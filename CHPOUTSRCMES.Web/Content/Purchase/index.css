@@ -1,0 +1,21 @@
+﻿/*event title以white-space分行.會以最多行的為主,比較少行會有空白行*/
+.fc-event-time, .fc-event-title
+{
+	padding: 0 1px;
+	white-space: nowrap;
+}
+
+.fc-title
+{
+	white-space: normal;
+}
+
+.fullcalendarHeader
+{
+	margin: 20px 0px 20px;
+}
+
+.fc-title
+{
+	font-size: 15px;
+}

@@ -1,0 +1,31 @@
+﻿@model CHPOUTSRCMES.Web.ViewModels.ErrorViewModel
+@{
+    ViewBag.Title = "發生錯誤";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section scripts {
+    <script src="~/Scripts/Errors/General.js"></script>
+}
+
+<div class="row">
+
+    <div class="col">
+        <div class="form-group">
+            @Html.LabelFor(model => model.Error.Message, new { @class = "input-lg" })
+            @Html.DisplayTextFor(model => model.Error.Message)
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col">
+        <div class="btn-group">
+            <button id="btnPrevious" class="btn btn-success btn-lg">上一頁</button>
+        </div>
+
+    </div>
+
+</div>
+
+

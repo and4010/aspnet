@@ -1,0 +1,38 @@
+﻿@model CHPOUTSRCMES.Web.Models.Process.CHP_PROCESS_T
+@{
+    IEnumerable<SelectListItem> LocatorItem = (IEnumerable<SelectListItem>)ViewBag.LocatorItem;
+
+}
+
+<!-- Modal -->
+<div class="modal fade" id="SubinventoryModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h3 class="modal-title" id="exampleModalLabel">請選擇儲位</h3>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-5" style="margin-bottom:10px">
+                        <div class="form-inline" style="margin-bottom:10px">
+                            @Html.LabelFor(model => model.Locator)
+                            @Html.DropDownListFor(model => model.Locator, LocatorItem, new { @class = "form-control input-lg", id = "dialg_Subinventory" })
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="btnSaveSubinventory">儲存</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+            </div>
+
+        </div>
+    </div>
+</div>

@@ -1,0 +1,31 @@
+﻿@model CHPOUTSRCMES.Web.ViewModels.StockTransaction.TopViewModel
+
+<div class="row row-std">
+    <div class="col-md-12 form-inline">
+        <div class="form-group col col-md-4">
+            @Html.LabelFor(model => model.SelectedSubinventory, new { @class = "input-lg" })
+            @Html.DropDownListFor(model => model.SelectedSubinventory, Model.SubinventoryItems, new { @class = "form-control", id = "ddlSubinventory", autocomplete = "off" })
+        </div>
+        <div id="ddlLocatorArea" class="form-group col col-md-4" style="display: none;">
+            @Html.LabelFor(model => model.SelectedLocator, new { @class = "input-lg" })
+            @Html.DropDownListFor(model => model.SelectedLocator, Model.LocatorItems, new { @class = "form-control", id = "ddlLocator", autocomplete = "off" })
+        </div>
+    </div>
+</div>
+ @*   <div class="col-md-12">
+        <div class="form-group col col-xs-12 col-sm-5 col-md-4 col-lg-3 input-group">
+            <div class="input-group input-lg">
+                <span class="input-group-addon" id="ItemNumber-addon">料號</span>
+                <input class="form-control" type="text" id="txtItemNumber" aria-describedby="ItemNumber-addon" tabindex="6" /> 
+            </div>
+        </div>
+    </div>*@
+
+<div class="row row-std col-md-12 form-inline">
+    <div class="input-group col-xs-12 col-sm-5 col-md-4 col-lg-3">
+        <span class="input-group-addon" style="width: 53px;">料號</span>
+        <input class="form-control" type="text" id="txtItemNumber" placeholder="請輸入料號" />
+    </div>
+</div>
+
+

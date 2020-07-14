@@ -1,0 +1,251 @@
+﻿@*@{
+        ViewBag.EnableReturnButton = "true";
+        ViewBag.Title = "庫存移轉-盤點";
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+
+    <link href="@Url.Content("~/bower_components/dataTables-select/css/select.dataTables.min.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/bower_components/editor/css/scss/editor.dataTables.min.css")" rel="stylesheet" type="text/css" />
+
+
+
+    @section scripts {
+
+        <script src="~/bower_components/bootstrap-filestyle/src/bootstrap-filestyle.min.js"></script>
+        <script src="~/Scripts/Photo.js"></script>
+        <script src="~/Scripts/StockInventory.js"></script>
+    }
+
+    @{
+
+        IEnumerable<SelectListItem> TypeItem = (IEnumerable<SelectListItem>)ViewBag.TypeItem;
+        IEnumerable<SelectListItem> ProfitItem = (IEnumerable<SelectListItem>)ViewBag.ProfitItem;
+        IEnumerable<SelectListItem> SubinventoryItem = (IEnumerable<SelectListItem>)ViewBag.SubinventoryItem;
+        IEnumerable<SelectListItem> LocatorItem = (IEnumerable<SelectListItem>)ViewBag.LocatorItem;
+        IEnumerable<SelectListItem> ItemNoItem = (IEnumerable<SelectListItem>)ViewBag.ItemNoItem;
+
+
+    }*@
+
+@model CHPOUTSRCMES.Web.ViewModels.StockInvetory.LossViewModel
+<div class="row col-md-12">
+    <h4 class="page-header" id="page-header">庫存查詢</h4>
+</div>
+<div id="Top">
+</div>
+<div class="row row-std col-md-12">
+    <input type="button" id="btnSearchStock" value="查詢" class="btn btn-primary" />
+</div>
+
+
+<div class="row row-std">
+    @*<div class="col-md-12 form-inline">
+
+            <div class="form-group col col-md-2">
+                <label class="input-lg">類型</label>
+                @Html.DropDownList("類型", TypeItem, new { @class = "form-control", id = "ddlType", autocomplete = "off" })
+            </div>
+            <div class="form-group col col-md-2">
+                <label class="input-lg">盤點</label>
+                @Html.DropDownList("盤點", ProfitItem, new { @class = "form-control", id = "ddlProfit", autocomplete = "off" })
+            </div>
+
+        </div>
+
+
+        <div class="col-md-12 form-inline">
+
+
+            <div class="form-group col col-md-2">
+                <label class="input-lg">倉庫</label>
+                @Html.DropDownListFor(model => model.Subinventory, SubinventoryItem, new { @class = "form-control", id = "ddlSubinventory", autocomplete = "off" })
+            </div>
+            <div class="form-group col col-md-2">
+                <label class="input-lg">儲位</label>
+                @Html.DropDownListFor(model => model.Locator, LocatorItem, new { @class = "form-control", id = "ddlLocator", autocomplete = "off" })
+            </div>
+
+
+
+        </div>
+
+        <div class="col-md-12 form-inline">
+
+            <div class="form-group col col-md-4">
+                <label class="input-lg">料號</label>
+                @Html.DropDownListFor(model => model.Item_No, ItemNoItem, new { @class = "form-control", id = "ddlItemNo", autocomplete = "off" })
+            </div>
+        </div>*@
+
+
+
+    <div class="row row-std">
+        <div class="col-sm-12 col-md-12">
+            <table class="table table-striped table-bordered table-hover" id="StockDT">
+                <thead>
+                    <tr>
+                        <th rowspan="2" colspan="1"></th>
+                        <th rowspan="2" colspan="1">項次</th>
+                        <th rowspan="2" colspan="1">倉庫</th>
+                        <th rowspan="2" colspan="1">儲位</th>
+                        <th rowspan="2" colspan="1">料號</th>
+                        <th rowspan="2" colspan="1">條碼號</th>
+                        <th rowspan="1" colspan="2">主單位</th>
+                        <th rowspan="1" colspan="2">次單位</th>
+                        <th rowspan="2" colspan="1">備註</th>
+                    </tr>
+                    <tr>
+                        @*<th>
+                        </th>*@
+                        @*<th>
+                            @Html.DisplayName("項次")
+                        </th>
+                        <th>
+                            @Html.DisplayName("倉庫")
+                        </th>
+                        <th>
+                            @Html.DisplayName("儲位")
+                        </th>
+                        <th>
+                            @Html.DisplayName("料號")
+                        </th>
+                        <th>
+                            @Html.DisplayName("條碼號")
+                        </th>*@
+                        <th>
+                            @Html.DisplayName("數量")
+                        </th>
+                        <th>
+                            @Html.DisplayName("單位")
+                        </th>
+                        <th>
+                            @Html.DisplayName("數量")
+                        </th>
+                        <th>
+                            @Html.DisplayName("單位")
+                        </th>
+                    </tr>
+                </thead>
+
+            </table>
+
+        </div>
+    </div>
+</div>
+
+<div class="row col-md-12">
+    <h4 class="page-header">異動明細</h4>
+</div>
+
+<div class="row row-std">
+    <div class="row col-md-12 form-group">
+
+        <div class="col-md-1 input-lg">
+            <label>項次</label>
+            <label id="StockId"></label>
+        </div>
+
+        <div class="col-md-2 input-lg">
+            <label class="form-inline">倉庫</label>
+            <label class="form-inline" id="Subinventory"></label>
+        </div>
+
+        <div class="col-md-2 input-lg">
+            <label class="form-inline">儲位</label>
+            <label class="form-inline" id="Locator"></label>
+        </div>
+
+    </div>
+
+    <div class="row col-md-12 form-group">
+
+        <div class="col-md-4 input-lg">
+            <label class="form-inline">料號</label>
+            <label class="form-inline" id="ItemNumber"></label>
+        </div>
+
+        <div class="col-md-4 input-lg">
+            <label class="form-inline">條碼號</label>
+            <label class="form-inline" id="Barcode"></label>
+        </div>
+
+    </div>
+
+    <div class="row form-inline col-md-12  form-group">
+
+        <div id ="InputArea" class="input-group form-row col col-md-3">
+            <span class="input-group-addon" id="QtyText">減少數量</span>
+            <input type="text" class="form-control" placeholder="請輸入數量" id="txtQty" autocomplete="off">
+        </div>
+        <label id="TransactionUnit"></label>
+
+        <button class="btn btn-danger" type="button" id="btnAddRecord">新增明細</button>
+        @*<button class="btn btn-danger" type="button" id="BtnInsert">新增條碼</button>*@
+    </div>
+
+    <div class="row row-std col-md-12">
+        <input type="button" id="btnSaveTransaction" value="異動存檔" class="btn btn-danger" />
+    </div>
+
+
+    <div class="row row-std">
+        <div class="col-sm-12 col-md-12">
+            <table class="table table-striped table-bordered table-hover" id="LossDetailDT">
+                <thead>
+                    <tr>
+                        <th rowspan="2" colspan="1"></th>
+                        <th rowspan="2" colspan="1">項次</th>
+                        <th rowspan="2" colspan="1">倉庫</th>
+                        <th rowspan="2" colspan="1">儲位</th>
+                        <th rowspan="2" colspan="1">料號</th>
+                        <th rowspan="2" colspan="1">條碼號</th>
+                        <th rowspan="1" colspan="3">主單位</th>
+                        <th rowspan="1" colspan="3">次單位</th>
+                        <th rowspan="2" colspan="1">備註</th>
+                    </tr>
+                    <tr>
+                        @*<th>
+                        </th>*@
+                        @*<th>
+                            @Html.DisplayName("項次")
+                        </th>
+                        <th>
+                            @Html.DisplayName("倉庫")
+                        </th>
+                        <th>
+                            @Html.DisplayName("儲位")
+                        </th>
+                        <th>
+                            @Html.DisplayName("料號")
+                        </th>
+                        <th>
+                            @Html.DisplayName("條碼號")
+                        </th>*@
+                        <th>
+                            @Html.DisplayName("異動量")
+                        </th>
+                        <th>
+                            @Html.DisplayName("異動後")
+                        </th>
+                        <th>
+                            @Html.DisplayName("單位")
+                        </th>
+                        <th>
+                            @Html.DisplayName("異動量")
+                        </th>
+                        <th>
+                            @Html.DisplayName("異動後")
+                        </th>
+                        <th>
+                            @Html.DisplayName("單位")
+                        </th>
+                    </tr>
+                </thead>
+
+            </table>
+        </div>
+    </div>
+
+
+</div>
+

@@ -1,0 +1,382 @@
+﻿@model CHPOUTSRCMES.Web.ViewModels.Process.ProcessIndexViewModel
+@{
+    ViewBag.EnableReturnButton = "true";
+    ViewBag.Title = "加工-排程-完工紀錄";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+@section scripts {
+    <script src="~/Scripts/Process/Schedule.js"></script>
+    <script src="~/bower_components/editor/js/dataTables.editor.min.js"></script>
+    <script src="~/bower_components/editor/js/editor.bootstrap.min.js"></script>
+}
+
+
+@Html.HiddenFor(model => model.CHP_PROCESS_T.Process_Detail_Id, new { id = "Process_Detail_Id" })
+
+
+<div class="row">
+
+    <div class="row col-md-12">
+        @*工單號*@
+        <div class="form-group col col-md-1">
+            @Html.LabelFor(model => model.CHP_PROCESS_T.Process_Batch_no)
+        </div>
+
+        <div class="form-group col col-md-2">
+            <span id="Process_Batch_no">@Html.DisplayFor(model => model.CHP_PROCESS_T.Process_Batch_no)</span>
+        </div>
+
+        @* 訂單編號 *@
+        <div class="form-group col col-md-1">
+            @Html.LabelFor(model => model.CHP_PROCESS_T.Order_Number)
+        </div>
+
+        <div class="form-group col col-md-2">
+            @Html.DisplayFor(model => model.CHP_PROCESS_T.Order_Number)
+        </div>
+
+        @*客戶名稱*@
+        <div class="form-group col col-md-1">
+            @Html.LabelFor(model => model.CHP_PROCESS_T.Cosutomer_Num)
+        </div>
+
+        <div class="form-group col col-md-2">
+            @Html.DisplayFor(model => model.CHP_PROCESS_T.Cosutomer_Num)
+        </div>
+    </div>
+
+    <div class="row col-md-12">
+
+        @*需求日*@
+        <div class="form-group col col-md-1">
+            @Html.LabelFor(model => model.CHP_PROCESS_T.Demand_Date)
+        </div>
+
+        <div class="form-group col col-md-2">
+            @Html.DisplayFor(model => model.CHP_PROCESS_T.Demand_Date)
+        </div>
+
+        @*裁切日*@
+        <div class="form-group col col-md-1">
+            @Html.LabelFor(model => model.CHP_PROCESS_T.Cutting_Date_From)
+        </div>
+
+        <div class="form-group col col-md-2">
+            @Html.DisplayFor(model => model.CHP_PROCESS_T.Cutting_Date_From)
+        </div>
+
+        @*裁切日*@
+        <div class="form-group col col-md-1">
+            @Html.LabelFor(model => model.CHP_PROCESS_T.Cutting_Date_To)
+        </div>
+
+        <div class="form-group col col-md-2">
+            @Html.DisplayFor(model => model.CHP_PROCESS_T.Cutting_Date_To)
+        </div>
+
+    </div>
+
+    @*投入*@
+    <div class="row col-md-12">
+        <div class="row row-std col-md-12">
+            <h3 class="page-header">
+                投入
+            </h3>
+        </div>
+    </div>
+
+    <div class="row col-md-12">
+
+        <div class="row col-md-12">
+            <div class="col col-md-2">
+                @Html.LabelFor(model => model.CHP_PROCESS_T.SelectedInventoryItemNumber)
+            </div>
+
+            <div class=" col col-md-2">
+                @Html.DisplayFor(model => model.CHP_PROCESS_T.SelectedInventoryItemNumber)
+            </div>
+
+        </div>
+
+
+        @* 條碼編號 *@
+        <div class="col col-md-1">
+            @Html.LabelFor(model => model.Invest.Barcode)
+        </div>
+
+        <div class="col col-md-2">
+            <label id="Invest_Barcode"></label>
+        </div>
+
+        @* 殘捲 *@
+        <div class="col col-md-1">
+            @Html.LabelFor(model => model.Invest.Remnant)
+        </div>
+
+        <div class="col col-md-1">
+            <label id="Invest_Remnant"></label>
+        </div>
+
+        @* 原重量 *@
+        <div class="form-group col col-md-1">
+            <label>原重量</label>
+        </div>
+        <div class="form-group col col-md-1">
+            <label id="Invest_Original_Weight"></label>
+        </div>
+
+        @* 餘量 *@
+        <div class="form-group col col-md-1">
+            @Html.LabelFor(model => model.Invest.Remaining_Weight)
+        </div>
+
+        <div class="form-group col col-md-1">
+            <label id="Invest_Remaining_Weight"></label>
+        </div>
+    </div>
+
+
+
+    <div class="row col-md-12">
+        @* 基重 *@
+        <div class="form-group col col-md-1">
+            <label>基重</label>
+        </div>
+
+        <div class="form-group col col-md-1">
+            <label id="Invest_Basic_Weight"></label>
+        </div>
+
+        @* 規格 *@
+        <div class="form-group col col-md-1">
+            <label>規格</label>
+        </div>
+
+        <div class="form-group col col-md-1">
+            <label id="Invest_Specification"></label>
+        </div>
+
+        @* 捲號 *@
+        <div class="form-group col col-md-1">
+            <label>捲號</label>
+        </div>
+
+        <div class="form-group col col-md-2">
+            <label id="Invest_Lot_Number"></label>
+
+        </div>
+
+        <div class="form-group col col-md-1">
+            <button class="btn btn-primary" type="button">補印標籤</button>
+        </div>
+
+
+
+    </div>
+
+
+    <div class="row row-std">
+        <div class="dataTable_wrapper">
+            <div class="col-sm-12 col-md-12">
+                <table class="table table-striped table-bordered table-hover" id="InvestDataTables">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>
+                                @Html.DisplayName("條碼號")
+                            </th>
+                            <th>
+                                @Html.DisplayName("殘捲")
+                            </th>
+                            <th>
+                                @Html.DisplayName("基重")
+                            </th>
+                            <th>
+                                @Html.DisplayName("規格")
+                            </th>
+                            <th>
+                                @Html.DisplayName("捲號")
+                            </th>
+                            <th>
+                                @Html.DisplayName("紙別")
+                            </th>
+                            <th>
+                                @Html.DisplayName("原重KG")
+                            </th>
+                            <th>
+                                @Html.DisplayName("餘重KG")
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <br />
+
+    @* 產出 *@
+
+    <div class="row col-md-12">
+        <div class="row row-std col-md-12">
+            <h3 class="page-header">
+                產出
+            </h3>
+        </div>
+    </div>
+
+    <div class="row col-md-12">
+
+        @* 料號 *@
+
+        <div class="form-group col col-md-1">
+            @Html.LabelFor(model => model.Production.Product_Item)
+        </div>
+
+        <div class="form-group col col-md-2">
+            <span class="form-group col col-md-2" id="Product_Item">@Html.DisplayFor(model => model.CHP_PROCESS_T.Product_Item)</span>
+        </div>
+
+        @* 棧板數 *@
+
+        <div class="form-group col col-md-1">
+            @Html.LabelFor(model => model.Production.Roll_Ream_Qty)
+        </div>
+
+        <div class="form-group col col-md-1">
+            @Html.DisplayFor(model => model.Production.Roll_Ream_Qty)
+        </div>
+
+    </div>
+
+    @* 產出table *@
+    <div class="row col-md-12">
+
+        <div class="row row-std">
+            <div class="dataTable_wrapper">
+                <div class="col-sm-12 col-md-12">
+                    <table class="table table-striped table-bordered table-hover" id="ProductionDataTables">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>
+                                    @Html.DisplayName("條碼號")
+                                </th>
+                                <th>
+                                    @Html.DisplayName("料號")
+                                </th>
+                                <th>
+                                    @Html.DisplayName("令數")
+                                </th>
+                                <th>
+                                    @Html.DisplayName("重量")
+                                </th>
+                                <th>
+                                    @Html.DisplayName("狀態")
+                                </th>
+                                <th>
+
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <br />
+
+    @* 餘切table *@
+    <div class="row col-md-12">
+        <h4>餘切</h4>
+
+        <div class="row row-std">
+            <div class="dataTable_wrapper">
+                <div class="col-sm-12 col-md-12">
+                    <table class="table table-striped table-bordered table-hover" id="CotangentDataTables">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>
+                                    @Html.DisplayName("條碼號")
+                                </th>
+                                <th>
+                                    @Html.DisplayName("料號")
+                                </th>
+                                <th>
+                                    @Html.DisplayName("令數")
+                                </th>
+                                <th>
+                                    @Html.DisplayName("公斤")
+                                </th>
+                                <th>
+                                    @Html.DisplayName("狀態")
+                                </th>
+                                <th>
+
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row col-md-12 col-lg-12 col-sm-12">
+        <div>
+            <button class="btn btn-primary" type="button" id="BtnLabel">補印標籤</button>
+        </div>
+    </div>
+
+
+
+
+    <br />
+    @* 損耗 *@
+    <div class="row col-md-12">
+        <div class="row row-std col-md-12">
+            <h4 class="page-header">
+                損耗
+            </h4>
+        </div>
+    </div>
+    <div class="row col-md-12">
+        <div class="form-group col col-md-1">
+            @Html.LabelFor(model => model.Production.Loss)
+        </div>
+
+        <div class="form-group col col-md-2">
+          <label id="Production_Loss">@Html.DisplayFor(model => model.Production.Loss)</label>
+        </div>
+
+        <div class="col-md-2">
+            @Html.HiddenFor(model => model.CHP_PROCESS_T.Weight, new { id = "CHP_PROCESS_T_Weight" })
+            <button class="btn btn-primary" type="button" id="BtnCalculate">計算</button>
+        </div>
+
+    </div>
+
+
+    <div class="row col-md-12 col-lg-12 col-sm-12">
+        <div class="col-lg-offset-10">
+            <button class="btn btn-danger" type="button" id="BtnEdit">修改</button>
+            <button class="btn btn-danger" type="button" id="BtnApprove">核准</button>
+            @*<button class="btn btn-primary" type="button" id="BtnReturn">返回</button>*@
+        </div>
+
+    </div>
+
+</div>
+

@@ -1,0 +1,109 @@
+﻿@model CHPOUTSRCMES.Web.ViewModels.Purchase.PurchaseViewModel
+
+
+@{
+    ViewBag.EnableReturnButton = "true";
+    ViewBag.Title = "檢視明細(平張)";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@section scripts {
+
+    <script src="~/Scripts/Purchase/View.js"></script>
+}
+
+
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="col-md-1 text-right">
+            @Html.LabelFor(model => model.CabinetNumber)
+        </div>
+        <div class="col-md-2">
+            @Html.DisplayFor(model => model.CabinetNumber)
+        </div>
+        <div class="col-md-1 text-right">
+            @Html.LabelFor(model => model.FlatDetailModel.Item_No)
+        </div>
+        <div class="col-md-2">
+            @Html.DisplayFor(model => model.FlatDetailModel.Item_No)
+        </div>
+        <div class="col-md-1 text-right">
+            @Html.LabelFor(model => model.FlatDetailModel.ReamWeight)
+        </div>
+        <div class="col-md-2">
+            @Html.DisplayFor(model => model.FlatDetailModel.ReamWeight)
+        </div>
+    </div>
+
+
+    <div class="col-md-12">
+        <div class="col-md-1 text-right">
+            @Html.LabelFor(model => model.FlatDetailModel.Pieces_Qty)
+        </div>
+
+        <div class="col-md-2">
+            @Html.DisplayFor(model => model.FlatDetailModel.Pieces_Qty)
+        </div>
+
+        <div class="col-md-1 text-right">
+            @Html.LabelFor(model => model.FlatDetailModel.Barcode)
+        </div>
+
+        <div class="col-md-2">
+            @Html.DisplayFor(model => model.FlatDetailModel.Barcode)
+        </div>
+
+        <div class="col-md-1 text-right">
+            @Html.LabelFor(model => model.FlatDetailModel.Qty)
+        </div>
+
+        <div class="col-md-2">
+            @Html.DisplayFor(model => model.FlatDetailModel.Qty)
+        </div>
+
+        <div class="col-md-1 text-right">
+            @Html.LabelFor(model => model.FlatDetailModel.Locator)
+        </div>
+        <div class="col-md-2">
+            @Html.DisplayFor(model => model.FlatDetailModel.Locator)
+        </div>
+
+    </div>
+
+
+    <div class="col-md-12" style="margin-top:30px">
+
+        <h4 class="page-header">
+            <label>備註</label>
+        </h4>
+
+        <div class="col-md-12">
+            <div class="col-md-12">
+                @Html.DisplayFor(model => model.FlatDetailModel.Reason) @Html.DisplayFor(model => model.FlatDetailModel.Remark)
+            </div>
+            <div class="col-md-12">
+                @Html.DisplayName("異動人小王   時間:2019 / 07 / 31 15:05:02")
+            </div>
+        </div>
+        
+    </div>
+
+
+
+    <div class="col-md-12">
+        <h4 class="page-header">
+            <label>照片</label>
+        </h4>
+
+        <div class="col-md-5" id="imgBox">
+            <img class="col-md-5" id="img" onclick="imgDisplay(this)"
+                 src="" alt="" />
+        </div>
+    </div>
+
+
+
+</div>
+

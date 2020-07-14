@@ -1,0 +1,455 @@
+﻿@model CHPOUTSRCMES.Web.ViewModels.Purchase.PurchaseViewModel
+
+@{
+    ViewBag.EnableReturnButton = "true";
+    ViewBag.Title = "進櫃明細";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="@Url.Content("~/Content/Purchase/detail.css")" rel="stylesheet" type="text/css" />
+
+@section scripts {
+
+    <script src="~/Scripts/Purchase/Purchase.js"></script>
+    <script src="~/Scripts/label.js"></script>
+}
+@Html.HiddenFor(model => model.Status, new { id = "Status" })
+
+<div>
+
+    <div class="row row-std">
+        <div class="col-md-4">
+            <h4>
+                櫃號
+                <span id="CabinetNumber">@Html.DisplayFor(model => model.CabinetNumber)</span>
+            </h4>
+        </div>
+        <div class="col-md-4">
+            <h4>
+                進櫃時間
+                <span id="CreateDate">@Html.DisplayFor(model => model.CreateDate)</span>
+            </h4>
+        </div>
+
+        <div class="col-md-4">
+            <h4>
+                倉庫
+                <span id="Subinventory">@Html.DisplayFor(model => model.Subinventory)</span>
+            </h4>
+        </div>
+
+    </div>
+
+    <div class="row row-std">
+
+        <form class="bs-example bs-example-form col-md-3" id="form" onsubmit="return false">
+            <div class="input-group form-row">
+                <span class="input-group-addon">請輸入櫃號</span>
+                <input type="text" class="form-control" placeholder="請輸入櫃號" id="CheckCabinetNumber" name="CabinetNumber" autocomplete="off">
+            </div>
+        </form>
+        <button class="btn btn-danger" type="button" id="BtnCabinetNumber">比對</button>
+
+    </div>
+
+
+
+    <br />
+
+
+    @*<div class="alert alert-warning" role="alert">
+            <h4>
+                紙捲平張混合
+            </h4>
+        </div>*@
+
+    <div class="row col-md-12">
+        <ul id="mytab" class="nav nav-tabs  nav-justified">
+
+            <li class="active">
+                <a class="nav-link active MyTabs" href="#PaperRoll" data-toggle="tab">紙捲&emsp;<span class="label label-danger" id="PaperRollSpan"></span></a>
+            </li>
+
+            <li>
+                <a class="nav-link MyTabs" href="#Flat" data-toggle="tab">平張&emsp;<span class="label label-danger" id="FlatSpan"></span></a>
+            </li>
+
+        </ul>
+    </div>
+
+
+
+
+    <div id="myTabContent" class="tab-content row">
+
+        <div class="tab-pane fade in active col-md-12" id="PaperRoll">
+
+            <div class="row row-std col-md-12">
+                <h4 class="page-header">
+                    紙捲 表頭
+                </h4>
+            </div>
+
+            <div class="row row-std">
+                <div class="dataTable_wrapper">
+                    <div class="col-md-12">
+                        <table class="table table-striped table-bordered table-hover" id="PaperRolldataTablesHeader">
+                            <thead>
+                                <tr>
+                                    <th rowspan="2" colspan="1">項次</th>
+                                    <th rowspan="2" colspan="1">倉庫</th>
+                                    <th rowspan="2" colspan="1">儲位</th>
+                                    <th rowspan="2" colspan="1">料號</th>
+                                    <th rowspan="2" colspan="1">紙別</th>
+                                    <th rowspan="2" colspan="1">基重</th>
+                                    <th rowspan="2" colspan="1">規格</th>
+                                    <th rowspan="2" colspan="1">捲數</th>
+                                    <th rowspan="1" colspan="2">交易單位</th>
+                                    <th rowspan="1" colspan="2">主單位</th>
+                                </tr>
+                                <tr>
+                                    @*<th>
+                                        @Html.DisplayName("項次")
+                                    </th>
+                                    <th>
+                                        @Html.DisplayName("倉庫")
+                                    </th>
+                                    <th>
+                                        @Html.DisplayName("儲位")
+                                    </th>
+                                    <th>
+                                        @Html.DisplayName("料號")
+                                    </th>
+                                    <th>
+                                        @Html.DisplayName("紙別")
+                                    </th>
+                                    <th>
+                                        @Html.DisplayName("基重")
+                                    </th>
+                                    <th>
+                                        @Html.DisplayName("規格")
+                                    </th>
+                                    <th>
+                                        @Html.DisplayName("捲數")
+                                    </th>*@
+                                    <th>
+                                        @Html.DisplayName("數量")
+                                    </th>
+                                    <th>
+                                        @Html.DisplayName("單位")
+                                    </th>
+                                    <th>
+                                        @Html.DisplayName("數量")
+                                    </th>
+                                    <th>
+                                        @Html.DisplayName("單位")
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <div class="row row-std col-md-12">
+
+                <h4 class="page-header">
+                    紙捲 表身
+                    <button type="button" class="btn btn-primary" id="BtnImportRoll">
+                        檔案匯入
+                    </button>
+
+                    <button type="button" class="btn btn-primary" id="BtnDownload">
+                        範例下載
+                    </button>
+                </h4>
+
+            </div>
+
+
+
+
+            <div class="row row-std">
+                <form class="bs-example bs-example-form col-md-3" id="form" onsubmit="return false">
+                    @*以防表單跳轉*@
+
+                    <div class="input-group form-row">
+                        <span class="input-group-addon">條碼</span>
+                        <input type="text" class="form-control" placeholder="請輸入條碼" id="PaperRollBarcode" name="PaperRollKeyword" autocomplete="off">
+                    </div>
+                    <br>
+
+                </form>
+
+                <button class="btn btn-danger" type="button" id="BtnPaperRollSaveBarcode">轉已入庫</button>
+                <button class="btn btn-primary col-md-offset-1 btn-label" type="button">印標籤</button>
+                <button class="btn btn-primary" type="button">入庫單</button>
+            </div>
+
+
+            <div class="row row-std">
+                <div class="col-md-12">
+                    <table class="table table-striped table-bordered table-hover" id="PaperRolldataTablesBody">
+                        <thead>
+                            <tr>
+                                <th rowspan="2" colspan="1"></th>
+                                <th rowspan="2" colspan="1">項次</th>
+                                <th rowspan="2" colspan="1">倉別</th>
+                                <th rowspan="2" colspan="1">儲位</th>
+                                <th rowspan="2" colspan="1">條碼號</th>
+                                <th rowspan="2" colspan="1">入庫狀態</th>
+                                <th rowspan="2" colspan="1">料號</th>
+                                <th rowspan="2" colspan="1">紙別</th>
+                                <th rowspan="2" colspan="1">基重</th>
+                                <th rowspan="2" colspan="1">規格</th>
+                                <th rowspan="2" colspan="1">理論重(KG)</th>
+                                <th rowspan="1" colspan="2">交易單位</th>
+                                <th rowspan="1" colspan="2">主單位</th>
+                                <th rowspan="2" colspan="1">捲號</th>
+                                <th rowspan="2" colspan="1">備註</th>
+                                <th rowspan="2" colspan="1"></th>
+                            </tr>
+                            <tr>
+
+                                @*<th>
+                                    @Html.DisplayName("項次")
+                                </th>
+                                <th>
+                                    @Html.DisplayName("倉別")
+                                </th>
+                                <th>
+                                    @Html.DisplayName("儲位")
+                                </th>
+                                <th>
+                                    @Html.DisplayName("條碼號")
+                                </th>
+                                <th>
+                                    @Html.DisplayName("入庫狀態")
+                                </th>
+                                <th>
+                                    @Html.DisplayName("料號")
+                                </th>
+                                <th>
+                                    @Html.DisplayName("紙別")
+                                </th>
+                                <th>
+                                    @Html.DisplayName("基重")
+                                </th>
+                                <th>
+                                    @Html.DisplayName("規格")
+                                </th>
+                                <th>
+                                    @Html.DisplayName("理論重(KG)")
+                                </th>*@
+                                <th>
+                                    @Html.DisplayName("數量")
+                                </th>
+                                <th>
+                                    @Html.DisplayName("單位")
+                                </th>
+                                <th>
+                                    @Html.DisplayName("數量")
+                                </th>
+                                <th>
+                                    @Html.DisplayName("單位")
+                                </th>
+                                @*<th>
+                                    @Html.DisplayName("捲號")
+                                </th>
+                                <th>
+                                    @Html.DisplayName("備註")
+                                </th>
+                                <th></th>*@
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+
+
+
+
+
+        <div class="tab-pane fade row col-md-12" id="Flat">
+
+
+            <div class="row row-std col-md-12">
+                <h4 class="page-header">
+                    平張 表頭
+                </h4>
+            </div>
+
+            <div class="row row-std">
+                <div class="dataTable_wrapper">
+                    <div class="col-md-12">
+                        <table class="table table-striped table-bordered table-hover" id="FlatdataTablesHeader">
+                            <thead>
+                                <tr>
+                                    <th rowspan="2" colspan="1">項次</th>
+                                    <th rowspan="2" colspan="1">倉別</th>
+                                    <th rowspan="2" colspan="1">儲位</th>
+                                    <th rowspan="2" colspan="1">料號</th>
+                                    <th rowspan="2" colspan="1">令重</th>
+                                    <th rowspan="2" colspan="1">棧板數</th>
+                                    <th rowspan="2" colspan="1">包裝方式</th>
+                                    <th rowspan="2" colspan="1">每件令數</th>
+                                    <th rowspan="1" colspan="2">交易單位</th>
+                                    <th rowspan="1" colspan="2">次單位</th>
+                                    <th rowspan="1" colspan="2">主單位</th>
+                                </tr>
+                                <tr>
+                                    @*<th>
+                                        @Html.DisplayName("項次")
+                                    </th>
+                                    <th>
+                                        @Html.DisplayName("倉別")
+                                    </th>
+                                    <th>
+                                        @Html.DisplayName("儲位")
+                                    </th>
+                                    <th>
+                                        @Html.DisplayName("料號")
+                                    </th>
+                                    <th>
+                                        @Html.DisplayName("令重")
+                                    </th>
+                                    <th>
+                                        @Html.DisplayName("棧板數")
+                                    </th>
+                                    <th>
+                                        @Html.DisplayName("包裝方式")
+                                    </th>
+                                    <th>
+                                        @Html.DisplayName("每件令數")
+                                    </th>*@
+                                    <th>
+                                        @Html.DisplayName("數量")
+                                    </th>
+                                    <th>
+                                        @Html.DisplayName("單位")
+                                    </th>
+                                    <th>
+                                        @Html.DisplayName("總令數")
+                                    </th>
+                                    <th>
+                                        @Html.DisplayName("單位")
+                                    </th>
+                                    <th>
+                                        @Html.DisplayName("總公斤")
+                                    </th>
+                                    <th>
+                                        @Html.DisplayName("單位")
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row row-std col-md-12">
+                <h4 class="page-header">
+                    平張 表身
+                    @*<button  type="button" class="btn btn-primary"  id="BtnImportFlat">檔案匯入</button>*@
+                </h4>
+            </div>
+
+            <div class="row row-std">
+                <form class="bs-example bs-example-form col-md-3" role="form" onsubmit="return false">
+                    @*以防表單跳轉*@
+
+                    <div class="input-group">
+                        <span class="input-group-addon">條碼</span>
+                        <input type="text" class="form-control" placeholder="請輸入條碼" id="FlatBarcode" name="FlatKeyword" autocomplete="off">
+                    </div>
+                    <br>
+
+                </form>
+
+                <button class="btn btn-danger insideBtn" type="button" id="BtnFlatSaveBarcode">轉已入庫</button>
+                <button class="btn btn-primary col-md-offset-1 btn-label2" type="button">印標籤</button>
+                <button class="btn btn-primary insideBtn" type="button">入庫單</button>
+            </div>
+
+
+            <div class="row row-std">
+                <div class="col-md-12">
+                    <table class="table table-striped table-bordered table-hover" id="FlatdataTablesBody">
+                        <thead>
+                            <tr>
+                                <th>
+                                    @*<input type="checkbox" id="flatcheckallbutton" class="fa fa-minus-square-o">*@
+                                </th>
+                                <th>
+                                    @Html.DisplayName("項次")
+                                </th>
+                                <th>
+                                    @Html.DisplayName("倉別")
+                                </th>
+                                <th>
+                                    @Html.DisplayName("儲位")
+                                </th>
+                                <th>
+                                    @Html.DisplayName("條碼號")
+                                </th>
+                                <th>
+                                    @Html.DisplayName("入庫狀態")
+                                </th>
+                                <th>
+                                    @Html.DisplayName("料號")
+                                </th>
+                                <th>
+                                    @Html.DisplayName("令重")
+                                </th>
+                                <th>
+                                    @Html.DisplayName("包裝方式")
+                                </th>
+                                <th>
+                                    @Html.DisplayName("每件令數")
+                                </th>
+                                <th>
+                                    @Html.DisplayName("數量(頓)")
+                                </th>
+                                <th>
+                                    @Html.DisplayName("備註")
+                                </th>
+                                <th>
+
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+
+
+
+
+    </div>
+    <div class="row row-std col-md-12">
+        <button class="btn btn-danger externalBtn" id="btnSaveInvenorty">存檔入庫</button>
+    </div>
+
+</div>
+

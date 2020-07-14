@@ -1,0 +1,209 @@
+﻿@model CHPOUTSRCMES.Web.ViewModels.Process.ProcessIndexViewModel
+@{
+    ViewBag.EnableReturnButton = "true";
+    ViewBag.Title = "加工-編輯";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<link href="@Url.Content("~/bower_components/dataTables-select/css/select.dataTables.min.css")" rel="stylesheet" type="text/css" />
+<link href="@Url.Content("~/bower_components/editor/css/scss/editor.dataTables.min.css")" rel="stylesheet" type="text/css" />
+
+@section scripts {
+    <script src="~/Scripts/Process/Edit.js"></script>
+}
+
+@Html.HiddenFor(model => model.CHP_PROCESS_T.Process_Detail_Id, new { id = "Process_Detail_Id" })
+
+<div class="row">
+
+
+    <div class="row col-md-12">
+        @*工單號*@
+        <div class="form-group col col-md-1 text-right">
+            @Html.LabelFor(model => model.CHP_PROCESS_T.Process_Batch_no)
+        </div>
+
+        <div class="form-group col col-md-2 ">
+            @Html.DisplayFor(model => model.CHP_PROCESS_T.Process_Batch_no)
+        </div>
+
+        @* 料號 *@
+        <div class="form-group col-md-1 text-right">
+            @Html.LabelFor(model => model.CHP_PROCESS_T.Produce_Item)
+        </div>
+
+        <div class="form-group col-md-2">
+            @Html.DisplayFor(model => model.CHP_PROCESS_T.Produce_Item)
+        </div>
+
+        @*需求日*@
+        <div class="form-group col col-md-1 text-right">
+            @Html.LabelFor(model => model.CHP_PROCESS_T.Demand_Date)
+        </div>
+
+        <div class="form-group col col-md-2">
+            @Html.DisplayFor(model => model.CHP_PROCESS_T.Demand_Date)
+        </div>
+
+    </div>
+
+    <div class="row col-md-12">
+
+        @*裁切日*@
+        <div class="form-group col col-md-1 text-right">
+            @Html.LabelFor(model => model.CHP_PROCESS_T.Cutting_Date_From)
+        </div>
+
+        <div class="form-group col col-md-2">
+            @Html.DisplayFor(model => model.CHP_PROCESS_T.Cutting_Date_From)
+        </div>
+
+        @*裁切日*@
+        <div class="form-group col col-md-1 text-right">
+            @Html.LabelFor(model => model.CHP_PROCESS_T.Cutting_Date_To)
+        </div>
+
+        <div class="form-group col col-md-2">
+            @Html.DisplayFor(model => model.CHP_PROCESS_T.Cutting_Date_To)
+        </div>
+
+    </div>
+
+
+    <div class="row col-md-12">
+
+
+        @*客戶名稱*@
+        <div class="form-group col col-md-1 text-right">
+            @Html.LabelFor(model => model.CHP_PROCESS_T.Cosutomer_Num)
+        </div>
+
+        <div class="form-group col col-md-2">
+            @Html.DisplayFor(model => model.CHP_PROCESS_T.Cosutomer_Num)
+        </div>
+
+        @* 訂單編號 *@
+        <div class="form-group col col-md-1 text-right">
+            @Html.LabelFor(model => model.CHP_PROCESS_T.Order_Number)
+        </div>
+
+        <div class="form-group col col-md-2">
+            @Html.DisplayFor(model => model.CHP_PROCESS_T.Order_Number)
+        </div>
+
+        @* 紙別 *@
+        <div class="form-group col col-md-1 text-right">
+            @Html.LabelFor(model => model.CHP_PROCESS_T.Paper_Type)
+        </div>
+
+        <div class="form-group col col-md-1">
+            @Html.DisplayFor(model => model.CHP_PROCESS_T.Paper_Type)
+        </div>
+    </div>
+
+    <div class="row col-md-12">
+
+        @* 基重 *@
+        <div class="form-group col-md-1 text-right">
+            @Html.LabelFor(model => model.CHP_PROCESS_T.Basic_Weight)
+        </div>
+
+        <div class="form-group col-md-2">
+            @Html.DisplayFor(model => model.CHP_PROCESS_T.Basic_Weight)
+        </div>
+
+        @* 規格 *@
+        <div class="form-group col col-md-1 text-right">
+            @Html.LabelFor(model => model.CHP_PROCESS_T.Specification)
+        </div>
+
+        <div class="form-group col col-md-2">
+            @Html.DisplayFor(model => model.CHP_PROCESS_T.Specification)
+        </div>
+
+        @* 絲向 *@
+        <div class="form-group col col-md-1 text-right">
+            @Html.LabelFor(model => model.CHP_PROCESS_T.Grain_Direction)
+        </div>
+
+        <div class="form-group col col-md-2">
+            @Html.DisplayFor(model => model.CHP_PROCESS_T.Grain_Direction)
+        </div>
+
+
+    </div>
+
+
+    <div class="row col-md-12">
+
+        @* 重量 *@
+        <div class="form-group col col-md-1 text-right">
+            @Html.LabelFor(model => model.CHP_PROCESS_T.Weight)
+        </div>
+
+        <div class="form-group col col-md-2">
+            @Html.DisplayFor(model => model.CHP_PROCESS_T.Weight)
+        </div>
+
+        @* 令數 *@
+        <div class="form-group col col-md-1 text-right">
+            @Html.LabelFor(model => model.CHP_PROCESS_T.Ream_Qty)
+        </div>
+
+        <div class="form-group col col-md-2">
+            @Html.DisplayFor(model => model.CHP_PROCESS_T.Ream_Qty)
+        </div>
+
+        @* 包裝方式 *@
+        <div class="form-group col col-md-1 text-right">
+            @Html.LabelFor(model => model.CHP_PROCESS_T.Packing_Type)
+        </div>
+
+        <div class="form-group col col-md-2">
+            @Html.DisplayFor(model => model.CHP_PROCESS_T.Packing_Type)
+        </div>
+
+      
+
+
+    </div>
+
+    <div class="row col-md-12">
+        @* 損失 *@
+        <div class="form-group col col-md-1 text-right">
+            @Html.LabelFor(model => model.Production.Loss)
+        </div>
+
+        <div class="form-group col col-md-2">
+            @Html.DisplayFor(model => model.Production.Loss)
+        </div>
+    </div>
+
+
+    <br />
+
+    <div class="row col-md-12">
+
+
+        <div class="col-md-12">
+            @Html.LabelFor(model => model.CHP_PROCESS_T.Produce_Remark)
+        </div>
+        <div class="form-group col-md-12">
+            <textarea style="width:1000px;height:200px;" class="form-control col-md-4" rows="3" id="textarea"></textarea>
+        </div>
+
+    </div>
+
+    @*<div class="row col-md-12">
+        @Html.DisplayFor(model => model.CHP_PROCESS_T.Created_by)
+    </div>
+    <div class="row col-md-12">
+        @Html.DisplayFor(model => model.CHP_PROCESS_T.Creation_date)
+    </div>*@
+
+    <div class="col-md-12">
+        <button class="btn btn-danger" id="BtnSave">存檔</button>
+    </div>
+
+</div>

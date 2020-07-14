@@ -1,0 +1,607 @@
+﻿
+
+$(document).ready(function() {
+
+    //紙捲
+    $('#PaperRolldataTablesHeader').DataTable({
+        "language": {
+            "url": "/bower_components/datatables/language/zh-TW.json"
+        },
+        dom:
+            "<'row'<'col-sm-2'l><'col-sm-7'><'col-sm-3'f>>" +
+            "<'row'<'col-sm-12'tr>>" +
+            "<'row'<'col-sm-5'i><'col-sm-7'p>>",
+        ajax: {
+            "url": "/Purchase/Header",
+            "type": "GET",
+            "datatype": "json",
+            "data": {},
+        },
+        columns: [
+            { data: "Id", "name": "項次", "autoWidth": true },
+            { data: "Subinventory", "name": "倉別", "autoWidth": true },
+            { data: "Locator", "name": "儲位", "autoWidth": true },
+            { data: "PartNo", "name": "料號", "autoWidth": true },
+            { data: "PaperType", "name": "紙別", "autoWidth": true },
+            { data: "BaseWeight", "name": "基重", "autoWidth": true },
+            { data: "Specification", "name": "規格", "autoWidth": true },
+            { data: "RollReamQty", "name": "捲數/棧板數", "autoWidth": true },
+            { data: "TransactionQuantity", "name": "交易數量", "autoWidth": true },
+            { data: "TransactionUom", "name": "交易單位", "autoWidth": true },
+            { data: "PrimanyQuantity", "name": "主要數量", "autoWidth": true },
+            { data: "PrimaryUom", "name": "主要單位", "autoWidth": true },
+        ]
+    });
+
+    var PaperRolldataTablesBody =  $('#PaperRolldataTablesBody').DataTable({
+        "language": {
+            "url": "/bower_components/datatables/language/zh-TW.json"
+        },
+        dom:
+            "<'row'<'col-sm-2'l><'col-sm-7'B><'col-sm-3'f>>" +
+            "<'row'<'col-sm-12'tr>>" +
+            "<'row'<'col-sm-5'i><'col-sm-7'p>>",
+        select: {
+            style: 'multi',
+            blurable: true,
+            selector: 'td:first-child'
+        },
+        buttons: [
+            'selectAll',
+            'selectNone'
+        ],
+    });
+
+    $('.row-std').on('click', '.btn-label', function (e) {
+        PrintLable(PaperRolldataTablesBody, "/Purchase/GetLabel");
+    })
+
+
+
+
+    $('#PaperRolldataTablesBody tbody').on('click', '.btn-edit', function(e) {
+
+        var data = $('#PaperRolldataTablesBody').DataTable().row($(this).parents('tr')).data();
+        if (data == null) {
+            return false;
+        }
+        $.ajax({
+            url: '/Purchase/PaperRollEdit/',
+            type: "POST",
+            success: function() {
+                window.location.href = "/Purchase/PaperRollEdit"
+            },
+            error: function() {
+
+                $.alert("失敗")
+            }
+
+        })
+    })
+
+
+
+
+    //平張
+    $('#FlatdataTablesHeader').DataTable({
+        "language": {
+            "url": "/bower_components/datatables/language/zh-TW.json"
+        },
+        dom:
+            "<'row'<'col-sm-2'l><'col-sm-7'><'col-sm-3'f>>" +
+            "<'row'<'col-sm-12'tr>>" +
+            "<'row'<'col-sm-5'i><'col-sm-7'p>>",
+        ajax: {
+            "url": "/Purchase/FlatHeader",
+            "type": "GET",
+            "datatype": "json",
+            "data": {},
+        },
+        columns: [
+            { data: "Id", "name": "項次", "autoWidth": true },
+            { data: "Subinventory", "name": "倉別", "autoWidth": true },
+            { data: "Locator", "name": "儲位", "autoWidth": true },
+            { data: "PartNo", "name": "料號", "autoWidth": true },
+            { data: "ReamWeight", "name": "令種", "autoWidth": true },
+            { data: "RollReamQty", "name": "捲數/棧板數", "autoWidth": true },
+            { data: "PackingType", "name": "包裝方式", "autoWidth": true },
+            { data: "RollReamWt", "name": "每件令數", "autoWidth": true },
+            { data: "TransactionQuantity", "name": "交易數量", "autoWidth": true },
+            { data: "TtlRollReam", "name": "總令數", "autoWidth": true },
+            { data: "DeliveryQty", "name": "總公斤", "autoWidth": true },
+        ]
+    });
+
+
+    var FlatdataTablesBody = $('#FlatdataTablesBody').DataTable({
+        "language": {
+            "url": "/bower_components/datatables/language/zh-TW.json"
+        },
+        dom:
+            "<'row'<'col-sm-2'l><'col-sm-7'B><'col-sm-3'f>>" +
+            "<'row'<'col-sm-12'tr>>" +
+            "<'row'<'col-sm-5'i><'col-sm-7'p>>",
+        select: {
+            style: 'multi',
+            blurable: true,
+            selector: 'td:first-child'
+        },
+        buttons: [
+            'selectAll',
+            'selectNone'
+        ],
+    });
+
+
+
+<<<<<<< HEAD
+    $('#FlatdataTablesBody tbody').on('click', '.btn-view', function (e) {
+
+        var data = FlatdataTablesBody.row($(this).parents('tr')).data();
+        if (data == null) {
+            return false;
+        }
+        $.ajax({
+            url: '/Purchase/FlatView/',
+            type: "POST",
+            success: function (result) {
+                window.location.href = "/Purchase/FlatView"
+
+            },
+            error: function () {
+                $.alert("失敗");
+            }
+        });
+
+    })
+
+
+    $('#FlatdataTablesBody tbody').on('click', '.btn-edit', function (e) {
+
+        var data = FlatdataTablesBody.row($(this).parents('tr')).data();
+=======
+    $('#FlatdataTablesBody tbody').on('click', '.btn-edit', function(e) {
+
+        var data = $('#FlatdataTablesBody').DataTable().row($(this).parents('tr')).data();
+>>>>>>> origin/eric
+        if (data == null) {
+            return false;
+        }
+
+        $.ajax({
+            url: '/Purchase/FlatEdit/',
+            type: "POST",
+            success: function() {
+                window.location.href = "/Purchase/FlatEdit"
+            },
+            error: function() {
+
+                $.alert("失敗")
+            }
+
+        })
+    })
+
+
+
+
+
+    //重新整理表格寬度
+    $('a[data-toggle="tab"]').on('shown.bs.tab', function(e) {
+        $('#FlatdataTablesBody').DataTable().table().node().style.width = '';
+        $('#PaperRolldataTablesBody').DataTable().table().node().style.width = '';
+        // Need to reset width on table, not sure why.
+        $.fn.dataTable.tables({ visible: true, api: true }).table().node().style.width = '';
+
+        // .draw() is necessary for "no results" message to be properly positioned
+        $.fn.dataTable.tables({ visible: true, api: true }).columns.adjust().draw();
+
+
+    });
+
+
+
+
+
+
+
+
+    $('#PaperRollCheckAllButton').click(function() {
+        if (PaperRolldataTablesBody.rows({
+            selected: true
+        }).count() > 0) {
+            PaperRolldataTablesBody.rows().deselect();
+            return;
+        }
+
+        PaperRolldataTablesBody.rows().select();
+    });
+
+    PaperRolldataTablesBody.on('select deselect', function(e, dt, type, indexes) {
+        if (type === 'row') {
+            // We may use dt instead of myTable to have the freshest data.
+            if (dt.rows().count() === dt.rows({
+                selected: true
+            }).count()) {
+                // Deselect all items button.
+                $('#PaperRollCheckAllButton i').attr('class', 'far fa-check-square');
+                return;
+            }
+
+            if (dt.rows({
+                selected: true
+            }).count() === 0) {
+                // Select all items button.
+                $('#PaperRollCheckAllButton i').attr('class', 'far fa-square');
+                return;
+            }
+
+            // Deselect some items button.
+            $('#PaperRollCheckAllButton i').attr('class', 'far fa-minus-square');
+        }
+    });
+
+
+
+    $('#FlatCheckAllButton').click(function() {
+        if (FlatdataTablesBody.rows({
+            selected: true
+        }).count() > 0) {
+            FlatdataTablesBody.rows().deselect();
+            return;
+        }
+
+        FlatdataTablesBody.rows().select();
+    });
+
+
+    FlatdataTablesBody.on('select deselect', function(e, dt, type, indexes) {
+        if (type === 'row') {
+            // We may use dt instead of myTable to have the freshest data.
+            if (dt.rows().count() === dt.rows({
+                selected: true
+            }).count()) {
+                // Deselect all items button.
+                $('#FlatCheckAllButton i').attr('class', 'far fa-check-square');
+                return;
+            }
+
+            if (dt.rows({
+                selected: true
+            }).count() === 0) {
+                // Select all items button.
+                $('#FlatCheckAllButton i').attr('class', 'far fa-square');
+                return;
+            }
+
+            // Deselect some items button.
+            $('#FlatCheckAllButton i').attr('class', 'far fa-minus-square');
+        }
+    });
+
+
+
+
+
+
+    //紙捲匯入Dialog
+    $("#BtnImportPaperRoll").click(function() {
+        $.ajax({
+            url: '/Purchase/ImportBodyPaperRoll/',
+            type: "GET",
+            success: function(result) {
+                $('body').append(result);
+                Open($('#PaperRollModal'));
+            },
+            error: function() {
+                alert("失敗");
+            }
+        });
+
+    });
+
+
+
+
+    //平張匯入Dialog
+    $("#BtnImportFlat").click(function() {
+        $.ajax({
+            url: '/Purchase/ImportBodyFlat',
+            type: "GET",
+            success: function(result) {
+                $('body').append(result);
+                Open($('#FlatModal'));
+            },
+            error: function() {
+                alert("失敗")
+            }
+        })
+
+
+    })
+});
+
+
+
+
+
+
+
+
+function Open(modal_dialog) {
+    modal_dialog.modal({
+        backdrop: "static",
+        keyboard: true,
+        show: true
+    });
+
+    modal_dialog.on('hidden.bs.modal', function(e) {
+        $("div").remove(modal_dialog.selector);
+    });
+
+    modal_dialog.on('show.bs.modal', function(e) {
+        $.validator.unobtrusive.parse('form');
+    });
+
+
+    modal_dialog.on('click', '#btnImport', function(e) {
+        if (modal_dialog.selector == '#PaperRollModal') {
+            ImportPaperRoll()
+        } else if (modal_dialog.selector == '#FlatModal') {
+            ImportFlat();
+        }
+
+    });
+
+    modal_dialog.on('click', '#btnDailogPaperRoll', function (e) {
+        $('#PaperRollModal').modal('hide');
+        PaperRolldataTablesBody();
+    });
+
+    modal_dialog.on('click', '#btnDailogFlat', function (e) {
+        $('#FlatModal').modal('hide');
+        FlatdataTablesBody();
+    });
+
+
+    modal_dialog.modal('show');
+
+}
+
+function ImportPaperRoll() {
+    var fileInput = $('#file').get(0).files;
+   
+    var formData = new FormData();
+    if (fileInput.length > 0) { formData.append("file", fileInput[0]);}
+
+    $.ajax({
+        "url": "/Purchase/UploadFilePaperRoll",
+        "type": "POST",
+        "datatype": "json",
+        "data": formData,
+        success: function (data) {
+            if (data.result.Success) {
+                ImportPaperRollTable(data)
+            } else {
+                alert(data.result.Msg)
+            }
+           
+         
+        },
+        error: function (data) {
+            alert(data)
+        },
+        cache: false,
+        contentType: false,
+        processData: false
+    });
+
+}
+
+function ImportPaperRollTable(data) {
+
+    $('#ImportPaperRollTable').DataTable({
+        "language": {
+            "url": "/bower_components/datatables/language/zh-TW.json"
+        },
+        dom:
+            "<'row'<'col-sm-2'l><'col-sm-7'><'col-sm-3'f>>" +
+            "<'row'<'col-sm-12'tr>>" +
+            "<'row'<'col-sm-5'i><'col-sm-7'p>>",
+        data: data.data,
+        destroy: true,
+        error: function () {
+            $.alert("失敗");
+        },
+        columns: [
+            { data: "Id", "name": "項次", "autoWidth": true },
+            { data: "Subinventory", "name": "倉別", "autoWidth": true },
+            { data: "Locator", "name": "儲位", "autoWidth": true },
+            { data: "PartNo", "name": "料號", "autoWidth": true },
+            { data: "PaperType", "name": "紙別", "autoWidth": true },
+            { data: "BaseWeight", "name": "基重", "autoWidth": true },
+            { data: "Specification", "name": "規格", "autoWidth": true },
+            { data: "TheoreticalWeight", "name": "理論重(KG)", "autoWidth": true },
+            { data: "RollReamQty", "name": "捲號", "autoWidth": true },
+            { data: "Remark", "name": "備註", "autoWidth": true },
+           
+        ],
+    });
+
+}
+
+
+function PaperRolldataTablesBody(){
+
+    $('#PaperRolldataTablesBody').DataTable({
+        "language": {
+            "url": "/bower_components/datatables/language/zh-TW.json"
+        },
+        destroy: true,
+        dom:
+            "<'row'<'col-sm-2'l><'col-sm-7'B><'col-sm-3'f>>" +
+            "<'row'<'col-sm-12'tr>>" +
+            "<'row'<'col-sm-5'i><'col-sm-7'p>>",
+        select: {
+            style: 'multi',
+            blurable: true,
+            selector: 'td:first-child'
+        },
+        buttons: [
+            'selectAll',
+            'selectNone'
+        ],
+        ajax: {
+            "url": "/Purchase/Body",
+            "type": "GET",
+            "datatype": "json",
+            "data": {},
+        },
+        columns: [
+            {
+                data: null,
+                defaultContent: '',
+                className: 'select-checkbox',
+                orderable: false,
+                targets: 0
+            },
+            { data: "Id", "name": "項次", "autoWidth": true },
+            { data: "Subinventory", "name": "倉別", "autoWidth": true },
+            { data: "Locator", "name": "儲位", "autoWidth": true },
+            { data: "Barocde", "name": "條碼號", "autoWidth": true },
+            { data: "PartNo", "name": "料號", "autoWidth": true },
+            { data: "PaperType", "name": "紙別", "autoWidth": true },
+            { data: "BaseWeight", "name": "基重", "autoWidth": true },
+            { data: "Specification", "name": "規格", "autoWidth": true },
+            { data: "TheoreticalWeight", "name": "理論重(KG)", "autoWidth": true },
+            { data: "TransactionQuantity", "name": "交易數量", "autoWidth": true },
+            { data: "TransactionUom", "name": "交易單位", "autoWidth": true },
+            { data: "PrimanyQuantity", "name": "主要數量", "autoWidth": true },
+            { data: "PrimaryUom", "name": "主要單位", "autoWidth": true },
+            { data: "RollReamQty", "name": "捲號", "autoWidth": true },
+            { data: "Status", "name": "入庫狀態", "autoWidth": true },
+            { data: "Remark", "name": "備註", "autoWidth": true },
+            {
+                data: null, "width": "40px", "render": function (data) {
+                    return '<button class="btn btn-info btn-sm btn-edit"><i class="glyphicon glyphicon-eye-open"></i>編輯</button>';
+                }
+            }
+        ],
+    });
+
+
+}
+
+
+function ImportFlat() {
+    var fileInput = $('#file').get(0).files;
+
+    var formData = new FormData();
+    if (fileInput.length > 0) { formData.append("file", fileInput[0]); }
+
+    $.ajax({
+        "url": "/Purchase/UploadFileFlat",
+        "type": "POST",
+        "datatype": "json",
+        "data": formData,
+        success: function (data) {
+            if (data.result.Success) {
+                ImportFlatTable(data)
+            } else {
+                alert(data.result.Msg)
+            }
+
+
+        },
+        error: function (data) {
+            alert(data)
+        },
+        cache: false,
+        contentType: false,
+        processData: false
+    });
+
+}
+
+function ImportFlatTable(data) {
+    $('#ImportFlatTable').DataTable({
+        "language": {
+            "url": "/bower_components/datatables/language/zh-TW.json"
+        },
+        dom:
+            "<'row'<'col-sm-2'l><'col-sm-7'><'col-sm-3'f>>" +
+            "<'row'<'col-sm-12'tr>>" +
+            "<'row'<'col-sm-5'i><'col-sm-7'p>>",
+        data: data.data,
+        destroy: true,
+        error: function() {
+            $.alert("失敗");
+        },
+        columns: [
+            { data: "Id", "name": "項次", "autoWidth": true },
+            { data: "Subinventory", "name": "倉別", "autoWidth": true },
+            { data: "Locator", "name": "儲位", "autoWidth": true },
+            { data: "PartNo", "name": "料號", "autoWidth": true },
+            { data: "ReamWeight", "name": "令重", "autoWidth": true },
+            { data: "PackingType", "name": "包裝方式", "autoWidth": true },
+            { data: "EveyReam", "name": "每件令數", "autoWidth": true },
+            { data: "Qty", "name": "數量(頓)", "autoWidth": true },
+            { data: "Status", "name": "入庫狀態", "autoWidth": true },
+            { data: "Remark", "name": "備註", "autoWidth": true },
+        ]
+    });
+}
+
+
+function FlatdataTablesBody() {
+    $('#FlatdataTablesBody').DataTable({
+        "language": {
+            "url": "/bower_components/datatables/language/zh-TW.json"
+        },
+        destroy: true,
+        dom:
+            "<'row'<'col-sm-2'l><'col-sm-7'B><'col-sm-3'f>>" +
+            "<'row'<'col-sm-12'tr>>" +
+            "<'row'<'col-sm-5'i><'col-sm-7'p>>",
+        ajax: {
+            "url": "/Purchase/FlatBody",
+            "type": "GET",
+            "datatype": "json",
+            "data": {},
+        },
+        columns: [
+            {
+                data: null,
+                defaultContent: '',
+                className: 'select-checkbox',
+                orderable: false,
+                targets: 0
+            },
+            { data: "Id", "name": "項次", "autoWidth": true },
+            { data: "Subinventory", "name": "倉別", "autoWidth": true },
+            { data: "Locator", "name": "儲位", "autoWidth": true },
+            { data: "Barocde", "name": "條碼號", "autoWidth": true },
+            { data: "PartNo", "name": "料號", "autoWidth": true },
+            { data: "ReamWeight", "name": "令重", "autoWidth": true },
+            { data: "PackingType", "name": "包裝方式", "autoWidth": true },
+            { data: "EveyReam", "name": "每件令數", "autoWidth": true },
+            { data: "Qty", "name": "數量(頓)", "autoWidth": true },
+            { data: "Status", "name": "入庫狀態", "autoWidth": true },
+            { data: "Remark", "name": "備註", "autoWidth": true },
+            {
+                data: null, "width": "40px", "render": function (data) {
+                    return '<button class="btn btn-info btn-sm btn-edit"><i class="glyphicon glyphicon-eye-open"></i>編輯</button>';
+                }
+            }
+        ],
+        select: {
+            style: 'multi',
+            blurable: true,
+            selector: 'td:first-child'
+        },
+        buttons: [
+            'selectAll',
+            'selectNone'
+        ]
+    });
+}

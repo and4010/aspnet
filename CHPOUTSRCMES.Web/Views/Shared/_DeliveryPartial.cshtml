@@ -1,0 +1,102 @@
+﻿@model CHPOUTSRCMES.Web.Models.Delivery.DeliveryDetailViewHeader
+
+
+<div class="row row-std">
+    <div class="form-inline">
+        <div style="display: none">
+            <span id="TripDetailDT_ID">@Html.DisplayFor(model => model.TripDetailDT_ID)</span>
+        </div>
+        <div class="form-group col col-md-4 input-lg">
+            <div class="col-md-4 text-right">
+                @Html.LabelFor(model => model.DELIVERY_NAME)
+            </div>
+            <div class="col-md-4">
+                <span id="DELIVERY_NAME">@Html.DisplayFor(model => model.DELIVERY_NAME)</span>
+            </div>
+            <div class="col-md-2 text-right">
+                @Html.LabelFor(model => model.DELIVERY_STATUS)
+            </div>
+            <div class="col-md-2">
+                @Html.DisplayFor(model => model.DELIVERY_STATUS)
+            </div>
+        </div>
+
+
+        <div class="form-group col col-md-4 input-lg">
+            <div class="col-md-3 text-right">
+                @Html.LabelFor(model => model.TRIP_NAME)
+            </div>
+            <div class="col-md-9">
+                <span id="TRIP_NAME">@Html.DisplayFor(model => model.TRIP_NAME)</span>
+            </div>
+        </div>
+
+        <div class="form-group col col-md-4 input-lg">
+            <div class="col-md-4 text-right">
+                @Html.LabelFor(model => model.TRIP_CAR)
+            </div>
+            <div class="col-md-8">
+                @Html.DisplayFor(model => model.TRIP_CAR)
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row row-std">
+    <div class="form-inline">
+        <div class="form-group col col-md-4 input-lg">
+            <div class="col-md-4 text-right">
+                @Html.LabelFor(model => model.CUSTOMER_NAME)
+            </div>
+            <div class="col-md-8">
+                @Html.DisplayFor(model => model.CUSTOMER_NAME)
+            </div>
+        </div>
+        <div class="form-group col col-md-4 input-lg">
+            <div class="col-md-3 text-right">
+                @Html.LabelFor(model => model.CUSTOMER_LOCATION_CODE)
+            </div>
+            <div class="col-md-9">
+                @Html.DisplayFor(model => model.CUSTOMER_LOCATION_CODE)
+            </div>
+        </div>
+        <div class="form-group col col-md-4 input-lg">
+            <div class="col-md-4 text-right">
+                @Html.LabelFor(model => model.SHIP_CUSTOMER_NAME)
+            </div>
+            <div class="col-md-8">
+                @Html.DisplayFor(model => model.SHIP_CUSTOMER_NAME)
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="row row-std">
+    <div class="form-inline">
+        <div class="form-group col col-md-4 input-lg">
+            <div class="col-md-4 text-right">
+                @Html.LabelFor(model => model.SHIP_LOCATION_CODE)
+            </div>
+            <div class="col-md-8">
+                @Html.DisplayFor(model => model.SHIP_LOCATION_CODE)
+            </div>
+        </div>
+        <div class="form-group col col-md-4 input-lg">
+            <div class="col-md-3 text-right">
+                @Html.LabelFor(model => model.TRIP_ACTUAL_SHIP_DATE)
+            </div>
+            <div class="col-md-9">
+                @Html.DisplayFor(model => model.TRIP_ACTUAL_SHIP_DATE)
+            </div>
+        </div>
+        <div class="form-group col col-md-4 input-lg">
+            <div class="col-md-4 text-right">
+                @Html.LabelFor(model => model.REMARK)
+            </div>
+            <div class="col-md-8">
+                @Html.DisplayFor(model => model.REMARK)
+            </div>
+        </div>
+    </div>
+</div>

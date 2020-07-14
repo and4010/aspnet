@@ -1,0 +1,28 @@
+﻿div.DTE_Inline input
+{
+	border: none;
+	background-color: transparent;
+	padding: 0 !important;
+	font-size: 90%;
+}
+
+	div.DTE_Inline input:focus
+	{
+		outline: none;
+		background-color: transparent;
+	}
+
+
+.MyTabs
+{
+	font-size: 18px;
+}
+
+
+.table.dataTable tr th.select-checkbox.selected::after
+{
+	margin-top: -11px;
+	margin-left: -4px;
+	text-align: center;
+}
+

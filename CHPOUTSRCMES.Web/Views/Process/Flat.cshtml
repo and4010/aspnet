@@ -1,0 +1,470 @@
+﻿@model CHPOUTSRCMES.Web.ViewModels.Process.ProcessIndexViewModel
+
+@if (Model.CHP_PROCESS_T.Process_Status == "已完工" || Model.CHP_PROCESS_T.Process_Status == "待核准")
+{
+    ViewBag.EnableReturnButton = "true";
+    ViewBag.Title = "加工-平張-完工紀錄";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+else
+{
+    ViewBag.EnableReturnButton = "true";
+    ViewBag.Title = "加工-平張-完工";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+@section scripts {
+    <script src="~/Scripts/Process/Flat.js"></script>
+    <script src="~/bower_components/editor/js/dataTables.editor.min.js"></script>
+    <script src="~/bower_components/editor/js/editor.bootstrap.min.js"></script>
+    <script src="~/Scripts/label.js"></script>
+}
+
+@Html.HiddenFor(model => model.CHP_PROCESS_T.Process_Status, new { id = "Process_Status" })
+@Html.HiddenFor(model => model.CHP_PROCESS_T.Process_Detail_Id, new { id = "Process_Detail_Id" })
+
+<div class="row">
+
+    <div class="row form-group">
+
+        @*工單號*@
+        <div class="form-inline col col-md-1 text-right">
+            @Html.LabelFor(model => model.CHP_PROCESS_T.Process_Batch_no)
+
+        </div>
+
+        <div class="form-inline col col-md-1">
+            <span id="Flat_Process_Batch_No">@Html.DisplayFor(model => model.CHP_PROCESS_T.Process_Batch_no)</span>
+        </div>
+
+
+
+
+        @* 訂單編號 *@
+        <div class="form-inline col col-md-1 text-right">
+            @Html.LabelFor(model => model.CHP_PROCESS_T.Order_Number)
+
+        </div>
+
+        <div class="form-inline col col-md-1">
+            @Html.DisplayFor(model => model.CHP_PROCESS_T.Order_Number)
+        </div>
+
+
+        @*客戶名稱*@
+        <div class="form-inline col col-md-1 text-right">
+            @Html.LabelFor(model => model.CHP_PROCESS_T.Cosutomer_Num)
+
+        </div>
+
+        <div class="form-inline col col-md-1">
+            @Html.DisplayFor(model => model.CHP_PROCESS_T.Cosutomer_Num)
+        </div>
+
+        @* 訂單編號 *@
+        <div class="form-inline col col-md-1 text-right">
+            @Html.LabelFor(model => model.CHP_PROCESS_T.Order_Number)
+
+        </div>
+
+        <div class="form-inline col col-md-1">
+            @Html.DisplayFor(model => model.CHP_PROCESS_T.Order_Number)
+        </div>
+
+
+    </div>
+
+    <div class="row form-group">
+
+        @*需求日*@
+        <div class="form-inline col col-md-1 text-right">
+            @Html.LabelFor(model => model.CHP_PROCESS_T.Demand_Date)
+
+        </div>
+
+        <div class="form-inline col col-md-1">
+            @Html.DisplayFor(model => model.CHP_PROCESS_T.Demand_Date)
+        </div>
+
+        @*裁切日*@
+        <div class="form-inline col col-md-1 text-right">
+            @Html.LabelFor(model => model.CHP_PROCESS_T.Cutting_Date_From)
+
+        </div>
+
+        <div class="form-inline col col-md-1 ">
+            @Html.DisplayFor(model => model.CHP_PROCESS_T.Cutting_Date_From)
+        </div>
+
+        @*裁切日*@
+        <div class="form-inline col col-md-1 text-right">
+            @Html.LabelFor(model => model.CHP_PROCESS_T.Cutting_Date_To)
+
+        </div>
+
+        <div class="form-inline col col-md-1">
+            @Html.DisplayFor(model => model.CHP_PROCESS_T.Cutting_Date_To)
+        </div>
+
+    </div>
+
+    <div class="row form-group">
+
+
+        @* 生產料號 *@
+        <div class="form-inline col col-md-1 text-right">
+            @Html.LabelFor(model => model.CHP_PROCESS_T.Produce_Item)
+
+        </div>
+
+        <div class="form-inline col col-md-1">
+            @Html.DisplayFor(model => model.CHP_PROCESS_T.Produce_Item)
+        </div>
+
+
+        @* 規格 *@
+        <div class="form-inline col col-md-1 text-right">
+            @Html.LabelFor(model => model.CHP_PROCESS_T.Specification)
+
+        </div>
+
+        <div class="form-inline col col-md-1">
+            @Html.DisplayFor(model => model.CHP_PROCESS_T.Specification)
+        </div>
+
+        @* 紙別 *@
+        <div class="form-inline col col-md-1 text-right">
+            @Html.LabelFor(model => model.CHP_PROCESS_T.Paper_Type)
+
+        </div>
+
+        <div class="form-inline col col-md-1">
+            @Html.DisplayFor(model => model.CHP_PROCESS_T.Paper_Type)
+        </div>
+
+
+        @* 絲向 *@
+        <div class="form-inline col col-md-1 text-right">
+            @Html.LabelFor(model => model.CHP_PROCESS_T.Grain_Direction)
+
+        </div>
+
+        <div class="form-inline col col-md-1">
+            @Html.DisplayFor(model => model.CHP_PROCESS_T.Grain_Direction)
+        </div>
+
+    </div>
+
+
+    <div class="row form-group">
+
+
+        @* 基重 *@
+        <div class="form-inline col col-md-1 text-right">
+            @Html.LabelFor(model => model.CHP_PROCESS_T.Basic_Weight)
+
+        </div>
+
+        <div class="form-inline col col-md-1">
+            @Html.DisplayFor(model => model.CHP_PROCESS_T.Basic_Weight)
+        </div>
+
+        @* 重量 *@
+        <div class="form-inline col col-md-1 text-right">
+            @Html.LabelFor(model => model.CHP_PROCESS_T.Weight)
+
+        </div>
+
+        <div class="form-inline col col-md-1">
+            @Html.DisplayFor(model => model.CHP_PROCESS_T.Weight)
+        </div>
+
+        @* 令數 *@
+        <div class="form-inline col col-md-1 text-right">
+            @Html.LabelFor(model => model.CHP_PROCESS_T.Ream_Qty)
+
+        </div>
+
+        <div class="form-inline col col-md-1">
+            @Html.DisplayFor(model => model.CHP_PROCESS_T.Ream_Qty)
+        </div>
+
+        @* 包裝方式 *@
+        <div class="form-inline col col-md-1 text-right">
+            @Html.LabelFor(model => model.CHP_PROCESS_T.Packing_Type)
+
+        </div>
+
+        <div class="form-inline col col-md-1">
+            @Html.DisplayFor(model => model.CHP_PROCESS_T.Packing_Type)
+        </div>
+
+    </div>
+
+
+    @*投入*@
+    <div class="row col-md-12">
+        <div class="row row-std col-md-12">
+            <h3 class="page-header">
+                投入
+            </h3>
+        </div>
+    </div>
+
+    <div class="row row-std form-group">
+
+        <form class="bs-example bs-example-form col-md-3" id="form" onsubmit="return false">
+            <div class="input-group form-row">
+                <span class="input-group-addon">請輸入工單號</span>
+                <input type="text" class="form-control" placeholder="請輸入工單號" id="ProcessBatchNo" autocomplete="off">
+            </div>
+        </form>
+        <button class="btn btn-danger" type="button" id="BtnProcess_Batch_no">比對</button>
+        <button class="btn btn-danger" type="button" id="BtnEdit">修改</button>
+        <button class="btn btn-danger" type="button" id="BtnApprove">核准</button>
+    </div>
+
+
+    <div class="row col-md-12">
+        <div class="form-group col-md-1 text-right">
+            <label>組成料號</label>
+        </div>
+        <div class="form-inline col col-md-1">
+            @Html.DisplayFor(model => model.CHP_PROCESS_T.SelectedInventoryItemNumber)
+        </div>
+    </div>
+
+    <div class="row col-md-12">
+
+        @* 條碼編號 *@
+        <div class="form-inline col col-md-1 text-right">
+            @Html.LabelFor(model => model.Invest.Barcode)
+        </div>
+
+        <div class="form-inline col col-md-1">
+            <input class="form-control input-sm" id="Flat_Invest_Barcode" , autocomplete="off" />
+        </div>
+
+        <div class="form-group col col-md-1 col-lg-offset-1">
+            <button class="btn btn-danger" type="button" id="BtnFlat_ProcessSave">儲存</button>
+        </div>
+
+        <div class="form-group col col-md-1">
+            <button class="btn btn-primary" id="BtnRePrint" type="button">補印標籤</button>
+        </div>
+    </div>
+
+
+    <div class="row row-std">
+        <div class="dataTable_wrapper">
+            <div class="col-sm-12 col-md-12">
+                <table class="table table-striped table-bordered table-hover" id="FlatInvestDataTables">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>
+                                @Html.DisplayName("條碼號")
+                            </th>
+                            <th>
+                                @Html.DisplayName("料號")
+                            </th>
+                            <th>
+                                @Html.DisplayName("令數(RE)")
+                            </th>
+                            <th>
+
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <br />
+
+    @* 產出 *@
+
+    <div class="row col-md-12">
+        <div class="row row-std col-md-12">
+            <h3 class="page-header">
+                產出
+            </h3>
+        </div>
+    </div>
+
+
+    <div class="row row-std">
+
+        <form class="bs-example bs-example-form col-md-3" id="form" onsubmit="return false">
+            <div class="input-group form-row">
+                <span class="input-group-addon">請輸入工單號</span>
+                <input type="text" class="form-control" placeholder="請輸入工單號" id="ProcessProductionBatchNo" autocomplete="off">
+            </div>
+        </form>
+        <button class="btn btn-danger" type="button" id="BtnProcess_Production_Batch_no">比對</button>
+    </div>
+
+
+    <div class="row col-md-12  form-group">
+        @* 料號 *@
+        <div class="form-inline col col-md-1 text-right">
+            @Html.LabelFor(model => model.Production.Product_Item)
+        </div>
+
+        <div class="form-inline col col-md-1">
+            <span id="Flat_Product_Item">@Html.DisplayFor(model => model.CHP_PROCESS_T.Product_Item)</span>
+        </div>
+    </div>
+
+
+    <div class="row col-md-12  form-group">
+
+        @* 棧板數 *@
+
+        <div class="form-inline col col-md-1 text-right">
+            @Html.LabelFor(model => model.Production.Roll_Ream_Qty)
+        </div>
+
+        <div class="form-inline col col-md-2">
+            <input id="Flat_Production_Roll_Ream_Qty" class="form-control input-sm" autocomplete="off" />
+        </div>
+
+        @* 每版令數 *@
+
+        <div class="form-inline col col-md-1 text-right">
+            @Html.LabelFor(model => model.Production.Roll_Ream_Wt)
+
+        </div>
+
+        <div class="form-inline col col-md-2">
+            <input id="Flat_Production_Roll_Ream_Wt" class="form-control input-sm" autocomplete="off" />
+
+        </div>
+
+        <div class="form-group col col-md-1 ">
+            <button class="btn btn-danger" type="button" id="BtnFlat_Product_detail">產生明細</button>
+        </div>
+    </div>
+
+    @* 產出table *@
+    <div class="row col-md-12">
+
+        @* 條碼編號 *@
+        <div class="row form-inline col-md-12  form-group">
+            <div class="input-group form-row col col-md-3">
+                <span class="input-group-addon">條碼</span>
+                <input type="text" class="form-control" placeholder="請輸入條碼" id="Flat_Production_Barcode" autocomplete="off">
+
+            </div>
+            <button class="btn btn-danger" type="button" id="BtnFlatBarcodeSave">轉已入庫</button>
+
+        </div>
+
+
+        <div class="row row-std">
+            <div class="dataTable_wrapper">
+                <div class="col-sm-12 col-md-12">
+                    <table class="table table-striped table-bordered table-hover" id="FlatProductionDataTables">
+                        <thead>
+                            <tr>
+                                <th rowspan="2" colspan="1"></th>
+                                <th rowspan="2" colspan="1">條碼號</th>
+                                <th rowspan="2" colspan="1">料號</th>
+                                <th rowspan="1" colspan="2">主單位</th>
+                                <th rowspan="1" colspan="2">次單位</th>
+                                <th rowspan="2" colspan="1">狀態</th>
+                                <th rowspan="2" colspan="1"></th>
+                            </tr>
+                            <tr>
+                                @*<th></th>
+                                    <th>
+                                        @Html.DisplayName("條碼號")
+                                    </th>
+                                    <th>
+                                        @Html.DisplayName("料號")
+                                    </th>*@
+                                <th>
+                                    @Html.DisplayName("重量")
+                                </th>
+                                <th>
+                                    @Html.DisplayName("單位")
+                                </th>
+                                <th>
+                                    @Html.DisplayName("令數")
+                                </th>
+                                <th>
+                                    @Html.DisplayName("單位")
+                                </th>
+                                @*<th>
+                                        @Html.DisplayName("狀態")
+                                    </th>
+                                    <th>
+
+                                    </th>*@
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="row col-md-12 col-lg-12 col-sm-12">
+        <div>
+            <button class="btn btn-primary" type="button" id="BtnLabel">列印成品標籤</button>
+            <button class="btn btn-primary" type="button" id="BtnPurchase">列印入庫單</button>
+        </div>
+    </div>
+
+    <br />
+    @* 損耗 *@
+    <div class="row col-md-12">
+        <div class="row row-std col-md-12">
+            <h4 class="page-header">
+                損耗
+            </h4>
+        </div>
+    </div>
+    <div class="row col-md-12">
+        <div class="form-group col col-md-1">
+            @Html.LabelFor(model => model.Production.Loss)
+        </div>
+
+        <div class="form-group col col-md-2">
+            <label id="Production_Loss">@Html.DisplayFor(model => model.Production.Loss)</label>
+        </div>
+
+        <div class="col-md-2">
+            @Html.HiddenFor(model => model.CHP_PROCESS_T.Weight, new { id = "CHP_PROCESS_T_Weight" })
+            <button class="btn btn-primary" type="button" id="BtnFlatCalculate">計算</button>
+        </div>
+
+    </div>
+
+
+    <div class="row col-md-12 col-lg-12 col-sm-12" id="User">
+        <div>
+            @*<button class="btn btn-primary" type="button" id="BtnReturn">返回</button>*@
+            <button class="btn btn-danger" type="button" id="BtnSave">完工存檔</button>
+        </div>
+
+    </div>
+
+    @*<div class="row col-md-12 col-lg-12 col-sm-12" id="Manager">
+            <div>
+                <button class="btn btn-danger" type="button" id="BtnEdit">修改</button>
+                <button class="btn btn-danger" type="button" id="BtnApprove">核准</button>
+            </div>
+
+        </div>*@
+
+</div>

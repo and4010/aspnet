@@ -1,0 +1,89 @@
+﻿@model CHPOUTSRCMES.Web.ViewModels.MachinePaperTypeViewModel
+@{
+    ViewBag.Title = "機台紙別對照表";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+@section scripts {
+ 
+    <script src="~/Scripts/MachinePaperType.js"></script>
+
+
+}
+
+<div class="row row-std">
+    @{
+
+        IEnumerable<SelectListItem> Organization_code = (IEnumerable<SelectListItem>)ViewBag.Organization_code;
+
+    }
+
+    <div class="row">
+        <div class="col-md-1">
+            <label class="input-lg">組織</label>
+        </div>
+
+        <div class="col-md-2">
+            @Html.DropDownListFor(model => model.MachinePaperType.Organization_code, Organization_code, new { @class = "form-control", id = "Organization_code", autocomplete = "off" })
+        </div>
+
+    </div>
+    <div class="row">
+        <div class="col-md-2">
+            <button id="btnSearch" class="btn btn-primary externalBtn">查詢</button>
+        </div>
+    </div>
+
+    <div class="row row-std">
+        <div class="dataTables_wrapper ">
+            <div class="col-md-12">
+                <table class="table table-striped table-bordered" id="MachinePaperTypeTable">
+                    <thead>
+                        <tr>
+                            <th>
+                                @Html.DisplayName("機台紙別代碼")
+                            </th>
+                            <th>
+                                @Html.DisplayName("機台紙別意義")
+                            </th>
+                            <th>
+                                @Html.DisplayName("機台紙別摘要")
+                            </th>
+                            <th>
+                                @Html.DisplayName("紙別")
+                            </th>
+                            <th>
+                                @Html.DisplayName("機台")
+                            </th>
+                            <th>
+                                @Html.DisplayName("供應商編號")
+                            </th>
+                            <th>
+                                @Html.DisplayName("供應商名稱")
+                            </th>
+                            <th>
+                                @Html.DisplayName("建立人員ID")
+                            </th>
+                            <th>
+                                @Html.DisplayName("建立日期")
+                            </th>
+                            <th>
+                                @Html.DisplayName("最後更新人員ID")
+                            </th>
+                            <th>
+                                @Html.DisplayName("最後更新日期")
+                            </th>
+
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+
+
+
+
+</div>

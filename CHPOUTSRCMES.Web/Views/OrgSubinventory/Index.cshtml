@@ -1,0 +1,86 @@
+﻿@model CHPOUTSRCMES.Web.ViewModels.OrgSubinventoryViewModel
+@{
+    ViewBag.Title = "組織倉庫";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section scripts {
+    <script src="~/Scripts/OrgSubinventory.js"></script>
+    <script src="~/Scripts/moment.js"></script>
+}
+
+<div class="row row-std">
+    <div class="form-inline">
+        <div class="form-group col col-md-3">
+            @Html.LabelFor(model => model.SelectedOrganization, new { @class = "input-lg" })
+            @Html.DropDownListFor(model => model.SelectedOrganization, Model.OrganizationNameItems, new { @class = "form-control", id = "ddlOrganization", autocomplete="off" })
+        </div>
+
+          <div class="form-group col col-md-3">
+            @Html.LabelFor(model => model.SelectedSubinventory, new { @class = "input-lg" })
+            @Html.DropDownListFor(model => model.SelectedSubinventory, Model.SubinventoryNameItems, new { @class = "form-control", id = "ddlSubinventory", autocomplete="off" })
+        </div>
+
+         <div class="form-group col col-md-3">
+            @Html.LabelFor(model => model.SelectedLocator, new { @class = "input-lg" })
+            @Html.DropDownListFor(model => model.SelectedLocator, Model.LocatorNameItems, new { @class = "form-control", id = "ddlLocator", autocomplete="off" })
+        </div>
+
+    </div>
+</div>
+
+<div class="row row-std">
+    <div class="btn-group col-md-1">
+            <button id="btnSearch" class="btn btn-primary externalBtn">查詢</button>
+        </div>
+    </div>
+
+<div class="row row-std">
+    <div class="dataTable_wrapper">
+        <div class="col-sm-12 col-md-12">
+            <table class="table table-striped table-bordered table-hover" id="OrgSubinventoryDataTablesBody">
+                <thead>
+                    <tr>  
+                         <th>
+                            @Html.DisplayName("庫存組織")
+                        </th>
+                        <th>
+                            @Html.DisplayName("庫存組織名稱")
+                        </th>
+                        <th>
+                            @Html.DisplayName("倉庫")
+                        </th>
+                        <th>
+                            @Html.DisplayName("倉庫名稱")
+                        </th>
+                        <th>
+                            @Html.DisplayName("加工廠")
+                        </th>
+                         <th>
+                            @Html.DisplayName("儲位節段")
+                        </th>
+                        <th>
+                            @Html.DisplayName("儲位描述")
+                        </th>
+                         <th>
+                            @Html.DisplayName("建立人員")
+                        </th>
+                         <th>
+                            @Html.DisplayName("建立日期")
+                        </th>
+                         <th>
+                            @Html.DisplayName("更新人員")
+                        </th>
+                         <th>
+                            @Html.DisplayName("更新日期")
+                        </th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+

@@ -1,0 +1,146 @@
+﻿@model CHPOUTSRCMES.Web.ViewModels.PartNoViewModel
+
+@{
+    ViewBag.Title = "料號";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section scripts {
+    <script src="~/Scripts/PartNo.js"></script>
+    <script src="~/Scripts/moment.js"></script>
+}
+
+    @{
+
+        IEnumerable<SelectListItem> Catalog_elem_val_050 = (IEnumerable<SelectListItem>)ViewBag.Catalog_elem_val_050;
+        IEnumerable<SelectListItem> Catalog_elem_val_020 = (IEnumerable<SelectListItem>)ViewBag.Catalog_elem_val_020;
+        IEnumerable<SelectListItem> Catalog_elem_val_070 = (IEnumerable<SelectListItem>)ViewBag.Catalog_elem_val_070;
+        IEnumerable<SelectListItem> Organization_code = (IEnumerable<SelectListItem>)ViewBag.Organization_code;
+
+    }
+
+    <div class="row row-std">
+
+        <div class="col-md-1 text-right">
+            <label class="input-lg">組織</label>
+        </div>
+
+        <div class="col-md-2">
+            @Html.DropDownListFor(model => model.partNoModel.Organization_code, Organization_code, new { @class = "form-control", id = "Organization_code", autocomplete = "off" })
+        </div>
+
+        <div class="col col-md-2 text-right">
+            <label class="input-lg">規格</label>
+        </div>
+
+        <div class="col-md-2">
+            @Html.DropDownListFor(model => model.partNoModel.Catalog_elem_val_050, Catalog_elem_val_050, new { @class = "form-control", id = "Catalog_elem_val_050", autocomplete = "off" })
+        </div>
+
+    </div>
+
+    <div class="row row-std">
+
+        <div class="col col-md-1 text-right">
+            <label class="input-lg">紙別</label>
+        </div>
+
+        <div class="col-md-2">
+            @Html.DropDownListFor(model => model.partNoModel.Catalog_elem_val_020, Catalog_elem_val_020, new { @class = "form-control", id = "Catalog_elem_val_020", autocomplete = "off" })
+        </div>
+
+        <div class="col col-md-2 text-right">
+            <label class="input-lg">紙別類型</label>
+        </div>
+
+        <div class="col-md-2">
+            @Html.DropDownListFor(model => model.partNoModel.Catalog_elem_val_070, Catalog_elem_val_070, new { @class = "form-control", id = "Catalog_elem_val_070", autocomplete = "off" })
+        </div>
+
+
+    </div>
+
+    <div class="row row-mtd">
+        <div class="btn-group col-md-3 col-lg">
+            <button id="btnSearch" class="btn btn-primary externalBtn">查詢</button>
+        </div>
+    </div>
+
+    <div class="row row-std">
+        <div class="col-md-12">
+            <table class="table table-striped table-bordered" id="PartNoTable">
+                <thead>
+                    <tr>
+                        <th>
+                            @Html.DisplayName("存貨分類")
+                        </th>
+                        <th>
+                            @Html.DisplayName("成本分類")
+                        </th>
+                        <th>
+                            @Html.DisplayName("料號")
+                        </th>
+                        <th>
+                            @Html.DisplayName("英文摘要")
+                        </th>
+                        <th>
+                            @Html.DisplayName("中文摘要")
+                        </th>
+                        <th>
+                            @Html.DisplayName("主要單位")
+                        </th>
+                        <th>
+                            @Html.DisplayName("次要單位")
+                        </th>
+                        <th>
+                            @Html.DisplayName("料號型態")
+                        </th>
+                        <th>
+                            @Html.DisplayName("大紙別")
+                        </th>
+                        <th>
+                            @Html.DisplayName("紙別代碼")
+                        </th>
+                        <th>
+                            @Html.DisplayName("料件等級")
+                        </th>
+                        <th>
+                            @Html.DisplayName("基重")
+                        </th>
+                        <th>
+                            @Html.DisplayName("規格")
+                        </th>
+                        <th>
+                            @Html.DisplayName("令重")
+                        </th>
+                        <th>
+                            @Html.DisplayName("捲筒/平版")
+                        </th>
+                        <th>
+                            @Html.DisplayName("市場常規")
+                        </th>
+                        <th>
+                            @Html.DisplayName("令包/無令打件")
+                        </th>
+                        <th>
+                            @Html.DisplayName("紙別中文名稱")
+                        </th>
+                        <th>
+                            @Html.DisplayName("建立人員ID")
+                        </th>
+                        <th>
+                            @Html.DisplayName("建立日期")
+                        </th>
+                        <th>
+                            @Html.DisplayName("最後更新人員ID")
+                        </th>
+                        <th>
+                            @Html.DisplayName("最後更新日期")
+                        </th>
+                    </tr>
+                </thead>
+
+            </table>
+
+        </div>
+</div>

@@ -1,0 +1,92 @@
+﻿@model IEnumerable<CHPOUTSRCMES.Web.Models.Navbar>
+
+<!-- Navigation -->
+<nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+    
+    <div class="navbar-header">
+        <a class="btn openbtn" onclick="toggleNav()" >&#9776;</a>
+@*        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>*@
+        @Html.ActionLink("華紙 MES", "Index", new { controller = "Home" }, new { @class = "navbar-brand" })
+    </div>
+    <!-- /.navbar-header -->
+    <ul class="nav navbar-top-links navbar-right">
+        <!-- /.dropdown -->
+        <li class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                <i class="fa fa-user fa-fw"></i><i class="fa fa-caret-down"></i>
+            </a>
+            <ul class="dropdown-menu dropdown-user">
+                <li>
+                    <a href="#"><i class="fa fa-user fa-fw"></i>個人檔案</a>
+                </li>
+                <li>
+                    <a href="#"><i class="fa fa-gear fa-fw"></i>設定</a>
+                </li>
+                <li class="divider"></li>
+                <li>
+                    <a href="login.html"><i class="fa fa-sign-out fa-fw"></i>登出</a>
+                </li>
+            </ul>
+            <!-- /.dropdown-user -->
+        </li>
+        <!-- /.dropdown -->
+    </ul>
+    <!-- /.navbar-top-links -->
+    
+    <div class="navbar-default sidebar" role="navigation" style="align-content: space-around">
+        
+        
+        
+        <div class="sidebar-nav navbar-collapse"  id="menuSidebar" >
+            
+            <a class="closebtn" onclick="closeNav()">&times;</a>
+            <ul class="nav" id="side-menu">
+                
+                @foreach (var item in Model)
+                {
+                    if (item.isParent == false && item.parentId == 0)
+                    {
+                        if (item.status == true)
+                        {
+                            <li><a href="@Url.Action(item.action, item.controller)"><i class="@item.imageClass"></i>@item.nameOption</a></li>
+                        }
+                        else 
+                        {
+                            <li><a href="#"><i class="@item.imageClass"></i>@item.nameOption</a></li>
+                        }
+                    }
+                    else
+                    {
+                        if (item.isParent == true)
+                        {
+                    <li>
+                        <a href="#"><i class="@item.imageClass"></i>@item.nameOption<span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level">
+                            @foreach (var child in Model.Where(p => p.parentId == item.Id))
+                            {
+                                if (child.controller == null || child.status == false)
+                                {
+                                <li><a href="#">@child.nameOption</a></li>
+                                }
+                                else
+                                {
+                                <li><a href="@Url.Action(child.action, child.controller)">&emsp; &emsp; &emsp;@child.nameOption</a></li>
+                                }
+                            }
+                        </ul>
+                    </li>
+                        }
+                    }
+                }
+            </ul>
+        </div>
+        
+        <!-- /.sidebar-collapse -->
+    </div>
+    <!-- /.navbar-static-side -->
+</nav>

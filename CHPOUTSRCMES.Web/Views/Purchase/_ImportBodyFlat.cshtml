@@ -1,0 +1,76 @@
+﻿<script src="~/bower_components/bootstrap-filestyle/src/bootstrap-filestyle.min.js"></script>
+<div class="modal fade" id="FlatModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="exampleModalLabel">匯入明細(平張)</h3>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-inline row" style="margin-bottom:10px">
+                    <label class="control-label col-md-1" style="width:15%">上傳檔案</label>
+                    <input type="file" class="filestyle col-md-1" id="file" name="file" accept="xls/xlsx" data-icon="true" required data-buttonText="瀏覽">
+                    <button type="button" class="btn btn-default" id="btnImport">匯入</button>
+                </div>
+
+                <div class="col-md-12">
+                    <h4 style="color:red">
+                        警告：若先前已經上傳進櫃明細，再次上傳資料會被清除
+                    </h4>
+                </div>
+
+
+                <div class="cl-md-12">
+                    <h4 class="page-header">
+                        資料預覽
+                    </h4>
+                </div>
+
+                <div class="form-inline modal-body" style="margin-bottom:10px">
+                    <table class="table table-striped table-bordered table-hover" id="ImportFlatTable">
+                        <thead>
+                            <tr>
+                                <th>
+                                    @Html.DisplayName("項次")
+                                </th>
+                                <th>
+                                    @Html.DisplayName("倉庫")
+                                </th>
+                                <th>
+                                    @Html.DisplayName("儲位")
+                                </th>
+                                <th>
+                                    @Html.DisplayName("料號")
+                                </th>
+                                <th>
+                                    @Html.DisplayName("包裝方式")
+                                </th>
+                                <th>
+                                    @Html.DisplayName("棧板數")
+                                </th>
+                                <th>
+                                    @Html.DisplayName("每件令數")
+                                </th>
+                                <th>
+                                    @Html.DisplayName("總令數")
+                                </th>
+                                <th>
+                                    @Html.DisplayName("數量(頓)")
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="btnDailogFlat">儲存</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+            </div>
+        </div>
+    </div>
+</div>

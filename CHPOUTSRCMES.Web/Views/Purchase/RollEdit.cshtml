@@ -1,0 +1,155 @@
+﻿@model CHPOUTSRCMES.Web.ViewModels.Purchase.PurchaseViewModel
+
+@{
+    ViewBag.EnableReturnButton = "true";
+    ViewBag.Title = "編輯(紙捲)";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="@Url.Content("~/Content/photo.css")" rel="stylesheet" type="text/css" />
+<link href="@Url.Content("~/Content/Purchase/detail.css")" rel="stylesheet" type="text/css" />
+
+@section scripts {
+    <script src="~/bower_components/bootstrap-filestyle/src/bootstrap-filestyle.min.js"></script>
+    <script src="~/Scripts/Purchase/Edit.js"></script>
+    <script src="~/Scripts/Photo.js"></script>
+}
+
+@Html.HiddenFor(model => model.RollDetailModel.Id, new { id = "Id" })
+@Html.HiddenFor(model => model.Status, new { id = "Status" })
+
+@{
+
+    IEnumerable<SelectListItem> CabinetNumberItems = (IEnumerable<SelectListItem>)ViewBag.WarehouseItems;
+
+    IEnumerable<SelectListItem> ReasonItems = (IEnumerable<SelectListItem>)ViewBag.ReasonItems;
+
+}
+
+<div class="row">
+
+    <div class="col-md-12">
+        <div class="col-md-1 text-right">
+            @Html.LabelFor(model => model.CabinetNumber)
+        </div>
+        <div class="col-md-2">
+            @Html.DisplayFor(model => model.CabinetNumber)
+        </div>
+        <div class="col-md-1 text-right">
+            @Html.LabelFor(model => model.RollDetailModel.PaperType)
+        </div>
+        <div class="col-md-2">
+            @Html.DisplayFor(model => model.RollDetailModel.PaperType)
+        </div>
+        <div class="col-md-1 text-right">
+            @Html.LabelFor(model => model.RollDetailModel.TheoreticalWeight)
+        </div>
+        <div class="col-md-2">
+            @Html.DisplayFor(model => model.RollDetailModel.TheoreticalWeight)
+        </div>
+
+    </div>
+
+    <div class="col-md-12">
+        <div class="col-md-1 text-right">
+            @Html.LabelFor(model => model.CreateDate)
+        </div>
+
+        <div class="col-md-2">
+            @Html.DisplayFor(model => model.CreateDate)
+        </div>
+
+        <div class="col-md-1 text-right">
+            @Html.LabelFor(model => model.RollDetailModel.BaseWeight)
+        </div>
+
+        <div class="col-md-2">
+            @Html.DisplayFor(model => model.RollDetailModel.BaseWeight)
+        </div>
+
+        <div class="col-md-1 text-right">
+            @Html.LabelFor(model => model.RollDetailModel.LotNumber)
+        </div>
+
+        <div class="col-md-2">
+            @Html.DisplayFor(model => model.RollDetailModel.LotNumber)
+        </div>
+
+
+
+
+    </div>
+
+    <div class="col-md-12">
+        <div class="col-md-1 text-right">
+            @Html.LabelFor(model => model.RollDetailModel.Barcode)
+        </div>
+
+        <div class="col-md-2">
+            @Html.DisplayFor(model => model.RollDetailModel.Barcode, new { id = "barcode" })
+        </div>
+
+        <div class="col-md-1 text-right">
+            @Html.LabelFor(model => model.RollDetailModel.Specification)
+        </div>
+
+        <div class="col-md-2">
+            @Html.DisplayFor(model => model.RollDetailModel.Specification)
+        </div>
+    </div>
+
+
+    <div class="col-md-12">
+        <label class="col-md-1 text-right">異常原因</label>
+        <div class="col-md-2 form-inline">
+            @Html.DropDownListFor(model => model.Detail, ReasonItems, new { @class = "form-control", id = "select-reason" })
+        </div>
+    </div>
+
+    <div class="col-md-12">
+        <label class="col-md-1 text-right">儲位</label>
+        <div class="col-md-1 form-inline">
+            @Html.DropDownListFor(model => model.CabinetNumber, CabinetNumberItems, new { @class = "form-control", id = "select-warehouse" })
+        </div>
+    </div>
+
+
+    <div class="col-md-12">
+        <form class="col-md-12">
+
+            <h4 class="col-md-5"><label>備註</label></h4>
+
+
+            <h4 class="col-md-1"><label>照片上傳</label></h4>
+            <div class="form-inline col-md-6">
+                <input type="file" class="filestyle" id="fileinput" name="file" accept="image/*" data-icon="true" required data-buttonText="選擇照片" multiple>
+            </div>
+
+        </form>
+    </div>
+
+
+    <div class="col-md-12">
+
+        <form role="form" class="col-md-5">
+            <div class="form-group col-md-5">
+                <textarea style="width:250px;height:250px;" class="form-control col-md-4" rows="3" id="textarea"></textarea>
+            </div>
+        </form>
+        <div class="col-md-6" id="SaveImg">
+            <img class="col-md-6" id="SaveImg" onclick="imgDisplay(this)" src="" alt="" />
+        </div>
+        <div class="col-md-6" id="imgBox">
+            <img class="col-md-6" id="img" onclick="imgDisplay(this)"
+                 src="" alt="" />
+        </div>
+    </div>
+
+    <br />
+    <div class="col-md-12">
+        @*<button class="btn btn-primary col-lg-offset-10" id="BtnReturn">返回</button>*@
+        <button class="btn btn-danger" id="BtnRollSave">存檔</button>
+    </div>
+
+
+</div>

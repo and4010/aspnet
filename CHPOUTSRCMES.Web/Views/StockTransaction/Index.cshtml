@@ -1,0 +1,33 @@
+﻿@model CHPOUTSRCMES.Web.ViewModels.StockTransaction.StockTransferViewModel
+@{
+    ViewBag.Title = "庫存移轉";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@*<link href="@Url.Content("~/bower_components/dataTables-select/css/select.dataTables.min.css")" rel="stylesheet" type="text/css" />*@
+<link href="@Url.Content("~/Content/photo.css")" rel="stylesheet" type="text/css" />
+
+@section scripts {
+
+    <script src="~/Scripts/StockTransaction/StockTransfer.js"></script>
+    <script src="~/Scripts/StockTransaction/OutBound.js"></script>
+    <script src="~/Scripts/StockTransaction/InBound.js"></script>
+    <script src="~/Scripts/StockTransaction/TransferReason.js"></script>
+    <script src="~/Scripts/StockTransaction/Top.js"></script>
+    <script src="~/Scripts/moment.js"></script>
+    <script src="~/Scripts/label.js"></script>
+    <script src="~/bower_components/bootstrap-filestyle/src/bootstrap-filestyle.min.js"></script>
+    <script src="~/Scripts/Photo.js"></script>
+}
+<div class="row row-std">
+    <div class="col-md-12 form-inline">
+        <div class="form-group col col-md-4">
+            @Html.LabelFor(model => model.SelectedTransferType, new { @class = "input-lg" })
+            @Html.DropDownListFor(model => model.SelectedTransferType, Model.TransferTypeItems, new { @class = "form-control", id = "ddlTransferType", autocomplete = "off" })
+        </div>
+    </div>
+</div>
+
+<div id="Content">
+</div>
+@*@Html.Partial("_OutBoundPartial", @Model.OutBoundViewModel)*@

@@ -1,0 +1,30 @@
+﻿@model CHPOUTSRCMES.Web.ViewModels.StockInvetory.StockInventoryViewModel
+@{
+    ViewBag.Title = "盤點";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<link href="@Url.Content("~/bower_components/editor/css/scss/editor.dataTables.min.css")" rel="stylesheet" type="text/css" />
+
+@section scripts {
+    <script src="~/Scripts/StockInventory/Type.js"></script>
+    <script src="~/Scripts/StockTransaction/Top.js"></script>
+    <script src="~/Scripts/Miscellaneous/Miscellaneous.js"></script>
+    <script src="~/Scripts/moment.js"></script>
+    <script src="~/Scripts/label.js"></script>
+    <script src="~/Scripts/StockInventory/Loss.js"></script>
+    <script src="~/Scripts/StockInventory/Profit.js"></script>
+}
+
+<div class="row row-std">
+    <div class="col-md-12 form-inline">
+        <div class="form-group col col-md-2">
+            <label class="input-lg">盤點</label>
+            @Html.DropDownListFor(model => model.SelectedTransactionType, Model.TransactionTypeItems, new { @class = "form-control", id = "ddlProfit", autocomplete = "off" })
+        </div>
+    </div>
+</div>
+
+<div id="Content">
+</div>

@@ -1,0 +1,239 @@
+﻿@model CHPOUTSRCMES.Web.Models.Process.CHP_PROCESS_T
+@{
+    ViewBag.Title = "加工";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+@section scripts {
+
+    <script src="~/Scripts/Process/Index.js"></script>
+    <script src="~/Scripts/moment.js"></script>
+
+}
+
+@{
+
+    IEnumerable<SelectListItem> Process_Status = (IEnumerable<SelectListItem>)ViewBag.Process_Status;
+    IEnumerable<SelectListItem> Process_Batch_no = (IEnumerable<SelectListItem>)ViewBag.Process_Batch_no;
+    IEnumerable<SelectListItem> Manchine_Num = (IEnumerable<SelectListItem>)ViewBag.Manchine_Num;
+    IEnumerable<SelectListItem> Subinventory = (IEnumerable<SelectListItem>)ViewBag.Subinventory;
+
+}
+
+
+
+<div class="row row-std">
+
+    @*狀態*@
+    <div class="form-inline col col-md-1 text-right">
+        @Html.LabelFor(model => model.Process_Status)
+    </div>
+
+    <div class="form-inline col col-md-2 ">
+        @Html.DropDownListFor(model => model.Process_Status, Process_Status, new { @class = "form-control input-sm", id = "Process_Status" })
+    </div>
+
+    @*工單號*@
+    <div class="form-inline col col-md-1 text-right">
+        @Html.LabelFor(model => model.Process_Batch_no)
+    </div>
+
+    <div class="form-inline col col-md-2">
+        @Html.DropDownListFor(model => model.Process_Batch_no, Process_Batch_no, new { @class = "form-control input-sm", id = "Process_Batch_no" })
+    </div>
+
+    @*機台*@
+    <div class="form-inline col col-md-1 text-right">
+        @Html.LabelFor(model => model.Manchine_Num)
+    </div>
+
+    <div class="form-inline col col-md-2 ">
+        @Html.DropDownListFor(model => model.Manchine_Num, Manchine_Num, new { @class = "form-control input-sm", id = "Manchine_Num" })
+    </div>
+
+    @* 倉庫 *@
+    <div class="form-inline col col-md-1 text-right">
+        @Html.LabelFor(model => model.Subinventory)
+    </div>
+
+    <div class="form-inline col col-md-2">
+        @Html.DropDownListFor(model => model.Subinventory, Subinventory, new { @class = "form-control input-sm", id = "Subinventory" })
+    </div>
+
+</div>
+
+
+<div class="row row-std">
+
+    @*需球日期*@
+    <div class="form-group col col-md-1 text-right">
+        @Html.LabelFor(model => model.Demand_Date)
+    </div>
+
+    <div class="form-group col col-md-2">
+        @Html.TextBoxFor(model => model.Demand_Date, new { @class = "form-control input-sm form-inline", id = "Demand_Date", autocomplete = "off" })
+    </div>
+
+    @*裁切日期*@
+    <div class="form-group col col-md-1 text-right">
+        @Html.LabelFor(model => model.Cutting_Date_From)
+    </div>
+
+    <div class="form-group col col-md-2 ">
+        @Html.TextBoxFor(model => model.Cutting_Date_From, new { @class = "form-control input-sm", id = "Cutting_Date_From", autocomplete = "off" })
+    </div>
+
+    @*裁切日期*@
+    <div class="form-group col col-md-1 text-right">
+        @Html.LabelFor(model => model.Cutting_Date_To)
+    </div>
+
+    <div class="form-group col col-md-2 ">
+        @Html.TextBoxFor(model => model.Cutting_Date_To, new { @class = "form-control input-sm", id = "Cutting_Date_To", autocomplete = "off" })
+    </div>
+
+</div>
+
+<div class="row row-std">
+    <div class="col col-md-1">
+        <button id="btnSearch" type="button" class="btn btn-primary">查詢</button>
+    </div>
+    <div class="col-md-3 col-lg-offset-2">
+        <button type="button" class="btn btn-danger" id="BtnStatus">排單</button>
+        <button type="button" class="btn btn-danger" id="BtnEdit">更改排單日</button>
+        <button type="button" class="btn btn-danger" id="BtnCloss">關帳</button>
+
+    </div>
+
+    <div class="col-md-3">
+        <button type="button" class="btn btn-primary" id="BtnPrint">裁切單</button>
+        <button type="button" class="btn btn-primary" id="BtnPrint">領料單</button>
+    </div>
+
+</div>
+
+
+<div class="row">
+
+
+</div>
+
+
+<div class="row row-std">
+    <div class="dataTable_wrapper">
+        <div class="col-sm-12 col-md-12">
+            <table class="table table-striped table-bordered table-hover" id="ProcessDataTables">
+                <thead>
+                    <tr>
+                        <th rowspan="2" colspan="1"></th>
+                        <th rowspan="2" colspan="1">需求日</th>
+                        <th rowspan="2" colspan="1">裁切日(起)</th>
+                        <th rowspan="2" colspan="1">裁切日(迄)</th>
+                        <th rowspan="2" colspan="1">工單號</th>
+                        <th rowspan="2" colspan="1">機台</th>
+                        <th rowspan="2" colspan="1">狀態</th>
+                        <th rowspan="2" colspan="1">客戶名稱</th>
+                        <th rowspan="2" colspan="1">紙別</th>
+                        <th rowspan="2" colspan="1">基重</th>
+                        <th rowspan="2" colspan="1">規格</th>
+                        <th rowspan="2" colspan="1">令重</th>
+                        <th rowspan="2" colspan="1">絲向</th>
+                        <th rowspan="1" colspan="2">交易單位</th>
+                        <th rowspan="1" colspan="2">主單位</th>
+                        <th rowspan="2" colspan="1">包裝方式</th>
+                        <th rowspan="2" colspan="1">委外工單備註</th>
+                        <th rowspan="2" colspan="1">生產備註</th>
+                        <th rowspan="2" colspan="1">組成成份料號</th>
+                        <th rowspan="2" colspan="1">產品料號</th>
+                        <th rowspan="2" colspan="1">訂單編號</th>
+                        <th rowspan="2" colspan="1">明細行</th>
+                        <th rowspan="2" colspan="1"></th>
+                    </tr>
+                    <tr>
+                        @*<th></th>*@
+                        @*<th>
+                                @Html.DisplayName("需求日")
+                            </th>*@
+                        @*<th>
+                                @Html.DisplayName("裁切日(起)")
+                            </th>
+                            <th>
+                                @Html.DisplayName("裁切日(迄)")
+                            </th>
+                            <th>
+                                @Html.DisplayName("工單號")
+                            </th>
+                            <th>
+                                @Html.DisplayName("機台")
+                            </th>
+                            <th>
+                                @Html.DisplayName("狀態")
+                            </th>
+                            <th>
+                                @Html.DisplayName("客戶名稱")
+                            </th>
+                            <th>
+                                @Html.DisplayName("紙別")
+                            </th>
+                            <th>
+                                @Html.DisplayName("基重")
+                            </th>
+                            <th>
+                                @Html.DisplayName("規格")
+                            </th>
+                            <th>
+                                @Html.DisplayName("令重")
+                            </th>
+                            <th>
+                                @Html.DisplayName("絲向")
+                            </th>*@
+                        <th>
+                            @Html.DisplayName("令數")
+                        </th>
+                        <th>
+                            @Html.DisplayName("單位")
+                        </th>
+                        <th>
+                            @Html.DisplayName("重量")
+                        </th>
+                        <th>
+                            @Html.DisplayName("單位")
+                        </th>
+                        @*<th>
+                                @Html.DisplayName("包裝方式")
+                            </th>
+                            <th>
+                                @Html.DisplayName("委外工單備註")
+                            </th>
+                            <th>
+                                @Html.DisplayName("生產備註")
+                            </th>
+                            <th>
+                                @Html.DisplayName("組成成份料號")
+                            </th>
+                            <th>
+                                @Html.DisplayName("產品料號")
+                            </th>
+                            <th>
+                                @Html.DisplayName("訂單編號")
+                            </th>
+                            <th>
+                                @Html.DisplayName("明細行")
+                            </th>*@
+
+                        @*<th>
+
+                            </th>*@
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+
+</div>
