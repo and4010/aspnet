@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using System.Web.Mvc;
-using CHPOUTSRCMES.Web.Data;
+using CHPOUTSRCMES.Web.DataModel;
 using CHPOUTSRCMES.Web.Domain;
 
 namespace CHPOUTSRCMES.Web.Controllers

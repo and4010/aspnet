@@ -1,4 +1,4 @@
-﻿using CHPOUTSRCMES.Web.Data;
+﻿using CHPOUTSRCMES.Web.DataModel;
 using CHPOUTSRCMES.Web.Models;
 using CHPOUTSRCMES.Web.Models.Information;
 using CHPOUTSRCMES.Web.ViewModels;

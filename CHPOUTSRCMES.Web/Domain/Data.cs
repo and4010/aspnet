@@ -46,7 +46,7 @@ namespace CHPOUTSRCMES.Web.Domain
 
             //menu.Add(new Navbar { Id = 20, nameOption = "傳輸記錄", controller = "Home", action = "Blank", status = false, isParent = false, parentId = 0 });
 
-            menu.Add(new Navbar { Id = 21, nameOption = "登入", controller = "Home", action = "Login", status = true, isParent = false, parentId = 0 });
+            menu.Add(new Navbar { Id = 21, nameOption = "登入", controller = "Account", action = "Login", status = true, isParent = false, parentId = 0 });
 
             menu.Add(new Navbar { Id = 22, nameOption = "測試資料", controller = "Home", action = "TestData", status = true, isParent = false, parentId = 0 });
 

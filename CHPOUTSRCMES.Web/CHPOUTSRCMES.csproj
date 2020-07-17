@@ -197,6 +197,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="App_Start\AuthConfig.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
@@ -221,35 +222,36 @@
     <Compile Include="Controllers\TransferController.cs" />
     <Compile Include="Controllers\YszmpckqController.cs" />
     <Compile Include="DataAnnotation\Precision.cs" />
-    <Compile Include="Db\Entiy\AspNetUsers.cs" />
-    <Compile Include="Db\Entiy\BCD_PREFIX_T.cs" />
-    <Compile Include="Db\Entiy\LogEntry.cs" />
-    <Compile Include="Db\Entiy\ORG_ITEMS_T.cs" />
-    <Compile Include="Db\Entiy\USER_SUBINVENTORY_T.cs" />
-    <Compile Include="Db\ModelInitializer.cs" />
-    <Compile Include="Db\Repositorys\GenericRepository.cs" />
-    <Compile Include="Db\Repositorys\Interfaces\IRepository.cs" />
-    <Compile Include="Db\Entiy\Purchase\CTR_FILEINFO_T.cs" />
-    <Compile Include="Db\Entiy\Purchase\CTR_FILES_T.cs" />
-    <Compile Include="Db\Entiy\Purchase\CTR_PICKED_HT.cs" />
-    <Compile Include="Db\Entiy\Purchase\CTR_DETAIL_HT.cs" />
-    <Compile Include="Db\Entiy\Purchase\CTR_DETAIL_T.cs" />
-    <Compile Include="Db\Entiy\Purchase\CTR_HEADER_T.cs" />
-    <Compile Include="Db\Entiy\Purchase\CTR_ORG_T.cs" />
-    <Compile Include="Db\Entiy\ITEMS_T.cs" />
-    <Compile Include="Db\Entiy\LOCATOR_T.cs" />
-    <Compile Include="Db\Entiy\MACHINE_PAPER_TYPE_T.cs" />
-    <Compile Include="Db\Entiy\ORGANIZATION_T.cs" />
-    <Compile Include="Db\Entiy\Purchase\CTR_PICKED_T.cs" />
-    <Compile Include="Db\Entiy\RELATED_T.cs" />
-    <Compile Include="Db\Entiy\STOCK_REASON_T.cs" />
-    <Compile Include="Db\Entiy\STOCK_T.cs" />
-    <Compile Include="Db\Entiy\SUBINVENTORY_T.cs" />
-    <Compile Include="Db\Entiy\TRANSACTION_TYPE_T.cs" />
-    <Compile Include="Db\Entiy\YSZMPCKQ_T.cs" />
-    <Compile Include="Db\Interfaces\IStaff.cs" />
-    <Compile Include="Db\MesContext.cs" />
-    <Compile Include="Db\Initializer.cs" />
+    <Compile Include="DataModel\Entiy\AppUserManager.cs" />
+    <Compile Include="DataModel\Entiy\USER_T.cs" />
+    <Compile Include="DataModel\Entiy\BCD_PREFIX_T.cs" />
+    <Compile Include="DataModel\Entiy\LOG_ENTRY_T.cs" />
+    <Compile Include="DataModel\Entiy\ORG_ITEMS_T.cs" />
+    <Compile Include="DataModel\Entiy\USER_SUBINVENTORY_T.cs" />
+    <Compile Include="DataModel\ModelInitializer.cs" />
+    <Compile Include="DataModel\Repositorys\GenericRepository.cs" />
+    <Compile Include="DataModel\Repositorys\Interfaces\IRepository.cs" />
+    <Compile Include="DataModel\Entiy\Purchase\CTR_FILEINFO_T.cs" />
+    <Compile Include="DataModel\Entiy\Purchase\CTR_FILES_T.cs" />
+    <Compile Include="DataModel\Entiy\Purchase\CTR_PICKED_HT.cs" />
+    <Compile Include="DataModel\Entiy\Purchase\CTR_DETAIL_HT.cs" />
+    <Compile Include="DataModel\Entiy\Purchase\CTR_DETAIL_T.cs" />
+    <Compile Include="DataModel\Entiy\Purchase\CTR_HEADER_T.cs" />
+    <Compile Include="DataModel\Entiy\Purchase\CTR_ORG_T.cs" />
+    <Compile Include="DataModel\Entiy\ITEMS_T.cs" />
+    <Compile Include="DataModel\Entiy\LOCATOR_T.cs" />
+    <Compile Include="DataModel\Entiy\MACHINE_PAPER_TYPE_T.cs" />
+    <Compile Include="DataModel\Entiy\ORGANIZATION_T.cs" />
+    <Compile Include="DataModel\Entiy\Purchase\CTR_PICKED_T.cs" />
+    <Compile Include="DataModel\Entiy\RELATED_T.cs" />
+    <Compile Include="DataModel\Entiy\STOCK_REASON_T.cs" />
+    <Compile Include="DataModel\Entiy\STOCK_T.cs" />
+    <Compile Include="DataModel\Entiy\SUBINVENTORY_T.cs" />
+    <Compile Include="DataModel\Entiy\TRANSACTION_TYPE_T.cs" />
+    <Compile Include="DataModel\Entiy\YSZMPCKQ_T.cs" />
+    <Compile Include="DataModel\Interfaces\IStaff.cs" />
+    <Compile Include="DataModel\MesContext.cs" />
+    <Compile Include="DataModel\Initializer.cs" />
     <Compile Include="Domain\Data.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -1762,9 +1764,12 @@
     <Content Include="Scripts\StockTransaction\TransferReason.js" />
     <Content Include="Scripts\Yszmpckq.js" />
     <Content Include="Scripts\_references.js" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -1787,7 +1792,7 @@
     <Content Include="Views\Home\Icons.cshtml" />
     <Content Include="Views\Home\Grid.cshtml" />
     <Content Include="Views\Home\Blank.cshtml" />
-    <Content Include="Views\Home\Login.cshtml" />
+    <Content Include="Views\Account\Login.cshtml" />
     <Content Include="Views\Purchase\Detail.cshtml" />
     <Content Include="Views\Purchase\Index.cshtml" />
     <Content Include="Views\Account\Index.cshtml" />

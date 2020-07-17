@@ -154,18 +154,6 @@ namespace CHPOUTSRCMES.Web.Tests.Controllers
             Assert.IsInstanceOfType(result, typeof(ViewResult));
             Assert.AreEqual(result.ViewName, "Blank");
         }
-
-        [TestMethod]
-        public void Login()
-        {
-
-            ViewResult result = _controller.Login() as ViewResult;
-
-            Assert.IsNotNull(result);
-            Assert.IsInstanceOfType(result, typeof(ViewResult));
-            Assert.AreEqual(result.ViewName, "Login");
-        }
-
       
     }
 }

@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
+using CHPOUTSRCMES.Web.DataModel;
 
 namespace CHPOUTSRCMES.Web
 {
@@ -16,6 +17,10 @@ namespace CHPOUTSRCMES.Web
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+
+            using (MesContext mesContext = new MesContext())
+            {
+            }
         }
 
         protected void Application_Error()

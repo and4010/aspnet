@@ -21,6 +21,14 @@ namespace CHPOUTSRCMES.Web.Controllers
             return View();
         }
 
+        //
+        // GET: /Account/Login
+        [AllowAnonymous]
+        public ActionResult Login()
+        {
+            return View("Login");
+        }
+
         [HttpPost, ActionName("AccountJson")]
         public JsonResult AccountJson(DataTableAjaxPostViewModel data)
         {

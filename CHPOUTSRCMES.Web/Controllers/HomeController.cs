@@ -78,10 +78,7 @@ namespace CHPOUTSRCMES.Web.Controllers
             return View("Blank");
         }
 
-        public ActionResult Login()
-        {
-            return View("Login");
-        }
+
 
         public ActionResult TestData()
         {

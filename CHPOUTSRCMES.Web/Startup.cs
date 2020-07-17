@@ -6,6 +6,11 @@ using System.Collections.Generic;
 using Hangfire;
 using Hangfire.SqlServer;
 using System.Diagnostics;
+using CHPOUTSRCMES.Web.DataModel;
+using CHPOUTSRCMES.Web.DataModel.Entiy;
+using Microsoft.Owin.Security.Cookies;
+using Microsoft.AspNet.Identity;
+using CHPOUTSRCMES.Web.App_Start;
 
 [assembly: OwinStartup(typeof(Startup))]
 namespace CHPOUTSRCMES.Web
@@ -15,7 +20,7 @@ namespace CHPOUTSRCMES.Web
 
         public void Configuration(IAppBuilder app)
         {
-            
+            AuthConfig.Register(app);
         }
     }
 }
