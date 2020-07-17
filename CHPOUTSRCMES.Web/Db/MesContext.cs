@@ -16,6 +16,9 @@ namespace CHPOUTSRCMES.Web.Data
     {
         public MesContext() : base("MesContext")
         {
+            Configuration.ProxyCreationEnabled = false;
+            Configuration.LazyLoadingEnabled = false;
+
             Database.SetInitializer<MesContext>(new ModelInitializer());
 
             if (!Database.Exists())

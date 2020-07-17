@@ -65,7 +65,7 @@ namespace CHPOUTSRCMES.Web.Db.Entiy
         /// </summary>
         /// 
         [StringLength(4000)]
-        [Required]
+        [Required(AllowEmptyStrings = true)]
         [Column("CATEGORY_CODE_COST")]
         public string CategoryCodeCost { set; get; }
 
@@ -83,7 +83,7 @@ namespace CHPOUTSRCMES.Web.Db.Entiy
         /// </summary>
         /// 
         [StringLength(4000)]
-        [Required]
+        [Required(AllowEmptyStrings = true)]
         [Column("CATEGORY_CODE_CONTROL")]
         public string CategoryCodeControl { set; get; }
 
@@ -140,7 +140,7 @@ namespace CHPOUTSRCMES.Web.Db.Entiy
         /// </summary>
         /// 
         [StringLength(3)]
-        [Required]
+        [Required(AllowEmptyStrings = true)]
         [Column("SECONDARY_UOM_CODE")]
         public string SecondaryUomCode { set; get; }
 
@@ -160,7 +160,7 @@ namespace CHPOUTSRCMES.Web.Db.Entiy
         [StringLength(30)]
         [Required]
         [Column("ITEM_TYPE")]
-        public string ItemYype { set; get; }
+        public string ItemType { set; get; }
 
 
         /// <summary>
@@ -168,7 +168,7 @@ namespace CHPOUTSRCMES.Web.Db.Entiy
         /// </summary>
         /// 
         [StringLength(4000)]
-        [Required]
+        [Required(AllowEmptyStrings = true)]
         [Column("CATALOG_ELEM_VAL_010")]
         public string CatalogElemVal010 { set; get; }
 
@@ -177,7 +177,7 @@ namespace CHPOUTSRCMES.Web.Db.Entiy
         /// </summary>
         /// 
         [StringLength(4000)]
-        [Required]
+        [Required(AllowEmptyStrings = true)]
         [Column("CATALOG_ELEM_VAL_020")]
         public string CatalogElemVal020 { set; get; }
 
@@ -186,7 +186,7 @@ namespace CHPOUTSRCMES.Web.Db.Entiy
         /// </summary>
         /// 
         [StringLength(4000)]
-        [Required]
+        [Required(AllowEmptyStrings = true)]
         [Column("CATALOG_ELEM_VAL_030")]
         public string CatalogElemVal030 { set; get; }
 
@@ -195,7 +195,7 @@ namespace CHPOUTSRCMES.Web.Db.Entiy
         /// </summary>
         /// 
         [StringLength(4000)]
-        [Required]
+        [Required(AllowEmptyStrings = true)]
         [Column("CATALOG_ELEM_VAL_040")]
         public string CatalogElemVal040 { set; get; }
 
@@ -204,7 +204,7 @@ namespace CHPOUTSRCMES.Web.Db.Entiy
         /// </summary>
         /// 
         [StringLength(4000)]
-        [Required]
+        [Required(AllowEmptyStrings = true)]
         [Column("CATALOG_ELEM_VAL_050")]
         public string CatalogElemVal050 { set; get; }
 
@@ -213,7 +213,7 @@ namespace CHPOUTSRCMES.Web.Db.Entiy
         /// </summary>
         /// 
         [StringLength(4000)]
-        [Required]
+        [Required(AllowEmptyStrings = true)]
         [Column("CATALOG_ELEM_VAL_060")]
         public string CatalogElemVal060 { set; get; }
 
@@ -222,7 +222,7 @@ namespace CHPOUTSRCMES.Web.Db.Entiy
         /// </summary>
         /// 
         [StringLength(4000)]
-        [Required]
+        [Required(AllowEmptyStrings = true)]
         [Column("CATALOG_ELEM_VAL_070")]
         public string CatalogElemVal070 { set; get; }
 
@@ -231,7 +231,7 @@ namespace CHPOUTSRCMES.Web.Db.Entiy
         /// </summary>
         /// 
         [StringLength(4000)]
-        [Required]
+        [Required(AllowEmptyStrings = true)]
         [Column("CATALOG_ELEM_VAL_080")]
         public string CatalogElemVal080 { set; get; }
 
@@ -240,7 +240,7 @@ namespace CHPOUTSRCMES.Web.Db.Entiy
         /// </summary>
         /// 
         [StringLength(4000)]
-        [Required]
+        [Required(AllowEmptyStrings = true)]
         [Column("CATALOG_ELEM_VAL_090")]
         public string CatalogElemVal090 { set; get; }
 
@@ -249,7 +249,7 @@ namespace CHPOUTSRCMES.Web.Db.Entiy
         /// </summary>
         /// 
         [StringLength(4000)]
-        [Required]
+        [Required(AllowEmptyStrings = true)]
         [Column("CATALOG_ELEM_VAL_100")]
         public string CatalogElemVal100 { set; get; }
 
@@ -258,7 +258,7 @@ namespace CHPOUTSRCMES.Web.Db.Entiy
         /// </summary>
         /// 
         [StringLength(4000)]
-        [Required]
+        [Required(AllowEmptyStrings = true)]
         [Column("CATALOG_ELEM_VAL_110")]
         public string CatalogElemVal110 { set; get; }
 
@@ -267,7 +267,6 @@ namespace CHPOUTSRCMES.Web.Db.Entiy
         /// </summary>
         /// 
         [StringLength(4000)]
-        [Required]
         [Column("CATALOG_ELEM_VAL_120")]
         public string CatalogElemVal120 { set; get; }
 
@@ -276,7 +275,7 @@ namespace CHPOUTSRCMES.Web.Db.Entiy
         /// </summary>
         /// 
         [StringLength(4000)]
-        [Required]
+        [Required(AllowEmptyStrings = true)]
         [Column("CATALOG_ELEM_VAL_130")]
         public string CatalogElemVal130 { set; get; }
 
@@ -285,7 +284,7 @@ namespace CHPOUTSRCMES.Web.Db.Entiy
         /// </summary>
         /// 
         [StringLength(4000)]
-        [Required]
+        [Required(AllowEmptyStrings = true)]
         [Column("CATALOG_ELEM_VAL_140")]
         public string CatalogElemVal140 { set; get; }
 
@@ -293,10 +292,10 @@ namespace CHPOUTSRCMES.Web.Db.Entiy
         /// D:刪除
         /// </summary>
         /// 
+        [Required(AllowEmptyStrings = true)]
+        [Column("CONTROL_FLAG",TypeName = "char")]
         [StringLength(1)]
-        [Required]
-        [Column("CONTROL_FLAG")]
-        public Char[] ControlFlag { set; get; }
+        public string ControlFlag { set; get; }
 
 
 
@@ -305,8 +304,8 @@ namespace CHPOUTSRCMES.Web.Db.Entiy
         /// </summary>
         /// 
         [Required]
-        [Column("CREATE_BY")]
-        public long CreateBy { set; get; }
+        [Column("CREATED_BY")]
+        public long CreatedBy { set; get; }
 
         /// <summary>
         /// 建立時間
@@ -315,8 +314,8 @@ namespace CHPOUTSRCMES.Web.Db.Entiy
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         [Required]
-        [Column("CREATE_DATE")]
-        public DateTime CreateDate { set; get; }
+        [Column("CREATION_DATE")]
+        public DateTime CreationDate { set; get; }
 
         /// <summary>
         /// 更新人員

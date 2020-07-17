@@ -29,7 +29,7 @@ namespace CHPOUTSRCMES.Web.Db.Entiy
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         [Column("SUBINVENTORY_CODE", Order = 2)]
-        public string SsubinventoryCode { set; get; }
+        public string SubinventoryCode { set; get; }
 
 
         /// <summary>
