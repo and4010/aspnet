@@ -1,4 +1,6 @@
-﻿using CHPOUTSRCMES.Web.Models;
+﻿using CHPOUTSRCMES.Web.Data;
+using CHPOUTSRCMES.Web.Models;
+using CHPOUTSRCMES.Web.Models.Information;
 using CHPOUTSRCMES.Web.ViewModels;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +10,8 @@ namespace CHPOUTSRCMES.Web.Controllers
 {
     public class PartNoController : Controller
     {
+
+
         // GET: PartNo
         public ActionResult Index()
         {
@@ -16,7 +20,6 @@ namespace CHPOUTSRCMES.Web.Controllers
             ViewBag.Catalog_elem_val_070 = model.Get070();
             ViewBag.Catalog_elem_val_020 = model.GetTypePaper();
             ViewBag.Organization_code = model.GetOrganization_code();
-
             return View();
         }
 

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace CHPOUTSRCMES.Web.Models
+namespace CHPOUTSRCMES.Web.Models.Information
 {
 
     public class ReasonModel

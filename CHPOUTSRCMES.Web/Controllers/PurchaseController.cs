@@ -9,6 +9,7 @@ using CHPOUTSRCMES.Web.Util;
 using CHPOUTSRCMES.Web.ViewModels;
 using System.Web;
 using System.Linq;
+using CHPOUTSRCMES.Web.Models.Information;
 
 namespace CHPOUTSRCMES.Web.Controllers
 {

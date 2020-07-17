@@ -1,4 +1,5 @@
 ﻿using CHPOUTSRCMES.Web.Models;
+using CHPOUTSRCMES.Web.Models.Information;
 using CHPOUTSRCMES.Web.Models.Purchase;
 using CHPOUTSRCMES.Web.ViewModels.Purchase;
 using System;

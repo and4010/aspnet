@@ -1,19 +1,18 @@
-﻿using CHPOUTSRCMES.Web.Domain;
-using CHPOUTSRCMES.Web.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.Linq;
 using System.Web.Mvc;
+using CHPOUTSRCMES.Web.Data;
+using CHPOUTSRCMES.Web.Domain;
 
 namespace CHPOUTSRCMES.Web.Controllers
 {
     public class NavbarController : Controller
     {
+        private MesContext db = new MesContext();
         // GET: Navbar
         public ActionResult Index()
-        {
-            var data = new Data();            
+        { 
+            var data = new Domain.Data();
+            db.LocatorTs.ToList();
             return PartialView("_Navbar", data.navbarItems().ToList());
         }
     }

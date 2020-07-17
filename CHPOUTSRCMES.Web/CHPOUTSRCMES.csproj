@@ -1,6 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\EntityFramework.6.4.4\build\EntityFramework.props" Condition="Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -52,10 +51,13 @@
       <HintPath>..\packages\Editor-1.9.2\lib\net46\DataTables-Editor-Server.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.dll</HintPath>
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.Utilities, Version=1.0.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\EFUtilities.1.0.2\lib\EntityFramework.Utilities.dll</HintPath>
     </Reference>
     <Reference Include="Hangfire.Core">
       <HintPath>..\packages\Hangfire-1.7.9\net45\Hangfire.Core.dll</HintPath>
@@ -73,11 +75,17 @@
       <HintPath>..\packages\Microsoft.AspNet.Identity.Core.2.2.3\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Microsoft.AspNet.Identity.EntityFramework, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Identity.EntityFramework.2.2.3\lib\net45\Microsoft.AspNet.Identity.EntityFramework.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.AspNet.Identity.Owin, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.Identity.Owin.2.2.3\lib\net45\Microsoft.AspNet.Identity.Owin.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Extensions.Logging.Abstractions, Version=3.1.6.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Logging.Abstractions.3.1.6\lib\netstandard2.0\Microsoft.Extensions.Logging.Abstractions.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Owin, Version=4.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Owin.4.0.1\lib\net45\Microsoft.Owin.dll</HintPath>
       <Private>True</Private>
@@ -101,6 +109,9 @@
     <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
+    </Reference>
+    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\packages\NLog.4.7.2\lib\net45\NLog.dll</HintPath>
     </Reference>
     <Reference Include="NPOI, Version=2.3.0.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -130,6 +141,10 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.IO.Compression, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Transactions" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -205,7 +220,36 @@
     <Compile Include="Controllers\StockTransactionController.cs" />
     <Compile Include="Controllers\TransferController.cs" />
     <Compile Include="Controllers\YszmpckqController.cs" />
-    <Compile Include="Data\MesContext.cs" />
+    <Compile Include="DataAnnotation\Precision.cs" />
+    <Compile Include="Db\Entiy\AspNetUsers.cs" />
+    <Compile Include="Db\Entiy\BCD_PREFIX_T.cs" />
+    <Compile Include="Db\Entiy\LogEntry.cs" />
+    <Compile Include="Db\Entiy\ORG_ITEMS_T.cs" />
+    <Compile Include="Db\Entiy\USER_SUBINVENTORY_T.cs" />
+    <Compile Include="Db\ModelInitializer.cs" />
+    <Compile Include="Db\Repositorys\GenericRepository.cs" />
+    <Compile Include="Db\Repositorys\Interfaces\IRepository.cs" />
+    <Compile Include="Db\Entiy\Purchase\CTR_FILEINFO_T.cs" />
+    <Compile Include="Db\Entiy\Purchase\CTR_FILES_T.cs" />
+    <Compile Include="Db\Entiy\Purchase\CTR_PICKED_HT.cs" />
+    <Compile Include="Db\Entiy\Purchase\CTR_DETAIL_HT.cs" />
+    <Compile Include="Db\Entiy\Purchase\CTR_DETAIL_T.cs" />
+    <Compile Include="Db\Entiy\Purchase\CTR_HEADER_T.cs" />
+    <Compile Include="Db\Entiy\Purchase\CTR_ORG_T.cs" />
+    <Compile Include="Db\Entiy\ITEMS_T.cs" />
+    <Compile Include="Db\Entiy\LOCATOR_T.cs" />
+    <Compile Include="Db\Entiy\MACHINE_PAPER_TYPE_T.cs" />
+    <Compile Include="Db\Entiy\ORGANIZATION_T.cs" />
+    <Compile Include="Db\Entiy\Purchase\CTR_PICKED_T.cs" />
+    <Compile Include="Db\Entiy\RELATED_T.cs" />
+    <Compile Include="Db\Entiy\STOCK_REASON_T.cs" />
+    <Compile Include="Db\Entiy\STOCK_T.cs" />
+    <Compile Include="Db\Entiy\SUBINVENTORY_T.cs" />
+    <Compile Include="Db\Entiy\TRANSACTION_TYPE_T.cs" />
+    <Compile Include="Db\Entiy\YSZMPCKQ_T.cs" />
+    <Compile Include="Db\Interfaces\IStaff.cs" />
+    <Compile Include="Db\MesContext.cs" />
+    <Compile Include="Db\Initializer.cs" />
     <Compile Include="Domain\Data.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -225,14 +269,14 @@
     <Compile Include="Models\Delivery\TripDetailDT.cs" />
     <Compile Include="Models\Delivery\DeliveryDetailViewHeader.cs" />
     <Compile Include="Models\Error.cs" />
-    <Compile Include="Models\AccountModel.cs" />
+    <Compile Include="Models\Information\AccountModel.cs" />
     <Compile Include="Models\FullCalendarEventModel.cs" />
     <Compile Include="Models\Inventory\Inventory.cs" />
     <Compile Include="Models\Label.cs" />
-    <Compile Include="Models\MachinePaperType.cs" />
+    <Compile Include="Models\Information\MachinePaperType.cs" />
     <Compile Include="Models\OrgSubinventoryDT.cs" />
     <Compile Include="Models\OspRelatedDT.cs" />
-    <Compile Include="Models\PartNoModel.cs" />
+    <Compile Include="Models\Information\PartNoModel.cs" />
     <Compile Include="Models\Process\Invest.cs" />
     <Compile Include="Models\Process\CHP_PROCESS_T.cs" />
     <Compile Include="Models\Process\Cotangent.cs" />
@@ -240,7 +284,7 @@
     <Compile Include="Models\Purchase\PurchaseCalendar.cs" />
     <Compile Include="Models\Navbar.cs" />
     <Compile Include="Models\Purchase\DetailModel.cs" />
-    <Compile Include="Models\ReasonModel.cs" />
+    <Compile Include="Models\Information\ReasonModel.cs" />
     <Compile Include="Models\ResultModel.cs" />
     <Compile Include="Models\CHP_SUBINVENTORY_T\LOCATOR.cs" />
     <Compile Include="Models\CHP_SUBINVENTORY_T\ORGANIZATION.cs" />
@@ -255,11 +299,12 @@
     <Compile Include="Models\Stock\StockTransferDT.cs" />
     <Compile Include="Models\Stock\STOCK_T.cs" />
     <Compile Include="Models\Stock\Top.cs" />
-    <Compile Include="Models\YszmpckqDT.cs" />
+    <Compile Include="Models\Information\YszmpckqDT.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="Util\ExcelImport.cs" />
     <Compile Include="Util\ExcelUtil.cs" />
+    <Compile Include="Util\LogUtilities.cs" />
     <Compile Include="Util\PdfLableUtil.cs" />
     <Compile Include="ViewModels\Account\AccountViewModel.cs" />
     <Compile Include="ViewModels\DataTableAjaxPostViewModel.cs" />
@@ -1653,6 +1698,13 @@
     <Content Include="bower_components\editor\css\scss\upload.scss" />
     <Content Include="File\detail.xls" />
     <Content Include="File\StockTransaction.zip" />
+    <Content Include="NLog.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\Excel\ERP0193164.xlsx" />
+    <None Include="NLog.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Properties\PublishProfiles\Pon.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\Delivery\DetailViewHeader.js" />
@@ -1790,7 +1842,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Data\Entiy\" />
     <Folder Include="Jsons\Responses\" />
     <Folder Include="Views\Stock\" />
     <Folder Include="Views\Transfer\" />
@@ -1838,14 +1889,6 @@
       </FlavorProperties>
     </VisualStudio>
   </ProjectExtensions>
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>此專案參考這部電腦上所缺少的 NuGet 套件。請啟用 NuGet 套件還原，以下載該套件。如需詳細資訊，請參閱 http://go.microsoft.com/fwlink/?LinkID=322105。缺少的檔案是 {0}。</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.4.4\build\EntityFramework.props'))" />
-    <Error Condition="!Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.4.4\build\EntityFramework.targets'))" />
-  </Target>
-  <Import Project="..\packages\EntityFramework.6.4.4\build\EntityFramework.targets" Condition="Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

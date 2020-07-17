@@ -6,7 +6,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.UI.WebControls;
 
-namespace CHPOUTSRCMES.Web.Models
+namespace CHPOUTSRCMES.Web.Models.Information
 {
     public class YszmpckqDT
     {

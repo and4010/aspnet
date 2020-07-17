@@ -15,6 +15,7 @@ namespace CHPOUTSRCMES.Web
 
         public void Configuration(IAppBuilder app)
         {
+            
         }
     }
 }
