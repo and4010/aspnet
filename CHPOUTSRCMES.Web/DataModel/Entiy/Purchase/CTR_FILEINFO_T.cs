@@ -77,19 +77,19 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Purchase
         /// 建立人員
         /// </summary>
         /// 
-        [Column("CREATE_BY")]
         [Required]
-        public long CreateBy { set; get; }
+        [Column("CREATED_BY")]
+        public long CreatedBy { set; get; }
 
         /// <summary>
         /// 建立時間
         /// </summary>
         /// 
-        [Column("CREATE_DATE")]
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         [Required]
-        public DateTime CreateDate { set; get; }
+        [Column("CREATION_DATE")]
+        public DateTime CreationDate { set; get; }
 
 
     }

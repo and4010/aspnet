@@ -36,7 +36,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         [Key]
         [Required]
-        [Column("LOCATOR_ID")]
+        [Column("LOCATOR_ID",Order = 1)]
         public long LocatorId { set; get; }
 
 
@@ -64,7 +64,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy
         /// </summary>
         /// 
         [StringLength(50)]
-        [Required]
         [Column("LOCATOR_DESC")]
         public string LocatorDesc { set; get; }
 

@@ -14,19 +14,19 @@ namespace CHPOUTSRCMES.Web.DataModel.Interfaces
         /// 建立人員
         /// </summary>
         /// 
-        [Column(TypeName = "CREATE_BY")]
         [Required]
-        int CreateBy { set; get; }
+        [Column("CREATED_BY")]
+        long CreatedBy { set; get; }
 
         /// <summary>
         /// 建立時間
         /// </summary>
         /// 
-        [Column(TypeName = "CREATE_DATE")]
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         [Required]
-        DateTime CreateDate { set; get; }
+        [Column("CREATION_DATE")]
+        DateTime CreationDate { set; get; }
 
         /// <summary>
         /// 更新人員
