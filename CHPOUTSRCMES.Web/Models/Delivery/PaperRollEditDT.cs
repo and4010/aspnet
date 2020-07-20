@@ -25,7 +25,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
         public string OSP_BATCH_NO { get; set; }
 
         [Display(Name = "料號名稱")]
-        public string ITEM_DESCRIPTION { get; set; }
+        public string ITEM_DESCRIPTION { get; set; } //要改為ITEM_NUMBER
 
         [Display(Name = "代紙料號名稱")]
         public string TMP_ITEM_NUMBER { get; set; }
@@ -58,8 +58,8 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
         public string SRC_REQUESTED_QUANTITY_UOM { get; set; }
 
         [Display(Name = "備註")]
-        public string REMARK { get; set; }
-        
+        public string REMARK { get; set; }//要刪掉
+
     }
 
     public class PaperRollEditData
@@ -141,7 +141,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
             paperRollData3.SRC_REQUESTED_QUANTITY_UOM = "MT";
             paperRollData3.REMARK = "";
             model.Add(paperRollData3);
-     
+
 
         }
 
@@ -157,11 +157,11 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
         public static List<PaperRollEditDT> getDataList(long TripDetailDT_ID)
         {
             var query = from data in PaperRollEditData.model
-                        where data.TripDetailDT_ID == TripDetailDT_ID 
+                        where data.TripDetailDT_ID == TripDetailDT_ID
                         select data;
             List<PaperRollEditDT> list = query.ToList<PaperRollEditDT>();
             return list;
-        } 
+        }
 
 
         //Barcode 123
@@ -324,7 +324,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
                 return false;
             }
 
-         
+
         }
     }
 

@@ -5,7 +5,7 @@ var Pay;   //0盤盈 1盤虧
 var selected = [];
 
 function LossInit() {
-    GetTop();
+    GetLossTop();
     LossOnClick();
     LossLoadStockDT();
     LossLoadLossDetailDT();
@@ -13,16 +13,118 @@ function LossInit() {
     LossOnkey();
 };
 
+function GetLossTop() {
+    $("#txtItemNumberArea").toggleClass('border-0')
+    $.ajax({
+        url: "/StockTransaction/GetTop",
+        type: "GET",
+        dataType: 'html',
+        data: {},
+        success: function (data) {
+            $('#Top').empty();
+            $('#Top').html(data);
+            LossTopInit();
+        },
+        error: function () {
+            swal.fire('更新倉庫搜尋頁面失敗');
+        },
+        complete: function (data) {
 
 
-function SubinventoryChangeCallBack() {
+        }
+
+    })
+}
+
+
+function LossTopInit() {
+
+    $('#ddlSubinventory').change(function () {
+
+        var SUBINVENTORY_CODE = $("#ddlSubinventory").val();
+        $.ajax({
+            url: "/StockTransaction/GetLocatorList",
+            type: "post",
+            data: {
+                SUBINVENTORY_CODE: SUBINVENTORY_CODE
+            },
+            success: function (data) {
+                $('#ddlLocator').empty();
+                for (var i = 0; i < data.length; i++) {
+                    $('#ddlLocator').append($('<option></option>').val(data[i].Value).html(data[i].Text));
+                }
+                //GetItemNumberList();
+                if (data.length == 1) {
+                    $('#ddlLocatorArea').hide();
+                } else {
+                    $('#ddlLocatorArea').show();
+                }
+
+            },
+            error: function () {
+                swal.fire('更新儲位失敗');
+            },
+            complete: function (data) {
+
+
+            }
+
+        })
+
+
+    })
+
+    $('#ddlLocator').change(function () {
+
+    })
+
+    $("#txtItemNumber").autocomplete({
+        autoFocus: true,
+        source: function (request, response) {
+            $.ajax({
+                url: "/StockTransaction/AutoCompleteItemNumber",
+                type: "POST",
+                dataType: "json",
+                data: {
+                    SubinventoryCode: $("#ddlSubinventory").val(),
+                    Locator: $("#ddlLocator").val(),
+                    Prefix: request.term
+                },
+                success: function (data) {
+                    response($.map(data, function (item) {
+                        return { label: item.Description, value: item.Value };
+                    }))
+                }
+            })
+        },
+        messages: {
+            noResults: "", results: ""
+        },
+        select: function (event, ui) {
+            if (ui.item) {
+                LossAutoCompleteItemNumberSelectCallBack(ui.item.value);
+            }
+        }
+    });
+
+    function LossAutoCompleteItemNumberSelectCallBack(ITEM_NO) {
+        $('#btnSearchStock').focus();
+        //$("#txtItemNumber").val(ITEM_NO);
+        //SearchStock();
+    }
+
+    //$('#txtItemNumber').keydown(function (e) {
+    //    if (e.keyCode == 13) {
+    //        //$('#btnSearchStock').focus();
+    //        //SearchStock();
+    //        //$(this).data('ui-autocomplete')._trigger('select', 'autocompleteselect', { item: { value: $(this).val() } });
+    //        //AutoCompleteItemNumberEnterCallBack();
+    //    }
+    //});
 
 }
 
 
-function LocatorChangeCallBack() {
-
-}
 
 function LossLoadStockDT() {
     StockDT = $('#StockDT').DataTable({
@@ -107,11 +209,11 @@ function LossLoadStockDT() {
             if (ITEM_CATEGORY == "平版") {
                 var Unit = dt.rows(indexes).data().pluck('SECONDARY_UOM_CODE')[0];
                 $('#TransactionUnit').text(Unit);
-                $('#txtQty').attr('disabled', false);
+                //$('#txtQty').attr('disabled', false);
             } else if (ITEM_CATEGORY == "捲筒") {
                 $('#txtQty').val(dt.rows(indexes).data().pluck('PRIMARY_AVAILABLE_QTY')[0]);
                 var Unit = dt.rows(indexes).data().pluck('PRIMARY_UOM_CODE')[0];
-                $('#txtQty').attr('disabled', true);
+                //$('#txtQty').attr('disabled', true);
                 $('#TransactionUnit').text(Unit);
             } else {
                 $('#TransactionUnit').text("");
@@ -175,7 +277,7 @@ function LossOnClick() {
     $('#btnSaveTransaction').click(function () {
         SaveLossDetail();
     });
-   
+
 }
 
 
@@ -208,7 +310,7 @@ function LossLoadLossDetailDT() {
                     }
                     StockInventoryDTList.push(StockInventoryDT);
                 });
-                
+
                 var data = {
                     'action': d.action,
                     'StockInventoryDTList': StockInventoryDTList
@@ -445,10 +547,7 @@ function SearchStock() {
     StockDT.ajax.reload(null, false);
 }
 
-function AutoCompleteItemNumberSelectCallBack2(ITEM_NO) {
-    $("#txtItemNumber").val(ITEM_NO);
-    SearchStock();
-}
+
 
 
 

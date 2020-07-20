@@ -17,8 +17,8 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
         [Display(Name = "航程號")]
         public string TRIP_NAME { get; set; }
 
-        [Display(Name = "訂單編號")]
-        public string ORDER_NUMBER { get; set; }
+        //[Display(Name = "訂單編號")]
+        //public string ORDER_NUMBER { get; set; }
 
         [Display(Name = "車次")]
         public string TRIP_CAR { get; set; }

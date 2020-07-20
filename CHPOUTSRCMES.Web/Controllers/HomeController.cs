@@ -150,6 +150,28 @@ namespace CHPOUTSRCMES.Web.Controllers
 
         }
 
+        [HttpPost]
+        public ActionResult GetLabels3(List<string> BARCODE)
+        //public ActionResult GetLabel(List<PurchaseDetailModel> model)
+        {
+            string msg = "";
+            LabelData labelData = new LabelData();
+            var lables = labelData.GetLabels3(BARCODE);
+            Util.PdfLableUtil pdf = new PdfLableUtil();
+            string labelFullPath = pdf.GeneratePdfLabels2(lables, ref msg);
+            if (string.IsNullOrEmpty(labelFullPath))
+            {
+                throw new Exception("產生PDF發生錯誤:" + msg);
+            }
+
+            var fileStream = new FileStream(labelFullPath,
+                                 FileMode.Open,
+                                 FileAccess.Read
+                               );
+            return new FileStreamResult(fileStream, "application/pdf");
+
+        }
+
         public void DownloadFile()
         {
             //用戶端的物件

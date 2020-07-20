@@ -44,7 +44,7 @@ $(document).ready(function () {
                 var size = Object.keys(tripDetailDTData).length;
                 for (var i = 0; i < size; i++) {
                     var TRIP_ID = Object.keys(tripDetailDTData)[i];
-                    var TRANSACTION_AUTHORIZE_DATE = Object.values(tripDetailDTData[TRIP_ID])[0];
+                    var AUTHORIZE_DATE = Object.values(tripDetailDTData[TRIP_ID])[0];
                     //ids.push(tripDetailDT_ID);
                     //dates.push(TRANSACTION_AUTHORIZE_DATE);
                     var TRIP_ID_REPEAT = false;
@@ -59,7 +59,7 @@ $(document).ready(function () {
                     if (TRIP_ID_REPEAT == false) {
                         var TripDetailDT = {
                             'TRIP_ID': TRIP_ID,
-                            'TRANSACTION_AUTHORIZE_DATE': TRANSACTION_AUTHORIZE_DATE
+                            'AUTHORIZE_DATE': AUTHORIZE_DATE
                         }
                         TripDetailDTList.push(TripDetailDT);
                     }
@@ -88,7 +88,7 @@ $(document).ready(function () {
         fields: [
             {
                 label: "出貨核准日:",
-                name: "TRANSACTION_AUTHORIZE_DATE",
+                name: "AUTHORIZE_DATE",
                 type: 'date',
                 dateFormat: 'yy-mm-dd',
                 opts: {
@@ -188,7 +188,7 @@ $(document).ready(function () {
          //{ data: "SRC_REQUESTED_QUANTITY_UOM2", name: "輔單位(RE)", "autoWidth": true },
          //{ data: "REQUESTED_QUANTITY", name: "預計出庫量", "autoWidth": true },
          //{ data: "REQUESTED_QUANTITY_UOM", name: "庫存單位(KG)", "autoWidth": true },
-         { data: "SUBINVENTORY_NAME", name: "出貨倉庫", "autoWidth": true },
+         { data: "SUBINVENTORY_CODE", name: "出貨倉庫", "autoWidth": true },
          {
              data: "TRIP_ACTUAL_SHIP_DATE", name: "組車日", "autoWidth": true, "mRender": function (data, type, full) {
                  if (data != null) {
@@ -200,7 +200,7 @@ $(document).ready(function () {
                  }
              }
          },
-         
+
          {
              data: "TRANSACTION_DATE", name: "出貨申請日", "autoWidth": true, "mRender": function (data, type, full) {
                  if (data != null) {
@@ -213,10 +213,10 @@ $(document).ready(function () {
              }
          },
          {
-             data: "TRANSACTION_AUTHORIZE_DATE", name: "出貨核准日", "autoWidth": true,
+             data: "AUTHORIZE_DATE", name: "出貨核准日", "autoWidth": true,
          },
          { data: "REMARK", name: "備註", "autoWidth": true, className: "dt-body-left" },
-        
+
          {
              data: null, "autoWidth": true, orderable: false,
              render: function (data, type, row, meta) {
@@ -354,7 +354,7 @@ $(document).ready(function () {
             //}
             ],
         },
-        
+
         "rowCallback": function (row, data, displayNum, displayIndex, dataIndex) {
 
             if ($.inArray(data.Id, selected) !== -1) {
@@ -689,7 +689,7 @@ $(document).ready(function () {
                 CancelTrip(data);
             }
         });
-        
+
     });
 
     function GetTransactionAuthorizeMinDate() {

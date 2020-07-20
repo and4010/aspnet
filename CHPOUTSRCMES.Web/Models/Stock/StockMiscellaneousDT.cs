@@ -51,7 +51,7 @@ namespace CHPOUTSRCMES.Web.Models.Stock
             viewModel.SearchQty = null;
             viewModel.PercentageError = null;
             viewModel.Qty = null;
-            
+
 
             return viewModel;
         }
@@ -74,8 +74,12 @@ namespace CHPOUTSRCMES.Web.Models.Stock
         }
 
 
-        public ResultModel AddTransactionDetail(long ID, string Miscellaneous, decimal PrimaryQty)
+        public ResultModel AddTransactionDetail(long ID, string Miscellaneous, decimal PrimaryQty, string Note)
         {
+            if (PrimaryQty > 1)
+            {
+                return new ResultModel(false, "超過最大數量限制1KG");
+            }
             if (Miscellaneous == "雜發")
             {
                 PrimaryQty = -PrimaryQty;
@@ -99,7 +103,7 @@ namespace CHPOUTSRCMES.Web.Models.Stock
                 addData.STOCK_ID = stockData.ID;
                 addData.BARCODE = stockData.BARCODE;
                 addData.ITEM_NO = stockData.ITEM_NO;
-                addData.NOTE = stockData.NOTE;
+                addData.NOTE = Note;
                 if (stockData.ITEM_CATEGORY == "平版")
                 {
                     addData.PRIMARY_TRANSACTION_QTY = PrimaryQty;
@@ -127,7 +131,7 @@ namespace CHPOUTSRCMES.Web.Models.Stock
 
         public ResultModel SaveTransactionDetail()
         {
-            foreach(StockMiscellaneousDT detailData in model)
+            foreach (StockMiscellaneousDT detailData in model)
             {
                 foreach (StockDT stockData in StockData.source)
                 {
@@ -135,7 +139,7 @@ namespace CHPOUTSRCMES.Web.Models.Stock
                     {
                         stockData.PRIMARY_AVAILABLE_QTY = detailData.PRIMARY_AVAILABLE_QTY;
                         stockData.SECONDARY_AVAILABLE_QTY = detailData.SECONDARY_AVAILABLE_QTY;
-                        stockData.NOTE = detailData.NOTE;
+                        //stockData.NOTE = detailData.NOTE;
                         detailData.STATUS = "已異動存檔";
                     }
                 }
@@ -176,7 +180,7 @@ namespace CHPOUTSRCMES.Web.Models.Stock
             {
                 return new ResultModel(false, "異動明細刪除失敗");
             }
-            
+
         }
     }
 

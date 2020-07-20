@@ -6,6 +6,7 @@ using System.ComponentModel.DataAnnotations;
 using CHPOUTSRCMES.Web.ViewModels.StockTransaction;
 using CHPOUTSRCMES.Web.ViewModels;
 using System.Text;
+using System.Web.Mvc;
 
 namespace CHPOUTSRCMES.Web.Models.Stock
 {
@@ -55,9 +56,9 @@ namespace CHPOUTSRCMES.Web.Models.Stock
         public string ITEM_NUMBER { get; set; }
 
         public string ITEM_DESCRIPTION { get; set; }
-        
+
         public string ITEM_CATEGORY { get; set; }
-        
+
 
         [Display(Name = "包裝方式")]
         public string PACKING_TYPE { get; set; }
@@ -67,13 +68,14 @@ namespace CHPOUTSRCMES.Web.Models.Stock
 
         //[Display(Name = "棧板數")]
         //public decimal ROLL_REAM_QTY { get; set; }
-
+        [DisplayFormat(DataFormatString = "{0}")]
         [Display(Name = "數量")] //主要數量
         public decimal PRIMARY_QUANTITY { get; set; }
 
         [Display(Name = "單位")] //主要單位
         public string PRIMARY_UOM { get; set; }
 
+        [DisplayFormat(DataFormatString = "{0}")]
         [Display(Name = "數量")] //次要數量
         public decimal SECONDARY_QUANTITY { get; set; }
 
@@ -225,7 +227,7 @@ namespace CHPOUTSRCMES.Web.Models.Stock
             var query = from data in model
                         where BARCODE == data.BARCODE
                         select data;
-            
+
             return query.ToList();
         }
 
@@ -321,7 +323,7 @@ namespace CHPOUTSRCMES.Web.Models.Stock
         }
 
         public ResultModel CreateInboundBarcode(string TransactionType, string OUT_SUBINVENTORY_CODE, string OUT_LOCATOR_ID, string IN_SUBINVENTORY_CODE, string IN_LOCATOR_ID,
-            string Number, string ITEM_NUMBER, decimal REQUESTED_QTY, decimal ROLL_REAM_WT, string LOT_NUMBER, string NUMBER_STATUS)
+            ref string Number, string ITEM_NUMBER, decimal REQUESTED_QTY, decimal ROLL_REAM_WT, string LOT_NUMBER, string NUMBER_STATUS)
         {
             List<StockDT> itemList = StockData.GetStockItemData(IN_SUBINVENTORY_CODE, ITEM_NUMBER);
             if (itemList.Count == 0)
@@ -342,7 +344,7 @@ namespace CHPOUTSRCMES.Web.Models.Stock
             //ROLL_REAM_WT 每捲或棧板數量
             decimal ROLL_REAM_QTY = Math.Ceiling(REQUESTED_QTY / ROLL_REAM_WT); //無條件進位 算出棧板數或捲數
 
-            ResultModel saveStockTransferDTResult = stockTransferData.CreateInbound(TransactionType, OUT_SUBINVENTORY_CODE, OUT_LOCATOR_ID, IN_SUBINVENTORY_CODE, IN_LOCATOR_ID, Number, ITEM_NUMBER, REQUESTED_QTY, 0, Unit, ROLL_REAM_QTY, ITEM_CATEGORY, NUMBER_STATUS);
+            ResultModel saveStockTransferDTResult = stockTransferData.CreateInbound(TransactionType, OUT_SUBINVENTORY_CODE, OUT_LOCATOR_ID, IN_SUBINVENTORY_CODE, IN_LOCATOR_ID, ref Number, ITEM_NUMBER, REQUESTED_QTY, 0, Unit, ROLL_REAM_QTY, ITEM_CATEGORY, NUMBER_STATUS);
 
             if (!saveStockTransferDTResult.Success)
             {
@@ -373,7 +375,7 @@ namespace CHPOUTSRCMES.Web.Models.Stock
                 }
                 stockTransferBarcodeDT.LOT_NUMBER = LOT_NUMBER;
                 stockTransferBarcodeDT.BARCODE = GetInboundBarcode(StockTransferDT_ID, IN_SUBINVENTORY_CODE);
-                stockTransferBarcodeDT.Status = "待入庫";
+                stockTransferBarcodeDT.Status = "待列印";
                 stockTransferBarcodeDT.ITEM_NUMBER = ITEM_NUMBER;
                 stockTransferBarcodeDT.OSP_BATCH_NO = itemList[0].OSP_BATCH_NO;
                 stockTransferBarcodeDT.ITEM_DESCRIPTION = itemList[0].ITEM_DESCRIPTION;
@@ -473,6 +475,11 @@ namespace CHPOUTSRCMES.Web.Models.Stock
                 return new ResultModel(false, "找不到條碼");
             }
 
+            if (barcodeList[0].Status == "待列印")
+            {
+                return new ResultModel(false, "請列印條碼標籤");
+            }
+
             if (barcodeList[0].Status == "已入庫")
             {
                 return new ResultModel(false, "此條碼已入庫");
@@ -496,6 +503,8 @@ namespace CHPOUTSRCMES.Web.Models.Stock
             }
             return new ResultModel(true, "條碼入庫成功");
         }
+
+
 
         public ResultModel DeleteBarcode(List<long> IDs, bool isInbound)
         {
@@ -564,6 +573,187 @@ namespace CHPOUTSRCMES.Web.Models.Stock
                         where ID == stockTransferBarcodeDT.ID
                         select stockTransferBarcodeDT;
             return query.ToList();
+        }
+
+
+        public MergeBarcodeViewModel GetMergeBarcodeViewModel(List<long> IDs)
+        {
+            MergeBarcodeViewModel vieModel = new MergeBarcodeViewModel();
+            vieModel.WaitMergeBarcodeList = new List<StockTransferBarcodeDT>();
+
+            var query = from data in model
+                        where IDs.Contains(data.ID)
+                        select data;
+
+            var waitMergeBarcodeList = query.ToList();
+
+            if (waitMergeBarcodeList.Count != 0)
+            {
+                vieModel.WaitMergeBarcodeList = waitMergeBarcodeList;
+            }
+            return vieModel;
+
+        }
+
+        public JsonResult GetMergeBarocdeStatus(string MergeBarocde, List<long> waitMergeIDs)
+        {
+            List<StockDT> mergeBarocdeDataList = StockData.GetStockData(MergeBarocde);
+            var queryWaitMergeBarcodeData = from data in model
+                                            where waitMergeIDs.Contains(data.ID)
+                                            select data;
+            var waitMergeBarcodeDataList = queryWaitMergeBarcodeData.ToList();
+
+            ResultModel checkResult = checkMergeBarcode(mergeBarocdeDataList, waitMergeBarcodeDataList);
+            if (!checkResult.Success)
+            {
+                return new JsonResult { Data = new { status = checkResult.Success, result = checkResult.Msg } };
+            }
+
+            decimal waitMergeTotalQty = 0;
+            foreach (StockTransferBarcodeDT data in waitMergeBarcodeDataList)
+            {
+                waitMergeTotalQty = waitMergeTotalQty + data.SECONDARY_QUANTITY;
+            }
+
+            return new JsonResult
+            {
+                Data = new
+                {
+                    status = true,
+                    OriginalBarcode = mergeBarocdeDataList[0].BARCODE,
+                    OriginalQty = mergeBarocdeDataList[0].SECONDARY_AVAILABLE_QTY,
+                    OriginalUnit = mergeBarocdeDataList[0].SECONDARY_UOM_CODE,
+                    AfterBarcode = mergeBarocdeDataList[0].BARCODE,
+                    AfterQty = mergeBarocdeDataList[0].SECONDARY_AVAILABLE_QTY + waitMergeTotalQty,
+                    AfterUnit = mergeBarocdeDataList[0].SECONDARY_UOM_CODE
+                }
+            };
+
+            //if (mergeBarocdeDataList.Count > 0 && mergeBarocdeDataList[0].ITEM_CATEGORY == "平版")
+            //{
+            //    if (mergeBarocdeDataList[0].PACKING_TYPE == "令包")
+            //    {
+            //        return new JsonResult
+            //        {
+            //            Data = new
+            //            {
+            //                status = true,
+            //                Barcode = mergeBarocdeDataList[0].BARCODE,
+            //                OriginalBarcode = mergeBarocdeDataList[0].SECONDARY_AVAILABLE_QTY,
+            //                OriginalUnit = mergeBarocdeDataList[0].SECONDARY_UOM_CODE,
+            //                AfterBarcode = mergeBarocdeDataList[0].BARCODE,
+            //                AfterQty = mergeBarocdeDataList[0].SECONDARY_AVAILABLE_QTY + waitMergeTotalQty,
+            //                AfterUnit = mergeBarocdeDataList[0].SECONDARY_UOM_CODE
+            //            }
+            //        };
+            //    }
+            //    else
+            //    {
+            //        return new JsonResult { Data = new { status = false, result = "此條碼打包方式不是令包" } };
+            //    }
+            //}
+            //else if (mergeBarocdeDataList.Count > 0 && mergeBarocdeDataList[0].ITEM_CATEGORY == "捲筒")
+            //{
+            //    return new JsonResult { Data = new { status = false, result = "捲筒不可併板" } };
+            //}
+            //else
+            //{
+            //    return new JsonResult { Data = new { status = false, result = "找不到條碼資料" } };
+            //}
+        }
+
+        public ResultModel checkMergeBarcode(List<StockDT> mergeBarocdeDataList, List<StockTransferBarcodeDT> waitMergeBarcodeDataList)
+        {
+            if (mergeBarocdeDataList.Count == 0)
+            {
+                return new ResultModel(false, "此條碼不在庫存");
+            }
+            if (waitMergeBarcodeDataList.Count == 0)
+            {
+                return new ResultModel(false, "找不到待併板條碼資料");
+            }
+
+            if (mergeBarocdeDataList[0].ITEM_CATEGORY == "捲筒")
+            {
+                return new ResultModel(false, "捲筒不可併板");
+            }
+
+            if (mergeBarocdeDataList[0].PACKING_TYPE != "令包")
+            {
+                return new ResultModel(false, "打包方式不是令包不可併板");
+            }
+
+            foreach (StockTransferBarcodeDT data in waitMergeBarcodeDataList)
+            {
+                if (data.ITEM_NUMBER != mergeBarocdeDataList[0].ITEM_NO)
+                {
+                    return new ResultModel(false, "併板料號須相同");
+                }
+            }
+
+            return new ResultModel(true, "併板條碼檢查成功");
+        }
+
+        public ResultModel MergeBarcode(string MergeBarocde, List<long> waitMergeIDs)
+        {
+            List<StockDT> mergeBarocdeDataList = StockData.GetStockData(MergeBarocde);
+            var queryWaitMergeBarcodeData = from data in model
+                                            where waitMergeIDs.Contains(data.ID)
+                                            select data;
+            var waitMergeBarcodeDataList = queryWaitMergeBarcodeData.ToList();
+
+            ResultModel checkResult = checkMergeBarcode(mergeBarocdeDataList, waitMergeBarcodeDataList);
+            if (!checkResult.Success)
+            {
+                return checkResult;
+            }
+
+            decimal waitMergePrimaryTotalQty = 0;
+            decimal waitMergeSecondaryTotalQty = 0;
+            string newNote = "";
+
+            foreach (StockTransferBarcodeDT data in waitMergeBarcodeDataList)
+            {
+                waitMergePrimaryTotalQty = waitMergePrimaryTotalQty + data.PRIMARY_QUANTITY;
+                waitMergeSecondaryTotalQty = waitMergeSecondaryTotalQty + data.SECONDARY_QUANTITY;
+                newNote = newNote + data.BARCODE + " ";
+            }
+
+
+            var highestId = model.Any() ? model.Select(x => x.ID).Max() : 0;
+            StockTransferBarcodeDT stockTransferBarcodeDT = new StockTransferBarcodeDT();
+            stockTransferBarcodeDT.BARCODE = mergeBarocdeDataList[0].BARCODE;
+            stockTransferBarcodeDT.ID = highestId + 1;
+            stockTransferBarcodeDT.Subinventory = mergeBarocdeDataList[0].SUBINVENTORY_CODE;
+            stockTransferBarcodeDT.ITEM_NUMBER = mergeBarocdeDataList[0].ITEM_NO;
+            stockTransferBarcodeDT.OSP_BATCH_NO = mergeBarocdeDataList[0].OSP_BATCH_NO;
+            stockTransferBarcodeDT.ITEM_DESCRIPTION = mergeBarocdeDataList[0].ITEM_DESCRIPTION;
+            stockTransferBarcodeDT.ITEM_CATEGORY = mergeBarocdeDataList[0].ITEM_CATEGORY;
+            stockTransferBarcodeDT.PAPERTYPE = mergeBarocdeDataList[0].PapaerType;
+            stockTransferBarcodeDT.Base_Weight = mergeBarocdeDataList[0].BasicWeight;
+            stockTransferBarcodeDT.Specification = mergeBarocdeDataList[0].Specification;
+            stockTransferBarcodeDT.LAST_UPDATE_DATE = DateTime.Now;
+            stockTransferBarcodeDT.LOT_NUMBER = mergeBarocdeDataList[0].LOT_NUMBER;
+            stockTransferBarcodeDT.PACKING_TYPE = mergeBarocdeDataList[0].PACKING_TYPE;
+            stockTransferBarcodeDT.PRIMARY_QUANTITY = waitMergePrimaryTotalQty;
+            stockTransferBarcodeDT.PRIMARY_UOM = mergeBarocdeDataList[0].PRIMARY_UOM_CODE;
+            stockTransferBarcodeDT.REMARK = mergeBarocdeDataList[0].NOTE + " " + newNote;
+            stockTransferBarcodeDT.SECONDARY_QUANTITY = waitMergeSecondaryTotalQty;
+            stockTransferBarcodeDT.SECONDARY_UOM = mergeBarocdeDataList[0].SECONDARY_UOM_CODE;
+            stockTransferBarcodeDT.SHIPMENT_NUMBER = waitMergeBarcodeDataList[0].SHIPMENT_NUMBER;
+            stockTransferBarcodeDT.Status = "待列印";
+            stockTransferBarcodeDT.StockTransferDT_ID = waitMergeBarcodeDataList[0].StockTransferDT_ID;
+            stockTransferBarcodeDT.SUBINVENTORY_TRANSFER_NUMBER = waitMergeBarcodeDataList[0].SUBINVENTORY_TRANSFER_NUMBER;
+            model.Add(stockTransferBarcodeDT);
+            stockTransferData.MergeBarcode(waitMergeBarcodeDataList[0].StockTransferDT_ID, waitMergePrimaryTotalQty, waitMergeSecondaryTotalQty, 1);
+
+            //刪除舊條碼
+            foreach (StockTransferBarcodeDT data in waitMergeBarcodeDataList)
+            {
+                model.Remove(data);
+                stockTransferData.MergeBarcode(data.StockTransferDT_ID, -data.PRIMARY_QUANTITY, -data.SECONDARY_QUANTITY, -1);
+            }
+            return new ResultModel(true, "併板成功");
         }
 
         public ResultModel MergeBarcode(StockTransferBarcodeDTEditor data)
@@ -660,7 +850,7 @@ namespace CHPOUTSRCMES.Web.Models.Stock
             return new ResultModel(true, "併板成功");
         }
 
-        public ResultModel ImportRollInboundBarcode(ImportRollInboundBarcodeModel data)
+        public ResultModel ImportRollInboundBarcode(ImportRollInboundBarcodeModel data, ref string Number)
         {
             if (data.StockTransferBarcodeDTList == null || data.StockTransferBarcodeDTList.Count == 0)
             {
@@ -678,7 +868,8 @@ namespace CHPOUTSRCMES.Web.Models.Stock
 
             foreach (StockTransferBarcodeDT stockTransferBarcodeDT in data.StockTransferBarcodeDTList)
             {
-                ResultModel result = CreateInboundBarcode(data.TransactionType, data.OUT_SUBINVENTORY_CODE, data.OUT_LOCATOR_ID, data.IN_SUBINVENTORY_CODE, data.IN_LOCATOR_ID, data.Number,
+
+                ResultModel result = CreateInboundBarcode(data.TransactionType, data.OUT_SUBINVENTORY_CODE, data.OUT_LOCATOR_ID, data.IN_SUBINVENTORY_CODE, data.IN_LOCATOR_ID, ref Number,
                     stockTransferBarcodeDT.ITEM_NUMBER, stockTransferBarcodeDT.PRIMARY_QUANTITY, stockTransferBarcodeDT.PRIMARY_QUANTITY, stockTransferBarcodeDT.LOT_NUMBER, "非MES入庫檔案匯入");
                 if (!result.Success)
                 {
@@ -688,7 +879,7 @@ namespace CHPOUTSRCMES.Web.Models.Stock
             return new ResultModel(true, "捲筒匯入成功");
         }
 
-        public ResultModel ImportFlatInboundBarcode(ImportFlatInboundBarcodeModel data)
+        public ResultModel ImportFlatInboundBarcode(ImportFlatInboundBarcodeModel data, ref string Number)
         {
             if (data.StockTransferDTList == null || data.StockTransferDTList.Count == 0)
             {
@@ -706,7 +897,7 @@ namespace CHPOUTSRCMES.Web.Models.Stock
 
             foreach (StockTransferDT stockTransferBarcodeDT in data.StockTransferDTList)
             {
-                ResultModel result = CreateInboundBarcode(data.TransactionType, data.OUT_SUBINVENTORY_CODE, data.OUT_LOCATOR_ID, data.IN_SUBINVENTORY_CODE, data.IN_LOCATOR_ID, data.Number,
+                ResultModel result = CreateInboundBarcode(data.TransactionType, data.OUT_SUBINVENTORY_CODE, data.OUT_LOCATOR_ID, data.IN_SUBINVENTORY_CODE, data.IN_LOCATOR_ID, ref Number,
                     stockTransferBarcodeDT.ITEM_NUMBER, stockTransferBarcodeDT.REQUESTED_QUANTITY2, stockTransferBarcodeDT.ROLL_REAM_WT, "", "非MES入庫檔案匯入");
                 if (!result.Success)
                 {
@@ -880,6 +1071,8 @@ namespace CHPOUTSRCMES.Web.Models.Stock
 
         public List<StockTransferBarcodeDT> StockTransferBarcodeDTList { get; set; }
     }
+
+
 
     public class ImportRollInboundBarcodeModel
     {

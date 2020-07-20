@@ -1,0 +1,133 @@
+﻿
+@model CHPOUTSRCMES.Web.ViewModels.StockTransaction.MergeBarcodeViewModel
+
+<!-- Modal -->
+@*<script src="~/bower_components/bootstrap-filestyle/src/bootstrap-filestyle.min.js"></script>*@
+<div class="modal fade" id="MergeBarcodeModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="exampleModalLabel">併板</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div style="padding-left: 15px">
+                    <div class="row">
+                        <h4>被併板</h4>
+                    </div>
+                    <div class="row" style="margin-bottom: 10px">
+                        <div class="form-group form-inline">
+                            <div class="input-group col-md-3">
+                                <span id="qtyType" class="input-group-addon" style="width: 53px;">條碼</span>
+                                @Html.TextBoxFor(model => model.MergeBarcode, new { @class = "form-control", id = "txtMergeBarcode", placeholder = "請輸入被併板條碼", autocomplete = "off" })
+                            </div>
+                            <input type="button" id="btnConfirm" value="檢視併板結果" class="btn btn-primary" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <h4>待併板</h4>
+                    </div>
+                    <div id="WaitMergeBarcode">
+                        @if (Model.WaitMergeBarcodeList != null)
+                        {
+                            foreach (var x in Model.WaitMergeBarcodeList)
+                            {
+                            <div class="row input-lg">
+                                <div class="form-group form-inline">
+                                    <div class="col-md-7">
+                                        <div class="pickId" style="display:none">@Html.DisplayFor(ID => x.ID)</div>
+                                        <div class="col-md-2 text-right">
+                                            @Html.DisplayNameFor(BARCODE => x.BARCODE)
+                                        </div>
+                                        <div class="col-md-4 ">
+                                            @Html.DisplayFor(BARCODE => x.BARCODE)
+                                        </div>
+                                        <div class="col-md-3 text-right">
+                                            @Html.DisplayFor(Qty => x.SECONDARY_QUANTITY)
+                                        </div>
+                                        <div class="col-md-2">
+                                            @Html.DisplayFor(Unit => x.SECONDARY_UOM)
+                                        </div>
+                                        @*@if (x.ITEM_CATEGORY == "平版")
+                                    {
+                                        <div class="col-md-3 text-right">
+                                            @Html.DisplayFor(Qty => x.SECONDARY_QUANTITY)
+                                        </div>
+                                        <div class="col-md-2">
+                                            @Html.DisplayFor(Unit => x.SECONDARY_UOM)
+                                        </div>
+                                    }
+                                    @if (x.ITEM_CATEGORY == "捲筒")
+                                    {
+                                        <div class="col-md-3 text-right">
+                                            @Html.DisplayFor(Qty => x.PRIMARY_QUANTITY)
+                                        </div>
+                                        <div class="col-md-2">
+                                            @Html.DisplayFor(Unit => x.PRIMARY_UOM)
+                                        </div>
+                                    }*@
+                                    </div>
+                                </div>
+                            </div>
+                            }
+                        }
+                    </div>
+
+
+                    <div class="row">
+                        <h4>併板前</h4>
+                    </div>
+                    <div class="row input-lg" style="margin-bottom: 10px">
+                        <div class="form-group form-inline">
+                            <div class="col-md-7">
+                                <div class="col-md-2 text-right">
+                                    條碼
+                                </div>
+                                <div class="col-md-4">
+                                    <span id="OriginalBarcode"></span>
+                                </div>
+                                <div class="col-md-3 text-right">
+                                    <span id="OriginalQty"></span>
+                                </div>
+                                <div class="col-md-2">
+                                    <span id="OriginalUnit"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <h4>併板後</h4>
+                    </div>
+                    <div class="row input-lg" style="margin-bottom: 10px">
+                        <div class="form-group form-inline">
+                            <div class="col-md-7">
+                                <div class="col-md-2 text-right">
+                                    條碼
+                                </div>
+                                <div class="col-md-4">
+                                    <span id="AfterBarcode"></span>
+                                </div>
+                                <div class="col-md-3 text-right">
+                                    <span id="AfterQty"></span>
+                                </div>
+                                <div class="col-md-2">
+                                    <span id="AfterUnit"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" id="btnMergeBarcode">併板</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" id="btnCancel">取消</button>
+            </div>
+        </div>
+    </div>
+</div>

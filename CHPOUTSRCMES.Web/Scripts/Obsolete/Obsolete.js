@@ -5,7 +5,7 @@ var StockDT;
 $(document).ready(function () {
 
     GetTop();
-    
+
 
     $("#btnSearchStock").click(function () {
         SearchStock();
@@ -46,7 +46,7 @@ $(document).ready(function () {
             "data": function (d) {
                 d.SubinventoryCode = $("#ddlSubinventory").val();
                 d.Locator = $("#ddlLocator").val();
-                d.ItemNumber = $("#txtItemNumber").val(); 
+                d.ItemNumber = $("#txtItemNumber").val();
             }
         },
         columns: [
@@ -103,7 +103,7 @@ $(document).ready(function () {
             $("#ItemNumber").text(ItemNumber);
             var Barcode = dt.rows(indexes).data().pluck('BARCODE')[0];
             $('#Barcode').text(Barcode);
-            
+
             var ITEM_CATEGORY = dt.rows(indexes).data().pluck('ITEM_CATEGORY')[0];
             if (ITEM_CATEGORY == "平版") {
                 var Unit = dt.rows(indexes).data().pluck('SECONDARY_UOM_CODE')[0];
@@ -331,7 +331,7 @@ $(document).ready(function () {
         }
     });
 
-    
+
 
     function AddTransactionDetail() {
         var ID = $('#StockId').text();
@@ -348,13 +348,13 @@ $(document).ready(function () {
             return false;
         }
 
-       
+
 
         $.ajax({
             url: "/Obsolete/AddTransactionDetail",
             type: "post",
             data: {
-                ID : ID,
+                ID: ID,
                 ObsoleteQty: ObsoleteQty
             },
             success: function (data) {
@@ -492,6 +492,8 @@ function LocatorChangeCallBack() {
 //}
 
 function AutoCompleteItemNumberSelectCallBack(ITEM_NO) {
-    $("#txtItemNumber").val(ITEM_NO);
-    SearchStock();
+    $("#btnSearchStock").focus();
+    return false;
+    //$("#txtItemNumber").val(ITEM_NO);
+    //SearchStock();
 }

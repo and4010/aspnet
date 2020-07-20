@@ -11,9 +11,9 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
     {
         public long PICKED_ID { get; set; }
 
-        public long TripDetailDT_ID { get; set; }
+        public long TripDetailDT_ID { get; set; } //DELIVERY_HEADER_ID
 
-        public long PaperRollEditDT_ID { get; set; }
+        public long PaperRollEditDT_ID { get; set; } //DELIVERY_DETAIL_ID
 
         [Display(Name = "料號名稱")]
         public string ITEM_DESCRIPTION { get; set; }
@@ -28,7 +28,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
         public string PRIMARY_UOM { get; set; }
 
         [Display(Name = "是否代紙")]
-        public string ISTMP { get; set; }
+        public string ISTMP { get; set; } //待判斷是否刪掉
 
         [Display(Name = "建立人員")]
         public long CREATED_BY { get; set; }
@@ -192,7 +192,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
             }
         }
 
-        
+
 
 
         public static bool remove(List<long> PICKED_ID)
@@ -268,7 +268,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.REMARK) : models.OrderBy(x => x.REMARK);
                 case 7:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.LAST_UPDATE_DATE) : models.OrderBy(x => x.LAST_UPDATE_DATE);
-                
+
             }
         }
 

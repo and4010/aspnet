@@ -70,16 +70,26 @@
 @*<div class="row row-std">*@
 <div class="row row-std form-inline col-md-12" id="SHIPMENT_NUMBER_AREA">
 
-    <div class="input-group col-md-3">
-        @*@Html.LabelFor(model => model.SelectedShipmentNumber, new { @class = "input-lg" })
-                @Html.DropDownListFor(model => model.SelectedShipmentNumber, Model.ShipmentNumberItems, new { @class = "form-control", id = "ddlShipmentNumber", autocomplete = "off" })*@
-        <span id="TransactionType" class="input-group-addon" style="width: 53px;">編號</span>
-        <input class="form-control" type="text" id="AutoCompleteShipmentNumber" placeholder="請輸入編號" />
-    </div>
-    <span id="NumberStatus" style="display: none;"></span>
-    <input type="button" id="btnPrintPick" value="列印備貨單" class="btn btn-primary" />
+    @*<div class="input-group col-md-3">*@
+    <div class="col-md-6">
 
-    @*<div class="row row-std">
+        @*<span id="TransactionType" style="width: 53px;">*@
+        <label id="TransactionType" class="input-lg">編號</label>
+        @* @Html.LabelFor(model => model.SelectedShipmentNumber, new { @class = "input-lg" })*@
+        @*</span>*@
+        @Html.DropDownListFor(model => model.SelectedShipmentNumber, Model.ShipmentNumberItems, new { @class = "form-control", id = "ddlShipmentNumber", autocomplete = "off" })
+        @* <span id="TransactionType" class="input-group-addon" style="width: 53px;">編號</span>
+        <input class="form-control" type="text" id="AutoCompleteShipmentNumber" placeholder="請輸入編號" />*@
+        <span id="NumberStatus" style="display: none;"></span>
+        <button id="btnPrintPick" class="btn btn-primary form-control">列印備貨單</button>
+    </div>
+
+    @*<button id="btnPrintPick" class="btn btn-primary form-control">列印備貨單</button>*@
+
+</div>
+@*<input type="button" id="btnPrintPick" value="列印備貨單" class="btn btn-primary" />*@
+
+@*<div class="row row-std">
             <div class="col-md-6 form-inline">
                 <div class=" input-group col-md-6">
                     <span class="input-group-addon" style="width: 53px;">出貨編號</span>
@@ -160,7 +170,7 @@
                     <tr>
                         <th rowspan="2" colspan="1"></th>
                         <th rowspan="2" colspan="1">項次</th>
-                        <th rowspan="1" colspan="3">商品</th>
+                        <th rowspan="1" colspan="4">商品</th>
                         <th rowspan="1" colspan="3">主單位</th>
                         <th rowspan="1" colspan="3">次單位</th>
                     </tr>
@@ -177,6 +187,9 @@
                         </th>
                         <th>
                             @Html.DisplayName("板/捲數")
+                        </th>
+                        <th>
+                            @Html.DisplayName("單位")
                         </th>
                         <th>
                             @Html.DisplayName("需求數量")

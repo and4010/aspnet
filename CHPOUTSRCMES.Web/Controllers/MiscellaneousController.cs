@@ -141,9 +141,9 @@ namespace CHPOUTSRCMES.Web.Controllers
         }
 
         [HttpPost]
-        public ActionResult AddTransactionDetail(long ID, string Miscellaneous, decimal PrimaryQty)
+        public ActionResult AddTransactionDetail(long ID, string Miscellaneous, decimal PrimaryQty, string Note)
         {
-            ResultModel result = miscellaneousData.AddTransactionDetail(ID, Miscellaneous, PrimaryQty);
+            ResultModel result = miscellaneousData.AddTransactionDetail(ID, Miscellaneous, PrimaryQty, Note);
             return new JsonResult { Data = new { status = result.Success, result = result.Msg } };
         }
 

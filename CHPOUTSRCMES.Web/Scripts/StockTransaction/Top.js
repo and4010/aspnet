@@ -71,6 +71,7 @@ function TopInit() {
     })
 
     $("#txtItemNumber").autocomplete({
+        autoFocus: true,
         source: function (request, response) {
             $.ajax({
                 url: "/StockTransaction/AutoCompleteItemNumber",
@@ -94,16 +95,14 @@ function TopInit() {
         select: function (event, ui) {
             if (ui.item) {
                 AutoCompleteItemNumberSelectCallBack(ui.item.value);
-                AutoCompleteItemNumberSelectCallBack2(ui.item.value);
-                //AutoCompleteItemNumberSelectCallBack$($('#txtItemNumber').val());
             }
         }
     });
 
-    $('#txtItemNumber').keydown(function (e) {
-        if (e.keyCode == 13) {
-            $(this).data('ui-autocomplete')._trigger('select', 'autocompleteselect', { item: { value: $(this).val() } });
-            //AutoCompleteItemNumberEnterCallBack();
-        }
-    });
+    //$('#txtItemNumber').keydown(function (e) {
+    //    if (e.keyCode == 13) {
+    //        $(this).data('ui-autocomplete')._trigger('select', 'autocompleteselect', { item: { value: $(this).val() } });
+    //        //AutoCompleteItemNumberEnterCallBack();
+    //    }
+    //});
 }
