@@ -7,6 +7,7 @@ using CHPOUTSRCMES.Web.ViewModels;
 using CHPOUTSRCMES.Web.ViewModels.Delivery;
 using System.Web.Mvc;
 using System.Web.UI.WebControls;
+using CHPOUTSRCMES.Web.Models.Information;
 
 namespace CHPOUTSRCMES.Web.Models.Delivery
 {

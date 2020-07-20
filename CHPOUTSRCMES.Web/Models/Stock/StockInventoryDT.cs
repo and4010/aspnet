@@ -7,6 +7,7 @@ using CHPOUTSRCMES.Web.ViewModels;
 using System.Web.UI.WebControls;
 using System.Web.Mvc;
 using System.Text;
+using CHPOUTSRCMES.Web.Models.Information;
 
 namespace CHPOUTSRCMES.Web.Models.Stock
 {
