@@ -12,7 +12,9 @@ $(document).ready(function () {
 
     $('#txtPercentageError').keydown(function (e) {
         if (e.keyCode == 13) {
-            SearchStock();
+            $("#btnSearchStock").focus();
+            return false;
+            //SearchStock();
         }
     });
 
@@ -26,9 +28,16 @@ $(document).ready(function () {
 
     $('#txtQty').keydown(function (e) {
         if (e.keyCode == 13) {
-            AddTransactionDetail();
+            $('#txtNote').focus().select();
         }
     });
+
+    $('#txtNote').keydown(function (e) {
+        if (e.keyCode == 13) {
+            AddTransactionDetail();
+        }
+    })
+
 
     $("#btnSaveTransaction").click(function () {
         SaveTransactionDetail();
@@ -441,6 +450,14 @@ $(document).ready(function () {
             return false;
         }
 
+        var Note = $('#txtNote').val();
+        if (Note == "") {
+            swal.fire('請輸入備註');
+            event.preventDefault();
+            return false;
+        }
+
+
         $.ajax({
             url: "/Miscellaneous/AddTransactionDetail",
             type: "post",
@@ -448,6 +465,7 @@ $(document).ready(function () {
                 ID: ID,
                 PrimaryQty: PrimaryQty,
                 Miscellaneous: Miscellaneous,
+                Note: Note
             },
             success: function (data) {
                 if (data.status) {
@@ -563,8 +581,10 @@ function LocatorChangeCallBack() {
 //}
 
 function AutoCompleteItemNumberSelectCallBack(ITEM_NO) {
+    //$("#txtItemNumber").val(ITEM_NO);
     GetStockItemData(ITEM_NO);
 }
+
 
 function GetStockItemData(ITEM_NO) {
     $.ajax({

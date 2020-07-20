@@ -40,36 +40,36 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
         public string SHIP_LOCATION_CODE { get; set; }
 
 
-        [Display(Name = "訂單編號")]
-        public long ORDER_NUMBER { get; set; }
+        //[Display(Name = "訂單編號")]
+        //public long ORDER_NUMBER { get; set; }
 
 
-        [Display(Name = "訂單行號")]
-        public string ORDER_SHIP_NUMBER { get; set; }
+        //[Display(Name = "訂單行號")]
+        //public string ORDER_SHIP_NUMBER { get; set; }
 
 
-        [Display(Name = "料號名稱")]
-        public string ITEM_DESCRIPTION { get; set; }
+        //[Display(Name = "料號名稱")]
+        //public string ITEM_DESCRIPTION { get; set; }
 
 
-        [Display(Name = "紙別")]
-        public string PAPER_TYPE { get; set; }
+        //[Display(Name = "紙別")]
+        //public string PAPER_TYPE { get; set; }
 
 
-        [Display(Name = "基重")]
-        public string BASIC_WEIGHT { get; set; }
+        //[Display(Name = "基重")]
+        //public string BASIC_WEIGHT { get; set; }
 
 
-        [Display(Name = "規格")]
-        public string SPECIFICATION { get; set; }
+        //[Display(Name = "規格")]
+        //public string SPECIFICATION { get; set; }
 
 
-        [Display(Name = "絲向")]
-        public string GRAIN_DIRECTION { get; set; }
+        //[Display(Name = "絲向")]
+        //public string GRAIN_DIRECTION { get; set; }
 
 
-        [Display(Name = "包裝方式")]
-        public string PACKING_TYPE { get; set; }
+        //[Display(Name = "包裝方式")]
+        //public string PACKING_TYPE { get; set; }
 
 
         [Display(Name = "訂單原始數量")]
@@ -99,10 +99,10 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
         [Display(Name = "出貨倉庫")]
         public string SUBINVENTORY_CODE { get; set; }
 
-        
-        [Display(Name = "出貨倉庫名稱")]
-        public string SUBINVENTORY_NAME { get; set; }
-        
+
+        //[Display(Name = "出貨倉庫名稱")]
+        //public string SUBINVENTORY_NAME { get; set; }
+
 
         [Display(Name = "組車日")]
         public DateTime? TRIP_ACTUAL_SHIP_DATE { get; set; }
@@ -119,7 +119,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
         public DateTime? TRANSACTION_DATE { get; set; }
 
         [Display(Name = "出貨核准日")]
-        public string TRANSACTION_AUTHORIZE_DATE { get; set; }
+        public string AUTHORIZE_DATE { get; set; }
 
 
         [Display(Name = "備註")]
@@ -191,7 +191,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
                 //出貨倉庫
                 SUBINVENTORY_CODE = "TB2",
                 //出貨倉庫名稱
-                SUBINVENTORY_NAME = "TB2",
+                //SUBINVENTORY_NAME = "TB2",
                 //組車日
                 TRIP_ACTUAL_SHIP_DATE = Convert.ToDateTime("2019-12-26"),
                 //航程號
@@ -199,7 +199,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
                 //預計出貨確認日
                 TRANSACTION_DATE = Convert.ToDateTime("2019-12-26"),
                 //出貨核准日
-                TRANSACTION_AUTHORIZE_DATE = "2019-12-26",
+                AUTHORIZE_DATE = "2019-12-26",
                 //備註
                 REMARK = "FT1.P9B0288",
             });
@@ -243,7 +243,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
                 //出貨倉庫
                 SUBINVENTORY_CODE = "TB2",
                 //出貨倉庫名稱
-                SUBINVENTORY_NAME = "TB2",
+                //SUBINVENTORY_NAME = "TB2",
                 //組車日
                 TRIP_ACTUAL_SHIP_DATE = Convert.ToDateTime("2020-01-09"),
                 //航程號
@@ -251,7 +251,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
                 //預計出貨確認日
                 TRANSACTION_DATE = Convert.ToDateTime("2020-01-09"),
                 //出貨核准日
-                TRANSACTION_AUTHORIZE_DATE = "2020-01-09",
+                AUTHORIZE_DATE = "2020-01-09",
                 //備註
                 REMARK = "FT1.早上到X002010031大道季刊98期/P2010087",
             });
@@ -296,7 +296,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
                 //出貨倉庫
                 SUBINVENTORY_CODE = "SFG",
                 //出貨倉庫名稱
-                SUBINVENTORY_NAME = "SFG",
+                //SUBINVENTORY_NAME = "SFG",
                 //組車日
                 TRIP_ACTUAL_SHIP_DATE = Convert.ToDateTime("2020-04-22"),
                 //航程號
@@ -304,7 +304,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
                 //預計出貨確認日
                 TRANSACTION_DATE = Convert.ToDateTime("2020-04-22"),
                 //出貨核准日
-                TRANSACTION_AUTHORIZE_DATE ="2020-04-22",
+                AUTHORIZE_DATE = "2020-04-22",
                 //備註
                 REMARK = "",
             });
@@ -399,11 +399,11 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
 
             //viewModel.SelectedTrip = "*";
             List<ListItem> tripList = new List<ListItem>();
-            tripList.Add(new ListItem ("全部", "*"));
-            tripList.Add(new ListItem ("Y191226-1036357", "Y191226-1036357"));
+            tripList.Add(new ListItem("全部", "*"));
+            tripList.Add(new ListItem("Y191226-1036357", "Y191226-1036357"));
             tripList.Add(new ListItem("Y200109-1052058", "Y200109-1052058"));
             tripList.Add(new ListItem("Y200109-1052060", "Y200109-1052060"));
-            
+
             viewModel.TripNameItems = tripList.Select(i => new SelectListItem() { Text = i.Text, Value = i.Value });
 
             //viewModel.SelectedSubinventory = "*";
@@ -412,7 +412,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
 
 
 
-           
+
 
             //viewModel.SelectedDeliveryStatus = "*";
             List<ListItem> deliveryStatusList = new List<ListItem>();
@@ -432,7 +432,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
 
         public static ResultModel DeliveryConfirm(List<long> ids)
         {
-            
+
 
             var query = from tripDetail in source
                         where ids.Contains(tripDetail.Id)
@@ -442,10 +442,10 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
                         } into g
                         select new
                         {
-                            g.Key.TRIP_ID 
+                            g.Key.TRIP_ID
                         };
 
-            
+
 
             ResultModel result = new ResultModel(true, "出貨確認成功");
 
@@ -490,13 +490,13 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
             }
 
             return result;
-            
-           
+
+
         }
 
         public static ResultModel CancelConfirm(List<long> ids)
         {
-           
+
             var query = from tripDetail in source
                         where ids.Contains(tripDetail.Id)
                         group tripDetail by new
@@ -600,7 +600,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
                     }
                 }
             }
- 
+
             return result;
         }
 
@@ -841,7 +841,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
                 {
                     if (sourceTripDetailDT.TRIP_ID == selectedData.TRIP_ID)
                     {
-                        sourceTripDetailDT.TRANSACTION_AUTHORIZE_DATE = selectedData.TRANSACTION_AUTHORIZE_DATE;
+                        sourceTripDetailDT.AUTHORIZE_DATE = selectedData.AUTHORIZE_DATE;
                         result.Add(sourceTripDetailDT);
                     }
                 }
@@ -898,10 +898,10 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
                 case 11:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.TRANSACTION_DATE) : models.OrderBy(x => x.TRANSACTION_DATE);
                 case 12:
-                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.TRANSACTION_AUTHORIZE_DATE) : models.OrderBy(x => x.TRANSACTION_AUTHORIZE_DATE);
+                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.AUTHORIZE_DATE) : models.OrderBy(x => x.AUTHORIZE_DATE);
                 case 13:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.REMARK) : models.OrderBy(x => x.REMARK);
-                
+
 
             }
         }
@@ -934,10 +934,10 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
                 case 11:
                     return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.TRANSACTION_DATE) : models.ThenBy(x => x.TRANSACTION_DATE);
                 case 12:
-                    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.TRANSACTION_AUTHORIZE_DATE) : models.ThenBy(x => x.TRANSACTION_AUTHORIZE_DATE);
+                    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.AUTHORIZE_DATE) : models.ThenBy(x => x.AUTHORIZE_DATE);
                 case 13:
                     return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.REMARK) : models.ThenBy(x => x.REMARK);
-               
+
 
             }
         }

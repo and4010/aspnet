@@ -30,6 +30,11 @@ namespace CHPOUTSRCMES.Web.Models.Stock
         public string NOTE { set; get; }
         public DateTime LAST_UPDATE_DATE { set; get; }
         public string STATUS { set; get; }
+        public string PapaerType { get; set; }
+        public string BasicWeight { get; set; }
+        public string Specification { get; set; }
+        public string OSP_BATCH_NO { set; get; }
+        public string ITEM_DESCRIPTION { set; get; }
     }
 
     public class StockInventoryData
@@ -102,6 +107,10 @@ namespace CHPOUTSRCMES.Web.Models.Stock
             }
             else
             {
+                if (stockData.ITEM_CATEGORY == "捲筒" && stockData.PRIMARY_AVAILABLE_QTY < Qty)
+                {
+                    return new ResultModel(false, "數量不可大於庫存量");
+                }
                 var detailData = lossModel.FirstOrDefault(d => d.BARCODE == stockData.BARCODE && d.STATUS == "未異動存檔");
                 if (detailData != null)
                 {
@@ -138,6 +147,11 @@ namespace CHPOUTSRCMES.Web.Models.Stock
                 addData.SUBINVENTORY_CODE = stockData.SUBINVENTORY_CODE;
                 addData.LAST_UPDATE_DATE = DateTime.Now;
                 addData.STATUS = "未異動存檔";
+                addData.PapaerType = stockData.PapaerType;
+                addData.BasicWeight = stockData.BasicWeight;
+                addData.Specification = stockData.Specification;
+                addData.OSP_BATCH_NO = stockData.OSP_BATCH_NO;
+                addData.ITEM_DESCRIPTION = stockData.ITEM_DESCRIPTION;
                 lossModel.Add(addData);
             }
             return new ResultModel(true, "新增明細成功");
@@ -189,6 +203,11 @@ namespace CHPOUTSRCMES.Web.Models.Stock
                 addData.SUBINVENTORY_CODE = stockData.SUBINVENTORY_CODE;
                 addData.LAST_UPDATE_DATE = DateTime.Now;
                 addData.STATUS = "未異動存檔";
+                addData.PapaerType = stockData.PapaerType;
+                addData.BasicWeight = stockData.BasicWeight;
+                addData.Specification = stockData.Specification;
+                addData.OSP_BATCH_NO = stockData.OSP_BATCH_NO;
+                addData.ITEM_DESCRIPTION = stockData.ITEM_DESCRIPTION;
                 profitModel.Add(addData);
             }
             return new ResultModel(true, "新增明細成功");
@@ -232,6 +251,11 @@ namespace CHPOUTSRCMES.Web.Models.Stock
             addData.SUBINVENTORY_CODE = dataList[0].SUBINVENTORY_CODE;
             addData.LAST_UPDATE_DATE = DateTime.Now;
             addData.STATUS = "未異動存檔";
+            addData.PapaerType = itemList[0].PapaerType;
+            addData.BasicWeight = itemList[0].BasicWeight;
+            addData.Specification = itemList[0].Specification;
+            addData.OSP_BATCH_NO = itemList[0].OSP_BATCH_NO;
+            addData.ITEM_DESCRIPTION = itemList[0].ITEM_DESCRIPTION;
             createList.Add(addData);
             profitModel.Add(addData);
             return createList;
@@ -407,6 +431,16 @@ namespace CHPOUTSRCMES.Web.Models.Stock
             }
 
         }
+
+        public List<StockInventoryDT> GetProfitBarcodeData(string BARCODE)
+        {
+            var query = from data in profitModel
+                        where BARCODE == data.BARCODE
+                        select data;
+
+            return query.ToList();
+        }
+
     }
 
 

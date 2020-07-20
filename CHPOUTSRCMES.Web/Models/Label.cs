@@ -150,33 +150,36 @@ namespace CHPOUTSRCMES.Web.Models
                       stockTransferBarcodeDTList[0].Specification, stockTransferBarcodeDTList[0].PRIMARY_QUANTITY.ToString(), stockTransferBarcodeDTList[0].PRIMARY_UOM,
                       stockTransferBarcodeDTList[0].OSP_BATCH_NO, "OY001", barcode));
                     }
+                    stockTransferBarcodeDTList[0].Status = "待入庫";
                 }
             }
             return lableList;
         }
 
 
-        public List<LabelModel> GetLabels3(List<string> Barcode, StockTransferBarcodeData stockTransferBarcodeData)
+        public List<LabelModel> GetLabels3(List<string> Barcode)
         {
+
+            StockInventoryData stockInventoryData = new StockInventoryData();
             var lableList = new List<LabelModel>();
             foreach (string barcode in Barcode)
             {
-                var stockTransferBarcodeDTList = stockTransferBarcodeData.GetBarcodeData(barcode);
-
+                List<StockInventoryDT> StockInventoryList = stockInventoryData.GetProfitBarcodeData(barcode);
+                //List<StockDT> StockInventoryList = StockData.GetStockBarcodeData(barcode);
                 //var stockData = StockData.GetStockData(barcode);
-                if (stockTransferBarcodeDTList.Count > 0)
+                if (StockInventoryList.Count > 0)
                 {
-                    if (stockTransferBarcodeDTList[0].ITEM_CATEGORY == "平版")
+                    if (StockInventoryList[0].ITEM_CATEGORY == "平版")
                     {
-                        lableList.Add(new LabelModel(stockTransferBarcodeDTList[0].ITEM_DESCRIPTION, stockTransferBarcodeDTList[0].PAPERTYPE, stockTransferBarcodeDTList[0].Base_Weight,
-                       stockTransferBarcodeDTList[0].Specification, stockTransferBarcodeDTList[0].SECONDARY_QUANTITY.ToString(), stockTransferBarcodeDTList[0].SECONDARY_UOM,
-                       stockTransferBarcodeDTList[0].OSP_BATCH_NO, "OY001", barcode));
+                        lableList.Add(new LabelModel(StockInventoryList[0].ITEM_DESCRIPTION, StockInventoryList[0].PapaerType, StockInventoryList[0].BasicWeight,
+                        StockInventoryList[0].Specification, StockInventoryList[0].SECONDARY_AVAILABLE_QTY.ToString(), StockInventoryList[0].SECONDARY_UOM_CODE,
+                        StockInventoryList[0].OSP_BATCH_NO, "OY001", barcode));
                     }
                     else
                     {
-                        lableList.Add(new LabelModel(stockTransferBarcodeDTList[0].ITEM_DESCRIPTION, stockTransferBarcodeDTList[0].PAPERTYPE, stockTransferBarcodeDTList[0].Base_Weight,
-                      stockTransferBarcodeDTList[0].Specification, stockTransferBarcodeDTList[0].PRIMARY_QUANTITY.ToString(), stockTransferBarcodeDTList[0].PRIMARY_UOM,
-                      stockTransferBarcodeDTList[0].OSP_BATCH_NO, "OY001", barcode));
+                        lableList.Add(new LabelModel(StockInventoryList[0].ITEM_DESCRIPTION, StockInventoryList[0].PapaerType, StockInventoryList[0].BasicWeight,
+                      StockInventoryList[0].Specification, StockInventoryList[0].PRIMARY_AVAILABLE_QTY.ToString(), StockInventoryList[0].PRIMARY_UOM_CODE,
+                      StockInventoryList[0].OSP_BATCH_NO, "OY001", barcode));
                     }
                 }
             }

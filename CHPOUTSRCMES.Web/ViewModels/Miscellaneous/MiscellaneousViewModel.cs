@@ -37,5 +37,8 @@ namespace CHPOUTSRCMES.Web.ViewModels.Miscellaneous
         public decimal? PercentageError { set; get; }
 
         public decimal? Qty { set; get; }
+
+        [Display(Name = "備註")]
+        public string Note { set; get; }
     }
 }

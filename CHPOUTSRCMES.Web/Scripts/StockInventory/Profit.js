@@ -4,13 +4,123 @@ var ProfitDetailDT;
 var editor;
 
 function ProfitInit() {
-    GetTop();
+    GetProfitTop();
     ProfitOnClick();
     ProfitLoadLossDetailDT();
     ProfitLoadProfitDetailDT();
     ProfitOnkey();
 };
 
+
+function GetProfitTop() {
+    $("#txtItemNumberArea").toggleClass('border-0')
+    $.ajax({
+        url: "/StockTransaction/GetTop",
+        type: "GET",
+        dataType: 'html',
+        data: {},
+        success: function (data) {
+            $('#Top').empty();
+            $('#Top').html(data);
+            ProfitTopInit();
+        },
+        error: function () {
+            swal.fire('更新倉庫搜尋頁面失敗');
+        },
+        complete: function (data) {
+
+
+        }
+
+    })
+}
+
+
+function ProfitTopInit() {
+
+    $('#ddlSubinventory').change(function () {
+
+        var SUBINVENTORY_CODE = $("#ddlSubinventory").val();
+        $.ajax({
+            url: "/StockTransaction/GetLocatorList",
+            type: "post",
+            data: {
+                SUBINVENTORY_CODE: SUBINVENTORY_CODE
+            },
+            success: function (data) {
+                $('#ddlLocator').empty();
+                for (var i = 0; i < data.length; i++) {
+                    $('#ddlLocator').append($('<option></option>').val(data[i].Value).html(data[i].Text));
+                }
+                //GetItemNumberList();
+                if (data.length == 1) {
+                    $('#ddlLocatorArea').hide();
+                } else {
+                    $('#ddlLocatorArea').show();
+                }
+
+            },
+            error: function () {
+                swal.fire('更新儲位失敗');
+            },
+            complete: function (data) {
+
+
+            }
+
+        })
+
+
+    })
+
+    $('#ddlLocator').change(function () {
+
+    })
+
+    $("#txtItemNumber").autocomplete({
+        autoFocus: true,
+        source: function (request, response) {
+            $.ajax({
+                url: "/StockTransaction/AutoCompleteItemNumber",
+                type: "POST",
+                dataType: "json",
+                data: {
+                    SubinventoryCode: $("#ddlSubinventory").val(),
+                    Locator: $("#ddlLocator").val(),
+                    Prefix: request.term
+                },
+                success: function (data) {
+                    response($.map(data, function (item) {
+                        return { label: item.Description, value: item.Value };
+                    }))
+                }
+            })
+        },
+        messages: {
+            noResults: "", results: ""
+        },
+        select: function (event, ui) {
+            if (ui.item) {
+                ProfitAutoCompleteItemNumberSelectCallBack(ui.item.value);
+
+            }
+        }
+    });
+
+    function ProfitAutoCompleteItemNumberSelectCallBack(ITEM_NO) {
+        $('#btnSearchLoss').focus();
+        //$("#txtItemNumber").val(ITEM_NO);
+        //SearchLoss();
+    }
+
+    //$('#txtItemNumber').keydown(function (e) {
+    //    if (e.keyCode == 13) {
+    //        $('#btnSearchStock').focus();
+    //        //$(this).data('ui-autocomplete')._trigger('select', 'autocompleteselect', { item: { value: $(this).val() } });
+    //        //AutoCompleteItemNumberEnterCallBack();
+    //    }
+    //});
+}
 
 function ProfitLoadLossDetailDT() {
     LossDetailDT = $('#LossDetailDT').DataTable({
@@ -114,7 +224,7 @@ function ProfitLoadLossDetailDT() {
                 $('#txtQty').val(qty);
                 var Unit = dt.rows(indexes).data().pluck('PRIMARY_UOM_CODE')[0];
                 $('#TransactionUnit').text(Unit);
-                
+
             } else {
                 $('#TransactionUnit').text("");
             }
@@ -324,10 +434,11 @@ function ProfitLoadProfitDetailDT() {
                 text: '<span class="glyphicon glyphicon-print"></span>&nbsp列印標籤',
                 //className: 'btn-default btn-sm',
                 action: function (e) {
-                    PrintLable(ProfitDetailDT, "/Home/GetLabel2", "5");
+                    PrintLable(ProfitDetailDT, "/Home/GetLabels3", "5");
                 },
                 className: "btn-primary"
-            },
+            }
+            ,
             {
                 extend: 'edit',
                 text: '編輯備註',
@@ -343,12 +454,12 @@ function ProfitLoadProfitDetailDT() {
                         title: '編輯備註',
                         buttons: '確定',
                         action: function () {
-                                    this.submit();
+                            this.submit();
                         },
                         className: 'btn-danger'
                     });
                     editor.hide(['ID', 'SUBINVENTORY_CODE', 'SEGMENT3', 'ITEM_NO', 'PRIMARY_TRANSACTION_QTY', 'LOT_NUMBER', 'LOCATOR_ID', 'SECONDARY_TRANSACTION_QTY']);
-                    
+
                 }
             }
             ]
@@ -449,7 +560,7 @@ function ProfitOnClick() {
             swal.fire("請先輸入料號");
             return;
         }
-        
+
         CreateBarcode(SUBINVENTORY_CODE, SEGMENT3, ITEM_NO, LOCATOR_ID);
 
         //editor.create({
@@ -471,7 +582,7 @@ function ProfitOnClick() {
         //    editor.field('SEGMENT3').val(ddlLocator);
         //    editor.field('ITEM_NO').val(ddlItemNo);
         //}
-        
+
     });
 
 }
@@ -556,9 +667,8 @@ function SearchLoss() {
 }
 
 
-function AutoCompleteItemNumberSelectCallBack(ITEM_NO) {
-    SearchLoss();
-}
+
+
 
 function AddProfitDetail() {
     var ID = $('#StockId').text();
@@ -610,7 +720,7 @@ function SaveProfitDetail() {
         event.preventDefault();
         return;
     }
-    
+
 
     swal.fire({
         title: "異動存檔",

@@ -10,7 +10,7 @@ namespace CHPOUTSRCMES.Web.ViewModels.StockTransaction
     public class StockTransferViewModel
     {
         public IEnumerable<SelectListItem> TransferTypeItems { set; get; }
-        [Display(Name = "出/入庫")]
+        [Display(Name = "異動類別")]
         public string SelectedTransferType { set; get; }
 
         public IEnumerable<SelectListItem> OutSubinventoryItems { set; get; }
@@ -43,7 +43,7 @@ namespace CHPOUTSRCMES.Web.ViewModels.StockTransaction
         [Display(Name = "數量")] //輸入的主次單位數浪
         public string InputTransactionQty { get; set; }
 
-        [Display(Name = "捲數/板數")] 
+        [Display(Name = "捲數/板數")]
         public string ROLL_REAM_QTY { get; set; }
 
         [Display(Name = "項次")]
@@ -63,5 +63,5 @@ namespace CHPOUTSRCMES.Web.ViewModels.StockTransaction
 
     }
 
-   
+
 }

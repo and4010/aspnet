@@ -291,7 +291,6 @@
     <Compile Include="Models\CHP_SUBINVENTORY_T\LOCATOR.cs" />
     <Compile Include="Models\CHP_SUBINVENTORY_T\ORGANIZATION.cs" />
     <Compile Include="Models\CHP_SUBINVENTORY_T\SUBINVENTORY.cs" />
-    <Compile Include="Models\Stock\InBoundDT.cs" />
     <Compile Include="Models\Stock\StockInventoryDT.cs" />
     <Compile Include="Models\Stock\StockDT.cs" />
     <Compile Include="Models\StockInventory\StockInventoryModel.cs" />
@@ -331,6 +330,7 @@
     <Compile Include="ViewModels\StockInvetory\StockInventoryViewModel.cs" />
     <Compile Include="ViewModels\StockTransaction\InBoundViewModel.cs" />
     <Compile Include="ViewModels\Miscellaneous\MiscellaneousViewModel.cs" />
+    <Compile Include="ViewModels\StockTransaction\MergeBarcodeViewModel.cs" />
     <Compile Include="ViewModels\StockTransaction\OutBoundViewModel.cs" />
     <Compile Include="ViewModels\StockTransaction\TopViewModel.cs" />
     <Compile Include="ViewModels\StockTransaction\TransferReasonViewModel.cs" />
@@ -1844,6 +1844,7 @@
     <Content Include="Views\Obsolete\Index.cshtml" />
     <Content Include="Views\StockInventory\Index.cshtml" />
     <Content Include="Views\StockInventory\_ProfitPartial.cshtml" />
+    <Content Include="Views\StockTransaction\_MergeBarcodePartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

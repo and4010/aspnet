@@ -149,6 +149,11 @@
         @*<input class="form-control" type="text" id="txtQty" placeholder="請輸入數量" />*@
     </div>
     <span id="TransactionUnit">@Html.DisplayFor(model => model.TransactionUnit)</span>
+
+    <div class="input-group col-md-3">
+        <span class="input-group-addon" style="width: 53px;">備註</span>
+        @Html.TextBoxFor(model => model.Note, new { @class = "form-control", id = "txtNote", placeholder = "請輸入備註", autocomplete = "off" })
+    </div>
     <input type="button" id="btnAddRecord" value="新增" class="btn btn-danger" />
 </div>
 

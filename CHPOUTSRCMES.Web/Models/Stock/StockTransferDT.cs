@@ -19,20 +19,23 @@ namespace CHPOUTSRCMES.Web.Models.Stock
         [Display(Name = "料號")]
         public string ITEM_NUMBER { get; set; }
 
-        [Display(Name = "基重")]
-        public string Base_Weight { get; set; }
+        //[Display(Name = "基重")]
+        //public string Base_Weight { get; set; }
 
-        [Display(Name = "紙別")]
-        public string PAPERTYPE { get; set; }
+        //[Display(Name = "紙別")]
+        //public string PAPERTYPE { get; set; }
 
-        [Display(Name = "規格")]
-        public string Specification { get; set; }
+        //[Display(Name = "規格")]
+        //public string Specification { get; set; }
 
         [Display(Name = "包裝方式")]
         public string PACKING_TYPE { get; set; }
 
         [Display(Name = "捲數/板數")]
         public decimal ROLL_REAM_QTY { get; set; }
+
+        [Display(Name = "捲板單位")]
+        public string ROLL_REAM_UOM { get; set; }
 
         [Display(Name = "需求數量")] //預計出庫量 主要數量
         public decimal REQUESTED_QUANTITY { get; set; }
@@ -71,8 +74,8 @@ namespace CHPOUTSRCMES.Web.Models.Stock
         //[Display(Name = "單位")] //交易單位
         //public string SRC_REQUESTED_QUANTITY_UOM { get; set; }
 
-        [Display(Name = "備註")]
-        public string REMARK { get; set; }
+        //[Display(Name = "備註")]
+        //public string REMARK { get; set; }
 
 
 
@@ -116,7 +119,7 @@ namespace CHPOUTSRCMES.Web.Models.Stock
     public class StockTransferData
     {
         public static List<StockTransferDT> model = new List<StockTransferDT>();
-        public List<StockTransferDT> importModel = new List<StockTransferDT>(); 
+        public List<StockTransferDT> importModel = new List<StockTransferDT>();
         public OrgSubinventoryData orgData = new OrgSubinventoryData();
 
 
@@ -203,6 +206,10 @@ namespace CHPOUTSRCMES.Web.Models.Stock
 
             viewModel.InLocatorItems = orgData.GetLocatorList("265", viewModel.SelectedInSubinventory, false);
 
+            viewModel.ShipmentNumberItems = GetShipmentNumberList(viewModel.SelectedOutSubinventory, viewModel.SelectedOutLocator, viewModel.SelectedInSubinventory, viewModel.SelectedInLocator);
+
+
+
             return viewModel;
         }
 
@@ -211,7 +218,7 @@ namespace CHPOUTSRCMES.Web.Models.Stock
 
             TransferReasonViewModel viewModel = new TransferReasonViewModel();
             viewModel.ReasonItems = orgData.GetReasonList();
-            viewModel.LocatorItems = orgData.GetLocatorList("265", viewModel.Locator,false);
+            viewModel.LocatorItems = orgData.GetLocatorList("265", viewModel.Locator, false);
 
             return viewModel;
         }
@@ -268,7 +275,7 @@ namespace CHPOUTSRCMES.Web.Models.Stock
         {
             List<ListItem> list = new List<ListItem>();
 
-            list.Add(new ListItem("新增出貨編號", "新增出貨編號"));
+            list.Add(new ListItem("新增編號", "新增編號"));
 
             var query = from stockTransferDT in model
                         where outSubInventory == stockTransferDT.OUT_SUBINVENTORY_CODE &&
@@ -386,7 +393,7 @@ namespace CHPOUTSRCMES.Web.Models.Stock
         {
             List<ListItem> list = new List<ListItem>();
 
-            list.Add(new ListItem("新增移轉編號", "新增移轉編號"));
+            list.Add(new ListItem("新增編號", "新增編號"));
 
             var query = from stockTransferDT in model
                         where outSubInventory == stockTransferDT.OUT_SUBINVENTORY_CODE &&
@@ -465,6 +472,47 @@ namespace CHPOUTSRCMES.Web.Models.Stock
             }
         }
 
+
+        public string GetShipmentNumber(string OUT_SUBINVENTORY_CODE, string OUT_LOCATOR_ID, string IN_SUBINVENTORY_CODE, string IN_LOCATOR_ID)
+        {
+            var query = from stockTransferDT in model
+                        where OUT_SUBINVENTORY_CODE == stockTransferDT.OUT_SUBINVENTORY_CODE &&
+                        OUT_LOCATOR_ID == stockTransferDT.OUT_LOCATOR_ID &&
+                        IN_SUBINVENTORY_CODE == stockTransferDT.IN_SUBINVENTORY_CODE &&
+                        IN_LOCATOR_ID == stockTransferDT.IN_LOCATOR_ID
+                        orderby stockTransferDT.SHIPMENT_NUMBER descending
+                        select stockTransferDT.SHIPMENT_NUMBER;
+            var list = query.ToList();
+            int lastNumber = 0;
+            if (list.Count > 0)
+            {
+                lastNumber = Convert.ToInt32(list[0].Substring((list[0].Length - 3) > 0 ? list[0].Length - 3 : 0)); //取後三碼流水號
+            }
+            lastNumber = lastNumber + 1;
+
+            return "(" + OUT_SUBINVENTORY_CODE + "-" + IN_SUBINVENTORY_CODE + ")" + DateTime.Now.ToString("yyyyMMdd") + "-" + String.Format("{0:000}", lastNumber);
+        }
+
+        public string GetSubinventoryTransferNumber(string OUT_SUBINVENTORY_CODE, string OUT_LOCATOR_ID, string IN_SUBINVENTORY_CODE, string IN_LOCATOR_ID)
+        {
+            var query = from stockTransferDT in model
+                        where OUT_SUBINVENTORY_CODE == stockTransferDT.OUT_SUBINVENTORY_CODE &&
+                        OUT_LOCATOR_ID == stockTransferDT.OUT_LOCATOR_ID &&
+                        IN_SUBINVENTORY_CODE == stockTransferDT.IN_SUBINVENTORY_CODE &&
+                        IN_LOCATOR_ID == stockTransferDT.IN_LOCATOR_ID
+                        orderby stockTransferDT.SUBINVENTORY_TRANSFER_NUMBER descending
+                        select stockTransferDT.SUBINVENTORY_TRANSFER_NUMBER;
+            var list = query.ToList();
+            int lastNumber = 0;
+            if (list.Count > 0)
+            {
+                lastNumber = Convert.ToInt32(list[0].Substring((list[0].Length - 3) > 0 ? list[0].Length - 3 : 0)); //取後三碼流水號
+            }
+            lastNumber = lastNumber + 1;
+
+            return "(" + OUT_SUBINVENTORY_CODE + "-" + IN_SUBINVENTORY_CODE + ")" + DateTime.Now.ToString("yyyyMMdd") + "-" + String.Format("{0:000}", lastNumber);
+        }
+
         public ResultModel SaveStockTransferDT(string TransactionType, string OUT_SUBINVENTORY_CODE, string OUT_LOCATOR_ID, string IN_SUBINVENTORY_CODE, string IN_LOCATOR_ID,
             string Number, string ITEM_NUMBER, decimal REQUESTED_QTY, decimal PICKED_QTY, string UNIT, decimal ROLL_REAM_QTY)
         {
@@ -490,7 +538,14 @@ namespace CHPOUTSRCMES.Web.Models.Stock
             //        return new ResultModel(true, "是否新增出貨編號?");
             //    }
             //}
-
+            if (Number == "新增編號" && TransactionType == "出貨編號")
+            {
+                Number = GetShipmentNumber(OUT_SUBINVENTORY_CODE, OUT_LOCATOR_ID, IN_SUBINVENTORY_CODE, IN_LOCATOR_ID);
+            }
+            else if (Number == "新增編號" && TransactionType == "移轉編號")
+            {
+                Number = GetSubinventoryTransferNumber(OUT_SUBINVENTORY_CODE, OUT_LOCATOR_ID, IN_SUBINVENTORY_CODE, IN_LOCATOR_ID);
+            }
 
             List<StockTransferDT> list = new List<StockTransferDT>();
 
@@ -568,6 +623,7 @@ namespace CHPOUTSRCMES.Web.Models.Stock
                         stockTransferDT.REQUESTED_QUANTITY2 = 0;
                         stockTransferDT.PICKED_QUANTITY2 = 0;
                         stockTransferDT.INBOUND_PICKED_QUANTITY2 = 0;
+                        stockTransferDT.ROLL_REAM_UOM = "捲";
                     }
                     else if (itemList[0].ITEM_CATEGORY == "平版")
                     {
@@ -577,6 +633,7 @@ namespace CHPOUTSRCMES.Web.Models.Stock
                         stockTransferDT.REQUESTED_QUANTITY2 = REQUESTED_QTY / 10;
                         stockTransferDT.PICKED_QUANTITY2 = PICKED_QTY / 10;
                         stockTransferDT.INBOUND_PICKED_QUANTITY2 = PICKED_QTY / 10;
+                        stockTransferDT.ROLL_REAM_UOM = "板";
                     }
                 }
                 else if (UNIT == "RE")
@@ -587,26 +644,36 @@ namespace CHPOUTSRCMES.Web.Models.Stock
                     stockTransferDT.REQUESTED_QUANTITY2 = REQUESTED_QTY;
                     stockTransferDT.PICKED_QUANTITY2 = PICKED_QTY;
                     stockTransferDT.INBOUND_PICKED_QUANTITY2 = PICKED_QTY;
+                    stockTransferDT.ROLL_REAM_UOM = "板";
                 }
                 stockTransferDT.REQUESTED_QUANTITY_UOM = itemList[0].PRIMARY_UOM_CODE;
                 stockTransferDT.SRC_REQUESTED_QUANTITY_UOM2 = itemList[0].SECONDARY_UOM_CODE;
                 stockTransferDT.ROLL_REAM_QTY = ROLL_REAM_QTY;
                 stockTransferDT.NUMBER_STATUS = "MES未出庫";
                 model.Add(stockTransferDT);
-                return new ResultModel(true, stockTransferDT.ID.ToString());
+                return new ResultModel(true, Number);
             }
         }
 
         public ResultModel CreateInbound(string TransactionType, string OUT_SUBINVENTORY_CODE, string OUT_LOCATOR_ID, string IN_SUBINVENTORY_CODE, string IN_LOCATOR_ID,
-          string Number, string ITEM_NUMBER, decimal REQUESTED_QTY, decimal PICKED_QTY, string UNIT, decimal ROLL_REAM_QTY, string ITEM_CATEGORY, string NUMBER_STATUS)
+          ref string Number, string ITEM_NUMBER, decimal REQUESTED_QTY, decimal PICKED_QTY, string UNIT, decimal ROLL_REAM_QTY, string ITEM_CATEGORY, string NUMBER_STATUS)
         {
-             List<StockTransferDT> list = new List<StockTransferDT>();
+            if (Number == "新增編號" && TransactionType == "出貨編號")
+            {
+                Number = GetShipmentNumber(OUT_SUBINVENTORY_CODE, OUT_LOCATOR_ID, IN_SUBINVENTORY_CODE, IN_LOCATOR_ID);
+            }
+            else if (Number == "新增編號" && TransactionType == "移轉編號")
+            {
+                Number = GetSubinventoryTransferNumber(OUT_SUBINVENTORY_CODE, OUT_LOCATOR_ID, IN_SUBINVENTORY_CODE, IN_LOCATOR_ID);
+            }
+            List<StockTransferDT> list = new List<StockTransferDT>();
 
+            string newNumber = Number;
             //檢查入庫單的料號是否存在
             if (TransactionType == "出貨編號")
             {
                 var query = from stockTransferDT in model
-                            where Number == stockTransferDT.SHIPMENT_NUMBER &&
+                            where newNumber == stockTransferDT.SHIPMENT_NUMBER &&
                             ITEM_NUMBER == stockTransferDT.ITEM_NUMBER
                             select stockTransferDT;
                 list = query.ToList();
@@ -614,7 +681,7 @@ namespace CHPOUTSRCMES.Web.Models.Stock
             else if (TransactionType == "移轉編號")
             {
                 var query = from stockTransferDT in model
-                            where Number == stockTransferDT.SUBINVENTORY_TRANSFER_NUMBER &&
+                            where newNumber == stockTransferDT.SUBINVENTORY_TRANSFER_NUMBER &&
                             ITEM_NUMBER == stockTransferDT.ITEM_NUMBER
                             select stockTransferDT;
                 list = query.ToList();
@@ -730,7 +797,7 @@ namespace CHPOUTSRCMES.Web.Models.Stock
                     return new ResultModel(true, stockTransferDT.ID.ToString());
                 }
             }
-            
+
         }
 
         public ResultModel UpdateStockTransferDT(long ID, decimal PRIMARY_QUANTITY, decimal SECONDARY_QUANTITY, bool remove, bool isInbound, string barcodeStatus)
@@ -795,8 +862,8 @@ namespace CHPOUTSRCMES.Web.Models.Stock
             if (TransactionType == "出貨編號")
             {
                 var stockTransferDTquery = from stockTransferDT in model
-                            where Number == stockTransferDT.SHIPMENT_NUMBER
-                            select stockTransferDT;
+                                           where Number == stockTransferDT.SHIPMENT_NUMBER
+                                           select stockTransferDT;
                 var stockTransferDTList = stockTransferDTquery.ToList();
 
                 if (stockTransferDTList.Count == 0)
@@ -1215,7 +1282,7 @@ namespace CHPOUTSRCMES.Web.Models.Stock
                 data.REQUESTED_QUANTITY = data.REQUESTED_QUANTITY + PRIMARY_QUANTITY;
                 data.REQUESTED_QUANTITY2 = data.REQUESTED_QUANTITY2 + SECONDARY_QUANTITY;
                 data.ROLL_REAM_QTY = data.ROLL_REAM_QTY + addROLL_REAM_QTY;
-              
+
                 return new ResultModel(true, "更改入庫單數量成功");
             }
             else

@@ -126,7 +126,7 @@ namespace CHPOUTSRCMES.Web.Models.Information
             return getOspSubinventoryList(ORGANIZATION_ID);
         }
 
-        private IEnumerable<SelectListItem> getOspSubinventoryList(string ORGANIZATION_ID)
+        private IEnumerable<SelectListItem> getOspSubinventoryList(string ORGANIZATION_ID) //要加條件OSP_FLAG為Y 只顯示是加工廠的倉庫
         {
             long organizationId = 0;
             try

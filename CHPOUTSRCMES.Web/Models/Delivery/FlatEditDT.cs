@@ -9,7 +9,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
 {
     public class FlatEditDT
     {
-        public long ID { get; set; }
+        public long ID { get; set; } //DELIVERY_DETAIL_ID
 
         [Display(Name = "訂單編號")]
         public long ORDER_NUMBER { get; set; }
@@ -20,7 +20,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
         [Display(Name = "代紙料號")]
         public string TMP_ITEM_NUMBER { get; set; }
         [Display(Name = "料號名稱")]
-        public string ITEM_DESCRIPTION { get; set; }
+        public string ITEM_DESCRIPTION { get; set; } //要改為ITEM_NUMBER
         [Display(Name = "令重")]
         public string REAM_WEIGHT { get; set; }
         [Display(Name = "包裝方式")]
@@ -52,8 +52,9 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
         [Display(Name = "單位")] //交易單位
         public string SRC_REQUESTED_QUANTITY_UOM { get; set; }
 
+
         [Display(Name = "備註")]
-        public string REMARK { get; set; }
+        public string REMARK { get; set; }//要刪掉
 
         [Display(Name = "建立人員")]
         public long CREATED_BY { get; set; }
@@ -64,16 +65,16 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
         [Display(Name = "更新日期")]
         public DateTime LAST_UPDATE_DATE { get; set; }
 
-        public string TRIP_NAME { get; set; }
-        public string DELIVERY_NAME { get; set; }
-        
+        public string TRIP_NAME { get; set; }//要刪掉
+        public string DELIVERY_NAME { get; set; }//要刪掉
+
     }
 
     public class FlatEditData
     {
         public static List<FlatEditDT> model = new List<FlatEditDT>();
 
-        public static List<FlatEditDT> getModel(string DELIVERY_NAME, string TRIP_NAME)
+        public static List<FlatEditDT> getModel(string DELIVERY_NAME, string TRIP_NAME) //改成用DELIVERY_DETAIL_ID SELECT
         {
             var query = from data in model
                         where DELIVERY_NAME == data.DELIVERY_NAME && TRIP_NAME == data.TRIP_NAME
@@ -238,11 +239,11 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
         //    //model.Add(data3);
         //}
 
-       
+
 
         public static bool checkDefaultModel(string DELIVERY_NAME, string TRIP_NAME)
         {
-            
+
             var query = from data in model
                         where DELIVERY_NAME == data.DELIVERY_NAME && TRIP_NAME == data.TRIP_NAME
                         select data;
@@ -367,7 +368,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
             var query = from data in FlatEditData.model
                         where data.PICKED_QUANTITY == data.REQUESTED_QUANTITY &&
                         data.PICKED_QUANTITY2 == data.REQUESTED_QUANTITY2 &&
-                        data.SRC_PICKED_QUANTITY == data.SRC_REQUESTED_QUANTITY 
+                        data.SRC_PICKED_QUANTITY == data.SRC_REQUESTED_QUANTITY
                         && TripDetailDT_ID == data.ID
                         select data;
 

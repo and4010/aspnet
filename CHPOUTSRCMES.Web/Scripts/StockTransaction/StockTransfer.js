@@ -49,86 +49,86 @@
 
 
 
-//沒用到
-function GetShipmentNumberList(selectValue) {
+////沒用到
+//function GetShipmentNumberList(selectValue, selectText) {
 
-    var InSubinventoryCode = $("#ddlInSubinventory").val();
-    var InLocator = $("#ddlInLocator").val();
-    var OutSubinventoryCode = $("#ddlOutSubinventory").val();
-    var OutLocator = $("#ddlOutLocator").val();
+//    var InSubinventoryCode = $("#ddlInSubinventory").val();
+//    var InLocator = $("#ddlInLocator").val();
+//    var OutSubinventoryCode = $("#ddlOutSubinventory").val();
+//    var OutLocator = $("#ddlOutLocator").val();
 
-    $.ajax({
-        url: "/StockTransaction/GetShipmentNumberList",
-        type: "post",
-        data: {
-            OutSubinventoryCode: OutSubinventoryCode,
-            OutLocator: OutLocator,
-            InSubinventoryCode: InSubinventoryCode,
-            InLocator: InLocator
-        },
-        success: function (data) {
-            $('#ddlShipmentNumber').empty();
-            for (var i = 0; i < data.length; i++) {
-                $('#ddlShipmentNumber').append($('<option></option>').val(data[i].Value).html(data[i].Text));
-            }
+//    $.ajax({
+//        url: "/StockTransaction/GetShipmentNumberList",
+//        type: "post",
+//        data: {
+//            OutSubinventoryCode: OutSubinventoryCode,
+//            OutLocator: OutLocator,
+//            InSubinventoryCode: InSubinventoryCode,
+//            InLocator: InLocator
+//        },
+//        success: function (data) {
+//            $('#ddlShipmentNumber').empty();
+//            for (var i = 0; i < data.length; i++) {
+//                $('#ddlShipmentNumber').append($('<option></option>').val(data[i].Value).html(data[i].Text));
+//            }
 
-            //$("#ddlShipmentNumber").val("");
+//            //$("#ddlShipmentNumber").val("");
+//            $("#ddlShipmentNumber").combobox('autocomplete', selectValue, selectText);
 
+//            //$("#ddlShipmentNumber").val(selectValue).trigger('change');
 
-            $("#ddlShipmentNumber").val(selectValue).trigger('change');
-
-        },
-        error: function () {
-            swal.fire('更新出貨編號失敗');
-        },
-        complete: function (data) {
-
-
-        }
-
-    })
-
-}
-//沒用到
-function GetSubinventoryTransferNumberList(selectValue) {
-
-    var InSubinventoryCode = $("#ddlInSubinventory").val();
-    var InLocator = $("#ddlInLocator").val();
-    var OutSubinventoryCode = $("#ddlOutSubinventory").val();
-    var OutLocator = $("#ddlOutLocator").val();
-
-    $.ajax({
-        url: "/StockTransaction/GetSubinventoryTransferNumberList",
-        type: "post",
-        data: {
-            OutSubinventoryCode: OutSubinventoryCode,
-            OutLocator: OutLocator,
-            InSubinventoryCode: InSubinventoryCode,
-            InLocator: InLocator
-        },
-        success: function (data) {
-            $('#ddlSubinventoryTransferNumber').empty();
-            for (var i = 0; i < data.length; i++) {
-                $('#ddlSubinventoryTransferNumber').append($('<option></option>').val(data[i].Value).html(data[i].Text));
-            }
-
-            //$("#ddlSubinventoryTransferNumber").val("");
+//        },
+//        error: function () {
+//            swal.fire('更新出貨編號失敗');
+//        },
+//        complete: function (data) {
 
 
-            $("#ddlSubinventoryTransferNumber").val(selectValue).trigger('change');
+//        }
+
+//    })
+
+//}
+////沒用到
+//function GetSubinventoryTransferNumberList(selectValue, selectText) {
+
+//    var InSubinventoryCode = $("#ddlInSubinventory").val();
+//    var InLocator = $("#ddlInLocator").val();
+//    var OutSubinventoryCode = $("#ddlOutSubinventory").val();
+//    var OutLocator = $("#ddlOutLocator").val();
+
+//    $.ajax({
+//        url: "/StockTransaction/GetSubinventoryTransferNumberList",
+//        type: "post",
+//        data: {
+//            OutSubinventoryCode: OutSubinventoryCode,
+//            OutLocator: OutLocator,
+//            InSubinventoryCode: InSubinventoryCode,
+//            InLocator: InLocator
+//        },
+//        success: function (data) {
+//            $('#ddlShipmentNumber').empty();
+//            for (var i = 0; i < data.length; i++) {
+//                $('#ddlShipmentNumber').append($('<option></option>').val(data[i].Value).html(data[i].Text));
+//            }
+
+//            //$("#ddlSubinventoryTransferNumber").val("");
+//            $("#ddlShipmentNumber").combobox('autocomplete', selectValue, selectText);
+
+//            //$("#ddlShipmentNumber").val(selectValue).trigger('change');
 
 
-        },
-        error: function () {
-            swal.fire('更新移轉編號失敗');
-        },
-        complete: function (data) {
+//        },
+//        error: function () {
+//            swal.fire('更新移轉編號失敗');
+//        },
+//        complete: function (data) {
 
 
-        }
+//        }
 
-    })
-}
+//    })
+//}
 //沒用到
 function GetItemNumberList() {
 

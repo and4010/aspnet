@@ -38,6 +38,14 @@ namespace CHPOUTSRCMES.Web.Controllers
             return PartialView("~/Views/Purchase/_ImportBodyFlat.cshtml");
         }
 
+        [HttpPost]
+        public ActionResult MergeBarcodeDialog(List<long> IDs)
+        {
+            MergeBarcodeViewModel vieModel = stockTransferBarcodeData.GetMergeBarcodeViewModel(IDs);
+            return PartialView("_MergeBarcodePartial", vieModel);
+        }
+
+
 
         //public ActionResult StockTransfer()
         //{
@@ -150,6 +158,11 @@ namespace CHPOUTSRCMES.Web.Controllers
 
         }
 
+        [HttpPost, ActionName("GetMergeBarocdeStatus")]
+        public JsonResult GetMergeBarocdeStatus(string MergeBarocde, List<long> waitMergeIDs)
+        {
+            return stockTransferBarcodeData.GetMergeBarocdeStatus(MergeBarocde, waitMergeIDs);
+        }
 
         [HttpPost, ActionName("GetStockItemData")]
         public JsonResult GetStockItemData(string SUBINVENTORY_CODE, string ITEM_NO)
@@ -231,7 +244,7 @@ namespace CHPOUTSRCMES.Web.Controllers
         }
 
         [HttpPost, ActionName("GetStockTransferDT")]
-        public JsonResult GetStockTransferDT(DataTableAjaxPostViewModel data, string TransactionType, string OutSubinventoryCode, string OutLocator, string InSubinventoryCode, string InLocator, string Number ,string NumberStatus)
+        public JsonResult GetStockTransferDT(DataTableAjaxPostViewModel data, string TransactionType, string OutSubinventoryCode, string OutLocator, string InSubinventoryCode, string InLocator, string Number, string NumberStatus)
         {
             List<StockTransferDT> model;
             if (TransactionType == "出貨編號" && !string.IsNullOrEmpty(Number) && NumberStatus != "非MES入庫手動新增" && NumberStatus != "非MES入庫檔案匯入" && NumberStatus != "非MES已入庫")
@@ -352,7 +365,7 @@ namespace CHPOUTSRCMES.Web.Controllers
 
 
         [HttpPost, ActionName("GetInboundStockTransferBarcodeDT")]
-        public JsonResult GetInboundStockTransferBarcodeDT(DataTableAjaxPostViewModel data, string TransactionType, string OUT_SUBINVENTORY_CODE, string OUT_LOCATOR_ID, string IN_SUBINVENTORY_CODE, string IN_LOCATOR_ID, string Number, string NumberStatus )
+        public JsonResult GetInboundStockTransferBarcodeDT(DataTableAjaxPostViewModel data, string TransactionType, string OUT_SUBINVENTORY_CODE, string OUT_LOCATOR_ID, string IN_SUBINVENTORY_CODE, string IN_LOCATOR_ID, string Number, string NumberStatus)
         {
             List<StockTransferBarcodeDT> model;
             if (TransactionType == "出貨編號" && !string.IsNullOrEmpty(Number) && NumberStatus != "MES未出庫")
@@ -407,22 +420,24 @@ namespace CHPOUTSRCMES.Web.Controllers
             string Number, string ITEM_NUMBER, decimal REQUESTED_QTY, decimal ROLL_REAM_WT, string LOT_NUMBER)
         {
             ResultModel result = stockTransferBarcodeData.CreateInboundBarcode(TransactionType, OUT_SUBINVENTORY_CODE, OUT_LOCATOR_ID, IN_SUBINVENTORY_CODE, IN_LOCATOR_ID,
-             Number, ITEM_NUMBER, REQUESTED_QTY, ROLL_REAM_WT, LOT_NUMBER, "非MES入庫手動新增");
-            return new JsonResult { Data = new { status = result.Success, result = result.Msg } };
+            ref Number, ITEM_NUMBER, REQUESTED_QTY, ROLL_REAM_WT, LOT_NUMBER, "非MES入庫手動新增");
+            return new JsonResult { Data = new { status = result.Success, result = result.Msg, number = Number } };
         }
 
         [HttpPost, ActionName("ImportRollInboundBarcode")]
         public JsonResult ImportRollInboundBarcode(ImportRollInboundBarcodeModel data)
         {
-            ResultModel result = stockTransferBarcodeData.ImportRollInboundBarcode(data);
-            return new JsonResult { Data = new { status = result.Success, result = result.Msg } };
+            string Number = data.Number;
+            ResultModel result = stockTransferBarcodeData.ImportRollInboundBarcode(data, ref Number);
+            return new JsonResult { Data = new { status = result.Success, result = result.Msg, number = Number } };
         }
 
         [HttpPost, ActionName("ImportFlatInboundBarcode")]
         public JsonResult ImportFlatInboundBarcode(ImportFlatInboundBarcodeModel data)
         {
-            ResultModel result = stockTransferBarcodeData.ImportFlatInboundBarcode(data);
-            return new JsonResult { Data = new { status = result.Success, result = result.Msg } };
+            string Number = data.Number;
+            ResultModel result = stockTransferBarcodeData.ImportFlatInboundBarcode(data, ref Number);
+            return new JsonResult { Data = new { status = result.Success, result = result.Msg, number = Number } };
         }
 
         [HttpPost, ActionName("BarcodeInbound")]
@@ -483,20 +498,27 @@ namespace CHPOUTSRCMES.Web.Controllers
             ResultModel result = StockData.SaveReason(ID, REASON_CODE, REASON_DESC, locatorId, NOTE, stockTransferData.orgData);
             return new JsonResult { Data = new { status = result.Success, result = result.Msg } };
         }
-        
 
-        
+
+
+        //[HttpPost]
+        //public ActionResult MergeBarcode(StockTransferBarcodeDTEditor selectedData)
+        //{
+        //    ResultModel result = stockTransferBarcodeData.MergeBarcode(selectedData);
+        //    return new JsonResult { Data = new { status = result.Success, result = result.Msg } };
+        //}
+
         [HttpPost]
-        public ActionResult MergeBarcode(StockTransferBarcodeDTEditor selectedData)
+        public ActionResult MergeBarcode(string MergeBarocde, List<long> waitMergeIDs)
         {
-            ResultModel result = stockTransferBarcodeData.MergeBarcode(selectedData);
+            ResultModel result = stockTransferBarcodeData.MergeBarcode(MergeBarocde, waitMergeIDs);
             return new JsonResult { Data = new { status = result.Success, result = result.Msg } };
         }
 
 
 
         [HttpPost]
-        public JsonResult UploadFileRoll(HttpPostedFileBase file,string ddlInSubinventory, string ddlInLocator, DataTableAjaxPostViewModel data)
+        public JsonResult UploadFileRoll(HttpPostedFileBase file, string ddlInSubinventory, string ddlInLocator, DataTableAjaxPostViewModel data)
         {
             var result = new ResultModel();
             var detail = new List<StockTransferBarcodeDT>();
@@ -554,7 +576,7 @@ namespace CHPOUTSRCMES.Web.Controllers
                     {
                         StockTransferData stock = new StockTransferData();
                         var papper = new ExcelImport();
-                        papper.TransferFlat(file, ref detail, ref result, ddlInSubinventory, ddlInLocator );
+                        papper.TransferFlat(file, ref detail, ref result, ddlInSubinventory, ddlInLocator);
                         stock.importModel = detail;
                     }
                     catch (Exception e)
@@ -574,4 +596,3 @@ namespace CHPOUTSRCMES.Web.Controllers
         }
     }
 }
-

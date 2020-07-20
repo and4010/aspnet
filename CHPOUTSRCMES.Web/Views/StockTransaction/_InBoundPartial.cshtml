@@ -30,47 +30,59 @@
 </div>
 
 <div class="row row-std col-md-12 form-inline" id="SHIPMENT_NUMBER_AREA">
-    <div class="input-group col-md-3">
-        <span id="TransactionType" class="input-group-addon" style="width: 53px;">編號</span>
-        <input class="form-control" type="text" id="AutoCompleteShipmentNumber" placeholder="請輸入編號" />
+    <div class="col-md-8">
+        @* <span id="TransactionType" class="input-group-addon" style="width: 53px;">編號</span>
+        <input class="form-control" type="text" id="AutoCompleteShipmentNumber" placeholder="請輸入編號" />*@
+        <label id="TransactionType" class="input-lg">編號</label>
+        @Html.DropDownListFor(model => model.SelectedShipmentNumber, Model.ShipmentNumberItems, new { @class = "form-control", id = "ddlShipmentNumber", autocomplete = "off" })
+        <span id="NumberStatus" style="display: none;"></span>
+        <input type="button" id="btnImportFile" value="紙捲匯入" class="btn btn-primary" />
+        <input type="button" id="btnImportFlatFile" value="平張匯入" class="btn btn-primary" />
+        <input type="button" id="btnExampleDownload" value="範例下載" class="btn btn-primary" />
+        <input type="button" id="btnPrintPick" value="列印入庫單" class="btn btn-primary" />
+        <input type="button" id="btnMultiLable" value="列印全部標籤" class="btn btn-primary" />
     </div>
-    <span id="NumberStatus" style="display: none;"></span>
-    <input type="button" id="btnImportFile" value="紙捲匯入" class="btn btn-primary" />
-    <input type="button" id="btnImportFlatFile" value="平張匯入" class="btn btn-primary" />
-    <input type="button" id="btnExampleDownload" value="範例下載" class="btn btn-primary" />
-    <input type="button" id="btnPrintPick" value="列印入庫單" class="btn btn-primary" />
-    <input type="button" id="btnMultiLable" value="列印全部標籤" class="btn btn-primary" />
+
 </div>
 
-<div id="PickInputArea" style="display: none;">
-    <div class="row row-std col-md-12 form-inline">
-        <div class="input-group col-md-3">
-            <span class="input-group-addon" style="width: 53px;">料號</span>
-            <input class="form-control" type="text" id="AutoCompleteItemNumber" placeholder="請輸入料號" />
-        </div>
-        <span id="PACKING_TYPE_LABEL" style="display: none;">@Html.LabelFor(model => model.PACKING_TYPE)</span>
-        <span id="PACKING_TYPE">@Html.DisplayFor(model => model.PACKING_TYPE)</span>
+<div class="panel panel-default ">
+    <div class="panel-heading">
+        <a data-toggle="collapse" data-target="#scrollbox" href="#scrollbox">
+            <h3 class="panel-title">新增入庫單明細</h3>
+        </a>
     </div>
+    <div class="panel-body panel-collapse collapse " id="scrollbox">
+        <div id="PickInputArea">
+            <div class="row row-std col-md-12 form-inline">
+                <div class="input-group col-md-3">
+                    <span class="input-group-addon" style="width: 53px;">料號</span>
+                    <input class="form-control" type="text" id="AutoCompleteItemNumber" placeholder="請輸入料號" />
+                </div>
+                <span id="PACKING_TYPE_LABEL" style="display: none;">@Html.LabelFor(model => model.PACKING_TYPE)</span>
+                <span id="PACKING_TYPE">@Html.DisplayFor(model => model.PACKING_TYPE)</span>
+            </div>
 
-    <div id="QtyInputArea" style="display: none;">
-        <div class="row row-std col-md-12 form-inline">
-            <div class="input-group col-md-3">
-                <span class="input-group-addon" style="width: 53px;">數量</span>
-                <input class="form-control" type="text" id="txtInputTransactionQty" placeholder="請輸入數量" />
-            </div>
-            <span id="UNIT">@Html.DisplayFor(model => model.Unit)</span>
-        </div>
+            <div id="QtyInputArea">
+                <div class="row row-std col-md-12 form-inline">
+                    <div class="input-group col-md-3">
+                        <span class="input-group-addon" style="width: 53px;">數量</span>
+                        <input class="form-control" type="text" id="txtInputTransactionQty" placeholder="請輸入數量" />
+                    </div>
+                    <span id="UNIT">@Html.DisplayFor(model => model.Unit)</span>
+                </div>
 
-        <div class="row row-std col-md-12 form-inline">
-            <div id="REAM_INPUT_AREA" class="input-group col-md-3">
-                <span class="input-group-addon" style="width: 53px;">每棧令數</span>
-                <input class="form-control" type="text" id="txtRollReamWT" placeholder="請輸入令數" />
+                <div class="row row-std col-md-12 form-inline">
+                    <div id="REAM_INPUT_AREA" class="input-group col-md-3">
+                        <span class="input-group-addon" style="width: 53px;">每棧令數</span>
+                        <input class="form-control" type="text" id="txtRollReamWT" placeholder="請輸入令數" />
+                    </div>
+                    <div id="ROLL_INPUT_AREA" class="input-group col-md-3" style="display: none;">
+                        <span class="input-group-addon" style="width: 53px;">捲號</span>
+                        <input class="form-control" type="text" id="txtLotNumber" placeholder="請輸入捲號" />
+                    </div>
+                    <input type="button" id="btnSaveStockTransferDT" value="產生明細" class="btn btn-danger" />
+                </div>
             </div>
-            <div id="ROLL_INPUT_AREA" class="input-group col-md-3">
-                <span class="input-group-addon" style="width: 53px;">捲號</span>
-                <input class="form-control" type="text" id="txtLotNumber" placeholder="請輸入捲號" />
-            </div>
-            <input type="button" id="btnSaveStockTransferDT" value="產生明細" class="btn btn-danger" />
         </div>
     </div>
 </div>
@@ -143,3 +155,4 @@
         </div>
     </div>
 </div>
+

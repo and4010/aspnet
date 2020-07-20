@@ -49,7 +49,7 @@ namespace CHPOUTSRCMES.Web.Controllers
                     || (!string.IsNullOrEmpty(p.SRC_REQUESTED_QUANTITY_UOM2) && p.SRC_REQUESTED_QUANTITY_UOM2.ToLower().Contains(search.ToLower()))
                     || p.REQUESTED_QUANTITY.ToString().ToLower().Contains(search.ToLower())
                     || (!string.IsNullOrEmpty(p.REQUESTED_QUANTITY_UOM) && p.REQUESTED_QUANTITY_UOM.ToLower().Contains(search.ToLower()))
-                    || (!string.IsNullOrEmpty(p.SUBINVENTORY_NAME) && p.SUBINVENTORY_NAME.ToLower().Contains(search.ToLower()))
+                    || (!string.IsNullOrEmpty(p.SUBINVENTORY_CODE) && p.SUBINVENTORY_CODE.ToLower().Contains(search.ToLower()))
                     || (p.TRIP_ACTUAL_SHIP_DATE.HasValue && p.TRIP_ACTUAL_SHIP_DATE.Value.ToString("yyyy-MM-dd").ToLower().Contains(search.ToLower()))
                     || (!string.IsNullOrEmpty(p.TRIP_NAME) && p.TRIP_NAME.ToLower().Contains(search.ToLower()))
                     || (p.TRANSACTION_DATE.HasValue && p.TRANSACTION_DATE.Value.ToString("yyyy-MM-dd").ToLower().Contains(search.ToLower()))
@@ -92,7 +92,7 @@ namespace CHPOUTSRCMES.Web.Controllers
             model.DeliveryDetailViewHeader.CUSTOMER_LOCATION_CODE = detailData.CUSTOMER_LOCATION_CODE;
             model.DeliveryDetailViewHeader.CUSTOMER_NAME = detailData.CUSTOMER_NAME;
             model.DeliveryDetailViewHeader.DELIVERY_NAME = detailData.DELIVERY_NAME;
-            model.DeliveryDetailViewHeader.ORDER_NUMBER = Convert.ToString(detailData.ORDER_NUMBER);
+            //model.DeliveryDetailViewHeader.ORDER_NUMBER = Convert.ToString(detailData.ORDER_NUMBER);
             model.DeliveryDetailViewHeader.REMARK = detailData.REMARK;
             model.DeliveryDetailViewHeader.SHIP_CUSTOMER_NAME = detailData.SHIP_CUSTOMER_NAME;
             model.DeliveryDetailViewHeader.SHIP_LOCATION_CODE = detailData.SHIP_LOCATION_CODE;
@@ -132,7 +132,7 @@ namespace CHPOUTSRCMES.Web.Controllers
             model.DeliveryDetailViewHeader.CUSTOMER_LOCATION_CODE = detailData.CUSTOMER_LOCATION_CODE;
             model.DeliveryDetailViewHeader.CUSTOMER_NAME = detailData.CUSTOMER_NAME;
             model.DeliveryDetailViewHeader.DELIVERY_NAME = detailData.DELIVERY_NAME;
-            model.DeliveryDetailViewHeader.ORDER_NUMBER = Convert.ToString(detailData.ORDER_NUMBER);
+            //model.DeliveryDetailViewHeader.ORDER_NUMBER = Convert.ToString(detailData.ORDER_NUMBER);
             model.DeliveryDetailViewHeader.REMARK = detailData.REMARK;
             model.DeliveryDetailViewHeader.SHIP_CUSTOMER_NAME = detailData.SHIP_CUSTOMER_NAME;
             model.DeliveryDetailViewHeader.SHIP_LOCATION_CODE = detailData.SHIP_LOCATION_CODE;
@@ -165,7 +165,7 @@ namespace CHPOUTSRCMES.Web.Controllers
                 // Apply search   
                 model = model.Where(p => (!string.IsNullOrEmpty(p.ORDER_NUMBER.ToString()) && p.ORDER_NUMBER.ToString().ToLower().Contains(search.ToLower()))
                     || (!string.IsNullOrEmpty(p.ORDER_SHIP_NUMBER) && p.ORDER_SHIP_NUMBER.ToLower().Contains(search.ToLower()))
-                    || (!string.IsNullOrEmpty(p.ITEM_DESCRIPTION) && p.ITEM_DESCRIPTION.ToLower().Contains(search.ToLower()))  
+                    || (!string.IsNullOrEmpty(p.ITEM_DESCRIPTION) && p.ITEM_DESCRIPTION.ToLower().Contains(search.ToLower()))
                     || (!string.IsNullOrEmpty(p.PAPER_TYPE) && p.PAPER_TYPE.ToLower().Contains(search.ToLower()))
                     || (!string.IsNullOrEmpty(p.BASIC_WEIGHT) && p.BASIC_WEIGHT.ToLower().Contains(search.ToLower()))
                     || (!string.IsNullOrEmpty(p.SPECIFICATION) && p.SPECIFICATION.ToLower().Contains(search.ToLower()))
@@ -180,7 +180,7 @@ namespace CHPOUTSRCMES.Web.Controllers
             var filteredCount = model.Count;
             model = PaperRollEditDTOrder.Order(data.Order, model).ToList();
             model = model.Skip(data.Start).Take(data.Length).ToList();
-            
+
             return Json(new { draw = data.Draw, recordsFiltered = filteredCount, recordsTotal = totalCount, data = model }, JsonRequestBehavior.AllowGet);
         }
 
@@ -523,7 +523,7 @@ namespace CHPOUTSRCMES.Web.Controllers
             model.DeliveryDetailViewHeader.CUSTOMER_LOCATION_CODE = detailData.CUSTOMER_LOCATION_CODE;
             model.DeliveryDetailViewHeader.CUSTOMER_NAME = detailData.CUSTOMER_NAME;
             model.DeliveryDetailViewHeader.DELIVERY_NAME = detailData.DELIVERY_NAME;
-            model.DeliveryDetailViewHeader.ORDER_NUMBER = Convert.ToString(detailData.ORDER_NUMBER);
+            //model.DeliveryDetailViewHeader.ORDER_NUMBER = Convert.ToString(detailData.ORDER_NUMBER);
             model.DeliveryDetailViewHeader.REMARK = detailData.REMARK;
             model.DeliveryDetailViewHeader.SHIP_CUSTOMER_NAME = detailData.SHIP_CUSTOMER_NAME;
             model.DeliveryDetailViewHeader.SHIP_LOCATION_CODE = detailData.SHIP_LOCATION_CODE;
@@ -532,7 +532,7 @@ namespace CHPOUTSRCMES.Web.Controllers
             model.DeliveryDetailViewHeader.TRIP_NAME = detailData.TRIP_NAME;
             model.DeliveryDetailViewHeader.DELIVERY_STATUS = detailData.DELIVERY_STATUS;
 
-            return View(model);      
+            return View(model);
         }
 
         public ActionResult InsteadView(string id)
@@ -557,7 +557,7 @@ namespace CHPOUTSRCMES.Web.Controllers
             model.DeliveryDetailViewHeader.CUSTOMER_LOCATION_CODE = detailData.CUSTOMER_LOCATION_CODE;
             model.DeliveryDetailViewHeader.CUSTOMER_NAME = detailData.CUSTOMER_NAME;
             model.DeliveryDetailViewHeader.DELIVERY_NAME = detailData.DELIVERY_NAME;
-            model.DeliveryDetailViewHeader.ORDER_NUMBER = Convert.ToString(detailData.ORDER_NUMBER);
+            //model.DeliveryDetailViewHeader.ORDER_NUMBER = Convert.ToString(detailData.ORDER_NUMBER);
             model.DeliveryDetailViewHeader.REMARK = detailData.REMARK;
             model.DeliveryDetailViewHeader.SHIP_CUSTOMER_NAME = detailData.SHIP_CUSTOMER_NAME;
             model.DeliveryDetailViewHeader.SHIP_LOCATION_CODE = detailData.SHIP_LOCATION_CODE;
@@ -635,7 +635,7 @@ namespace CHPOUTSRCMES.Web.Controllers
             model.CUSTOMER_LOCATION_CODE = detailData.CUSTOMER_LOCATION_CODE;
             model.CUSTOMER_NAME = detailData.CUSTOMER_NAME;
             model.DELIVERY_NAME = detailData.DELIVERY_NAME;
-            model.ORDER_NUMBER = Convert.ToString(detailData.ORDER_NUMBER);
+            //model.ORDER_NUMBER = Convert.ToString(detailData.ORDER_NUMBER);
             model.REMARK = detailData.REMARK;
             model.SHIP_CUSTOMER_NAME = detailData.SHIP_CUSTOMER_NAME;
             model.SHIP_LOCATION_CODE = detailData.SHIP_LOCATION_CODE;
