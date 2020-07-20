@@ -1,97 +1,90 @@
-﻿using CHPOUTSRCMES.Web.DataModel.Interfaces;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
 
-namespace CHPOUTSRCMES.Web.DataModel.Entiy
+namespace CHPOUTSRCMES.Web.DataModel.Entiy.Information
 {
-    [Table("MACHINE_PAPER_TYPE_T")]
-    public class MACHINE_PAPER_TYPE_T
+    public class TRANSACTION_TYPE_T
     {
+
         /// <summary>
-        /// 庫存組織ID
+        /// 異動型態ID
         /// </summary>
         /// 
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         [Required]
-        [Column("ORGANIZATION_ID")]
-        public long OrganizationId { set; get; }
+        [Column("TRANSACTION_TYPE_ID")]
+        public long TransactionTypeId { set; get; }
+
 
         /// <summary>
-        /// 庫存組織
-        /// </summary>
-        /// 
-        [StringLength(3)]
-        [Required]
-        [Column("ORGANIZATION_CODE")]
-        public string OrganizationCode { set; get; }
-
-        /// <summary>
-        /// 機台紙別代碼
-        /// </summary>
-        /// 
-        [StringLength(30)]
-        [Required]
-        [Column("REASON_CODE")]
-        public string MachineCode { set; get; }
-
-        /// <summary>
-        /// 機台紙別意義
+        /// 異動型態
         /// </summary>
         /// 
         [StringLength(80)]
         [Required]
-        [Column("MACHINE_MEANING")]
-        public string MachineMeaning { set; get; }
+        [Column("TRANSACTION_TYPE_NAME")]
+        public string TransactionTypeName { set; get; }
 
         /// <summary>
-        /// 機台紙別摘要
+        /// 異動型態摘要
         /// </summary>
         /// 
-        [StringLength(240)]
-        [Required]
+        [StringLength(2400)]
+        [Required(AllowEmptyStrings = true)]
         [Column("DESCRIPTION")]
         public string Description { set; get; }
 
-        /// <summary>
-        /// 紙別
-        /// </summary>
-        /// 
-        [StringLength(4)]
-        [Required]
-        [Column("PAPER_TYPE")]
-        public string PaperType { set; get; }
 
         /// <summary>
-        /// 機台
+        /// 異動作業id
         /// </summary>
         /// 
-        [StringLength(2)]
         [Required]
-        [Column("MACHINE_NUM")]
-        public string MachineNum { set; get; }
+        [Column("TRANSACTION_ACTION_ID")]
+        public long TransactionActionId { set; get; }
+
 
         /// <summary>
-        /// 供應商編號
+        /// 異動作業
         /// </summary>
         /// 
-        [StringLength(3)]
+        [StringLength(80)]
         [Required]
-        [Column("SUPPLIER_NUM")]
-        public string SupplierNum { set; get; }
+        [Column("TRANSACTION_ACTION_NAME")]
+        public string TransactionActionName { set; get; }
+
 
         /// <summary>
-        /// 供應商名稱
+        /// 來源型態ID
         /// </summary>
         /// 
-        [StringLength(240)]
         [Required]
-        [Column("SUPPLIER_NAME")]
-        public string SupplierName { set; get; }
+        [Column("TRANSACTION_SOURCE_TYPE_ID")]
+        public long TransactionSourceTypeId { set; get; }
+
+
+        /// <summary>
+        /// 來源型態
+        /// </summary>
+        /// 
+        [StringLength(30)]
+        [Required]
+        [Column("TRANSACTION_SOURCE_TYPE_NAME")]
+        public string TransactionSourceTypeName { set; get; }
+
+        /// <summary>
+        /// 控制欄位  D:刪除
+        /// </summary>
+        /// 
+        [StringLength(1)]
+        [Required(AllowEmptyStrings = true)]
+        [Column("CONTROL_FLAG", TypeName = "char")]
+        public string ControlFlag { set; get; }
 
 
         /// <summary>

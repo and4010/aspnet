@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
 
-namespace CHPOUTSRCMES.Web.DataModel.Entiy.Purchase
+namespace CHPOUTSRCMES.Web.DataModel.Entiy.Information
 {
     public class ORG_ITEMS_T
     {
@@ -15,6 +15,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Purchase
         /// 
         [Required]
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         [Column("INVENTORY_ITEM_ID")]
         public long InventoryItemId { set; get; }
 

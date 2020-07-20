@@ -7,7 +7,7 @@ using System.Web;
 
 namespace CHPOUTSRCMES.Web.DataModel.Entiy
 {
-    public class STOCK_T
+    public class STK_TXN_T
     {
         /// <summary>
         /// 庫存ID
@@ -16,16 +16,37 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         [Key]
         [Required]
-        [Column("STOCK_ID")]
-        public int StockId { set; get; }
+        [Column("STK_TXN_ID")]
+        public int StkTxnId { set; get; }
+
 
         /// <summary>
-        /// 庫存組織ID
+        /// 庫存ID
         /// </summary>
         /// 
         [Required]
-        [Column("ORGANIZATION_ID")]
-        public int OrganizationId { set; get; }
+        [Column("STOCK_ID")]
+        public int StockId { set; get; }
+
+
+        /// <summary>
+        /// 庫存組織CODE
+        /// </summary>
+        /// 
+        [StringLength(3)]
+        [Required]
+        [Column("ORGANIZATION_CODE")]
+        public string OrganizationCode { set; get; }
+
+
+        /// <summary>
+        /// 庫存組織名稱
+        /// </summary>
+        /// 
+        [StringLength(240)]
+        [Required]
+        [Column("ORGANIZATION_NAME")]
+        public string OrganizationName { set; get; }
 
 
         /// <summary>
@@ -35,7 +56,18 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy
         [StringLength(10)]
         [Required]
         [Column("SUBINVENTORY_CODE")]
-        public string SsubinventoryCode { set; get; }
+        public string SubinventoryCode { set; get; }
+
+
+        /// <summary>
+        /// 倉庫名稱
+        /// </summary>
+        /// 
+        [StringLength(50)]
+        [Required]
+        [Column("SUBINVENTORY_NAME")]
+        public string SubinventoryName { set; get; }
+
 
         /// <summary>
         /// 儲位ID
@@ -43,27 +75,68 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy
         /// 
         [Required]
         [Column("LOCATOR_ID")]
-        public int LocatorId { set; get; }
+        public long LocatorId { set; get; }
+
 
 
         /// <summary>
-        /// 儲位節段
+        /// 庫存組織CODE
         /// </summary>
         /// 
-        [StringLength(163)]
+        [StringLength(3)]
         [Required]
-        [Column("LOCATOR_SEGMENTS")]
-        public string LocatorSegments { set; get; }
+        [Column("DST_ORGANIZATION_CODE")]
+        public string DstOrganizationCode { set; get; }
+
+
+        /// <summary>
+        /// 庫存組織名稱
+        /// </summary>
+        /// 
+        [StringLength(240)]
+        [Required]
+        [Column("DST_ORGANIZATION_NAME")]
+        public string DstOrganizationName { set; get; }
+
+
+        /// <summary>
+        /// 倉庫
+        /// </summary>
+        /// 
+        [StringLength(10)]
+        [Required]
+        [Column("DST_SUBINVENTORY_CODE")]
+        public string DstSubinventoryCode { set; get; }
+
+
+        /// <summary>
+        /// 倉庫名稱
+        /// </summary>
+        /// 
+        [StringLength(50)]
+        [Required]
+        [Column("DST_SUBINVENTORY_NAME")]
+        public string DstSubinventoryName { set; get; }
+
+
+        /// <summary>
+        /// 儲位ID
+        /// </summary>
+        /// 
+        [Required]
+        [Column("DST_LOCATOR_ID")]
+        public long DstLocatorId { set; get; }
+
 
         /// <summary>
         /// 料號ID
         /// </summary>
         /// 
         [Required]
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         [Column("INVENTORY_ITEM_ID")]
         public long InventoryItemId { set; get; }
-
-
 
         /// <summary>
         /// 料號
@@ -73,6 +146,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy
         [Required]
         [Column("ITEM_NUMBER")]
         public string ItemNumber { set; get; }
+
 
         /// <summary>
         /// 料號說明
@@ -94,71 +168,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy
         [Column("ITEM_CATEGORY")]
         public string ItemCategory { set; get; }
 
-
-        /// <summary>
-        /// 紙別
-        /// </summary>
-        /// 
-        [StringLength(30)]
-        [Required]
-        [Column("PAPER_TYPE")]
-        public string PaperType { set; get; }
-
-        /// <summary>
-        /// 基重
-        /// </summary>
-        /// 
-        [StringLength(30)]
-        [Required]
-        [Column("BASIC_WEIGHT")]
-        public string BasicWeight { set; get; }
-
-        /// <summary>
-        /// 令重
-        /// </summary>
-        /// 
-        [StringLength(30)]
-        [Required]
-        [Column("REAM_WEIGHT")]
-        public string ReamWeight { set; get; }
-
-
-        /// <summary>
-        /// 每件令數
-        /// </summary>
-        /// 
-        [Required]
-        [Column("ROLL_REAM_WT")]
-        public decimal RollReamWt { set; get; }
-
-        /// <summary>
-        /// 規格
-        /// </summary>
-        /// 
-        [StringLength(30)]
-        [Required]
-        [Column("SPECIFICATION")]
-        public string Specification { set; get; }
-
-        /// <summary>
-        /// 令包\無令打件
-        /// </summary>
-        /// 
-        [StringLength(30)]
-        [Required]
-        [Column("PACKING_TYPE")]
-        public string PackingType { set; get; }
-
-
-        /// <summary>
-        /// 工單號碼
-        /// </summary>
-        /// 
-        [StringLength(32)]
-        [Required]
-        [Column("OSP_BATCH_NO")]
-        public string OspBatchNo { set; get; }
-
         /// <summary>
         /// 捲號
         /// </summary>
@@ -167,6 +176,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy
         [Required]
         [Column("LOT_NUMBER")]
         public string LotNumber { set; get; }
+
 
         /// <summary>
         /// 條碼
@@ -225,30 +235,42 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy
         [Column("SECONDARY_AVAILABLE_QTY")]
         public decimal? SecondaryAvailableQty { set; get; }
 
-        /// <summary>
-        /// 原因ID
-        /// </summary>
-        /// 
-        [StringLength(10)]
-        [Column("REASON_CODE")]
-        public string ReasonCode { set; get; }
 
         /// <summary>
-        /// 原因說明
+        /// 作業別
+        /// </summary>
+        /// 
+        [StringLength(30)]
+        [Required]
+        [Column("CATEGORY")]
+        public string Category { set; get; }
+
+        /// <summary>
+        /// 單號
         /// </summary>
         /// 
         [StringLength(50)]
-        [Column("REASON_DESC")]
-        public string ReasonDesc { set; get; }
+        [Required]
+        [Column("DOC")]
+        public string Doc { set; get; }
+
+        /// <summary>
+        /// 動作
+        /// </summary>
+        /// 
+        [StringLength(50)]
+        [Required]
+        [Column("ACTION")]
+        public string Action { set; get; }
 
         /// <summary>
         /// 備註
         /// </summary>
         /// 
         [StringLength(250)]
+        [Required]
         [Column("NOTE")]
         public string Note { set; get; }
-
 
         /// <summary>
         /// 狀態碼
@@ -280,18 +302,20 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy
         /// 更新人員
         /// </summary>
         /// 
-        [Column("LAST_UPDATE_BY")]
         [Required]
+        [Column("LAST_UPDATE_BY")]
         public long LastUpdateBy { set; get; }
 
         /// <summary>
         /// 更新時間
         /// </summary>
         /// 
-        [Column("LAST_UPDATE_DATE")]
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         [Required]
+        [Column("LAST_UPDATE_DATE")]
         public DateTime LastUpdateDate { set; get; }
     }
+
+
 }

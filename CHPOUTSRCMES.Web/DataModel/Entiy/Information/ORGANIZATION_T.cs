@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
 
-namespace CHPOUTSRCMES.Web.DataModel.Entiy
+namespace CHPOUTSRCMES.Web.DataModel.Entiy.Information
 {
     public class ORGANIZATION_T
     {
@@ -40,6 +40,17 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy
         [Required]
         [Column("ORGANIZATION_NAME")]
         public string OrganizationName { set; get; }
+
+
+
+        /// <summary>
+        /// 控制欄位  D:刪除
+        /// </summary>
+        /// 
+        [StringLength(1)]
+        [Required(AllowEmptyStrings = true)]
+        [Column("CONTROL_FLAG",TypeName = "char")]
+        public string ControlFlag { set; get; }
 
     }
 }

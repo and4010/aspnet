@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
 
-namespace CHPOUTSRCMES.Web.DataModel.Entiy
+namespace CHPOUTSRCMES.Web.DataModel.Entiy.Information
 {
     [Table("LOCATOR_T")]
     public class LOCATOR_T
@@ -102,5 +102,16 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy
         [Required]
         [Column("SEGMENT4")]
         public string Segment4 { set; get; }
+
+
+        /// <summary>
+        /// 控制欄位  D:刪除
+        /// </summary>
+        /// 
+        [StringLength(1)]
+        [Required(AllowEmptyStrings = true)]
+        [Column("CONTROL_FLAG", TypeName = "char")]
+        public string ControlFlag { set; get; }
+
     }
 }

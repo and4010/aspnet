@@ -1,6 +1,8 @@
 ﻿using CHPOUTSRCMES.Web.DataModel;
 using CHPOUTSRCMES.Web.DataModel.Entiy;
+using CHPOUTSRCMES.Web.DataModel.Entiy.Information;
 using CHPOUTSRCMES.Web.DataModel.Entiy.Interfaces;
+using CHPOUTSRCMES.Web.DataModel.Entiy.Purchase;
 using CHPOUTSRCMES.Web.DataModel.Entiy.Repositorys;
 using CHPOUTSRCMES.Web.Util;
 using Microsoft.Extensions.Logging;
@@ -58,6 +60,9 @@ namespace CHPOUTSRCMES.Web.DataModel
                     ImportLocater(workbook, context);
                     ImprotItemCd(workbook, context);
                     ImprotRelated(workbook, context);
+                    ImportYszmpckq(workbook, context);
+                    ImprotMachinePaperType(workbook, context);
+                    ImprotTransaction(workbook, context);
                 }
             }
         }
@@ -101,6 +106,7 @@ namespace CHPOUTSRCMES.Web.DataModel
                                     oRGANIZATION_T.OrganizationID = Int64.Parse(getCellString(row.GetCell(0)).Trim());
                                     oRGANIZATION_T.OrganizationCode = getCellString(row.GetCell(1)).Trim();
                                     oRGANIZATION_T.OrganizationName = getCellString(row.GetCell(2)).Trim();
+                                    oRGANIZATION_T.ControlFlag = "";
                                     OrganizationRepositiory.Create(oRGANIZATION_T);
                                 }
                             }
@@ -174,6 +180,7 @@ namespace CHPOUTSRCMES.Web.DataModel
                             sUBINVENTORY_T.SubinventoryCode = ExcelUtil.GetCellString(j, subinventoryCode_cell.ColumnIndex, sheet).Trim();
                             sUBINVENTORY_T.SubinventoryName = ExcelUtil.GetCellString(j, subinventoryName_cell.ColumnIndex, sheet).Trim();
                             sUBINVENTORY_T.OspFlag = ExcelUtil.GetCellString(j, ospFlag_cell.ColumnIndex, sheet).Trim();
+                            sUBINVENTORY_T.ControlFlag = "";
                             SubinventoryRepositiory.Create(sUBINVENTORY_T);
                         }
                     }
@@ -288,6 +295,7 @@ namespace CHPOUTSRCMES.Web.DataModel
                             lOCATOR_T.Segment2 = ExcelUtil.GetCellString(j, Segment2_cell.ColumnIndex, sheet).Trim();
                             lOCATOR_T.Segment3 = ExcelUtil.GetCellString(j, Segment3_cell.ColumnIndex, sheet).Trim();
                             lOCATOR_T.Segment4 = ExcelUtil.GetCellString(j, Segment4_cell.ColumnIndex, sheet).Trim();
+                            lOCATOR_T.ControlFlag = "";
                             LocatorTRepositiory.Create(lOCATOR_T);
                         }
                     }
@@ -302,6 +310,8 @@ namespace CHPOUTSRCMES.Web.DataModel
         private static void ImprotItemCd(IWorkbook book, MesContext context)
         {
             IRepository<ITEMS_T> ItemsTRepositiory = new GenericRepository<ITEMS_T>(context);
+            IRepository<ORG_ITEMS_T> OrgItemRepositityory = new GenericRepository<ORG_ITEMS_T>(context);
+            IRepository<ORGANIZATION_T> OrganizationRepositiory = new GenericRepository<ORGANIZATION_T>(context);
             if (book.NumberOfSheets == 0)
             {
                 return;
@@ -317,6 +327,7 @@ namespace CHPOUTSRCMES.Web.DataModel
 
                 ISheet sheet = book.GetSheetAt(i);
                 var noOfRow = sheet.LastRowNum;
+                ICell ORGANIZATION_CODE_cell = null;
                 ICell InventoryItemId_cell = null;
                 ICell Item_number_cell = null;
                 ICell CategoryCodeInv_cell = null;
@@ -351,6 +362,13 @@ namespace CHPOUTSRCMES.Web.DataModel
                 ICell CreationDate_cell = null;
                 ICell LastUpdateBy_cell = null;
                 ICell LastUpdateDate_cell = null;
+
+                ORGANIZATION_CODE_cell = ExcelUtil.FindCell("ORGANIZATION_CODE", sheet);
+                if (ORGANIZATION_CODE_cell == null)
+                {
+                    throw new Exception("找不到ORGANIZATION_CODE欄位");
+                }
+
 
                 InventoryItemId_cell = ExcelUtil.FindCell("INVENTORY_ITEM_ID", sheet);
                 if (InventoryItemId_cell == null)
@@ -586,6 +604,19 @@ namespace CHPOUTSRCMES.Web.DataModel
                             iTEMS_T.LastUpdateBy = Int64.Parse(ExcelUtil.GetCellString(j, LastUpdateBy_cell.ColumnIndex, sheet).Trim());
                             iTEMS_T.LastUpdateDate = DateTime.Parse(ExcelUtil.GetCellString(j, LastUpdateDate_cell.ColumnIndex, sheet).Trim());
                             ItemsTRepositiory.Create(iTEMS_T);
+
+
+                            ORG_ITEMS_T oRG_ITEMS_T = new ORG_ITEMS_T();
+                            var ocode = ExcelUtil.GetCellString(j, ORGANIZATION_CODE_cell.ColumnIndex, sheet).Trim();
+                            var o = OrganizationRepositiory.Get(x => x.OrganizationCode == ocode);
+                            if (o != null)
+                            {
+                                oRG_ITEMS_T.InventoryItemId = Int64.Parse(ExcelUtil.GetCellString(j, InventoryItemId_cell.ColumnIndex, sheet).Trim());
+                                oRG_ITEMS_T.OrganizationId = o.OrganizationID;
+                                OrgItemRepositityory.Create(oRG_ITEMS_T);
+                            }
+                       
+
                         }
                     }
                     catch (Exception ex)
@@ -707,7 +738,413 @@ namespace CHPOUTSRCMES.Web.DataModel
                             rELATED_T.CreationDate = DateTime.Parse(ExcelUtil.GetCellString(j, CreationDate_cell.ColumnIndex, sheet).Trim());
                             rELATED_T.LastUpdateBy = Int64.Parse(ExcelUtil.GetCellString(j, LastUpdateBy_cell.ColumnIndex, sheet).Trim());
                             rELATED_T.LastUpdateDate = DateTime.Parse(ExcelUtil.GetCellString(j, LastUpdateDate_cell.ColumnIndex, sheet).Trim());
+                            rELATED_T.ControlFlag = "";
                             RelatedTRepositiory.Create(rELATED_T);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.Error(LogUtilities.BuildExceptionMessage(ex));
+                    }
+                }
+            }
+        }
+
+        private static void ImportYszmpckq(IWorkbook book, MesContext context)
+        {
+            IRepository<YSZMPCKQ_T> YszmpckqTRepositiory = new GenericRepository<YSZMPCKQ_T>(context);
+            if (book.NumberOfSheets == 0)
+            {
+                return;
+            }
+            for (int i = 0; i < book.NumberOfSheets; i++)
+            {
+                //獲取工作表(GetSheetAt)
+                if (!book.GetSheetAt(i).SheetName.Contains("XXCOM_YSZMPCKQ_V"))
+                {
+                    continue;
+                }
+
+                ISheet sheet = book.GetSheetAt(i);
+                var noOfRow = sheet.LastRowNum;
+                ICell OrganizationId_cell = null;
+                ICell OrganizationCode_cell = null;
+                ICell OspSubinventory_cell = null;
+                ICell Pstyp_cell = null;
+                ICell Bwetup_cell = null;
+                ICell Bwetdn_cell = null;
+                ICell Rwtup_cell = null;
+                ICell Rwtdn_cell = null;
+                ICell Pckq_cell = null;
+                ICell PaperQty_cell = null;
+                ICell PiecesQty_cell = null;
+                ICell CreatedBy_cell = null;
+                ICell CreationDate_cell = null;
+                ICell LastUpdateBy_cell = null;
+                ICell LastUpdateDate_cell = null;
+
+                OrganizationId_cell = ExcelUtil.FindCell("ORGANIZATION_ID", sheet);
+                if (OrganizationId_cell == null)
+                {
+                    throw new Exception("找不到ORGANIZATION_ID欄位");
+                }
+                OrganizationCode_cell = ExcelUtil.FindCell("ORGANIZATION_CODE", sheet);
+                if (OrganizationCode_cell == null)
+                {
+                    throw new Exception("找不到ORGANIZATION_CODE欄位");
+                }
+
+                OspSubinventory_cell = ExcelUtil.FindCell("OSP_SUBINVENTORY", sheet);
+                if (OspSubinventory_cell == null)
+                {
+                    throw new Exception("找不到OSP_SUBINVENTORY欄位");
+                }
+                Pstyp_cell = ExcelUtil.FindCell("PSTYP", sheet);
+                if (Pstyp_cell == null)
+                {
+                    throw new Exception("找不到PSTYP欄位");
+                }
+                Bwetup_cell = ExcelUtil.FindCell("BWETUP", sheet);
+                if (Bwetup_cell == null)
+                {
+                    throw new Exception("找不到BWETUP欄位");
+                }
+                Bwetdn_cell = ExcelUtil.FindCell("BWETDN", sheet);
+                if (Bwetdn_cell == null)
+                {
+                    throw new Exception("找不到BWETDN欄位");
+                }
+                Rwtup_cell = ExcelUtil.FindCell("RWTUP", sheet);
+                if (Rwtup_cell == null)
+                {
+                    throw new Exception("找不到RWTUP欄位");
+                }
+                Rwtdn_cell = ExcelUtil.FindCell("RWTDN", sheet);
+                if (Rwtdn_cell == null)
+                {
+                    throw new Exception("找不到RWTDN欄位");
+                }
+                Pckq_cell = ExcelUtil.FindCell("PCKQ", sheet);
+                if (Pckq_cell == null)
+                {
+                    throw new Exception("找不到PCKQ欄位");
+                }
+                PaperQty_cell = ExcelUtil.FindCell("PAPER_QTY", sheet);
+                if (PaperQty_cell == null)
+                {
+                    throw new Exception("找不到PAPER_QTY欄位");
+                }
+                PiecesQty_cell = ExcelUtil.FindCell("PIECES_QTY", sheet);
+                if (PiecesQty_cell == null)
+                {
+                    throw new Exception("找不到PIECES_QTY欄位");
+                }
+
+                CreatedBy_cell = ExcelUtil.FindCell("CREATED_BY", sheet);
+                if (CreatedBy_cell == null)
+                {
+                    throw new Exception("找不到CREATE_BY欄位");
+                }
+                CreationDate_cell = ExcelUtil.FindCell("CREATION_DATE", sheet);
+                if (CreationDate_cell == null)
+                {
+                    throw new Exception("找不到CREATE_DATE欄位");
+                }
+                LastUpdateBy_cell = ExcelUtil.FindCell("LAST_UPDATED_BY", sheet);
+                if (LastUpdateBy_cell == null)
+                {
+                    throw new Exception("找不到LAST_UPDATE_BY欄位");
+                }
+                LastUpdateDate_cell = ExcelUtil.FindCell("LAST_UPDATE_DATE", sheet);
+                if (LastUpdateDate_cell == null)
+                {
+                    throw new Exception("找不到LAST_UPDATE_DATE欄位");
+                }
+
+
+
+                for (int j = OrganizationId_cell.RowIndex + 1; j <= noOfRow; j++)
+                {
+                    try
+                    {
+                        //var id = Int64.Parse(ExcelUtil.GetCellString(j, OrganizationId_cell.ColumnIndex, sheet).Trim());
+                        //var org = YszmpckqTRepositiory.Get(x => x.InventoryItemId == id);
+                        //if (org == null || org.InventoryItemId <= 0)
+                        //{
+                        YSZMPCKQ_T ySZMPCKQ_T = new YSZMPCKQ_T();
+                        ySZMPCKQ_T.OrganizationId = Int64.Parse(ExcelUtil.GetCellString(j, OrganizationId_cell.ColumnIndex, sheet).Trim());
+                        ySZMPCKQ_T.OrganizationCode = ExcelUtil.GetCellString(j, OrganizationCode_cell.ColumnIndex, sheet).Trim();
+                        ySZMPCKQ_T.OspSubinventory = ExcelUtil.GetCellString(j, OspSubinventory_cell.ColumnIndex, sheet).Trim();
+                        ySZMPCKQ_T.Pstyp = ExcelUtil.GetCellString(j, Pstyp_cell.ColumnIndex, sheet).Trim();
+                        ySZMPCKQ_T.Bwetup = ExcelUtil.GetCellString(j, Bwetup_cell.ColumnIndex, sheet).Trim() == "" ? 0 : Decimal.Parse(ExcelUtil.GetCellString(j, Bwetup_cell.ColumnIndex, sheet).Trim());
+                        ySZMPCKQ_T.Bwetdn = ExcelUtil.GetCellString(j, Bwetdn_cell.ColumnIndex, sheet).Trim() == "" ? 0 : Decimal.Parse(ExcelUtil.GetCellString(j, Bwetdn_cell.ColumnIndex, sheet).Trim());
+                        ySZMPCKQ_T.Rwtup = ExcelUtil.GetCellString(j, Rwtup_cell.ColumnIndex, sheet).Trim() == "" ? 0 : Decimal.Parse(ExcelUtil.GetCellString(j, Rwtup_cell.ColumnIndex, sheet).Trim());
+                        ySZMPCKQ_T.Rwtdn = ExcelUtil.GetCellString(j, Rwtdn_cell.ColumnIndex, sheet).Trim() == "" ? 0 : Decimal.Parse(ExcelUtil.GetCellString(j, Rwtdn_cell.ColumnIndex, sheet).Trim());
+                        ySZMPCKQ_T.Pckq = ExcelUtil.GetCellString(j, Pckq_cell.ColumnIndex, sheet).Trim() == "" ? 0 : Int64.Parse(ExcelUtil.GetCellString(j, Pckq_cell.ColumnIndex, sheet).Trim());
+                        ySZMPCKQ_T.PaperQty = ExcelUtil.GetCellString(j, PaperQty_cell.ColumnIndex, sheet).Trim() == "" ? 0 : Int64.Parse(ExcelUtil.GetCellString(j, PaperQty_cell.ColumnIndex, sheet).Trim());
+                        ySZMPCKQ_T.PiecesQty = ExcelUtil.GetCellString(j, PiecesQty_cell.ColumnIndex, sheet).Trim() == "" ? 0 : Int64.Parse(ExcelUtil.GetCellString(j, PiecesQty_cell.ColumnIndex, sheet).Trim());
+                        ySZMPCKQ_T.CreatedBy = ExcelUtil.GetCellString(j, CreatedBy_cell.ColumnIndex, sheet).Trim() == "" ? 0 : Int64.Parse(ExcelUtil.GetCellString(j, CreatedBy_cell.ColumnIndex, sheet).Trim());
+                        ySZMPCKQ_T.CreationDate = DateTime.Parse(ExcelUtil.GetCellString(j, CreationDate_cell.ColumnIndex, sheet).Trim());
+                        ySZMPCKQ_T.LastUpdateBy = Int64.Parse(ExcelUtil.GetCellString(j, LastUpdateBy_cell.ColumnIndex, sheet).Trim());
+                        ySZMPCKQ_T.LastUpdateDate = DateTime.Parse(ExcelUtil.GetCellString(j, LastUpdateDate_cell.ColumnIndex, sheet).Trim());
+                        ySZMPCKQ_T.ControlFlag = "";
+                        YszmpckqTRepositiory.Create(ySZMPCKQ_T);
+                        //}
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.Error(LogUtilities.BuildExceptionMessage(ex));
+                    }
+                }
+            }
+        }
+
+
+        private static void ImprotMachinePaperType(IWorkbook book, MesContext context)
+        {
+            IRepository<MACHINE_PAPER_TYPE_T> MachinePaperTypeRepositiory = new GenericRepository<MACHINE_PAPER_TYPE_T>(context);
+            if (book.NumberOfSheets == 0)
+            {
+                return;
+            }
+            for (int i = 0; i < book.NumberOfSheets; i++)
+            {
+                //獲取工作表(GetSheetAt)
+                if (!book.GetSheetAt(i).SheetName.Contains("XXCPO_MACHINE_PAPER_TYPE_V"))
+                {
+                    continue;
+                }
+
+                ISheet sheet = book.GetSheetAt(i);
+                var noOfRow = sheet.LastRowNum;
+                ICell OrganizationId_cell = null;
+                ICell OrganizationCode_cell = null;
+                ICell MachineCode_cell = null;
+                ICell MachineMeaning_cell = null;
+                ICell Description_cell = null;
+                ICell PaperType_cell = null;
+                ICell MachineNum_cell = null;
+                ICell SupplierNum_cell = null;
+                ICell SupplierName_cell = null;
+                ICell CreatedBy_cell = null;
+                ICell CreationDate_cell = null;
+                ICell LastUpdateBy_cell = null;
+                ICell LastUpdateDate_cell = null;
+
+                OrganizationId_cell = ExcelUtil.FindCell("ORGANIZATION_ID", sheet);
+                if (OrganizationId_cell == null)
+                {
+                    throw new Exception("找不到ORGANIZATION_ID欄位");
+                }
+                OrganizationCode_cell = ExcelUtil.FindCell("ORGANIZATION_CODE", sheet);
+                if (OrganizationCode_cell == null)
+                {
+                    throw new Exception("找不到ORGANIZATION_CODE欄位");
+                }
+
+                MachineCode_cell = ExcelUtil.FindCell("MACHINE_CODE", sheet);
+                if (MachineCode_cell == null)
+                {
+                    throw new Exception("找不到MACHINE_CODE欄位");
+                }
+                MachineMeaning_cell = ExcelUtil.FindCell("MACHINE_MEANING", sheet);
+                if (MachineMeaning_cell == null)
+                {
+                    throw new Exception("找不到MACHINE_MEANING欄位");
+                }
+                Description_cell = ExcelUtil.FindCell("DESCRIPTION", sheet);
+                if (Description_cell == null)
+                {
+                    throw new Exception("找不到DESCRIPTION欄位");
+                }
+                PaperType_cell = ExcelUtil.FindCell("PAPER_TYPE", sheet);
+                if (PaperType_cell == null)
+                {
+                    throw new Exception("找不到PAPER_TYPE欄位");
+                }
+                MachineNum_cell = ExcelUtil.FindCell("MACHINE_NUM", sheet);
+                if (MachineNum_cell == null)
+                {
+                    throw new Exception("找不到MACHINE_NUM欄位");
+                }
+                SupplierNum_cell = ExcelUtil.FindCell("SUPPLIER_NUM", sheet);
+                if (SupplierNum_cell == null)
+                {
+                    throw new Exception("找不到SUPPLIER_NUM欄位");
+                }
+                SupplierName_cell = ExcelUtil.FindCell("VENDOR_NAME", sheet);
+                if (SupplierName_cell == null)
+                {
+                    throw new Exception("找不到VENDOR_NAME欄位");
+                }
+                CreatedBy_cell = ExcelUtil.FindCell("CREATED_BY", sheet);
+                if (CreatedBy_cell == null)
+                {
+                    throw new Exception("找不到CREATED_BY欄位");
+                }
+                CreationDate_cell = ExcelUtil.FindCell("CREATION_DATE", sheet);
+                if (CreationDate_cell == null)
+                {
+                    throw new Exception("找不到CREATION_DATE欄位");
+                }
+                LastUpdateBy_cell = ExcelUtil.FindCell("LAST_UPDATED_BY", sheet);
+                if (LastUpdateBy_cell == null)
+                {
+                    throw new Exception("找不到LAST_UPDATED_BY欄位");
+                }
+                LastUpdateDate_cell = ExcelUtil.FindCell("LAST_UPDATE_DATE", sheet);
+                if (LastUpdateDate_cell == null)
+                {
+                    throw new Exception("找不到LAST_UPDATE_DATE欄位");
+                }
+
+
+
+                for (int j = OrganizationId_cell.RowIndex + 1; j <= noOfRow; j++)
+                {
+                    try
+                    {
+                        var MachineCode = ExcelUtil.GetCellString(j, MachineCode_cell.ColumnIndex, sheet).Trim();
+                        var org = MachinePaperTypeRepositiory.Get(x => x.MachineCode == MachineCode);
+                        if (org == null || org.OrganizationId <= 0)
+                        {
+                            MACHINE_PAPER_TYPE_T mACHINE_PAPER_TYPE_T = new MACHINE_PAPER_TYPE_T();
+                            mACHINE_PAPER_TYPE_T.OrganizationId = Int64.Parse(ExcelUtil.GetCellString(j, OrganizationId_cell.ColumnIndex, sheet).Trim());
+                            mACHINE_PAPER_TYPE_T.OrganizationCode = ExcelUtil.GetCellString(j, OrganizationCode_cell.ColumnIndex, sheet).Trim();
+                            mACHINE_PAPER_TYPE_T.MachineCode = ExcelUtil.GetCellString(j, MachineCode_cell.ColumnIndex, sheet).Trim();
+                            mACHINE_PAPER_TYPE_T.MachineMeaning = ExcelUtil.GetCellString(j, MachineMeaning_cell.ColumnIndex, sheet).Trim();
+                            mACHINE_PAPER_TYPE_T.Description = ExcelUtil.GetCellString(j, Description_cell.ColumnIndex, sheet).Trim();
+                            mACHINE_PAPER_TYPE_T.PaperType = ExcelUtil.GetCellString(j, PaperType_cell.ColumnIndex, sheet).Trim();
+                            mACHINE_PAPER_TYPE_T.MachineNum = ExcelUtil.GetCellString(j, MachineNum_cell.ColumnIndex, sheet).Trim();
+                            mACHINE_PAPER_TYPE_T.SupplierNum = ExcelUtil.GetCellString(j, SupplierNum_cell.ColumnIndex, sheet).Trim();
+                            mACHINE_PAPER_TYPE_T.SupplierName = ExcelUtil.GetCellString(j, SupplierName_cell.ColumnIndex, sheet).Trim();
+                            mACHINE_PAPER_TYPE_T.CreatedBy = Int64.Parse(ExcelUtil.GetCellString(j, CreatedBy_cell.ColumnIndex, sheet).Trim());
+                            mACHINE_PAPER_TYPE_T.CreationDate = DateTime.Parse(ExcelUtil.GetCellString(j, CreationDate_cell.ColumnIndex, sheet).Trim());
+                            mACHINE_PAPER_TYPE_T.LastUpdateBy = Int64.Parse(ExcelUtil.GetCellString(j, LastUpdateBy_cell.ColumnIndex, sheet).Trim());
+                            mACHINE_PAPER_TYPE_T.LastUpdateDate = DateTime.Parse(ExcelUtil.GetCellString(j, LastUpdateDate_cell.ColumnIndex, sheet).Trim());
+                            mACHINE_PAPER_TYPE_T.ControlFlag = "";
+                            MachinePaperTypeRepositiory.Create(mACHINE_PAPER_TYPE_T);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.Error(LogUtilities.BuildExceptionMessage(ex));
+                    }
+                }
+            }
+        }
+
+
+        private static void ImprotTransaction(IWorkbook book, MesContext context)
+        {
+            IRepository<TRANSACTION_TYPE_T> TransactionTypeRepositiory = new GenericRepository<TRANSACTION_TYPE_T>(context);
+            if (book.NumberOfSheets == 0)
+            {
+                return;
+            }
+            for (int i = 0; i < book.NumberOfSheets; i++)
+            {
+                //獲取工作表(GetSheetAt)
+                if (!book.GetSheetAt(i).SheetName.Contains("XXCINV_TRANSACTION_TYPE_V"))
+                {
+                    continue;
+                }
+
+                ISheet sheet = book.GetSheetAt(i);
+                var noOfRow = sheet.LastRowNum;
+                ICell TransactionTypeId_cell = null;
+                ICell TransactionTypeName_cell = null;
+                ICell Description_cell = null;
+                ICell TransactionActionId_cell = null;
+                ICell TransactionActionName_cell = null;
+                ICell TransactionSourceTypeId_cell = null;
+                ICell TransactionSourceTypeName_cell = null;
+                ICell CreatedBy_cell = null;
+                ICell CreationDate_cell = null;
+                ICell LastUpdateBy_cell = null;
+                ICell LastUpdateDate_cell = null;
+
+                TransactionTypeId_cell = ExcelUtil.FindCell("TRANSACTION_TYPE_ID", sheet);
+                if (TransactionTypeId_cell == null)
+                {
+                    throw new Exception("找不到TRANSACTION_TYPE_ID欄位");
+                }
+                TransactionTypeName_cell = ExcelUtil.FindCell("TRANSACTION_TYPE_NAME", sheet);
+                if (TransactionTypeName_cell == null)
+                {
+                    throw new Exception("找不到TRANSACTION_TYPE_NAME欄位");
+                }
+                Description_cell = ExcelUtil.FindCell("DESCRIPTION", sheet);
+                if (Description_cell == null)
+                {
+                    throw new Exception("找不到DESCRIPTION欄位");
+                }
+                TransactionActionId_cell = ExcelUtil.FindCell("TRANSACTION_ACTION_ID", sheet);
+                if (TransactionActionId_cell == null)
+                {
+                    throw new Exception("找不到TRANSACTION_ACTION_ID欄位");
+                }
+                TransactionActionName_cell = ExcelUtil.FindCell("TRANSACTION_ACTION_NAME", sheet);
+                if (TransactionActionName_cell == null)
+                {
+                    throw new Exception("找不到TRANSACTION_ACTION_NAME欄位");
+                }
+
+                TransactionSourceTypeId_cell = ExcelUtil.FindCell("TRANSACTION_SOURCE_TYPE_ID", sheet);
+                if (TransactionSourceTypeId_cell == null)
+                {
+                    throw new Exception("找不到TRANSACTION_SOURCE_TYPE_ID欄位");
+                }
+                TransactionSourceTypeName_cell = ExcelUtil.FindCell("TRANSACTION_SOURCE_TYPE_NAME", sheet);
+                if (TransactionSourceTypeName_cell == null)
+                {
+                    throw new Exception("找不到TRANSACTION_SOURCE_TYPE_NAME欄位");
+                }
+                CreatedBy_cell = ExcelUtil.FindCell("CREATED_BY", sheet);
+                if (CreatedBy_cell == null)
+                {
+                    throw new Exception("找不到CREATED_BY欄位");
+                }
+                CreationDate_cell = ExcelUtil.FindCell("CREATION_DATE", sheet);
+                if (CreationDate_cell == null)
+                {
+                    throw new Exception("找不到CREATION_DATE欄位");
+                }
+                LastUpdateBy_cell = ExcelUtil.FindCell("LAST_UPDATED_BY", sheet);
+                if (LastUpdateBy_cell == null)
+                {
+                    throw new Exception("找不到LAST_UPDATED_BY欄位");
+                }
+                LastUpdateDate_cell = ExcelUtil.FindCell("LAST_UPDATE_DATE", sheet);
+                if (LastUpdateDate_cell == null)
+                {
+                    throw new Exception("找不到LAST_UPDATE_DATE欄位");
+                }
+
+
+
+                for (int j = TransactionTypeId_cell.RowIndex + 1; j <= noOfRow; j++)
+                {
+                    try
+                    {
+                        var TransactionTypeId = Int64.Parse(ExcelUtil.GetCellString(j, TransactionTypeId_cell.ColumnIndex, sheet).Trim());
+                        var org = TransactionTypeRepositiory.Get(x => x.TransactionTypeId == TransactionTypeId);
+                        if (org == null || org.TransactionTypeId <= 0)
+                        {
+                            TRANSACTION_TYPE_T tRANSACTION_TYPE_T = new TRANSACTION_TYPE_T();
+                            tRANSACTION_TYPE_T.TransactionTypeId = Int64.Parse(ExcelUtil.GetCellString(j, TransactionTypeId_cell.ColumnIndex, sheet).Trim());
+                            tRANSACTION_TYPE_T.TransactionTypeName = ExcelUtil.GetCellString(j, TransactionTypeName_cell.ColumnIndex, sheet).Trim();
+                            tRANSACTION_TYPE_T.Description = ExcelUtil.GetCellString(j, Description_cell.ColumnIndex, sheet).Trim();
+                            tRANSACTION_TYPE_T.TransactionActionId = Int64.Parse(ExcelUtil.GetCellString(j, TransactionActionId_cell.ColumnIndex, sheet).Trim());
+                            tRANSACTION_TYPE_T.TransactionActionName = ExcelUtil.GetCellString(j, TransactionActionName_cell.ColumnIndex, sheet).Trim();
+                            tRANSACTION_TYPE_T.TransactionSourceTypeId = Int64.Parse(ExcelUtil.GetCellString(j, TransactionSourceTypeId_cell.ColumnIndex, sheet).Trim());
+                            tRANSACTION_TYPE_T.TransactionSourceTypeName = ExcelUtil.GetCellString(j, TransactionSourceTypeName_cell.ColumnIndex, sheet).Trim();
+                            tRANSACTION_TYPE_T.CreatedBy = Int64.Parse(ExcelUtil.GetCellString(j, CreatedBy_cell.ColumnIndex, sheet).Trim());
+                            tRANSACTION_TYPE_T.CreationDate = DateTime.Parse(ExcelUtil.GetCellString(j, CreationDate_cell.ColumnIndex, sheet).Trim());
+                            tRANSACTION_TYPE_T.LastUpdateBy = Int64.Parse(ExcelUtil.GetCellString(j, LastUpdateBy_cell.ColumnIndex, sheet).Trim());
+                            tRANSACTION_TYPE_T.LastUpdateDate = DateTime.Parse(ExcelUtil.GetCellString(j, LastUpdateDate_cell.ColumnIndex, sheet).Trim());
+                            tRANSACTION_TYPE_T.ControlFlag = "";
+                            TransactionTypeRepositiory.Create(tRANSACTION_TYPE_T);
                         }
                     }
                     catch (Exception ex)
