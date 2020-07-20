@@ -9,11 +9,28 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using CHPOUTSRCMES.Web.DataModel.Entiy;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
+using System.Net;
+using Microsoft.Owin.Security;
 
 namespace CHPOUTSRCMES.Web.Controllers
 {
     public class AccountController : Controller
     {
+        public UserManager<AppUser> UserManager { get; private set; }
+
+        public RoleManager<IdentityRole> RoleManager { get; private set; }
+
+        private IAuthenticationManager AuthenticationManager
+        {
+            get
+            {
+                return HttpContext.GetOwinContext().Authentication;
+            }
+        }
+
         //
         // GET: /Account/
         public ActionResult Index()
@@ -24,10 +41,70 @@ namespace CHPOUTSRCMES.Web.Controllers
         //
         // GET: /Account/Login
         [AllowAnonymous]
-        public ActionResult Login()
+        public ActionResult Login(string returnUrl)
         {
-            return View("Login");
+            ViewBag.ReturnUrl = returnUrl;
+            return View();
         }
+
+        //
+        // POST: /Account/Login
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Login(LoginViewModel model, string returnUrl)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await UserManager.FindAsync(model.UserName, model.Password);
+                if (user != null)
+                {
+                    await SignInAsync(user, model.RememberMe);
+                    return RedirectToLocal(returnUrl);
+                }
+                else
+                {
+                    ModelState.AddModelError("", "帳號或密碼有誤!");
+                }
+            }
+
+            // If we got this far, something failed, redisplay form
+            return View(model);
+        }
+
+        //
+        // POST: /Account/LogOff
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult LogOff()
+        {
+            AuthenticationManager.SignOut();
+            Session.Abandon();
+            Session.Clear();
+            Session.RemoveAll();
+            return RedirectToAction("Index", "Home");
+        }
+
+
+        private ActionResult RedirectToLocal(string returnUrl)
+        {
+            if (Url.IsLocalUrl(returnUrl))
+            {
+                return Redirect(returnUrl);
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
+        }
+
+        private async Task SignInAsync(AppUser user, bool isPersistent)
+        {
+            AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+            var identity = await UserManager.CreateIdentityAsync(user, DefaultAuthenticationTypes.ApplicationCookie);
+            AuthenticationManager.SignIn(new AuthenticationProperties() { IsPersistent = isPersistent }, identity);
+        }
+
 
         [HttpPost, ActionName("AccountJson")]
         public JsonResult AccountJson(DataTableAjaxPostViewModel data)

@@ -12,19 +12,23 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Interfaces
 
         DbContext getContext();
 
-        void Create(TEntity instance);
 
-        void Update(TEntity instance);
+        void Create(TEntity instance, bool saveChanged = false);
 
-        void Update(TEntity instance, params object[] keyValues);
 
-        void Update(TEntity instance, bool saveChanged, params object[] keyValues);
+        void Update(TEntity instance, bool saveChanged = false);
 
-        void Delete(TEntity instance);
 
-        TEntity Get(Expression<Func<TEntity, bool>> predicate);
+        void Update(TEntity instance, bool saveChanged = false, params object[] keyValues);
 
-        IQueryable<TEntity> GetAll();
+
+        void Delete(TEntity instance, bool saveChanged = false);
+
+
+        IEnumerable<TEntity> Get(
+            Expression<Func<TEntity, bool>> filter = null,
+            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
+            string includeProperties = "");
 
         void SaveChanges();
 

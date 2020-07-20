@@ -14,11 +14,9 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Repositorys
     public class GenericRepository<TEntity> : IRepository<TEntity>
         where TEntity : class
     {
-        private DbContext _context
-        {
-            get;
-            set;
-        }
+
+        private DbContext _context { get; set; }
+
 
         public DbContext getContext()
         {
@@ -26,8 +24,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Repositorys
         }
 
 
-        public GenericRepository()
-            : this(new MesContext())
+        public GenericRepository() : this(new MesContext())
         {
         }
 
@@ -57,28 +54,32 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Repositorys
         /// </summary>
         /// <param name="instance">The instance.</param>
         /// <exception cref="System.ArgumentNullException">instance</exception>
-        public void Create(TEntity instance)
+        public void Create(TEntity instance, bool saveChanged = false)
         {
             if (instance == null)
             {
                 throw new ArgumentNullException("instance");
+
             }
-            else
+
+            this._context.Set<TEntity>().Add(instance);
+
+            if (saveChanged)
             {
-                this._context.Set<TEntity>().Add(instance);
                 this.SaveChanges();
             }
+
         }
 
-        /// <summary>
-        /// Creates instances at once.
-        /// </summary>
-        /// <param name="instance">The instance.</param>
-        /// <exception cref="System.ArgumentNullException">instance</exception>
-        public void Create(IEnumerable<TEntity> instance)
-        {
-            EFBatchOperation.For(_context, _context.Set<TEntity>()).InsertAll(instance);
-        }
+        ///// <summary>
+        ///// Creates instances at once.
+        ///// </summary>
+        ///// <param name="instance">The instance.</param>
+        ///// <exception cref="System.ArgumentNullException">instance</exception>
+        //public void Create(IEnumerable<TEntity> instance)
+        //{
+        //    EFBatchOperation.For(_context, _context.Set<TEntity>()).InsertAll(instance);
+        //}
 
 
         /// <summary>
@@ -86,29 +87,20 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Repositorys
         /// </summary>
         /// <param name="instance">The instance.</param>
         /// <exception cref="System.NotImplementedException"></exception>
-        public void Update(TEntity instance)
+        public void Update(TEntity instance, bool savedChanged = false)
         {
             if (instance == null)
             {
                 throw new ArgumentNullException("instance");
             }
-            else
+
+            this._context.Entry(instance).State = EntityState.Modified;
+            if (savedChanged)
             {
-                this._context.Entry(instance).State = EntityState.Modified;
                 this.SaveChanges();
             }
         }
 
-        /// <summary>
-        /// Updates the specified instance.
-        /// </summary>
-        /// <param name="instance">The instance.</param>
-        /// <param name="keyValues">The key values.</param>
-        /// <exception cref="System.ArgumentNullException">instance</exception>
-        public void Update(TEntity instance, params object[] keyValues)
-        {
-            Update(instance, true, keyValues);
-        }
 
         /// <summary>
         /// Updates the specified instance.
@@ -123,6 +115,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Repositorys
             {
                 throw new ArgumentNullException("instance");
             }
+
             var entry = _context.Entry<TEntity>(instance);
             if (entry.State == EntityState.Detached)
             {
@@ -138,6 +131,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Repositorys
                     entry.State = EntityState.Modified;
                 }
             }
+
             if (saveChanged)
             {
                 this.SaveChanges();
@@ -145,42 +139,63 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Repositorys
         }
 
 
-
         /// <summary>
         /// Deletes the specified instance.
         /// </summary>
         /// <param name="instance">The instance.</param>
         /// <exception cref="System.NotImplementedException"></exception>
-        public void Delete(TEntity instance)
+        public void Delete(TEntity instance, bool saveChanged = false)
         {
             if (instance == null)
             {
                 throw new ArgumentNullException("instance");
             }
             this._context.Entry(instance).State = EntityState.Deleted;
-            this.SaveChanges();
+            if (saveChanged)
+            {
+                this.SaveChanges();
+            }
         }
 
 
-        /// <summary>
-        /// Gets the specified predicate.
-        /// </summary>
-        /// <param name="predicate">The predicate.</param>
-        /// <returns></returns>
-        public TEntity Get(Expression<Func<TEntity, bool>> predicate)
+        public IEnumerable<TEntity> Get(
+            Expression<Func<TEntity, bool>> filter = null, 
+            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
+            string includeProperties = "")
         {
-            return this._context.Set<TEntity>().AsNoTracking().FirstOrDefault(predicate);
+            IQueryable<TEntity> query = this._context.Set<TEntity>();
+
+            if (filter != null)
+            {
+                query = query.Where(filter);
+            }
+
+            if (includeProperties != null)
+            {
+
+                foreach (var includeProperty in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    query = query.Include(includeProperty);
+                }
+            }
+
+            if (orderBy != null)
+            {
+                return orderBy(query).AsNoTracking().ToList();
+            }
+            else
+            {
+                return query.AsNoTracking().ToList();
+            }
+
         }
 
 
-        /// <summary>
-        /// Gets all.
-        /// </summary>
-        /// <returns></returns>
-        public IQueryable<TEntity> GetAll()
+        public IEnumerable<TEntity> Query(string queryString, params object[] parameters)
         {
-            return this._context.Set<TEntity>().AsNoTracking();
+            return _context.Set<TEntity>().SqlQuery(queryString, parameters).AsNoTracking().ToList();
         }
+
 
         public void SaveChanges()
         {

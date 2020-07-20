@@ -82,6 +82,8 @@ namespace CHPOUTSRCMES.Web.DataModel
                     ISheet sheet = book.GetSheetAt(i);
                     var noOfRow = sheet.LastRowNum;
                     int start_pos = 1;
+
+                    OrganizationRepositiory.getContext().Configuration.AutoDetectChangesEnabled = false;
                     for (int rowIterator = start_pos; rowIterator <= noOfRow; rowIterator++)
                     {
                         IRow row = sheet.GetRow(rowIterator);
@@ -94,14 +96,14 @@ namespace CHPOUTSRCMES.Web.DataModel
                             try
                             {
                                 var id = Int64.Parse(getCellString(row.GetCell(0)).Trim());
-                                var org = OrganizationRepositiory.Get(x => x.OrganizationID == id);
+                                var org = OrganizationRepositiory.Get(x => x.OrganizationID == id).First();
                                 if (org == null || org.OrganizationID <= 0)
                                 {
                                     ORGANIZATION_T oRGANIZATION_T = new ORGANIZATION_T();
                                     oRGANIZATION_T.OrganizationID = Int64.Parse(getCellString(row.GetCell(0)).Trim());
                                     oRGANIZATION_T.OrganizationCode = getCellString(row.GetCell(1)).Trim();
                                     oRGANIZATION_T.OrganizationName = getCellString(row.GetCell(2)).Trim();
-                                    OrganizationRepositiory.Create(oRGANIZATION_T);
+                                    OrganizationRepositiory.Create(oRGANIZATION_T, saveChanged : true);
                                 }
                             }
                             catch (Exception ex)
@@ -110,6 +112,8 @@ namespace CHPOUTSRCMES.Web.DataModel
                             }
                         }
                     }
+                    
+                    OrganizationRepositiory.getContext().Configuration.AutoDetectChangesEnabled = true;
                 }
             }
         }
@@ -159,6 +163,7 @@ namespace CHPOUTSRCMES.Web.DataModel
                 {
                     throw new Exception("找不到OSP_FLAG欄位");
                 }
+                SubinventoryRepositiory.getContext().Configuration.AutoDetectChangesEnabled = false;
 
                 for (int j = organizationId_cell.RowIndex + 1; j <= noOfRow; j++)
                 {
@@ -166,7 +171,7 @@ namespace CHPOUTSRCMES.Web.DataModel
                     {
                         var id = Int64.Parse(ExcelUtil.GetCellString(j, organizationId_cell.ColumnIndex, sheet).Trim());
                         var subcode = ExcelUtil.GetCellString(j, subinventoryCode_cell.ColumnIndex, sheet).Trim();
-                        var org = SubinventoryRepositiory.Get(x => x.OrganizationID == id && x.SubinventoryCode == subcode);
+                        var org = SubinventoryRepositiory.Get(x => x.OrganizationID == id && x.SubinventoryCode == subcode).FirstOrDefault();
                         if (org == null || org.OrganizationID <= 0)
                         {
                             SUBINVENTORY_T sUBINVENTORY_T = new SUBINVENTORY_T();
@@ -174,7 +179,7 @@ namespace CHPOUTSRCMES.Web.DataModel
                             sUBINVENTORY_T.SubinventoryCode = ExcelUtil.GetCellString(j, subinventoryCode_cell.ColumnIndex, sheet).Trim();
                             sUBINVENTORY_T.SubinventoryName = ExcelUtil.GetCellString(j, subinventoryName_cell.ColumnIndex, sheet).Trim();
                             sUBINVENTORY_T.OspFlag = ExcelUtil.GetCellString(j, ospFlag_cell.ColumnIndex, sheet).Trim();
-                            SubinventoryRepositiory.Create(sUBINVENTORY_T);
+                            SubinventoryRepositiory.Create(sUBINVENTORY_T, saveChanged : true);
                         }
                     }
                     catch (Exception ex)
@@ -182,6 +187,8 @@ namespace CHPOUTSRCMES.Web.DataModel
                         logger.Error(LogUtilities.BuildExceptionMessage(ex));
                     }
                 }
+
+                SubinventoryRepositiory.getContext().Configuration.AutoDetectChangesEnabled = true;
             }
 
         }
@@ -267,14 +274,14 @@ namespace CHPOUTSRCMES.Web.DataModel
                 {
                     throw new Exception("找不到SEGMENT4欄位");
                 }
-
+                LocatorTRepositiory.getContext().Configuration.AutoDetectChangesEnabled = false;
                 for (int j = organizationId_cell.RowIndex + 1; j <= noOfRow; j++)
                 {
                     try
                     {
                         var id = Int64.Parse(ExcelUtil.GetCellString(j, organizationId_cell.ColumnIndex, sheet).Trim());
                         var subcode = ExcelUtil.GetCellString(j, subinventoryCode_cell.ColumnIndex, sheet).Trim();
-                        var org = LocatorTRepositiory.Get(x => x.LocatorId == id);
+                        var org = LocatorTRepositiory.Get(x => x.LocatorId == id).FirstOrDefault();
                         if (org == null || org.LocatorId <= 0)
                         {
                             LOCATOR_T lOCATOR_T = new LOCATOR_T();
@@ -288,7 +295,7 @@ namespace CHPOUTSRCMES.Web.DataModel
                             lOCATOR_T.Segment2 = ExcelUtil.GetCellString(j, Segment2_cell.ColumnIndex, sheet).Trim();
                             lOCATOR_T.Segment3 = ExcelUtil.GetCellString(j, Segment3_cell.ColumnIndex, sheet).Trim();
                             lOCATOR_T.Segment4 = ExcelUtil.GetCellString(j, Segment4_cell.ColumnIndex, sheet).Trim();
-                            LocatorTRepositiory.Create(lOCATOR_T);
+                            LocatorTRepositiory.Create(lOCATOR_T, saveChanged: true);
                         }
                     }
                     catch (Exception ex)
@@ -296,6 +303,7 @@ namespace CHPOUTSRCMES.Web.DataModel
                         logger.Error(LogUtilities.BuildExceptionMessage(ex));
                     }
                 }
+                LocatorTRepositiory.getContext().Configuration.AutoDetectChangesEnabled = true;
             }
         }
 
@@ -541,13 +549,13 @@ namespace CHPOUTSRCMES.Web.DataModel
                 }
 
 
-
+                ItemsTRepositiory.getContext().Configuration.AutoDetectChangesEnabled = false;
                 for (int j = InventoryItemId_cell.RowIndex + 1; j <= noOfRow; j++)
                 {
                     try
                     {
                         var id = Int64.Parse(ExcelUtil.GetCellString(j, InventoryItemId_cell.ColumnIndex, sheet).Trim());
-                        var org = ItemsTRepositiory.Get(x => x.InventoryItemId == id);
+                        var org = ItemsTRepositiory.Get(x => x.InventoryItemId == id).FirstOrDefault();
                         if (org == null || org.InventoryItemId <= 0)
                         {
                             ITEMS_T iTEMS_T = new ITEMS_T();
@@ -585,7 +593,7 @@ namespace CHPOUTSRCMES.Web.DataModel
                             iTEMS_T.CreationDate = DateTime.Parse(ExcelUtil.GetCellString(j, CreationDate_cell.ColumnIndex, sheet).Trim());
                             iTEMS_T.LastUpdateBy = Int64.Parse(ExcelUtil.GetCellString(j, LastUpdateBy_cell.ColumnIndex, sheet).Trim());
                             iTEMS_T.LastUpdateDate = DateTime.Parse(ExcelUtil.GetCellString(j, LastUpdateDate_cell.ColumnIndex, sheet).Trim());
-                            ItemsTRepositiory.Create(iTEMS_T);
+                            ItemsTRepositiory.Create(iTEMS_T, saveChanged: true);
                         }
                     }
                     catch (Exception ex)
@@ -593,6 +601,8 @@ namespace CHPOUTSRCMES.Web.DataModel
                         logger.Error(LogUtilities.BuildExceptionMessage(ex));
                     }
                 }
+                ItemsTRepositiory.getContext().Configuration.AutoDetectChangesEnabled = true;
+                
             }
 
         }
@@ -687,13 +697,13 @@ namespace CHPOUTSRCMES.Web.DataModel
                 }
 
 
-
+                RelatedTRepositiory.getContext().Configuration.AutoDetectChangesEnabled = false;
                 for (int j = InventoryItemId_cell.RowIndex + 1; j <= noOfRow; j++)
                 {
                     try
                     {
                         var id = Int64.Parse(ExcelUtil.GetCellString(j, InventoryItemId_cell.ColumnIndex, sheet).Trim());
-                        var org = RelatedTRepositiory.Get(x => x.InventoryItemId == id);
+                        var org = RelatedTRepositiory.Get(x => x.InventoryItemId == id).FirstOrDefault();
                         if (org == null || org.InventoryItemId <= 0)
                         {
                             RELATED_T rELATED_T = new RELATED_T();
@@ -707,7 +717,8 @@ namespace CHPOUTSRCMES.Web.DataModel
                             rELATED_T.CreationDate = DateTime.Parse(ExcelUtil.GetCellString(j, CreationDate_cell.ColumnIndex, sheet).Trim());
                             rELATED_T.LastUpdateBy = Int64.Parse(ExcelUtil.GetCellString(j, LastUpdateBy_cell.ColumnIndex, sheet).Trim());
                             rELATED_T.LastUpdateDate = DateTime.Parse(ExcelUtil.GetCellString(j, LastUpdateDate_cell.ColumnIndex, sheet).Trim());
-                            RelatedTRepositiory.Create(rELATED_T);
+                            RelatedTRepositiory.Create(rELATED_T, saveChanged: true);
+
                         }
                     }
                     catch (Exception ex)
@@ -715,6 +726,8 @@ namespace CHPOUTSRCMES.Web.DataModel
                         logger.Error(LogUtilities.BuildExceptionMessage(ex));
                     }
                 }
+                RelatedTRepositiory.getContext().Configuration.AutoDetectChangesEnabled = true;
+               
             }
         }
 
