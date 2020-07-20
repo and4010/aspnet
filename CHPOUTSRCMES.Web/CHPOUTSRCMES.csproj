@@ -273,11 +273,11 @@
     <Compile Include="Models\Error.cs" />
     <Compile Include="Models\Information\AccountModel.cs" />
     <Compile Include="Models\FullCalendarEventModel.cs" />
+    <Compile Include="Models\Information\OrgSubinventoryDT.cs" />
+    <Compile Include="Models\Information\OspRelatedDT.cs" />
     <Compile Include="Models\Inventory\Inventory.cs" />
     <Compile Include="Models\Label.cs" />
     <Compile Include="Models\Information\MachinePaperType.cs" />
-    <Compile Include="Models\OrgSubinventoryDT.cs" />
-    <Compile Include="Models\OspRelatedDT.cs" />
     <Compile Include="Models\Information\PartNoModel.cs" />
     <Compile Include="Models\Process\Invest.cs" />
     <Compile Include="Models\Process\CHP_PROCESS_T.cs" />
@@ -1848,6 +1848,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="DataModel\Entiy\Delivery\" />
     <Folder Include="Jsons\Responses\" />
     <Folder Include="Views\Stock\" />
     <Folder Include="Views\Transfer\" />

@@ -1,4 +1,5 @@
-﻿using CHPOUTSRCMES.Web.ViewModels.StockTransaction;
+﻿using CHPOUTSRCMES.Web.Models.Information;
+using CHPOUTSRCMES.Web.ViewModels.StockTransaction;
 using System;
 using System.Collections.Generic;
 using System.Linq;
