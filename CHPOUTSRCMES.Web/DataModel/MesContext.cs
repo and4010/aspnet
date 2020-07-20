@@ -19,10 +19,7 @@ namespace CHPOUTSRCMES.Web.DataModel
         {
             Configuration.ProxyCreationEnabled = false;
             Configuration.LazyLoadingEnabled = false;
-
             Database.SetInitializer<MesContext>(new ModelInitializer());
-            Configuration.ProxyCreationEnabled = false;
-            Configuration.LazyLoadingEnabled = false;
 
             if (!Database.Exists())
             {
@@ -41,6 +38,7 @@ namespace CHPOUTSRCMES.Web.DataModel
             modelBuilder.Conventions.Add(new DecimalPropertyConvention(30, 10));
             Precision.ConfigureModelBuilder(modelBuilder);
 
+            //修改使用者登入表格無ID及重新命名表格
             modelBuilder.Entity<AppUser>().HasKey<string>(l => l.Id).ToTable("USER_T");
             modelBuilder.Entity<IdentityUserLogin>().HasKey<string>(l => l.UserId).ToTable("USER_LOGIN_T");
             modelBuilder.Entity<IdentityRole>().HasKey<string>(r => r.Id).ToTable("ROLE_T");
