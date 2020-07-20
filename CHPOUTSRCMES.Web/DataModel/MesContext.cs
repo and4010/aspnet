@@ -9,6 +9,7 @@ using System.Data.Entity.ModelConfiguration.Conventions;
 using System.Linq;
 using System.Web;
 using Microsoft.AspNet.Identity.EntityFramework;
+using CHPOUTSRCMES.Web.DataModel.Entiy.Delivery;
 
 
 namespace CHPOUTSRCMES.Web.DataModel
@@ -94,5 +95,17 @@ namespace CHPOUTSRCMES.Web.DataModel
         public DbSet<CTR_PICKED_HT> CTR_PICKED_HTs { set; get; }
 
         public DbSet<CTR_PICKED_T> CTR_PICKED_Ts { set; get; }
+
+        public DbSet<DLV_ORG_T> DLV_ORG_Ts { set; get; }
+
+        public DbSet<DLV_HEADER_T> DLV_HEADER_Ts { set; get; }
+
+        public DbSet<DLV_DETAIL_T> DLV_DETAIL_Ts { set; get; }
+
+        public DbSet<DLV_DETAIL_HT> DLV_DETAIL_HTs { set; get; }
+
+        public DbSet<DLV_PICKED_T> DLV_PICKED_Ts { set; get; }
+
+        public DbSet<DLV_PICKED_HT> DLV_PICKED_HTs { set; get; }
     }
 }
