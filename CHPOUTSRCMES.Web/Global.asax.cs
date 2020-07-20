@@ -6,11 +6,13 @@ using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
 using CHPOUTSRCMES.Web.DataModel;
+using NLog;
 
 namespace CHPOUTSRCMES.Web
 {
     public class MvcApplication : System.Web.HttpApplication
     {
+        private static Logger logger = LogManager.GetCurrentClassLogger();
         protected void Application_Start()
         {
             AreaRegistration.RegisterAllAreas();
@@ -21,6 +23,11 @@ namespace CHPOUTSRCMES.Web
             using (MesContext mesContext = new MesContext())
             {
             }
+
+            logger.Info("Info");
+            logger.Warn("Warn");
+            logger.Debug("Debug");
+            logger.Error("Error");
         }
 
         protected void Application_Error()
