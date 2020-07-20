@@ -6,10 +6,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
 
-namespace CHPOUTSRCMES.Web.DataModel.Entiy
+namespace CHPOUTSRCMES.Web.DataModel.Entiy.Information
 {
-    [Table("STOCK_REASON_T")]
-    public class STOCK_REASON_T
+    [Table("STK_REASON_T")]
+    public class STK_REASON_T
     {
         /// <summary>
         /// 原因ID

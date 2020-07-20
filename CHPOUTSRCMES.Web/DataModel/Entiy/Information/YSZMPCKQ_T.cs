@@ -5,19 +5,28 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
 
-namespace CHPOUTSRCMES.Web.DataModel.Entiy
+namespace CHPOUTSRCMES.Web.DataModel.Entiy.Information
 {
     [Table("YSZMPCKQ_T")]
     public class YSZMPCKQ_T
     {
+        /// <summary>
+        /// 庫存組織
+        /// </summary>
+        /// 
+        [Required]
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Column("YSZMPCKQ_ID")]
+        public long Yszmpckq_ID { set; get; }
+
+
 
         /// <summary>
         /// 庫存組織
         /// </summary>
         /// 
         [Required]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        [Key]
         [Column("ORGANIZATION_ID")]
         public long OrganizationId { set; get; }
 
@@ -37,7 +46,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy
         /// </summary>
         /// 
         [StringLength(10)]
-        [Required]
+        [Required(AllowEmptyStrings = true)]
         [Column("OSP_SUBINVENTORY")]
         public string OspSubinventory { set; get; }
 
@@ -45,7 +54,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy
         /// 紙別
         /// </summary>
         /// 
-        [StringLength(3)]
+        [StringLength(4)]
         [Required]
         [Column("PSTYP")]
         public string Pstyp { set; get; }
@@ -55,40 +64,40 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy
         /// 基重上限
         /// </summary>
         /// 
-        [Required]
+        [Required(AllowEmptyStrings = true)]
         [Column("BWETUP")]
-        public long Bwetup { set; get; }
+        public decimal Bwetup { set; get; }
 
         /// <summary>
         /// 基重下限
         /// </summary>
         /// 
-        [Required]
+        [Required(AllowEmptyStrings = true)]
         [Column("BWETDN")]
-        public long Bwetdn { set; get; }
+        public decimal Bwetdn { set; get; }
 
         /// <summary>
         /// 令重上限
         /// </summary>
         /// 
-        [Required]
+        [Required(AllowEmptyStrings = true)]
         [Column("RWTUP")]
-        public long Rwtup { set; get; }
+        public decimal Rwtup { set; get; }
 
         /// <summary>
         /// 令重下限
         /// </summary>
         /// 
-        [Required]
+        [Required(AllowEmptyStrings = true)]
         [Column("RWTDN")]
-        public long Rwtdn { set; get; }
+        public decimal Rwtdn { set; get; }
 
         /// <summary>
         /// 包數
         /// </summary>
         /// 
 
-        [Required]
+        [Required(AllowEmptyStrings = true)]
         [Column("PCKQ")]
         public long Pckq { set; get; }
 
@@ -97,7 +106,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy
         /// </summary>
         /// 
 
-        [Required]
+        [Required(AllowEmptyStrings = true)]
         [Column("PAPER_QTY")]
         public long PaperQty { set; get; }
 
@@ -106,10 +115,18 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy
         /// </summary>
         /// 
 
-        [Required]
+        [Required(AllowEmptyStrings = true)]
         [Column("PIECES_QTY")]
         public long PiecesQty { set; get; }
 
+        /// <summary>
+        /// 控制欄位  D:刪除
+        /// </summary>
+        /// 
+        [StringLength(1)]
+        [Required(AllowEmptyStrings = true)]
+        [Column("CONTROL_FLAG", TypeName = "char")]
+        public string ControlFlag { set; get; }
 
         /// <summary>
         /// 建立人員

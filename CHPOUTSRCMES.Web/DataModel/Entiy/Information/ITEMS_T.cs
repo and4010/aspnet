@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
 
-namespace CHPOUTSRCMES.Web.DataModel.Entiy
+namespace CHPOUTSRCMES.Web.DataModel.Entiy.Information
 {
     [Table("ITEMS_T")]
     public class ITEMS_T

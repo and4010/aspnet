@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
 
-namespace CHPOUTSRCMES.Web.DataModel.Entiy
+namespace CHPOUTSRCMES.Web.DataModel.Entiy.Information
 {
     public class SUBINVENTORY_T
     {
@@ -16,6 +16,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy
         /// 
         [Required]
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         [Column("ORGANIZATION_ID",Order = 1)]
         public long OrganizationID { set; get; }
 
@@ -49,5 +50,16 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy
         [StringLength(10)]
         [Column("OSP_FLAG")]
         public string OspFlag { set; get; }
+
+
+        /// <summary>
+        /// 控制欄位  D:刪除
+        /// </summary>
+        /// 
+        [StringLength(1)]
+        [Required(AllowEmptyStrings = true)]
+        [Column("CONTROL_FLAG", TypeName = "char")]
+        public string ControlFlag { set; get; }
+
     }
 }

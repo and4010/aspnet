@@ -9,7 +9,7 @@ using System.Data.Entity.ModelConfiguration.Conventions;
 using System.Linq;
 using System.Web;
 using Microsoft.AspNet.Identity.EntityFramework;
-
+using CHPOUTSRCMES.Web.DataModel.Entiy.Information;
 
 namespace CHPOUTSRCMES.Web.DataModel
 {
@@ -65,6 +65,8 @@ namespace CHPOUTSRCMES.Web.DataModel
 
         public DbSet<ITEMS_T> ItemsTs { set; get; }
 
+        public DbSet<ORG_ITEMS_T> OrgItemsTs { set; get; }
+
         public DbSet<SUBINVENTORY_T> SubinventoryTs { set; get; }
 
         public DbSet<ORGANIZATION_T> OrganizationTs { set; get; }
@@ -75,9 +77,11 @@ namespace CHPOUTSRCMES.Web.DataModel
 
         public DbSet<RELATED_T> ReLatedTs { set; get; }
 
-        public DbSet<STOCK_REASON_T> StockReasonTs { set; get; }
+        public DbSet<STK_REASON_T> StockReasonTs { set; get; }
 
         public DbSet<YSZMPCKQ_T> YszmpckqTs { set; get; }
+
+        public DbSet<TRANSACTION_TYPE_T> TransactionTypeTs { set; get; }
 
         public DbSet<CTR_DETAIL_HT> CTR_DETAIL_HTs { set; get; }
 

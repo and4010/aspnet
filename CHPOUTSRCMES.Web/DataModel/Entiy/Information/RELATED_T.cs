@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
 
-namespace CHPOUTSRCMES.Web.DataModel.Entiy
+namespace CHPOUTSRCMES.Web.DataModel.Entiy.Information
 {
     [Table("RELATED_T")]
     public class RELATED_T
@@ -72,6 +72,15 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy
         [Column("RELATED_ITEM_DESCRIPTION")]
         public string RelatedItemDescription { set; get; }
 
+
+        /// <summary>
+        /// 控制欄位  D:刪除
+        /// </summary>
+        /// 
+        [StringLength(1)]
+        [Required(AllowEmptyStrings = true)]
+        [Column("CONTROL_FLAG", TypeName = "char")]
+        public string ControlFlag { set; get; }
 
         /// <summary>
         /// 建立人員

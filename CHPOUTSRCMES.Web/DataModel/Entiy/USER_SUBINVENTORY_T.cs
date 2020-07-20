@@ -11,6 +11,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy
         /// 
         [Required]
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         [StringLength(128)]
         [Column("UserId")]
         public string UserId { set; get; }
@@ -21,6 +22,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy
         /// 
         [Required]
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         [Column("ORGANIZATION_ID")]
         public long OrganizationID { set; get; }
 
@@ -30,6 +32,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy
         /// 
         [Required]
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         [StringLength(10)]
         [Column("SUBINVENTORY_CODE")]
         public long SUBINVENTORY_CODE { set; get; }

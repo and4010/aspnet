@@ -26,6 +26,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy
         /// 
         [Required]
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         [Column("SUBINVENTORY_CODE")]
         public long SsubinventoryCode { set; get; }
 

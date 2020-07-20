@@ -7,7 +7,7 @@ using System.Web;
 
 namespace CHPOUTSRCMES.Web.DataModel.Entiy
 {
-    public class STOCK_T
+    public class STOCK_HT
     {
         /// <summary>
         /// 庫存ID
@@ -15,6 +15,14 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy
         /// 
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         [Key]
+        [Required]
+        [Column("STOCK_HT_ID")]
+        public int StockHtId { set; get; }
+
+        /// <summary>
+        /// 庫存ID
+        /// </summary>
+        /// 
         [Required]
         [Column("STOCK_ID")]
         public int StockId { set; get; }
@@ -254,7 +262,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy
         /// 狀態碼
         /// </summary>
         /// 
-        [StringLength(10)]
+        [StringLength(240)]
         [Column("STATUS_CODE")]
         public string StatusCode { set; get; }
 
