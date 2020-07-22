@@ -7,6 +7,7 @@ using System.Web;
 
 namespace CHPOUTSRCMES.Web.DataModel.Entiy.Delivery
 {
+    [Table("DLV_DETAIL_T")]
     public class DLV_DETAIL_T
     {
         /// <summary>
@@ -25,7 +26,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Delivery
         /// 
         [Required]
         [Column("DLV_HEADER_ID")]
-        public long Dlv_Header_Id { set; get; }
+        public long DlvHeaderId { set; get; }
 
         /// <summary>
         /// 訂單編號
@@ -33,7 +34,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Delivery
         /// 
         [Required]
         [Column("Order_Number")]
-        public long ORDER_NUMBER { set; get; }
+        public long OrderNumber { set; get; }
 
         /// <summary>
         /// 訂單明細ID
@@ -76,7 +77,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Delivery
         [StringLength(40)]
         [Required]
         [Column("ITEM_NUMBER")]
-        public string Item_Number { set; get; }
+        public string ItemNumber { set; get; }
 
         /// <summary>
         /// 料號名稱
@@ -85,7 +86,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Delivery
         [StringLength(240)]
         [Required]
         [Column("ITEM_DESCRIPTION")]
-        public string Item_Description { set; get; }
+        public string ItemDescription { set; get; }
 
         /// <summary>
         /// 令重
@@ -103,7 +104,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Delivery
         [StringLength(10)]
         [Required]
         [Column("ITEM_CATEGORY")]
-        public string Item_Category { set; get; }
+        public string ItemCategory { set; get; }
 
         /// <summary>
         /// 紙別
@@ -154,7 +155,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Delivery
         /// 
         [StringLength(30)]
         [Column("LOCATOR_CODE")]
-        public string LOCATOR_CODE { set; get; }
+        public string LocatorCode { set; get; }
 
         /// <summary>
         /// 訂單原始交易數量
@@ -266,8 +267,8 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Delivery
         /// 建立時間
         /// </summary>
         /// 
-        [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        //[DataType(DataType.Date)]
+        //[DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         [Required]
         [Column("CREATION_DATE")]
         public DateTime CreationDate { set; get; }
@@ -285,8 +286,8 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Delivery
         /// </summary>
         /// 
         [Column("LAST_UPDATE_DATE")]
-        [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        //[DataType(DataType.Date)]
+        //[DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         [Required]
         public DateTime LastUpdateDate { set; get; }
 

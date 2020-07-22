@@ -7,6 +7,7 @@ using System.Web;
 
 namespace CHPOUTSRCMES.Web.DataModel.Entiy.Delivery
 {
+    [Table("DLV_HEADER_T")]
     public class DLV_HEADER_T
     {
         /// <summary>
@@ -17,7 +18,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Delivery
         [Key]
         [Required]
         [Column("DLV_HEADER_ID")]
-        public long Dlv_Header_Id { set; get; }
+        public long DlvHeaderId { set; get; }
 
         /// <summary>
         /// 作業單元ID(OU)
@@ -33,7 +34,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Delivery
         /// </summary>
         /// 
         [StringLength(240)]
-        [Required]
+        [Required(AllowEmptyStrings=true)]
         [Column("ORG_NAME")]
         public string OrgName { set; get; }
 
@@ -124,7 +125,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Delivery
         [StringLength(10)]
         [Required]
         [Column("ITEM_CATEGORY")]
-        public string Item_Category { set; get; }
+        public string ItemCategory { set; get; }
 
         /// <summary>
         /// 客戶ID
@@ -210,8 +211,8 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Delivery
         /// </summary>
         /// 
         [Required]
-        [Column("DELIVERY_STATUS")]
-        public long DELIVERY_STATUS { set; get; }
+        [Column("DELIVERY_STATUS_ID")]
+        public long DeliveryStatusId { set; get; }
 
         /// <summary>
         /// 交貨單狀態名稱
@@ -226,9 +227,8 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Delivery
         /// 出貨確認人員
         /// </summary>
         /// 
-        [Required]
         [Column("TRANSACTION_BY")]
-        public long TransactionBy { set; get; }
+        public long? TransactionBy { set; get; }
 
         /// <summary>
         /// 出貨確認日期
@@ -237,17 +237,15 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Delivery
         [Column("TRANSACTION_DATE")]
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
-        [Required]
-        public DateTime TransactionDate { set; get; }
+        public DateTime? TransactionDate { set; get; }
 
 
         /// <summary>
         /// 出貨核准人員
         /// </summary>
         /// 
-        [Required]
         [Column("AUTHORIZE_BY")]
-        public long Authorize_By { set; get; }
+        public long? Authorize_By { set; get; }
 
         /// <summary>
         /// 出貨核准日期
@@ -256,8 +254,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Delivery
         [Column("AUTHORIZE_DATE")]
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
-        [Required]
-        public DateTime Authorize_Date { set; get; }
+        public DateTime? Authorize_Date { set; get; }
 
         /// <summary>
         /// 建立人員
@@ -271,8 +268,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Delivery
         /// 建立時間
         /// </summary>
         /// 
-        [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         [Required]
         [Column("CREATION_DATE")]
         public DateTime CreationDate { set; get; }
@@ -290,8 +285,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Delivery
         /// </summary>
         /// 
         [Column("LAST_UPDATE_DATE")]
-        [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         [Required]
         public DateTime LastUpdateDate { set; get; }
     }

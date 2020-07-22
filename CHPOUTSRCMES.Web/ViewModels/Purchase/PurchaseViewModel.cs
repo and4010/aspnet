@@ -6,6 +6,8 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using CHPOUTSRCMES.Web.DataModel;
+using CHPOUTSRCMES.Web.DataModel.UnitOfWorks;
 
 namespace CHPOUTSRCMES.Web.ViewModels.Purchase
 {
@@ -48,8 +50,10 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
 
         public List<FullCalendarEventModel> GetFullCalendarModel()
         {
-            DataProcess dataProcess = new DataProcess();
-            return dataProcess.FullCalender();
+            using (var context = new MesContext())
+            {
+                return new PurchaseUOW(context).getFullCalenderList();
+            }
         }
 
         public List<DetailModel.RollModel> GetRollHeader()

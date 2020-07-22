@@ -264,7 +264,9 @@
     <Compile Include="DataModel\Repositorys\ItemsTRepository.cs" />
     <Compile Include="DataModel\UnitOfWorks\MasterUOW.cs" />
     <Compile Include="DataModel\UnitOfWorks\Interfaces\IUnitOfWork.cs" />
+    <Compile Include="DataModel\UnitOfWorks\PurchaseUOW.cs" />
     <Compile Include="DataModel\UnitOfWorks\UnitOfWork.cs" />
+    <Compile Include="DataModel\UnitOfWorks\DeliveryUOW.cs" />
     <Compile Include="Domain\Data.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -296,7 +298,6 @@
     <Compile Include="Models\Process\CHP_PROCESS_T.cs" />
     <Compile Include="Models\Process\Cotangent.cs" />
     <Compile Include="Models\Process\Production.cs" />
-    <Compile Include="Models\Purchase\DataProcess.cs" />
     <Compile Include="Models\Purchase\PurchaseCalendar.cs" />
     <Compile Include="Models\Navbar.cs" />
     <Compile Include="Models\Purchase\DetailModel.cs" />
