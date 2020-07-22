@@ -48,7 +48,7 @@ function RollSave() {
         url: '/Purchase/RollEditSave',
         type: 'POST',
         datatype: 'json',
-        data: { remak: remak, id: id, status: status, reason: reason, imgSrc: imgSrc},
+        data: { remak: remak, id: id, status: status, reason: reason, imgFile: imgFile},
         success: function (data) {
             if (data.boolean) {
                 window.history.go(-1);
@@ -66,10 +66,16 @@ function FlatSave() {
     var status = $("#Status").val();
     var reason = $("#select-reason").val();
     var remak = $("#textarea").val();
+    var formData = new FormData();
+    var d = imgFile;
+    if (d.length > 0) {
+        formData.append("imgFile", d);
+    }
+
     $.ajax({
         url: "/Purchase/FlatEditSave",
         type: "POST",
-        data: { remak: remak, id: id, status: status, reason: reason  ,imgSrc: imgSrc },
+        data:  formData  ,
         dataType: "JSON",
         success: function (data) {
             if (data.boolean) {

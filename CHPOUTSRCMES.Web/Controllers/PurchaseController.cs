@@ -346,7 +346,7 @@ namespace CHPOUTSRCMES.Web.Controllers
         }
 
         [HttpPost]
-        public JsonResult RollEditSave(string Remak, int id, string Status,string Reason)
+        public JsonResult RollEditSave(string Remak, int id, string Status,string Reason,string imgFile)
         {
             PurchaseViewModel model = new PurchaseViewModel();
 
@@ -357,11 +357,11 @@ namespace CHPOUTSRCMES.Web.Controllers
         }
 
         [HttpPost]
-        public JsonResult FlatEditSave(string Remak, int id, string Status, string Reason,string imgSrc)
+        public JsonResult FlatEditSave(string Remak, int id, string Status, string Reason, HttpPostedFileBase file)
         {
             PurchaseViewModel model = new PurchaseViewModel();
             model.GetFlatEditRemak(Remak, id, Status, Reason);
-            model.SavePhoto(imgSrc);
+            model.SavePhoto(file);
             var boolean = true;
 
             return Json(new { boolean }, JsonRequestBehavior.AllowGet);

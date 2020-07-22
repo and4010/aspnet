@@ -12,7 +12,7 @@ namespace CHPOUTSRCMES.Web.Controllers
         public ActionResult Index()
         { 
             var data = new Domain.Data();
-            db.LocatorTs.ToList();
+         
             return PartialView("_Navbar", data.navbarItems().ToList());
         }
     }

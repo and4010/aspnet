@@ -242,15 +242,20 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
             return paperRollDetail;
         }
 
-        public void SavePhoto(string Img_data)
+        public void SavePhoto(HttpPostedFileBase file)
         {
-            string Img_base64 = Img_data.Substring(Img_data.IndexOf(',') + 1);
-            byte[] Img_byte = Convert.FromBase64String(Img_base64);
-            using (Stream stream = new MemoryStream(Img_byte))
+            var fileName = Path.GetFileName(file.FileName);
+            //string Img_base64 = Img_data.Substring(Img_data.IndexOf(',') + 1);
+            if(fileName != null)
             {
-                Image img = Image.FromStream(stream);
-                img.Save("123.jpg", ImageFormat.Jpeg);
+                byte[] Img_byte = Convert.FromBase64String(fileName);
+                using (Stream stream = new MemoryStream(Img_byte))
+                {
+                    Image img = Image.FromStream(stream);
+                    img.Save("123.jpg", ImageFormat.Jpeg);
+                }
             }
+           
         }
 
 
