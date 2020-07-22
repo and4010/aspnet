@@ -229,6 +229,8 @@
     <Compile Include="DataModel\Entiy\Delivery\DLV_ORG_T.cs" />
     <Compile Include="DataModel\Entiy\Delivery\DLV_PICKED_HT.cs" />
     <Compile Include="DataModel\Entiy\Delivery\DLV_PICKED_T.cs" />
+    <Compile Include="DataModel\Entiy\STK_TXN_T.cs" />
+    <Compile Include="DataModel\Entiy\STOCK_HT.cs" />
     <Compile Include="DataModel\Entiy\USER_T.cs" />
     <Compile Include="DataModel\Entiy\BCD_PREFIX_T.cs" />
     <Compile Include="DataModel\Entiy\LOG_ENTRY_T.cs" />
@@ -258,6 +260,11 @@
     <Compile Include="DataModel\Interfaces\IStaff.cs" />
     <Compile Include="DataModel\MesContext.cs" />
     <Compile Include="DataModel\Initializer.cs" />
+    <Compile Include="DataModel\Repositorys\Interfaces\IItemsTRepository.cs" />
+    <Compile Include="DataModel\Repositorys\ItemsTRepository.cs" />
+    <Compile Include="DataModel\UnitOfWorks\MasterUOW.cs" />
+    <Compile Include="DataModel\UnitOfWorks\Interfaces\IUnitOfWork.cs" />
+    <Compile Include="DataModel\UnitOfWorks\UnitOfWork.cs" />
     <Compile Include="Domain\Data.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
