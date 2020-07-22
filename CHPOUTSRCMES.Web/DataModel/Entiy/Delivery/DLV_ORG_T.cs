@@ -7,6 +7,7 @@ using System.Web;
 
 namespace CHPOUTSRCMES.Web.DataModel.Entiy.Delivery
 {
+    [Table("DLV_ORG_T")]
     public class DLV_ORG_T
     {
         /// <summary>

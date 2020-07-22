@@ -30,9 +30,10 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Interfaces
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
             string includeProperties = "");
 
+        IEnumerable<TEntity> Query(string queryString, params object[] parameters);
+
+
         void SaveChanges();
-
-
 
     }
 }
