@@ -258,6 +258,7 @@
     <Compile Include="DataModel\Interfaces\IStaff.cs" />
     <Compile Include="DataModel\MesContext.cs" />
     <Compile Include="DataModel\Initializer.cs" />
+    <Compile Include="DataModel\Repositorys\OrganizationRepository.cs" />
     <Compile Include="Domain\Data.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>

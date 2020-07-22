@@ -102,7 +102,7 @@ namespace CHPOUTSRCMES.Web.Models.Information
             return ReasonList.Select(i => new SelectListItem() { Text = i.Text, Value = i.Value });
         }
 
-        private IEnumerable<SelectListItem> getOrganizationList()
+        private List<SelectListItem> getOrganizationList()
         {
             List<ListItem> organizationList = new List<ListItem>();
             organizationList.Add(new ListItem("全部", "*"));
@@ -118,7 +118,7 @@ namespace CHPOUTSRCMES.Web.Models.Information
             //organizationList.Add(new ListItem("INV_ORG_華紙新屋廠", "285"));
             //organizationList.Add(new ListItem("INV_ORG_華紙久堂廠", "305"));
             organizationList.AddRange(query.ToList());
-            return organizationList.Select(i => new SelectListItem() { Text = i.Text, Value = i.Value });
+            return organizationList.Select(i => new SelectListItem() { Text = i.Text, Value = i.Value }).ToList();
         }
 
         public IEnumerable<SelectListItem> GetSubinventoryList(string ORGANIZATION_ID, bool needAll)
@@ -378,7 +378,6 @@ namespace CHPOUTSRCMES.Web.Models.Information
             viewModel.SelectedLocator = "*";
             viewModel.SelectedOrganization = "*";
             viewModel.SelectedSubinventory = "*";
-
             viewModel.OrganizationNameItems = getOrganizationList();
             viewModel.SubinventoryNameItems = GetSubinventoryList("*", true);
             viewModel.LocatorNameItems = getLocatorList("*", "*", true);
