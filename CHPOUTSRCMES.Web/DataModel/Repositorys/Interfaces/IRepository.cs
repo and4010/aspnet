@@ -26,9 +26,11 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Interfaces
 
 
         IEnumerable<TEntity> Get(
-            Expression<Func<TEntity, bool>> filter = null,
-            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
-            string includeProperties = "");
+          Expression<Func<TEntity, bool>> filter = null,
+          Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
+          string includeProperties = "");
+
+        IEnumerable<TEntity> Query(string queryString, params object[] parameters);
 
         void SaveChanges();
 
