@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CHPOUTSRCMES.Web.DataModel.Entiy.Information
@@ -36,5 +37,39 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Information
         [StringLength(10)]
         [Column("SUBINVENTORY_CODE", Order = 3)]
         public string SUBINVENTORY_CODE { set; get; }
+
+        /// <summary>
+        /// 建立人員
+        /// </summary>
+        /// 
+        [StringLength(128)]
+        [Required]
+        [Column("CREATED_BY")]
+        public string CreatedBy { set; get; }
+
+        /// <summary>
+        /// 建立時間
+        /// </summary>
+        /// 
+        [DataType(DataType.Date)]
+        [Required]
+        [Column("CREATION_DATE")]
+        public DateTime CreationDate { set; get; }
+
+        /// <summary>
+        /// 更新人員
+        /// </summary>
+        /// 
+        [StringLength(128)]
+        [Column("LAST_UPDATE_BY")]
+        public string LastUpdateBy { set; get; }
+
+        /// <summary>
+        /// 更新時間
+        /// </summary>
+        /// 
+        [DataType(DataType.Date)]
+        [Column("LAST_UPDATE_DATE")]
+        public DateTime? LastUpdateDate { set; get; }
     }
 }

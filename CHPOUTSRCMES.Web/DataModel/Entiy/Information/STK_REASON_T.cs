@@ -54,16 +54,14 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Information
         /// </summary>
         /// 
         [StringLength(128)]
-        [Required]
         [Column("LAST_UPDATE_BY")]
-        public string? LastUpdateBy { set; get; }
+        public string LastUpdateBy { set; get; }
 
         /// <summary>
         /// 更新時間
         /// </summary>
         /// 
         [DataType(DataType.Date)]
-        [Required]
         [Column("LAST_UPDATE_DATE")]
         public DateTime? LastUpdateDate { set; get; }
 

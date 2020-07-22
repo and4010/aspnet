@@ -590,6 +590,10 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             ICell Segment2_cell = null;
             ICell Segment3_cell = null;
             ICell Segment4_cell = null;
+            ICell LocatorStatus_cell = null;
+            ICell LocatorStatusCode_cell = null;
+            ICell LocatorPickingOrder_cell = null;
+            ICell LocatorDisableDate_cell = null;
 
             organizationId_cell = ExcelUtil.FindCell("ORGANIZATION_ID", sheet);
             if (organizationId_cell == null)
@@ -643,6 +647,27 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             {
                 throw new Exception("找不到SEGMENT4欄位");
             }
+            LocatorStatus_cell = ExcelUtil.FindCell("LOCATOR_STATUS", sheet);
+            if (LocatorStatus_cell == null)
+            {
+                throw new Exception("找不到LOCATOR_STATUS欄位");
+            }
+            LocatorStatusCode_cell = ExcelUtil.FindCell("LOCATOR_STATUS_CODE", sheet);
+            if (LocatorStatusCode_cell == null)
+            {
+                throw new Exception("找不到LOCATOR_STATUS_CODE欄位");
+            }
+            LocatorPickingOrder_cell = ExcelUtil.FindCell("LOCATOR_PICKING_ORDER", sheet);
+            if (LocatorPickingOrder_cell == null)
+            {
+                throw new Exception("找不到LOCATOR_PICKING_ORDER欄位");
+            }
+            LocatorDisableDate_cell = ExcelUtil.FindCell("LOCATOR_DISABLE_DATE", sheet);
+            if (LocatorDisableDate_cell == null)
+            {
+                throw new Exception("找不到LOCATOR_DISABLE_DATE欄位");
+            }
+
 
             for (int j = organizationId_cell.RowIndex + 1; j <= noOfRow; j++)
             {
@@ -670,6 +695,10 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                         lOCATOR_T.Segment3 = ExcelUtil.GetCellString(j, Segment3_cell.ColumnIndex, sheet).Trim();
                         lOCATOR_T.Segment4 = ExcelUtil.GetCellString(j, Segment4_cell.ColumnIndex, sheet).Trim();
                         lOCATOR_T.ControlFlag = "";
+                        lOCATOR_T.LocatorStatus = Int64.Parse(ExcelUtil.GetCellString(j, LocatorStatus_cell.ColumnIndex, sheet).Trim());
+                        lOCATOR_T.LocatorStatusCode = ExcelUtil.GetCellString(j, LocatorStatusCode_cell.ColumnIndex, sheet).Trim();
+                        lOCATOR_T.LocatorPickingOrder = Int64.Parse(ExcelUtil.GetCellString(j, LocatorPickingOrder_cell.ColumnIndex, sheet).Trim());
+                        lOCATOR_T.LocatorDisableDate = null;
                         locatorTRepositiory.Create(lOCATOR_T);
                     }
                 }

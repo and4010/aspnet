@@ -7,6 +7,7 @@ using System.Web;
 
 namespace CHPOUTSRCMES.Web.DataModel.Entiy
 {
+    [Table("STK_TXN_T")]
     public class STK_TXN_T
     {
         /// <summary>
@@ -28,6 +29,13 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy
         [Column("STOCK_ID")]
         public int StockId { set; get; }
 
+        /// <summary>
+        /// 庫存組織ID
+        /// </summary>
+        /// 
+        [Required]
+        [Column("ORGANIZATION_ID")]
+        public long OrganizationId { set; get; }
 
         /// <summary>
         /// 庫存組織CODE
@@ -77,7 +85,13 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy
         [Column("LOCATOR_ID")]
         public long LocatorId { set; get; }
 
-
+        /// <summary>
+        /// 庫存組織ID
+        /// </summary>
+        /// 
+        [Required]
+        [Column("DST_ORGANIZATION_ID")]
+        public long DstOrganizationId { set; get; }
 
         /// <summary>
         /// 庫存組織CODE
@@ -193,7 +207,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy
         /// 
         [StringLength(3)]
         [Required]
-        [Column("PRIMARY_UOM_CODE")]
+        [Column("PRY_UOM_CODE")]
         public string PrimaryUomCode { set; get; }
 
         /// <summary>
@@ -201,39 +215,45 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy
         /// </summary>
         /// 
         [Required]
-        [Column("PRIMARY_TRANSACTION_QTY")]
-        public decimal PrimaryTransactionQty { set; get; }
+        [Column("PRY_BEF_QTY")]
+        public decimal PryBefQty { set; get; }
 
         /// <summary>
-        ///主單位可異動量
+        ///主單位異動後數量
         /// </summary>
         /// 
-        [Required]
-        [Column("PRIMARY_AVAILABLE_QTY")]
-        public decimal PrimaryAvailableQty { set; get; }
+        [Column("PRY_AFT_QTY")]
+        public decimal PryAftQty { set; get; }
+
+        /// <summary>
+        ///主單位異動量
+        /// </summary>
+        /// 
+        [Column("PRY_AFT_QTY")]
+        public decimal PryChgQty { set; get; }
 
         /// <summary>
         /// 次要單位
         /// </summary>
         /// 
         [StringLength(3)]
-        [Column("SECONDARY_UOM_CODE")]
-        public string SecondaryUomCode { set; get; }
+        [Column("SEC_UOM_CODE")]
+        public string SecUomCode { set; get; }
 
 
         /// <summary>
         /// 次單位原數量
         /// </summary>
         /// 
-        [Column("SECONDARY_TRANSACTION_QTY")]
-        public decimal? SecondaryTransactionQty { set; get; }
+        [Column("SEC_BEF_QTY")]
+        public decimal? SecBefQty { set; get; }
 
         /// <summary>
         /// 次單位可異動數量
         /// </summary>
         /// 
-        [Column("SECONDARY_AVAILABLE_QTY")]
-        public decimal? SecondaryAvailableQty { set; get; }
+        [Column("SEC_AFT_QTY")]
+        public decimal? SecAftQty { set; get; }
 
 
         /// <summary>
@@ -292,9 +312,8 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy
         /// 建立時間
         /// </summary>
         /// 
-        [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         [Required]
+        [DataType(DataType.Date)]
         [Column("CREATION_DATE")]
         public DateTime CreationDate { set; get; }
 
@@ -304,17 +323,16 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy
         /// 
         [Required]
         [Column("LAST_UPDATE_BY")]
-        public long LastUpdateBy { set; get; }
+        public long? LastUpdateBy { set; get; }
 
         /// <summary>
         /// 更新時間
         /// </summary>
         /// 
-        [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         [Required]
+        [DataType(DataType.Date)]
         [Column("LAST_UPDATE_DATE")]
-        public DateTime LastUpdateDate { set; get; }
+        public DateTime? LastUpdateDate { set; get; }
     }
 
 

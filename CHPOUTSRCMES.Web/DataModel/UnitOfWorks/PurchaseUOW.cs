@@ -274,9 +274,9 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                     ctrheaderT.OrganizationCode = org[i].OrganizationCode;
                     ctrheaderT.Subinventory = org[i].Subinventory;
                     ctrheaderT.Status = 1;
-                    ctrheaderT.CreatedBy = org[i].CreatedBy;
+                    ctrheaderT.CreatedBy = org[i].CreatedBy.ToString();
                     ctrheaderT.CreationDate = org[i].CreationDate;
-                    ctrheaderT.LastUpdateBy = org[i].LastUpdateBy;
+                    ctrheaderT.LastUpdateBy = org[i].LastUpdateBy.ToString();
                     ctrheaderT.LastUpdateDate = org[i].LastUpdateDate;
                     ctrHeaderTRepositiory.Create(ctrheaderT,true);
 
@@ -317,9 +317,9 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                     {
                         ctrdetailT.ItemCategory = "捲筒";
                     }
-                    ctrdetailT.CreatedBy = org[i].CreatedBy;
+                    ctrdetailT.CreatedBy = org[i].CreatedBy.ToString();
                     ctrdetailT.CreationDate = org[i].CreationDate;
-                    ctrdetailT.LastUpdateBy = org[i].LastUpdateBy;
+                    ctrdetailT.LastUpdateBy = org[i].LastUpdateBy.ToString();
                     ctrdetailT.LastUpdateDate = org[i].LastUpdateDate;
                     ctrDetailTRepositiory.Create(ctrdetailT,true);
                 }

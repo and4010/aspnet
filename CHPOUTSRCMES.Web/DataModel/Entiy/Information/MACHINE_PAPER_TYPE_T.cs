@@ -116,7 +116,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Information
         /// </summary>
         /// 
         [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         [Required]
         [Column("CREATION_DATE")]
         public DateTime CreationDate { set; get; }
@@ -135,7 +134,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Information
         /// 
         [Column("LAST_UPDATE_DATE")]
         [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         [Required]
         public DateTime LastUpdateDate { set; get; }
     }

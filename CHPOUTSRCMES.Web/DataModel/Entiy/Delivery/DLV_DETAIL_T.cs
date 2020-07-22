@@ -259,16 +259,16 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Delivery
         /// 建立人員
         /// </summary>
         /// 
+        [StringLength(128)]
         [Required]
         [Column("CREATED_BY")]
-        public long CreatedBy { set; get; }
+        public string CreatedBy { set; get; }
 
         /// <summary>
         /// 建立時間
         /// </summary>
         /// 
-        //[DataType(DataType.Date)]
-        //[DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        [DataType(DataType.Date)]
         [Required]
         [Column("CREATION_DATE")]
         public DateTime CreationDate { set; get; }
@@ -277,19 +277,17 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Delivery
         /// 更新人員
         /// </summary>
         /// 
+        [StringLength(128)]
         [Column("LAST_UPDATE_BY")]
-        [Required]
-        public long LastUpdateBy { set; get; }
+        public string LastUpdateBy { set; get; }
 
         /// <summary>
         /// 更新時間
         /// </summary>
         /// 
+        [DataType(DataType.Date)]
         [Column("LAST_UPDATE_DATE")]
-        //[DataType(DataType.Date)]
-        //[DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
-        [Required]
-        public DateTime LastUpdateDate { set; get; }
+        public DateTime? LastUpdateDate { set; get; }
 
     }
 }

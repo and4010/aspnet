@@ -75,9 +75,9 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                 mDLV_HEADER_T.TransactionDate = null;
                 mDLV_HEADER_T.Authorize_By = null;
                 mDLV_HEADER_T.Authorize_Date = null;
-                mDLV_HEADER_T.CreatedBy = 1;
+                mDLV_HEADER_T.CreatedBy = "1";
                 mDLV_HEADER_T.CreationDate = DateTime.Now;
-                mDLV_HEADER_T.LastUpdateBy = 1;
+                mDLV_HEADER_T.LastUpdateBy = "1";
                 mDLV_HEADER_T.LastUpdateDate = DateTime.Now;
                 dlvHeaderTRepositiory.Create(mDLV_HEADER_T, true);
                 //DliveryHeaderRepositiory.getContext().Configuration.AutoDetectChangesEnabled = true;
@@ -113,9 +113,9 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                 mDLV_DETAIL_T.TmpItemId = null;
                 mDLV_DETAIL_T.TmpItemNumber = "";
                 mDLV_DETAIL_T.TmpItemDescription = "";
-                mDLV_DETAIL_T.CreatedBy = 1;
+                mDLV_DETAIL_T.CreatedBy = "1";
                 mDLV_DETAIL_T.CreationDate = DateTime.Now;
-                mDLV_DETAIL_T.LastUpdateBy = 1;
+                mDLV_DETAIL_T.LastUpdateBy = "1";
                 mDLV_DETAIL_T.LastUpdateDate = DateTime.Now;
                 dlvDetailTRepositiory.Create(mDLV_DETAIL_T, true);
             }
