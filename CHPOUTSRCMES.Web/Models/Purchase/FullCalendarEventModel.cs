@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace CHPOUTSRCMES.Web.Models
+namespace CHPOUTSRCMES.Web.Models.Purchase
 {
     public class FullCalendarEventModel
     {
-        public Int64 id { get; set; }
+        public long id { get; set; }
 
         public String title { get; set; }
 
@@ -19,7 +19,7 @@ namespace CHPOUTSRCMES.Web.Models
 
         public String url { get; set; }
 
-        public String Status { get; set; }
+        public long Status { get; set; }
 
         public String color { get; set; }
     }

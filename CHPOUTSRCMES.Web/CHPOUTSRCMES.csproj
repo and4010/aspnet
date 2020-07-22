@@ -229,6 +229,8 @@
     <Compile Include="DataModel\Entiy\Delivery\DLV_ORG_T.cs" />
     <Compile Include="DataModel\Entiy\Delivery\DLV_PICKED_HT.cs" />
     <Compile Include="DataModel\Entiy\Delivery\DLV_PICKED_T.cs" />
+    <Compile Include="DataModel\Entiy\STK_TXN_T.cs" />
+    <Compile Include="DataModel\Entiy\STOCK_HT.cs" />
     <Compile Include="DataModel\Entiy\USER_T.cs" />
     <Compile Include="DataModel\Entiy\BCD_PREFIX_T.cs" />
     <Compile Include="DataModel\Entiy\LOG_ENTRY_T.cs" />
@@ -259,6 +261,13 @@
     <Compile Include="DataModel\MesContext.cs" />
     <Compile Include="DataModel\Initializer.cs" />
     <Compile Include="DataModel\Repositorys\OrganizationRepository.cs" />
+    <Compile Include="DataModel\Repositorys\Interfaces\IItemsTRepository.cs" />
+    <Compile Include="DataModel\Repositorys\ItemsTRepository.cs" />
+    <Compile Include="DataModel\UnitOfWorks\MasterUOW.cs" />
+    <Compile Include="DataModel\UnitOfWorks\Interfaces\IUnitOfWork.cs" />
+    <Compile Include="DataModel\UnitOfWorks\PurchaseUOW.cs" />
+    <Compile Include="DataModel\UnitOfWorks\UnitOfWork.cs" />
+    <Compile Include="DataModel\UnitOfWorks\DeliveryUOW.cs" />
     <Compile Include="Domain\Data.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -279,7 +288,7 @@
     <Compile Include="Models\Delivery\DeliveryDetailViewHeader.cs" />
     <Compile Include="Models\Error.cs" />
     <Compile Include="Models\Information\AccountModel.cs" />
-    <Compile Include="Models\FullCalendarEventModel.cs" />
+    <Compile Include="Models\Purchase\FullCalendarEventModel.cs" />
     <Compile Include="Models\Information\OrgSubinventoryDT.cs" />
     <Compile Include="Models\Information\OspRelatedDT.cs" />
     <Compile Include="Models\Inventory\Inventory.cs" />
@@ -310,6 +319,7 @@
     <Compile Include="Models\Information\YszmpckqDT.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
+    <Compile Include="Util\ConvertDateTime.cs" />
     <Compile Include="Util\ExcelImport.cs" />
     <Compile Include="Util\ExcelUtil.cs" />
     <Compile Include="Util\LogUtilities.cs" />

@@ -164,7 +164,7 @@ function calendarinit(calendar, sy, sm, sw) {
         calendar.getEventSources()[0].remove();
     };
 
-    calendar.addEventSource('/Purchase/GetEvents/' + date);
+    calendar.addEventSource('/Purchase/GetEvents/');
     calendar.gotoDate(year + "-" + month + "-01");
 
     //var date = calendar.getDate()

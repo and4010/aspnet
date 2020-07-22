@@ -119,7 +119,7 @@ namespace CHPOUTSRCMES.Web.Models.Purchase
             [Display(Name = "料號")]
             public string Item_No { get; set; }
 
-            [Display(Name = "令種")]
+            [Display(Name = "令重")]
             public string ReamWeight { get; set; }
 
             [Display(Name = "捲數/棧板數")]

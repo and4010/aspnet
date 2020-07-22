@@ -7,31 +7,27 @@ using System.Web;
 
 namespace CHPOUTSRCMES.Web.DataModel.Entiy.Interfaces
 {
-    public interface IRepository<TEntity> : IDisposable where TEntity : class
+    public interface IRepository<T> : IDisposable where T : class
     {
-
-        DbContext getContext();
-
-
-        void Create(TEntity instance, bool saveChanged = false);
+        void Create(T instance, bool saveChanged = false);
 
 
-        void Update(TEntity instance, bool saveChanged = false);
+        void Update(T instance, bool saveChanged = false);
 
 
-        void Update(TEntity instance, bool saveChanged = false, params object[] keyValues);
+        void Update(T instance, bool saveChanged = false, params object[] keyValues);
 
 
-        void Delete(TEntity instance, bool saveChanged = false);
+        void Delete(T instance, bool saveChanged = false);
 
-
-        IEnumerable<TEntity> Get(
-            Expression<Func<TEntity, bool>> filter = null,
-            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
+        IEnumerable<T> Get(
+            Expression<Func<T, bool>> filter = null,
+            Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
             string includeProperties = "");
 
-        IEnumerable<TEntity> Query(string queryString, params object[] parameters);
+        IEnumerable<T> Query(string queryString, params object[] parameters);
 
+        IQueryable<T> GetAll();
 
         void SaveChanges();
 

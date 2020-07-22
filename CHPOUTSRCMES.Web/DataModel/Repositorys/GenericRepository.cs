@@ -8,46 +8,26 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Web;
 using EntityFramework.Utilities;
+using CHPOUTSRCMES.Web.DataModel.UnitOfWorks.Interfaces;
 
 namespace CHPOUTSRCMES.Web.DataModel.Entiy.Repositorys
 {
     public class GenericRepository<TEntity> : IRepository<TEntity>
         where TEntity : class
     {
+        public IUnitOfWork UnitOfWork { get; set; }
 
-        private DbContext _context { get; set; }
+        private DbContext context { set; get; }
 
-
-        public DbContext getContext()
+        public GenericRepository(IUnitOfWork uow)
         {
-            return this._context;
-        }
-
-
-        public GenericRepository() : this(new MesContext())
-        {
-        }
-
-
-        public GenericRepository(DbContext context)
-        {
-            if (context == null)
+            if (uow == null)
             {
-                throw new ArgumentNullException("context");
+                throw new ArgumentNullException("uow");
             }
-            this._context = context;
+            this.UnitOfWork = uow;
+            this.context = uow.Context;
         }
-
-
-        public GenericRepository(ObjectContext context)
-        {
-            if (context == null)
-            {
-                throw new ArgumentNullException("context");
-            }
-            this._context = new DbContext(context, true);
-        }
-
 
         /// <summary>
         /// Creates the specified instance.
@@ -62,7 +42,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Repositorys
 
             }
 
-            this._context.Set<TEntity>().Add(instance);
+            this.context.Set<TEntity>().Add(instance);
 
             if (saveChanged)
             {
@@ -94,7 +74,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Repositorys
                 throw new ArgumentNullException("instance");
             }
 
-            this._context.Entry(instance).State = EntityState.Modified;
+            this.context.Entry<TEntity>(instance).State = EntityState.Modified;
             if (savedChanged)
             {
                 this.SaveChanges();
@@ -116,14 +96,14 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Repositorys
                 throw new ArgumentNullException("instance");
             }
 
-            var entry = _context.Entry<TEntity>(instance);
+            var entry = this.context.Entry(instance);
             if (entry.State == EntityState.Detached)
             {
-                var set = _context.Set<TEntity>();
+                var set = this.context.Set<TEntity>();
                 TEntity attachedEntity = set.Find(keyValues);
                 if (attachedEntity != null)
                 {
-                    var attachedEntry = _context.Entry(attachedEntity);
+                    var attachedEntry = this.context.Entry(attachedEntity);
                     attachedEntry.CurrentValues.SetValues(instance);
                 }
                 else
@@ -150,7 +130,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Repositorys
             {
                 throw new ArgumentNullException("instance");
             }
-            this._context.Entry(instance).State = EntityState.Deleted;
+            this.context.Entry(instance).State = EntityState.Deleted;
             if (saveChanged)
             {
                 this.SaveChanges();
@@ -163,7 +143,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Repositorys
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
             string includeProperties = "")
         {
-            IQueryable<TEntity> query = this._context.Set<TEntity>();
+            IQueryable<TEntity> query = this.context.Set<TEntity>();
 
             if (filter != null)
             {
@@ -181,11 +161,11 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Repositorys
 
             if (orderBy != null)
             {
-                return orderBy(query).AsNoTracking().ToList();
+                return orderBy(query).ToList();
             }
             else
             {
-                return query.AsNoTracking().ToList();
+                return query.ToList();
             }
 
         }
@@ -193,13 +173,19 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Repositorys
 
         public IEnumerable<TEntity> Query(string queryString, params object[] parameters)
         {
-            return _context.Set<TEntity>().SqlQuery(queryString, parameters).AsNoTracking().ToList();
+            return this.context.Set<TEntity>().SqlQuery(queryString, parameters).ToList();
+        }
+
+
+        public IQueryable<TEntity> GetAll()
+        {
+            return context.Set<TEntity>().AsQueryable();
         }
 
 
         public void SaveChanges()
         {
-            this._context.SaveChanges();
+            this.context.SaveChanges();
         }
 
 
@@ -214,10 +200,10 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Repositorys
         {
             if (disposing)
             {
-                if (this._context != null)
+                if (this.context != null)
                 {
-                    this._context.Dispose();
-                    this._context = null;
+                    this.context.Dispose();
+                    this.context = null;
                 }
             }
         }
