@@ -13,6 +13,7 @@ using NLog;
 using NPOI.SS.UserModel;
 using System.Web.UI.WebControls;
 using System.Web.Mvc;
+using CHPOUTSRCMES.Web.Models.Information;
 
 namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
 {
@@ -1274,8 +1275,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
  
             var tempList = organizationRepositiory
                             .GetAll().AsNoTracking()
-                            .OrderBy(x => x.OrganizationID)
-                            .ThenBy(x => x.OrganizationCode)
+                            .OrderBy(x => x.OrganizationCode)
                             .Select(x => new SelectListItem()
                             {
                                 Text = x.OrganizationCode,
@@ -1306,8 +1306,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             {
                 var tempList = subinventoryRepositiory
                            .GetAll().AsNoTracking()
-                           .OrderBy(x => x.OrganizationId)
-                           .ThenBy(x => x.SubinventoryCode)
+                           .OrderBy(x => x.SubinventoryCode)
                            .Select(x => new SelectListItem()
                            {
                                Text = x.SubinventoryCode,
@@ -1320,8 +1319,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                 var tempList = subinventoryRepositiory
                            .GetAll().AsNoTracking()
                            .Where(x => x.OrganizationId == organizationId)
-                           .OrderBy(x => x.OrganizationId)
-                           .ThenBy(x => x.SubinventoryCode)
+                           .OrderBy(x => x.SubinventoryCode)
                            .Select(x => new SelectListItem()
                            {
                                Text = x.SubinventoryCode,
@@ -1352,8 +1350,8 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             
             if (ORGANIZATION_ID == "*" && SUBINVENTORY_CODE == "*")
             {
-                var tempList = locatorTRepositiory.GetAll()
-                          .Join(subinventoryRepositiory.GetAll(),
+                var tempList = locatorTRepositiory.GetAll().AsNoTracking()
+                          .Join(subinventoryRepositiory.GetAll().AsNoTracking(),
                           l => new { l.SubinventoryCode, l.OrganizationId },
                           s => new { s.SubinventoryCode, s.OrganizationId },
                           (l, s) => new
@@ -1375,8 +1373,8 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             }
             else if (ORGANIZATION_ID != "*" && SUBINVENTORY_CODE == "*")
             {
-                var tempList = locatorTRepositiory.GetAll()
-                          .Join(subinventoryRepositiory.GetAll(),
+                var tempList = locatorTRepositiory.GetAll().AsNoTracking()
+                          .Join(subinventoryRepositiory.GetAll().AsNoTracking(),
                           l => new { l.SubinventoryCode, l.OrganizationId },
                           s => new { s.SubinventoryCode, s.OrganizationId },
                           (l, s) => new
@@ -1398,8 +1396,8 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             }
             else if (ORGANIZATION_ID == "*" && SUBINVENTORY_CODE != "*")
             {
-                var tempList = locatorTRepositiory.GetAll()
-                          .Join(subinventoryRepositiory.GetAll(),
+                var tempList = locatorTRepositiory.GetAll().AsNoTracking()
+                          .Join(subinventoryRepositiory.GetAll().AsNoTracking(),
                           l => new { l.SubinventoryCode, l.OrganizationId },
                           s => new { s.SubinventoryCode, s.OrganizationId },
                           (l, s) => new
@@ -1421,8 +1419,8 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             }
             else
             {
-                var tempList = locatorTRepositiory.GetAll()
-                          .Join(subinventoryRepositiory.GetAll(),
+                var tempList = locatorTRepositiory.GetAll().AsNoTracking()
+                          .Join(subinventoryRepositiory.GetAll().AsNoTracking(),
                           l => new { l.SubinventoryCode, l.OrganizationId },
                           s => new { s.SubinventoryCode, s.OrganizationId },
                           (l, s) => new
@@ -1453,6 +1451,56 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             Choice = 2
         }
 
-        
+        public List<OrgSubinventoryDT> search(string ORGANIZATION_ID, string SUBINVENTORY_CODE, string LOCATOR_ID)
+        {
+            try
+            {
+                long orgId = 0;
+                long locId = 0;
+
+                try
+                {
+                    if (!string.IsNullOrEmpty(ORGANIZATION_ID) && ORGANIZATION_ID != "*")
+                    {
+                        orgId = Convert.ToInt64(ORGANIZATION_ID);
+                    }
+                }
+                catch
+                {
+                    ORGANIZATION_ID = "*";
+                }
+
+                try
+                {
+                    if (!string.IsNullOrEmpty(LOCATOR_ID) && LOCATOR_ID != "*")
+                    {
+                        locId = Convert.ToInt64(LOCATOR_ID);
+                    }
+                }
+                catch
+                {
+                    LOCATOR_ID = "*";
+                }
+
+
+
+                //var query = testSource.Where(
+                //  x =>
+                //  (ORGANIZATION_ID == "*" || x.ORGANIZATION_ID == orgId) &&
+                //  (SUBINVENTORY_CODE == "*" || x.SUBINVENTORY_CODE != null && x.SUBINVENTORY_CODE.ToLower() == SUBINVENTORY_CODE.ToLower()) &&
+                //  (LOCATOR_ID == "*" || x.LOCATOR_ID == locId)
+                //  ).ToList();
+
+                //dtData = query;
+                return query;
+            }
+            catch (Exception e)
+            {
+                //result.Msg = e.Message;
+                //result.Success = false;
+                return new List<OrgSubinventoryDT>();
+            }
+            //return result;
+        }
     }
 }
