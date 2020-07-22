@@ -10,6 +10,7 @@ using CHPOUTSRCMES.Web.ViewModels;
 using System.Web;
 using System.Linq;
 using CHPOUTSRCMES.Web.Models.Information;
+using System.Net;
 
 namespace CHPOUTSRCMES.Web.Controllers
 {
@@ -153,11 +154,11 @@ namespace CHPOUTSRCMES.Web.Controllers
 
 
         [HttpPost, ActionName("RollHeader")]
-        public JsonResult RollHeader(DataTableAjaxPostViewModel data)
+        public JsonResult RollHeader(DataTableAjaxPostViewModel data,string CabinetNumber)
         {
             PurchaseViewModel purchaseViewModel = new PurchaseViewModel();
             List<DetailModel.RollModel> model;
-            model = purchaseViewModel.GetRollHeader();
+            model = purchaseViewModel.GetRollHeader(CabinetNumber);
             return Json(new { draw = data.Draw, recordsFiltered = model.Count, recordsTotal = model.Count, data = model }, JsonRequestBehavior.AllowGet);
             //draw：為避免XSS攻擊，內建的控制。 
             //recordsTotal：篩選前的總資料數 
@@ -199,12 +200,12 @@ namespace CHPOUTSRCMES.Web.Controllers
 
 
         [HttpPost, ActionName("FlatHeader")]
-        public JsonResult FlatHeader(DataTableAjaxPostViewModel data)
+        public JsonResult FlatHeader(DataTableAjaxPostViewModel data, string CabinetNumber)
         {
             PurchaseViewModel purchaseViewModel = new PurchaseViewModel();
             List<DetailModel.FlatModel> model;
 
-            model = purchaseViewModel.GetFlatHeader();
+            model = purchaseViewModel.GetFlatHeader(CabinetNumber);
 
             return Json(new { draw = data.Draw, recordsFiltered = model.Count, recordsTotal = model.Count, data = model }, JsonRequestBehavior.AllowGet);
             //draw：為避免XSS攻擊，內建的控制。 
@@ -240,10 +241,10 @@ namespace CHPOUTSRCMES.Web.Controllers
         }
 
         [HttpPost]
-        public JsonResult CheckCabinetNumber(string CabinetNumber)
+        public JsonResult CheckCabinetNumber(string InputCabinetNumber, string ViewCabinetNumber)
         {
             var boolean = false;
-             if(CabinetNumber == "TGBU6882663")
+             if(InputCabinetNumber == ViewCabinetNumber)
             {
                 boolean = true;
             }
@@ -345,7 +346,7 @@ namespace CHPOUTSRCMES.Web.Controllers
         }
 
         [HttpPost]
-        public JsonResult RollEditSave(string Remak, int id, string Status,string Reason)
+        public JsonResult RollEditSave(string Remak, int id, string Status,string Reason,string imgFile)
         {
             PurchaseViewModel model = new PurchaseViewModel();
 
@@ -356,10 +357,11 @@ namespace CHPOUTSRCMES.Web.Controllers
         }
 
         [HttpPost]
-        public JsonResult FlatEditSave(string Remak, int id, string Status, string Reason)
+        public JsonResult FlatEditSave(string Remak, int id, string Status, string Reason, HttpPostedFileBase file)
         {
             PurchaseViewModel model = new PurchaseViewModel();
             model.GetFlatEditRemak(Remak, id, Status, Reason);
+            model.SavePhoto(file);
             var boolean = true;
 
             return Json(new { boolean }, JsonRequestBehavior.AllowGet);
@@ -395,7 +397,7 @@ namespace CHPOUTSRCMES.Web.Controllers
 
 
         [HttpPost]
-        public JsonResult UploadFileRoll(HttpPostedFileBase file, DataTableAjaxPostViewModel data)
+        public JsonResult UploadFileRoll(HttpPostedFileBase file, DataTableAjaxPostViewModel data, FormCollection formCollection)
         {
             var result = new ResultModel();
             var detail = new List<DetailModel.RollDetailModel>();
@@ -418,7 +420,7 @@ namespace CHPOUTSRCMES.Web.Controllers
                     try
                     {
                         //file.SaveAs(Path.Combine(filelocation, file.FileName));
-                        ExcelImportRoll(file, data, ref detail, ref result);
+                        ExcelImportRoll(file, data, ref detail, ref result, formCollection["CabinetNumber"]);
                     }
                     catch (Exception e)
                     {
@@ -437,11 +439,11 @@ namespace CHPOUTSRCMES.Web.Controllers
         }
 
         [HttpPost]
-        public JsonResult ExcelImportRoll(HttpPostedFileBase file, DataTableAjaxPostViewModel data, ref List<DetailModel.RollDetailModel> detail, ref ResultModel result)
+        public JsonResult ExcelImportRoll(HttpPostedFileBase file, DataTableAjaxPostViewModel data, ref List<DetailModel.RollDetailModel> detail, ref ResultModel result,string CONTAINER_NO)
         {
 
             PurchaseViewModel purchaseView = new PurchaseViewModel();
-            List<DetailModel.RollModel> RollHeader = purchaseView.GetRollHeader();
+            List<DetailModel.RollModel> RollHeader = purchaseView.GetRollHeader(CONTAINER_NO);
             var papper = new ExcelImport();
             papper.PaperRollDetail(file, ref data, ref detail, ref result, RollHeader);
             PurchaseViewModel.StockInRoll = detail;
@@ -457,15 +459,15 @@ namespace CHPOUTSRCMES.Web.Controllers
 
         //頁籤數字
         [HttpPost]
-        public JsonResult PaperNumber()
+        public JsonResult PaperNumber(string CabinetNumber)
         {
             var PR = 0;
             var PH = 0;
             PurchaseViewModel purchaseView = new PurchaseViewModel();
-            List <DetailModel.RollModel> header = purchaseView.GetRollHeader();
+            List <DetailModel.RollModel> header = purchaseView.GetRollHeader(CabinetNumber);
             for(int i =0; i<header.Count; i++)
             {
-                PH += Int32.Parse(header[i].RollReamQty);
+                PH += decimal.ToInt32(header[i].RollReamQty);
             }
             var model = PurchaseViewModel.StockInRoll;
             for (int i = 0; i < model.Count; i++)
@@ -480,15 +482,15 @@ namespace CHPOUTSRCMES.Web.Controllers
         }
 
         [HttpPost]
-        public JsonResult FlatNumber()
+        public JsonResult FlatNumber(string CabinetNumber)
         {
             var FB = 0;
             var FH = 0;
             PurchaseViewModel purchaseView = new PurchaseViewModel();
-            List<DetailModel.FlatModel> header = purchaseView.GetFlatHeader();
+            List<DetailModel.FlatModel> header = purchaseView.GetFlatHeader(CabinetNumber);
             for (int i = 0; i < header.Count; i++)
             {
-                FH += Int32.Parse(header[i].RollReamQty);
+                FH += decimal.ToInt32(header[i].RollReamQty);
             }
             var model = PurchaseViewModel.StockInFlat;
             for (int i = 0; i < model.Count; i++)
@@ -546,8 +548,6 @@ namespace CHPOUTSRCMES.Web.Controllers
             //papper.FlatDetail(file, ref detail, ref result);
             return Json(new { draw = data.Draw, recordsFiltered = detail.Count, recordsTotal = detail.Count, data = detail, result }, JsonRequestBehavior.AllowGet);
         }
-
-
       
         public void DownloadFile()
         {
@@ -590,5 +590,6 @@ namespace CHPOUTSRCMES.Web.Controllers
             //HttpContext.Current.Response.Write();
            Response.End();
         }
+
     }
 }

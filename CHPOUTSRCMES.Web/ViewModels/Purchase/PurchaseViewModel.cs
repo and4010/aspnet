@@ -8,6 +8,9 @@ using System.Web;
 using System.Web.Mvc;
 using CHPOUTSRCMES.Web.DataModel;
 using CHPOUTSRCMES.Web.DataModel.UnitOfWorks;
+using System.IO;
+using System.Drawing;
+using System.Drawing.Imaging;
 
 namespace CHPOUTSRCMES.Web.ViewModels.Purchase
 {
@@ -56,93 +59,24 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
             }
         }
 
-        public List<DetailModel.RollModel> GetRollHeader()
+        public List<DetailModel.RollModel> GetRollHeader(string CONTAINER_NO)
         {
-            List<DetailModel.RollModel> model = new List<DetailModel.RollModel>();
-
-            model.Add(new DetailModel.RollModel()
+            using (var context = new MesContext())
             {
-                Id = 1,
-                Subinventory = "TB2",
-                Locator = "SFG",
-                Item_No = "4FU0ZA025500635RL00",
-                PaperType = "FU0Z"
-            ,
-                BaseWeight = "2550",
-                Specification = "635",
-                RollReamQty = "1",
-                TransactionQuantity = "0.421",
-                TransactionUom = "MT",
-                PrimanyQuantity = "421",
-                PrimaryUom = "KG",
-            });
-            model.Add(new DetailModel.RollModel()
-            {
-                Id = 2,
-                Subinventory = "TB2",
-                Locator = "SFG",
-                Item_No = "4FU0ZA022000635RL00",
-                PaperType = "FU0Z"
-    ,
-                BaseWeight = "2200",
-                Specification = "635",
-                RollReamQty = "1",
-                TransactionQuantity = "0.44",
-                TransactionUom = "MT",
-                PrimanyQuantity = "440",
-                PrimaryUom = "KG",
-            });
-            model.Add(new DetailModel.RollModel()
-            {
-                Id = 3,
-                Subinventory = "TB2",
-                Locator = "SFG",
-                Item_No = "4FU0ZA022000889RL00",
-                PaperType = "FU0Z"
-    ,
-                BaseWeight = "2200",
-                Specification = "889",
-                RollReamQty = "1",
-                TransactionQuantity = "0.889",
-                TransactionUom = "MT",
-                PrimanyQuantity = "889",
-                PrimaryUom = "KG",
-            });
-            return model;
+                return new PurchaseUOW(context).GetPaperRollHeaderList(CONTAINER_NO);
+            }
         }
 
-        public List<DetailModel.FlatModel> GetFlatHeader()
+        public List<DetailModel.FlatModel> GetFlatHeader(string CONTAINER_NO)
         {
-            List<DetailModel.FlatModel> model = new List<DetailModel.FlatModel>();
 
-            model.Add(new DetailModel.FlatModel()
+            using (var context = new MesContext())
             {
-                Id = 1,
-                Subinventory = "SFG",
-                Locator = "TB2",
-                Item_No = "4DM00A03500214K512K",
-                ReamWeight = "1000"
-            ,
-                RollReamQty = "3",
-                PackingType = "令包",
-                Pieces_Qty = "1000",
-                TransactionQuantity = "3",
-                TransactionUom = "MT",
-                TtlRollReam = "30000",
-                TtlRollReamUom = "RE",
-                DeliveryQty = "30000",
-                DeliveryUom = "KG"
-            });
-
-            return model;
+               return new PurchaseUOW(context).GetFlatHeaderList(CONTAINER_NO);
+            }
         }
 
-        public static void resetData()
-        {
-            StockInFlat = new List<DetailModel.FlatDetailModel>();
-            StockInRoll = new List<DetailModel.RollDetailModel>();
-        
-        }
+
 
         public static void GetStockInRoll()
         {
@@ -308,7 +242,21 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
             return paperRollDetail;
         }
 
-
+        public void SavePhoto(HttpPostedFileBase file)
+        {
+            var fileName = Path.GetFileName(file.FileName);
+            //string Img_base64 = Img_data.Substring(Img_data.IndexOf(',') + 1);
+            if(fileName != null)
+            {
+                byte[] Img_byte = Convert.FromBase64String(fileName);
+                using (Stream stream = new MemoryStream(Img_byte))
+                {
+                    Image img = Image.FromStream(stream);
+                    img.Save("123.jpg", ImageFormat.Jpeg);
+                }
+            }
+           
+        }
 
 
 

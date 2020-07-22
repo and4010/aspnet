@@ -10,7 +10,7 @@ namespace CHPOUTSRCMES.Web.ViewModels
 {
     public class OrgSubinventoryViewModel
     {
-        public IEnumerable<SelectListItem> OrganizationNameItems { set; get; }
+        public List<SelectListItem> OrganizationNameItems { set; get; }
         [Display(Name = "組織")]
         public string SelectedOrganization { set; get; }
 

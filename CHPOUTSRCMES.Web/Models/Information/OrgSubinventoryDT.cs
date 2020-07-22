@@ -1,4 +1,6 @@
-﻿using CHPOUTSRCMES.Web.ViewModels;
+﻿using CHPOUTSRCMES.Web.DataModel;
+using CHPOUTSRCMES.Web.DataModel.UnitOfWorks;
+using CHPOUTSRCMES.Web.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -102,7 +104,7 @@ namespace CHPOUTSRCMES.Web.Models.Information
             return ReasonList.Select(i => new SelectListItem() { Text = i.Text, Value = i.Value });
         }
 
-        private IEnumerable<SelectListItem> getOrganizationList()
+        private List<SelectListItem> getOrganizationList()
         {
             List<ListItem> organizationList = new List<ListItem>();
             organizationList.Add(new ListItem("全部", "*"));
@@ -118,7 +120,7 @@ namespace CHPOUTSRCMES.Web.Models.Information
             //organizationList.Add(new ListItem("INV_ORG_華紙新屋廠", "285"));
             //organizationList.Add(new ListItem("INV_ORG_華紙久堂廠", "305"));
             organizationList.AddRange(query.ToList());
-            return organizationList.Select(i => new SelectListItem() { Text = i.Text, Value = i.Value });
+            return organizationList.Select(i => new SelectListItem() { Text = i.Text, Value = i.Value }).ToList();
         }
 
         public IEnumerable<SelectListItem> GetSubinventoryList(string ORGANIZATION_ID, bool needAll)
@@ -374,15 +376,22 @@ namespace CHPOUTSRCMES.Web.Models.Information
 
         public OrgSubinventoryViewModel getViewModel()
         {
-            OrgSubinventoryViewModel viewModel = new OrgSubinventoryViewModel();
-            viewModel.SelectedLocator = "*";
-            viewModel.SelectedOrganization = "*";
-            viewModel.SelectedSubinventory = "*";
-
-            viewModel.OrganizationNameItems = getOrganizationList();
-            viewModel.SubinventoryNameItems = GetSubinventoryList("*", true);
-            viewModel.LocatorNameItems = getLocatorList("*", "*", true);
-            return viewModel;
+            using (var context = new MesContext())
+            {
+                using (MasterUOW uow = new MasterUOW(context))
+                {
+                    OrgSubinventoryViewModel viewModel = new OrgSubinventoryViewModel();
+                    viewModel.SelectedLocator = "*";
+                    viewModel.SelectedOrganization = "*";
+                    viewModel.SelectedSubinventory = "*";
+                    viewModel.OrganizationNameItems = uow.GetOrganizationDropDownList(MasterUOW.DropDownListType.All);
+                    //viewModel.SubinventoryNameItems = GetSubinventoryList("*", true);
+                    viewModel.SubinventoryNameItems = uow.GetSubinventoryDropDownList("*", MasterUOW.DropDownListType.All);
+                    //viewModel.LocatorNameItems = getLocatorList("*", "*", true);
+                    viewModel.LocatorNameItems = uow.GetLocatorDropDownList("*", "*", MasterUOW.DropDownListType.All);
+                    return viewModel;
+                }             
+            }
         }
 
         public string getORGANIZATION_CODE(string SUBINVENTORY_CODE)

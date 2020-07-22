@@ -11,6 +11,8 @@ using CHPOUTSRCMES.Web.DataModel.UnitOfWorks.Interfaces;
 using CHPOUTSRCMES.Web.Util;
 using NLog;
 using NPOI.SS.UserModel;
+using System.Web.UI.WebControls;
+using System.Web.Mvc;
 
 namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
 {
@@ -508,6 +510,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             ICell subinventoryCode_cell = null;
             ICell subinventoryName_cell = null;
             ICell ospFlag_cell = null;
+            ICell LocatorType_cell = null;
 
             organizationId_cell = ExcelUtil.FindCell("ORGANIZATION_ID", sheet);
             if (organizationId_cell == null)
@@ -531,6 +534,11 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             {
                 throw new Exception("找不到OSP_FLAG欄位");
             }
+            LocatorType_cell = ExcelUtil.FindCell("LOCATOR_TYPE", sheet);
+            if (LocatorType_cell == null)
+            {
+                throw new Exception("找不到LOCATOR_TYPE欄位");
+            }
 
             for (int j = organizationId_cell.RowIndex + 1; j <= noOfRow; j++)
             {
@@ -545,11 +553,12 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                     if (org == null)
                     {
                         SUBINVENTORY_T sUBINVENTORY_T = new SUBINVENTORY_T();
-                        sUBINVENTORY_T.OrganizationID = Int64.Parse(ExcelUtil.GetCellString(j, organizationId_cell.ColumnIndex, sheet).Trim());
+                        sUBINVENTORY_T.OrganizationId = Int64.Parse(ExcelUtil.GetCellString(j, organizationId_cell.ColumnIndex, sheet).Trim());
                         sUBINVENTORY_T.SubinventoryCode = ExcelUtil.GetCellString(j, subinventoryCode_cell.ColumnIndex, sheet).Trim();
                         sUBINVENTORY_T.SubinventoryName = ExcelUtil.GetCellString(j, subinventoryName_cell.ColumnIndex, sheet).Trim();
                         sUBINVENTORY_T.OspFlag = ExcelUtil.GetCellString(j, ospFlag_cell.ColumnIndex, sheet).Trim();
                         sUBINVENTORY_T.ControlFlag = "";
+                        sUBINVENTORY_T.LocatorType = Int64.Parse(ExcelUtil.GetCellString(j, LocatorType_cell.ColumnIndex, sheet).Trim());
                         subinventoryRepositiory.Create(sUBINVENTORY_T);
                     }
                 }
@@ -573,7 +582,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             ICell organizationId_cell = null;
             ICell subinventoryCode_cell = null;
             ICell LocatorId_cell = null;
-            ICell LocatorType_cell = null;
+            //ICell LocatorType_cell = null;
             ICell LocatorSegments_cell = null;
             ICell LocatorDesc_cell = null;
             ICell Segment1_cell = null;
@@ -598,11 +607,11 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             {
                 throw new Exception("找不到LOCATOR_ID欄位");
             }
-            LocatorType_cell = ExcelUtil.FindCell("LOCATOR_TYPE", sheet);
-            if (LocatorType_cell == null)
-            {
-                throw new Exception("找不到LOCATOR_TYPE欄位");
-            }
+            //LocatorType_cell = ExcelUtil.FindCell("LOCATOR_TYPE", sheet);
+            //if (LocatorType_cell == null)
+            //{
+            //    throw new Exception("找不到LOCATOR_TYPE欄位");
+            //}
             LocatorSegments_cell = ExcelUtil.FindCell("LOCATOR_SEGMENTS", sheet);
             if (LocatorSegments_cell == null)
             {
@@ -652,7 +661,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                         lOCATOR_T.OrganizationId = Int64.Parse(ExcelUtil.GetCellString(j, organizationId_cell.ColumnIndex, sheet).Trim());
                         lOCATOR_T.SubinventoryCode = ExcelUtil.GetCellString(j, subinventoryCode_cell.ColumnIndex, sheet).Trim();
                         lOCATOR_T.LocatorId = Int64.Parse(ExcelUtil.GetCellString(j, LocatorId_cell.ColumnIndex, sheet).Trim());
-                        lOCATOR_T.LocatorType = Int64.Parse(ExcelUtil.GetCellString(j, LocatorType_cell.ColumnIndex, sheet).Trim());
+                        //lOCATOR_T.LocatorType = Int64.Parse(ExcelUtil.GetCellString(j, LocatorType_cell.ColumnIndex, sheet).Trim());
                         lOCATOR_T.LocatorSegments = ExcelUtil.GetCellString(j, LocatorSegments_cell.ColumnIndex, sheet).Trim();
                         lOCATOR_T.LocatorDesc = ExcelUtil.GetCellString(j, LocatorDesc_cell.ColumnIndex, sheet).Trim();
                         lOCATOR_T.Segment1 = ExcelUtil.GetCellString(j, Segment1_cell.ColumnIndex, sheet).Trim();
@@ -1220,5 +1229,230 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                 return 0;
             }
         }
+
+        private List<SelectListItem> createDropDownList(DropDownListType type)
+        {
+            var organizationList = new List<SelectListItem>();
+            switch (type)
+            {
+                case DropDownListType.All:
+                    organizationList.Add(new SelectListItem() { Text = "全部", Value = "*" });
+                    break;
+                case DropDownListType.Choice:
+                    organizationList.Add(new SelectListItem() { Text = "請選擇", Value = "請選擇" });
+                    break;
+                default://無Header
+                    break;
+            }
+            return organizationList;
+        }
+
+        public List<SelectListItem> GetOrganizationDropDownList(DropDownListType type)
+        {
+            var organizationList = createDropDownList(type);
+            organizationList.AddRange(getOrganizationList());
+            return organizationList;
+        }
+
+        public List<SelectListItem> GetSubinventoryDropDownList(string ORGANIZATION_ID, DropDownListType type)
+        {
+            var subinventoryList = createDropDownList(type);
+            subinventoryList.AddRange(getSubinventoryList(ORGANIZATION_ID));
+            return subinventoryList;
+        }
+
+        public List<SelectListItem> GetLocatorDropDownList(string ORGANIZATION_ID, string SUBINVENTORY_CODE, DropDownListType type)
+        {
+            var locatorList = createDropDownList(type);
+            locatorList.AddRange(getLocatorList(ORGANIZATION_ID, SUBINVENTORY_CODE));
+            return locatorList;
+        }
+
+        private List<SelectListItem> getOrganizationList()
+        {
+            var organizationList = new List<SelectListItem>();
+ 
+            var tempList = organizationRepositiory
+                            .GetAll().AsNoTracking()
+                            .OrderBy(x => x.OrganizationID)
+                            .ThenBy(x => x.OrganizationCode)
+                            .Select(x => new SelectListItem()
+                            {
+                                Text = x.OrganizationCode,
+                                Value = x.OrganizationID.ToString()
+                            });
+
+            organizationList.AddRange(tempList);
+            return organizationList;
+        }
+
+        private List<SelectListItem> getSubinventoryList(string ORGANIZATION_ID)
+        {
+            long organizationId = 0;
+            try
+            {
+                if (ORGANIZATION_ID != "*")
+                {
+                    organizationId = Convert.ToInt64(ORGANIZATION_ID);
+                }
+            }
+            catch
+            {
+                ORGANIZATION_ID = "*";
+            }
+
+            var subinventoryList = new List<SelectListItem>();
+            if (ORGANIZATION_ID == "*")
+            {
+                var tempList = subinventoryRepositiory
+                           .GetAll().AsNoTracking()
+                           .OrderBy(x => x.OrganizationId)
+                           .ThenBy(x => x.SubinventoryCode)
+                           .Select(x => new SelectListItem()
+                           {
+                               Text = x.SubinventoryCode,
+                               Value = x.SubinventoryCode
+                           });
+                subinventoryList.AddRange(tempList);
+            }
+            else
+            {
+                var tempList = subinventoryRepositiory
+                           .GetAll().AsNoTracking()
+                           .Where(x => x.OrganizationId == organizationId)
+                           .OrderBy(x => x.OrganizationId)
+                           .ThenBy(x => x.SubinventoryCode)
+                           .Select(x => new SelectListItem()
+                           {
+                               Text = x.SubinventoryCode,
+                               Value = x.SubinventoryCode
+                           });
+                subinventoryList.AddRange(tempList);
+            }
+            return subinventoryList;
+        }
+
+        private List<SelectListItem> getLocatorList(string ORGANIZATION_ID, string SUBINVENTORY_CODE)
+        {
+            long organizationId = 0;
+
+            try
+            {
+                if (ORGANIZATION_ID != "*")
+                {
+                    organizationId = Convert.ToInt64(ORGANIZATION_ID);
+                }
+            }
+            catch
+            {
+                ORGANIZATION_ID = "*";
+            }
+
+            var locatorList = new List<SelectListItem>();
+            
+            if (ORGANIZATION_ID == "*" && SUBINVENTORY_CODE == "*")
+            {
+                var tempList = locatorTRepositiory.GetAll()
+                          .Join(subinventoryRepositiory.GetAll(),
+                          l => new { l.SubinventoryCode, l.OrganizationId },
+                          s => new { s.SubinventoryCode, s.OrganizationId },
+                          (l, s) => new
+                          {
+                              OrganizationId = l.OrganizationId,
+                              SubinventoryCode = l.SubinventoryCode,
+                              Segment3 = l.Segment3,
+                              LocatorType = s.LocatorType,
+                              LocatorId = l.LocatorId
+                          })
+                          .Where(x => x.LocatorType == 2)
+                          .OrderBy(x => x.Segment3)
+                          .Select(x => new SelectListItem()
+                          {
+                              Text = x.Segment3,
+                              Value = x.LocatorId.ToString()
+                          });
+                locatorList.AddRange(tempList);
+            }
+            else if (ORGANIZATION_ID != "*" && SUBINVENTORY_CODE == "*")
+            {
+                var tempList = locatorTRepositiory.GetAll()
+                          .Join(subinventoryRepositiory.GetAll(),
+                          l => new { l.SubinventoryCode, l.OrganizationId },
+                          s => new { s.SubinventoryCode, s.OrganizationId },
+                          (l, s) => new
+                          {
+                              OrganizationId = l.OrganizationId,
+                              SubinventoryCode = l.SubinventoryCode,
+                              Segment3 = l.Segment3,
+                              LocatorType = s.LocatorType,
+                              LocatorId = l.LocatorId
+                          })
+                          .Where(x => x.LocatorType == 2 && x.OrganizationId == organizationId)
+                          .OrderBy(x => x.Segment3)
+                          .Select(x => new SelectListItem()
+                          {
+                              Text = x.Segment3,
+                              Value = x.LocatorId.ToString()
+                          });
+                locatorList.AddRange(tempList);
+            }
+            else if (ORGANIZATION_ID == "*" && SUBINVENTORY_CODE != "*")
+            {
+                var tempList = locatorTRepositiory.GetAll()
+                          .Join(subinventoryRepositiory.GetAll(),
+                          l => new { l.SubinventoryCode, l.OrganizationId },
+                          s => new { s.SubinventoryCode, s.OrganizationId },
+                          (l, s) => new
+                          {
+                              OrganizationId = l.OrganizationId,
+                              SubinventoryCode = l.SubinventoryCode,
+                              Segment3 = l.Segment3,
+                              LocatorType = s.LocatorType,
+                              LocatorId = l.LocatorId
+                          })
+                          .Where(x => x.LocatorType == 2 && x.SubinventoryCode == SUBINVENTORY_CODE)
+                          .OrderBy(x => x.Segment3)
+                          .Select(x => new SelectListItem()
+                          {
+                              Text = x.Segment3,
+                              Value = x.LocatorId.ToString()
+                          });
+                locatorList.AddRange(tempList);
+            }
+            else
+            {
+                var tempList = locatorTRepositiory.GetAll()
+                          .Join(subinventoryRepositiory.GetAll(),
+                          l => new { l.SubinventoryCode, l.OrganizationId },
+                          s => new { s.SubinventoryCode, s.OrganizationId },
+                          (l, s) => new
+                          {
+                              OrganizationId = l.OrganizationId,
+                              SubinventoryCode = l.SubinventoryCode,
+                              Segment3 = l.Segment3,
+                              LocatorType = s.LocatorType,
+                              LocatorId = l.LocatorId
+                          })
+                          .Where(x => x.LocatorType == 2 && x.OrganizationId == organizationId && x.SubinventoryCode == SUBINVENTORY_CODE)
+                          .OrderBy(x => x.Segment3)
+                          .Select(x => new SelectListItem()
+                          {
+                              Text = x.Segment3,
+                              Value = x.LocatorId.ToString()
+                          });
+                locatorList.AddRange(tempList);
+            }
+
+            return locatorList;
+        }
+
+        public enum DropDownListType
+        {
+            NoHeader = 0,
+            All = 1,
+            Choice = 2
+        }
+
+        
     }
 }

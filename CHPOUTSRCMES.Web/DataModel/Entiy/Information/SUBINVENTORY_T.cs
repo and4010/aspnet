@@ -18,7 +18,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Information
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         [Column("ORGANIZATION_ID",Order = 1)]
-        public long OrganizationID { set; get; }
+        public long OrganizationId { set; get; }
 
 
         /// <summary>
