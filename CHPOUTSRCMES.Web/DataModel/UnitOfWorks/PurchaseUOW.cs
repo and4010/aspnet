@@ -1,7 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.SqlClient;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Web;
 using System.Web.Mvc;
 using CHPOUTSRCMES.Web.DataModel.Entiy;
@@ -42,7 +47,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
 
         public List<FullCalendarEventModel> getFullCalenderList()
         {
-            var header = ctrHeaderTRepositiory.GetAll().ToList();
+            var header = ctrHeaderTRepositiory.GetAll().GroupBy(x => x.ContainerNo).Select(x => x.FirstOrDefault()) .ToList();
 
             List<FullCalendarEventModel> fullCalendarEventModel = new List<FullCalendarEventModel>();
             UrlHelper objUrlHelper = new UrlHelper(HttpContext.Current.Request.RequestContext);
@@ -89,18 +94,18 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
         public void generateTestData()
         {
             this.Context.Configuration.AutoDetectChangesEnabled = false;
-            using (this.Context.Database.BeginTransaction())
+            using (var txn = this.Context.Database.BeginTransaction())
             {
                 try
                 {
                     generateTestDataCtrOrgT();
                     generateTestDataCtrHeaderDetail();
-
-                    this.SaveChanges();
+                    txn.Commit();
                 }
                 catch (Exception ex)
                 {
                     logger.Error(LogUtilities.BuildExceptionMessage(ex));
+                    txn.Rollback();
                 }
             }
             this.Context.Configuration.AutoDetectChangesEnabled = true;
@@ -152,14 +157,100 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                 ctrorg.CreationDate = DateTime.Now;
                 ctrorg.LastUpdateBy = 1;
                 ctrorg.LastUpdateDate = DateTime.Now;
-                
+                ctrOrgTRepositiory.Create(ctrorg, true);
+
+                ctrorg.CtrOrgId = 2;
+                ctrorg.ProcessCode = "XXIFP217";
+                ctrorg.ServerCode = "123";
+                ctrorg.BatchId = "20200721141600100000";
+                ctrorg.BatchLineId = 2;
+                ctrorg.HeaderId = 2;
+                ctrorg.OrgId = 2;
+                ctrorg.OrgName = "入庫";
+                ctrorg.LineId = 2;
+                ctrorg.ContainerNo = "WHAU5231488";
+                ctrorg.MvContainerDate = DateTime.Now;
+                ctrorg.OrganizationId = 265;
+                ctrorg.OrganizationCode = "FTY";
+                ctrorg.Subinventory = "SFG";
+                ctrorg.LocatorId = 22016;
+                ctrorg.LocatorCode = "SFG";
+                ctrorg.DetailId = 1;
+                ctrorg.InventoryItemId = 503117;
+                ctrorg.ShipItemNumber = "4FU0ZA022000889RL00";
+                ctrorg.PaperType = "FU0Z";
+                ctrorg.BasicWeight = "02200";
+                ctrorg.ReamWeight = "02200";
+                ctrorg.RollReamQty = 1;
+                ctrorg.RollReamWt = 1;
+                ctrorg.TtlRollReam = 1;
+                ctrorg.Specification = "889K502K";
+                ctrorg.PackingType = "無";
+                ctrorg.ShipMtQty = 1;
+                ctrorg.TransactionQuantity = 0.421M;
+                ctrorg.TransactionUom = "MT";
+                ctrorg.PrimaryQuantity = 421;
+                ctrorg.PrimaryUom = "KG";
+                ctrorg.SecondaryQuantity = 0;
+                ctrorg.SecondaryUom = "";
+                ctrorg.LotNumber = "1400110000776875";
+                ctrorg.TheoryWeight = "";
+                ctrorg.CreatedBy = 1;
+                ctrorg.CreationDate = DateTime.Now;
+                ctrorg.LastUpdateBy = 1;
+                ctrorg.LastUpdateDate = DateTime.Now;
+                ctrOrgTRepositiory.Create(ctrorg, true);
+
+                ctrorg.CtrOrgId = 3;
+                ctrorg.ProcessCode = "XXIFP217";
+                ctrorg.ServerCode = "123";
+                ctrorg.BatchId = "20200721141600100000";
+                ctrorg.BatchLineId = 3;
+                ctrorg.HeaderId = 3;
+                ctrorg.OrgId = 3;
+                ctrorg.OrgName = "入庫";
+                ctrorg.LineId = 3;
+                ctrorg.ContainerNo = "WHAU5231488";
+                ctrorg.MvContainerDate = DateTime.Now;
+                ctrorg.OrganizationId = 265;
+                ctrorg.OrganizationCode = "FTY";
+                ctrorg.Subinventory = "SFG";
+                ctrorg.LocatorId = 22016;
+                ctrorg.LocatorCode = "SFG";
+                ctrorg.DetailId = 1;
+                ctrorg.InventoryItemId = 503117;
+                ctrorg.ShipItemNumber = "4FU0ZA022000635RL00";
+                ctrorg.PaperType = "FU0Z";
+                ctrorg.BasicWeight = "02200";
+                ctrorg.ReamWeight = "02200";
+                ctrorg.RollReamQty = 1;
+                ctrorg.RollReamWt = 1;
+                ctrorg.TtlRollReam = 1;
+                ctrorg.Specification = "635K502K";
+                ctrorg.PackingType = "無";
+                ctrorg.ShipMtQty = 1;
+                ctrorg.TransactionQuantity = 0.441M;
+                ctrorg.TransactionUom = "MT";
+                ctrorg.PrimaryQuantity = 440;
+                ctrorg.PrimaryUom = "KG";
+                ctrorg.SecondaryQuantity = 0;
+                ctrorg.SecondaryUom = "";
+                ctrorg.LotNumber = "1400120000776904";
+                ctrorg.TheoryWeight = "";
+                ctrorg.CreatedBy = 1;
+                ctrorg.CreationDate = DateTime.Now;
+                ctrorg.LastUpdateBy = 1;
+                ctrorg.LastUpdateDate = DateTime.Now;
+                ctrOrgTRepositiory.Create(ctrorg, true);
             }
             catch (Exception e)
             {
                 logger.Error(e.Message.ToString());
             }
 
-            ctrOrgTRepositiory.Create(ctrorg);
+        
+
+       
         }
 
         public void generateTestDataCtrHeaderDetail()
@@ -173,7 +264,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             {
                 for (int i = 0; org.Count() > i; i++)
                 {
-
+                    ctrheaderT.HeaderId = org[i].HeaderId;
                     ctrheaderT.OrgId = org[i].OrgId;
                     ctrheaderT.OrgName = org[i].OrgName;
                     ctrheaderT.LineId = org[i].LineId;
@@ -187,7 +278,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                     ctrheaderT.CreationDate = org[i].CreationDate;
                     ctrheaderT.LastUpdateBy = org[i].LastUpdateBy;
                     ctrheaderT.LastUpdateDate = org[i].LastUpdateDate;
-
+                    ctrHeaderTRepositiory.Create(ctrheaderT,true);
 
                     ctrdetailT.CtrHeaderId = ctrheaderT.CtrHeaderId;
                     ctrdetailT.ProcessCode = org[i].ProcessCode;
@@ -230,6 +321,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                     ctrdetailT.CreationDate = org[i].CreationDate;
                     ctrdetailT.LastUpdateBy = org[i].LastUpdateBy;
                     ctrdetailT.LastUpdateDate = org[i].LastUpdateDate;
+                    ctrDetailTRepositiory.Create(ctrdetailT,true);
                 }
             }
             catch (Exception e)
@@ -237,8 +329,79 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                 logger.Error(e.Message.ToString());
             }
 
-            ctrHeaderTRepositiory.Create(ctrheaderT);
-            ctrDetailTRepositiory.Create(ctrdetailT);
         }
+
+
+        public List<DetailModel.FlatModel> GetFlatHeaderList(string CONTAINER_NO)
+        {
+            try
+            {
+                using (var mesContext = new MesContext())
+                {
+                    StringBuilder query = new StringBuilder();
+                    query.Append(
+                    @"SELECT 
+Cast(d.CTR_HEADER_ID AS bigint) as Id,
+h.SUBINVENTORY AS Subinventory, 
+d.LOCATOR_CODE as Locator,
+d.SHIP_ITEM_NUMBER AS Item_No,
+d.REAM_WEIGHT AS ReamWeight,
+d.ROLL_REAM_QTY AS RollReamQty,
+d.PACKING_TYPE AS PackingType,
+d.ROLL_REAM_WT AS Pieces_Qty,
+d.TRANSACTION_QUANTITY AS TransactionQuantity,
+d.TRANSACTION_UOM AS TransactionUom,
+d.SECONDARY_QUANTITY AS TtlRollReam,
+d.SECONDARY_UOM AS TtlRollReamUom,
+d.PRIMARY_QUANTITY AS DeliveryQty,
+d.PRIMARY_UOM AS DeliveryUom
+FROM dbo.CTR_DETAIL_T d
+LEFT JOIN dbo.CTR_HEADER_T h ON h.CTR_HEADER_ID = d.CTR_HEADER_ID
+WHERE d.ITEM_CATEGORY = N'平張' and h.CONTAINER_NO  = @CONTAINER_NO");
+                    return mesContext.Database.SqlQuery<DetailModel.FlatModel>(query.ToString(),new SqlParameter("@CONTAINER_NO", CONTAINER_NO)).ToList();
+                }
+            }
+            catch (Exception e)
+            {
+                logger.Error(e.Message.ToString());
+                return null;
+            }
+        }
+
+     
+        public List<DetailModel.RollModel> GetPaperRollHeaderList(string CONTAINER_NO)
+        {
+            try
+            {
+                using (var mesContext = new MesContext())
+                {
+                    StringBuilder query = new StringBuilder();
+                    query.Append(
+                    @"SELECT 
+Cast(d.CTR_HEADER_ID AS bigint) as Id,
+h.SUBINVENTORY AS Subinventory, 
+d.LOCATOR_CODE as Locator,
+d.SHIP_ITEM_NUMBER AS Item_No,
+d.PAPER_TYPE AS PaperType,
+d.BASIC_WEIGHT AS BaseWeight,
+d.SPECIFICATION AS Specification,
+d.ROLL_REAM_QTY AS RollReamQty,
+d.TRANSACTION_QUANTITY AS TransactionQuantity,
+d.TRANSACTION_UOM AS TransactionUom,
+d.PRIMARY_QUANTITY AS PrimanyQuantity,
+d.PRIMARY_UOM AS PrimaryUom
+FROM dbo.CTR_DETAIL_T d
+LEFT JOIN dbo.CTR_HEADER_T h ON h.CTR_HEADER_ID = d.CTR_HEADER_ID
+WHERE d.ITEM_CATEGORY = N'捲筒' and h.CONTAINER_NO  = @CONTAINER_NO");
+                    return mesContext.Database.SqlQuery<DetailModel.RollModel>(query.ToString(),new SqlParameter("@CONTAINER_NO", CONTAINER_NO)).ToList();
+                }
+            }
+            catch (Exception e)
+            {
+                logger.Error(e.Message.ToString());
+                return null;
+            }
+        }
+
     }
 }

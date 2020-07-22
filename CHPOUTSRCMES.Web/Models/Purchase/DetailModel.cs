@@ -12,7 +12,7 @@ namespace CHPOUTSRCMES.Web.Models.Purchase
         public class RollModel
         {
 
-            public int Id { get; set; }
+            public long Id { get; set; }
 
             [Display(Name = "倉庫")]
             public string Subinventory { get; set; }
@@ -33,16 +33,16 @@ namespace CHPOUTSRCMES.Web.Models.Purchase
             public string Specification { get; set; }
 
             [Display(Name = "捲數/棧板數")]
-            public string RollReamQty { get; set; }
+            public decimal RollReamQty { get; set; }
 
             [Display(Name = "交易數量")]
-            public string TransactionQuantity { get; set; }
+            public decimal TransactionQuantity { get; set; }
 
             [Display(Name = "交易單位")]
             public string TransactionUom { get; set; }
 
             [Display(Name = "主要數量")]
-            public string PrimanyQuantity { set; get; }
+            public decimal PrimanyQuantity { set; get; }
 
             [Display(Name = "主要單位")]
             public string PrimaryUom { set; get; }
@@ -108,7 +108,7 @@ namespace CHPOUTSRCMES.Web.Models.Purchase
         public class FlatModel
         {
 
-            public int Id { get; set; }
+            public long Id { get; set; }
 
             [Display(Name = "倉別")]
             public string Subinventory { get; set; }
@@ -123,28 +123,28 @@ namespace CHPOUTSRCMES.Web.Models.Purchase
             public string ReamWeight { get; set; }
 
             [Display(Name = "捲數/棧板數")]
-            public string RollReamQty { get; set; }
+            public decimal RollReamQty { get; set; }
 
             [Display(Name = "包裝方式")]
             public string PackingType { get; set; }
 
             [Display(Name = "每件令數")]
-            public string Pieces_Qty { get; set; }
+            public decimal Pieces_Qty { get; set; }
 
             [Display(Name = "交易數量")]
-            public string TransactionQuantity { set; get; }
+            public decimal TransactionQuantity { set; get; }
 
             [Display(Name = "交易單位")]
             public string TransactionUom { set; get; }
 
             [Display(Name = "總令數")]
-            public string TtlRollReam { get; set; }
+            public decimal TtlRollReam { get; set; }
 
             [Display(Name = "總令數單位")]
             public string TtlRollReamUom { get; set; }
 
             [Display(Name = "總公斤")]
-            public string DeliveryQty { get; set; }
+            public decimal DeliveryQty { get; set; }
 
             [Display(Name = "總公斤單位")]
             public string DeliveryUom { get; set; }

@@ -13,6 +13,7 @@
     <script src="~/Scripts/label.js"></script>
 }
 @Html.HiddenFor(model => model.Status, new { id = "Status" })
+@Html.HiddenFor(model => model.CabinetNumber, new { id = "CabinetNumber" })
 
 <div>
 
@@ -20,7 +21,7 @@
         <div class="col-md-4">
             <h4>
                 櫃號
-                <span id="CabinetNumber">@Html.DisplayFor(model => model.CabinetNumber)</span>
+                <span>@Html.DisplayFor(model => model.CabinetNumber)</span>
             </h4>
         </div>
         <div class="col-md-4">
@@ -108,29 +109,29 @@
                                 </tr>
                                 <tr>
                                     @*<th>
-                                        @Html.DisplayName("項次")
-                                    </th>
-                                    <th>
-                                        @Html.DisplayName("倉庫")
-                                    </th>
-                                    <th>
-                                        @Html.DisplayName("儲位")
-                                    </th>
-                                    <th>
-                                        @Html.DisplayName("料號")
-                                    </th>
-                                    <th>
-                                        @Html.DisplayName("紙別")
-                                    </th>
-                                    <th>
-                                        @Html.DisplayName("基重")
-                                    </th>
-                                    <th>
-                                        @Html.DisplayName("規格")
-                                    </th>
-                                    <th>
-                                        @Html.DisplayName("捲數")
-                                    </th>*@
+                                            @Html.DisplayName("項次")
+                                        </th>
+                                        <th>
+                                            @Html.DisplayName("倉庫")
+                                        </th>
+                                        <th>
+                                            @Html.DisplayName("儲位")
+                                        </th>
+                                        <th>
+                                            @Html.DisplayName("料號")
+                                        </th>
+                                        <th>
+                                            @Html.DisplayName("紙別")
+                                        </th>
+                                        <th>
+                                            @Html.DisplayName("基重")
+                                        </th>
+                                        <th>
+                                            @Html.DisplayName("規格")
+                                        </th>
+                                        <th>
+                                            @Html.DisplayName("捲數")
+                                        </th>*@
                                     <th>
                                         @Html.DisplayName("數量")
                                     </th>
@@ -197,7 +198,7 @@
                             <tr>
                                 <th rowspan="2" colspan="1"></th>
                                 <th rowspan="2" colspan="1">項次</th>
-                                <th rowspan="2" colspan="1">倉別</th>
+                                <th rowspan="2" colspan="1">倉庫</th>
                                 <th rowspan="2" colspan="1">儲位</th>
                                 <th rowspan="2" colspan="1">條碼號</th>
                                 <th rowspan="2" colspan="1">入庫狀態</th>
@@ -215,35 +216,35 @@
                             <tr>
 
                                 @*<th>
-                                    @Html.DisplayName("項次")
-                                </th>
-                                <th>
-                                    @Html.DisplayName("倉別")
-                                </th>
-                                <th>
-                                    @Html.DisplayName("儲位")
-                                </th>
-                                <th>
-                                    @Html.DisplayName("條碼號")
-                                </th>
-                                <th>
-                                    @Html.DisplayName("入庫狀態")
-                                </th>
-                                <th>
-                                    @Html.DisplayName("料號")
-                                </th>
-                                <th>
-                                    @Html.DisplayName("紙別")
-                                </th>
-                                <th>
-                                    @Html.DisplayName("基重")
-                                </th>
-                                <th>
-                                    @Html.DisplayName("規格")
-                                </th>
-                                <th>
-                                    @Html.DisplayName("理論重(KG)")
-                                </th>*@
+                                        @Html.DisplayName("項次")
+                                    </th>
+                                    <th>
+                                        @Html.DisplayName("倉別")
+                                    </th>
+                                    <th>
+                                        @Html.DisplayName("儲位")
+                                    </th>
+                                    <th>
+                                        @Html.DisplayName("條碼號")
+                                    </th>
+                                    <th>
+                                        @Html.DisplayName("入庫狀態")
+                                    </th>
+                                    <th>
+                                        @Html.DisplayName("料號")
+                                    </th>
+                                    <th>
+                                        @Html.DisplayName("紙別")
+                                    </th>
+                                    <th>
+                                        @Html.DisplayName("基重")
+                                    </th>
+                                    <th>
+                                        @Html.DisplayName("規格")
+                                    </th>
+                                    <th>
+                                        @Html.DisplayName("理論重(KG)")
+                                    </th>*@
                                 <th>
                                     @Html.DisplayName("數量")
                                 </th>
@@ -257,12 +258,12 @@
                                     @Html.DisplayName("單位")
                                 </th>
                                 @*<th>
-                                    @Html.DisplayName("捲號")
-                                </th>
-                                <th>
-                                    @Html.DisplayName("備註")
-                                </th>
-                                <th></th>*@
+                                        @Html.DisplayName("捲號")
+                                    </th>
+                                    <th>
+                                        @Html.DisplayName("備註")
+                                    </th>
+                                    <th></th>*@
                             </tr>
                         </thead>
                         <tbody>
@@ -297,7 +298,7 @@
                             <thead>
                                 <tr>
                                     <th rowspan="2" colspan="1">項次</th>
-                                    <th rowspan="2" colspan="1">倉別</th>
+                                    <th rowspan="2" colspan="1">倉庫</th>
                                     <th rowspan="2" colspan="1">儲位</th>
                                     <th rowspan="2" colspan="1">料號</th>
                                     <th rowspan="2" colspan="1">令重</th>
@@ -310,29 +311,29 @@
                                 </tr>
                                 <tr>
                                     @*<th>
-                                        @Html.DisplayName("項次")
-                                    </th>
-                                    <th>
-                                        @Html.DisplayName("倉別")
-                                    </th>
-                                    <th>
-                                        @Html.DisplayName("儲位")
-                                    </th>
-                                    <th>
-                                        @Html.DisplayName("料號")
-                                    </th>
-                                    <th>
-                                        @Html.DisplayName("令重")
-                                    </th>
-                                    <th>
-                                        @Html.DisplayName("棧板數")
-                                    </th>
-                                    <th>
-                                        @Html.DisplayName("包裝方式")
-                                    </th>
-                                    <th>
-                                        @Html.DisplayName("每件令數")
-                                    </th>*@
+                                            @Html.DisplayName("項次")
+                                        </th>
+                                        <th>
+                                            @Html.DisplayName("倉別")
+                                        </th>
+                                        <th>
+                                            @Html.DisplayName("儲位")
+                                        </th>
+                                        <th>
+                                            @Html.DisplayName("料號")
+                                        </th>
+                                        <th>
+                                            @Html.DisplayName("令重")
+                                        </th>
+                                        <th>
+                                            @Html.DisplayName("棧板數")
+                                        </th>
+                                        <th>
+                                            @Html.DisplayName("包裝方式")
+                                        </th>
+                                        <th>
+                                            @Html.DisplayName("每件令數")
+                                        </th>*@
                                     <th>
                                         @Html.DisplayName("數量")
                                     </th>
@@ -397,7 +398,7 @@
                                     @Html.DisplayName("項次")
                                 </th>
                                 <th>
-                                    @Html.DisplayName("倉別")
+                                    @Html.DisplayName("倉庫")
                                 </th>
                                 <th>
                                     @Html.DisplayName("儲位")
