@@ -229,13 +229,15 @@
     <Compile Include="DataModel\Entiy\Delivery\DLV_ORG_T.cs" />
     <Compile Include="DataModel\Entiy\Delivery\DLV_PICKED_HT.cs" />
     <Compile Include="DataModel\Entiy\Delivery\DLV_PICKED_T.cs" />
+    <Compile Include="DataModel\Entiy\Information\BCD_MISC_T.cs" />
+    <Compile Include="DataModel\Entiy\Information\BCD_SERIAL_T.cs" />
+    <Compile Include="DataModel\Entiy\Information\BCD_UNIQUE_T.cs" />
     <Compile Include="DataModel\Entiy\STK_TXN_T.cs" />
     <Compile Include="DataModel\Entiy\STOCK_HT.cs" />
     <Compile Include="DataModel\Entiy\USER_T.cs" />
-    <Compile Include="DataModel\Entiy\BCD_PREFIX_T.cs" />
     <Compile Include="DataModel\Entiy\LOG_ENTRY_T.cs" />
     <Compile Include="DataModel\Entiy\Information\ORG_ITEMS_T.cs" />
-    <Compile Include="DataModel\Entiy\USER_SUBINVENTORY_T.cs" />
+    <Compile Include="DataModel\Entiy\Information\USER_SUBINVENTORY_T.cs" />
     <Compile Include="DataModel\ModelInitializer.cs" />
     <Compile Include="DataModel\Repositorys\GenericRepository.cs" />
     <Compile Include="DataModel\Repositorys\Interfaces\IRepository.cs" />

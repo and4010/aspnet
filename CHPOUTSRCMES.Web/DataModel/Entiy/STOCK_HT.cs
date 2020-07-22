@@ -13,16 +13,16 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy
         /// 庫存ID
         /// </summary>
         /// 
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
         [Required]
         [Column("STOCK_HT_ID")]
         public int StockHtId { set; get; }
-
         /// <summary>
         /// 庫存ID
         /// </summary>
         /// 
+        [Key]
         [Required]
         [Column("STOCK_ID")]
         public int StockId { set; get; }
@@ -35,6 +35,14 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy
         [Column("ORGANIZATION_ID")]
         public int OrganizationId { set; get; }
 
+        /// <summary>
+        /// 庫存組織CODE
+        /// </summary>
+        /// 
+        [StringLength(3)]
+        [Required]
+        [Column("ORGANIZATION_CODE")]
+        public string OrganizationCode { set; get; }
 
         /// <summary>
         /// 倉庫
@@ -253,7 +261,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy
         /// 備註
         /// </summary>
         /// 
-        [StringLength(250)]
+        [StringLength(2000)]
         [Column("NOTE")]
         public string Note { set; get; }
 
@@ -262,7 +270,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy
         /// 狀態碼
         /// </summary>
         /// 
-        [StringLength(240)]
+        [StringLength(10)]
         [Column("STATUS_CODE")]
         public string StatusCode { set; get; }
 
@@ -279,7 +287,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy
         /// </summary>
         /// 
         [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         [Required]
         [Column("CREATION_DATE")]
         public DateTime CreationDate { set; get; }
@@ -290,7 +297,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy
         /// 
         [Column("LAST_UPDATE_BY")]
         [Required]
-        public long LastUpdateBy { set; get; }
+        public long? LastUpdateBy { set; get; }
 
         /// <summary>
         /// 更新時間
@@ -298,8 +305,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy
         /// 
         [Column("LAST_UPDATE_DATE")]
         [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         [Required]
-        public DateTime LastUpdateDate { set; get; }
+        public DateTime? LastUpdateDate { set; get; }
     }
 }

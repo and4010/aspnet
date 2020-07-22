@@ -1,5 +1,4 @@
-﻿using CHPOUTSRCMES.Web.DataModel.Interfaces;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -8,28 +7,44 @@ using System.Web;
 
 namespace CHPOUTSRCMES.Web.DataModel.Entiy.Information
 {
-    [Table("STK_REASON_T")]
-    public class STK_REASON_T
+    [Table("BCD_MISC_T")]
+    public class BCD_MISC_T
     {
         /// <summary>
-        /// 原因ID
+        /// 庫存組織ID
         /// </summary>
         /// 
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        [StringLength(10)]
         [Required]
         [Key]
-        [Column("REASON_CODE")]
-        public string ReasonCode { set; get; }
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [Column("ORGANIZATION_ID", Order= 1)]
+        public long OrganizationId { set; get; }
 
         /// <summary>
-        /// 原因說明
+        /// 倉庫
         /// </summary>
         /// 
-        [StringLength(50)]
+        [StringLength(10)]
         [Required]
-        [Column("REASON_DESC")]
-        public string ReasonDesc { set; get; }
+        [Column("SUBINVENTORY_CODE", Order=2)]
+        public string SubinventoryCode { set; get; }
+
+        /// <summary>
+        /// 前置碼
+        /// </summary>
+        /// 
+        [StringLength(10)]
+        [Required]
+        [Column("PREFIX_CODE")]
+        public string PREFIX_CODE { set; get; }
+
+        /// <summary>
+        /// 流水號碼數
+        /// </summary>
+        /// 
+        [Required]
+        [Column("SERIAL_SIZE")]
+        public int SerialSize { set; get; }
 
         /// <summary>
         /// 建立人員
@@ -66,6 +81,5 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Information
         [Required]
         [Column("LAST_UPDATE_DATE")]
         public DateTime? LastUpdateDate { set; get; }
-
     }
 }

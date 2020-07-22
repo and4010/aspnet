@@ -5,39 +5,38 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
 
-namespace CHPOUTSRCMES.Web.DataModel.Entiy
+namespace CHPOUTSRCMES.Web.DataModel.Entiy.Information
 {
-    public class BCD_PREFIX_T
+    [Table("BCD_UNIQUE_T")]
+    public class BCD_UNIQUE_T
     {
-
         /// <summary>
-        /// 庫存組織ID
+        /// 條碼
         /// </summary>
         /// 
         [Required]
         [Key]
+        [StringLength(20)]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        [Column("ORGANIZATION_ID")]
-        public long OrganizationID { set; get; }
+        [Column("BARCODE")]
+        public string Barcode { set; get; }
 
         /// <summary>
-        /// 倉庫
+        /// 建立人員
         /// </summary>
         /// 
+        [StringLength(128)]
         [Required]
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        [Column("SUBINVENTORY_CODE")]
-        public long SsubinventoryCode { set; get; }
+        [Column("CREATED_BY")]
+        public string CreatedBy { set; get; }
 
         /// <summary>
-        /// 條碼前置碼
+        /// 建立時間
         /// </summary>
         /// 
-        [StringLength(10)]
+        [DataType(DataType.Date)]
         [Required]
-        [Column("PREFIX_CODE")]
-        public string PrefixCode { set; get; }
-
+        [Column("CREATION_DATE")]
+        public DateTime CreationDate { set; get; }
     }
 }

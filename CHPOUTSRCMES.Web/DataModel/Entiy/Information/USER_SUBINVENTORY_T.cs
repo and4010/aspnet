@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace CHPOUTSRCMES.Web.DataModel.Entiy
+namespace CHPOUTSRCMES.Web.DataModel.Entiy.Information
 {
     public class USER_SUBINVENTORY_T
     {
@@ -13,7 +13,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         [StringLength(128)]
-        [Column("UserId")]
+        [Column("UserId", Order = 1)]
         public string UserId { set; get; }
 
         /// <summary>
@@ -23,7 +23,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy
         [Required]
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        [Column("ORGANIZATION_ID")]
+        [Column("ORGANIZATION_ID", Order = 2)]
         public long OrganizationID { set; get; }
 
         /// <summary>
@@ -34,7 +34,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         [StringLength(10)]
-        [Column("SUBINVENTORY_CODE")]
-        public long SUBINVENTORY_CODE { set; get; }
+        [Column("SUBINVENTORY_CODE", Order = 3)]
+        public string SUBINVENTORY_CODE { set; get; }
     }
 }
