@@ -132,11 +132,12 @@ $(document).ready(function() {
 
 
 function PaperNavsNumber() {
-
+    var CabinetNumber = $("#CabinetNumber").val();
     $.ajax({
         url: '/Purchase/PaperNumber',
         type: 'POST',
         datatype: 'json',
+        data: { CabinetNumber: CabinetNumber},
         success: function (data) {
             $('#PaperRollSpan').text(data.PaperTotle);
         },
@@ -148,11 +149,12 @@ function PaperNavsNumber() {
 }
 
 function FlatNavsNumber() {
-
+    var CabinetNumber = $("#CabinetNumber").val();
     $.ajax({
         url: '/Purchase/FlatNumber',
         type: 'POST',
         datatype: 'json',
+        data: { CabinetNumber: CabinetNumber},
         success: function (data) {
             $('#FlatSpan').text(data.FlatTotle);
         },
@@ -212,7 +214,7 @@ function BtnOnClick() {
  
     //存檔入庫
     $("#btnSaveInvenorty").click(function() {
-        var CabinetNumber = $("#CabinetNumber").text();
+        var CabinetNumber = $("#CabinetNumber").val()
         var CreateDate = $("#CreateDate").text();
         var PaperRollSpan = $('#PaperRollSpan').text();
         var FlatSpan = $('#FlatSpan').text();
@@ -388,12 +390,13 @@ function onkey(status) {
     });
 
     $('#BtnCabinetNumber').click(function (e) {
-        var CabinetNumber = $('#CheckCabinetNumber').val();
+        var InputCabinetNumber = $('#CheckCabinetNumber').val();
+        var ViewCabinetNumber = $("#CabinetNumber").val();
         $.ajax({
             url: '/Purchase/CheckCabinetNumber',
             datatype: 'json',
             type: "POST",
-            data: { CabinetNumber: CabinetNumber},
+            data: { InputCabinetNumber: InputCabinetNumber, ViewCabinetNumber: ViewCabinetNumber},
             success: function (data) {
                 if (data.boolean) {
                     EnableBarcode(false);
@@ -512,9 +515,12 @@ function ImportPaperRoll() {
 
 
     var fileInput = $('#file').get(0).files;
-
+    var CabinetNumber = $("#CabinetNumber").val();
     var formData = new FormData();
-    if (fileInput.length > 0) { formData.append("file", fileInput[0]); }
+    if (fileInput.length > 0) {
+        formData.append("file", fileInput[0]);
+        formData.append("CabinetNumber", CabinetNumber);
+    }
 
     $.ajax({
         "url": "/Purchase/UploadFileRoll",
@@ -561,7 +567,7 @@ function ImportPaperRollTable(data) {
         },
         columns: [
             { data: "Id", "name": "項次", "autoWidth": true, "className": "dt-body-center" },
-            { data: "Subinventory", "name": "倉別", "autoWidth": true, "className": "dt-body-center" },
+            { data: "Subinventory", "name": "倉庫", "autoWidth": true, "className": "dt-body-center" },
             { data: "Locator", "name": "儲位", "autoWidth": true, "className": "dt-body-center"},
             { data: "Item_No", "name": "料號", "autoWidth": true, "className": "dt-body-left" },
             { data: "PaperType", "name": "紙別", "autoWidth": true, "className": "dt-body-center"},
@@ -623,7 +629,7 @@ function ImportFlatTable(data) {
         },
         columns: [
             { data: "Id", "name": "項次", "autoWidth": true },
-            { data: "Subinventory", "name": "倉別", "autoWidth": true },
+            { data: "Subinventory", "name": "倉庫", "autoWidth": true },
             { data: "Locator", "name": "儲位", "autoWidth": true },
             { data: "Item_No", "name": "料號", "autoWidth": true },
             { data: "ReamWeight", "name": "令重", "autoWidth": true },
@@ -637,6 +643,7 @@ function ImportFlatTable(data) {
 
 //表頭
 function LoadPaperRollHeard() {
+    var CabinetNumber = $("#CabinetNumber").val();
     //紙捲表頭
     PaperRolldataTablesHeader = $('#PaperRolldataTablesHeader').DataTable({
         "language": {
@@ -650,11 +657,11 @@ function LoadPaperRollHeard() {
             "url": "/Purchase/RollHeader",
             "type": "POST",
             "datatype": "json",
-            "data": {}
+            "data": { CabinetNumber: CabinetNumber}
         },
         columns: [
             { data: "Id", "name": "項次", "autoWidth": true, "className": "dt-body-center"},
-            { data: "Subinventory", "name": "倉別", "autoWidth": true, "className": "dt-body-center" },
+            { data: "Subinventory", "name": "倉庫", "autoWidth": true, "className": "dt-body-center" },
             { data: "Locator", "name": "儲位", "autoWidth": true, "className": "dt-body-center" },
             { data: "Item_No", "name": "料號", "autoWidth": true, "className": "dt-body-left"},
             { data: "PaperType", "name": "紙別", "autoWidth": true, "className": "dt-body-center"},
@@ -672,6 +679,7 @@ function LoadPaperRollHeard() {
 //平張表頭
 function LoadFlatHeader() {
     //平張表頭
+    var CabinetNumber = $("#CabinetNumber").val();
     FlatdataTablesHeader = $('#FlatdataTablesHeader').DataTable({
         "language": {
             "url": "/bower_components/datatables/language/zh-TW.json"
@@ -684,11 +692,11 @@ function LoadFlatHeader() {
             "url": "/Purchase/FlatHeader",
             "type": "POST",
             "datatype": "json",
-            "data": {},
+            "data": { CabinetNumber: CabinetNumber},
         },
         columns: [
             { data: "Id", "name": "項次", "autoWidth": true, "className": "dt-body-center"},
-            { data: "Subinventory", "name": "倉別", "autoWidth": true, "className": "dt-body-center"},
+            { data: "Subinventory", "name": "倉庫", "autoWidth": true, "className": "dt-body-center"},
             { data: "Locator", "name": "儲位", "autoWidth": true, "className": "dt-body-center"},
             { data: "Item_No", "name": "料號", "autoWidth": true, "className": "dt-body-left"},
             { data: "ReamWeight", "name": "令重", "autoWidth": true, "className": "dt-body-right"},
@@ -747,7 +755,7 @@ function PaperRolldataTablesBody(Status) {
                 targets: 0
             },
             { data: "Id", "name": "項次", "autoWidth": true, "className": "dt-body-center"},
-            { data: "Subinventory", "name": "倉別", "autoWidth": true, "className": "dt-body-center"},
+            { data: "Subinventory", "name": "倉庫", "autoWidth": true, "className": "dt-body-center"},
             { data: "Locator", "name": "儲位", "autoWidth": true, "className": "dt-body-center"},
             { data: "Barcode", "name": "條碼號", "autoWidth": true, "className": "dt-body-center" },
             {
@@ -817,7 +825,7 @@ function FlatdataTablesBody(Status) {
                 targets: 0
             },
             { data: "Id", "name": "項次", "autoWidth": true, "className": "dt-body-center"},
-            { data: "Subinventory", "name": "倉別", "autoWidth": true, "className": "dt-body-center"},
+            { data: "Subinventory", "name": "倉庫", "autoWidth": true, "className": "dt-body-center"},
             { data: "Locator", "name": "儲位", "autoWidth": true, "className": "dt-body-center"},
             { data: "Barcode", "name": "條碼號", "autoWidth": true, "className": "dt-body-center" },
             {
