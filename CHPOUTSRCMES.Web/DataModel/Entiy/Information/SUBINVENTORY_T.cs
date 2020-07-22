@@ -18,7 +18,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Information
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         [Column("ORGANIZATION_ID",Order = 1)]
-        public long OrganizationID { set; get; }
+        public long OrganizationId { set; get; }
 
 
         /// <summary>
@@ -42,6 +42,13 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Information
         [Column("SUBINVENTORY_NAME")]
         public string SubinventoryName { set; get; }
 
+        /// <summary>
+        /// 儲位控制
+        /// </summary>
+        /// 
+        [Required]
+        [Column("LOCATOR_TYPE")]
+        public long LocatorType { set; get; }
 
         /// <summary>
         /// 加工廠註記

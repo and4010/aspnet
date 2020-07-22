@@ -159,7 +159,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                 logger.Error(e.Message.ToString());
             }
 
-            ctrOrgTRepositiory.Create(ctrorg);
+            ctrOrgTRepositiory.Create(ctrorg,true);
         }
 
         public void generateTestDataCtrHeaderDetail()

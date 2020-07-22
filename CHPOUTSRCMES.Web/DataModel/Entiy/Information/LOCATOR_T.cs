@@ -40,13 +40,13 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Information
         public long LocatorId { set; get; }
 
 
-        /// <summary>
-        /// 儲位控制
-        /// </summary>
-        /// 
-        [Required]
-        [Column("LOCATOR_TYPE")]
-        public long LocatorType { set; get; }
+        ///// <summary>
+        ///// 儲位控制
+        ///// </summary>
+        ///// 
+        //[Required]
+        //[Column("LOCATOR_TYPE")]
+        //public long LocatorType { set; get; }
 
 
         /// <summary>

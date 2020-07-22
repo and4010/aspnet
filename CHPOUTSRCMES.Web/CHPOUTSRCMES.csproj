@@ -260,7 +260,6 @@
     <Compile Include="DataModel\Interfaces\IStaff.cs" />
     <Compile Include="DataModel\MesContext.cs" />
     <Compile Include="DataModel\Initializer.cs" />
-    <Compile Include="DataModel\Repositorys\OrganizationRepository.cs" />
     <Compile Include="DataModel\Repositorys\Interfaces\IItemsTRepository.cs" />
     <Compile Include="DataModel\Repositorys\ItemsTRepository.cs" />
     <Compile Include="DataModel\UnitOfWorks\MasterUOW.cs" />
