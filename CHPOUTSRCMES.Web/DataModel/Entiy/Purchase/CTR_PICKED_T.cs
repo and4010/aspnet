@@ -21,6 +21,14 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Purchase
 
 
         /// <summary>
+        /// 表頭ID
+        /// </summary>
+        /// 
+        [Required]
+        [Column("CTR_HEADER_ID")]
+        public long CtrHeaderId { set; get; }
+
+        /// <summary>
         /// 檔頭ID
         /// </summary>
         /// 
@@ -264,7 +272,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Purchase
         /// </summary>
         /// 
         [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        //[DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         [Required]
         [Column("CREATION_DATE")]
         public DateTime CreationDate { set; get; }
@@ -283,7 +291,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Purchase
         /// 
         [Column("LAST_UPDATE_DATE")]
         [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        //[DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         [Required]
         public DateTime LastUpdateDate { set; get; }
     }

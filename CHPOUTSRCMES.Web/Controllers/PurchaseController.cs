@@ -23,8 +23,8 @@ namespace CHPOUTSRCMES.Web.Controllers
             var model = new PurchaseViewModel()
             {
                 Year = DateTime.Now.Year.ToString(),
-                Month = DateTime.Now.Month.ToString("00"),
-                Warehouse = "TB2"
+                Month = DateTime.Now.Month.ToString("00")
+                //Warehouse = "TB2"
             };
             ViewBag.MonthItems = GetMonths();
             ViewBag.YearItems = GetYears();
@@ -37,174 +37,21 @@ namespace CHPOUTSRCMES.Web.Controllers
         public JsonResult GetEvents(string id)
         {
             PurchaseViewModel purchaseViewModel = new PurchaseViewModel();
-            var events = new List<FullCalendarEventModel>();
-            if (PurchaseViewModel.fullCalendarEventModel.Count == 0)
-            {
-                events.Add(new FullCalendarEventModel()
-                {
-                    id = 1,
-                    title = "TB2" + "\nWHLU5321157" + " 待入庫",
-                    start = "2020-02-25 10:00:00",
-                    end = "2020-02-25 24:00:00",
-                    allDay = false,
-                    url = @Url.Action("Detail", "Purchase", new { CONTAINER_NO = "WHLU5321157" }),
-                    Status = "1"
-                });
-
-                events.Add(new FullCalendarEventModel()
-                {
-                    id = 3,
-                    title = "TB2" + "\nWHAU5231488" + " 已取消",
-                    start = "2020-02-25 14:00:00",
-                    end = "2020-02-25 24:00:00",
-                    allDay = false,
-
-                    Status = "2",
-                    color = "#E60000",
-                });
-
-
-
-                events.Add(new FullCalendarEventModel()
-                {
-                    id = 1,
-                    title = "TB2" + "\nWHLU5321157" + " 待入庫",
-                    start = "2020-03-06 10:00:00",
-                    end = "2020-03-06 24:00:00",
-                    allDay = false,
-                    url = @Url.Action("Detail", "Purchase", new { CONTAINER_NO = "WHLU5321157", Status = "1", start = "2020-03-06 10:00:00" }),
-                    Status = "1"
-                });
-
-                events.Add(new FullCalendarEventModel()
-                {
-                    id = 3,
-                    title = "TB2" + "\nWHAU5231488" + " 已取消",
-                    start = "2020-03-07 14:00:00",
-                    end = "2020-03-07 24:00:00",
-                    allDay = false,
-                    url = "",
-                    Status = "2",
-                    color = "#E60000",
-                });
-
-
-
-
-                events.Add(new FullCalendarEventModel()
-                {
-                    id = 1,
-                    title = "TB2" + "\nWHLU5321157" + " 待入庫",
-                    start = "2020-04-08 10:00:00",
-                    end = "2020-04-08 24:00:00",
-                    allDay = false,
-                    url = @Url.Action("Detail", "Purchase", new { CONTAINER_NO = "WHLU5321157", Status = "1", start = "2020-04-08 10:00:00" }),
-                    Status = "1"
-                });
-
-                events.Add(new FullCalendarEventModel()
-                {
-                    id = 3,
-                    title = "TB2" + "\nWHAU5231488" + " 已取消",
-                    start = "2020-04-09 14:00:00",
-                    end = "2020-04-09 24:00:00",
-                    allDay = false,
-                    url = "",
-                    Status = "2",
-                    color = "#E60000",
-                });
-
-
-
-
-                events.Add(new FullCalendarEventModel()
-                {
-                    id = 1,
-                    title = "TB2"+ "\nWHLU5321157" + " 待入庫",
-                    start = "2020-05-08 10:00:00",
-                    end = "2020-05-08 24:00:00",
-                    allDay = false,
-                    Status = "1",
-                    url = @Url.Action("Detail", "Purchase", new { CONTAINER_NO = "WHLU5321157", Status = "1", start = "2020-05-08 10:00:00" }),
-                });
-
-                events.Add(new FullCalendarEventModel()
-                {
-                    id = 2,
-                    title = "TB2" + "\nWHAU5231488" + " 已取消",
-                    start = "2020-05-09 14:00:00",
-                    end = "2020-05-09 24:00:00",
-                    allDay = false,
-                    url = "",
-                    Status = "2",
-                    color = "#E60000",
-                });
-
-                events.Add(new FullCalendarEventModel()
-                {
-                    id = 1,
-                    title = "TB2" + "\nTGBU6882663" + " 待入庫",
-                    start = "2020-06-08 10:00:00",
-                    end = "2020-06-08 24:00:00",
-                    allDay = false,
-                    Status = "1",
-                    url = @Url.Action("Detail", "Purchase", new { CONTAINER_NO = "TGBU6882663", Status = "1", start = "2020-06-08 10:00:00" }),
-                });
-
-                events.Add(new FullCalendarEventModel()
-                {
-                    id = 2,
-                    title = "TB2" + "\nWHAU5231488" + " 已取消",
-                    start = "2020-06-09 14:00:00",
-                    end = "2020-06-09 24:00:00",
-                    allDay = false,
-                    url = "",
-                    Status = "2",
-                    color = "#E60000",
-                });
-
-                events.Add(new FullCalendarEventModel()
-                {
-                    id = 1,
-                    title = "TB2" + "\nTGBU6882663" + " 待入庫",
-                    start = "2020-07-08 10:00:00",
-                    end = "2020-07-08 24:00:00",
-                    allDay = false,
-                    Status = "1",
-                    url = @Url.Action("Detail", "Purchase", new { CONTAINER_NO = "TGBU6882663", Status = "1", start = "2020-07-08 10:00:00" }),
-                });
-
-                events.Add(new FullCalendarEventModel()
-                {
-                    id = 2,
-                    title = "TB2" + "\nWHAU5231488" + " 已取消",
-                    start = "2020-07-09 14:00:00",
-                    end = "2020-07-09 24:00:00",
-                    allDay = false,
-                    url = "",
-                    Status = "2",
-                    color = "#E60000",
-                });
-
-                PurchaseViewModel.fullCalendarEventModel = events;
-            }
-
-
-
-
-
-            return Json(PurchaseViewModel.fullCalendarEventModel.ToArray(), JsonRequestBehavior.AllowGet);
+            var fullcalendar = purchaseViewModel.GetFullCalendarModel();
+            return Json(fullcalendar.ToArray(), JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
         public JsonResult ReturnIndex(string CabinetNumber, string CreateDate)
         {
+            PurchaseViewModel purchaseViewModel = new PurchaseViewModel();
+            var fullcalendar = purchaseViewModel.GetFullCalendarModel();
             var boolean = true;
-            var creatdate = PurchaseViewModel.fullCalendarEventModel.First(r => r.start == CreateDate);
+            var creatdate = fullcalendar.First(r => r.start == CreateDate);
             if (creatdate != null)
             {
                 creatdate.title = "TB2" + "\nTGBU6882663" + " 已入庫";
-                creatdate.Status = "0";
+                creatdate.Status = 0;
                 creatdate.url = @Url.Action("Detail", "Purchase", new { CONTAINER_NO = "TGBU6882663", Status = "0", start = CreateDate });
             }
             return Json(new { boolean },JsonRequestBehavior.AllowGet);
@@ -293,13 +140,13 @@ namespace CHPOUTSRCMES.Web.Controllers
 
         // GET: Purchase
         [HttpGet, ActionName("Detail")]
-        public ActionResult Detail(string CONTAINER_NO = "", string Status = "", string start = "")
+        public ActionResult Detail(string CONTAINER_NO = "", string Start = "", string Status = "",string Subinventory = "")
         {
             PurchaseViewModel model = new PurchaseViewModel();
 
-            model.CreateDate = start;
+            model.CreateDate = Start;
             model.CabinetNumber = CONTAINER_NO;
-            model.Subinventory = "TB2";
+            model.Subinventory = Subinventory;
             model.Status = Status;
             return View(model);
         }
@@ -311,8 +158,6 @@ namespace CHPOUTSRCMES.Web.Controllers
             PurchaseViewModel purchaseViewModel = new PurchaseViewModel();
             List<DetailModel.RollModel> model;
             model = purchaseViewModel.GetRollHeader();
-
-
             return Json(new { draw = data.Draw, recordsFiltered = model.Count, recordsTotal = model.Count, data = model }, JsonRequestBehavior.AllowGet);
             //draw：為避免XSS攻擊，內建的控制。 
             //recordsTotal：篩選前的總資料數 

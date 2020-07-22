@@ -285,7 +285,7 @@
     <Compile Include="Models\Delivery\DeliveryDetailViewHeader.cs" />
     <Compile Include="Models\Error.cs" />
     <Compile Include="Models\Information\AccountModel.cs" />
-    <Compile Include="Models\FullCalendarEventModel.cs" />
+    <Compile Include="Models\Purchase\FullCalendarEventModel.cs" />
     <Compile Include="Models\Information\OrgSubinventoryDT.cs" />
     <Compile Include="Models\Information\OspRelatedDT.cs" />
     <Compile Include="Models\Inventory\Inventory.cs" />
@@ -296,6 +296,7 @@
     <Compile Include="Models\Process\CHP_PROCESS_T.cs" />
     <Compile Include="Models\Process\Cotangent.cs" />
     <Compile Include="Models\Process\Production.cs" />
+    <Compile Include="Models\Purchase\DataProcess.cs" />
     <Compile Include="Models\Purchase\PurchaseCalendar.cs" />
     <Compile Include="Models\Navbar.cs" />
     <Compile Include="Models\Purchase\DetailModel.cs" />
@@ -316,6 +317,7 @@
     <Compile Include="Models\Information\YszmpckqDT.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
+    <Compile Include="Util\ConvertDateTime.cs" />
     <Compile Include="Util\ExcelImport.cs" />
     <Compile Include="Util\ExcelUtil.cs" />
     <Compile Include="Util\LogUtilities.cs" />

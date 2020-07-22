@@ -317,7 +317,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy
         /// </summary>
         /// 
         [StringLength(80)]
-        [Required]
+        [Required(AllowEmptyStrings = true)]
         [Column("LOT_NUMBER")]
         public string LotNumber { set; get; }
 
@@ -326,7 +326,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy
         /// </summary>
         /// 
         [StringLength(30)]
-        [Required]
+        [Required(AllowEmptyStrings = true)]
         [Column("THEORY_WEIGHT")]
         public string TheoryWeight { set; get; }
 
@@ -456,7 +456,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy
         /// ERP請求識別碼
         /// </summary>
         /// 
-        [Required]
         [Column("REQUEST_ID")]
         public long? RequestId { set; get; }
 
@@ -474,7 +473,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy
         /// </summary>
         /// 
         [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        //[DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         [Required]
         [Column("CREATION_DATE")]
         public DateTime CreationDate { set; get; }
@@ -493,7 +492,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy
         /// 
         [Column("LAST_UPDATE_DATE")]
         [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        //[DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         [Required]
         public DateTime LastUpdateDate { set; get; }
     }

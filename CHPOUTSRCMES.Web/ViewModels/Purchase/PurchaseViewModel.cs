@@ -28,7 +28,7 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
 
         public List<DetailModel> Purchase { get; set; }
 
-   
+
 
         public DetailModel Detail { set; get; }
 
@@ -45,7 +45,12 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
 
         public static List<DetailModel.RollDetailModel> StockInRoll = new List<DetailModel.RollDetailModel>();
 
-        public static List<FullCalendarEventModel> fullCalendarEventModel = new List<FullCalendarEventModel>();
+
+        public List<FullCalendarEventModel> GetFullCalendarModel()
+        {
+            DataProcess dataProcess = new DataProcess();
+            return dataProcess.FullCalender();
+        }
 
         public List<DetailModel.RollModel> GetRollHeader()
         {
@@ -74,7 +79,7 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
                 Locator = "SFG",
                 Item_No = "4FU0ZA022000635RL00",
                 PaperType = "FU0Z"
-,
+    ,
                 BaseWeight = "2200",
                 Specification = "635",
                 RollReamQty = "1",
@@ -90,7 +95,7 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
                 Locator = "SFG",
                 Item_No = "4FU0ZA022000889RL00",
                 PaperType = "FU0Z"
-,
+    ,
                 BaseWeight = "2200",
                 Specification = "889",
                 RollReamQty = "1",
@@ -132,12 +137,12 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
         {
             StockInFlat = new List<DetailModel.FlatDetailModel>();
             StockInRoll = new List<DetailModel.RollDetailModel>();
-            fullCalendarEventModel = new List<FullCalendarEventModel>();
+        
         }
 
         public static void GetStockInRoll()
         {
-           
+
         }
 
         public static void GetStockInFlat()
@@ -191,13 +196,13 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
 
         }
 
-        public List<DetailModel.RollDetailModel> SaveRollBarcode(String Barcode,ref Boolean Boolean,ref Boolean BarcodeStatus)
+        public List<DetailModel.RollDetailModel> SaveRollBarcode(String Barcode, ref Boolean Boolean, ref Boolean BarcodeStatus)
         {
             List<DetailModel.RollDetailModel> model = StockInRoll;
             try
             {
                 var sr = model.First(r => r.Barcode == Barcode);
-                if(sr.Status == "已入庫")
+                if (sr.Status == "已入庫")
                 {
                     BarcodeStatus = false;
                 }
@@ -207,11 +212,11 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
                 }
 
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Boolean = false;
             }
-           
+
 
             return model;
         }
@@ -224,7 +229,7 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
             return rm;
         }
 
-        public Boolean GetRollEditRemak(string remak, int id, String status,string Reason)
+        public Boolean GetRollEditRemak(string remak, int id, String status, string Reason)
         {
 
             var Id = StockInRoll.Single(r => r.Id == id);
@@ -282,8 +287,8 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
             {
                 Boolean = false;
             }
-           
-       
+
+
 
             return model;
         }
