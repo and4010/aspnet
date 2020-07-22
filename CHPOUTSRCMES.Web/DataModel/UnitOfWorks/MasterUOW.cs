@@ -1451,56 +1451,56 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             Choice = 2
         }
 
-        public List<OrgSubinventoryDT> search(string ORGANIZATION_ID, string SUBINVENTORY_CODE, string LOCATOR_ID)
-        {
-            try
-            {
-                long orgId = 0;
-                long locId = 0;
+        //public List<OrgSubinventoryDT> search(string ORGANIZATION_ID, string SUBINVENTORY_CODE, string LOCATOR_ID)
+        //{
+        //    try
+        //    {
+        //        long orgId = 0;
+        //        long locId = 0;
 
-                try
-                {
-                    if (!string.IsNullOrEmpty(ORGANIZATION_ID) && ORGANIZATION_ID != "*")
-                    {
-                        orgId = Convert.ToInt64(ORGANIZATION_ID);
-                    }
-                }
-                catch
-                {
-                    ORGANIZATION_ID = "*";
-                }
+        //        try
+        //        {
+        //            if (!string.IsNullOrEmpty(ORGANIZATION_ID) && ORGANIZATION_ID != "*")
+        //            {
+        //                orgId = Convert.ToInt64(ORGANIZATION_ID);
+        //            }
+        //        }
+        //        catch
+        //        {
+        //            ORGANIZATION_ID = "*";
+        //        }
 
-                try
-                {
-                    if (!string.IsNullOrEmpty(LOCATOR_ID) && LOCATOR_ID != "*")
-                    {
-                        locId = Convert.ToInt64(LOCATOR_ID);
-                    }
-                }
-                catch
-                {
-                    LOCATOR_ID = "*";
-                }
+        //        try
+        //        {
+        //            if (!string.IsNullOrEmpty(LOCATOR_ID) && LOCATOR_ID != "*")
+        //            {
+        //                locId = Convert.ToInt64(LOCATOR_ID);
+        //            }
+        //        }
+        //        catch
+        //        {
+        //            LOCATOR_ID = "*";
+        //        }
 
 
 
-                //var query = testSource.Where(
-                //  x =>
-                //  (ORGANIZATION_ID == "*" || x.ORGANIZATION_ID == orgId) &&
-                //  (SUBINVENTORY_CODE == "*" || x.SUBINVENTORY_CODE != null && x.SUBINVENTORY_CODE.ToLower() == SUBINVENTORY_CODE.ToLower()) &&
-                //  (LOCATOR_ID == "*" || x.LOCATOR_ID == locId)
-                //  ).ToList();
+        //        //var query = testSource.Where(
+        //        //  x =>
+        //        //  (ORGANIZATION_ID == "*" || x.ORGANIZATION_ID == orgId) &&
+        //        //  (SUBINVENTORY_CODE == "*" || x.SUBINVENTORY_CODE != null && x.SUBINVENTORY_CODE.ToLower() == SUBINVENTORY_CODE.ToLower()) &&
+        //        //  (LOCATOR_ID == "*" || x.LOCATOR_ID == locId)
+        //        //  ).ToList();
 
-                //dtData = query;
-                return query;
-            }
-            catch (Exception e)
-            {
-                //result.Msg = e.Message;
-                //result.Success = false;
-                return new List<OrgSubinventoryDT>();
-            }
-            //return result;
-        }
+        //        //dtData = query;
+        //        return query;
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        //result.Msg = e.Message;
+        //        //result.Success = false;
+        //        return new List<OrgSubinventoryDT>();
+        //    }
+        //    //return result;
+        //}
     }
 }
