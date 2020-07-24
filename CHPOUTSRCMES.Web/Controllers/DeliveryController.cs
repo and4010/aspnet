@@ -9,61 +9,77 @@ using System.Web.Mvc;
 using CHPOUTSRCMES.Web.Models;
 using DataTables;
 using System.Collections.Specialized;
+using CHPOUTSRCMES.Web.DataModel;
+using CHPOUTSRCMES.Web.DataModel.UnitOfWorks;
 
 namespace CHPOUTSRCMES.Web.Controllers
 {
     public class DeliveryController : Controller
     {
+        TripHeaderData tripHeaderData = new TripHeaderData();
         //
         // GET: /Delivery/
         public ActionResult Index()
         {
-            DeliverySearchViewModel viewModel = TripDetailData.GetViewModel();
-            return View(viewModel);
+            using (var context = new MesContext())
+            {
+                using (DeliveryUOW uow = new DeliveryUOW(context))
+                {
+                    DeliverySearchViewModel viewModel = tripHeaderData.GetViewModel(uow);
+                    return View(viewModel);
+                }
+            }
         }
 
         [HttpPost, ActionName("GetTripDetail")]
         public JsonResult GetTripDetail(DataTableAjaxPostViewModel data, string TripActualShipBeginDate, string TripActualShipEndDate, string DeliveryName, string SelectedSubinventory,
             string SelectedTrip, string TransactionDate, string SelectedDeliveryStatus)
         {
-            if (TripDetailData.source.Count == 0)
-            {
-                TripDetailData.AddDefaultData();
-            }
+            //if (TripDetailData.source.Count == 0)
+            //{
+            //    TripDetailData.AddDefaultData();
+            //}
 
             //List<TripDetailDT> model = TripDetailData.model;
-            List<TripDetailDT> model = TripDetailData.Search(TripActualShipBeginDate, TripActualShipEndDate, DeliveryName, SelectedSubinventory, SelectedTrip, TransactionDate, SelectedDeliveryStatus);
-            var totalCount = model.Count;
-            string search = data.Search.Value;
 
-            if (!string.IsNullOrEmpty(search) && !string.IsNullOrWhiteSpace(search))
+            using (var context = new MesContext())
             {
-                // Apply search   
-                model = model.Where(p => (!string.IsNullOrEmpty(p.FREIGHT_TERMS_NAME) && p.FREIGHT_TERMS_NAME.ToLower().Contains(search.ToLower()))
-                    || (!string.IsNullOrEmpty(p.DELIVERY_NAME) && p.DELIVERY_NAME.ToLower().Contains(search.ToLower()))
-                    || (!string.IsNullOrEmpty(p.CUSTOMER_NAME) && p.CUSTOMER_NAME.ToLower().Contains(search.ToLower()))
-                    || (!string.IsNullOrEmpty(p.CUSTOMER_LOCATION_CODE) && p.CUSTOMER_LOCATION_CODE.ToLower().Contains(search.ToLower()))
-                    || p.SRC_REQUESTED_QUANTITY.ToString().ToLower().Contains(search.ToLower())
-                    || (!string.IsNullOrEmpty(p.SRC_REQUESTED_QUANTITY_UOM) && p.SRC_REQUESTED_QUANTITY_UOM.ToLower().Contains(search.ToLower()))
-                    || p.REQUESTED_QUANTITY2.ToString().ToLower().Contains(search.ToLower())
-                    || (!string.IsNullOrEmpty(p.SRC_REQUESTED_QUANTITY_UOM2) && p.SRC_REQUESTED_QUANTITY_UOM2.ToLower().Contains(search.ToLower()))
-                    || p.REQUESTED_QUANTITY.ToString().ToLower().Contains(search.ToLower())
-                    || (!string.IsNullOrEmpty(p.REQUESTED_QUANTITY_UOM) && p.REQUESTED_QUANTITY_UOM.ToLower().Contains(search.ToLower()))
-                    || (!string.IsNullOrEmpty(p.SUBINVENTORY_CODE) && p.SUBINVENTORY_CODE.ToLower().Contains(search.ToLower()))
-                    || (p.TRIP_ACTUAL_SHIP_DATE.HasValue && p.TRIP_ACTUAL_SHIP_DATE.Value.ToString("yyyy-MM-dd").ToLower().Contains(search.ToLower()))
-                    || (!string.IsNullOrEmpty(p.TRIP_NAME) && p.TRIP_NAME.ToLower().Contains(search.ToLower()))
-                    || (p.TRANSACTION_DATE.HasValue && p.TRANSACTION_DATE.Value.ToString("yyyy-MM-dd").ToLower().Contains(search.ToLower()))
-                    || (!string.IsNullOrEmpty(p.DetailType) && p.DetailType.ToLower().Contains(search.ToLower()))
-                    || (!string.IsNullOrEmpty(p.DELIVERY_STATUS) && p.DELIVERY_STATUS.ToLower().Contains(search.ToLower()))
-                    || (!string.IsNullOrEmpty(p.REMARK) && p.REMARK.ToLower().Contains(search.ToLower()))
-                    ).ToList();
+                using (DeliveryUOW uow = new DeliveryUOW(context))
+                {
+                    List<TripHeaderDT> model = tripHeaderData.DeliverySearch(uow, TripActualShipBeginDate, TripActualShipEndDate, DeliveryName, SelectedSubinventory, SelectedTrip, TransactionDate, SelectedDeliveryStatus);
+                    var totalCount = model.Count;
+                    string search = data.Search.Value;
+
+                    if (!string.IsNullOrEmpty(search) && !string.IsNullOrWhiteSpace(search))
+                    {
+                        // Apply search   
+                        model = model.Where(p => (!string.IsNullOrEmpty(p.FREIGHT_TERMS_NAME) && p.FREIGHT_TERMS_NAME.ToLower().Contains(search.ToLower()))
+                            || (!string.IsNullOrEmpty(p.DELIVERY_NAME) && p.DELIVERY_NAME.ToLower().Contains(search.ToLower()))
+                            || (!string.IsNullOrEmpty(p.CUSTOMER_NAME) && p.CUSTOMER_NAME.ToLower().Contains(search.ToLower()))
+                            || (!string.IsNullOrEmpty(p.CUSTOMER_LOCATION_CODE) && p.CUSTOMER_LOCATION_CODE.ToLower().Contains(search.ToLower()))
+                            || p.SRC_REQUESTED_QUANTITY.ToString().ToLower().Contains(search.ToLower())
+                            || (!string.IsNullOrEmpty(p.SRC_REQUESTED_QUANTITY_UOM) && p.SRC_REQUESTED_QUANTITY_UOM.ToLower().Contains(search.ToLower()))
+                            || p.REQUESTED_QUANTITY2.ToString().ToLower().Contains(search.ToLower())
+                            || (!string.IsNullOrEmpty(p.REQUESTED_QUANTITY_UOM2) && p.REQUESTED_QUANTITY_UOM2.ToLower().Contains(search.ToLower()))
+                            || p.REQUESTED_QUANTITY.ToString().ToLower().Contains(search.ToLower())
+                            || (!string.IsNullOrEmpty(p.REQUESTED_QUANTITY_UOM) && p.REQUESTED_QUANTITY_UOM.ToLower().Contains(search.ToLower()))
+                            || (!string.IsNullOrEmpty(p.SUBINVENTORY_CODE) && p.SUBINVENTORY_CODE.ToLower().Contains(search.ToLower()))
+                            || (p.TRIP_ACTUAL_SHIP_DATE.HasValue && p.TRIP_ACTUAL_SHIP_DATE.Value.ToString("yyyy-MM-dd").ToLower().Contains(search.ToLower()))
+                            || (!string.IsNullOrEmpty(p.TRIP_NAME) && p.TRIP_NAME.ToLower().Contains(search.ToLower()))
+                            || (p.TRANSACTION_DATE.HasValue && p.TRANSACTION_DATE.Value.ToString("yyyy-MM-dd").ToLower().Contains(search.ToLower()))
+                            || (!string.IsNullOrEmpty(p.DetailType) && p.DetailType.ToLower().Contains(search.ToLower()))
+                            || (!string.IsNullOrEmpty(p.DELIVERY_STATUS) && p.DELIVERY_STATUS.ToLower().Contains(search.ToLower()))
+                            || (!string.IsNullOrEmpty(p.NOTE) && p.NOTE.ToLower().Contains(search.ToLower()))
+                            ).ToList();
+                    }
+
+                    var filteredCount = model.Count;
+                    model = TripDetailDTOrder.Order(data.Order, model).ToList();
+                    model = model.Skip(data.Start).Take(data.Length).ToList();
+
+                    return Json(new { draw = data.Draw, recordsFiltered = filteredCount, recordsTotal = totalCount, data = model }, JsonRequestBehavior.AllowGet);
+                }
             }
-
-            var filteredCount = model.Count;
-            model = TripDetailDTOrder.Order(data.Order, model).ToList();
-            model = model.Skip(data.Start).Take(data.Length).ToList();
-
-            return Json(new { draw = data.Draw, recordsFiltered = filteredCount, recordsTotal = totalCount, data = model }, JsonRequestBehavior.AllowGet);
         }
 
         //[HttpPost, ActionName("Search")]
@@ -77,14 +93,14 @@ namespace CHPOUTSRCMES.Web.Controllers
 
         public ActionResult FlatEdit(string id)
         {
-            TripDetailDT detailData = null;
+            TripHeaderDT detailData = null;
             if (string.IsNullOrEmpty(id))
             {
-                detailData = TripDetailData.GetData()[0];
+                detailData = TripHeaderData.GetData()[0];
             }
             else
             {
-                detailData = TripDetailData.GetData(Convert.ToInt32(id))[0];
+                detailData = TripHeaderData.GetData(Convert.ToInt32(id))[0];
             }
 
             FlatEditViewModel model = new FlatEditViewModel();
@@ -93,7 +109,7 @@ namespace CHPOUTSRCMES.Web.Controllers
             model.DeliveryDetailViewHeader.CUSTOMER_NAME = detailData.CUSTOMER_NAME;
             model.DeliveryDetailViewHeader.DELIVERY_NAME = detailData.DELIVERY_NAME;
             //model.DeliveryDetailViewHeader.ORDER_NUMBER = Convert.ToString(detailData.ORDER_NUMBER);
-            model.DeliveryDetailViewHeader.REMARK = detailData.REMARK;
+            model.DeliveryDetailViewHeader.REMARK = detailData.NOTE;
             model.DeliveryDetailViewHeader.SHIP_CUSTOMER_NAME = detailData.SHIP_CUSTOMER_NAME;
             model.DeliveryDetailViewHeader.SHIP_LOCATION_CODE = detailData.SHIP_LOCATION_CODE;
             model.DeliveryDetailViewHeader.TRIP_ACTUAL_SHIP_DATE = detailData.TRIP_ACTUAL_SHIP_DATE;
@@ -117,14 +133,14 @@ namespace CHPOUTSRCMES.Web.Controllers
         [HttpGet]
         public ActionResult RollEdit(string id)
         {
-            TripDetailDT detailData = null;
+            TripHeaderDT detailData = null;
             if (string.IsNullOrEmpty(id))
             {
-                detailData = TripDetailData.GetData()[0];
+                detailData = TripHeaderData.GetData()[0];
             }
             else
             {
-                detailData = TripDetailData.GetData(Convert.ToInt32(id))[0];
+                detailData = TripHeaderData.GetData(Convert.ToInt32(id))[0];
             }
             PaperRollEditViewModel model = new PaperRollEditViewModel();
             model.DeliveryDetailViewHeader = new DeliveryDetailViewHeader();
@@ -133,7 +149,7 @@ namespace CHPOUTSRCMES.Web.Controllers
             model.DeliveryDetailViewHeader.CUSTOMER_NAME = detailData.CUSTOMER_NAME;
             model.DeliveryDetailViewHeader.DELIVERY_NAME = detailData.DELIVERY_NAME;
             //model.DeliveryDetailViewHeader.ORDER_NUMBER = Convert.ToString(detailData.ORDER_NUMBER);
-            model.DeliveryDetailViewHeader.REMARK = detailData.REMARK;
+            model.DeliveryDetailViewHeader.REMARK = detailData.NOTE;
             model.DeliveryDetailViewHeader.SHIP_CUSTOMER_NAME = detailData.SHIP_CUSTOMER_NAME;
             model.DeliveryDetailViewHeader.SHIP_LOCATION_CODE = detailData.SHIP_LOCATION_CODE;
             model.DeliveryDetailViewHeader.TRIP_ACTUAL_SHIP_DATE = detailData.TRIP_ACTUAL_SHIP_DATE;
@@ -278,7 +294,7 @@ namespace CHPOUTSRCMES.Web.Controllers
                     }
 
 
-                    TripDetailData.ChangeDeliveryStatus(TripDetailDT_ID, PaperRollEditData.checkDeliveryPickComplete(TripDetailDT_ID));
+                    TripHeaderData.ChangeDeliveryStatus(TripDetailDT_ID, PaperRollEditData.checkDeliveryPickComplete(TripDetailDT_ID));
                     return new JsonResult { Data = new { status = true, result = "條碼儲存成功" } };
                 }
                 else
@@ -319,7 +335,7 @@ namespace CHPOUTSRCMES.Web.Controllers
                         //    PaperRollEditData.removeA006s(item.PaperRollEditDT_ID, TripDetailDT_ID);
                         //}
                     }
-                    TripDetailData.ChangeDeliveryStatus(TripDetailDT_ID, PaperRollEditData.checkDeliveryPickComplete(TripDetailDT_ID));
+                    TripHeaderData.ChangeDeliveryStatus(TripDetailDT_ID, PaperRollEditData.checkDeliveryPickComplete(TripDetailDT_ID));
                     return new JsonResult { Data = new { status = true, result = "條碼刪除成功" } };
                 }
                 else
@@ -423,7 +439,7 @@ namespace CHPOUTSRCMES.Web.Controllers
                     FlatEditBarcodeData.addBarcode123((decimal)SECONDARY_QUANTITY);
                     FlatEditData.updateF001((decimal)SECONDARY_QUANTITY);
                     //FlatEditBarcodeData.add(BARCODE, (decimal)SECONDARY_QUANTITY, PACKING_TYPE);
-                    TripDetailData.ChangeDeliveryStatus(TripDetailDT_ID, FlatEditData.checkDeliveryPickComplete(TripDetailDT_ID));
+                    TripHeaderData.ChangeDeliveryStatus(TripDetailDT_ID, FlatEditData.checkDeliveryPickComplete(TripDetailDT_ID));
                     return new JsonResult { Data = new { status = true, result = "令包_條碼儲存成功" } };
                 }
             }
@@ -438,7 +454,7 @@ namespace CHPOUTSRCMES.Web.Controllers
                 FlatEditBarcodeData.addBarcode456();
                 FlatEditData.updateF002();
                 //FlatEditBarcodeData.add(BARCODE, 9, PACKING_TYPE);
-                TripDetailData.ChangeDeliveryStatus(TripDetailDT_ID, FlatEditData.checkDeliveryPickComplete(TripDetailDT_ID));
+                TripHeaderData.ChangeDeliveryStatus(TripDetailDT_ID, FlatEditData.checkDeliveryPickComplete(TripDetailDT_ID));
                 return new JsonResult { Data = new { status = true, result = "無令打件_條碼儲存成功" } };
             }
             else if (BARCODE == "P2005060003") //平張打件
@@ -452,7 +468,7 @@ namespace CHPOUTSRCMES.Web.Controllers
                 FlatEditBarcodeData.addBarcode130();
                 FlatEditData.updateF003();
                 //FlatEditBarcodeData.add(BARCODE, 9, PACKING_TYPE);
-                TripDetailData.ChangeDeliveryStatus(TripDetailDT_ID, FlatEditData.checkDeliveryPickComplete(TripDetailDT_ID));
+                TripHeaderData.ChangeDeliveryStatus(TripDetailDT_ID, FlatEditData.checkDeliveryPickComplete(TripDetailDT_ID));
                 return new JsonResult { Data = new { status = true, result = "無令打件_條碼儲存成功" } };
             }
             else
@@ -471,7 +487,7 @@ namespace CHPOUTSRCMES.Web.Controllers
                 FlatEditData.remove(removeBarcodeList);
                 if (FlatEditBarcodeData.remove(PICKED_ID))
                 {
-                    TripDetailData.ChangeDeliveryStatus(TripDetailDT_ID, FlatEditData.checkDeliveryPickComplete(TripDetailDT_ID));
+                    TripHeaderData.ChangeDeliveryStatus(TripDetailDT_ID, FlatEditData.checkDeliveryPickComplete(TripDetailDT_ID));
                     return new JsonResult { Data = new { status = true, result = "條碼刪除成功" } };
                 }
                 else
@@ -508,14 +524,14 @@ namespace CHPOUTSRCMES.Web.Controllers
 
         public ActionResult FlatView(string id)
         {
-            TripDetailDT detailData = null;
+            TripHeaderDT detailData = null;
             if (string.IsNullOrEmpty(id))
             {
-                detailData = TripDetailData.GetData()[0];
+                detailData = TripHeaderData.GetData()[0];
             }
             else
             {
-                detailData = TripDetailData.GetData(Convert.ToInt32(id))[0];
+                detailData = TripHeaderData.GetData(Convert.ToInt32(id))[0];
             }
             FlatViewModel model = new FlatViewModel();
             model.DeliveryDetailViewHeader = new DeliveryDetailViewHeader();
@@ -524,7 +540,7 @@ namespace CHPOUTSRCMES.Web.Controllers
             model.DeliveryDetailViewHeader.CUSTOMER_NAME = detailData.CUSTOMER_NAME;
             model.DeliveryDetailViewHeader.DELIVERY_NAME = detailData.DELIVERY_NAME;
             //model.DeliveryDetailViewHeader.ORDER_NUMBER = Convert.ToString(detailData.ORDER_NUMBER);
-            model.DeliveryDetailViewHeader.REMARK = detailData.REMARK;
+            model.DeliveryDetailViewHeader.REMARK = detailData.NOTE;
             model.DeliveryDetailViewHeader.SHIP_CUSTOMER_NAME = detailData.SHIP_CUSTOMER_NAME;
             model.DeliveryDetailViewHeader.SHIP_LOCATION_CODE = detailData.SHIP_LOCATION_CODE;
             model.DeliveryDetailViewHeader.TRIP_ACTUAL_SHIP_DATE = detailData.TRIP_ACTUAL_SHIP_DATE;
@@ -542,14 +558,14 @@ namespace CHPOUTSRCMES.Web.Controllers
 
         public ActionResult RollView(string id)
         {
-            TripDetailDT detailData = null;
+            TripHeaderDT detailData = null;
             if (string.IsNullOrEmpty(id))
             {
-                detailData = TripDetailData.GetData()[0];
+                detailData = TripHeaderData.GetData()[0];
             }
             else
             {
-                detailData = TripDetailData.GetData(Convert.ToInt32(id))[0];
+                detailData = TripHeaderData.GetData(Convert.ToInt32(id))[0];
             }
             PaperRollViewModel model = new PaperRollViewModel();
             model.DeliveryDetailViewHeader = new DeliveryDetailViewHeader();
@@ -558,7 +574,7 @@ namespace CHPOUTSRCMES.Web.Controllers
             model.DeliveryDetailViewHeader.CUSTOMER_NAME = detailData.CUSTOMER_NAME;
             model.DeliveryDetailViewHeader.DELIVERY_NAME = detailData.DELIVERY_NAME;
             //model.DeliveryDetailViewHeader.ORDER_NUMBER = Convert.ToString(detailData.ORDER_NUMBER);
-            model.DeliveryDetailViewHeader.REMARK = detailData.REMARK;
+            model.DeliveryDetailViewHeader.REMARK = detailData.NOTE;
             model.DeliveryDetailViewHeader.SHIP_CUSTOMER_NAME = detailData.SHIP_CUSTOMER_NAME;
             model.DeliveryDetailViewHeader.SHIP_LOCATION_CODE = detailData.SHIP_LOCATION_CODE;
             model.DeliveryDetailViewHeader.TRIP_ACTUAL_SHIP_DATE = detailData.TRIP_ACTUAL_SHIP_DATE;
@@ -577,7 +593,7 @@ namespace CHPOUTSRCMES.Web.Controllers
         [HttpPost]
         public ActionResult DeliveryConfirm(List<long> id)
         {
-            ResultModel result = TripDetailData.DeliveryConfirm(id);
+            ResultModel result = TripHeaderData.DeliveryConfirm(id);
             return new JsonResult { Data = new { status = result.Success, result = result.Msg } };
 
             //if (result.Success)
@@ -595,35 +611,35 @@ namespace CHPOUTSRCMES.Web.Controllers
         [HttpPost]
         public ActionResult CancelConfirm(List<long> id)
         {
-            ResultModel result = TripDetailData.CancelConfirm(id);
+            ResultModel result = TripHeaderData.CancelConfirm(id);
             return new JsonResult { Data = new { status = result.Success, result = result.Msg } };
         }
 
         [HttpPost]
         public ActionResult PrintPickList(List<long> id)
         {
-            ResultModel result = TripDetailData.PrintPickList(id);
+            ResultModel result = TripHeaderData.PrintPickList(id);
             return new JsonResult { Data = new { status = result.Success, result = result.Msg } };
         }
 
         [HttpPost]
         public ActionResult DeliveryAuthorize(List<long> id)
         {
-            ResultModel result = TripDetailData.DeliveryAuthorize(id);
+            ResultModel result = TripHeaderData.DeliveryAuthorize(id);
             return new JsonResult { Data = new { status = result.Success, result = result.Msg } };
         }
 
         [HttpPost]
         public ActionResult CancelAuthorize(List<long> id)
         {
-            ResultModel result = TripDetailData.CancelAuthorize(id);
+            ResultModel result = TripHeaderData.CancelAuthorize(id);
             return new JsonResult { Data = new { status = result.Success, result = result.Msg } };
         }
 
         [HttpPost]
         public ActionResult CancelTrip(List<long> id)
         {
-            ResultModel result = TripDetailData.CancelTrip(id);
+            ResultModel result = TripHeaderData.CancelTrip(id);
             return new JsonResult { Data = new { status = result.Success, result = result.Msg } };
         }
 
@@ -631,12 +647,12 @@ namespace CHPOUTSRCMES.Web.Controllers
         public ActionResult UpdateDeliveryDetailViewHeader(long TripDetailDT_ID)
         {
             DeliveryDetailViewHeader model = new DeliveryDetailViewHeader();
-            TripDetailDT detailData = TripDetailData.GetData(Convert.ToInt32(TripDetailDT_ID))[0];
+            TripHeaderDT detailData = TripHeaderData.GetData(Convert.ToInt32(TripDetailDT_ID))[0];
             model.CUSTOMER_LOCATION_CODE = detailData.CUSTOMER_LOCATION_CODE;
             model.CUSTOMER_NAME = detailData.CUSTOMER_NAME;
             model.DELIVERY_NAME = detailData.DELIVERY_NAME;
             //model.ORDER_NUMBER = Convert.ToString(detailData.ORDER_NUMBER);
-            model.REMARK = detailData.REMARK;
+            model.REMARK = detailData.NOTE;
             model.SHIP_CUSTOMER_NAME = detailData.SHIP_CUSTOMER_NAME;
             model.SHIP_LOCATION_CODE = detailData.SHIP_LOCATION_CODE;
             model.TRIP_ACTUAL_SHIP_DATE = detailData.TRIP_ACTUAL_SHIP_DATE;
@@ -651,7 +667,7 @@ namespace CHPOUTSRCMES.Web.Controllers
         [HttpPost]
         public ActionResult UpdateTransactionAuthorizeDates(TripDetailDTEditor selectedData)
         {
-            List<TripDetailDT> data = TripDetailData.UpdateTransactionAuthorizeDates(selectedData);
+            List<TripHeaderDT> data = TripHeaderData.UpdateTransactionAuthorizeDates(selectedData);
             return new JsonResult { Data = new { data } };
         }
     }

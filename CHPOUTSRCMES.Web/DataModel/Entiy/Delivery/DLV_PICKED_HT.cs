@@ -205,6 +205,14 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Delivery
         public string CreatedBy { set; get; }
 
         /// <summary>
+        /// 建立人員名稱
+        /// </summary>
+        /// 
+        [Required]
+        [Column("CREATED_USER_NAME")]
+        public string CreatedUserName { set; get; }
+
+        /// <summary>
         /// 建立時間
         /// </summary>
         /// 
@@ -220,6 +228,13 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Delivery
         [StringLength(128)]
         [Column("LAST_UPDATE_BY")]
         public string LastUpdateBy { set; get; }
+
+        /// <summary>
+        /// 更新人員名稱
+        /// </summary>
+        /// 
+        [Column("LAST_UPDATE_USER_NAME")]
+        public string LastUpdateUserName { set; get; }
 
         /// <summary>
         /// 更新時間

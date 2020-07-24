@@ -204,15 +204,16 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Delivery
         [StringLength(30)]
         [Required]
         [Column("FREIGHT_TERMS_NAME")]
-        public string Freight_Terms_Name { set; get; }
+        public string FreightTermsName { set; get; }
 
         /// <summary>
         /// 交貨單狀態
         /// </summary>
         /// 
+        [StringLength(10)]
         [Required]
-        [Column("DELIVERY_STATUS_ID")]
-        public long DeliveryStatusId { set; get; }
+        [Column("DELIVERY_STATUS_CODE")]
+        public string DeliveryStatusCode { set; get; }
 
         /// <summary>
         /// 交貨單狀態名稱
@@ -245,7 +246,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Delivery
         /// </summary>
         /// 
         [Column("AUTHORIZE_BY")]
-        public long? Authorize_By { set; get; }
+        public long? AuthorizeBy { set; get; }
 
         /// <summary>
         /// 出貨核准日期
@@ -254,7 +255,15 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Delivery
         [Column("AUTHORIZE_DATE")]
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
-        public DateTime? Authorize_Date { set; get; }
+        public DateTime? AuthorizeDate { set; get; }
+
+        /// <summary>
+        /// 備註
+        /// </summary>
+        /// 
+        [StringLength(240)]
+        [Column("NOTE")]
+        public string Note { set; get; }
 
         /// <summary>
         /// 建立人員
@@ -264,6 +273,14 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Delivery
         [Required]
         [Column("CREATED_BY")]
         public string CreatedBy { set; get; }
+
+        /// <summary>
+        /// 建立人員名稱
+        /// </summary>
+        /// 
+        [Required]
+        [Column("CREATED_USER_NAME")]
+        public string CreatedUserName { set; get; }
 
         /// <summary>
         /// 建立時間
@@ -281,6 +298,13 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Delivery
         [StringLength(128)]
         [Column("LAST_UPDATE_BY")]
         public string LastUpdateBy { set; get; }
+
+        /// <summary>
+        /// 更新人員名稱
+        /// </summary>
+        /// 
+        [Column("LAST_UPDATE_USER_NAME")]
+        public string LastUpdateUserName { set; get; }
 
         /// <summary>
         /// 更新時間

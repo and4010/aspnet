@@ -9,6 +9,7 @@ using System.Web.Mvc;
 using CHPOUTSRCMES.Web.ViewModels;
 using CHPOUTSRCMES.Web.Jsons.Requests;
 using CHPOUTSRCMES.Web.Models.Information;
+using CHPOUTSRCMES.Web.DataModel.UnitOfWorks;
 
 namespace CHPOUTSRCMES.Web.Models.Stock
 {
@@ -152,15 +153,15 @@ namespace CHPOUTSRCMES.Web.Models.Stock
             return viewModel;
         }
 
-        public OutBoundViewModel GetOutBoundViewModel()
+        public OutBoundViewModel GetOutBoundViewModel(MasterUOW uow)
         {
             OutBoundViewModel viewModel = new OutBoundViewModel();
 
-            viewModel.OutSubinventoryItems = orgData.GetSubinventoryList("265", false);
+            viewModel.OutSubinventoryItems = orgData.GetSubinventoryList(uow, "265", MasterUOW.DropDownListType.Choice);
 
             viewModel.OutLocatorItems = orgData.GetLocatorList("265", viewModel.SelectedOutSubinventory, false);
 
-            viewModel.InSubinventoryItems = orgData.GetSubinventoryList("*", false);
+            viewModel.InSubinventoryItems = orgData.GetSubinventoryList(uow, "*", MasterUOW.DropDownListType.Choice);
 
             viewModel.InLocatorItems = orgData.GetLocatorList("*", viewModel.SelectedInSubinventory, false);
 
@@ -195,15 +196,15 @@ namespace CHPOUTSRCMES.Web.Models.Stock
             return viewModel;
         }
 
-        public InBoundViewModel GetInBoundViewModel()
+        public InBoundViewModel GetInBoundViewModel(MasterUOW uow)
         {
             InBoundViewModel viewModel = new InBoundViewModel();
 
-            viewModel.OutSubinventoryItems = orgData.GetSubinventoryList("*", false);
+            viewModel.OutSubinventoryItems = orgData.GetSubinventoryList(uow, "*", MasterUOW.DropDownListType.Choice);
 
             viewModel.OutLocatorItems = orgData.GetLocatorList("*", viewModel.SelectedOutSubinventory, false);
 
-            viewModel.InSubinventoryItems = orgData.GetSubinventoryList("265", false);
+            viewModel.InSubinventoryItems = orgData.GetSubinventoryList(uow, "265", MasterUOW.DropDownListType.Choice);
 
             viewModel.InLocatorItems = orgData.GetLocatorList("265", viewModel.SelectedInSubinventory, false);
 

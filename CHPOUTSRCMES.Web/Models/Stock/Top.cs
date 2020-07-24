@@ -1,4 +1,5 @@
-﻿using CHPOUTSRCMES.Web.Models.Information;
+﻿using CHPOUTSRCMES.Web.DataModel.UnitOfWorks;
+using CHPOUTSRCMES.Web.Models.Information;
 using CHPOUTSRCMES.Web.ViewModels.StockTransaction;
 using System;
 using System.Collections.Generic;
@@ -16,12 +17,11 @@ namespace CHPOUTSRCMES.Web.Models.Stock
         //    orgData = orgSubinventoryData;
         //}
 
-        public TopViewModel GetViewModel(OrgSubinventoryData orgData)
+        public TopViewModel GetViewModel(MasterUOW uow, OrgSubinventoryData orgData)
         {
-
             TopViewModel viewModel = new TopViewModel();
 
-            viewModel.SubinventoryItems = orgData.GetSubinventoryList("265", false);
+            viewModel.SubinventoryItems = orgData.GetSubinventoryList(uow, "265", MasterUOW.DropDownListType.Choice);
 
             viewModel.LocatorItems = orgData.GetLocatorList("265", viewModel.SelectedSubinventory, false);
 

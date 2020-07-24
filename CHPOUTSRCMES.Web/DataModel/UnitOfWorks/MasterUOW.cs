@@ -15,6 +15,7 @@ using System.Web.UI.WebControls;
 using System.Web.Mvc;
 using CHPOUTSRCMES.Web.Models.Information;
 using CHPOUTSRCMES.Web.Models;
+using System.Text;
 using System.Data.SqlClient;
 
 namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
@@ -456,7 +457,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                         {
                             var entity = data.Entity;
                             oRG_ITEMS_T.InventoryItemId = Int64.Parse(ExcelUtil.GetCellString(j, InventoryItemId_cell.ColumnIndex, sheet).Trim());
-                            oRG_ITEMS_T.OrganizationId = entity.OrganizationID;
+                            oRG_ITEMS_T.OrganizationId = entity.OrganizationId;
                             orgItemRepositityory.Create(oRG_ITEMS_T);
                         }
                     }
@@ -492,13 +493,13 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                     {
                         var id = Int64.Parse(getCellString(row.GetCell(0)).Trim());
                         //搜尋未執行 SaveChanges 的資料
-                        var org = this.Context.ChangeTracker.Entries<ORGANIZATION_T>().Where(x => x.Entity.OrganizationID == id).FirstOrDefault();
+                        var org = this.Context.ChangeTracker.Entries<ORGANIZATION_T>().Where(x => x.Entity.OrganizationId == id).FirstOrDefault();
                         //搜尋已執行 SaveChanges 的資料
                         //var org = organizationRepositiory.Get(x => x.OrganizationID == id).FirstOrDefault();
                         if (org == null)
                         {
                             ORGANIZATION_T oRGANIZATION_T = new ORGANIZATION_T();
-                            oRGANIZATION_T.OrganizationID = Int64.Parse(getCellString(row.GetCell(0)).Trim());
+                            oRGANIZATION_T.OrganizationId = Int64.Parse(getCellString(row.GetCell(0)).Trim());
                             oRGANIZATION_T.OrganizationCode = getCellString(row.GetCell(1)).Trim();
                             oRGANIZATION_T.OrganizationName = getCellString(row.GetCell(2)).Trim();
                             oRGANIZATION_T.ControlFlag = "";
@@ -1345,7 +1346,12 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             }
         }
 
-        private List<SelectListItem> createDropDownList(DropDownListType type)
+        /// <summary>
+        /// 產生下拉選單內容
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public List<SelectListItem> createDropDownList(DropDownListType type)
         {
             var organizationList = new List<SelectListItem>();
             switch (type)
@@ -1362,6 +1368,11 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             return organizationList;
         }
 
+        /// <summary>
+        /// 取得組織下拉式選單內容
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
         public List<SelectListItem> GetOrganizationDropDownList(DropDownListType type)
         {
             var organizationList = createDropDownList(type);
@@ -1369,6 +1380,12 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             return organizationList;
         }
 
+        /// <summary>
+        /// 取得倉庫下拉式選單內容
+        /// </summary>
+        /// <param name="ORGANIZATION_ID"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
         public List<SelectListItem> GetSubinventoryDropDownList(string ORGANIZATION_ID, DropDownListType type)
         {
             var subinventoryList = createDropDownList(type);
@@ -1376,6 +1393,13 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             return subinventoryList;
         }
 
+        /// <summary>
+        /// 取得儲位下拉式選單內容
+        /// </summary>
+        /// <param name="ORGANIZATION_ID"></param>
+        /// <param name="SUBINVENTORY_CODE"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
         public List<SelectListItem> GetLocatorDropDownList(string ORGANIZATION_ID, string SUBINVENTORY_CODE, DropDownListType type)
         {
             var locatorList = createDropDownList(type);
@@ -1407,23 +1431,40 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
 
         }
 
+        /// <summary>
+        /// 取得組織SelectListItem
+        /// </summary>
+        /// <returns></returns>
         private List<SelectListItem> getOrganizationList()
         {
             var organizationList = new List<SelectListItem>();
- 
-            var tempList = organizationRepositiory
+            try
+            {
+                var tempList = organizationRepositiory
                             .GetAll().AsNoTracking()
                             .OrderBy(x => x.OrganizationCode)
                             .Select(x => new SelectListItem()
                             {
                                 Text = x.OrganizationCode,
-                                Value = x.OrganizationID.ToString()
+                                Value = x.OrganizationId.ToString()
                             });
+                organizationList.AddRange(tempList);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(LogUtilities.BuildExceptionMessage(ex));
+            }
+            
 
-            organizationList.AddRange(tempList);
+            //organizationList.AddRange(tempList);
             return organizationList;
         }
 
+        /// <summary>
+        /// 取得倉庫SelectListItem
+        /// </summary>
+        /// <param name="ORGANIZATION_ID"></param>
+        /// <returns></returns>
         private List<SelectListItem> getSubinventoryList(string ORGANIZATION_ID)
         {
             long organizationId = 0;
@@ -1468,6 +1509,12 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             return subinventoryList;
         }
 
+        /// <summary>
+        /// 取得儲位SelectListItem
+        /// </summary>
+        /// <param name="ORGANIZATION_ID"></param>
+        /// <param name="SUBINVENTORY_CODE"></param>
+        /// <returns></returns>
         private List<SelectListItem> getLocatorList(string ORGANIZATION_ID, string SUBINVENTORY_CODE)
         {
             long organizationId = 0;
@@ -1582,63 +1629,176 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             return locatorList;
         }
 
+        /// <summary>
+        /// 下拉選單OPTION種類
+        /// </summary>
         public enum DropDownListType
         {
-            NoHeader = 0,
-            All = 1,
-            Choice = 2
+            NoHeader = 0, //沒有額外添加第一項
+            All = 1, //添加第一項為全部
+            Choice = 2 //添加第一項為請選擇
         }
 
-        //public List<OrgSubinventoryDT> search(string ORGANIZATION_ID, string SUBINVENTORY_CODE, string LOCATOR_ID)
-        //{
-        //    try
-        //    {
-        //        long orgId = 0;
-        //        long locId = 0;
+        /// <summary>
+        /// 取得 基本資料-庫存組織 查詢結果
+        /// </summary>
+        /// <param name="ORGANIZATION_ID"></param>
+        /// <param name="SUBINVENTORY_CODE"></param>
+        /// <param name="LOCATOR_ID"></param>
+        /// <returns></returns>
+        public List<OrgSubinventoryDT> OrgSubinventorySearch(string ORGANIZATION_ID, string SUBINVENTORY_CODE, string LOCATOR_ID)
+        {
+            try
+            {
+                long orgId = 0;
+                long locId = 0;
 
-        //        try
-        //        {
-        //            if (!string.IsNullOrEmpty(ORGANIZATION_ID) && ORGANIZATION_ID != "*")
-        //            {
-        //                orgId = Convert.ToInt64(ORGANIZATION_ID);
-        //            }
-        //        }
-        //        catch
-        //        {
-        //            ORGANIZATION_ID = "*";
-        //        }
+                try
+                {
+                    if (!string.IsNullOrEmpty(ORGANIZATION_ID) && ORGANIZATION_ID != "*")
+                    {
+                        orgId = Convert.ToInt64(ORGANIZATION_ID);
+                    }
+                }
+                catch
+                {
+                    ORGANIZATION_ID = "*";
+                }
 
-        //        try
-        //        {
-        //            if (!string.IsNullOrEmpty(LOCATOR_ID) && LOCATOR_ID != "*")
-        //            {
-        //                locId = Convert.ToInt64(LOCATOR_ID);
-        //            }
-        //        }
-        //        catch
-        //        {
-        //            LOCATOR_ID = "*";
-        //        }
+                try
+                {
+                    if (!string.IsNullOrEmpty(LOCATOR_ID) && LOCATOR_ID != "*")
+                    {
+                        locId = Convert.ToInt64(LOCATOR_ID);
+                    }
+                }
+                catch
+                {
+                    LOCATOR_ID = "*";
+                }
 
+                
+                List<string> cond = new List<string>();
+                List<SqlParameter> sqlParameterList = new List<SqlParameter>();
+                string prefixCmd = @"
+select o.ORGANIZATION_ID,
+o.ORGANIZATION_CODE,
+o.ORGANIZATION_NAME,
+s.SUBINVENTORY_CODE,
+s.SUBINVENTORY_NAME,
+s.OSP_FLAG,
+'A',
+l.LOCATOR_ID,
+s.LOCATOR_TYPE,
+l.LOCATOR_SEGMENTS,
+l.LOCATOR_DESC,
+l.SEGMENT1,
+l.SEGMENT2,
+l.SEGMENT3,
+l.SEGMENT4
+from ORGANIZATION_T o
+inner join SUBINVENTORY_T s
+on o.ORGANIZATION_ID = s.ORGANIZATION_ID
+inner join LOCATOR_T l
+on s.ORGANIZATION_ID = l.ORGANIZATION_ID and s.SUBINVENTORY_CODE = l.SUBINVENTORY_CODE";
 
+                if (ORGANIZATION_ID != "*")
+                {
+                    cond.Add("o.ORGANIZATION_ID = @ORGANIZATION_ID");
+                    sqlParameterList.Add(new SqlParameter("@ORGANIZATION_ID", orgId.ToString()));
+                    
+                }
+                if (SUBINVENTORY_CODE != "*")
+                {
+                    cond.Add("s.SUBINVENTORY_CODE = @SUBINVENTORY_CODE");
+                    sqlParameterList.Add(new SqlParameter("@SUBINVENTORY_CODE", SUBINVENTORY_CODE));
+                }
+                if (LOCATOR_ID != "*")
+                {
+                    cond.Add("l.LOCATOR_ID = @LOCATOR_ID");
+                    sqlParameterList.Add(new SqlParameter("@LOCATOR_ID", locId.ToString()));
+                }
 
-        //        //var query = testSource.Where(
-        //        //  x =>
-        //        //  (ORGANIZATION_ID == "*" || x.ORGANIZATION_ID == orgId) &&
-        //        //  (SUBINVENTORY_CODE == "*" || x.SUBINVENTORY_CODE != null && x.SUBINVENTORY_CODE.ToLower() == SUBINVENTORY_CODE.ToLower()) &&
-        //        //  (LOCATOR_ID == "*" || x.LOCATOR_ID == locId)
-        //        //  ).ToList();
+                string commandText = string.Format(prefixCmd + "{0}{1}", cond.Count > 0 ? " WHERE " : "", string.Join(" AND ", cond.ToArray()));
 
-        //        //dtData = query;
-        //        return query;
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        //result.Msg = e.Message;
-        //        //result.Success = false;
-        //        return new List<OrgSubinventoryDT>();
-        //    }
-        //    //return result;
-        //}
+                if (sqlParameterList.Count > 0)
+                {
+                    return this.Context.Database.SqlQuery<OrgSubinventoryDT>(commandText, sqlParameterList.ToArray()).ToList();
+                    
+                }
+                else
+                {
+                    return this.Context.Database.SqlQuery<OrgSubinventoryDT>(commandText).ToList();
+                }
+                
+                //var tempList = this.Context.Database.SqlQuery<OrgSubinventoryDT>(cmd.ToString(),
+                //    new SqlParameter("@ORGANIZATION_ID", orgId),
+                //    new SqlParameter("@SUBINVENTORY_CODE", SUBINVENTORY_CODE),
+                //    new SqlParameter("@LOCATOR_ID", locId)).ToList();
+
+                //var tempList = organizationRepositiory.GetAll().AsNoTracking()
+                //    .Join(subinventoryRepositiory.GetAll().AsNoTracking(),
+                //    o => new { o.OrganizationId },
+                //    s => new { s.OrganizationId },
+                //    (o, s) => new
+                //    {
+                //        o.OrganizationId,
+                //        o.OrganizationCode,
+                //        o.OrganizationName,
+                //        s.SubinventoryCode,
+                //        s.SubinventoryName,
+                //        s.OspFlag,
+                //        s.LocatorType
+                //    })
+                //    .Join(locatorTRepositiory.GetAll().AsNoTracking(),
+                //    os => new { os.OrganizationId, os.SubinventoryCode },
+                //    l => new { l.OrganizationId, l.SubinventoryCode },
+                //    (os, l) => new {
+                //        OrganizationId = os.OrganizationId,
+                //        OrganizationCode = os.OrganizationCode,
+                //        OrganizationName = os.OrganizationName,
+                //        SubinventoryCode = os.SubinventoryCode,
+                //        SubinventoryName = os.SubinventoryName,
+                //        OspFlag = os.OspFlag,
+                //        BarcodePrefixCode = "A",
+                //        LocatorId = l.LocatorId,
+                //        LocatorType = os.LocatorType,
+                //        LocatorSegments = l.LocatorSegments,
+                //        LocatorDesc = l.LocatorDesc,
+                //        Segment1 = l.Segment1,
+                //        Segment2 = l.Segment2,
+                //        Segment3 = l.Segment3,
+                //        Segment4 = l.Segment4
+                //    })
+                //        .Where(x => ORGANIZATION_ID == "*" ? true : x.OrganizationId == orgId &&
+                //            SUBINVENTORY_CODE == "*" ? true : x.SubinventoryCode == SUBINVENTORY_CODE &&
+                //            LOCATOR_ID == "*" ? true : x.LocatorId == locId)
+                //            .Select(x => new OrgSubinventoryDT{
+                //                ORGANIZATION_ID = x.OrganizationId,
+                //                ORGANIZATION_CODE = x.OrganizationCode,
+                //                ORGANIZATION_NAME = x.OrganizationName,
+                //                SUBINVENTORY_CODE = x.SubinventoryCode,
+                //                SUBINVENTORY_NAME = x.SubinventoryName,
+                //                OSP_FLAG = x.OspFlag,
+                //                BARCODE_PREFIX_CODE = x.BarcodePrefixCode,
+                //                LOCATOR_ID = x.LocatorId,
+                //                LOCATOR_TYPE = x.LocatorType,
+                //                LOCATOR_SEGMENTS = x.LocatorSegments,
+                //                LOCATOR_DESC = x.LocatorDesc,
+                //                SEGMENT1 = x.Segment1,
+                //                SEGMENT2 = x.Segment2,
+                //                SEGMENT3 = x.Segment3,
+                //                SEGMENT4 = x.Segment4
+                //            });
+
+                //return tempList;
+            }
+            catch (Exception ex)
+            {
+                logger.Error(LogUtilities.BuildExceptionMessage(ex));
+                return new List<OrgSubinventoryDT>();
+            }
+            //return result;
+        }
     }
 }

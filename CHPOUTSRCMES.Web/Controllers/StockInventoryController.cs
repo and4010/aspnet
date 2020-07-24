@@ -1,4 +1,6 @@
-﻿using CHPOUTSRCMES.Web.Models;
+﻿using CHPOUTSRCMES.Web.DataModel;
+using CHPOUTSRCMES.Web.DataModel.UnitOfWorks;
+using CHPOUTSRCMES.Web.Models;
 using CHPOUTSRCMES.Web.Models.Stock;
 using CHPOUTSRCMES.Web.Models.StockInventory;
 using CHPOUTSRCMES.Web.ViewModels;
@@ -36,7 +38,13 @@ namespace CHPOUTSRCMES.Web.Controllers
 
         public PartialViewResult GetTop()
         {
-            return PartialView("_TopPartial", top.GetViewModel(stockInventoryData.orgData));
+            using (var context = new MesContext())
+            {
+                using (MasterUOW uow = new MasterUOW(context))
+                {
+                    return PartialView("_TopPartial", top.GetViewModel(uow, stockInventoryData.orgData));
+                }
+            }
         }
 
         public PartialViewResult GetContent(string TransactionType)

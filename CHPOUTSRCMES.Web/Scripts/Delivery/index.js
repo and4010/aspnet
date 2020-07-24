@@ -215,7 +215,7 @@ $(document).ready(function () {
          {
              data: "AUTHORIZE_DATE", name: "出貨核准日", "autoWidth": true,
          },
-         { data: "REMARK", name: "備註", "autoWidth": true, className: "dt-body-left" },
+         { data: "NOTE", name: "備註", "autoWidth": true, className: "dt-body-left" },
 
          {
              data: null, "autoWidth": true, orderable: false,
