@@ -218,6 +218,12 @@ namespace CHPOUTSRCMES.Web.Models.Information
             return subinventoryList;
         }
 
+        public List<SelectListItem> GetLocatorList(MasterUOW uow, string ORGANIZATION_ID, string SUBINVENTORY_CODE, MasterUOW.DropDownListType type)
+        {
+            return uow.GetLocatorDropDownList(ORGANIZATION_ID, SUBINVENTORY_CODE, type);
+        }
+
+
         public IEnumerable<SelectListItem> GetLocatorList(string ORGANIZATION_ID, string SUBINVENTORY_CODE, bool needAll)
         {
             return getLocatorList(ORGANIZATION_ID, SUBINVENTORY_CODE, needAll);

@@ -1262,6 +1262,11 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             }
         }
 
+        /// <summary>
+        /// 產生下拉選單內容
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
         public List<SelectListItem> createDropDownList(DropDownListType type)
         {
             var organizationList = new List<SelectListItem>();
@@ -1279,6 +1284,11 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             return organizationList;
         }
 
+        /// <summary>
+        /// 取得組織下拉式選單內容
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
         public List<SelectListItem> GetOrganizationDropDownList(DropDownListType type)
         {
             var organizationList = createDropDownList(type);
@@ -1286,6 +1296,12 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             return organizationList;
         }
 
+        /// <summary>
+        /// 取得倉庫下拉式選單內容
+        /// </summary>
+        /// <param name="ORGANIZATION_ID"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
         public List<SelectListItem> GetSubinventoryDropDownList(string ORGANIZATION_ID, DropDownListType type)
         {
             var subinventoryList = createDropDownList(type);
@@ -1293,6 +1309,13 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             return subinventoryList;
         }
 
+        /// <summary>
+        /// 取得儲位下拉式選單內容
+        /// </summary>
+        /// <param name="ORGANIZATION_ID"></param>
+        /// <param name="SUBINVENTORY_CODE"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
         public List<SelectListItem> GetLocatorDropDownList(string ORGANIZATION_ID, string SUBINVENTORY_CODE, DropDownListType type)
         {
             var locatorList = createDropDownList(type);
@@ -1300,6 +1323,10 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             return locatorList;
         }
 
+        /// <summary>
+        /// 取得組織SelectListItem
+        /// </summary>
+        /// <returns></returns>
         private List<SelectListItem> getOrganizationList()
         {
             var organizationList = new List<SelectListItem>();
@@ -1325,6 +1352,11 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             return organizationList;
         }
 
+        /// <summary>
+        /// 取得倉庫SelectListItem
+        /// </summary>
+        /// <param name="ORGANIZATION_ID"></param>
+        /// <returns></returns>
         private List<SelectListItem> getSubinventoryList(string ORGANIZATION_ID)
         {
             long organizationId = 0;
@@ -1369,6 +1401,12 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             return subinventoryList;
         }
 
+        /// <summary>
+        /// 取得儲位SelectListItem
+        /// </summary>
+        /// <param name="ORGANIZATION_ID"></param>
+        /// <param name="SUBINVENTORY_CODE"></param>
+        /// <returns></returns>
         private List<SelectListItem> getLocatorList(string ORGANIZATION_ID, string SUBINVENTORY_CODE)
         {
             long organizationId = 0;
@@ -1483,13 +1521,23 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             return locatorList;
         }
 
+        /// <summary>
+        /// 下拉選單OPTION種類
+        /// </summary>
         public enum DropDownListType
         {
-            NoHeader = 0,
-            All = 1,
-            Choice = 2
+            NoHeader = 0, //沒有額外添加第一項
+            All = 1, //添加第一項為全部
+            Choice = 2 //添加第一項為請選擇
         }
 
+        /// <summary>
+        /// 取得 基本資料-庫存組織 查詢結果
+        /// </summary>
+        /// <param name="ORGANIZATION_ID"></param>
+        /// <param name="SUBINVENTORY_CODE"></param>
+        /// <param name="LOCATOR_ID"></param>
+        /// <returns></returns>
         public List<OrgSubinventoryDT> OrgSubinventorySearch(string ORGANIZATION_ID, string SUBINVENTORY_CODE, string LOCATOR_ID)
         {
             try
