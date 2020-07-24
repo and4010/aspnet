@@ -123,6 +123,15 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Purchase
         public string CreatedBy { set; get; }
 
         /// <summary>
+        /// 建立人員名稱
+        /// </summary>
+        /// 
+        [Required]
+        [Column("CREATED_USER_NAME")]
+        public string CreatedUserName { set; get; }
+
+
+        /// <summary>
         /// 建立時間
         /// </summary>
         /// 
@@ -130,6 +139,13 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Purchase
         [Required]
         [Column("CREATION_DATE")]
         public DateTime CreationDate { set; get; }
+
+        /// <summary>
+        /// 更新人員名稱
+        /// </summary>
+        /// 
+        [Column("LAST_UPDATE_USER_NAME")]
+        public string LastUpdateUserName { set; get; }
 
         /// <summary>
         /// 更新人員
@@ -146,5 +162,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Purchase
         [DataType(DataType.Date)]
         [Column("LAST_UPDATE_DATE")]
         public DateTime? LastUpdateDate { set; get; }
+
+       
     }
 }

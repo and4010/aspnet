@@ -20,8 +20,8 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
         public string Month { set; get; }
         [Display(Name = "年")]
         public string Year { set; get; }
-        [Display(Name = "倉庫")]
-        public string Warehouse { set; get; }
+        [Display(Name = "儲位")]
+        public string Locator { set; get; }
         [Display(Name = "建立時間")]
         public string CreateDate { set; get; }
         [Display(Name = "櫃號")]
@@ -40,13 +40,6 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
         public DetailModel.RollDetailModel RollDetailModel { set; get; }
         public DetailModel.FlatDetailModel FlatDetailModel { set; get; }
 
-
-
-
-
-        //測試資料
-
-        public static List<DetailModel.FlatDetailModel> StockInFlat = new List<DetailModel.FlatDetailModel>();
 
         public static List<DetailModel.RollDetailModel> StockInRoll = new List<DetailModel.RollDetailModel>();
 
@@ -72,7 +65,7 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
 
             using (var context = new MesContext())
             {
-               return new PurchaseUOW(context).GetFlatHeaderList(CONTAINER_NO);
+                return new PurchaseUOW(context).GetFlatHeaderList(CONTAINER_NO);
             }
         }
 
@@ -83,54 +76,13 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
 
         }
 
-        public static void GetStockInFlat()
+        public List<DetailModel.FlatDetailModel> GetFlatPickT(string CONTAINER_NO)
         {
 
-            StockInFlat.Add(new DetailModel.FlatDetailModel()
+            using (var context = new MesContext())
             {
-                Id = 1,
-                Subinventory = "SFG",
-                Locator = "TB2",
-                Barcode = "P2005060001",
-                Item_No = "4DM00A03500214K512K",
-                ReamWeight = "1000"
-            ,
-                PackingType = "令包",
-                Pieces_Qty = "1000",
-                Qty = "1",
-                Status = "待入庫",
-                Remark = ""
-            });
-            StockInFlat.Add(new DetailModel.FlatDetailModel()
-            {
-                Id = 2,
-                Subinventory = "SFG",
-                Locator = "TB2",
-                Barcode = "P2005060002",
-                Item_No = "4DM00A03500214K512K",
-                ReamWeight = "1000"
-            ,
-                PackingType = "令包",
-                Pieces_Qty = "1000",
-                Qty = "1",
-                Status = "待入庫",
-                Remark = ""
-            });
-            StockInFlat.Add(new DetailModel.FlatDetailModel()
-            {
-                Id = 3,
-                Subinventory = "SFG",
-                Locator = "TB2",
-                Barcode = "P2005060003",
-                Item_No = "4DM00A03500214K512K",
-                ReamWeight = "1000"
-        ,
-                PackingType = "令包",
-                Pieces_Qty = "1000",
-                Qty = "1",
-                Status = "待入庫",
-                Remark = ""
-            });
+                return new PurchaseUOW(context).GetFlatDetailList(CONTAINER_NO);
+            }
 
         }
 
@@ -181,58 +133,91 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
             return true;
         }
 
-        public Boolean GetFlatEditRemak(string remak, int id, string status, string Reason)
+        public Boolean GetFlatEditRemak(int id, string Reason, string remak)
         {
 
-            var Id = StockInFlat.Single(r => r.Id == id);
+            //var Id = StockInFlat.Single(r => r.Id == id);
 
-            if (Id != null)
-            {
-                Id.Remark = remak;
-                Id.Reason = Reason;
-            }
+            //if (Id != null)
+            //{
+            //    Id.Remark = remak;
+            //    Id.Reason = Reason;
+            //}
 
 
             return true;
         }
 
-
+        /// <summary>
+        /// 取得編輯
+        /// </summary>
+        /// <param name="Id"></param>
+        /// <returns></returns>
         public DetailModel.FlatDetailModel GetFlatEdit(string Id)
         {
-            var model = StockInFlat.First(r => r.Id.ToString() == Id);
-            DetailModel.FlatDetailModel fd = new DetailModel.FlatDetailModel();
-            fd = model;
-            return fd;
+            using (var context = new MesContext())
+            {
+                return new PurchaseUOW(context).GetFlatEdit(Id);
+            }
         }
 
         public List<DetailModel.FlatDetailModel> SaveFlatBarcode(string Barcode, ref Boolean Boolean, ref Boolean BarcodeStatus)
         {
-            List<DetailModel.FlatDetailModel> model = StockInFlat;
-            try
-            {
-                var sf = model.First(r => r.Barcode == Barcode);
-                if (sf.Status == "已入庫")
-                {
-                    BarcodeStatus = false;
-                }
-                else
-                {
-                    sf.Status = "已入庫";
-                }
+            //List<DetailModel.FlatDetailModel> model = StockInFlat;
+            //try
+            //{
+            //    var sf = model.First(r => r.Barcode == Barcode);
+            //    if (sf.Status == "已入庫")
+            //    {
+            //        BarcodeStatus = false;
+            //    }
+            //    else
+            //    {
+            //        sf.Status = "已入庫";
+            //    }
 
-            }
-            catch (Exception e)
-            {
-                Boolean = false;
-            }
+            //}
+            //catch (Exception e)
+            //{
+            //    Boolean = false;
+            //}
 
 
 
-            return model;
+            return null;
         }
 
+        /// <summary>
+        /// 取得平張頁籤數量
+        /// </summary>
+        /// <param name="CabinetNumber"></param>
+        /// <returns></returns>
+        public decimal GetFlatNumberTab(string CabinetNumber)
+        {
+            using (var context = new MesContext())
+            {
+                return new PurchaseUOW(context).GetFlatNumberTab(CabinetNumber);
+            }
+        }
 
+        /// <summary>
+        /// 取得紙捲頁籤數量
+        /// </summary>
+        /// <param name="CabinetNumber"></param>
+        /// <returns></returns>
+        public decimal GetPaperRollNumberTab(string CabinetNumber)
+        {
+            using (var context = new MesContext())
+            {
+                return new PurchaseUOW(context).GetPaperRollNumberTab(CabinetNumber);
+            }
+            
+        }
 
+        /// <summary>
+        /// 檢查櫃號
+        /// </summary>
+        /// <returns></returns>
         public DetailModel.RollDetailModel CheckLotNumber()
         {
             DetailModel.RollDetailModel paperRollDetail = new DetailModel.RollDetailModel();
@@ -242,24 +227,119 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
             return paperRollDetail;
         }
 
+        /// <summary>
+        /// 儲存照片
+        /// </summary>
+        /// <param name="file"></param>
         public void SavePhoto(HttpPostedFileBase file)
         {
-            var fileName = Path.GetFileName(file.FileName);
-            //string Img_base64 = Img_data.Substring(Img_data.IndexOf(',') + 1);
-            if(fileName != null)
+            if (file != null)
             {
-                byte[] Img_byte = Convert.FromBase64String(fileName);
-                using (Stream stream = new MemoryStream(Img_byte))
+                using (var context = new MesContext())
                 {
-                    Image img = Image.FromStream(stream);
-                    img.Save("123.jpg", ImageFormat.Jpeg);
+                    new PurchaseUOW(context).SavePhoto(file);
                 }
+
             }
-           
+
+        }
+
+        /// <summary>
+        /// 入庫行事曆取得月份
+        /// </summary>
+        /// <returns></returns>
+        public List<SelectListItem> GetMonths()
+        {
+            List<SelectListItem> months = new List<SelectListItem>();
+            for (int i = 1; i <= 12; i++)
+            {
+                string month = i.ToString();
+                month = month.PadLeft(2, '0');
+                months.Add(new SelectListItem()
+                {
+                    Text = month,
+                    Value = month,
+                    Selected = false,
+                });
+            }
+            return months;
+        }
+
+        /// <summary>
+        /// 入庫行事曆取得年份
+        /// </summary>
+        /// <returns></returns>
+        public List<SelectListItem> GetYears()
+        {
+            List<SelectListItem> years = new List<SelectListItem>();
+            int nowYear = DateTime.Now.Year;
+
+            if (nowYear < 100)
+            {
+                nowYear = 100; //fullcendar支援的最小年份
+            }
+
+            int maxYear = nowYear + 1;
+            int minYear = nowYear - 4;
+
+            if (minYear < 100)
+            {
+                minYear = 100; //fullcendar支援的最小年份
+            }
+
+            for (int i = minYear; i <= maxYear; i++)
+            {
+                string year = i.ToString();
+                year = year.PadLeft(4, '0');
+                years.Add(new SelectListItem()
+                {
+                    Text = year,
+                    Value = year,
+                    Selected = false,
+                });
+            }
+            return years;
         }
 
 
+        /// <summary>
+        /// 編輯取得原因
+        /// </summary>
+        /// <returns></returns>
+        public List<SelectListItem> GetReason()
+        {
+            using (var context = new MesContext())
+            {
+                return new MasterUOW(context).GetReasonDropDownList(MasterUOW.DropDownListType.Choice);
+            }
+        }
 
+
+        /// <summary>
+        /// 編輯取得儲位
+        /// </summary>
+        /// <returns></returns>
+        public List<SelectListItem> GetLocator()
+        {
+            using (var context = new MesContext())
+            {
+                return new MasterUOW(context).GetLocatorDropDownList("*", "*", MasterUOW.DropDownListType.Choice);
+            }
+
+        }
+
+        /// <summary>
+        /// 編輯取得儲位
+        /// </summary>
+        /// <returns></returns>
+        public List<SelectListItem> GetSubinventoryList()
+        {
+            using (var context = new MesContext())
+            {
+                return new MasterUOW(context).GetSubinventoryDropDownList("*", MasterUOW.DropDownListType.Choice);
+            }
+
+        }
 
         internal class RollDetailModelDTOrder
         {
@@ -483,8 +563,8 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
                         || (!string.IsNullOrEmpty(p.Item_No) && p.Item_No.ToLower().Contains(search.ToLower()))
                         || (!string.IsNullOrEmpty(p.ReamWeight) && p.ReamWeight.ToLower().Contains(search.ToLower()))
                         || (!string.IsNullOrEmpty(p.PackingType) && p.PackingType.ToLower().Contains(search.ToLower()))
-                        || (!string.IsNullOrEmpty(p.Pieces_Qty) && p.Pieces_Qty.ToLower().Contains(search.ToLower()))
-                        || (!string.IsNullOrEmpty(p.Qty) && p.Qty.ToLower().Contains(search.ToLower()))
+                        || (!string.IsNullOrEmpty(p.Pieces_Qty.ToString()) && p.Pieces_Qty.ToString().ToLower().Contains(search.ToLower()))
+                        || (!string.IsNullOrEmpty(p.Qty.ToString()) && p.Qty.ToString().ToLower().Contains(search.ToLower()))
                         || (!string.IsNullOrEmpty(p.Status) && p.Status.ToLower().Contains(search.ToLower()))
                         || (!string.IsNullOrEmpty(p.Remark) && p.Remark.ToLower().Contains(search.ToLower()))
                         ).ToList();

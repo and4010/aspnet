@@ -27,9 +27,9 @@ namespace CHPOUTSRCMES.Web.Controllers
                 Month = DateTime.Now.Month.ToString("00")
                 //Warehouse = "TB2"
             };
-            ViewBag.MonthItems = GetMonths();
-            ViewBag.YearItems = GetYears();
-            ViewBag.WarehouseItems = GetWarehouses();
+            ViewBag.MonthItems = model.GetMonths();
+            ViewBag.YearItems = model.GetYears();
+            ViewBag.SubinventoryItems = model.GetSubinventoryList();
 
             return View(model);
         }
@@ -55,93 +55,14 @@ namespace CHPOUTSRCMES.Web.Controllers
                 creatdate.Status = 0;
                 creatdate.url = @Url.Action("Detail", "Purchase", new { CONTAINER_NO = "TGBU6882663", Status = "0", start = CreateDate });
             }
-            return Json(new { boolean },JsonRequestBehavior.AllowGet);
+            return Json(new { boolean }, JsonRequestBehavior.AllowGet);
         }
 
-        private List<SelectListItem> GetMonths()
-        {
-            List<SelectListItem> months = new List<SelectListItem>();
-            for (int i = 1; i <= 12; i++)
-            {
-                string month = i.ToString();
-                month = month.PadLeft(2, '0');
-                months.Add(new SelectListItem()
-                {
-                    Text = month,
-                    Value = month,
-                    Selected = false,
-                });
-            }
-            return months;
-        }
 
-        private List<SelectListItem> GetYears()
-        {
-            List<SelectListItem> years = new List<SelectListItem>();
-            int nowYear = DateTime.Now.Year;
-
-            if (nowYear < 100)
-            {
-                nowYear = 100; //fullcendar支援的最小年份
-            }
-
-            int maxYear = nowYear + 1;
-            int minYear = nowYear - 4;
-
-            if (minYear < 100)
-            {
-                minYear = 100; //fullcendar支援的最小年份
-            }
-
-            for (int i = minYear; i <= maxYear; i++)
-            {
-                string year = i.ToString();
-                year = year.PadLeft(4, '0');
-                years.Add(new SelectListItem()
-                {
-                    Text = year,
-                    Value = year,
-                    Selected = false,
-                });
-            }
-            return years;
-        }
-
-        private List<SelectListItem> GetWarehouses()
-        {
-            List<SelectListItem> warehouses = new List<SelectListItem>();
-
-            warehouses.Add(new SelectListItem()
-            {
-                Text = "TB2",
-                Value = "TB2",
-                Selected = false,
-            });
-            return warehouses;
-        }
-
-        private List<SelectListItem> GetReason()
-        {
-            List<SelectListItem> reason = new List<SelectListItem>();
-            List<ReasonModel> models = new List<ReasonModel>();
-            reason.Add(new SelectListItem()
-            {
-                Text = "A-破損",
-                Value = "A-破損",
-                Selected = false,
-            });
-            reason.Add(new SelectListItem()
-            {
-                Text = "B-汙垢",
-                Value = "B-汙垢",
-                Selected = false,
-            });
-            return reason;
-        }
 
         // GET: Purchase
         [HttpGet, ActionName("Detail")]
-        public ActionResult Detail(string CONTAINER_NO = "", string Start = "", string Status = "",string Subinventory = "")
+        public ActionResult Detail(string CONTAINER_NO = "", string Start = "", string Status = "", string Subinventory = "")
         {
             PurchaseViewModel model = new PurchaseViewModel();
 
@@ -154,7 +75,7 @@ namespace CHPOUTSRCMES.Web.Controllers
 
 
         [HttpPost, ActionName("RollHeader")]
-        public JsonResult RollHeader(DataTableAjaxPostViewModel data,string CabinetNumber)
+        public JsonResult RollHeader(DataTableAjaxPostViewModel data, string CabinetNumber)
         {
             PurchaseViewModel purchaseViewModel = new PurchaseViewModel();
             List<DetailModel.RollModel> model;
@@ -218,17 +139,11 @@ namespace CHPOUTSRCMES.Web.Controllers
 
 
         [HttpPost, ActionName("FlatBody")]
-        public JsonResult FlatBody(DataTableAjaxPostViewModel data, string status)
+        public JsonResult FlatBody(DataTableAjaxPostViewModel data, string CabinetNumber)
         {
 
-
-            List<DetailModel.FlatDetailModel> model;
-
-            if (PurchaseViewModel.StockInFlat.Count == 0)
-            {
-                PurchaseViewModel.GetStockInFlat();
-            }
-            model = PurchaseViewModel.StockInFlat;
+            PurchaseViewModel viewModel = new PurchaseViewModel();
+            List<DetailModel.FlatDetailModel> model = viewModel.GetFlatPickT(CabinetNumber);
 
             model = PurchaseViewModel.FlatDetailModelDTOrder.Search(data, model);
             model = PurchaseViewModel.FlatDetailModelDTOrder.Order(data.Order, model).ToList();
@@ -244,7 +159,7 @@ namespace CHPOUTSRCMES.Web.Controllers
         public JsonResult CheckCabinetNumber(string InputCabinetNumber, string ViewCabinetNumber)
         {
             var boolean = false;
-             if(InputCabinetNumber == ViewCabinetNumber)
+            if (InputCabinetNumber == ViewCabinetNumber)
             {
                 boolean = true;
             }
@@ -275,8 +190,8 @@ namespace CHPOUTSRCMES.Web.Controllers
             model.CabinetNumber = "TGBU6882663";
             model.Subinventory = "TB2";
 
-            ViewBag.WarehouseItems = GetWarehouses();
-            ViewBag.ReasonItems = GetReason();
+            ViewBag.LocatorItems = model.GetLocator();
+            ViewBag.ReasonItems = model.GetReason();
 
 
             model.RollDetailModel = model.GetRollEdit(id);
@@ -286,16 +201,19 @@ namespace CHPOUTSRCMES.Web.Controllers
 
         public ActionResult FlatView(string id)
         {
+
+            
+
             PurchaseViewModel model = new PurchaseViewModel();
 
-
-            model.CreateDate = "2020-06-08 10:00:00";
-            model.CabinetNumber = "TGBU6882663";
-            model.Subinventory = "TB2";
-            ViewBag.WarehouseItems = GetWarehouses();
-            ViewBag.ReasonItems = GetReason();
+            ViewBag.LocatorItems = model.GetLocator();
+            ViewBag.ReasonItems = model.GetReason();
 
             model.FlatDetailModel = model.GetFlatEdit(id);
+            //model.CreateDate = "2020-06-08 10:00:00";
+            //model.CabinetNumber = "TGBU6882663";
+            //model.Subinventory = "TB2";
+
 
             return View(model);
         }
@@ -305,65 +223,70 @@ namespace CHPOUTSRCMES.Web.Controllers
         {
 
             PurchaseViewModel model = new PurchaseViewModel();
-            string[] sarry = id.ToString().Split(new char[1] { '-' });
-            var Id = sarry[0];
-            var status = sarry[1];
-            model.CreateDate = "2020-06-08 10:00:00";
-            model.CabinetNumber = "TGBU6882663";
-            model.Subinventory = "TB2";
-            model.Status = status;
+            //string[] sarry = id.ToString().Split(new char[1] { '-' });
+            //var Id = sarry[0];
+            //var status = sarry[1];
+            //model.CreateDate = "2020-06-08 10:00:00";
+            //model.CabinetNumber = "TGBU6882663";
+            //model.Subinventory = "TB2";
+            //model.Status = status;
 
-            ViewBag.WarehouseItems = GetWarehouses();
-            ViewBag.ReasonItems = GetReason();
-
-
-            model.RollDetailModel = model.GetRollEdit(Id);
-
-
+            model.RollDetailModel = model.GetRollEdit(id);
+            ViewBag.LocatorItems = model.GetLocator();
+            ViewBag.ReasonItems = model.GetReason();
 
             return View(model);
         }
 
-
-        public ActionResult FlatEdit(string id)
+        public ActionResult FlatEdit(string Id,string CabinetNumber)
         {
             PurchaseViewModel model = new PurchaseViewModel();
-            string[] sarry = id.ToString().Split(new char[1] { '-' });
-            var Id = sarry[0];
-            var status = sarry[1];
-
-            model.Status = status;
-            model.CreateDate = "2020-06-08 10:00:00";
-            model.CabinetNumber = "TGBU6882663";
-            model.Subinventory = "TB2";
-            ViewBag.WarehouseItems = GetWarehouses();
-            ViewBag.ReasonItems = GetReason();
-
+            ViewBag.LocatorItems = model.GetLocator();
+            ViewBag.ReasonItems = model.GetReason();
             model.FlatDetailModel = model.GetFlatEdit(Id);
 
+            //model.Status = purchaseViewModel.Status;
+            //model.CreateDate = purchaseViewModel.CreateDate;
+            model.CabinetNumber = CabinetNumber;
+            //model.Subinventory = purchaseViewModel.Subinventory;
 
             return View(model);
+        
+        }
+
+        public ActionResult FlatEditView(string id = "",string cabinetNumber = "")
+        {
+            return RedirectToAction("FlatEdit", "Purchas", new { Id = id, CabinetNumber = cabinetNumber });
         }
 
         [HttpPost]
-        public JsonResult RollEditSave(string Remak, int id, string Status,string Reason,string imgFile)
+        public JsonResult RollEditSave(string Remak, int id, string Status, string Reason, string imgFile)
         {
             PurchaseViewModel model = new PurchaseViewModel();
 
-            model.GetRollEditRemak(Remak, id, Status,Reason);
+            model.GetRollEditRemak(Remak, id, Status, Reason);
             var boolean = true;
 
             return Json(new { boolean }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
-        public JsonResult FlatEditSave(string Remak, int id, string Status, string Reason, HttpPostedFileBase file)
+        public JsonResult FlatEditSave(FormCollection formCollection)
         {
             PurchaseViewModel model = new PurchaseViewModel();
-            model.GetFlatEditRemak(Remak, id, Status, Reason);
-            model.SavePhoto(file);
-            var boolean = true;
+            var Files = Request.Files;
+            if (Files != null || Files.Count != 0)
+            {
+                foreach (string i in Files)
+                {
+                    HttpPostedFileBase hpf = Files[i] as HttpPostedFileBase;
+                    model.SavePhoto(hpf);
+                }
+            }
 
+            //model.GetFlatEditRemak(int.Parse(formCollection["id"]),
+            //   formCollection["reason"], formCollection["remak"]);
+            var boolean = true;
             return Json(new { boolean }, JsonRequestBehavior.AllowGet);
         }
 
@@ -439,7 +362,7 @@ namespace CHPOUTSRCMES.Web.Controllers
         }
 
         [HttpPost]
-        public JsonResult ExcelImportRoll(HttpPostedFileBase file, DataTableAjaxPostViewModel data, ref List<DetailModel.RollDetailModel> detail, ref ResultModel result,string CONTAINER_NO)
+        public JsonResult ExcelImportRoll(HttpPostedFileBase file, DataTableAjaxPostViewModel data, ref List<DetailModel.RollDetailModel> detail, ref ResultModel result, string CONTAINER_NO)
         {
 
             PurchaseViewModel purchaseView = new PurchaseViewModel();
@@ -461,46 +384,17 @@ namespace CHPOUTSRCMES.Web.Controllers
         [HttpPost]
         public JsonResult PaperNumber(string CabinetNumber)
         {
-            var PR = 0;
-            var PH = 0;
-            PurchaseViewModel purchaseView = new PurchaseViewModel();
-            List <DetailModel.RollModel> header = purchaseView.GetRollHeader(CabinetNumber);
-            for(int i =0; i<header.Count; i++)
-            {
-                PH += decimal.ToInt32(header[i].RollReamQty);
-            }
-            var model = PurchaseViewModel.StockInRoll;
-            for (int i = 0; i < model.Count; i++)
-            {
-                if (model[i].Status == "已入庫")
-                {
-                    PR++;
-                }
-            }
-            var PaperTotle = PH - PR;
+            
+            PurchaseViewModel viewModel = new PurchaseViewModel();
+            var PaperTotle = viewModel.GetPaperRollNumberTab(CabinetNumber);
             return Json(new { PaperTotle }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
         public JsonResult FlatNumber(string CabinetNumber)
         {
-            var FB = 0;
-            var FH = 0;
-            PurchaseViewModel purchaseView = new PurchaseViewModel();
-            List<DetailModel.FlatModel> header = purchaseView.GetFlatHeader(CabinetNumber);
-            for (int i = 0; i < header.Count; i++)
-            {
-                FH += decimal.ToInt32(header[i].RollReamQty);
-            }
-            var model = PurchaseViewModel.StockInFlat;
-            for (int i = 0; i < model.Count; i++)
-            {
-                if (model[i].Status == "已入庫")
-                {
-                    FB++;
-                }
-            }
-            var FlatTotle = FH - FB;
+            PurchaseViewModel viewModel = new PurchaseViewModel();
+            var FlatTotle = viewModel.GetFlatNumberTab(CabinetNumber);
             return Json(new { FlatTotle }, JsonRequestBehavior.AllowGet);
         }
 
@@ -548,7 +442,7 @@ namespace CHPOUTSRCMES.Web.Controllers
             //papper.FlatDetail(file, ref detail, ref result);
             return Json(new { draw = data.Draw, recordsFiltered = detail.Count, recordsTotal = detail.Count, data = detail, result }, JsonRequestBehavior.AllowGet);
         }
-      
+
         public void DownloadFile()
         {
             //用戶端的物件
@@ -570,14 +464,14 @@ namespace CHPOUTSRCMES.Web.Controllers
             Response.Buffer = true;
             string fileName = System.IO.Path.GetFileName(filepath);
             //跳出視窗，讓用戶端選擇要儲存的地方                         //使用Server.UrlEncode()編碼中文字才不會下載時，檔名為亂碼
-            Response.AddHeader("Content-Disposition", "Attachment;FileName=" + System.Web.HttpUtility.UrlEncode(fileName,System.Text.Encoding.UTF8));
+            Response.AddHeader("Content-Disposition", "Attachment;FileName=" + System.Web.HttpUtility.UrlEncode(fileName, System.Text.Encoding.UTF8));
             //設定MIME類型為二進位檔案
             Response.ContentType = "Application/xls";
 
             try
             {
                 //檔案有各式各樣，所以用BinaryWrite
-               Response.BinaryWrite(file);
+                Response.BinaryWrite(file);
 
             }
             catch (Exception ex)
@@ -588,7 +482,7 @@ namespace CHPOUTSRCMES.Web.Controllers
 
             //這是專門寫文字的
             //HttpContext.Current.Response.Write();
-           Response.End();
+            Response.End();
         }
 
     }

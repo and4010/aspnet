@@ -20,7 +20,7 @@
 
 @{
 
-    IEnumerable<SelectListItem> CabinetNumberItems = (IEnumerable<SelectListItem>)ViewBag.WarehouseItems;
+    IEnumerable<SelectListItem> LocatorItems = (IEnumerable<SelectListItem>)ViewBag.LocatorItems;
 
     IEnumerable<SelectListItem> ReasonItems = (IEnumerable<SelectListItem>)ViewBag.ReasonItems;
 
@@ -109,7 +109,7 @@
     <div class="col-md-12">
         <label class="col-md-1 text-right">儲位</label>
         <div class="col-md-1 form-inline">
-            @Html.DropDownListFor(model => model.CabinetNumber, CabinetNumberItems, new { @class = "form-control", id = "select-warehouse" })
+            @Html.DropDownListFor(model => model.Locator, LocatorItems, new { @class = "form-control", id = "select-warehouse" })
         </div>
     </div>
 

@@ -13,7 +13,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Purchase
         /// 檔案資訊 ID
         /// </summary>
         /// 
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
         [Required]
         [Column("CTR_FILEINFO_ID")]

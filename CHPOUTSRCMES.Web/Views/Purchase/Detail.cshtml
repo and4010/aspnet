@@ -14,6 +14,8 @@
 }
 @Html.HiddenFor(model => model.Status, new { id = "Status" })
 @Html.HiddenFor(model => model.CabinetNumber, new { id = "CabinetNumber" })
+@Html.HiddenFor(model => model.CreateDate, new { id = "CreateDate" })
+@Html.HiddenFor(model => model.Subinventory, new { id = "Subinventory" })
 
 <div>
 
@@ -21,20 +23,20 @@
         <div class="col-md-4">
             <h4>
                 櫃號
-                <span>@Html.DisplayFor(model => model.CabinetNumber)</span>
+                @Html.DisplayFor(model => model.CabinetNumber)
             </h4>
         </div>
         <div class="col-md-4">
             <h4>
                 進櫃時間
-                <span id="CreateDate">@Html.DisplayFor(model => model.CreateDate)</span>
+                @Html.DisplayFor(model => model.CreateDate)
             </h4>
         </div>
 
         <div class="col-md-4">
             <h4>
                 倉庫
-                <span id="Subinventory">@Html.DisplayFor(model => model.Subinventory)</span>
+               @Html.DisplayFor(model => model.Subinventory)
             </h4>
         </div>
 

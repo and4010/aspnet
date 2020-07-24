@@ -63,6 +63,10 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
         /// 條碼設定類別
         /// </summary>
         private readonly IRepository<BCD_MISC_T> bcdMiscRepositiory;
+        /// <summary>
+        /// 原因
+        /// </summary>
+        private readonly IRepository<STK_REASON_T> stkReasonTRepositiory;
 
 
         /// <summary>
@@ -81,6 +85,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             this.machinePaperTypeRepositiory = new GenericRepository<MACHINE_PAPER_TYPE_T>(this);
             this.transactionTypeRepositiory = new GenericRepository<TRANSACTION_TYPE_T>(this);
             this.bcdMiscRepositiory = new GenericRepository<BCD_MISC_T>(this);
+            this.stkReasonTRepositiory = new GenericRepository<STK_REASON_T>(this);
         }
 
         /// <summary>
@@ -1376,6 +1381,30 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             var locatorList = createDropDownList(type);
             locatorList.AddRange(getLocatorList(ORGANIZATION_ID, SUBINVENTORY_CODE));
             return locatorList;
+        }
+
+        public List<SelectListItem> GetReasonDropDownList(DropDownListType type)
+        {
+            var reasonList = createDropDownList(type);
+            reasonList.AddRange(getReasonList());
+            return reasonList;
+        }
+
+        private List<SelectListItem> getReasonList()
+        {
+            var reasonList = new List<SelectListItem>();
+            var tempList = stkReasonTRepositiory
+                          .GetAll().AsNoTracking()
+                          .Select(x => new SelectListItem()
+                          {
+                              Text = x.ReasonCode + "-" + x.ReasonDesc,
+                              Value = x.ReasonCode
+                          }) ;
+
+            reasonList.AddRange(tempList);
+            return reasonList;
+
+
         }
 
         private List<SelectListItem> getOrganizationList()
