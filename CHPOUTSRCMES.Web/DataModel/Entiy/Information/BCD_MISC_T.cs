@@ -26,6 +26,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Information
         /// 
         [StringLength(10)]
         [Required]
+        [Key]
         [Column("SUBINVENTORY_CODE", Order=2)]
         public string SubinventoryCode { set; get; }
 
@@ -36,7 +37,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Information
         [StringLength(10)]
         [Required]
         [Column("PREFIX_CODE")]
-        public string PREFIX_CODE { set; get; }
+        public string PrefixCode { set; get; }
 
         /// <summary>
         /// 流水號碼數

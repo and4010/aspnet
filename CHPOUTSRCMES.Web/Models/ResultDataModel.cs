@@ -5,7 +5,7 @@ using System.Web;
 
 namespace CHPOUTSRCMES.Web.Models
 {
-    public class ResultModel
+    public class ResultDataModel<T> : ResultModel
     {
         public const int CODE_SUCCESS = 0;
 
@@ -15,23 +15,22 @@ namespace CHPOUTSRCMES.Web.Models
 
         public string Msg { get; set; }
 
+        public T Data { set; get; }
 
-        public ResultModel()
+        public ResultDataModel()
         {
         }
 
-        public ResultModel (bool success, string msg)
+        public ResultDataModel(bool success, string msg, T data)
+            : base(success, msg)
         {
-            this.Success = success;
-            this.Code = success ? CODE_SUCCESS : -1;
-            this.Msg = msg;
+            this.Data = data;
         }
 
-        public ResultModel(int code, string msg)
+        public ResultDataModel(int code, string msg, T data)
+            : base(code, msg)
         {
-            this.Success = code == CODE_SUCCESS;
-            this.Code = code;
-            this.Msg = msg;
+            this.Data = data;
         }
 
         /// <summary>
@@ -40,7 +39,7 @@ namespace CHPOUTSRCMES.Web.Models
         /// <returns></returns>
         public override string ToString()
         {
-            return string.Format("RESULTMODEL (SUCCESS : {0}, CODE:{1}, MSG:{2})", this.Success, this.Code, this.Msg);
+            return string.Format("RESULTMODEL ( SUCCESS : {0}, CODE:{1}, MSG:{2}, DATA:{3} )", this.Success, this.Code, this.Msg, this.Data);
         }
     }
 }

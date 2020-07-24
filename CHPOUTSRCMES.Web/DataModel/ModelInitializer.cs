@@ -31,12 +31,37 @@ namespace CHPOUTSRCMES.Web.DataModel
 
         protected override void Seed(MesContext context)
         {
+
+            executeSqlScript(context);
+
             readFromXls(context);
             new PurchaseUOW(context).generateTestData();
             new DeliveryUOW(context).generateTestData();
 
             base.Seed(context);
 
+        }
+
+        internal static void executeSqlScript(MesContext context)
+        {
+            var baseDir = AppDomain.CurrentDomain
+                   .BaseDirectory
+                   .Replace("\\bin", string.Empty) + "Data\\SQLScript";
+            var files = Directory.GetFiles(baseDir);
+            foreach (var file in files)
+            {
+                try
+                {
+                    if (!string.IsNullOrEmpty(file) && File.Exists(file))
+                    {
+                        context.Database.ExecuteSqlCommand(File.ReadAllText(file));
+                    }
+                }
+                catch (Exception ex)
+                {
+                    logger.Error(ex, "執行SQL腳本出現錯誤");
+                }
+            }
         }
 
 

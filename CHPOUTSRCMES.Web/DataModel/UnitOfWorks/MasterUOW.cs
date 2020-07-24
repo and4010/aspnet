@@ -14,6 +14,8 @@ using NPOI.SS.UserModel;
 using System.Web.UI.WebControls;
 using System.Web.Mvc;
 using CHPOUTSRCMES.Web.Models.Information;
+using CHPOUTSRCMES.Web.Models;
+using System.Data.SqlClient;
 
 namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
 {
@@ -57,6 +59,11 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
         /// 庫存交易類別
         /// </summary>
         private readonly IRepository<TRANSACTION_TYPE_T> transactionTypeRepositiory;
+        /// <summary>
+        /// 條碼設定類別
+        /// </summary>
+        private readonly IRepository<BCD_MISC_T> bcdMiscRepositiory;
+
 
         /// <summary>
         /// 
@@ -73,6 +80,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             this.yszmpckqTRepositiory = new GenericRepository<YSZMPCKQ_T>(this);
             this.machinePaperTypeRepositiory = new GenericRepository<MACHINE_PAPER_TYPE_T>(this);
             this.transactionTypeRepositiory = new GenericRepository<TRANSACTION_TYPE_T>(this);
+            this.bcdMiscRepositiory = new GenericRepository<BCD_MISC_T>(this);
         }
 
         /// <summary>
@@ -88,12 +96,13 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
         /// <param name="yszmpckqTRepositiory"></param>
         /// <param name="machinePaperTypeRepositiory"></param>
         /// <param name="transactionTypeRepositiory"></param>
+        /// <param name="bcdMiscRepositiory"></param>
         public MasterUOW( DbContext context,
             IItemsTRepository itemsTRepository, IRepository<ORG_ITEMS_T> orgItemRepository,
             IRepository<ORGANIZATION_T> organizationRepositiory, IRepository<SUBINVENTORY_T> subinventoryRepositiory,
             IRepository<LOCATOR_T> locatorTRepositiory, IRepository<RELATED_T> relatedTRepositiory,
             IRepository<YSZMPCKQ_T> yszmpckqTRepositiory, IRepository<MACHINE_PAPER_TYPE_T> machinePaperTypeRepositiory,
-            IRepository<TRANSACTION_TYPE_T> transactionTypeRepositiory
+            IRepository<TRANSACTION_TYPE_T> transactionTypeRepositiory, IRepository<BCD_MISC_T> bcdMiscRepositiory
             ) : base(context)
         {
             this.itemsTRepositiory = itemsTRepository;
@@ -105,6 +114,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             this.yszmpckqTRepositiory = yszmpckqTRepositiory;
             this.machinePaperTypeRepositiory = machinePaperTypeRepositiory;
             this.transactionTypeRepositiory = transactionTypeRepositiory;
+            this.bcdMiscRepositiory = bcdMiscRepositiory;
         }
 
         /// <summary>
@@ -128,6 +138,8 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                     ImportYszmpckq(book);
                     ImprotMachinePaperType(book);
                     ImprotTransaction(book);
+                    //產生條碼設定預設值
+                    generateTestDataBcdMisc();
                     //成功時，提交所有處理
                     txn.Commit();
                 }
@@ -1197,6 +1209,74 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             this.SaveChanges();
         }
 
+        /// <summary>
+        /// 產生條碼設定資料
+        /// </summary>
+        private void generateTestDataBcdMisc()
+        {
+            var bcdMisc1 = new BCD_MISC_T()
+            {
+                OrganizationId = 265,
+                SubinventoryCode = "REVT",
+                PrefixCode = "A",
+                CreatedBy = "123",
+                CreationDate = DateTime.Now,
+                LastUpdateBy = null,
+                LastUpdateDate = null,
+                SerialSize = 4
+            };
+
+            var bcdMisc2 = new BCD_MISC_T()
+            {
+                OrganizationId = 265,
+                SubinventoryCode = "SFG",
+                PrefixCode = "B",
+                CreatedBy = "123",
+                CreationDate = DateTime.Now,
+                LastUpdateBy = null,
+                LastUpdateDate = null,
+                SerialSize = 4
+            };
+
+            bcdMiscRepositiory.Create(bcdMisc1);
+            bcdMiscRepositiory.Create(bcdMisc2);
+            bcdMiscRepositiory.SaveChanges();
+        }
+        
+        /// <summary>
+        /// 產生條碼清單 (請用交易TRANSACTION)
+        /// </summary>
+        /// <param name="organiztionId">組織ID</param>
+        /// <param name="subinventoryCode">倉庫</param>
+        /// <param name="prefix">前置碼</param>
+        /// <param name="requestQty">數量</param>
+        /// <param name="userId">使用者ID</param>
+        /// <returns>ResultDataModel 條碼清單</returns>
+        public ResultDataModel<List<string>> GenerateBarcodes(long organiztionId, string subinventoryCode, string prefix, int requestQty, string userId)
+        {
+            ResultDataModel<List<string>> result = null;
+                try
+                {
+                    var pOrg = SqlParamHelper.GetBigInt("@organizationId", organiztionId);
+                    var pSub = SqlParamHelper.R.SubinventoryCode("@subinventory", subinventoryCode);
+                    var pPrefix = SqlParamHelper.GetNVarChar("@prefix", prefix);
+                    var pReqQty = SqlParamHelper.GetInt("@requestQty", requestQty);
+                    var pCode = SqlParamHelper.GetInt("@code", 0, System.Data.ParameterDirection.Output);
+                    var pMsg = SqlParamHelper.GetNVarChar("@message", "", 500, System.Data.ParameterDirection.Output);
+                    var pUser = SqlParamHelper.GetNVarChar("@user", userId, 128);
+
+                    var list = this.Context.Database.SqlQuery<string>("dbo.SP_GenerateBarcodes @organizationId, @subinventory, @prefix, @requestQty, @code output, @message output, @user",
+                        pOrg, pSub, pPrefix, pReqQty, pCode, pMsg, pUser).ToList();
+
+                    result = new ResultDataModel<List<string>>(Convert.ToInt32(pCode.Value), Convert.ToString(pMsg.Value), list);
+                }
+                catch (Exception ex)
+                {
+                    result = new ResultDataModel<List<string>>(-1, ex.Message, null);
+                    logger.Error(ex, "產生條碼出現例外!!");
+                }
+                return result;
+        }
 
         private ISheet FindSheet(IWorkbook book ,string name)
         {
