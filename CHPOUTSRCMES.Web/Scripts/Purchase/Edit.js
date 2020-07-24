@@ -25,30 +25,36 @@ function click() {
 //已存檔入庫預設照片
 function photoView() {
     $('#fileinput').on("change", function () {
+        imgName = [];
+        imgSrc = [];
+        imgFile = [];
+        files = [];
         var file = $('#fileinput')[0];
         var fileList = file.files;
-        for (var i = 0; i<fileList.length; i++) {
+        for (var i = 0; i < fileList.length; i++) {
             var imgSrcI = getObjectURL(fileList[i]);
             imgName.push(fileList[i].name);
             imgSrc.push(imgSrcI);
             imgFile.push(fileList[i]);
+            files.push(fileList[i]);
         }
         addNewContent($('#imgBox'));
     });
 
 }
 
-function RollSave() {  
+function RollSave() {
     var id = $("#Id").val();
     var status = $("#Status").val();
     var reason = $("#select-reason").val();
     var remak = $("#textarea").val();
-
+    var file = $('#fileinput')[0];
+    var fileList = file.files;
     $.ajax({
         url: '/Purchase/RollEditSave',
         type: 'POST',
         datatype: 'json',
-        data: { remak: remak, id: id, status: status, reason: reason, imgFile: imgFile},
+        data: { remak: remak, id: id, status: status, reason: reason, fileList: fileList },
         success: function (data) {
             if (data.boolean) {
                 window.history.go(-1);
@@ -67,25 +73,33 @@ function FlatSave() {
     var reason = $("#select-reason").val();
     var remak = $("#textarea").val();
     var formData = new FormData();
-    var d = imgFile;
-    if (d.length > 0) {
-        formData.append("imgFile", d);
+    for (var i = 0; i < files.length; i++) {
+        formData.append(files[i].name ,files[i]);
     }
+    formData.append("id", id);
+    formData.append("reason", reason);
+    formData.append("remak", remak);
+
+
 
     $.ajax({
-        url: "/Purchase/FlatEditSave",
-        type: "POST",
-        data:  formData  ,
-        dataType: "JSON",
+        "url": "/Purchase/FlatEditSave",
+        "type": "POST",
+        "datatype": "json",
+        "data": formData,
         success: function (data) {
             if (data.boolean) {
-                window.history.go(-1);
+                swal.fire("");
+            } else {
+                swal.fire("");
             }
-
         },
         error: function (data) {
-
-        }
+            swal.fire(data);
+        },
+        cache: false,
+        contentType: false,
+        processData: false
     });
 }
 
@@ -93,7 +107,7 @@ function FlatSave() {
 
 
 function getServicePhoto() {
-   
+
 }
 
 //function getSpinnerValue() {

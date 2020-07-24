@@ -282,6 +282,15 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy
         public string CreatedBy { set; get; }
 
         /// <summary>
+        /// 建立人員名稱
+        /// </summary>
+        /// 
+        [Required]
+        [Column("CREATED_USER_NAME")]
+        public string CreatedUserName { set; get; }
+
+
+        /// <summary>
         /// 建立時間
         /// </summary>
         /// 
@@ -305,5 +314,13 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy
         [DataType(DataType.Date)]
         [Column("LAST_UPDATE_DATE")]
         public DateTime? LastUpdateDate { set; get; }
+
+
+        /// <summary>
+        /// 更新人員名稱
+        /// </summary>
+        /// 
+        [Column("LAST_UPDATE_USER_NAME")]
+        public string LastUpdateUserName { set; get; }
     }
 }

@@ -1,13 +1,14 @@
 ﻿var imgSrc = []; //圖片路徑
 var imgFile = []; //文件
 var imgName = []; //圖片名字
-
+var files = []; //存放照片
 
 //點擊預覽&&圖片放大
 function addNewContent(obj) {
     $(imgBox).html("");
     for (var a = 0; a < imgSrc.length; a++) {
         var oldBox = $(obj).html();
+        //$(obj).html(oldBox + '<div class="imgContainer"><img title=' + imgName[a] + ' alt=' + imgName[a] + ' src=' + imgSrc[a] + ' onclick="imgDisplay(this)"></div>');
         $(obj).html(oldBox + '<div class="imgContainer"><img title=' + imgName[a] + ' alt=' + imgName[a] + ' src=' + imgSrc[a] + ' onclick="imgDisplay(this)"><p onclick="removeImg(this,' + a + ')" class="imgDelete">删除</p></div>');
     }
 }
@@ -30,6 +31,7 @@ function removeImg(obj, index) {
     imgSrc.splice(index, 1);
     imgFile.splice(index, 1);
     imgName.splice(index, 1);
+    files.splice(index, 1);
     var boxId = "#" + $(obj).parent('.imgContainer').parent().attr("id");
     addNewContent(boxId);
 }

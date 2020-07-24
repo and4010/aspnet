@@ -154,7 +154,7 @@ namespace CHPOUTSRCMES.Web.Models.Purchase
         public class FlatDetailModel
         {
 
-            public int Id { get; set; }
+            public long Id { get; set; }
 
             [Display(Name = "倉別")]
             public string Subinventory { get; set; }
@@ -175,10 +175,10 @@ namespace CHPOUTSRCMES.Web.Models.Purchase
             public string PackingType { get; set; }
 
             [Display(Name = "每件令數")]//ROLL_REAM_WT
-            public string Pieces_Qty { get; set; }
+            public decimal Pieces_Qty { get; set; }
 
             [Display(Name = "數量(頓)")]
-            public string Qty { get; set; }
+            public decimal Qty { get; set; }
 
             [Display(Name = "入庫狀態")]
             public string Status { get; set; }

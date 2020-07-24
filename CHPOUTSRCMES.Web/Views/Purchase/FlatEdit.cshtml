@@ -21,7 +21,7 @@
 <div class="row">
     @{
 
-        IEnumerable<SelectListItem> WarehouseItems = (IEnumerable<SelectListItem>)ViewBag.WarehouseItems;
+        IEnumerable<SelectListItem> LocatorItems = (IEnumerable<SelectListItem>)ViewBag.LocatorItems;
 
         IEnumerable<SelectListItem> ReasonItems = (IEnumerable<SelectListItem>)ViewBag.ReasonItems;
 
@@ -51,7 +51,7 @@
     </div>
 
     <div class="col-md-12">
-        <div class="col-md-1 text-right" ">
+        <div class="col-md-1 text-right">
             @Html.LabelFor(model => model.FlatDetailModel.Pieces_Qty)
         </div>
 
@@ -59,7 +59,7 @@
             @Html.DisplayFor(model => model.FlatDetailModel.Pieces_Qty)
         </div>
 
-        <div class="col-md-1 text-right" ">
+        <div class="col-md-1 text-right">
             @Html.LabelFor(model => model.FlatDetailModel.Barcode)
         </div>
 
@@ -67,7 +67,7 @@
             @Html.DisplayFor(model => model.FlatDetailModel.Barcode)
         </div>
 
-        <div class="col-md-1 text-right" ">
+        <div class="col-md-1 text-right">
             @Html.LabelFor(model => model.FlatDetailModel.Qty)
         </div>
 
@@ -88,13 +88,13 @@
     <div class="col-md-12">
         <label class="col-md-1 text-right">儲位</label>
         <div class="col-md-1 form-inline">
-            @Html.DropDownListFor(model => model.Warehouse, WarehouseItems, new { @class = "form-control", id = "select-warehouse" })
+            @Html.DropDownListFor(model => model.Locator, LocatorItems, new { @class = "form-control", id = "select-warehouse" })
         </div>
     </div>
 
 
     <div class="col-md-12">
-        <form class="col-md-12">
+        <form class="col-md-12" >
 
             <h4 class="col-md-5"><label>備註</label></h4>
 

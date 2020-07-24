@@ -13,7 +13,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Purchase
         /// 入庫揀貨ID
         /// </summary>
         /// 
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
         [Required]
         [Column("CTR_PICKED_ID")]
@@ -202,8 +202,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Purchase
         /// </summary>
         /// 
         [StringLength(80)]
-        [Column("LOT_NUMBER")]
-        [Required]
+        [Required(AllowEmptyStrings = true)]
         public string LotNumber { set; get; }
 
         /// <summary>
@@ -211,8 +210,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Purchase
         /// </summary>
         /// 
         [StringLength(80)]
-        [Column("THEORY_WEIGHT")]
-        [Required]
+        [Required(AllowEmptyStrings = true)]
         public string TheoryWeight { set; get; }
 
 
@@ -269,6 +267,15 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Purchase
         public string CreatedBy { set; get; }
 
         /// <summary>
+        /// 建立人員名稱
+        /// </summary>
+        /// 
+        [Required]
+        [Column("CREATED_USER_NAME")]
+        public string CreatedUserName { set; get; }
+
+
+        /// <summary>
         /// 建立時間
         /// </summary>
         /// 
@@ -292,5 +299,13 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Purchase
         [DataType(DataType.Date)]
         [Column("LAST_UPDATE_DATE")]
         public DateTime? LastUpdateDate { set; get; }
+
+
+        /// <summary>
+        /// 更新人員名稱
+        /// </summary>
+        /// 
+        [Column("LAST_UPDATE_USER_NAME")]
+        public string LastUpdateUserName { set; get; }
     }
 }
