@@ -346,6 +346,10 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
        
         }
 
+        /// <summary>
+        /// 取得行事曆資料
+        /// </summary>
+        /// <returns></returns>
         public List<FullCalendarEventModel> getFullCalenderList()
         {
             var header = ctrHeaderTRepositiory.GetAll().GroupBy(x => x.ContainerNo).Select(x => x.FirstOrDefault()).ToList();
@@ -392,6 +396,11 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             return fullCalendarEventModel;
         }
 
+        /// <summary>
+        /// 取得平張header資料
+        /// </summary>
+        /// <param name="CONTAINER_NO"></param>
+        /// <returns></returns>
         public List<DetailModel.FlatModel> GetFlatHeaderList(string CONTAINER_NO)
         {
             try
@@ -428,7 +437,11 @@ WHERE d.ITEM_CATEGORY = N'平張' and h.CONTAINER_NO  = @CONTAINER_NO");
             }
         }
 
-
+        /// <summary>
+        /// 取得紙捲header資料
+        /// </summary>
+        /// <param name="CONTAINER_NO"></param>
+        /// <returns></returns>
         public List<DetailModel.RollModel> GetPaperRollHeaderList(string CONTAINER_NO)
         {
             try
@@ -463,6 +476,11 @@ WHERE d.ITEM_CATEGORY = N'捲筒' and h.CONTAINER_NO  = @CONTAINER_NO");
             }
         }
 
+        /// <summary>
+        /// 取得平張deatil資料
+        /// </summary>
+        /// <param name="CONTAINER_NO"></param>
+        /// <returns></returns>
         public List<DetailModel.FlatDetailModel> GetFlatDetailList(string CONTAINER_NO)
         {
             try
@@ -498,6 +516,11 @@ WHERE p.ITEM_CATEGORY = N'平張' and h.CONTAINER_NO  = @CONTAINER_NO");
             }
         }
 
+        /// <summary>
+        /// 取得編輯平張資料
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public DetailModel.FlatDetailModel GetFlatEdit(string id)
         {
             try
@@ -533,6 +556,11 @@ WHERE p.ITEM_CATEGORY = N'平張' and p.CTR_PICKED_ID  = @CTR_PICKED_ID");
             }
         }
 
+        /// <summary>
+        /// 取得頁籤平張數量
+        /// </summary>
+        /// <param name="CONTAINER_NO"></param>
+        /// <returns></returns>
         public decimal GetFlatNumberTab(string CONTAINER_NO)
         {
             try
@@ -563,6 +591,11 @@ WHERE d1.ITEM_CATEGORY = N'平張' and h1.CONTAINER_NO  = @CONTAINER_NO");
             return 0;
         }
 
+        /// <summary>
+        /// 取得頁籤紙捲數量
+        /// </summary>
+        /// <param name="CONTAINER_NO"></param>
+        /// <returns></returns>
         public decimal GetPaperRollNumberTab(string CONTAINER_NO)
         {
             try
@@ -593,6 +626,7 @@ WHERE d1.ITEM_CATEGORY = N'捲筒' and h1.CONTAINER_NO  = @CONTAINER_NO");
             return 0;
         }
 
+
         public void SavePhoto(HttpPostedFileBase file)
         {
             using (var txn = this.Context.Database.BeginTransaction())
@@ -613,6 +647,11 @@ WHERE d1.ITEM_CATEGORY = N'捲筒' and h1.CONTAINER_NO  = @CONTAINER_NO");
             }
         }
 
+        /// <summary>
+        /// 儲存照片FileInfo Table
+        /// </summary>
+        /// <param name="filebyte"></param>
+        /// <param name="file"></param>
         public void SaveCtrFileInfoT(byte[] filebyte,HttpPostedFileBase file)
         {
             try
@@ -639,6 +678,11 @@ WHERE d1.ITEM_CATEGORY = N'捲筒' and h1.CONTAINER_NO  = @CONTAINER_NO");
 
         }
 
+        /// <summary>
+        /// 儲存照片file table
+        /// </summary>
+        /// <param name="filebyte"></param>
+        /// <param name="file"></param>
         public void SaveCtrFileT(byte[] filebyte, HttpPostedFileBase file)
         {
             try
@@ -654,6 +698,11 @@ WHERE d1.ITEM_CATEGORY = N'捲筒' and h1.CONTAINER_NO  = @CONTAINER_NO");
             }
         }
 
+        /// <summary>
+        /// 壓縮照片大小
+        /// </summary>
+        /// <param name="file"></param>
+        /// <returns></returns>
         public byte[] VaryQualityLevel(HttpPostedFileBase file)
         {
             try
@@ -689,7 +738,12 @@ WHERE d1.ITEM_CATEGORY = N'捲筒' and h1.CONTAINER_NO  = @CONTAINER_NO");
             }
             return null;
         }
-        //照片解析
+
+        /// <summary>
+        /// 轉換
+        /// </summary>
+        /// <param name="format"></param>
+        /// <returns></returns>
         private static ImageCodecInfo GetEncoder(ImageFormat format)
         {
             ImageCodecInfo codec = ImageCodecInfo.GetImageDecoders().Where(m => m.FormatID == format.Guid).FirstOrDefault();

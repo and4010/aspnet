@@ -63,20 +63,20 @@ $(document).ready(function () {
         if (data == null) {
             return false;
         }
-        window.location.href = "/Purchase/FlatEdit/" + id;
-        //$.ajax({
-        //    url: '/Purchase/FlatEdit/',
-        //    type: "POST",
-        //    data: { id: id },
-        //    success: function () {
-        //        window.location.href = "/Purchase/FlatEdit/" + id;
-        //    },
-        //    error: function () {
+        var CabinetNumber = $('#CabinetNumber').val();
+        $.ajax({
+            url: '/Purchase/FlatEditView/',
+            type: "POST",
+            data: { id: id, CabinetNumber: CabinetNumber },
+            success: function () {
+                window.location.href = "/Purchase/FlatEdit/";
+            },
+            error: function () {
 
-        //        $.swal("失敗")
-        //    }
+                $.swal("失敗")
+            }
 
-        //})
+        })
     })
     //平張表身檢視事件
     $('#FlatdataTablesBody tbody').on('click', '#btnView', function (e) {

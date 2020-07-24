@@ -148,7 +148,11 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
             return true;
         }
 
-
+        /// <summary>
+        /// 取得編輯
+        /// </summary>
+        /// <param name="Id"></param>
+        /// <returns></returns>
         public DetailModel.FlatDetailModel GetFlatEdit(string Id)
         {
             using (var context = new MesContext())
@@ -183,6 +187,11 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
             return null;
         }
 
+        /// <summary>
+        /// 取得平張頁籤數量
+        /// </summary>
+        /// <param name="CabinetNumber"></param>
+        /// <returns></returns>
         public decimal GetFlatNumberTab(string CabinetNumber)
         {
             using (var context = new MesContext())
@@ -191,6 +200,11 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
             }
         }
 
+        /// <summary>
+        /// 取得紙捲頁籤數量
+        /// </summary>
+        /// <param name="CabinetNumber"></param>
+        /// <returns></returns>
         public decimal GetPaperRollNumberTab(string CabinetNumber)
         {
             using (var context = new MesContext())
@@ -200,6 +214,10 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
             
         }
 
+        /// <summary>
+        /// 檢查櫃號
+        /// </summary>
+        /// <returns></returns>
         public DetailModel.RollDetailModel CheckLotNumber()
         {
             DetailModel.RollDetailModel paperRollDetail = new DetailModel.RollDetailModel();
@@ -209,7 +227,10 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
             return paperRollDetail;
         }
 
-        //儲存照片
+        /// <summary>
+        /// 儲存照片
+        /// </summary>
+        /// <param name="file"></param>
         public void SavePhoto(HttpPostedFileBase file)
         {
             if (file != null)
@@ -223,7 +244,10 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
 
         }
 
-        //入庫行事曆取得月份
+        /// <summary>
+        /// 入庫行事曆取得月份
+        /// </summary>
+        /// <returns></returns>
         public List<SelectListItem> GetMonths()
         {
             List<SelectListItem> months = new List<SelectListItem>();
@@ -241,7 +265,10 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
             return months;
         }
 
-        //入庫行事曆取得年份
+        /// <summary>
+        /// 入庫行事曆取得年份
+        /// </summary>
+        /// <returns></returns>
         public List<SelectListItem> GetYears()
         {
             List<SelectListItem> years = new List<SelectListItem>();
@@ -275,7 +302,10 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
         }
 
 
-        //編輯取得原因
+        /// <summary>
+        /// 編輯取得原因
+        /// </summary>
+        /// <returns></returns>
         public List<SelectListItem> GetReason()
         {
             using (var context = new MesContext())
@@ -285,7 +315,10 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
         }
 
 
-        //編輯取得儲位
+        /// <summary>
+        /// 編輯取得儲位
+        /// </summary>
+        /// <returns></returns>
         public List<SelectListItem> GetLocator()
         {
             using (var context = new MesContext())
@@ -295,7 +328,10 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
 
         }
 
-        //編輯取得儲位
+        /// <summary>
+        /// 編輯取得儲位
+        /// </summary>
+        /// <returns></returns>
         public List<SelectListItem> GetSubinventoryList()
         {
             using (var context = new MesContext())

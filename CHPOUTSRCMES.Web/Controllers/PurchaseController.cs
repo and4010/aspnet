@@ -201,6 +201,9 @@ namespace CHPOUTSRCMES.Web.Controllers
 
         public ActionResult FlatView(string id)
         {
+
+            
+
             PurchaseViewModel model = new PurchaseViewModel();
 
             ViewBag.LocatorItems = model.GetLocator();
@@ -235,19 +238,25 @@ namespace CHPOUTSRCMES.Web.Controllers
             return View(model);
         }
 
-        public ActionResult FlatEdit(string id)
+        public ActionResult FlatEdit(string Id,string CabinetNumber)
         {
             PurchaseViewModel model = new PurchaseViewModel();
             ViewBag.LocatorItems = model.GetLocator();
             ViewBag.ReasonItems = model.GetReason();
-            model.FlatDetailModel = model.GetFlatEdit(id);
+            model.FlatDetailModel = model.GetFlatEdit(Id);
 
             //model.Status = purchaseViewModel.Status;
             //model.CreateDate = purchaseViewModel.CreateDate;
-            //model.CabinetNumber = purchaseViewModel.CabinetNumber;
+            model.CabinetNumber = CabinetNumber;
             //model.Subinventory = purchaseViewModel.Subinventory;
 
             return View(model);
+        
+        }
+
+        public ActionResult FlatEditView(string id = "",string cabinetNumber = "")
+        {
+            return RedirectToAction("FlatEdit", "Purchas", new { Id = id, CabinetNumber = cabinetNumber });
         }
 
         [HttpPost]
