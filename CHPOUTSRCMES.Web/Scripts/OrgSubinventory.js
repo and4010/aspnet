@@ -48,32 +48,32 @@ $(document).ready(function () {
          { data: "OSP_FLAG", name: "加工廠", "autoWidth": true },
           { data: "LOCATOR_SEGMENTS", name: "儲位節段", "autoWidth": true },
          { data: "LOCATOR_DESC", name: "儲位描述", "autoWidth": true },
-         { data: "CREATED_BY_NAME", name: "建立人員", "autoWidth": true },
-         {
-             data: "CREATION_DATE", name: "建立日期", "autoWidth": true, "mRender": function (data, type, full) {
-                 if (data != null) {
-                     var dtStart = new Date(parseInt(data.substr(6)));
-                     var dtStartWrapper = moment(dtStart);
-                     return dtStartWrapper.format('YYYY-MM-DD');
-                 } else {
-                     return '';
-                 }
-             }
-         },
-         
-         { data: "LAST_UPDATED_BY_NAME", name: "更新人員", "autoWidth": true },
-         
-        {
-        data: "LAST_UPDATE_DATE", name: "更新日期", "autoWidth": true, "mRender": function (data, type, full) {
-            if (data != null) {
-                var dtStart = new Date(parseInt(data.substr(6)));
-                var dtStartWrapper = moment(dtStart);
-                return dtStartWrapper.format('YYYY-MM-DD');
-            } else {
-                return '';
-            }
-        }
-    },
+        // { data: "CREATED_BY_NAME", name: "建立人員", "autoWidth": true },
+        // {
+        //     data: "CREATION_DATE", name: "建立日期", "autoWidth": true, "mRender": function (data, type, full) {
+        //         if (data != null) {
+        //             var dtStart = new Date(parseInt(data.substr(6)));
+        //             var dtStartWrapper = moment(dtStart);
+        //             return dtStartWrapper.format('YYYY-MM-DD');
+        //         } else {
+        //             return '';
+        //         }
+        //     }
+        // },
+
+        // { data: "LAST_UPDATED_BY_NAME", name: "更新人員", "autoWidth": true },
+
+        //{
+        //    data: "LAST_UPDATE_DATE", name: "更新日期", "autoWidth": true, "mRender": function (data, type, full) {
+        //        if (data != null) {
+        //            var dtStart = new Date(parseInt(data.substr(6)));
+        //            var dtStartWrapper = moment(dtStart);
+        //            return dtStartWrapper.format('YYYY-MM-DD');
+        //        } else {
+        //            return '';
+        //        }
+        //    }
+        //},
 
 
 
@@ -187,7 +187,7 @@ $(document).ready(function () {
                 swal.fire('更新儲位選單失敗');
             },
             complete: function () {
-                
+
             }
 
         });

@@ -434,7 +434,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Delivery
         /// </summary>
         /// 
         [StringLength(240)]
-        [Column("Note")]
+        [Column("NOTE")]
         public string Note { set; get; }
 
         /// <summary>

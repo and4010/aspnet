@@ -285,7 +285,7 @@
     <Compile Include="Models\Delivery\InsteadEditDT.cs" />
     <Compile Include="Models\Delivery\PaperRollEditBarcodeDT.cs" />
     <Compile Include="Models\Delivery\PaperRollEditDT.cs" />
-    <Compile Include="Models\Delivery\TripDetailDT.cs" />
+    <Compile Include="Models\Delivery\TripHeaderDT.cs" />
     <Compile Include="Models\Delivery\DeliveryDetailViewHeader.cs" />
     <Compile Include="Models\Error.cs" />
     <Compile Include="Models\Information\AccountModel.cs" />

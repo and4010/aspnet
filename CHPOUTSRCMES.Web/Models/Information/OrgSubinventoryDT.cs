@@ -12,12 +12,20 @@ namespace CHPOUTSRCMES.Web.Models.Information
 {
     public class OrgSubinventoryDT
     {
+        public OrgSubinventoryDT()
+        {
+        }
+        //public OrgSubinventoryDT(
+        //    long ORGANIZATION_ID, string ORGANIZATION_CODE, string ORGANIZATION_NAME,
+        //    string SUBINVENTORY_CODE, string SUBINVENTORY_NAME, string OSP_FLAG, string BARCODE_PREFIX_CODE, long LOCATOR_ID,
+        //    long LOCATOR_TYPE, string LOCATOR_SEGMENTS, string LOCATOR_DESC,
+        //    string SEGMENT1, string SEGMENT2, string SEGMENT3, string SEGMENT4,
+        //    long CREATED_BY, string CREATED_BY_NAME, DateTime CREATION_DATE, long LAST_UPDATED_BY, string LAST_UPDATED_BY_NAME, DateTime LAST_UPDATE_DATE)
         public OrgSubinventoryDT(
-            long ORGANIZATION_ID, string ORGANIZATION_CODE, string ORGANIZATION_NAME,
-            string SUBINVENTORY_CODE, string SUBINVENTORY_NAME, string OSP_FLAG, string BARCODE_PREFIX_CODE, long LOCATOR_ID,
-            long LOCATOR_TYPE, string LOCATOR_SEGMENTS, string LOCATOR_DESC,
-            string SEGMENT1, string SEGMENT2, string SEGMENT3, string SEGMENT4,
-            long CREATED_BY, string CREATED_BY_NAME, DateTime CREATION_DATE, long LAST_UPDATED_BY, string LAST_UPDATED_BY_NAME, DateTime LAST_UPDATE_DATE)
+           long ORGANIZATION_ID, string ORGANIZATION_CODE, string ORGANIZATION_NAME,
+           string SUBINVENTORY_CODE, string SUBINVENTORY_NAME, string OSP_FLAG, string BARCODE_PREFIX_CODE, long LOCATOR_ID,
+           long LOCATOR_TYPE, string LOCATOR_SEGMENTS, string LOCATOR_DESC,
+           string SEGMENT1, string SEGMENT2, string SEGMENT3, string SEGMENT4)
         {
             this.ORGANIZATION_ID = ORGANIZATION_ID;
             this.ORGANIZATION_CODE = ORGANIZATION_CODE;
@@ -34,12 +42,12 @@ namespace CHPOUTSRCMES.Web.Models.Information
             this.SEGMENT2 = SEGMENT2;
             this.SEGMENT3 = SEGMENT3;
             this.SEGMENT4 = SEGMENT4;
-            this.CREATED_BY = CREATED_BY;
-            this.CREATED_BY_NAME = CREATED_BY_NAME;
-            this.CREATION_DATE = CREATION_DATE;
-            this.LAST_UPDATED_BY = LAST_UPDATED_BY;
-            this.LAST_UPDATED_BY_NAME = LAST_UPDATED_BY_NAME;
-            this.LAST_UPDATE_DATE = LAST_UPDATE_DATE;
+            //this.CREATED_BY = CREATED_BY;
+            //this.CREATED_BY_NAME = CREATED_BY_NAME;
+            //this.CREATION_DATE = CREATION_DATE;
+            //this.LAST_UPDATED_BY = LAST_UPDATED_BY;
+            //this.LAST_UPDATED_BY_NAME = LAST_UPDATED_BY_NAME;
+            //this.LAST_UPDATE_DATE = LAST_UPDATE_DATE;
         }
 
         public long ORGANIZATION_ID { set; get; }
@@ -59,13 +67,13 @@ namespace CHPOUTSRCMES.Web.Models.Information
         public string SEGMENT3 { set; get; }
         public string SEGMENT4 { set; get; }
 
-        public long CREATED_BY { get; set; }
-        public string CREATED_BY_NAME { get; set; }
-        public DateTime? CREATION_DATE { get; set; }
+        //public long CREATED_BY { get; set; }
+        //public string CREATED_BY_NAME { get; set; }
+        //public DateTime? CREATION_DATE { get; set; }
 
-        public long LAST_UPDATED_BY { get; set; }
-        public string LAST_UPDATED_BY_NAME { get; set; }
-        public DateTime? LAST_UPDATE_DATE { get; set; }
+        //public long LAST_UPDATED_BY { get; set; }
+        //public string LAST_UPDATED_BY_NAME { get; set; }
+        //public DateTime? LAST_UPDATE_DATE { get; set; }
 
     }
 
@@ -77,15 +85,15 @@ namespace CHPOUTSRCMES.Web.Models.Information
 
         public OrgSubinventoryData()
         {
-            if (testSource.Count == 0)
-            {
-                testSource.Add(new OrgSubinventoryDT(265, "FTY", "INV_ORG_華紙總公司", "TB2", "總倉-南崁", "", "A", 0, 1, "", "", "", "", "", "", 1, "一力星1號", Convert.ToDateTime("2020-05-21"), 1, "一力星1號", Convert.ToDateTime("2020-05-21")));
-                testSource.Add(new OrgSubinventoryDT(265, "FTY", "INV_ORG_華紙總公司", "SFG", "中間倉", "是", "B", 22016, 2, "FTY.SFG.TB2.NA", "總公司.中間倉.TB2", "FTY", "SFG", "TB2", "NA", 1, "一力星1號", Convert.ToDateTime("2020-04-21"), 1, "一力星1號", Convert.ToDateTime("2020-04-21")));
-                testSource.Add(new OrgSubinventoryDT(265, "FTY", "INV_ORG_華紙總公司", "SFG", "中間倉", "", "B", 22017, 2, "FTY.SFG.TA1.NA", "總公司.中間倉.TA1", "FTY", "SFG", "TA1", "NA", 2, "一力星2號", Convert.ToDateTime("2020-04-20"), 2, "一力星2號", Convert.ToDateTime("2020-04-22")));
-                testSource.Add(new OrgSubinventoryDT(265, "FTY", "INV_ORG_華紙總公司", "SFG", "中間倉", "", "B", 22018, 2, "FTY.SFG.TCA.NA", "總公司.中間倉.TCA", "FTY", "SFG", "TCA", "NA", 1, "一力星1號", Convert.ToDateTime("2020-04-20"), 3, "華紙1號", Convert.ToDateTime("2020-04-23")));
-                testSource.Add(new OrgSubinventoryDT(285, "FTS", "INV_ORG_華紙新屋廠", "SA", "新屋內銷", "", "C", 0, 1, "", "", "", "", "", "", 2, "一力星2號", Convert.ToDateTime("2020-04-19"), 2, "一力星2號", Convert.ToDateTime("2020-04-19")));
-                testSource.Add(new OrgSubinventoryDT(305, "FTA", "INV_ORG_華紙久堂廠", "A1FG", "成品倉(21#平板)", "", "D", 0, 1, "", "", "", "", "", "", 1, " 一力星1號", Convert.ToDateTime("2020-04-22"), 1, "一力星1號", Convert.ToDateTime("2020-04-22")));
-            }
+            //if (testSource.Count == 0)
+            //{
+            //    testSource.Add(new OrgSubinventoryDT(265, "FTY", "INV_ORG_華紙總公司", "TB2", "總倉-南崁", "", "A", 0, 1, "", "", "", "", "", "", 1, "一力星1號", Convert.ToDateTime("2020-05-21"), 1, "一力星1號", Convert.ToDateTime("2020-05-21")));
+            //    testSource.Add(new OrgSubinventoryDT(265, "FTY", "INV_ORG_華紙總公司", "SFG", "中間倉", "是", "B", 22016, 2, "FTY.SFG.TB2.NA", "總公司.中間倉.TB2", "FTY", "SFG", "TB2", "NA", 1, "一力星1號", Convert.ToDateTime("2020-04-21"), 1, "一力星1號", Convert.ToDateTime("2020-04-21")));
+            //    testSource.Add(new OrgSubinventoryDT(265, "FTY", "INV_ORG_華紙總公司", "SFG", "中間倉", "", "B", 22017, 2, "FTY.SFG.TA1.NA", "總公司.中間倉.TA1", "FTY", "SFG", "TA1", "NA", 2, "一力星2號", Convert.ToDateTime("2020-04-20"), 2, "一力星2號", Convert.ToDateTime("2020-04-22")));
+            //    testSource.Add(new OrgSubinventoryDT(265, "FTY", "INV_ORG_華紙總公司", "SFG", "中間倉", "", "B", 22018, 2, "FTY.SFG.TCA.NA", "總公司.中間倉.TCA", "FTY", "SFG", "TCA", "NA", 1, "一力星1號", Convert.ToDateTime("2020-04-20"), 3, "華紙1號", Convert.ToDateTime("2020-04-23")));
+            //    testSource.Add(new OrgSubinventoryDT(285, "FTS", "INV_ORG_華紙新屋廠", "SA", "新屋內銷", "", "C", 0, 1, "", "", "", "", "", "", 2, "一力星2號", Convert.ToDateTime("2020-04-19"), 2, "一力星2號", Convert.ToDateTime("2020-04-19")));
+            //    testSource.Add(new OrgSubinventoryDT(305, "FTA", "INV_ORG_華紙久堂廠", "A1FG", "成品倉(21#平板)", "", "D", 0, 1, "", "", "", "", "", "", 1, " 一力星1號", Convert.ToDateTime("2020-04-22"), 1, "一力星1號", Convert.ToDateTime("2020-04-22")));
+            //}
 
         }
 
@@ -123,17 +131,10 @@ namespace CHPOUTSRCMES.Web.Models.Information
             return organizationList.Select(i => new SelectListItem() { Text = i.Text, Value = i.Value }).ToList();
         }
 
-        public IEnumerable<SelectListItem> GetSubinventoryList(string ORGANIZATION_ID, bool needAll)
+        public IEnumerable<SelectListItem> GetSubinventoryList(MasterUOW uow, string ORGANIZATION_ID, MasterUOW.DropDownListType type)
         {
-            var subinventoryList = getSubinventoryList(ORGANIZATION_ID, needAll);
-            return subinventoryList.Select(i => new SelectListItem() { Text = i.Text, Value = i.Value });
-        }
-
-        public IEnumerable<SelectListItem> GetSubinventoryListForInbound(string ORGANIZATION_ID, bool needAll)
-        {
-            var subinventoryList = getSubinventoryList(ORGANIZATION_ID, needAll);
-            subinventoryList.Insert(1, new ListItem("非MES", "非MES"));
-            return subinventoryList.Select(i => new SelectListItem() { Text = i.Text, Value = i.Value });
+            var subinventoryList = uow.GetSubinventoryDropDownList(ORGANIZATION_ID, type);
+            return subinventoryList;
         }
 
         public string GetBarodePrefixCode(string SUBINVENTORY_CODE)
@@ -205,7 +206,7 @@ namespace CHPOUTSRCMES.Web.Models.Information
                 subinventoryList.AddRange(query.ToList());
             }
 
-
+            
 
             //subinventoryList.Add(new ListItem("中間倉", "SFG"));
             //subinventoryList.Add(new ListItem("外購久堂倉", "TA1"));
@@ -317,81 +318,77 @@ namespace CHPOUTSRCMES.Web.Models.Information
             return query.ToList();
         }
 
-        public List<OrgSubinventoryDT> search(string ORGANIZATION_ID, string SUBINVENTORY_CODE, string LOCATOR_ID)
+        public List<OrgSubinventoryDT> search(MasterUOW uow, string ORGANIZATION_ID, string SUBINVENTORY_CODE, string LOCATOR_ID)
         {
+            return uow.OrgSubinventorySearch(ORGANIZATION_ID, SUBINVENTORY_CODE, LOCATOR_ID);
+
             //ResultModel result = new ResultModel(true, "搜尋成功");
-            try
-            {
-                long orgId = 0;
-                long locId = 0;
+            //try
+            //{
+            //    long orgId = 0;
+            //    long locId = 0;
 
-                try
-                {
-                    if (!string.IsNullOrEmpty(ORGANIZATION_ID) && ORGANIZATION_ID != "*")
-                    {
-                        orgId = Convert.ToInt64(ORGANIZATION_ID);
-                    }
-                }
-                catch
-                {
-                    ORGANIZATION_ID = "*";
-                }
+            //    try
+            //    {
+            //        if (!string.IsNullOrEmpty(ORGANIZATION_ID) && ORGANIZATION_ID != "*")
+            //        {
+            //            orgId = Convert.ToInt64(ORGANIZATION_ID);
+            //        }
+            //    }
+            //    catch
+            //    {
+            //        ORGANIZATION_ID = "*";
+            //    }
 
-                //if (string.IsNullOrEmpty(SUBINVENTORY_CODE))
-                //{
-                //    SUBINVENTORY_CODE = "*";
-                //}
+            //    //if (string.IsNullOrEmpty(SUBINVENTORY_CODE))
+            //    //{
+            //    //    SUBINVENTORY_CODE = "*";
+            //    //}
 
-                try
-                {
-                    if (!string.IsNullOrEmpty(LOCATOR_ID) && LOCATOR_ID != "*")
-                    {
-                        locId = Convert.ToInt64(LOCATOR_ID);
-                    }
-                }
-                catch
-                {
-                    LOCATOR_ID = "*";
-                }
+            //    try
+            //    {
+            //        if (!string.IsNullOrEmpty(LOCATOR_ID) && LOCATOR_ID != "*")
+            //        {
+            //            locId = Convert.ToInt64(LOCATOR_ID);
+            //        }
+            //    }
+            //    catch
+            //    {
+            //        LOCATOR_ID = "*";
+            //    }
 
 
-                var query = testSource.Where(
-                  x =>
-                  (ORGANIZATION_ID == "*" || x.ORGANIZATION_ID == orgId) &&
-                  (SUBINVENTORY_CODE == "*" || x.SUBINVENTORY_CODE != null && x.SUBINVENTORY_CODE.ToLower() == SUBINVENTORY_CODE.ToLower()) &&
-                  (LOCATOR_ID == "*" || x.LOCATOR_ID == locId)
-                  ).ToList();
+            //    var query = testSource.Where(
+            //      x =>
+            //      (ORGANIZATION_ID == "*" || x.ORGANIZATION_ID == orgId) &&
+            //      (SUBINVENTORY_CODE == "*" || x.SUBINVENTORY_CODE != null && x.SUBINVENTORY_CODE.ToLower() == SUBINVENTORY_CODE.ToLower()) &&
+            //      (LOCATOR_ID == "*" || x.LOCATOR_ID == locId)
+            //      ).ToList();
 
-                //dtData = query;
-                return query;
-            }
-            catch (Exception e)
-            {
-                //result.Msg = e.Message;
-                //result.Success = false;
-                return new List<OrgSubinventoryDT>();
-            }
-            //return result;
+            //    //dtData = query;
+            //    return query;
+            //}
+            //catch (Exception e)
+            //{
+            //    //result.Msg = e.Message;
+            //    //result.Success = false;
+            //    return new List<OrgSubinventoryDT>();
+            //}
+            ////return result;
         }
 
-        public OrgSubinventoryViewModel getViewModel()
+        public OrgSubinventoryViewModel getViewModel(MasterUOW uow)
         {
-            using (var context = new MesContext())
-            {
-                using (MasterUOW uow = new MasterUOW(context))
-                {
-                    OrgSubinventoryViewModel viewModel = new OrgSubinventoryViewModel();
-                    viewModel.SelectedLocator = "*";
-                    viewModel.SelectedOrganization = "*";
-                    viewModel.SelectedSubinventory = "*";
-                    viewModel.OrganizationNameItems = uow.GetOrganizationDropDownList(MasterUOW.DropDownListType.All);
-                    //viewModel.SubinventoryNameItems = GetSubinventoryList("*", true);
-                    viewModel.SubinventoryNameItems = uow.GetSubinventoryDropDownList("*", MasterUOW.DropDownListType.All);
-                    //viewModel.LocatorNameItems = getLocatorList("*", "*", true);
-                    viewModel.LocatorNameItems = uow.GetLocatorDropDownList("*", "*", MasterUOW.DropDownListType.All);
-                    return viewModel;
-                }             
-            }
+            OrgSubinventoryViewModel viewModel = new OrgSubinventoryViewModel();
+            viewModel.SelectedLocator = "*";
+            viewModel.SelectedOrganization = "*";
+            viewModel.SelectedSubinventory = "*";
+            viewModel.OrganizationNameItems = uow.GetOrganizationDropDownList(MasterUOW.DropDownListType.All);
+            //viewModel.SubinventoryNameItems = GetSubinventoryList("*", true);
+            viewModel.SubinventoryNameItems = uow.GetSubinventoryDropDownList("*", MasterUOW.DropDownListType.All);
+            //viewModel.LocatorNameItems = getLocatorList("*", "*", true);
+            viewModel.LocatorNameItems = uow.GetLocatorDropDownList("*", "*", MasterUOW.DropDownListType.All);
+            return viewModel;
         }
 
         public string getORGANIZATION_CODE(string SUBINVENTORY_CODE)
@@ -451,14 +448,14 @@ namespace CHPOUTSRCMES.Web.Models.Information
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.LOCATOR_SEGMENTS) : models.OrderBy(x => x.LOCATOR_SEGMENTS);
                 case 6:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.LOCATOR_DESC) : models.OrderBy(x => x.LOCATOR_DESC);
-                case 7:
-                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.CREATED_BY_NAME) : models.OrderBy(x => x.CREATED_BY_NAME);
-                case 8:
-                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.CREATION_DATE) : models.OrderBy(x => x.CREATION_DATE);
-                case 9:
-                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.LAST_UPDATED_BY_NAME) : models.OrderBy(x => x.LAST_UPDATED_BY_NAME);
-                case 10:
-                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.LAST_UPDATE_DATE) : models.OrderBy(x => x.LAST_UPDATE_DATE);
+                //case 7:
+                //    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.CREATED_BY_NAME) : models.OrderBy(x => x.CREATED_BY_NAME);
+                //case 8:
+                //    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.CREATION_DATE) : models.OrderBy(x => x.CREATION_DATE);
+                //case 9:
+                //    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.LAST_UPDATED_BY_NAME) : models.OrderBy(x => x.LAST_UPDATED_BY_NAME);
+                //case 10:
+                //    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.LAST_UPDATE_DATE) : models.OrderBy(x => x.LAST_UPDATE_DATE);
 
             }
         }
@@ -482,14 +479,14 @@ namespace CHPOUTSRCMES.Web.Models.Information
                     return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.LOCATOR_SEGMENTS) : models.ThenBy(x => x.LOCATOR_SEGMENTS);
                 case 6:
                     return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.LOCATOR_DESC) : models.ThenBy(x => x.LOCATOR_DESC);
-                case 7:
-                    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.CREATED_BY_NAME) : models.ThenBy(x => x.CREATED_BY_NAME);
-                case 8:
-                    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.CREATION_DATE) : models.ThenBy(x => x.CREATION_DATE);
-                case 9:
-                    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.LAST_UPDATED_BY_NAME) : models.ThenBy(x => x.LAST_UPDATED_BY_NAME);
-                case 10:
-                    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.LAST_UPDATE_DATE) : models.ThenBy(x => x.LAST_UPDATE_DATE);
+                //case 7:
+                //    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.CREATED_BY_NAME) : models.ThenBy(x => x.CREATED_BY_NAME);
+                //case 8:
+                //    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.CREATION_DATE) : models.ThenBy(x => x.CREATION_DATE);
+                //case 9:
+                //    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.LAST_UPDATED_BY_NAME) : models.ThenBy(x => x.LAST_UPDATED_BY_NAME);
+                //case 10:
+                //    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.LAST_UPDATE_DATE) : models.ThenBy(x => x.LAST_UPDATE_DATE);
             }
         }
     }

@@ -8,14 +8,15 @@ using CHPOUTSRCMES.Web.ViewModels.Delivery;
 using System.Web.Mvc;
 using System.Web.UI.WebControls;
 using CHPOUTSRCMES.Web.Models.Information;
+using CHPOUTSRCMES.Web.DataModel.UnitOfWorks;
 
 namespace CHPOUTSRCMES.Web.Models.Delivery
 {
-    public class TripDetailDT
+    public class TripHeaderDT
     {
         public long Id { get; set; }
 
-        public long ORG_ID { get; set; }
+        //public long ORG_ID { get; set; }
 
         [Display(Name = "內銷區域別")]
         public string FREIGHT_TERMS_NAME { get; set; }
@@ -86,7 +87,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
 
 
         [Display(Name = "輔單位(RE)")]
-        public string SRC_REQUESTED_QUANTITY_UOM2 { get; set; }
+        public string REQUESTED_QUANTITY_UOM2 { get; set; }
 
 
         [Display(Name = "預計出庫量")]
@@ -124,12 +125,14 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
 
 
         [Display(Name = "備註")]
-        public string REMARK { get; set; }
+        public string NOTE { get; set; }
 
 
         [Display(Name = "交運單狀態")]
         public string DELIVERY_STATUS { get; set; }
 
+        [Display(Name = "交運單狀態Code")]
+        public string DELIVERY_STATUS_CODE { get; set; }
 
         [Display(Name = "明細作業別")]
         public string DetailType { get; set; }
@@ -139,26 +142,26 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
     }
 
 
-    public class TripDetailData
+    public class TripHeaderData
     {
-        public static List<TripDetailDT> source = new List<TripDetailDT>();
+        public static List<TripHeaderDT> source = new List<TripHeaderDT>();
         //public static List<TripDetailDT> model = new List<TripDetailDT>();
 
         public static void resetData()
         {
-            source = new List<TripDetailDT>();
+            source = new List<TripHeaderDT>();
             //model = new List<TripDetailDT>();
         }
 
         public static void AddDefaultData()
         {
             #region 產生資料
-            source = new List<TripDetailDT>();
+            source = new List<TripHeaderDT>();
             #region 平版
-            source.Add(new TripDetailDT()
+            source.Add(new TripHeaderDT()
             {
                 Id = 1,
-                ORG_ID = 1,
+                //ORG_ID = 1,
                 CUSTOMER_LOCATION_CODE = "福安印刷",
                 CUSTOMER_NAME = "保吉",
                 SHIP_LOCATION_CODE = "台南市安南區府安路5段119巷",
@@ -184,7 +187,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
                 //預計出庫輔數量
                 REQUESTED_QUANTITY2 = 50,
                 //輔單位(RE)
-                SRC_REQUESTED_QUANTITY_UOM2 = "RE",
+                REQUESTED_QUANTITY_UOM2 = "RE",
                 //預計出庫量
                 REQUESTED_QUANTITY = 1337.419M,
                 //庫存單位(KG)
@@ -202,15 +205,15 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
                 //出貨核准日
                 AUTHORIZE_DATE = "2019-12-26",
                 //備註
-                REMARK = "FT1.P9B0288",
+                NOTE = "FT1.P9B0288",
             });
             #endregion
 
             #region 捲筒
-            source.Add(new TripDetailDT()
+            source.Add(new TripHeaderDT()
             {
                 Id = 2,
-                ORG_ID = 7,
+                //ORG_ID = 7,
                 CUSTOMER_LOCATION_CODE = "中華彩色",
                 CUSTOMER_NAME = "中華彩色",
                 SHIP_LOCATION_CODE = "新北市新店區寶橋路229號",
@@ -236,7 +239,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
                 //預計出庫輔數量
                 REQUESTED_QUANTITY2 = 19,
                 //輔單位(RE)
-                SRC_REQUESTED_QUANTITY_UOM2 = "RE",
+                REQUESTED_QUANTITY_UOM2 = "RE",
                 //預計出庫量
                 REQUESTED_QUANTITY = 374.8945M,
                 //庫存單位(KG)
@@ -254,16 +257,16 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
                 //出貨核准日
                 AUTHORIZE_DATE = "2020-01-09",
                 //備註
-                REMARK = "FT1.早上到X002010031大道季刊98期/P2010087",
+                NOTE = "FT1.早上到X002010031大道季刊98期/P2010087",
             });
 
             #endregion
 
             #region 捲筒
-            source.Add(new TripDetailDT()
+            source.Add(new TripHeaderDT()
             {
                 Id = 3,
-                ORG_ID = 8,
+                //ORG_ID = 8,
                 CUSTOMER_LOCATION_CODE = "中華彩色",
                 CUSTOMER_NAME = "中華彩色",
                 SHIP_LOCATION_CODE = "新北市新店區寶橋路229號",
@@ -289,7 +292,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
                 //預計出庫輔數量
                 REQUESTED_QUANTITY2 = 0,
                 //輔單位(RE)
-                SRC_REQUESTED_QUANTITY_UOM2 = "",
+                REQUESTED_QUANTITY_UOM2 = "",
                 //預計出庫量
                 REQUESTED_QUANTITY = 3000,
                 //庫存單位(KG)
@@ -307,7 +310,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
                 //出貨核准日
                 AUTHORIZE_DATE = "2020-04-22",
                 //備註
-                REMARK = "",
+                NOTE = "",
             });
 
             #endregion
@@ -316,24 +319,31 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
 
         }
 
-        public static List<TripDetailDT> GetData(int id)
+        public static List<TripHeaderDT> GetData(int id)
         {
             var query = from tripDetail in source
                         where tripDetail.Id == id
                         select tripDetail;
-            return query.ToList<TripDetailDT>();
+            return query.ToList<TripHeaderDT>();
         }
 
-        public static List<TripDetailDT> GetData()
+        public static List<TripHeaderDT> GetData()
         {
             var query = from tripDetail in source
                         select tripDetail;
-            return query.ToList<TripDetailDT>();
+            return query.ToList<TripHeaderDT>();
         }
 
-        public static List<TripDetailDT> Search(string TripActualShipBeginDate, string TripActualShipEndDate, string DeliveryName, string SelectedSubinventory,
+        public List<TripHeaderDT> DeliverySearch(DeliveryUOW uow, string TripActualShipBeginDate, string TripActualShipEndDate, string DeliveryName, string SelectedSubinventory,
             string SelectedTrip, string TransactionDate, string SelectedDeliveryStatus)
         {
+           return uow.DeliverySearch(TripActualShipBeginDate, TripActualShipEndDate, DeliveryName, SelectedSubinventory, SelectedTrip, TransactionDate, SelectedDeliveryStatus);
+        }
+
+        public static List<TripHeaderDT> Search(string TripActualShipBeginDate, string TripActualShipEndDate, string DeliveryName, string SelectedSubinventory,
+            string SelectedTrip, string TransactionDate, string SelectedDeliveryStatus)
+        {
+
 
             DateTime shipBeginDate = new DateTime();
             DateTime shipEndDate = new DateTime();
@@ -389,7 +399,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
             return query;
         }
 
-        public static DeliverySearchViewModel GetViewModel()
+        public DeliverySearchViewModel GetViewModel(DeliveryUOW uow)
         {
             DeliverySearchViewModel viewModel = new DeliverySearchViewModel();
             //viewModel.SelectedDeliveryStatus = "";
@@ -399,33 +409,34 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
             //viewModel.TripActualShipEndDate = "";
 
             //viewModel.SelectedTrip = "*";
-            List<ListItem> tripList = new List<ListItem>();
-            tripList.Add(new ListItem("全部", "*"));
-            tripList.Add(new ListItem("Y191226-1036357", "Y191226-1036357"));
-            tripList.Add(new ListItem("Y200109-1052058", "Y200109-1052058"));
-            tripList.Add(new ListItem("Y200109-1052060", "Y200109-1052060"));
+            //List<ListItem> tripList = new List<ListItem>();
+            //tripList.Add(new ListItem("全部", "*"));
+            //tripList.Add(new ListItem("Y191226-1036357", "Y191226-1036357"));
+            //tripList.Add(new ListItem("Y200109-1052058", "Y200109-1052058"));
+            //tripList.Add(new ListItem("Y200109-1052060", "Y200109-1052060"));
 
-            viewModel.TripNameItems = tripList.Select(i => new SelectListItem() { Text = i.Text, Value = i.Value });
+            //viewModel.TripNameItems = tripList.Select(i => new SelectListItem() { Text = i.Text, Value = i.Value });
+
+            viewModel.TripNameItems = uow.GetTripNameDropDownList(MasterUOW.DropDownListType.All);
 
             //viewModel.SelectedSubinventory = "*";
             OrgSubinventoryData orgData = new OrgSubinventoryData();
-            viewModel.SubinventoryNameItems = orgData.GetSubinventoryList("265", true);
+            viewModel.SubinventoryNameItems = orgData.GetSubinventoryList(uow, "265", MasterUOW.DropDownListType.All);
 
 
+            ////viewModel.SelectedDeliveryStatus = "*";
+            //List<ListItem> deliveryStatusList = new List<ListItem>();
+            //deliveryStatusList.Add(new ListItem("全部", "*"));
+            //deliveryStatusList.Add(new ListItem("取消", "取消"));
+            //deliveryStatusList.Add(new ListItem("未印", "未印"));
+            //deliveryStatusList.Add(new ListItem("待出", "待出"));
+            //deliveryStatusList.Add(new ListItem("已揀", "已揀"));
+            //deliveryStatusList.Add(new ListItem("待核准", "待核准"));
+            //deliveryStatusList.Add(new ListItem("已出貨", "已出貨"));
 
+            //viewModel.DeliveryStatusItems = deliveryStatusList.Select(i => new SelectListItem() { Text = i.Text, Value = i.Value });
 
-
-            //viewModel.SelectedDeliveryStatus = "*";
-            List<ListItem> deliveryStatusList = new List<ListItem>();
-            deliveryStatusList.Add(new ListItem("全部", "*"));
-            deliveryStatusList.Add(new ListItem("取消", "取消"));
-            deliveryStatusList.Add(new ListItem("未印", "未印"));
-            deliveryStatusList.Add(new ListItem("待出", "待出"));
-            deliveryStatusList.Add(new ListItem("已揀", "已揀"));
-            deliveryStatusList.Add(new ListItem("待核准", "待核准"));
-            deliveryStatusList.Add(new ListItem("已出貨", "已出貨"));
-
-            viewModel.DeliveryStatusItems = deliveryStatusList.Select(i => new SelectListItem() { Text = i.Text, Value = i.Value });
+            viewModel.DeliveryStatusItems = uow.GetDeliveryStatusDropDownList(MasterUOW.DropDownListType.All);
 
             return viewModel;
         }
@@ -450,7 +461,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
 
             ResultModel result = new ResultModel(true, "出貨確認成功");
 
-            foreach (TripDetailDT sourceData in source)
+            foreach (TripHeaderDT sourceData in source)
             {
                 if (result.Success == false)
                 {
@@ -475,7 +486,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
                 return result;
             }
 
-            foreach (TripDetailDT sourceData in source)
+            foreach (TripHeaderDT sourceData in source)
             {
                 foreach (var q in query)
                 {
@@ -511,7 +522,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
 
             ResultModel result = new ResultModel(true, "取消出貨確認成功");
 
-            foreach (TripDetailDT sourceData in source)
+            foreach (TripHeaderDT sourceData in source)
             {
                 if (result.Success == false)
                 {
@@ -536,7 +547,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
                 return result;
             }
 
-            foreach (TripDetailDT sourceData in source)
+            foreach (TripHeaderDT sourceData in source)
             {
                 foreach (var q in query)
                 {
@@ -570,7 +581,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
 
             ResultModel result = new ResultModel(true, "列印備貨單成功");
 
-            foreach (TripDetailDT obj in source)
+            foreach (TripHeaderDT obj in source)
             {
                 //foreach (var q in query)
                 //{
@@ -620,7 +631,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
 
             ResultModel result = new ResultModel(true, "出貨核准成功");
 
-            foreach (TripDetailDT sourceData in source)
+            foreach (TripHeaderDT sourceData in source)
             {
                 if (result.Success == false)
                 {
@@ -645,7 +656,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
                 return result;
             }
 
-            foreach (TripDetailDT sourceData in source)
+            foreach (TripHeaderDT sourceData in source)
             {
                 foreach (var q in query)
                 {
@@ -678,7 +689,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
 
             ResultModel result = new ResultModel(true, "取消出貨核准成功");
 
-            foreach (TripDetailDT sourceData in source)
+            foreach (TripHeaderDT sourceData in source)
             {
                 if (result.Success == false)
                 {
@@ -703,7 +714,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
                 return result;
             }
 
-            foreach (TripDetailDT sourceData in source)
+            foreach (TripHeaderDT sourceData in source)
             {
                 foreach (var q in query)
                 {
@@ -737,7 +748,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
 
             ResultModel result = new ResultModel(true, "取消航程號成功");
 
-            foreach (TripDetailDT sourceData in source)
+            foreach (TripHeaderDT sourceData in source)
             {
                 if (result.Success == false)
                 {
@@ -757,7 +768,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
                 }
             }
 
-            foreach (TripDetailDT sourceData in source)
+            foreach (TripHeaderDT sourceData in source)
             {
                 foreach (var q in query)
                 {
@@ -775,7 +786,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
         public static void ChangeDeliveryStatus(long TripDetailDT_ID, bool pickComplete)
         {
 
-            foreach (TripDetailDT obj in source)
+            foreach (TripHeaderDT obj in source)
             {
                 if (obj.Id == TripDetailDT_ID)
                 {
@@ -832,9 +843,9 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
 
         //}
 
-        public static List<TripDetailDT> UpdateTransactionAuthorizeDates(TripDetailDTEditor data)
+        public static List<TripHeaderDT> UpdateTransactionAuthorizeDates(TripDetailDTEditor data)
         {
-            List<TripDetailDT> result = new List<TripDetailDT>();
+            List<TripHeaderDT> result = new List<TripHeaderDT>();
 
             foreach (var sourceTripDetailDT in source)
             {
@@ -855,9 +866,9 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
 
     internal class TripDetailDTOrder
     {
-        public static IOrderedEnumerable<TripDetailDT> Order(List<Order> orders, IEnumerable<TripDetailDT> models)
+        public static IOrderedEnumerable<TripHeaderDT> Order(List<Order> orders, IEnumerable<TripHeaderDT> models)
         {
-            IOrderedEnumerable<TripDetailDT> orderedModel = null;
+            IOrderedEnumerable<TripHeaderDT> orderedModel = null;
             if (orders.Count() > 0)
             {
                 orderedModel = OrderBy(orders[0].Column, orders[0].Dir, models);
@@ -871,7 +882,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
         }
 
 
-        private static IOrderedEnumerable<TripDetailDT> OrderBy(int column, string dir, IEnumerable<TripDetailDT> models)
+        private static IOrderedEnumerable<TripHeaderDT> OrderBy(int column, string dir, IEnumerable<TripHeaderDT> models)
         {
             switch (column)
             {
@@ -901,13 +912,13 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
                 case 12:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.AUTHORIZE_DATE) : models.OrderBy(x => x.AUTHORIZE_DATE);
                 case 13:
-                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.REMARK) : models.OrderBy(x => x.REMARK);
+                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.NOTE) : models.OrderBy(x => x.NOTE);
 
 
             }
         }
 
-        private static IOrderedEnumerable<TripDetailDT> ThenBy(int column, string dir, IOrderedEnumerable<TripDetailDT> models)
+        private static IOrderedEnumerable<TripHeaderDT> ThenBy(int column, string dir, IOrderedEnumerable<TripHeaderDT> models)
         {
             switch (column)
             {
@@ -937,7 +948,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
                 case 12:
                     return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.AUTHORIZE_DATE) : models.ThenBy(x => x.AUTHORIZE_DATE);
                 case 13:
-                    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.REMARK) : models.ThenBy(x => x.REMARK);
+                    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.NOTE) : models.ThenBy(x => x.NOTE);
 
 
             }
@@ -949,7 +960,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
         public string Action { get; set; }
         //public List<long> TripDetailDT_IDs { get; set; }
         //public List<string> TRANSACTION_AUTHORIZE_DATEs { get; set; }
-        public List<TripDetailDT> TripDetailDTList { get; set; }
+        public List<TripHeaderDT> TripDetailDTList { get; set; }
     }
 
 }

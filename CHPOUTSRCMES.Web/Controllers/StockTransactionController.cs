@@ -10,6 +10,8 @@ using CHPOUTSRCMES.Web.ViewModels;
 using CHPOUTSRCMES.Web.Jsons.Requests;
 using System.IO;
 using CHPOUTSRCMES.Web.Util;
+using CHPOUTSRCMES.Web.DataModel;
+using CHPOUTSRCMES.Web.DataModel.UnitOfWorks;
 
 namespace CHPOUTSRCMES.Web.Controllers
 {
@@ -55,23 +57,35 @@ namespace CHPOUTSRCMES.Web.Controllers
 
         public PartialViewResult GetTop()
         {
-            return PartialView("_TopPartial", top.GetViewModel(stockTransferData.orgData));
+            using (var context = new MesContext())
+            {
+                using (MasterUOW uow = new MasterUOW(context))
+                {
+                    return PartialView("_TopPartial", top.GetViewModel(uow, stockTransferData.orgData));
+                }
+            }
         }
 
         public PartialViewResult GetContent(string TransferType)
         {
-            StockData.addDefault();
-            if (TransferType == "出庫")
+            using (var context = new MesContext())
             {
-                return PartialView("_OutBoundPartial", stockTransferData.GetOutBoundViewModel());
-            }
-            else if (TransferType == "入庫")
-            {
-                return PartialView("_InBoundPartial", stockTransferData.GetInBoundViewModel());
-            }
-            else
-            {
-                return PartialView("_TransferReasonPartial", stockTransferData.GetTransferReasonViewModel());
+                using (MasterUOW uow = new MasterUOW(context))
+                {
+                    StockData.addDefault();
+                    if (TransferType == "出庫")
+                    {
+                        return PartialView("_OutBoundPartial", stockTransferData.GetOutBoundViewModel(uow));
+                    }
+                    else if (TransferType == "入庫")
+                    {
+                        return PartialView("_InBoundPartial", stockTransferData.GetInBoundViewModel(uow));
+                    }
+                    else
+                    {
+                        return PartialView("_TransferReasonPartial", stockTransferData.GetTransferReasonViewModel());
+                    }
+                }
             }
         }
 

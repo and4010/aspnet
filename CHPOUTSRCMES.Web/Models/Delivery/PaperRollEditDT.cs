@@ -311,7 +311,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
                         group data by new { data.TripDetailDT_ID } into g
                         select g.Sum(p => p.PICKED_QUANTITY);
 
-            var query2 = from data in TripDetailData.source
+            var query2 = from data in TripHeaderData.source
                          where data.Id == TripDetailDT_ID
                          select data.REQUESTED_QUANTITY;
 
