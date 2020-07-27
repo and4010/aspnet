@@ -16,7 +16,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
     {
         public long Id { get; set; }
 
-        //public long ORG_ID { get; set; }
+        public long SUB_ID { get; set; }
 
         [Display(Name = "內銷區域別")]
         public string FREIGHT_TERMS_NAME { get; set; }
@@ -565,55 +565,60 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
 
         }
 
-        public static ResultModel PrintPickList(List<long> ids)
+        public ResultModel PrintPickList(DeliveryUOW uow, List<long> ids)
         {
+            //列印完後更新狀態
+            uow.UpdateDeliveryStatus(ids, DeliveryUOW.DeliveryStatusCode.UnPicked);
+           
 
-            var query = from tripDetail in source
-                        where ids.Contains(tripDetail.Id)
-                        group tripDetail by new
-                        {
-                            tripDetail.TRIP_ID
-                        } into g
-                        select new
-                        {
-                            g.Key.TRIP_ID
-                        };
+            return new ResultModel(true, "列印備貨單成功");
 
-            ResultModel result = new ResultModel(true, "列印備貨單成功");
+            //var query = from tripDetail in source
+            //            where ids.Contains(tripDetail.Id)
+            //            group tripDetail by new
+            //            {
+            //                tripDetail.TRIP_ID
+            //            } into g
+            //            select new
+            //            {
+            //                g.Key.TRIP_ID
+            //            };
 
-            foreach (TripHeaderDT obj in source)
-            {
-                //foreach (var q in query)
-                //{
-                //    if (obj.TRIP_ID == q.TRIP_ID)
-                //    {
-                //        if (obj.DELIVERY_STATUS != "未印")
-                //        {
-                //            result.Success = false;
-                //            result.Msg = "交運單" + obj.DELIVERY_NAME + "狀態須為未印";
-                //            break;
-                //        }
-                //    }
-                //}
+            //ResultModel result = new ResultModel(true, "列印備貨單成功");
 
-                //if (!result.Success)
-                //{
-                //    break;
-                //}
+            //foreach (TripHeaderDT obj in source)
+            //{
+            //    //foreach (var q in query)
+            //    //{
+            //    //    if (obj.TRIP_ID == q.TRIP_ID)
+            //    //    {
+            //    //        if (obj.DELIVERY_STATUS != "未印")
+            //    //        {
+            //    //            result.Success = false;
+            //    //            result.Msg = "交運單" + obj.DELIVERY_NAME + "狀態須為未印";
+            //    //            break;
+            //    //        }
+            //    //    }
+            //    //}
 
-                foreach (var q in query)
-                {
-                    if (obj.TRIP_ID == q.TRIP_ID)
-                    {
-                        if (obj.DELIVERY_STATUS == "未印")
-                        {
-                            obj.DELIVERY_STATUS = "待出";
-                        }
-                    }
-                }
-            }
+            //    //if (!result.Success)
+            //    //{
+            //    //    break;
+            //    //}
 
-            return result;
+            //    foreach (var q in query)
+            //    {
+            //        if (obj.TRIP_ID == q.TRIP_ID)
+            //        {
+            //            if (obj.DELIVERY_STATUS == "未印")
+            //            {
+            //                obj.DELIVERY_STATUS = "待出";
+            //            }
+            //        }
+            //    }
+            //}
+
+            //return result;
         }
 
         public static ResultModel DeliveryAuthorize(List<long> ids)

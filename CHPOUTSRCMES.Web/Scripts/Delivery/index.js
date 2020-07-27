@@ -165,7 +165,7 @@ $(document).ready(function () {
         },
         columns: [
          { data: null, defaultContent: '', className: 'select-checkbox', orderable: false, width: "40px" },
-         { data: "Id", name: "項次", "autoWidth": true },
+         { data: "SUB_ID", name: "項次", "autoWidth": true },
          { data: "FREIGHT_TERMS_NAME", name: "內銷地區別", "autoWidth": true },
          { data: "TRIP_NAME", name: "航程號", "autoWidth": true },
          { data: "DELIVERY_NAME", name: "交運單", "autoWidth": true },

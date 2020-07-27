@@ -23,7 +23,7 @@ namespace CHPOUTSRCMES.Web.Models.Stock
 
             viewModel.SubinventoryItems = orgData.GetSubinventoryList(uow, "265", MasterUOW.DropDownListType.Choice);
 
-            viewModel.LocatorItems = orgData.GetLocatorList("265", viewModel.SelectedSubinventory, false);
+            viewModel.LocatorItems = orgData.GetLocatorList(uow, "265", viewModel.SelectedSubinventory, MasterUOW.DropDownListType.Choice);
 
             return viewModel;
         }

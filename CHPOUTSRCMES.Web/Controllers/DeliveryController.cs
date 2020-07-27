@@ -618,8 +618,14 @@ namespace CHPOUTSRCMES.Web.Controllers
         [HttpPost]
         public ActionResult PrintPickList(List<long> id)
         {
-            ResultModel result = TripHeaderData.PrintPickList(id);
-            return new JsonResult { Data = new { status = result.Success, result = result.Msg } };
+            using (var context = new MesContext())
+            {
+                using (DeliveryUOW uow = new DeliveryUOW(context))
+                {
+                    ResultModel result = tripHeaderData.PrintPickList(uow, id);
+                    return new JsonResult { Data = new { status = result.Success, result = result.Msg } };
+                }
+            }
         }
 
         [HttpPost]

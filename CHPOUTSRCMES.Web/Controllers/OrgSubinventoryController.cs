@@ -87,8 +87,14 @@ namespace CHPOUTSRCMES.Web.Controllers
         [HttpPost, ActionName("GetLocatorList")]
         public JsonResult GetLocatorList(string ORGANIZATION_ID, string SUBINVENTORY_CODE)
         {
-            List<SelectListItem> items = orgSubinventoryData.GetLocatorList(ORGANIZATION_ID, SUBINVENTORY_CODE, true).ToList();
-            return Json(items, JsonRequestBehavior.AllowGet);
+            using (var context = new MesContext())
+            {
+                using (MasterUOW uow = new MasterUOW(context))
+                {
+                    List<SelectListItem> items = orgSubinventoryData.GetLocatorList(uow, ORGANIZATION_ID, SUBINVENTORY_CODE, MasterUOW.DropDownListType.All).ToList();
+                    return Json(items, JsonRequestBehavior.AllowGet);
+                }
+            }
         }
-	}
+    }
 }

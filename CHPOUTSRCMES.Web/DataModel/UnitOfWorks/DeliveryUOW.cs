@@ -45,89 +45,304 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             this.dlvPickedTRepositiory = new GenericRepository<DLV_PICKED_T>(this);
             this.dlvPickedHtRepositiory = new GenericRepository<DLV_PICKED_HT>(this);
         }
+        //private List<SelectListItem> deliveryStatusList = new List<SelectListItem>() 
+        //{
+        //     new SelectListItem() { Text = "取消", Value = "0" },
+        //     new SelectListItem() { Text = "未印", Value = "1" },
+        //     new SelectListItem() { Text = "待出", Value = "2" },
+        //     new SelectListItem() { Text = "已揀", Value = "3" },
+        //     new SelectListItem() { Text = "待核准", Value = "4" },
+        //     new SelectListItem() { Text = "已出貨", Value = "5" }
+        //};
+
+        private Dictionary<string, string> DeliveryStatusDictionary = new Dictionary<string, string>()
+        {
+            {DeliveryStatusCode.Cancle, "取消"},
+            {DeliveryStatusCode.Unprinted, "未印"},
+            {DeliveryStatusCode.UnPicked, "待出"},
+            {DeliveryStatusCode.Picked, "已揀"},
+            {DeliveryStatusCode.UnAuthorized, "待核准"},
+            {DeliveryStatusCode.Authorized, "已出貨"},
+        };
+
+
+
+        /// <summary>
+        /// 下拉選單OPTION種類
+        /// </summary>
+        public static class DeliveryStatusCode
+        {
+            /// <summary>
+            /// 取消
+            /// </summary>
+            public const string Cancle = "0";
+            /// <summary>
+            /// 未印
+            /// </summary>
+            public const string Unprinted = "1";
+            /// <summary>
+            /// 待出
+            /// </summary>
+            public const string UnPicked = "2";
+            /// <summary>
+            /// 已揀
+            /// </summary>
+            public const string Picked = "3";
+            /// <summary>
+            /// 待核准
+            /// </summary>
+            public const string UnAuthorized = "4";
+            /// <summary>
+            /// 已出貨
+            /// </summary>
+            public const string Authorized = "5";
+        }
 
         public void generateTestData()
         {
             try
             {
+                #region 第一筆測試資料
                 //DliveryHeaderRepositiory.getContext().Configuration.AutoDetectChangesEnabled = false;
-                DLV_HEADER_T mDLV_HEADER_T = new DLV_HEADER_T();
-                mDLV_HEADER_T.DlvHeaderId = 1;
-                mDLV_HEADER_T.OrgId = 1;
-                mDLV_HEADER_T.OrgName = "1";
-                mDLV_HEADER_T.OrganizationId = 265;
-                mDLV_HEADER_T.OrganizationCode = "FTY";
-                mDLV_HEADER_T.SubinventoryCode = "TB2";
-                mDLV_HEADER_T.TripCar = "PN01";
-                mDLV_HEADER_T.TripId = 1;
-                mDLV_HEADER_T.TripName = "Y191226-1036357";
-                mDLV_HEADER_T.TripActualShipDate = Convert.ToDateTime("2019-12-26");
-                mDLV_HEADER_T.DeliveryId = 1;
-                mDLV_HEADER_T.DeliveryName = "FTY1912000547";
-                mDLV_HEADER_T.ItemCategory = "平版";
-                mDLV_HEADER_T.CustomerId = 1;
-                mDLV_HEADER_T.CustomerNumber = "1";
-                mDLV_HEADER_T.CustomerName = "保吉";
-                mDLV_HEADER_T.CustomerLocationCode = "福安印刷";
-                mDLV_HEADER_T.ShipCustomerId = 1;
-                mDLV_HEADER_T.ShipCustomerNumber = "1";
-                mDLV_HEADER_T.ShipCustomerName = "保吉紙業有限公司";
-                mDLV_HEADER_T.ShipLocationCode = "台南市安南區府安路5段119巷";
-                mDLV_HEADER_T.FreightTermsName = "台南";
-                mDLV_HEADER_T.DeliveryStatusCode = "1";
-                mDLV_HEADER_T.DeliveryStatusName = "未印";
-                mDLV_HEADER_T.TransactionBy = null;
-                mDLV_HEADER_T.TransactionDate = null;
-                mDLV_HEADER_T.AuthorizeBy = null;
-                mDLV_HEADER_T.AuthorizeDate = null;
-                mDLV_HEADER_T.Note = "FT1.P9B0288";
-                mDLV_HEADER_T.CreatedBy = "1";
-                mDLV_HEADER_T.CreatedUserName = "華紙";
-                mDLV_HEADER_T.CreationDate = DateTime.Now;
-                mDLV_HEADER_T.LastUpdateBy = "1";
-                mDLV_HEADER_T.LastUpdateUserName = "華紙";
-                mDLV_HEADER_T.LastUpdateDate = DateTime.Now;
-                dlvHeaderTRepositiory.Create(mDLV_HEADER_T, true);
+                dlvHeaderTRepositiory.Create(new DLV_HEADER_T()
+                {
+                    DlvHeaderId = 1,
+                    OrgId = 1,
+                    OrgName = "1",
+                    OrganizationId = 265,
+                    OrganizationCode = "FTY",
+                    SubinventoryCode = "TB2",
+                    TripCar = "PN01",
+                    TripId = 1,
+                    TripName = "Y191226-1036357",
+                    TripActualShipDate = Convert.ToDateTime("2019-12-26"),
+                    DeliveryId = 1,
+                    DeliveryName = "FTY1912000547",
+                    ItemCategory = "平版",
+                    CustomerId = 1,
+                    CustomerNumber = "1",
+                    CustomerName = "保吉",
+                    CustomerLocationCode = "福安印刷",
+                    ShipCustomerId = 1,
+                    ShipCustomerNumber = "1",
+                    ShipCustomerName = "保吉紙業有限公司",
+                    ShipLocationCode = "台南市安南區府安路5段119巷",
+                    FreightTermsName = "台南",
+                    DeliveryStatusCode = "1",
+                    DeliveryStatusName = "未印",
+                    TransactionBy = null,
+                    TransactionDate = null,
+                    AuthorizeBy = null,
+                    AuthorizeDate = null,
+                    Note = "FT1.P9B0288",
+                    CreatedBy = "1",
+                    CreatedUserName = "華紙",
+                    CreationDate = DateTime.Now,
+                    LastUpdateBy = "1",
+                    LastUpdateUserName = "華紙",
+                    LastUpdateDate = DateTime.Now,
+                }, true);
                 //DliveryHeaderRepositiory.getContext().Configuration.AutoDetectChangesEnabled = true;
 
+                dlvDetailTRepositiory.Create(new DLV_DETAIL_T()
+                {
+                    DlvDetailId = 1,
+                    DlvHeaderId = 1,
+                    OrderNumber = 1192006167,
+                    OrderLineId = 1,
+                    OrderShipNumber = "1.2",
+                    PackingType = "令包",
+                    InventoryItemId = 1,
+                    ItemNumber = "4A003A01000310K266K",
+                    ItemDescription = "123",
+                    ReamWeight = "58.97",
+                    ItemCategory = "平版",
+                    PaperType = "A003",
+                    BasicWeight = "01000",
+                    Specification = "310K266K",
+                    GrainDirection = "1",
+                    LocatorId = null,
+                    LocatorCode = null,
+                    SrcRequestedQuantity = 1.33742M,
+                    SrcRequestedQuantityUom = "MT",
+                    RequestedQuantity = 1337.419M,
+                    RequestedQuantityUom = "KG",
+                    RequestedQuantity2 = 50,
+                    RequestedQuantityUom2 = "RE",
+                    OspBatchId = 1,
+                    OspBatchNo = "P9B0288",
+                    OspBatchType = "",
+                    TmpItemId = null,
+                    TmpItemNumber = "",
+                    TmpItemDescription = "",
+                    CreatedBy = "1",
+                    CreatedUserName = "華紙",
+                    CreationDate = DateTime.Now,
+                    LastUpdateBy = "1",
+                    LastUpdateUserName = "華紙",
+                    LastUpdateDate = DateTime.Now,
+                }, true);
+                #endregion
 
-                DLV_DETAIL_T mDLV_DETAIL_T = new DLV_DETAIL_T();
-                mDLV_DETAIL_T.DlvDetailId = 1;
-                mDLV_DETAIL_T.DlvHeaderId = mDLV_HEADER_T.DlvHeaderId;
-                mDLV_DETAIL_T.OrderNumber = 1192006167;
-                mDLV_DETAIL_T.OrderLineId = 1;
-                mDLV_DETAIL_T.OrderShipNumber = "1.2";
-                mDLV_DETAIL_T.PackingType = "令包";
-                mDLV_DETAIL_T.InventoryItemId = 1;
-                mDLV_DETAIL_T.ItemNumber = "4A003A01000310K266K";
-                mDLV_DETAIL_T.ItemDescription = "123";
-                mDLV_DETAIL_T.ReamWeight = "58.97";
-                mDLV_DETAIL_T.ItemCategory = "平版";
-                mDLV_DETAIL_T.PaperType = "A003";
-                mDLV_DETAIL_T.BasicWeight = "01000";
-                mDLV_DETAIL_T.Specification = "310K266K";
-                mDLV_DETAIL_T.GrainDirection = "1";
-                mDLV_DETAIL_T.LocatorId = null;
-                mDLV_DETAIL_T.LocatorCode = null;
-                mDLV_DETAIL_T.SrcRequestedQuantity = 1.33742M;
-                mDLV_DETAIL_T.SrcRequestedQuantityUom = "MT";
-                mDLV_DETAIL_T.RequestedQuantity = 1337.419M;
-                mDLV_DETAIL_T.RequestedQuantityUom = "KG";
-                mDLV_DETAIL_T.RequestedQuantity2 = 50;
-                mDLV_DETAIL_T.RequestedQuantityUom2 = "RE";
-                mDLV_DETAIL_T.OspBatchId = 1;
-                mDLV_DETAIL_T.OspBatchNo = "P9B0288";
-                mDLV_DETAIL_T.OspBatchType = "";
-                mDLV_DETAIL_T.TmpItemId = null;
-                mDLV_DETAIL_T.TmpItemNumber = "";
-                mDLV_DETAIL_T.TmpItemDescription = "";
-                mDLV_DETAIL_T.CreatedBy = "1";
-                mDLV_DETAIL_T.CreatedUserName = "華紙";
-                mDLV_DETAIL_T.CreationDate = DateTime.Now;
-                mDLV_DETAIL_T.LastUpdateBy = "1";
-                mDLV_DETAIL_T.LastUpdateUserName = "華紙";
-                mDLV_DETAIL_T.LastUpdateDate = DateTime.Now;
-                dlvDetailTRepositiory.Create(mDLV_DETAIL_T, true);
+                #region 第二筆測試資料
+                dlvHeaderTRepositiory.Create(new DLV_HEADER_T()
+                {
+                    DlvHeaderId = 2,
+                    OrgId = 1,
+                    OrgName = "1",
+                    OrganizationId = 265,
+                    OrganizationCode = "FTY",
+                    SubinventoryCode = "TB2",
+                    TripCar = "PTB2",
+                    TripId = 2,
+                    TripName = "Y200109-1052058",
+                    TripActualShipDate = Convert.ToDateTime("2020-01-09"),
+                    DeliveryId = 2,
+                    DeliveryName = "FTY2001000140",
+                    ItemCategory = "平版",
+                    CustomerId = 2,
+                    CustomerNumber = "2",
+                    CustomerName = "中華彩色",
+                    CustomerLocationCode = "中華彩色",
+                    ShipCustomerId = 2,
+                    ShipCustomerNumber = "2",
+                    ShipCustomerName = "中華彩色印刷股份有限公司",
+                    ShipLocationCode = "新北市新店區寶橋路229號",
+                    FreightTermsName = "台北",
+                    DeliveryStatusCode = "1",
+                    DeliveryStatusName = "未印",
+                    TransactionBy = null,
+                    TransactionDate = null,
+                    AuthorizeBy = null,
+                    AuthorizeDate = null,
+                    Note = "FT1.早上到X002010031大道季刊98期/P2010087",
+                    CreatedBy = "1",
+                    CreatedUserName = "華紙",
+                    CreationDate = DateTime.Now,
+                    LastUpdateBy = "1",
+                    LastUpdateUserName = "華紙",
+                    LastUpdateDate = DateTime.Now,
+                }, true);
+
+                dlvDetailTRepositiory.Create(new DLV_DETAIL_T()
+                {
+                    DlvDetailId = 2,
+                    DlvHeaderId = 2,
+                    OrderNumber = 1202000114,
+                    OrderLineId = 2,
+                    OrderShipNumber = "1.1",
+                    PackingType = "無令打件",
+                    InventoryItemId = 2,
+                    ItemNumber = "4AB23P00699350K250K",
+                    ItemDescription = "123",
+                    ReamWeight = "43.5",
+                    ItemCategory = "平版",
+                    PaperType = "AB23",
+                    BasicWeight = "00699",
+                    Specification = "350K250K",
+                    GrainDirection = "2",
+                    LocatorId = null,
+                    LocatorCode = null,
+                    SrcRequestedQuantity = 0.37489M,
+                    SrcRequestedQuantityUom = "MT",
+                    RequestedQuantity = 374.8945M,
+                    RequestedQuantityUom = "KG",
+                    RequestedQuantity2 = 19,
+                    RequestedQuantityUom2 = "RE",
+                    OspBatchId = 2,
+                    OspBatchNo = "P2010087",
+                    OspBatchType = "",
+                    TmpItemId = null,
+                    TmpItemNumber = "",
+                    TmpItemDescription = "",
+                    CreatedBy = "1",
+                    CreatedUserName = "華紙",
+                    CreationDate = DateTime.Now,
+                    LastUpdateBy = "1",
+                    LastUpdateUserName = "華紙",
+                    LastUpdateDate = DateTime.Now,
+                }, true);
+                #endregion
+
+                #region 第三筆測試資料
+                dlvHeaderTRepositiory.Create(new DLV_HEADER_T()
+                {
+                    DlvHeaderId = 3,
+                    OrgId = 1,
+                    OrgName = "1",
+                    OrganizationId = 265,
+                    OrganizationCode = "FTY",
+                    SubinventoryCode = "SFG",
+                    TripCar = "PTB3",
+                    TripId = 3,
+                    TripName = "Y200109-1052060",
+                    TripActualShipDate = Convert.ToDateTime("2020-04-22"),
+                    DeliveryId = 3,
+                    DeliveryName = "FTY2001000152",
+                    ItemCategory = "捲筒",
+                    CustomerId = 2,
+                    CustomerNumber = "2",
+                    CustomerName = "中華彩色",
+                    CustomerLocationCode = "中華彩色",
+                    ShipCustomerId = 2,
+                    ShipCustomerNumber = "2",
+                    ShipCustomerName = "中華彩色印刷股份有限公司",
+                    ShipLocationCode = "新北市新店區寶橋路229號",
+                    FreightTermsName = "台北",
+                    DeliveryStatusCode = "1",
+                    DeliveryStatusName = "未印",
+                    TransactionBy = null,
+                    TransactionDate = null,
+                    AuthorizeBy = null,
+                    AuthorizeDate = null,
+                    Note = "",
+                    CreatedBy = "1",
+                    CreatedUserName = "華紙",
+                    CreationDate = DateTime.Now,
+                    LastUpdateBy = "1",
+                    LastUpdateUserName = "華紙",
+                    LastUpdateDate = DateTime.Now,
+                }, true);
+
+                dlvDetailTRepositiory.Create(new DLV_DETAIL_T()
+                {
+                    DlvDetailId = 3,
+                    DlvHeaderId = 3,
+                    OrderNumber = 1192006168,
+                    OrderLineId = 3,
+                    OrderShipNumber = "1.1",
+                    PackingType = "",
+                    InventoryItemId = 3,
+                    ItemNumber = "4FHIZA03000787RL00",
+                    ItemDescription = "123",
+                    ReamWeight = "43.5",
+                    ItemCategory = "捲筒",
+                    PaperType = "FHIZ",
+                    BasicWeight = "03000",
+                    Specification = "787RL00",
+                    GrainDirection = "2",
+                    LocatorId = null,
+                    LocatorCode = null,
+                    SrcRequestedQuantity = 1M,
+                    SrcRequestedQuantityUom = "MT",
+                    RequestedQuantity = 1000M,
+                    RequestedQuantityUom = "KG",
+                    RequestedQuantity2 = 10,
+                    RequestedQuantityUom2 = "RE",
+                    OspBatchId = null,
+                    OspBatchNo = "",
+                    OspBatchType = "",
+                    TmpItemId = null,
+                    TmpItemNumber = "",
+                    TmpItemDescription = "",
+                    CreatedBy = "1",
+                    CreatedUserName = "華紙",
+                    CreationDate = DateTime.Now,
+                    LastUpdateBy = "1",
+                    LastUpdateUserName = "華紙",
+                    LastUpdateDate = DateTime.Now,
+                }, true);
+                #endregion
             }
             catch (Exception ex)
             {
@@ -158,12 +373,14 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             var deliveryStatusList = new List<SelectListItem>();
             try
             {
-                deliveryStatusList.Add(new SelectListItem() { Text = "取消", Value = "0" });
-                deliveryStatusList.Add(new SelectListItem() { Text = "未印", Value = "1" });
-                deliveryStatusList.Add(new SelectListItem() { Text = "待出", Value = "2" });
-                deliveryStatusList.Add(new SelectListItem() { Text = "已揀", Value = "3" });
-                deliveryStatusList.Add(new SelectListItem() { Text = "待核准", Value = "4" });
-                deliveryStatusList.Add(new SelectListItem() { Text = "已出貨", Value = "5" });
+                deliveryStatusList.Add(new SelectListItem() { Text = DeliveryStatusDictionary[DeliveryStatusCode.Cancle], Value = DeliveryStatusCode.Cancle });
+                deliveryStatusList.Add(new SelectListItem() { Text = DeliveryStatusDictionary[DeliveryStatusCode.Unprinted], Value = DeliveryStatusCode.Unprinted });
+                deliveryStatusList.Add(new SelectListItem() { Text = DeliveryStatusDictionary[DeliveryStatusCode.UnPicked], Value = DeliveryStatusCode.UnPicked });
+                deliveryStatusList.Add(new SelectListItem() { Text = DeliveryStatusDictionary[DeliveryStatusCode.Picked], Value = DeliveryStatusCode.Picked });
+                deliveryStatusList.Add(new SelectListItem() { Text = DeliveryStatusDictionary[DeliveryStatusCode.UnAuthorized], Value = DeliveryStatusCode.UnAuthorized });
+                deliveryStatusList.Add(new SelectListItem() { Text = DeliveryStatusDictionary[DeliveryStatusCode.Authorized], Value = DeliveryStatusCode.Authorized });
+
+                var a = deliveryStatusList.Select(x => new SelectListItem() { Text = x.Text, Value = x.Value }).Where(x => x.Value == "1");
             }
             catch (Exception ex)
             {
@@ -171,6 +388,8 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             }
             return deliveryStatusList;
         }
+
+
 
         private List<SelectListItem> getTripNameList()
         {
@@ -226,10 +445,10 @@ select h.AUTHORIZE_DATE,
 h.CUSTOMER_LOCATION_CODE,
 h.CUSTOMER_NAME,
 h.DELIVERY_NAME,
-h.DELIVERY_STATUS_NAME,
+h.DELIVERY_STATUS_NAME as DELIVERY_STATUS,
 h.ITEM_CATEGORY as DetailType,
 h.FREIGHT_TERMS_NAME,
-h.DLV_HEADER_ID,
+h.DLV_HEADER_ID as Id,
 h.NOTE,
 h.SUBINVENTORY_CODE,
 h.SHIP_CUSTOMER_NAME,
@@ -244,7 +463,8 @@ d.REQUESTED_PRIMARY_UOM,
 d.REQUESTED_SECONDARY_QUANTITY,
 d.REQUESTED_SECONDARY_UOM,
 d.REQUESTED_TRANSACTION_QUANTITY,
-d.REQUESTED_TRANSACTION_UOM
+d.REQUESTED_TRANSACTION_UOM,
+ROW_NUMBER() OVER(ORDER BY h.DLV_HEADER_ID) AS SUB_ID
 from DLV_HEADER_T h
 inner join DLV_DETAIL_T d
 on h.DLV_HEADER_ID = d.DLV_HEADER_ID";
@@ -299,8 +519,8 @@ on h.DLV_HEADER_ID = d.DLV_HEADER_ID";
             {
                 return this.Context.Database.SqlQuery<TripHeaderDT>(commandText).ToList();
             }
-           
-           
+
+
 
             //var query = dlvHeaderTRepositiory.GetAll().AsNoTracking()
             //    .Join(dlvDetailHtRepositiory.GetAll().AsNoTracking(),
@@ -345,6 +565,43 @@ on h.DLV_HEADER_ID = d.DLV_HEADER_ID";
             //  );
 
             //return tempList;
+        }
+
+
+        public void UpdateDeliveryStatus(List<long> dlvHeaderIds, string deliveryStatusCode)
+        {
+            //取選擇所有選擇的TripId
+            List<long> tripIds = dlvHeaderTRepositiory.GetAll().AsNoTracking().Where(x => dlvHeaderIds.Contains(x.DlvHeaderId)).GroupBy(x => x.TripId).Select(x => x.Key).ToList();
+            if (tripIds.Count > 0)
+            {
+                //取所有要更新狀態的資料
+                var updateDatas = dlvHeaderTRepositiory.GetAll().AsNoTracking().Where(x => tripIds.Contains(x.TripId)).ToList();
+                if (updateDatas.Count == 0) return;
+
+                using (var txn = this.Context.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        foreach (DLV_HEADER_T data in updateDatas)
+                        {
+                            data.DeliveryStatusCode = deliveryStatusCode;
+                            data.DeliveryStatusName = DeliveryStatusDictionary[deliveryStatusCode];
+                            dlvHeaderTRepositiory.Update(data);
+                        }
+                        dlvHeaderTRepositiory.SaveChanges();
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.Error(LogUtilities.BuildExceptionMessage(ex));
+                        txn.Rollback();
+                    }
+                }
+            }
+        }
+
+        public void UpdateTransactionAuthorizeDates()
+        {
+
         }
     }
 
