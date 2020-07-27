@@ -17,10 +17,10 @@ BEGIN
 	-- SET NOCOUNT ON added to prevent extra result sets from
 	-- interfering with SELECT statements.
 	SET NOCOUNT ON;
-	DECLARE @barcodes TABLE (
+	DECLARE @barcodes TABLE ( 
 		BARCODE VARCHAR(20)
 	)
-	DECLARE @miscPrefix NVARCHAR(10) = '', @serialSize INT = 4, @maxSerial BIGINT = 9999, @startSerial INT = 1, @endSerial INT = 1
+	DECLARE @miscPrefix NVARCHAR(10) = '', @serialSize INT = 4, @maxSerial BIGINT = 9999, @startSerial INT = 1, @endSerial INT = @requestQty
 	DECLARE @bcdDate VARCHAR(8) =  CONVERT(VARCHAR, GETDATE(), 12)
 	DECLARE @step INT = 1
 	
@@ -28,22 +28,22 @@ BEGIN
 
 		IF NOT EXISTS (SELECT TOP 1 * FROM dbo.BCD_MISC_T WHERE ORGANIZATION_ID = @organizationId AND SUBINVENTORY_CODE = @subinventory)
 		BEGIN
-			RAISERROR('²£¥Í±ø½X¥¢±Ñ¡A­Ü®w¨Ã¥¼³]¸m«e¸m½X!!', 16, @step)
+			RAISERROR('ç”¢ç”Ÿæ¢ç¢¼å¤±æ•—ï¼Œå€‰åº«ä¸¦æœªè¨­ç½®å‰ç½®ç¢¼!!', 16, @step)
 		END
 
 		SET @step = @step + 1
-		--¨ú±o±ø½X³]©w «e¸m½X¤Î³Ì¤j¬y¤ô¸¹
+		--å–å¾—æ¢ç¢¼è¨­å®š å‰ç½®ç¢¼åŠæœ€å¤§æµæ°´è™Ÿ
 		SELECT TOP 1 @miscPrefix = PREFIX_CODE, @maxSerial = POWER(10, SERIAL_SIZE) -1, @serialSize = SERIAL_SIZE
 		FROM dbo.BCD_MISC_T WHERE ORGANIZATION_ID = @organizationId AND SUBINVENTORY_CODE = @subinventory
 
-		--¥H¶Ç¤J«e¸m½X¬°¥D
+		--ä»¥å‚³å…¥å‰ç½®ç¢¼ç‚ºä¸»
 		IF(@prefix IS NULL OR LEN(@prefix) = 0)
 		BEGIN
 			SET @prefix = @miscPrefix
 		END
 
 		SET @step = @step + 1
-		--¨ú¥X¥Ø«e¬y¤ô¸¹
+		--å–å‡ºç›®å‰æµæ°´è™Ÿ
 		SELECT TOP 1 @startSerial = SERIAL_NUMBER + 1, @endSerial = SERIAL_NUMBER + @requestQty FROM dbo.BCD_SERIAL_T 
 			WHERE BCD_DATE = @bcdDate 
 			AND ORGANIZATION_ID = @organizationId 
@@ -52,7 +52,7 @@ BEGIN
 
 		IF(@endSerial > @maxSerial)
 		BEGIN
-			RAISERROR('²£¥Í±ø½X¥¢±Ñ¡A¬y¤ô¸¹¤w¶W¥X­­¨îªø«×!!', 16, @step)
+			RAISERROR('ç”¢ç”Ÿæ¢ç¢¼å¤±æ•—ï¼Œæµæ°´è™Ÿå·²è¶…å‡ºé™åˆ¶é•·åº¦!!', 16, @step)
 		END
 
 		print '@endSerial:' + STR(@endSerial)
@@ -60,7 +60,7 @@ BEGIN
 		print '@maxSerial:' + STR(@maxSerial)
 		
 		SET @step = @step + 1
-		--¼g¤J±ø½X¬y¤ô¸¹
+		--å¯«å…¥æ¢ç¢¼æµæ°´è™Ÿ
 		MERGE INTO dbo.BCD_SERIAL_T WITH (HOLDLOCK) AS A 
 			USING (VALUES(@bcdDate, @organizationId, @subinventory, @prefix)) AS B (BCD_DATE, ORGANIZATION_ID, SUBINVENTORY_CODE, PREFIX_CODE) 
 			ON A.BCD_DATE = B.BCD_DATE AND A.ORGANIZATION_ID = B.ORGANIZATION_ID AND A.SUBINVENTORY_CODE = B.SUBINVENTORY_CODE AND A.PREFIX_CODE = B.PREFIX_CODE 
@@ -69,11 +69,11 @@ BEGIN
 				VALUES (@bcdDate, @organizationId, @subinventory, @prefix, @endSerial, @user, GETDATE()); 
 		IF (@@ROWCOUNT < 0 OR @@ERROR <> 0)
 		BEGIN
-			RAISERROR('²£¥Í±ø½X¥¢±Ñ¡A¼g¤J¬y¤ô¸¹¥¢±Ñ!!', 16, @step)
+			RAISERROR('ç”¢ç”Ÿæ¢ç¢¼å¤±æ•—ï¼Œå¯«å…¥æµæ°´è™Ÿå¤±æ•—!!', 16, @step)
 		END
 
 		SET @step = @step + 1
-		--²£¥Í±ø½X²M³æ
+		--ç”¢ç”Ÿæ¢ç¢¼æ¸…å–®
 		DECLARE @currSerial INT = @startSerial
 		WHILE @currSerial <= @endSerial
 		BEGIN
@@ -85,7 +85,7 @@ BEGIN
 			INSERT INTO dbo.BCD_UNIQUE_T (BARCODE, CREATED_BY, CREATION_DATE) VALUES (@barcode, @user, GETDATE())
 			IF (@@ROWCOUNT < 0 OR @@ERROR <> 0)
 			BEGIN
-				RAISERROR('²£¥Í±ø½X¥¢±Ñ¡A±ø½X­«½Æ!!', 16, @step)
+				RAISERROR('ç”¢ç”Ÿæ¢ç¢¼å¤±æ•—ï¼Œæ¢ç¢¼é‡è¤‡!!', 16, @step)
 			END
 		END
 

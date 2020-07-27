@@ -22,7 +22,6 @@ namespace CHPOUTSRCMES.Web
 
             using (MesContext mesContext = new MesContext())
             {
-
             }
 
             logger.Info("Info");
