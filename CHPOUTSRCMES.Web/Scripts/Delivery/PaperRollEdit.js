@@ -36,7 +36,7 @@ $(document).ready(function () {
         },
         columns: [
          { data: null, defaultContent: '', className: 'select-checkbox', orderable: false, width: "40px" },
-         { data: "ID", name: "項次", autoWidth: true },
+         { data: "SUB_ID", name: "項次", autoWidth: true },
          { data: "ORDER_NUMBER", name: "訂單", autoWidth: true },
          { data: "ORDER_SHIP_NUMBER", name: "訂單行號", autoWidth: true },
          { data: "OSP_BATCH_NO", name: "工單號碼", autoWidth: true },

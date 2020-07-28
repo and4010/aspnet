@@ -608,42 +608,7 @@ on h.DLV_HEADER_ID = d.DLV_HEADER_ID";
             return dlvDetailTRepositiory.GetAll().AsNoTracking().Where(x => dlvHeaderId == x.DlvHeaderId).ToList();
         }
 
-#region 捲筒
-        public List<PaperRollEditDT> GetRollDetailDT(long dlvHeaderId)
-        {
-            string cmd = @"
-select 
-DLV_DETAIL_ID as ID,
-DLV_HEADER_ID as DlvHeaderId,
-ROW_NUMBER() OVER(ORDER BY DLV_DETAIL_ID) AS SUB_ID,
-ORDER_NUMBER,
-ORDER_SHIP_NUMBER,
-OSP_BATCH_NO,
-ITEM_NUMBER,
-TMP_ITEM_NUMBER,
-PAPER_TYPE,
-BASIC_WEIGHT,
-SPECIFICATION,
-REQUESTED_PRIMARY_QUANTITY as REQUESTED_QUANTITY,
-(select SUM(p.PRIMARY_QUANTITY) from DLV_PICKED_T p
-inner join DLV_DETAIL_T d
-on p.DLV_DETAIL_ID = d.DLV_DETAIL_ID
-) as PICKED_QUANTITY,
-REQUESTED_PRIMARY_UOM as REQUESTED_QUANTITY_UOM,
-REQUESTED_TRANSACTION_QUANTITY as SRC_REQUESTED_QUANTITY,
-(select SUM(p.TRANSACTION_QUANTITY) from DLV_PICKED_T p
-inner join DLV_DETAIL_T d
-on p.DLV_DETAIL_ID = d.DLV_DETAIL_ID
-) as SRC_PICKED_QUANTITY,
-REQUESTED_TRANSACTION_UOM as SRC_REQUESTED_QUANTITY_UOM
-from DLV_DETAIL_T";
 
-            return this.Context.Database.SqlQuery<PaperRollEditDT>(cmd).ToList();
-
-        }
-
-
-#endregion
         
 
 
@@ -724,6 +689,84 @@ from DLV_DETAIL_T";
                 }
             }
         }
+
+        #region 捲筒
+
+        /// <summary>
+        /// 取得捲筒明細表單內容
+        /// </summary>
+        /// <param name="dlvHeaderId"></param>
+        /// <returns></returns>
+        public List<PaperRollEditDT> GetRollDetailDT(long dlvHeaderId)
+        {
+            string cmd = @"
+select 
+DLV_DETAIL_ID as ID,
+DLV_HEADER_ID as DlvHeaderId,
+ROW_NUMBER() OVER(ORDER BY DLV_DETAIL_ID) AS SUB_ID,
+ORDER_NUMBER,
+ORDER_SHIP_NUMBER,
+OSP_BATCH_NO,
+ITEM_NUMBER,
+TMP_ITEM_NUMBER,
+PAPER_TYPE,
+BASIC_WEIGHT,
+SPECIFICATION,
+REQUESTED_PRIMARY_QUANTITY as REQUESTED_QUANTITY,
+(select SUM(PRIMARY_QUANTITY) from DLV_PICKED_T where DLV_HEADER_ID = @DLV_HEADER_ID) as PICKED_QUANTITY,
+REQUESTED_PRIMARY_UOM as REQUESTED_QUANTITY_UOM,
+REQUESTED_TRANSACTION_QUANTITY as SRC_REQUESTED_QUANTITY,
+(select SUM(TRANSACTION_QUANTITY) from DLV_PICKED_T where DLV_HEADER_ID = @DLV_HEADER_ID) as SRC_PICKED_QUANTITY,
+REQUESTED_TRANSACTION_UOM as SRC_REQUESTED_QUANTITY_UOM
+from DLV_DETAIL_T
+where DLV_HEADER_ID = @DLV_HEADER_ID";
+
+            return this.Context.Database.SqlQuery<PaperRollEditDT>(cmd, new SqlParameter("@DLV_HEADER_ID", dlvHeaderId)).ToList();
+
+        }
+
+
+        #endregion
+
+
+        #region 平版
+
+        /// <summary>
+        /// 取得捲筒明細表單內容
+        /// </summary>
+        /// <param name="dlvHeaderId"></param>
+        /// <returns></returns>
+        public List<FlatEditDT> GetFlatDetailDT(long dlvHeaderId)
+        {
+            string cmd = @"
+select 
+DLV_DETAIL_ID as ID,
+ROW_NUMBER() OVER(ORDER BY DLV_DETAIL_ID) AS SUB_ID,
+ORDER_NUMBER,
+ORDER_SHIP_NUMBER,
+OSP_BATCH_NO,
+ITEM_NUMBER,
+TMP_ITEM_NUMBER,
+REAM_WEIGHT,
+PACKING_TYPE,
+REQUESTED_PRIMARY_QUANTITY as REQUESTED_QUANTITY,
+(select SUM(PRIMARY_QUANTITY) from DLV_PICKED_T where DLV_HEADER_ID = @DLV_HEADER_ID) as PICKED_QUANTITY,
+REQUESTED_PRIMARY_UOM as REQUESTED_QUANTITY_UOM,
+[REQUESTED_SECONDARY_QUANTITY] as REQUESTED_QUANTITY2,
+(select SUM(SECONDARY_QUANTITY) from DLV_PICKED_T where DLV_HEADER_ID = @DLV_HEADER_ID) as PICKED_QUANTITY2,
+[REQUESTED_SECONDARY_UOM] as REQUESTED_QUANTITY_UOM2,
+REQUESTED_TRANSACTION_QUANTITY as SRC_REQUESTED_QUANTITY,
+(select SUM(TRANSACTION_QUANTITY) from DLV_PICKED_T where DLV_HEADER_ID = @DLV_HEADER_ID) as SRC_PICKED_QUANTITY,
+REQUESTED_TRANSACTION_UOM as SRC_REQUESTED_QUANTITY_UOM
+from DLV_DETAIL_T
+where DLV_HEADER_ID = @DLV_HEADER_ID";
+
+            return this.Context.Database.SqlQuery<FlatEditDT>(cmd, new SqlParameter("@DLV_HEADER_ID", dlvHeaderId)).ToList();
+
+        }
+
+
+        #endregion
     }
 
 

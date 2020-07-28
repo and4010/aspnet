@@ -20,8 +20,7 @@ $(document).ready(function () {
             "type": "Post",
             "datatype": "json",
             "data": {
-                DELIVERY_NAME: $("#DELIVERY_NAME").text(),
-                TRIP_NAME: $("#TRIP_NAME").text()
+                DlvHeaderId: $("#DlvHeaderId").text()
             },
         },
         columns: [
@@ -31,7 +30,7 @@ $(document).ready(function () {
          { data: "ORDER_SHIP_NUMBER", name: "訂單行號", autoWidth: true },
          { data: "OSP_BATCH_NO", name: "工單號碼", autoWidth: true },
          { data: "TMP_ITEM_NUMBER", name: "代紙料號", autoWidth: true, className: "dt-body-left" },
-         { data: "ITEM_DESCRIPTION", name: "料號", autoWidth: true, className: "dt-body-left" },
+         { data: "ITEM_NUMBER", name: "料號", autoWidth: true, className: "dt-body-left" },
          { data: "REAM_WEIGHT", name: "令重", autoWidth: true },
          { data: "PACKING_TYPE", name: "包裝方式", autoWidth: true },
 
@@ -41,7 +40,7 @@ $(document).ready(function () {
 
          { data: "REQUESTED_QUANTITY2", name: "預計出庫輔數量", autoWidth: true, className: "dt-body-right" },
          { data: "PICKED_QUANTITY2", name: "出庫已揀輔數量", autoWidth: true, className: "dt-body-right" },
-         { data: "SRC_REQUESTED_QUANTITY_UOM2", name: "輔單位", autoWidth: true },
+         { data: "REQUESTED_QUANTITY_UOM2", name: "輔單位", autoWidth: true },
 
          { data: "SRC_REQUESTED_QUANTITY", name: "訂單原始數量", autoWidth: true, className: "dt-body-right" },
          { data: "SRC_PICKED_QUANTITY", name: "訂單已揀數量", autoWidth: true, className: "dt-body-right" },

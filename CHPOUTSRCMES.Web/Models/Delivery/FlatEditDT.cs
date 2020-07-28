@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.ComponentModel.DataAnnotations;
 using CHPOUTSRCMES.Web.ViewModels;
+using CHPOUTSRCMES.Web.DataModel.UnitOfWorks;
 
 namespace CHPOUTSRCMES.Web.Models.Delivery
 {
@@ -20,7 +21,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
         [Display(Name = "代紙料號")]
         public string TMP_ITEM_NUMBER { get; set; }
         [Display(Name = "料號名稱")]
-        public string ITEM_DESCRIPTION { get; set; } //要改為ITEM_NUMBER
+        public string ITEM_NUMBER { get; set; } //要改為ITEM_NUMBER
         [Display(Name = "令重")]
         public string REAM_WEIGHT { get; set; }
         [Display(Name = "包裝方式")]
@@ -29,7 +30,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
         public decimal REQUESTED_QUANTITY { get; set; }
 
         [Display(Name = "已揀數量")] //主單位已揀數合計
-        public decimal PICKED_QUANTITY { get; set; }
+        public decimal? PICKED_QUANTITY { get; set; }
 
         [Display(Name = "單位")] //主單位
         public string REQUESTED_QUANTITY_UOM { get; set; }
@@ -38,16 +39,16 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
         public decimal REQUESTED_QUANTITY2 { get; set; }
 
         [Display(Name = "已揀數量")] //出庫已揀輔數量
-        public decimal PICKED_QUANTITY2 { get; set; }
+        public decimal? PICKED_QUANTITY2 { get; set; }
 
         [Display(Name = "單位")] //輔單位
-        public string SRC_REQUESTED_QUANTITY_UOM2 { get; set; }
+        public string REQUESTED_QUANTITY_UOM2 { get; set; }
 
         [Display(Name = "需求數量")] //訂單原始數量 交易數量
         public decimal SRC_REQUESTED_QUANTITY { get; set; }
 
         [Display(Name = "已揀數量")] //交易單位已揀數合計 由主單位已揀數合計 換算過來
-        public decimal SRC_PICKED_QUANTITY { get; set; }
+        public decimal? SRC_PICKED_QUANTITY { get; set; }
 
         [Display(Name = "單位")] //交易單位
         public string SRC_REQUESTED_QUANTITY_UOM { get; set; }
@@ -83,6 +84,17 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
             return list;
         }
 
+        public List<FlatEditDT> GetFlatDetailDT(DeliveryUOW uow, long DlvHeaderId)
+        {
+
+            return uow.GetFlatDetailDT(DlvHeaderId);
+            //var query = from data in PaperRollEditData.model
+            //            where data.DlvHeaderId == DlvHeaderId
+            //            select data;
+            //List<PaperRollEditDT> list = query.ToList<PaperRollEditDT>();
+            //return list;
+        }
+
         public static void resetData()
         {
             model = new List<FlatEditDT>();
@@ -98,7 +110,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
             data.ORDER_SHIP_NUMBER = "1.2";
             data.OSP_BATCH_NO = "P9B0288";
             data.TMP_ITEM_NUMBER = "";
-            data.ITEM_DESCRIPTION = "4A003A01000310K266K";
+            data.ITEM_NUMBER = "4A003A01000310K266K";
             data.REAM_WEIGHT = "58.97";
             data.PACKING_TYPE = "令包";
             data.REQUESTED_QUANTITY = 1337.419M;
@@ -106,7 +118,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
             data.REQUESTED_QUANTITY_UOM = "KG";
             data.REQUESTED_QUANTITY2 = 50;
             data.PICKED_QUANTITY2 = 0;
-            data.SRC_REQUESTED_QUANTITY_UOM2 = "RE";
+            data.REQUESTED_QUANTITY_UOM2 = "RE";
             data.SRC_REQUESTED_QUANTITY = 1.33742M;
             data.SRC_PICKED_QUANTITY = 0;
             data.SRC_REQUESTED_QUANTITY_UOM = "MT";
@@ -125,7 +137,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
             data2.ORDER_SHIP_NUMBER = "1.1";
             data2.OSP_BATCH_NO = "P2010087";
             data2.TMP_ITEM_NUMBER = "";
-            data2.ITEM_DESCRIPTION = "4AB23P00699350K250K";
+            data2.ITEM_NUMBER = "4AB23P00699350K250K";
             data2.REAM_WEIGHT = "43.5";
             data2.PACKING_TYPE = "無令打件";
             data2.REQUESTED_QUANTITY = 374.8945M;
@@ -133,7 +145,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
             data2.REQUESTED_QUANTITY_UOM = "KG";
             data2.REQUESTED_QUANTITY2 = 19;
             data2.PICKED_QUANTITY2 = 0;
-            data2.SRC_REQUESTED_QUANTITY_UOM2 = "RE";
+            data2.REQUESTED_QUANTITY_UOM2 = "RE";
             data2.SRC_REQUESTED_QUANTITY = 0.37489M;
             data2.SRC_PICKED_QUANTITY = 0;
             data2.SRC_REQUESTED_QUANTITY_UOM = "MT";
@@ -282,7 +294,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
             {
                 if (obj.ID == 1)
                 {
-                    decimal newQty = obj.PICKED_QUANTITY + qty;
+                    decimal newQty = (decimal)obj.PICKED_QUANTITY + qty;
                     obj.PICKED_QUANTITY2 = newQty;
                     obj.PICKED_QUANTITY = newQty * 26.74838M;
                     obj.SRC_PICKED_QUANTITY = Math.Round(newQty * 26.74838M / 1000, 5, MidpointRounding.AwayFromZero);
@@ -320,7 +332,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
             {
                 if (obj.ID == 3)
                 {
-                    decimal newQty = obj.PICKED_QUANTITY + addQty;
+                    decimal newQty = (decimal)obj.PICKED_QUANTITY + addQty;
                     obj.PICKED_QUANTITY2 = newQty;
                     obj.PICKED_QUANTITY = newQty * 10;
                     obj.SRC_PICKED_QUANTITY = newQty * 10 / 1000;
@@ -337,7 +349,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
                 {
                     if (obj.ID == barcodeData.FlatEditDT_ID)
                     {
-                        decimal newQty = obj.PICKED_QUANTITY2 - barcodeData.SECONDARY_QUANTITY;
+                        decimal newQty = (decimal)obj.PICKED_QUANTITY2 - barcodeData.SECONDARY_QUANTITY;
                         obj.PICKED_QUANTITY = newQty * 10;
                         obj.PICKED_QUANTITY2 = newQty;
                         obj.SRC_PICKED_QUANTITY = newQty * 10 / 1000;
@@ -349,7 +361,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
         public static bool checkBarcodeItemDesc(long FlatEditDT_ID, string ITEM_DESCRIPTION)
         {
             var query = from data in FlatEditData.model
-                        where FlatEditDT_ID == data.ID && ITEM_DESCRIPTION == data.ITEM_DESCRIPTION
+                        where FlatEditDT_ID == data.ID && ITEM_DESCRIPTION == data.ITEM_NUMBER
                         select data;
             List<FlatEditDT> list = query.ToList<FlatEditDT>();
             if (list.Count > 0)
@@ -447,7 +459,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
                 case 5:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.TMP_ITEM_NUMBER) : models.OrderBy(x => x.TMP_ITEM_NUMBER);
                 case 6:
-                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.ITEM_DESCRIPTION) : models.OrderBy(x => x.ITEM_DESCRIPTION);
+                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.ITEM_NUMBER) : models.OrderBy(x => x.ITEM_NUMBER);
                 case 7:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.REAM_WEIGHT) : models.OrderBy(x => x.REAM_WEIGHT);
                 case 8:
@@ -463,7 +475,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
                 case 13:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.PICKED_QUANTITY2) : models.OrderBy(x => x.REQUESTED_QUANTITY_UOM);
                 case 14:
-                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.SRC_REQUESTED_QUANTITY_UOM2) : models.OrderBy(x => x.REQUESTED_QUANTITY_UOM);
+                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.REQUESTED_QUANTITY_UOM2) : models.OrderBy(x => x.REQUESTED_QUANTITY_UOM);
                 case 15:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.SRC_REQUESTED_QUANTITY) : models.OrderBy(x => x.REQUESTED_QUANTITY_UOM);
                 case 16:
@@ -492,7 +504,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
                 case 5:
                     return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.TMP_ITEM_NUMBER) : models.ThenBy(x => x.TMP_ITEM_NUMBER);
                 case 6:
-                    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.ITEM_DESCRIPTION) : models.ThenBy(x => x.ITEM_DESCRIPTION);
+                    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.ITEM_NUMBER) : models.ThenBy(x => x.ITEM_NUMBER);
                 case 7:
                     return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.REAM_WEIGHT) : models.ThenBy(x => x.REAM_WEIGHT);
                 case 8:
@@ -508,7 +520,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
                 case 13:
                     return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.PICKED_QUANTITY2) : models.ThenBy(x => x.REQUESTED_QUANTITY_UOM);
                 case 14:
-                    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.SRC_REQUESTED_QUANTITY_UOM2) : models.ThenBy(x => x.REQUESTED_QUANTITY_UOM);
+                    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.REQUESTED_QUANTITY_UOM2) : models.ThenBy(x => x.REQUESTED_QUANTITY_UOM);
                 case 15:
                     return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.SRC_REQUESTED_QUANTITY) : models.ThenBy(x => x.REQUESTED_QUANTITY_UOM);
                 case 16:
