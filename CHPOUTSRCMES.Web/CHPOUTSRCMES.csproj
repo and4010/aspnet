@@ -222,7 +222,7 @@
     <Compile Include="Controllers\TransferController.cs" />
     <Compile Include="Controllers\YszmpckqController.cs" />
     <Compile Include="DataAnnotation\Precision.cs" />
-    <Compile Include="DataModel\Entiy\AppUserManager.cs" />
+    <Compile Include="DataModel\Managers\AppUserManager.cs" />
     <Compile Include="DataModel\Entiy\Delivery\DLV_DETAIL_HT.cs" />
     <Compile Include="DataModel\Entiy\Delivery\DLV_DETAIL_T.cs" />
     <Compile Include="DataModel\Entiy\Delivery\DLV_HEADER_T.cs" />
@@ -238,6 +238,7 @@
     <Compile Include="DataModel\Entiy\LOG_ENTRY_T.cs" />
     <Compile Include="DataModel\Entiy\Information\ORG_ITEMS_T.cs" />
     <Compile Include="DataModel\Entiy\Information\USER_SUBINVENTORY_T.cs" />
+    <Compile Include="DataModel\Managers\AppRoleManager.cs" />
     <Compile Include="DataModel\ModelInitializer.cs" />
     <Compile Include="DataModel\Repositorys\GenericRepository.cs" />
     <Compile Include="DataModel\Repositorys\Interfaces\IRepository.cs" />
@@ -264,6 +265,7 @@
     <Compile Include="DataModel\Initializer.cs" />
     <Compile Include="DataModel\Repositorys\Interfaces\IItemsTRepository.cs" />
     <Compile Include="DataModel\Repositorys\ItemsTRepository.cs" />
+    <Compile Include="DataModel\UnitOfWorks\IdentityUOW.cs" />
     <Compile Include="DataModel\UnitOfWorks\MasterUOW.cs" />
     <Compile Include="DataModel\UnitOfWorks\Interfaces\IUnitOfWork.cs" />
     <Compile Include="DataModel\UnitOfWorks\PurchaseUOW.cs" />
@@ -359,6 +361,18 @@
     <Compile Include="ViewModels\YszmpckqViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="bower_components\adminlte\css\AdminLTE.css" />
+    <Content Include="bower_components\adminlte\css\AdminLTE.min.css" />
+    <Content Include="bower_components\adminlte\css\skins\skin-green-light.css" />
+    <Content Include="bower_components\adminlte\css\skins\skin-green-light.min.css" />
+    <Content Include="bower_components\adminlte\css\skins\skin-green.css" />
+    <Content Include="bower_components\adminlte\css\skins\skin-green.min.css" />
+    <Content Include="bower_components\adminlte\css\skins\_all-skins.css" />
+    <Content Include="bower_components\adminlte\css\skins\_all-skins.min.css" />
+    <Content Include="bower_components\adminlte\js\app.js" />
+    <Content Include="bower_components\adminlte\js\app.min.js" />
+    <Content Include="bower_components\adminlte\js\pages\dashboard.js" />
+    <Content Include="bower_components\adminlte\js\pages\dashboard2.js" />
     <Content Include="bower_components\bootstrap-datetimepicker\bootstrap-datetimepicker.css" />
     <Content Include="bower_components\bootstrap-datetimepicker\bootstrap-datetimepicker.js" />
     <Content Include="bower_components\bootstrap-datetimepicker\bootstrap-datetimepicker.min.css" />
@@ -808,6 +822,8 @@
     <Content Include="bower_components\editor\js\editor.jqueryui.min.js" />
     <Content Include="bower_components\editor\js\editor.semanticui.js" />
     <Content Include="bower_components\editor\js\editor.semanticui.min.js" />
+    <Content Include="bower_components\fastclick\fastclick.js" />
+    <Content Include="bower_components\fastclick\fastclick.min.js" />
     <Content Include="bower_components\flot.tooltip\js\excanvas.min.js" />
     <Content Include="bower_components\flot.tooltip\js\jquery.flot.js" />
     <Content Include="bower_components\flot.tooltip\js\jquery.flot.tooltip.js" />
@@ -1269,6 +1285,8 @@
     <Content Include="bower_components\raphael\license.txt" />
     <Content Include="bower_components\raphael\raphael-min.js" />
     <Content Include="bower_components\raphael\raphael.js" />
+    <Content Include="bower_components\slimScroll\jquery.slimscroll.js" />
+    <Content Include="bower_components\slimScroll\jquery.slimscroll.min.js" />
     <Content Include="bower_components\sweet-alert\sweet-alert-bootstrap.css" />
     <Content Include="bower_components\sweet-alert\sweet-alert-bootstrap.js" />
     <Content Include="bower_components\sweet-alert\sweet-alert.css" />
@@ -1314,6 +1332,8 @@
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
+    <Content Include="Img\favicon.ico" />
+    <Content Include="Img\paper2.png" />
     <Content Include="pngtree.jpg" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -1725,6 +1745,11 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Data\Excel\ERP0193164.xlsx" />
+    <Content Include="Data\Excel\MES_USERS.xlsx" />
+    <Content Include="bower_components\adminlte\.DS_Store" />
+    <Content Include="bower_components\adminlte\css\.DS_Store" />
+    <Content Include="bower_components\adminlte\css\skins\.DS_Store" />
+    <Content Include="bower_components\adminlte\js\.DS_Store" />
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>
@@ -1870,6 +1895,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="bower_components\theme\" />
     <Folder Include="Jsons\Responses\" />
     <Folder Include="Views\Stock\" />
     <Folder Include="Views\Transfer\" />

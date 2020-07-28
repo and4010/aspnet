@@ -41,7 +41,7 @@ namespace CHPOUTSRCMES.Web.Util
             return GetCellString(sheet.GetRow(row_index).GetCell(col_index));
         }
 
-        private static string GetCellString(ICell cell)
+        public static string GetCellString(ICell cell)
         {
             if(cell == null)
             {
@@ -50,10 +50,8 @@ namespace CHPOUTSRCMES.Web.Util
             return GetCellString(cell, cell.CellType);
         }
 
-
-
         /// <summary>
-        /// 獲取單元格型別
+        /// 依型別獲取單元格內容
         /// </summary>
         /// <param name="cell"></param>
         /// <returns></returns>

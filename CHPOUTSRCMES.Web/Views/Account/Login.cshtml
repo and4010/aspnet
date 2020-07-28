@@ -1,4 +1,4 @@
-﻿
+﻿@model CHPOUTSRCMES.Web.ViewModels.Account.LoginViewModel
 @{
     ViewBag.Title = "登入";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -12,23 +12,42 @@
                     <h3 class="panel-title">請登入</h3>
                 </div>
                 <div class="panel-body">
-                    <form role="form">
-                        <fieldset>
-                            <div class="form-group">
-                                <input class="form-control" placeholder="帳號" name="User" type="text" autofocus>
-                            </div>
-                            <div class="form-group">
-                                <input class="form-control" placeholder="密碼" name="Password" type="password" value="">
-                            </div>
-                            <div class="checkbox">
-                                <label>
-                                    <input name="remember" type="checkbox" value="Remember Me">記住帳號
-                                </label>
-                            </div>
-                            <!-- Change this to a button or input when using this as a form -->
-                            <a href="/Home/Index" class="btn btn-lg btn-primary btn-block">登入</a>
-                        </fieldset>
-                    </form>
+                    <section id="loginForm">
+            @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+            {
+                @Html.AntiForgeryToken()
+                <h4>使用帳號密碼登入</h4>
+                <hr />
+                @Html.ValidationSummary(true)
+                <div class="form-group">
+                    @Html.LabelFor(m => m.UserName, new { @class = "col-md-2 control-label" })
+                    <div class="col-md-10">
+                        @Html.TextBoxFor(m => m.UserName, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.UserName)
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Password, new { @class = "col-md-2 control-label" })
+                    <div class="col-md-10">
+                        @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.Password)
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <div class="checkbox">
+                            @Html.CheckBoxFor(m => m.RememberMe)
+                            @Html.LabelFor(m => m.RememberMe)
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <input type="submit" value="登入" class="btn btn-default" />
+                    </div>
+                </div>
+            }
+        </section>
                 </div>
             </div>
         </div>

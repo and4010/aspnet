@@ -1,92 +1,88 @@
 ﻿@model IEnumerable<CHPOUTSRCMES.Web.Models.Navbar>
-
-<!-- Navigation -->
-<nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
-    
-    <div class="navbar-header">
-        <a class="btn openbtn" onclick="toggleNav()" >&#9776;</a>
-@*        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-        </button>*@
-        @Html.ActionLink("華紙 MES", "Index", new { controller = "Home" }, new { @class = "navbar-brand" })
-    </div>
-    <!-- /.navbar-header -->
-    <ul class="nav navbar-top-links navbar-right">
-        <!-- /.dropdown -->
-        <li class="dropdown">
-            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                <i class="fa fa-user fa-fw"></i><i class="fa fa-caret-down"></i>
+<header class="main-header">
+    <!-- Logo -->
+    <a href="~/home/index" class="logo" style="background-color: #148c4c;">
+        <!-- mini logo for sidebar mini 50x50 pixels -->
+        <span class="logo-mini"><b>CHP</b></span>
+        <!-- logo for regular state and mobile devices -->
+        <span class="logo-lg"><b>CHP華紙MES</b></span>
+    </a>
+    <!-- Navigation -->
+    <nav class="navbar navbar-static-top bkg" role="navigation" style="margin-bottom: 0">
+        <div class="navbar-header">
+            <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
             </a>
-            <ul class="dropdown-menu dropdown-user">
-                <li>
-                    <a href="#"><i class="fa fa-user fa-fw"></i>個人檔案</a>
-                </li>
-                <li>
-                    <a href="#"><i class="fa fa-gear fa-fw"></i>設定</a>
-                </li>
-                <li class="divider"></li>
-                <li>
-                    <a href="login.html"><i class="fa fa-sign-out fa-fw"></i>登出</a>
-                </li>
-            </ul>
-            <!-- /.dropdown-user -->
-        </li>
-        <!-- /.dropdown -->
-    </ul>
-    <!-- /.navbar-top-links -->
-    
-    <div class="navbar-default sidebar" role="navigation" style="align-content: space-around">
-        
-        
-        
-        <div class="sidebar-nav navbar-collapse"  id="menuSidebar" >
-            
-            <a class="closebtn" onclick="closeNav()">&times;</a>
-            <ul class="nav" id="side-menu">
-                
-                @foreach (var item in Model)
-                {
-                    if (item.isParent == false && item.parentId == 0)
-                    {
-                        if (item.status == true)
-                        {
-                            <li><a href="@Url.Action(item.action, item.controller)"><i class="@item.imageClass"></i>@item.nameOption</a></li>
-                        }
-                        else 
-                        {
-                            <li><a href="#"><i class="@item.imageClass"></i>@item.nameOption</a></li>
-                        }
-                    }
-                    else
-                    {
-                        if (item.isParent == true)
-                        {
+        </div>
+        <div class="navbar-custom-menu">
+
+            @if (Request.IsAuthenticated)
+            {
+                    <ul class="nav navbar-nav">
+                        <li>
+                            <a href="#" data-toggle="control-sidebar"><i class="fa fa-user" aria-hidden="true"></i>@this.User.Identity.Name</a>
+                        </li>
+                        <li>
+                            <a href="#" data-toggle="control-sidebar"><i class="fa fa-sign-out" aria-hidden="true"></i>登出</a>
+                        </li>
+                    </ul>
+            }
+            else
+            {
+                <ul class="nav navbar-nav">
                     <li>
-                        <a href="#"><i class="@item.imageClass"></i>@item.nameOption<span class="fa arrow"></span></a>
-                        <ul class="nav nav-second-level">
-                            @foreach (var child in Model.Where(p => p.parentId == item.Id))
+                        <a href="@Url.Action("Login", "Account")" data-toggle="control-sidebar"><i class="fa fa-sign-in" aria-hidden="true"></i>登入</a>
+                    </li>
+                </ul>
+            }
+        </div>
+    </nav>
+
+</header>
+
+<aside class="main-sidebar">
+    <!-- sidebar: style can be found in sidebar.less -->
+    <section class="sidebar">
+        <!-- Sidebar user panel -->
+
+        <!-- sidebar menu: : style can be found in sidebar.less -->
+        <ul class="sidebar-menu">
+            @{
+                var toplist = Model.Where(x => x.status && (x.isParent == true || x.parentId == 0)).OrderBy(x => x.Id).ToList();
+                foreach (var item in toplist)
+                {
+                    var url = item.isParent ? "" : @Url.Action(item.action, item.controller);
+                <li class="treeview">
+                    <a href="@url">
+                        <i class="@item.imageClass" aria-hidden="true"></i><span>@item.nameOption</span>
+                        @if (item.isParent)
+                        {
+                            <span class="pull-right-container">
+                                <i class="fa fa-angle-left fa-fw pull-right"></i>
+                            </span>
+                        }
+                    </a>
+                    @if (item.isParent)
+                    {
+                        var subList = Model.Where(x => x.parentId == item.Id && x.status).OrderBy(x => x.Id).ToList();
+                        if (subList.Count() > 0)
+                        {
+                        <ul class="treeview-menu">
+                            @foreach (var subItem in subList)
                             {
-                                if (child.controller == null || child.status == false)
-                                {
-                                <li><a href="#">@child.nameOption</a></li>
-                                }
-                                else
-                                {
-                                <li><a href="@Url.Action(child.action, child.controller)">&emsp; &emsp; &emsp;@child.nameOption</a></li>
-                                }
+                                <li style="padding-left: 21px;"><a href="@Url.Action(subItem.action, subItem.controller)">@subItem.nameOption</a></li>
                             }
                         </ul>
-                    </li>
                         }
                     }
+                </li>
+
                 }
-            </ul>
-        </div>
-        
-        <!-- /.sidebar-collapse -->
-    </div>
-    <!-- /.navbar-static-side -->
-</nav>
+            }
+        </ul>
+    </section>
+    <!-- /.sidebar -->
+</aside>

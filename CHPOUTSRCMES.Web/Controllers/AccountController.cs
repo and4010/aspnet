@@ -14,27 +14,42 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using System.Net;
 using Microsoft.Owin.Security;
+using CHPOUTSRCMES.Web.DataModel;
+using System.Security.Claims;
+using CHPOUTSRCMES.Web.DataModel.UnitOfWorks;
 
 namespace CHPOUTSRCMES.Web.Controllers
 {
+    [Authorize]
     public class AccountController : Controller
     {
-        public UserManager<AppUser> UserManager { get; private set; }
+        IdentityUOW identityUOW { set; get; }
 
-        public RoleManager<IdentityRole> RoleManager { get; private set; }
-
-        private IAuthenticationManager AuthenticationManager
+        private IAuthenticationManager authenticationManager
         {
-            get
-            {
-                return HttpContext.GetOwinContext().Authentication;
-            }
+            get { return this.HttpContext.GetOwinContext().Authentication; }
         }
+
+        public AccountController()
+        {
+            identityUOW = new IdentityUOW(new MesContext());
+        }
+
 
         //
         // GET: /Account/
+        [Authorize(Roles="系統管理員, 華紙使用者")]
         public ActionResult Index()
         {
+            var id = this.User.Identity.GetUserId();
+            var name = this.User.Identity.GetUserName();
+          
+            var userIdentity = (ClaimsIdentity)User.Identity;
+            
+            var claims = userIdentity.Claims;
+            var roleClaimType = userIdentity.RoleClaimType;
+            var roles = claims.Where(c => c.Type == ClaimTypes.Role).ToList();
+            
             return View();
         }
 
@@ -43,8 +58,20 @@ namespace CHPOUTSRCMES.Web.Controllers
         [AllowAnonymous]
         public ActionResult Login(string returnUrl)
         {
+            var loginViewModel = CheckLoginCookie();
             ViewBag.ReturnUrl = returnUrl;
-            return View();
+            return View(loginViewModel);
+        }
+
+        private LoginViewModel CheckLoginCookie()
+        {
+            var loginViewModel = new LoginViewModel();
+            if (Request.Cookies.Get("username") != null)
+            {
+                loginViewModel.UserName = Request.Cookies["username"].Value;
+                return loginViewModel;
+            }
+            return loginViewModel;
         }
 
         //
@@ -56,15 +83,20 @@ namespace CHPOUTSRCMES.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = await UserManager.FindAsync(model.UserName, model.Password);
-                if (user != null)
+                var result = await identityUOW.SignInAsync(authenticationManager, model);
+
+                if (!result.Success)
                 {
-                    await SignInAsync(user, model.RememberMe);
-                    return RedirectToLocal(returnUrl);
+                    ModelState.AddModelError("", "帳號或密碼有誤!");
                 }
                 else
                 {
-                    ModelState.AddModelError("", "帳號或密碼有誤!");
+                    if (model.RememberMe)
+                    {
+                        Response.Cookies.Add(new HttpCookie("username") { Value = result.Data.UserName });
+                        Response.Cookies.Add(new HttpCookie("displayname") { Value = result.Data.DisplayName });
+                    }
+                    return RedirectToLocal(returnUrl);
                 }
             }
 
@@ -78,13 +110,12 @@ namespace CHPOUTSRCMES.Web.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult LogOff()
         {
-            AuthenticationManager.SignOut();
+            identityUOW.SignOut(authenticationManager);
             Session.Abandon();
             Session.Clear();
             Session.RemoveAll();
             return RedirectToAction("Index", "Home");
         }
-
 
         private ActionResult RedirectToLocal(string returnUrl)
         {
@@ -97,14 +128,6 @@ namespace CHPOUTSRCMES.Web.Controllers
                 return RedirectToAction("Index", "Home");
             }
         }
-
-        private async Task SignInAsync(AppUser user, bool isPersistent)
-        {
-            AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
-            var identity = await UserManager.CreateIdentityAsync(user, DefaultAuthenticationTypes.ApplicationCookie);
-            AuthenticationManager.SignIn(new AuthenticationProperties() { IsPersistent = isPersistent }, identity);
-        }
-
 
         [HttpPost, ActionName("AccountJson")]
         public JsonResult AccountJson(DataTableAjaxPostViewModel data)
@@ -229,7 +252,6 @@ namespace CHPOUTSRCMES.Web.Controllers
 
             return new JsonResult { Data = new { status = result.Success, message = result.Msg } };
         }
-
 
 
         [HttpPost]

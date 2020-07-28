@@ -15,6 +15,7 @@ using System.Web.Mvc;
 
 namespace CHPOUTSRCMES.Web.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
         StockTransferBarcodeData stockTransferBarcodeData = new StockTransferBarcodeData();

@@ -123,6 +123,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             this.bcdMiscRepositiory = bcdMiscRepositiory;
         }
 
+        #region 測試資料產生
         /// <summary>
         /// 
         /// </summary>
@@ -1248,43 +1249,9 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             bcdMiscRepositiory.Create(bcdMisc2);
             bcdMiscRepositiory.SaveChanges();
         }
-        
-        /// <summary>
-        /// 產生條碼清單 (請用交易TRANSACTION)
-        /// </summary>
-        /// <param name="organiztionId">組織ID</param>
-        /// <param name="subinventoryCode">倉庫</param>
-        /// <param name="prefix">前置碼</param>
-        /// <param name="requestQty">數量</param>
-        /// <param name="userId">使用者ID</param>
-        /// <returns>ResultDataModel 條碼清單</returns>
-        public ResultDataModel<List<string>> GenerateBarcodes(long organiztionId, string subinventoryCode, string prefix, int requestQty, string userId)
-        {
-            ResultDataModel<List<string>> result = null;
-                try
-                {
-                    var pOrg = SqlParamHelper.GetBigInt("@organizationId", organiztionId);
-                    var pSub = SqlParamHelper.R.SubinventoryCode("@subinventory", subinventoryCode);
-                    var pPrefix = SqlParamHelper.GetNVarChar("@prefix", prefix);
-                    var pReqQty = SqlParamHelper.GetInt("@requestQty", requestQty);
-                    var pCode = SqlParamHelper.GetInt("@code", 0, System.Data.ParameterDirection.Output);
-                    var pMsg = SqlParamHelper.GetNVarChar("@message", "", 500, System.Data.ParameterDirection.Output);
-                    var pUser = SqlParamHelper.GetNVarChar("@user", userId, 128);
 
-                    var list = this.Context.Database.SqlQuery<string>("dbo.SP_GenerateBarcodes @organizationId, @subinventory, @prefix, @requestQty, @code output, @message output, @user",
-                        pOrg, pSub, pPrefix, pReqQty, pCode, pMsg, pUser).ToList();
 
-                    result = new ResultDataModel<List<string>>(Convert.ToInt32(pCode.Value), Convert.ToString(pMsg.Value), list);
-                }
-                catch (Exception ex)
-                {
-                    result = new ResultDataModel<List<string>>(-1, ex.Message, null);
-                    logger.Error(ex, "產生條碼出現例外!!");
-                }
-                return result;
-        }
-
-        private ISheet FindSheet(IWorkbook book ,string name)
+        private ISheet FindSheet(IWorkbook book, string name)
         {
             ISheet sheet = null;
 
@@ -1344,6 +1311,43 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             {
                 return 0;
             }
+        }
+
+        #endregion 測試資料產生
+
+        /// <summary>
+        /// 產生條碼清單 (請用交易TRANSACTION)
+        /// </summary>
+        /// <param name="organiztionId">組織ID</param>
+        /// <param name="subinventoryCode">倉庫</param>
+        /// <param name="prefix">前置碼</param>
+        /// <param name="requestQty">數量</param>
+        /// <param name="userId">使用者ID</param>
+        /// <returns>ResultDataModel 條碼清單</returns>
+        public ResultDataModel<List<string>> GenerateBarcodes(long organiztionId, string subinventoryCode, string prefix, int requestQty, string userId)
+        {
+            ResultDataModel<List<string>> result = null;
+                try
+                {
+                    var pOrg = SqlParamHelper.GetBigInt("@organizationId", organiztionId);
+                    var pSub = SqlParamHelper.R.SubinventoryCode("@subinventory", subinventoryCode);
+                    var pPrefix = SqlParamHelper.GetNVarChar("@prefix", prefix);
+                    var pReqQty = SqlParamHelper.GetInt("@requestQty", requestQty);
+                    var pCode = SqlParamHelper.GetInt("@code", 0, System.Data.ParameterDirection.Output);
+                    var pMsg = SqlParamHelper.GetNVarChar("@message", "", 500, System.Data.ParameterDirection.Output);
+                    var pUser = SqlParamHelper.GetNVarChar("@user", userId, 128);
+
+                    var list = this.Context.Database.SqlQuery<string>("dbo.SP_GenerateBarcodes @organizationId, @subinventory, @prefix, @requestQty, @code output, @message output, @user",
+                        pOrg, pSub, pPrefix, pReqQty, pCode, pMsg, pUser).ToList();
+
+                    result = new ResultDataModel<List<string>>(Convert.ToInt32(pCode.Value), Convert.ToString(pMsg.Value), list);
+                }
+                catch (Exception ex)
+                {
+                    result = new ResultDataModel<List<string>>(-1, ex.Message, null);
+                    logger.Error(ex, "產生條碼出現例外!!");
+                }
+                return result;
         }
 
         /// <summary>

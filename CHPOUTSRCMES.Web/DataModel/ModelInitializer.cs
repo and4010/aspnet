@@ -21,6 +21,8 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using CHPOUTSRCMES.Web.DataModel.UnitOfWorks;
+using Microsoft.AspNet.Identity.EntityFramework;
+using Microsoft.AspNet.Identity;
 
 namespace CHPOUTSRCMES.Web.DataModel
 {
@@ -33,7 +35,7 @@ namespace CHPOUTSRCMES.Web.DataModel
         {
 
             executeSqlScript(context);
-
+            readUsersXls(context);
             readFromXls(context);
             new PurchaseUOW(context).generateTestData();
             new DeliveryUOW(context).generateTestData();
@@ -94,5 +96,38 @@ namespace CHPOUTSRCMES.Web.DataModel
             }
         }
 
+
+        internal static void readUsersXls(MesContext context)
+        {
+            var baseDir = AppDomain.CurrentDomain
+                               .BaseDirectory
+                               .Replace("\\bin", string.Empty) + "Data\\Excel";
+
+            string initialFile = baseDir + "\\MES_USERS.xlsx";
+
+            if (!string.IsNullOrEmpty(initialFile) && File.Exists(initialFile))
+            {
+                using (FileStream fs = new FileStream(initialFile, FileMode.Open))
+                {
+                    IWorkbook workbook = null;
+                    if (fs.Length > 0 && initialFile.Substring(initialFile.LastIndexOf(".")).Equals(".xls"))
+                    {
+                        //把xls文件中的数据写入wk中
+                        workbook = new HSSFWorkbook(fs);
+                    }
+                    else
+                    {
+                        //把xlsx文件中的数据写入wk中
+                        workbook = new XSSFWorkbook(fs);
+                    }
+                    using (IdentityUOW identity = new IdentityUOW(context))
+                    {
+                        identity.generateRoles();
+                        identity.ImportUser(workbook);
+                    }
+                    
+                }
+            }
+        }
     }
 }

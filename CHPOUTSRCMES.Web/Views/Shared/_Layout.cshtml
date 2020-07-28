@@ -3,63 +3,60 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <meta name="description" content="">
     <meta name="author" content="">
-    <title>@ViewBag.Title - MES</title>
+    <title>CHP | 華紙資訊管理系統</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
 
-    
+    <link href="../Img/favicon.ico" rel="shortcut icon">
     <link href="@Url.Content("~/Content/mes.main.css")" rel="stylesheet" type="text/css" />
 
     <link href="@Url.Content("~/bower_components/morrisjs/morris.css")" rel="stylesheet" type="text/css" />
-    <link href="@Url.Content("~/bower_components/font-awesome/css/font-awesome.min.css")" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
     <link href="@Url.Content("~/bower_components/dataTables-select/css/select.bootstrap.min.css")" rel="stylesheet" type="text/css" />
     <link href="@Url.Content("~/bower_components/datatables-button/css/buttons.bootstrap.min.css")" rel="stylesheet" type="text/css" />
     <link href="@Url.Content("~/bower_components/datatables-responsive/css/responsive.bootstrap.min.css")" rel="stylesheet" type="text/css" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css" rel="stylesheet" type="text/css" />
 
-
-        <!-- DataTables CSS -->
+    <!-- DataTables CSS -->
     @Scripts.Render("~/Content/datatable")
 
     <!-- jQuery UI CSS -->
     @Styles.Render("~/Content/jquery-ui-css")
 
+    @Styles.Render("~/Content/theme")
+
     <!-- jQuery -->
     @Scripts.Render("~/bundles/jquery")
-
-    <!-- jQuery DataTable-->
-    @Scripts.Render("~/bundles/jquerydatatable")
-
-
-    @Scripts.Render("~/bundles/bootstrap")
 
     <!-- jQuery UI -->
     @Scripts.Render("~/bundles/jquery-ui")
 
+    <!-- jQuery DataTable-->
+    @Scripts.Render("~/bundles/jquerydatatable")
+
+    @Scripts.Render("~/bundles/bootstrap")
+
+    @Scripts.Render("~/bundles/theme")
+
 
 </head>
-<body>
+<body class="hold-transition skin-green-light sidebar-mini">
     <div id="wrapper">
         <!-- Navigation -->
         @Html.Action("Index", "Navbar")
 
-        <div id="page-wrapper">
-            <div class="container-fluid">
-                <h3 class="page-header">
-                    @{
-                        string EnableReturnButton = ViewBag.EnableReturnButton;
+        <div id="content-wrapper">
+            <section class="content-header">
+                <h1 class="header_gray"><a href="#" data-toggle="control-sidebar" onclick="history.back()"><i class="fa fa-arrow-left" aria-hidden="true"></i></a>@ViewBag.Title</h1>
+            </section>
 
-                        if (EnableReturnButton == "true")
-                        {    
-                        <input type="button" onclick="history.back()" value="返回" class="btn btn-primary" />
-                        }        
-                    }
-
-                    @ViewBag.Title</h3>
+            <!-- Main content -->
+            <section class="content">
                 @RenderBody()
-            </div>
+            </section>
             <!-- Copyright -->
             <div class="footer-copyright text-center py-3">
                 © 2020 Copyright: - 中華紙漿股份有限公司  -程式版本: @ViewContext.Controller.GetType().Assembly.GetName().Version
@@ -76,7 +73,8 @@
     <script src="@Url.Content("~/bower_components/raphael/raphael-min.js")"></script>
 
     <!-- Custom Theme JavaScript -->
-    <script src="@Url.Content("~/Scripts/mes.web.js")"></script>
+    @*<script src="@Url.Content("~/Scripts/mes.web.js")"></script>*@
+    
 
 
     @RenderSection("scripts", required: false)

@@ -14,13 +14,19 @@ namespace CHPOUTSRCMES.Web
             bundles.Add(new ScriptBundle("~/bundles/jquery-ui").Include(
                "~/bower_components/jquery-ui/jquery-ui.min.js",
                "~/bower_components/jquery-ui/jquery-ui-combobox.js",
-               "~/bower_components/jquery-ui/datepicker-zh-TW.js"));
+               "~/bower_components/jquery-ui/datepicker-zh-TW.js"
+               ));
+
+            bundles.Add(new ScriptBundle("~/bundles/theme").Include(
+                "~/bower_components/slimScroll/jquery.slimscroll.min.js",
+               "~/bower_components/fastclick/fastclick.js",
+               "~/bower_components/adminlte/js/app.js"
+                ));
 
             bundles.Add(new ScriptBundle("~/bundles/jquerydatatable").Include(
                         "~/bower_components/datatables/media/js/jquery.dataTables.min.js",
                         "~/bower_components/datatables/media/js/dataTables.bootstrap.min.js",
                         "~/bower_components/dataTables-select/js/dataTables.select.min.js",
-                        
                         "~/bower_components/datatables-button/js/dataTables.buttons.min.js",
                         "~/bower_components/datatables-button/js/buttons.bootstrap.min.js",
                         "~/bower_components/datatables-responsive/js/dataTables.responsive.min.js",
@@ -48,14 +54,14 @@ namespace CHPOUTSRCMES.Web
 
             bundles.Add(new ScriptBundle("~/bundles/bootstrap").Include(
                       "~/bower_components/bootstrap/dist/js/bootstrap.min.js",
-                      "~/bower_components/metisMenu/dist/metisMenu.min.js",
+                      //"~/bower_components/metisMenu/dist/metisMenu.min.js",
                       "~/Scripts/respond.js",
                       "~/Scripts/moment.js"));
 
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/bower_components/bootstrap/dist/css/bootstrap.min.css",
-                      "~/bower_components/metisMenu/dist/metisMenu.min.css",
+                      //"~/bower_components/metisMenu/dist/metisMenu.min.css",
                       "~/Content/timeline.css",
                       "~/Content/mes.web.css",
                       "~/bower_components/sweetalert2/sweetalert2.min.css"
@@ -68,6 +74,11 @@ namespace CHPOUTSRCMES.Web
             bundles.Add(new StyleBundle("~/Content/jquery-ui-css").Include(
                 "~/bower_components/jquery-ui/jquery-ui.min.css",
                 "~/bower_components/jquery-ui/jquery-ui-combobox.css"));
+
+            bundles.Add(new StyleBundle("~/Content/theme").Include(
+                "~/bower_components/adminlte/css/AdminLTE.css",
+                "~/bower_components/adminlte/css/skins/_all-skins.min.css"
+                ));
 
         }
     }
