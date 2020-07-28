@@ -11,6 +11,8 @@ using CHPOUTSRCMES.Web.DataModel.UnitOfWorks;
 using System.IO;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Web.Services.Protocols;
+using Microsoft.Graph;
 
 namespace CHPOUTSRCMES.Web.ViewModels.Purchase
 {
@@ -40,10 +42,6 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
         public DetailModel.RollDetailModel RollDetailModel { set; get; }
         public DetailModel.FlatDetailModel FlatDetailModel { set; get; }
 
-
-        public static List<DetailModel.RollDetailModel> StockInRoll = new List<DetailModel.RollDetailModel>();
-
-
         public List<FullCalendarEventModel> GetFullCalendarModel()
         {
             using (var context = new MesContext())
@@ -70,12 +68,37 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
         }
 
 
-
-        public static void GetStockInRoll()
+        /// <summary>
+        /// 匯入
+        /// </summary>
+        /// <param name="CONTAINER_NO"></param>
+        /// <param name="PaperRollModel"></param>
+        /// <returns></returns>
+        public ResultModel ImportPaperRollPickT(string CONTAINER_NO, List<DetailModel.RollDetailModel> PaperRollModel)
         {
-
+            using(var context = new MesContext())
+            {
+              return new PurchaseUOW(context).ImportPaperRollDetail(CONTAINER_NO, PaperRollModel);
+            }
         }
 
+        /// <summary>
+        /// 取得紙捲明細資料
+        /// </summary>
+        /// <param name="CONTAINER_NO"></param>
+        /// <returns></returns>
+        public List<DetailModel.RollDetailModel> GetPaperRollPickT(string CONTAINER_NO)
+        {
+            using (var context = new MesContext())
+            {
+                return new PurchaseUOW(context).GetPaperRollDetailList(CONTAINER_NO);
+            }
+        }
+        /// <summary>
+        /// 取得平張明細資料
+        /// </summary>
+        /// <param name="CONTAINER_NO"></param>
+        /// <returns></returns>
         public List<DetailModel.FlatDetailModel> GetFlatPickT(string CONTAINER_NO)
         {
 
@@ -88,49 +111,58 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
 
         public List<DetailModel.RollDetailModel> SaveRollBarcode(String Barcode, ref Boolean Boolean, ref Boolean BarcodeStatus)
         {
-            List<DetailModel.RollDetailModel> model = StockInRoll;
-            try
-            {
-                var sr = model.First(r => r.Barcode == Barcode);
-                if (sr.Status == "已入庫")
-                {
-                    BarcodeStatus = false;
-                }
-                else
-                {
-                    sr.Status = "已入庫";
-                }
+            //List<DetailModel.RollDetailModel> model = StockInRoll;
+            //try
+            //{
+            //    var sr = model.First(r => r.Barcode == Barcode);
+            //    if (sr.Status == "已入庫")
+            //    {
+            //        BarcodeStatus = false;
+            //    }
+            //    else
+            //    {
+            //        sr.Status = "已入庫";
+            //    }
 
-            }
-            catch (Exception e)
-            {
-                Boolean = false;
-            }
+            //}
+            //catch (Exception e)
+            //{
+            //    Boolean = false;
+            //}
 
 
-            return model;
+            return null;
         }
 
-        public DetailModel.RollDetailModel GetRollEdit(string Id)
+        public DetailModel.RollDetailModel GetPaperRollEdit(string Id)
         {
-            var model = StockInRoll.First(r => r.Id.ToString() == Id);
-            DetailModel.RollDetailModel rm = new DetailModel.RollDetailModel();
-            rm = model;
-            return rm;
-        }
-
-        public Boolean GetRollEditRemak(string remak, int id, String status, string Reason)
-        {
-
-            var Id = StockInRoll.Single(r => r.Id == id);
-
-            if (Id != null)
+            using (var context = new MesContext())
             {
-                Id.Remark = remak;
-                Id.Reason = Reason;
+                return new PurchaseUOW(context).GetPaperRollEdit(Id);
             }
-
-            return true;
+        }
+        /// <summary>
+        /// 編輯紙捲備註照片
+        /// </summary>
+        /// <param name="File"></param>
+        /// <param name="id"></param>
+        /// <param name="Reason"></param>
+        /// <param name="Locator"></param>
+        /// <param name="Remark"></param>
+        public void PaperRollEditNote(HttpFileCollectionBase File, long id, string Reason, string Locator, string Remark)
+        {
+            using (var context = new MesContext())
+            {
+                if (File != null || File.Count != 0)
+                {
+                    foreach (string i in File)
+                    {
+                        HttpPostedFileBase hpf = File[i] as HttpPostedFileBase;
+                        new PurchaseUOW(context).SavePhoto(hpf,id);
+                    }
+                }
+                new PurchaseUOW(context).PaperRollEdit(id, Reason, Locator, Remark);
+            }
         }
 
         public Boolean GetFlatEditRemak(int id, string Reason, string remak)
@@ -147,6 +179,20 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
 
             return true;
         }
+
+        /// <summary>
+        /// 刪除excel匯入資料
+        /// </summary>
+        /// <param name="CONTAINER_NO"></param>
+        /// <returns></returns>
+        public ResultModel ExcelDelete(string CONTAINER_NO)
+        {
+            using (var context = new MesContext())
+            {
+               return new PurchaseUOW(context).DeleteExcel(CONTAINER_NO);
+            }
+        }
+
 
         /// <summary>
         /// 取得編輯
@@ -227,22 +273,34 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
             return paperRollDetail;
         }
 
-        /// <summary>
-        /// 儲存照片
-        /// </summary>
-        /// <param name="file"></param>
-        public void SavePhoto(HttpPostedFileBase file)
-        {
-            if (file != null)
-            {
-                using (var context = new MesContext())
-                {
-                    new PurchaseUOW(context).SavePhoto(file);
-                }
 
+
+        public List<byte[]> GetPhoto(long id)
+        {
+            using (var context = new MesContext())
+            {
+               return new PurchaseUOW(context).GetPhoto(id);
             }
 
         }
+
+
+        ///// <summary>
+        ///// 儲存照片
+        ///// </summary>
+        ///// <param name="file"></param>
+        //public void SavePhoto(HttpPostedFileBase file)
+        //{
+        //    if (file != null)
+        //    {
+        //        using (var context = new MesContext())
+        //        {
+        //            new PurchaseUOW(context).SavePhoto(file);
+        //        }
+
+        //    }
+
+        //}
 
         /// <summary>
         /// 入庫行事曆取得月份
@@ -457,9 +515,9 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
                         || (!string.IsNullOrEmpty(p.BaseWeight) && p.BaseWeight.ToLower().Contains(search.ToLower()))
                         || (!string.IsNullOrEmpty(p.Specification) && p.Specification.ToLower().Contains(search.ToLower()))
                         || (!string.IsNullOrEmpty(p.TheoreticalWeight) && p.TheoreticalWeight.ToLower().Contains(search.ToLower()))
-                        || (!string.IsNullOrEmpty(p.TransactionQuantity) && p.TransactionQuantity.ToLower().Contains(search.ToLower()))
+                        || (!string.IsNullOrEmpty(p.TransactionQuantity.ToString()) && p.TransactionQuantity.ToString().ToLower().Contains(search.ToLower()))
                         || (!string.IsNullOrEmpty(p.TransactionUom) && p.TransactionUom.ToLower().Contains(search.ToLower()))
-                        || (!string.IsNullOrEmpty(p.PrimanyQuantity) && p.PrimanyQuantity.ToLower().Contains(search.ToLower()))
+                        || (!string.IsNullOrEmpty(p.PrimanyQuantity.ToString()) && p.PrimanyQuantity.ToString().ToLower().Contains(search.ToLower()))
                         || (!string.IsNullOrEmpty(p.PrimaryUom) && p.PrimaryUom.ToLower().Contains(search.ToLower()))
                         || (!string.IsNullOrEmpty(p.LotNumber) && p.LotNumber.ToLower().Contains(search.ToLower()))
                         || (!string.IsNullOrEmpty(p.Status) && p.Status.ToLower().Contains(search.ToLower()))
@@ -471,7 +529,7 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
 
         }
 
-
+        
         internal class FlatDetailModelDTOrder
         {
             public static IOrderedEnumerable<DetailModel.FlatDetailModel> Order(List<Order> orders, IEnumerable<DetailModel.FlatDetailModel> models)

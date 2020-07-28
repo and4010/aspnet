@@ -16,6 +16,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Purchase
         /// 
         [Key]
         [Required]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("CTR_FILE_ID")]
         public long CtrFileId { set; get; }
 
