@@ -70,10 +70,23 @@ $(document).ready(function () {
                     //'TRANSACTION_AUTHORIZE_DATEs': dates
                     'TripDetailDTList': TripDetailDTList
                 }
-
-
                 return JSON.stringify(data);
             },
+            success: function (data) {
+                if (data.status) {
+                    TripDataTablesBody.ajax.reload(null, false);
+                }
+                else {
+                    swal.fire(data.result);
+                }
+            },
+            error: function () {
+                swal.fire('更新出貨核准日失敗');
+            },
+            complete: function (data) {
+
+
+            }
         },
         //formOptions: {
         //    main: {
@@ -150,7 +163,7 @@ $(document).ready(function () {
             "<'row'<'col-sm-12'tr>>" +
             "<'row'<'col-sm-5'i><'col-sm-7'p>>",
         ajax: {
-            "url": "/Delivery/GetTripDetail",
+            "url": "/Delivery/DeliverySearch",
             "type": "POST",
             "datatype": "json",
             "data": function (d) {
@@ -165,7 +178,7 @@ $(document).ready(function () {
         },
         columns: [
          { data: null, defaultContent: '', className: 'select-checkbox', orderable: false, width: "40px" },
-         { data: "Id", name: "項次", "autoWidth": true },
+         { data: "SUB_ID", name: "項次", "autoWidth": true },
          { data: "FREIGHT_TERMS_NAME", name: "內銷地區別", "autoWidth": true },
          { data: "TRIP_NAME", name: "航程號", "autoWidth": true },
          { data: "DELIVERY_NAME", name: "交運單", "autoWidth": true },

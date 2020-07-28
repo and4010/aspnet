@@ -9,7 +9,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
 {
     public class DeliveryDetailViewHeader
     {
-        public long TripDetailDT_ID { get; set; }
+        public long DlvHeaderId { get; set; }
 
         [Display(Name = "交運單號")]
         public string DELIVERY_NAME { get; set; }

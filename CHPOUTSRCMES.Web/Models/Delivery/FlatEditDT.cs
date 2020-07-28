@@ -363,13 +363,13 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
         }
 
         //檢查交運單是否揀完
-        public static bool checkDeliveryPickComplete(long TripDetailDT_ID)
+        public static bool checkDeliveryPickComplete(long DlvHeaderId)
         {
             var query = from data in FlatEditData.model
                         where data.PICKED_QUANTITY == data.REQUESTED_QUANTITY &&
                         data.PICKED_QUANTITY2 == data.REQUESTED_QUANTITY2 &&
                         data.SRC_PICKED_QUANTITY == data.SRC_REQUESTED_QUANTITY
-                        && TripDetailDT_ID == data.ID
+                        && DlvHeaderId == data.ID
                         select data;
 
             List<FlatEditDT> list = query.ToList<FlatEditDT>();

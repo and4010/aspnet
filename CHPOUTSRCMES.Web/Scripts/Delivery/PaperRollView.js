@@ -24,7 +24,7 @@
             "type": "POST",
             "datatype": "json",
             "data": {
-                TripDetailDT_ID: $("#TripDetailDT_ID").text()
+                DlvHeaderId: $("#DlvHeaderId").text()
             }
         },
         columns: [
@@ -70,7 +70,7 @@
             "type": "Post",
             "datatype": "json",
             "data": {
-                TripDetailDT_ID: $("#TripDetailDT_ID").text()
+                DlvHeaderId: $("#DlvHeaderId").text()
             },
         },
         columns: [

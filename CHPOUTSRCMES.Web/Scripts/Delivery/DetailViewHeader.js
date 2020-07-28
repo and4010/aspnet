@@ -27,7 +27,7 @@ function UpdateDeliveryDetailViewHeader() {
         url: "/Delivery/UpdateDeliveryDetailViewHeader",
         type: "post",
         data: {
-            TripDetailDT_ID: $("#TripDetailDT_ID").text()
+            DlvHeaderId: $("#DlvHeaderId").text()
         },
         success: function (model) {
             $("#DeliveryPartial").html(model);
@@ -44,7 +44,7 @@ function DeliveryConfirm() {
    
    
     var list = [];
-    list.push($("#TripDetailDT_ID").text());
+    list.push($("#DlvHeaderId").text());
     
 
     $.ajax({
@@ -76,7 +76,7 @@ function DeliveryConfirm() {
 
 function CancelConfirm() {
     var list = [];
-    list.push($("#TripDetailDT_ID").text());
+    list.push($("#DlvHeaderId").text());
 
     $.ajax({
         url: "/Delivery/CancelConfirm",
@@ -107,7 +107,7 @@ function CancelConfirm() {
 
 function PrintPickList() {
     var list = [];
-    list.push($("#TripDetailDT_ID").text());
+    list.push($("#DlvHeaderId").text());
 
     $.ajax({
         url: "/Delivery/PrintPickList",
@@ -138,7 +138,7 @@ function PrintPickList() {
 
 function DeliveryAuthorize() {
     var list = [];
-    list.push($("#TripDetailDT_ID").text());
+    list.push($("#DlvHeaderId").text());
 
     $.ajax({
         url: "/Delivery/DeliveryAuthorize",
@@ -169,7 +169,7 @@ function DeliveryAuthorize() {
 
 function CancelAuthorize() {
     var list = [];
-    list.push($("#TripDetailDT_ID").text());
+    list.push($("#DlvHeaderId").text());
 
    
     $.ajax({

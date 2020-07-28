@@ -83,7 +83,7 @@ namespace CHPOUTSRCMES.Web.Controllers
                     }
                     else
                     {
-                        return PartialView("_TransferReasonPartial", stockTransferData.GetTransferReasonViewModel());
+                        return PartialView("_TransferReasonPartial", stockTransferData.GetTransferReasonViewModel(uow));
                     }
                 }
             }
@@ -92,8 +92,14 @@ namespace CHPOUTSRCMES.Web.Controllers
         [HttpPost, ActionName("GetLocatorList")]
         public JsonResult GetLocatorList(string SUBINVENTORY_CODE)
         {
-            List<SelectListItem> items = stockTransferData.GetLocatorList(SUBINVENTORY_CODE, false).ToList();
-            return Json(items, JsonRequestBehavior.AllowGet);
+            using (var context = new MesContext())
+            {
+                using (MasterUOW uow = new MasterUOW(context))
+                {
+                    List<SelectListItem> items = stockTransferData.GetLocatorList(uow, SUBINVENTORY_CODE, MasterUOW.DropDownListType.Choice).ToList();
+                    return Json(items, JsonRequestBehavior.AllowGet);
+                }
+            }
         }
 
         [HttpPost, ActionName("GetShipmentNumberList")]

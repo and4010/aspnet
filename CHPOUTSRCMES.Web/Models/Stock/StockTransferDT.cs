@@ -159,11 +159,11 @@ namespace CHPOUTSRCMES.Web.Models.Stock
 
             viewModel.OutSubinventoryItems = orgData.GetSubinventoryList(uow, "265", MasterUOW.DropDownListType.Choice);
 
-            viewModel.OutLocatorItems = orgData.GetLocatorList("265", viewModel.SelectedOutSubinventory, false);
+            viewModel.OutLocatorItems = orgData.GetLocatorList(uow, "265", viewModel.SelectedOutSubinventory, MasterUOW.DropDownListType.Choice);
 
             viewModel.InSubinventoryItems = orgData.GetSubinventoryList(uow, "*", MasterUOW.DropDownListType.Choice);
 
-            viewModel.InLocatorItems = orgData.GetLocatorList("*", viewModel.SelectedInSubinventory, false);
+            viewModel.InLocatorItems = orgData.GetLocatorList(uow, "*", viewModel.SelectedInSubinventory, MasterUOW.DropDownListType.Choice);
 
             viewModel.ShipmentNumberItems = GetShipmentNumberList(viewModel.SelectedOutSubinventory, viewModel.SelectedOutLocator, viewModel.SelectedInSubinventory, viewModel.SelectedInLocator);
 
@@ -202,11 +202,11 @@ namespace CHPOUTSRCMES.Web.Models.Stock
 
             viewModel.OutSubinventoryItems = orgData.GetSubinventoryList(uow, "*", MasterUOW.DropDownListType.Choice);
 
-            viewModel.OutLocatorItems = orgData.GetLocatorList("*", viewModel.SelectedOutSubinventory, false);
+            viewModel.OutLocatorItems = orgData.GetLocatorList(uow, "*", viewModel.SelectedOutSubinventory, MasterUOW.DropDownListType.Choice);
 
             viewModel.InSubinventoryItems = orgData.GetSubinventoryList(uow, "265", MasterUOW.DropDownListType.Choice);
 
-            viewModel.InLocatorItems = orgData.GetLocatorList("265", viewModel.SelectedInSubinventory, false);
+            viewModel.InLocatorItems = orgData.GetLocatorList(uow, "265", viewModel.SelectedInSubinventory, MasterUOW.DropDownListType.Choice);
 
             viewModel.ShipmentNumberItems = GetShipmentNumberList(viewModel.SelectedOutSubinventory, viewModel.SelectedOutLocator, viewModel.SelectedInSubinventory, viewModel.SelectedInLocator);
 
@@ -215,21 +215,19 @@ namespace CHPOUTSRCMES.Web.Models.Stock
             return viewModel;
         }
 
-        public TransferReasonViewModel GetTransferReasonViewModel()
+        public TransferReasonViewModel GetTransferReasonViewModel(MasterUOW uow)
         {
-
             TransferReasonViewModel viewModel = new TransferReasonViewModel();
             viewModel.ReasonItems = orgData.GetReasonList();
-            viewModel.LocatorItems = orgData.GetLocatorList("265", viewModel.Locator, false);
-
+            viewModel.LocatorItems = orgData.GetLocatorList(uow, "265", viewModel.Locator, MasterUOW.DropDownListType.Choice);
             return viewModel;
         }
 
 
 
-        public IEnumerable<SelectListItem> GetLocatorList(string SUBINVENTORY_CODE, bool needAll)
+        public IEnumerable<SelectListItem> GetLocatorList(MasterUOW uow, string SUBINVENTORY_CODE, MasterUOW.DropDownListType type)
         {
-            return orgData.GetLocatorList("265", SUBINVENTORY_CODE, needAll);
+            return orgData.GetLocatorList(uow, "265", SUBINVENTORY_CODE, type);
         }
 
         public ResultModel CheckTransactionType(string outSubinventory, string inSubinventory)

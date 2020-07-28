@@ -9,6 +9,7 @@ using System.Web.Mvc;
 using System.Web.UI.WebControls;
 using CHPOUTSRCMES.Web.Models.Information;
 using CHPOUTSRCMES.Web.DataModel.UnitOfWorks;
+using CHPOUTSRCMES.Web.DataModel.Entiy.Delivery;
 
 namespace CHPOUTSRCMES.Web.Models.Delivery
 {
@@ -16,7 +17,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
     {
         public long Id { get; set; }
 
-        //public long ORG_ID { get; set; }
+        public long SUB_ID { get; set; }
 
         [Display(Name = "內銷區域別")]
         public string FREIGHT_TERMS_NAME { get; set; }
@@ -337,7 +338,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
         public List<TripHeaderDT> DeliverySearch(DeliveryUOW uow, string TripActualShipBeginDate, string TripActualShipEndDate, string DeliveryName, string SelectedSubinventory,
             string SelectedTrip, string TransactionDate, string SelectedDeliveryStatus)
         {
-           return uow.DeliverySearch(TripActualShipBeginDate, TripActualShipEndDate, DeliveryName, SelectedSubinventory, SelectedTrip, TransactionDate, SelectedDeliveryStatus);
+            return uow.DeliverySearch(TripActualShipBeginDate, TripActualShipEndDate, DeliveryName, SelectedSubinventory, SelectedTrip, TransactionDate, SelectedDeliveryStatus);
         }
 
         public static List<TripHeaderDT> Search(string TripActualShipBeginDate, string TripActualShipEndDate, string DeliveryName, string SelectedSubinventory,
@@ -399,7 +400,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
             return query;
         }
 
-        public DeliverySearchViewModel GetViewModel(DeliveryUOW uow)
+        public DeliverySearchViewModel GetDeliverySearchViewModel(DeliveryUOW uow)
         {
             DeliverySearchViewModel viewModel = new DeliverySearchViewModel();
             //viewModel.SelectedDeliveryStatus = "";
@@ -441,354 +442,569 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
             return viewModel;
         }
 
-
-        public static ResultModel DeliveryConfirm(List<long> ids)
+        public FlatEditViewModel GetFlatEditViewModel(DeliveryUOW uow, long dlvHeaderId)
         {
-
-
-            var query = from tripDetail in source
-                        where ids.Contains(tripDetail.Id)
-                        group tripDetail by new
-                        {
-                            tripDetail.TRIP_ID
-                        } into g
-                        select new
-                        {
-                            g.Key.TRIP_ID
-                        };
-
-
-
-            ResultModel result = new ResultModel(true, "出貨確認成功");
-
-            foreach (TripHeaderDT sourceData in source)
+            var headerDataList = uow.GetDeliveryHeaderDataListFromHeaderId(dlvHeaderId);
+            FlatEditViewModel viewModel = new FlatEditViewModel();
+            viewModel.DeliveryDetailViewHeader = new DeliveryDetailViewHeader();
+            if (headerDataList.Count > 0)
             {
-                if (result.Success == false)
+                viewModel.DeliveryDetailViewHeader.CUSTOMER_LOCATION_CODE = headerDataList[0].CustomerLocationCode;
+                viewModel.DeliveryDetailViewHeader.CUSTOMER_NAME = headerDataList[0].CustomerName;
+                viewModel.DeliveryDetailViewHeader.DELIVERY_NAME = headerDataList[0].DeliveryName;
+                viewModel.DeliveryDetailViewHeader.DELIVERY_STATUS = headerDataList[0].DeliveryStatusName;
+                viewModel.DeliveryDetailViewHeader.DlvHeaderId = headerDataList[0].DlvHeaderId;
+                viewModel.DeliveryDetailViewHeader.REMARK = headerDataList[0].Note;
+                viewModel.DeliveryDetailViewHeader.SHIP_CUSTOMER_NAME = headerDataList[0].ShipCustomerName;
+                viewModel.DeliveryDetailViewHeader.SHIP_LOCATION_CODE = headerDataList[0].ShipLocationCode;
+                viewModel.DeliveryDetailViewHeader.TRIP_ACTUAL_SHIP_DATE = headerDataList[0].TripActualShipDate;
+                viewModel.DeliveryDetailViewHeader.TRIP_CAR = headerDataList[0].TripCar;
+                viewModel.DeliveryDetailViewHeader.TRIP_NAME = headerDataList[0].TripName;
+            }
+            return viewModel;
+        }
+
+        public PaperRollEditViewModel GetPaperRollEditViewModel(DeliveryUOW uow, long dlvHeaderId)
+        {
+            var headerDataList = uow.GetDeliveryHeaderDataListFromHeaderId(dlvHeaderId);
+            PaperRollEditViewModel viewModel = new PaperRollEditViewModel();
+            viewModel.DeliveryDetailViewHeader = new DeliveryDetailViewHeader();
+            if (headerDataList.Count > 0)
+            {
+                viewModel.DeliveryDetailViewHeader.CUSTOMER_LOCATION_CODE = headerDataList[0].CustomerLocationCode;
+                viewModel.DeliveryDetailViewHeader.CUSTOMER_NAME = headerDataList[0].CustomerName;
+                viewModel.DeliveryDetailViewHeader.DELIVERY_NAME = headerDataList[0].DeliveryName;
+                viewModel.DeliveryDetailViewHeader.DELIVERY_STATUS = headerDataList[0].DeliveryStatusName;
+                viewModel.DeliveryDetailViewHeader.DlvHeaderId = headerDataList[0].DlvHeaderId;
+                viewModel.DeliveryDetailViewHeader.REMARK = headerDataList[0].Note;
+                viewModel.DeliveryDetailViewHeader.SHIP_CUSTOMER_NAME = headerDataList[0].ShipCustomerName;
+                viewModel.DeliveryDetailViewHeader.SHIP_LOCATION_CODE = headerDataList[0].ShipLocationCode;
+                viewModel.DeliveryDetailViewHeader.TRIP_ACTUAL_SHIP_DATE = headerDataList[0].TripActualShipDate;
+                viewModel.DeliveryDetailViewHeader.TRIP_CAR = headerDataList[0].TripCar;
+                viewModel.DeliveryDetailViewHeader.TRIP_NAME = headerDataList[0].TripName;
+            }
+            return viewModel;
+        }
+
+        public ResultModel DeliveryConfirm(DeliveryUOW uow, List<long> ids)
+        {
+            List<long> tripIds = uow.GetTripIdList(ids);
+            if (tripIds.Count == 0)
+            {
+                return new ResultModel(false, "找不到航程號資料 ");
+            }
+
+            var updateDatas = uow.GetDeliveryHeaderDataListFromTripId(tripIds);
+            if (updateDatas.Count == 0) return new ResultModel(false, "找不到航程號資料");
+
+            //檢查交運單狀態
+            foreach (DLV_HEADER_T data in updateDatas)
+            {
+                if (data.DeliveryStatusCode != DeliveryUOW.DeliveryStatusCode.Picked)
                 {
-                    break;
-                }
-                foreach (var q in query)
-                {
-                    if (sourceData.TRIP_ID == q.TRIP_ID)
-                    {
-                        if (sourceData.DELIVERY_STATUS != "已揀")
-                        {
-                            result.Success = false;
-                            result.Msg = "交運單" + sourceData.DELIVERY_NAME + "狀態須為已揀";
-                            break;
-                        }
-                    }
+                    return new ResultModel(false, "交運單" + data.DeliveryName + "狀態須為" + DeliveryUOW.DeliveryStatusDictionary[DeliveryUOW.DeliveryStatusCode.Picked]);
                 }
             }
 
-            if (result.Success == false)
+            ResultModel result = uow.UpdateDeliveryStatus(updateDatas, DeliveryUOW.DeliveryStatusCode.UnAuthorized);
+            if (result.Success)
+            {
+                return new ResultModel(true, "出貨申請成功");
+            }
+            else
             {
                 return result;
             }
 
-            foreach (TripHeaderDT sourceData in source)
-            {
-                foreach (var q in query)
-                {
-                    if (sourceData.TRIP_ID == q.TRIP_ID)
-                    {
-                        if (sourceData.DELIVERY_STATUS == "已揀")
-                        {
-                            sourceData.DELIVERY_STATUS = "待核准";
-                            //obj.TRANSACTION_DATE = Convert.ToDateTime(DateTime.Now.ToString("yyyy-MM-dd"));
-                        }
-                    }
-                }
-            }
+            //var query = from tripDetail in source
+            //            where ids.Contains(tripDetail.Id)
+            //            group tripDetail by new
+            //            {
+            //                tripDetail.TRIP_ID
+            //            } into g
+            //            select new
+            //            {
+            //                g.Key.TRIP_ID
+            //            };
 
-            return result;
+
+
+            //ResultModel result = new ResultModel(true, "出貨確認成功");
+
+            //foreach (TripHeaderDT sourceData in source)
+            //{
+            //    if (result.Success == false)
+            //    {
+            //        break;
+            //    }
+            //    foreach (var q in query)
+            //    {
+            //        if (sourceData.TRIP_ID == q.TRIP_ID)
+            //        {
+            //            if (sourceData.DELIVERY_STATUS != "已揀")
+            //            {
+            //                result.Success = false;
+            //                result.Msg = "交運單" + sourceData.DELIVERY_NAME + "狀態須為已揀";
+            //                break;
+            //            }
+            //        }
+            //    }
+            //}
+
+            //if (result.Success == false)
+            //{
+            //    return result;
+            //}
+
+            //foreach (TripHeaderDT sourceData in source)
+            //{
+            //    foreach (var q in query)
+            //    {
+            //        if (sourceData.TRIP_ID == q.TRIP_ID)
+            //        {
+            //            if (sourceData.DELIVERY_STATUS == "已揀")
+            //            {
+            //                sourceData.DELIVERY_STATUS = "待核准";
+            //                //obj.TRANSACTION_DATE = Convert.ToDateTime(DateTime.Now.ToString("yyyy-MM-dd"));
+            //            }
+            //        }
+            //    }
+            //}
+
+            //return result;
 
 
         }
 
-        public static ResultModel CancelConfirm(List<long> ids)
+        public ResultModel CancelConfirm(DeliveryUOW uow, List<long> ids)
         {
-
-            var query = from tripDetail in source
-                        where ids.Contains(tripDetail.Id)
-                        group tripDetail by new
-                        {
-                            tripDetail.TRIP_ID
-                        } into g
-                        select new
-                        {
-                            g.Key.TRIP_ID
-                        };
-
-            ResultModel result = new ResultModel(true, "取消出貨確認成功");
-
-            foreach (TripHeaderDT sourceData in source)
+            List<long> tripIds = uow.GetTripIdList(ids);
+            if (tripIds.Count == 0)
             {
-                if (result.Success == false)
+                return new ResultModel(false, "找不到航程號資料 ");
+            }
+
+            var updateDatas = uow.GetDeliveryHeaderDataListFromTripId(tripIds);
+            if (updateDatas.Count == 0) return new ResultModel(false, "找不到航程號資料");
+
+            //檢查交運單狀態
+            foreach (DLV_HEADER_T data in updateDatas)
+            {
+                if (data.DeliveryStatusCode != DeliveryUOW.DeliveryStatusCode.UnAuthorized)
                 {
-                    break;
-                }
-                foreach (var q in query)
-                {
-                    if (sourceData.TRIP_ID == q.TRIP_ID)
-                    {
-                        if (sourceData.DELIVERY_STATUS != "待核准")
-                        {
-                            result.Success = false;
-                            result.Msg = "交運單" + sourceData.DELIVERY_NAME + "狀態須為待核准";
-                            break;
-                        }
-                    }
+                    return new ResultModel(false, "交運單" + data.DeliveryName + "狀態須為" + DeliveryUOW.DeliveryStatusDictionary[DeliveryUOW.DeliveryStatusCode.UnAuthorized]);
                 }
             }
 
-            if (result.Success == false)
+            ResultModel result = uow.UpdateDeliveryStatus(updateDatas, DeliveryUOW.DeliveryStatusCode.Picked);
+            if (result.Success)
+            {
+                return new ResultModel(true, "取消申請成功");
+            }
+            else
             {
                 return result;
             }
 
-            foreach (TripHeaderDT sourceData in source)
-            {
-                foreach (var q in query)
-                {
-                    if (sourceData.TRIP_ID == q.TRIP_ID)
-                    {
-                        if (sourceData.DELIVERY_STATUS == "待核准")
-                        {
-                            sourceData.DELIVERY_STATUS = "已揀";
-                        }
-                    }
-                }
-            }
 
-            return result;
+            //var query = from tripDetail in source
+            //            where ids.Contains(tripDetail.Id)
+            //            group tripDetail by new
+            //            {
+            //                tripDetail.TRIP_ID
+            //            } into g
+            //            select new
+            //            {
+            //                g.Key.TRIP_ID
+            //            };
+
+            //ResultModel result = new ResultModel(true, "取消出貨確認成功");
+
+            //foreach (TripHeaderDT sourceData in source)
+            //{
+            //    if (result.Success == false)
+            //    {
+            //        break;
+            //    }
+            //    foreach (var q in query)
+            //    {
+            //        if (sourceData.TRIP_ID == q.TRIP_ID)
+            //        {
+            //            if (sourceData.DELIVERY_STATUS != "待核准")
+            //            {
+            //                result.Success = false;
+            //                result.Msg = "交運單" + sourceData.DELIVERY_NAME + "狀態須為待核准";
+            //                break;
+            //            }
+            //        }
+            //    }
+            //}
+
+            //if (result.Success == false)
+            //{
+            //    return result;
+            //}
+
+            //foreach (TripHeaderDT sourceData in source)
+            //{
+            //    foreach (var q in query)
+            //    {
+            //        if (sourceData.TRIP_ID == q.TRIP_ID)
+            //        {
+            //            if (sourceData.DELIVERY_STATUS == "待核准")
+            //            {
+            //                sourceData.DELIVERY_STATUS = "已揀";
+            //            }
+            //        }
+            //    }
+            //}
+
+            //return result;
 
         }
 
-        public static ResultModel PrintPickList(List<long> ids)
+        public ResultModel PrintPickList(DeliveryUOW uow, List<long> ids)
         {
+            //列印備貨單 待寫
 
-            var query = from tripDetail in source
-                        where ids.Contains(tripDetail.Id)
-                        group tripDetail by new
-                        {
-                            tripDetail.TRIP_ID
-                        } into g
-                        select new
-                        {
-                            g.Key.TRIP_ID
-                        };
+            //列印完後更新狀態
+            List<long> tripIds = uow.GetTripIdList(ids);
+            if (tripIds.Count == 0)
+            {
+                return new ResultModel(false, "找不到航程號資料 ");
+            }
 
-            ResultModel result = new ResultModel(true, "列印備貨單成功");
+            var updateDatas = uow.GetDeliveryHeaderDataListFromTripId(tripIds);
+            if (updateDatas.Count == 0) return new ResultModel(false, "找不到航程號資料");
+
+            //檢查交運單狀態
+            //foreach (DLV_HEADER_T data in updateDatas)
+            //{
+               
+            //}
+
+            ResultModel result = uow.UpdateDeliveryStatus(updateDatas, DeliveryUOW.DeliveryStatusCode.UnPicked);
+            if (result.Success)
+            {
+                return new ResultModel(true, "列印備貨單成功");
+            }
+            else
+            {
+                return result;
+            }
+
+
+            //var query = from tripDetail in source
+            //            where ids.Contains(tripDetail.Id)
+            //            group tripDetail by new
+            //            {
+            //                tripDetail.TRIP_ID
+            //            } into g
+            //            select new
+            //            {
+            //                g.Key.TRIP_ID
+            //            };
+
+            //ResultModel result = new ResultModel(true, "列印備貨單成功");
+
+            //foreach (TripHeaderDT obj in source)
+            //{
+            //    //foreach (var q in query)
+            //    //{
+            //    //    if (obj.TRIP_ID == q.TRIP_ID)
+            //    //    {
+            //    //        if (obj.DELIVERY_STATUS != "未印")
+            //    //        {
+            //    //            result.Success = false;
+            //    //            result.Msg = "交運單" + obj.DELIVERY_NAME + "狀態須為未印";
+            //    //            break;
+            //    //        }
+            //    //    }
+            //    //}
+
+            //    //if (!result.Success)
+            //    //{
+            //    //    break;
+            //    //}
+
+            //    foreach (var q in query)
+            //    {
+            //        if (obj.TRIP_ID == q.TRIP_ID)
+            //        {
+            //            if (obj.DELIVERY_STATUS == "未印")
+            //            {
+            //                obj.DELIVERY_STATUS = "待出";
+            //            }
+            //        }
+            //    }
+            //}
+
+            //return result;
+        }
+
+        public ResultModel DeliveryAuthorize(DeliveryUOW uow, List<long> ids)
+        {
+            List<long> tripIds = uow.GetTripIdList(ids);
+            if (tripIds.Count == 0)
+            {
+                return new ResultModel(false, "找不到航程號資料 ");
+            }
+
+            var updateDatas = uow.GetDeliveryHeaderDataListFromTripId(tripIds);
+            if (updateDatas.Count == 0) return new ResultModel(false, "找不到航程號資料");
+
+            //檢查交運單狀態
+            foreach (DLV_HEADER_T data in updateDatas)
+            {
+                if (data.DeliveryStatusCode != DeliveryUOW.DeliveryStatusCode.UnAuthorized)
+                {
+                    return new ResultModel(false, "交運單" + data.DeliveryName + "狀態須為" + DeliveryUOW.DeliveryStatusDictionary[DeliveryUOW.DeliveryStatusCode.UnAuthorized]);
+                }
+            }
+
+            ResultModel result = uow.UpdateDeliveryStatus(updateDatas, DeliveryUOW.DeliveryStatusCode.Authorized);
+            if (result.Success)
+            {
+                return new ResultModel(true, "出貨核准成功");
+            }
+            else
+            {
+                return result;
+            }
+
+
+            //var query = from tripDetail in source
+            //            where ids.Contains(tripDetail.Id)
+            //            group tripDetail by new
+            //            {
+            //                tripDetail.TRIP_ID
+            //            } into g
+            //            select new
+            //            {
+            //                g.Key.TRIP_ID
+            //            };
+
+            //ResultModel result = new ResultModel(true, "出貨核准成功");
+
+            //foreach (TripHeaderDT sourceData in source)
+            //{
+            //    if (result.Success == false)
+            //    {
+            //        break;
+            //    }
+            //    foreach (var q in query)
+            //    {
+            //        if (sourceData.TRIP_ID == q.TRIP_ID)
+            //        {
+            //            if (sourceData.DELIVERY_STATUS != "待核准")
+            //            {
+            //                result.Success = false;
+            //                result.Msg = "交運單" + sourceData.DELIVERY_NAME + "狀態須為待核准";
+            //                break;
+            //            }
+            //        }
+            //    }
+            //}
+
+            //if (result.Success == false)
+            //{
+            //    return result;
+            //}
+
+            //foreach (TripHeaderDT sourceData in source)
+            //{
+            //    foreach (var q in query)
+            //    {
+            //        if (sourceData.TRIP_ID == q.TRIP_ID)
+            //        {
+            //            if (sourceData.DELIVERY_STATUS == "待核准")
+            //            {
+            //                sourceData.DELIVERY_STATUS = "已出貨";
+            //            }
+            //        }
+            //    }
+            //}
+
+            //return result;
+
+        }
+
+        public ResultModel CancelAuthorize(DeliveryUOW uow, List<long> ids)
+        {
+            List<long> tripIds = uow.GetTripIdList(ids);
+            if (tripIds.Count == 0)
+            {
+                return new ResultModel(false, "找不到航程號資料 ");
+            }
+
+            var updateDatas = uow.GetDeliveryHeaderDataListFromTripId(tripIds);
+            if (updateDatas.Count == 0) return new ResultModel(false, "找不到航程號資料");
+
+            //檢查交運單狀態
+            foreach (DLV_HEADER_T data in updateDatas)
+            {
+                if (data.DeliveryStatusCode != DeliveryUOW.DeliveryStatusCode.UnAuthorized)
+                {
+                    return new ResultModel(false, "交運單" + data.DeliveryName + "狀態須為" + DeliveryUOW.DeliveryStatusDictionary[DeliveryUOW.DeliveryStatusCode.UnAuthorized]);
+                }
+            }
+
+            ResultModel result = uow.UpdateDeliveryStatus(updateDatas, DeliveryUOW.DeliveryStatusCode.Picked);
+            if (result.Success)
+            {
+                return new ResultModel(true, "取消核准成功");
+            }
+            else
+            {
+                return result;
+            }
+
+            //var query = from tripDetail in source
+            //            where ids.Contains(tripDetail.Id)
+            //            group tripDetail by new
+            //            {
+            //                tripDetail.TRIP_ID
+            //            } into g
+            //            select new
+            //            {
+            //                g.Key.TRIP_ID
+            //            };
+
+            //ResultModel result = new ResultModel(true, "取消出貨核准成功");
+
+            //foreach (TripHeaderDT sourceData in source)
+            //{
+            //    if (result.Success == false)
+            //    {
+            //        break;
+            //    }
+            //    foreach (var q in query)
+            //    {
+            //        if (sourceData.TRIP_ID == q.TRIP_ID)
+            //        {
+            //            if (sourceData.DELIVERY_STATUS != "待核准")
+            //            {
+            //                result.Success = false;
+            //                result.Msg = "交運單" + sourceData.DELIVERY_NAME + "狀態須為待核准";
+            //                break;
+            //            }
+            //        }
+            //    }
+            //}
+
+            //if (result.Success == false)
+            //{
+            //    return result;
+            //}
+
+            //foreach (TripHeaderDT sourceData in source)
+            //{
+            //    foreach (var q in query)
+            //    {
+            //        if (sourceData.TRIP_ID == q.TRIP_ID)
+            //        {
+            //            if (sourceData.DELIVERY_STATUS == "待核准")
+            //            {
+            //                sourceData.DELIVERY_STATUS = "已揀";
+            //            }
+            //        }
+            //    }
+            //}
+
+            //return result;
+
+        }
+
+        public ResultModel CancelTrip(DeliveryUOW uow, List<long> ids)
+        {
+            List<long> tripIds = uow.GetTripIdList(ids);
+            if (tripIds.Count == 0)
+            {
+                return new ResultModel(false, "找不到航程號資料 ");
+            }
+
+            var updateDatas = uow.GetDeliveryHeaderDataListFromTripId(tripIds);
+            if (updateDatas.Count == 0) return new ResultModel(false, "找不到航程號資料");
+
+            //檢查交運單狀態
+            foreach (DLV_HEADER_T data in updateDatas)
+            {
+                if (data.DeliveryStatusCode == DeliveryUOW.DeliveryStatusCode.Canceled)
+                {
+                    return new ResultModel(false, "航程號" + data.DeliveryName + DeliveryUOW.DeliveryStatusDictionary[DeliveryUOW.DeliveryStatusCode.Canceled]);
+                }
+                if (data.DeliveryStatusCode == DeliveryUOW.DeliveryStatusCode.Authorized)
+                {
+                    return new ResultModel(false, "航程號" + data.DeliveryName + DeliveryUOW.DeliveryStatusDictionary[DeliveryUOW.DeliveryStatusCode.Authorized]);
+                }
+
+            }
+
+            ResultModel result = uow.UpdateDeliveryStatus(updateDatas, DeliveryUOW.DeliveryStatusCode.Canceled);
+            if (result.Success)
+            {
+                return new ResultModel(true, "取消航程號成功");
+            }
+            else
+            {
+                return result;
+            }
+
+
+            //var query = from tripDetail in source
+            //            where ids.Contains(tripDetail.Id)
+            //            group tripDetail by new
+            //            {
+            //                tripDetail.TRIP_ID
+            //            } into g
+            //            select new
+            //            {
+            //                g.Key.TRIP_ID
+            //            };
+
+            //ResultModel result = new ResultModel(true, "取消航程號成功");
+
+            //foreach (TripHeaderDT sourceData in source)
+            //{
+            //    if (result.Success == false)
+            //    {
+            //        break;
+            //    }
+            //    foreach (var q in query)
+            //    {
+            //        if (sourceData.TRIP_ID == q.TRIP_ID)
+            //        {
+            //            if (sourceData.DELIVERY_STATUS == "取消")
+            //            {
+            //                result.Success = false;
+            //                result.Msg = "航程號" + sourceData.TRIP_NAME + "已取消";
+            //                break;
+            //            }
+            //        }
+            //    }
+            //}
+
+            //foreach (TripHeaderDT sourceData in source)
+            //{
+            //    foreach (var q in query)
+            //    {
+            //        if (sourceData.TRIP_ID == q.TRIP_ID)
+            //        {
+            //            sourceData.DELIVERY_STATUS = "取消";
+            //        }
+            //    }
+            //}
+
+            //return result;
+
+        }
+
+        public static void ChangeDeliveryStatus(long DlvHeaderId, bool pickComplete)
+        {
 
             foreach (TripHeaderDT obj in source)
             {
-                //foreach (var q in query)
-                //{
-                //    if (obj.TRIP_ID == q.TRIP_ID)
-                //    {
-                //        if (obj.DELIVERY_STATUS != "未印")
-                //        {
-                //            result.Success = false;
-                //            result.Msg = "交運單" + obj.DELIVERY_NAME + "狀態須為未印";
-                //            break;
-                //        }
-                //    }
-                //}
-
-                //if (!result.Success)
-                //{
-                //    break;
-                //}
-
-                foreach (var q in query)
-                {
-                    if (obj.TRIP_ID == q.TRIP_ID)
-                    {
-                        if (obj.DELIVERY_STATUS == "未印")
-                        {
-                            obj.DELIVERY_STATUS = "待出";
-                        }
-                    }
-                }
-            }
-
-            return result;
-        }
-
-        public static ResultModel DeliveryAuthorize(List<long> ids)
-        {
-            var query = from tripDetail in source
-                        where ids.Contains(tripDetail.Id)
-                        group tripDetail by new
-                        {
-                            tripDetail.TRIP_ID
-                        } into g
-                        select new
-                        {
-                            g.Key.TRIP_ID
-                        };
-
-            ResultModel result = new ResultModel(true, "出貨核准成功");
-
-            foreach (TripHeaderDT sourceData in source)
-            {
-                if (result.Success == false)
-                {
-                    break;
-                }
-                foreach (var q in query)
-                {
-                    if (sourceData.TRIP_ID == q.TRIP_ID)
-                    {
-                        if (sourceData.DELIVERY_STATUS != "待核准")
-                        {
-                            result.Success = false;
-                            result.Msg = "交運單" + sourceData.DELIVERY_NAME + "狀態須為待核准";
-                            break;
-                        }
-                    }
-                }
-            }
-
-            if (result.Success == false)
-            {
-                return result;
-            }
-
-            foreach (TripHeaderDT sourceData in source)
-            {
-                foreach (var q in query)
-                {
-                    if (sourceData.TRIP_ID == q.TRIP_ID)
-                    {
-                        if (sourceData.DELIVERY_STATUS == "待核准")
-                        {
-                            sourceData.DELIVERY_STATUS = "已出貨";
-                        }
-                    }
-                }
-            }
-
-            return result;
-
-        }
-
-        public static ResultModel CancelAuthorize(List<long> ids)
-        {
-            var query = from tripDetail in source
-                        where ids.Contains(tripDetail.Id)
-                        group tripDetail by new
-                        {
-                            tripDetail.TRIP_ID
-                        } into g
-                        select new
-                        {
-                            g.Key.TRIP_ID
-                        };
-
-            ResultModel result = new ResultModel(true, "取消出貨核准成功");
-
-            foreach (TripHeaderDT sourceData in source)
-            {
-                if (result.Success == false)
-                {
-                    break;
-                }
-                foreach (var q in query)
-                {
-                    if (sourceData.TRIP_ID == q.TRIP_ID)
-                    {
-                        if (sourceData.DELIVERY_STATUS != "待核准")
-                        {
-                            result.Success = false;
-                            result.Msg = "交運單" + sourceData.DELIVERY_NAME + "狀態須為待核准";
-                            break;
-                        }
-                    }
-                }
-            }
-
-            if (result.Success == false)
-            {
-                return result;
-            }
-
-            foreach (TripHeaderDT sourceData in source)
-            {
-                foreach (var q in query)
-                {
-                    if (sourceData.TRIP_ID == q.TRIP_ID)
-                    {
-                        if (sourceData.DELIVERY_STATUS == "待核准")
-                        {
-                            sourceData.DELIVERY_STATUS = "已揀";
-                        }
-                    }
-                }
-            }
-
-            return result;
-
-        }
-
-        public static ResultModel CancelTrip(List<long> ids)
-        {
-
-            var query = from tripDetail in source
-                        where ids.Contains(tripDetail.Id)
-                        group tripDetail by new
-                        {
-                            tripDetail.TRIP_ID
-                        } into g
-                        select new
-                        {
-                            g.Key.TRIP_ID
-                        };
-
-            ResultModel result = new ResultModel(true, "取消航程號成功");
-
-            foreach (TripHeaderDT sourceData in source)
-            {
-                if (result.Success == false)
-                {
-                    break;
-                }
-                foreach (var q in query)
-                {
-                    if (sourceData.TRIP_ID == q.TRIP_ID)
-                    {
-                        if (sourceData.DELIVERY_STATUS == "取消")
-                        {
-                            result.Success = false;
-                            result.Msg = "航程號" + sourceData.TRIP_NAME + "已取消";
-                            break;
-                        }
-                    }
-                }
-            }
-
-            foreach (TripHeaderDT sourceData in source)
-            {
-                foreach (var q in query)
-                {
-                    if (sourceData.TRIP_ID == q.TRIP_ID)
-                    {
-                        sourceData.DELIVERY_STATUS = "取消";
-                    }
-                }
-            }
-
-            return result;
-
-        }
-
-        public static void ChangeDeliveryStatus(long TripDetailDT_ID, bool pickComplete)
-        {
-
-            foreach (TripHeaderDT obj in source)
-            {
-                if (obj.Id == TripDetailDT_ID)
+                if (obj.Id == DlvHeaderId)
                 {
                     if (pickComplete)
                     {
@@ -843,23 +1059,25 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
 
         //}
 
-        public static List<TripHeaderDT> UpdateTransactionAuthorizeDates(TripDetailDTEditor data)
+        public ResultModel UpdateTransactionAuthorizeDates(DeliveryUOW uow, TripDetailDTEditor data)
         {
-            List<TripHeaderDT> result = new List<TripHeaderDT>();
+            return uow.UpdateTransactionAuthorizeDates(data);
 
-            foreach (var sourceTripDetailDT in source)
-            {
-                foreach (var selectedData in data.TripDetailDTList)
-                {
-                    if (sourceTripDetailDT.TRIP_ID == selectedData.TRIP_ID)
-                    {
-                        sourceTripDetailDT.AUTHORIZE_DATE = selectedData.AUTHORIZE_DATE;
-                        result.Add(sourceTripDetailDT);
-                    }
-                }
-            }
+            //List<TripHeaderDT> result = new List<TripHeaderDT>();
 
-            return result;
+            //foreach (var sourceTripDetailDT in source)
+            //{
+            //    foreach (var selectedData in data.TripDetailDTList)
+            //    {
+            //        if (sourceTripDetailDT.TRIP_ID == selectedData.TRIP_ID)
+            //        {
+            //            sourceTripDetailDT.AUTHORIZE_DATE = selectedData.AUTHORIZE_DATE;
+            //            result.Add(sourceTripDetailDT);
+            //        }
+            //    }
+            //}
+
+            //return result;
 
         }
     }

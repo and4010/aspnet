@@ -31,7 +31,7 @@ $(document).ready(function () {
             "type": "POST",
             "datatype": "json",
             "data": {
-                TripDetailDT_ID: $("#TripDetailDT_ID").text()
+                DlvHeaderId: $("#DlvHeaderId").text()
             }
         },
         columns: [
@@ -41,7 +41,7 @@ $(document).ready(function () {
          { data: "ORDER_SHIP_NUMBER", name: "訂單行號", autoWidth: true },
          { data: "OSP_BATCH_NO", name: "工單號碼", autoWidth: true },
          { data: "TMP_ITEM_NUMBER", name: "代紙料號", autoWidth: true, className: "dt-body-left" },
-         { data: "ITEM_DESCRIPTION", name: "料號", autoWidth: true, className: "dt-body-left" },
+         { data: "ITEM_NUMBER", name: "料號", autoWidth: true, className: "dt-body-left" },
          { data: "PAPER_TYPE", name: "紙別", autoWidth: true },
          { data: "BASIC_WEIGHT", name: "基重", autoWidth: true },
          { data: "SPECIFICATION", name: "規格", autoWidth: true },
@@ -67,16 +67,9 @@ $(document).ready(function () {
             'selectNone'
         ],
         "rowCallback": function (row, data, displayNum, displayIndex, dataIndex) {
-            if ($.inArray(data.DT_RowId, selected) !== -1) {
-                //$(row).find('input[type="checkbox"]').prop('checked', true);
+            if ($.inArray(data.ID, selected) !== -1) {
                 var selectRow = ':eq(' + dataIndex + ')';
                 PaperRollDataTablesBody.row(selectRow, { page: 'current' }).select();
-                //$(row).toggleClass('selected');
-                //$("#PaperRollEditDT_ID").text(data.PaperRollEditDT_ID);
-                //$("#ORDER_NUMBER").text(data.ORDER_NUMBER);
-                //$("#ORDER_SHIP_NUMBER").text(data.ORDER_SHIP_NUMBER);
-                //$("#ITEM_DESCRIPTION").text(data.ITEM_DESCRIPTION);
-
             }
         },
         //"drawCallback": function( settings ) {
@@ -120,16 +113,16 @@ $(document).ready(function () {
             var rowsData = PaperRollDataTablesBody.rows({ page: 'current' }).data();
             for (i = 0 ; i < rowsData.length; i++) {
                 for (j = 0; j < selected.length; j++) {
-                    if (selected[j] == rowsData[i].DT_RowId) {
+                    if (selected[j] == rowsData[i].ID) {
                         selected.splice(j, 1);
                     }
                 }
             }
 
-            var DT_RowId = dt.rows(indexes).data().pluck('DT_RowId')[0];
-            var index = $.inArray(DT_RowId, selected);
+            var ID = dt.rows(indexes).data().pluck('ID')[0];
+            var index = $.inArray(ID, selected);
             if (index === -1) {
-                selected.push(DT_RowId);
+                selected.push(ID);
             }
 
             $('#txtBARCODE').focus().select();
@@ -143,8 +136,8 @@ $(document).ready(function () {
             $("#ORDER_SHIP_NUMBER").text("");
             $("#ITEM_DESCRIPTION").text("");
 
-            var DT_RowId = dt.rows(indexes).data().pluck('DT_RowId')[0];
-            var index = $.inArray(DT_RowId, selected);
+            var ID = dt.rows(indexes).data().pluck('ID')[0];
+            var index = $.inArray(ID, selected);
             selected.splice(index, 1);
         }
     });
@@ -199,7 +192,7 @@ $(document).ready(function () {
             "type": "Post",
             "datatype": "json",
             "data": {
-                TripDetailDT_ID: $("#TripDetailDT_ID").text()
+                DlvHeaderId: $("#DlvHeaderId").text()
             },
         },
         columns: [
@@ -317,7 +310,7 @@ $(document).ready(function () {
             type: "post",
             data: {
                 BARCODE: $('#txtBARCODE').val(),
-                TripDetailDT_ID: $("#TripDetailDT_ID").text(),
+                DlvHeaderId: $("#DlvHeaderId").text(),
                 PaperRollEditDT_ID: $("#PaperRollEditDT_ID").text()
             },
             success: function (data) {
@@ -371,7 +364,7 @@ $(document).ready(function () {
             type: "post",
             data: {
                 'PICKED_ID': list,
-                TripDetailDT_ID: $("#TripDetailDT_ID").text(),
+                DlvHeaderId: $("#DlvHeaderId").text(),
             },
             success: function (data) {
                 if (data.status) {
