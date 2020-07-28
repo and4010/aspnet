@@ -109,7 +109,7 @@
     <div class="col-md-12">
         <label class="col-md-1 text-right">儲位</label>
         <div class="col-md-1 form-inline">
-            @Html.DropDownListFor(model => model.Locator, LocatorItems, new { @class = "form-control", id = "select-warehouse" })
+            @Html.DropDownListFor(model => model.Locator, LocatorItems, new { @class = "form-control", id = "select-Locator" })
         </div>
     </div>
 
@@ -133,7 +133,7 @@
 
         <form role="form" class="col-md-5">
             <div class="form-group col-md-5">
-                <textarea style="width:250px;height:250px;" class="form-control col-md-4" rows="3" id="textarea"></textarea>
+                <textarea style="width:250px;height:250px;" class="form-control col-md-4" rows="3" id="textarea">@Html.DisplayFor(model =>model.RollDetailModel.Remark)</textarea>
             </div>
         </form>
         <div class="col-md-6" id="SaveImg">

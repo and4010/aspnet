@@ -18,8 +18,10 @@ namespace CHPOUTSRCMES.Web.Util
     public class ExcelImport
     {
 
-        public ResultModel PaperRollDetail(HttpPostedFileBase file, ref DataTableAjaxPostViewModel data, ref List<DetailModel.RollDetailModel> detail, ref ResultModel result, List<DetailModel.RollModel> RollHeader)
+        public ResultModel PaperRollDetail(HttpPostedFileBase file, ref List<DetailModel.RollDetailModel> PaperRollDetail,string CONTAINER_NO, ref ResultModel result)
         {
+            PurchaseViewModel purchaseView = new PurchaseViewModel();
+            var RollHeader = purchaseView.GetRollHeader(CONTAINER_NO);
             IWorkbook workbook = null;
             DataTable dt = new DataTable();
             if (file.FileName.Substring(file.FileName.LastIndexOf(".")).Equals(".xls"))
@@ -57,30 +59,6 @@ namespace CHPOUTSRCMES.Web.Util
                 ICell Status_cell = null;
                 ICell Remark_cell = null;
 
-                //Id_cell = ExcelUtil.FindCell("Id", sheet);
-                //if (Id_cell == null)
-                //{
-                //    throw new Exception("找不到id欄位");
-                //}
-
-                //Subinventory_cell = ExcelUtil.FindCell("Subinventory", sheet);
-                //if (Subinventory_cell == null)
-                //{
-                //    throw new Exception("找不到Subinventory欄位");
-                //}
-
-                //Locator_cell = ExcelUtil.FindCell("Locator", sheet);
-                //if (Locator_cell == null)
-                //{
-                //    throw new Exception("找不到Locator欄位");
-                //}
-
-                //Barocde_cell = ExcelUtil.FindCell("Barocde", sheet);
-                //if (Barocde_cell == null)
-                //{
-                //    throw new Exception("找不到Barocde欄位");
-                //}
-
                 PartNo_cell = ExcelUtil.FindCell("料號", sheet);
                 if (PartNo_cell == null)
                 {
@@ -111,24 +89,6 @@ namespace CHPOUTSRCMES.Web.Util
                     throw new Exception("找不到重量欄位");
                 }
 
-                //TransactionQuantity_cell = ExcelUtil.FindCell("TransactionQuantity", sheet);
-                //if (TransactionQuantity_cell == null)
-                //{
-                //    throw new Exception("找不到TransactionQuantity欄位");
-                //}
-
-                //TransactionUom_cell = ExcelUtil.FindCell("TransactionUom", sheet);
-                //if (TransactionUom_cell == null)
-                //{
-                //    throw new Exception("找不到TransactionUom欄位");
-                //}
-
-                //PrimanyQuantity_cell = ExcelUtil.FindCell("PrimanyQuantity", sheet);
-                //if (PrimanyQuantity_cell == null)
-                //{
-                //    throw new Exception("找不到PrimanyQuantity欄位");
-                //}
-
                 PrimaryUom_cell = ExcelUtil.FindCell("單位", sheet);
                 if (PrimaryUom_cell == null)
                 {
@@ -140,17 +100,6 @@ namespace CHPOUTSRCMES.Web.Util
                 {
                     throw new Exception("找不到捲號欄位");
                 }
-
-                //Status_cell = ExcelUtil.FindCell("Status", sheet);
-                //if (Status_cell == null)
-                //{
-                //    throw new Exception("找不到Status欄位");
-                //}
-                //Remark_cell = ExcelUtil.FindCell("Remark", sheet);
-                //if (Remark_cell == null)
-                //{
-                //    throw new Exception("找不到Remark欄位");
-                //}
 
                 int rowCount = sheet.LastRowNum;
                 for (int j = 0; j < RollHeader.Count; j++)
@@ -164,24 +113,34 @@ namespace CHPOUTSRCMES.Web.Util
                             var excelPartNo = ExcelUtil.GetCellString(i, PartNo_cell.ColumnIndex, sheet).Trim();
                             if (RollHeader[j].Item_No.Equals(excelPartNo))
                             {
-                                var model = new DetailModel.RollDetailModel();
-                                model.Id = i;
-                                model.Barcode = "W200506000" + (i).ToString();
-                                model.Item_No = ExcelUtil.GetCellString(i, PartNo_cell.ColumnIndex, sheet).Trim();
-                                model.PaperType = ExcelUtil.GetCellString(i, PaperType_cell.ColumnIndex, sheet).Trim();
-                                model.BaseWeight = ExcelUtil.GetCellString(i, BaseWeight_cell.ColumnIndex, sheet).Trim();
-                                model.Specification = ExcelUtil.GetCellString(i, Specification_cell.ColumnIndex, sheet).Trim();
-                                model.TheoreticalWeight = ExcelUtil.GetCellString(i, TheoreticalWeight_cell.ColumnIndex, sheet).Trim();
-                                model.TransactionQuantity = ExcelUtil.GetCellString(i, TheoreticalWeight_cell.ColumnIndex, sheet).Trim();
-                                model.TransactionUom = RollHeader[j].TransactionUom;
-                                model.PrimanyQuantity = ExcelUtil.GetCellString(i, TheoreticalWeight_cell.ColumnIndex, sheet).Trim();
-                                model.PrimaryUom = ExcelUtil.GetCellString(i, PrimaryUom_cell.ColumnIndex, sheet).Trim();
-                                model.LotNumber = ExcelUtil.GetCellString(i, LotNumber_cell.ColumnIndex, sheet).Trim();
-                                model.Status = "待入庫";
-                                //model.Remark = ExcelUtil.GetCellString(i, Remark_cell.ColumnIndex, sheet).Trim();
-                                model.Subinventory = RollHeader[j].Subinventory;
-                                model.Locator = RollHeader[j].Locator;
-                                detail.Add(model);
+                                if(RollHeader[j].PrimanyQuantity == decimal.Parse(ExcelUtil.GetCellString(i, TheoreticalWeight_cell.ColumnIndex, sheet).Trim()))
+                                {
+                                    var model = new DetailModel.RollDetailModel();
+                                    model.Id = i;
+                                    model.Barcode = "";
+                                    model.Item_No = ExcelUtil.GetCellString(i, PartNo_cell.ColumnIndex, sheet).Trim();
+                                    model.PaperType = ExcelUtil.GetCellString(i, PaperType_cell.ColumnIndex, sheet).Trim();
+                                    model.BaseWeight = ExcelUtil.GetCellString(i, BaseWeight_cell.ColumnIndex, sheet).Trim();
+                                    model.Specification = ExcelUtil.GetCellString(i, Specification_cell.ColumnIndex, sheet).Trim();
+                                    model.TheoreticalWeight = ExcelUtil.GetCellString(i, TheoreticalWeight_cell.ColumnIndex, sheet).Trim();
+                                    model.TransactionQuantity = decimal.Parse( ExcelUtil.GetCellString(i, TheoreticalWeight_cell.ColumnIndex, sheet).Trim());
+                                    model.TransactionUom = RollHeader[j].TransactionUom;
+                                    model.PrimanyQuantity = decimal.Parse(ExcelUtil.GetCellString(i, TheoreticalWeight_cell.ColumnIndex, sheet).Trim());
+                                    model.PrimaryUom = ExcelUtil.GetCellString(i, PrimaryUom_cell.ColumnIndex, sheet).Trim();
+                                    model.LotNumber = ExcelUtil.GetCellString(i, LotNumber_cell.ColumnIndex, sheet).Trim();
+                                    model.Status = "待入庫";
+                                    //model.Remark = ExcelUtil.GetCellString(i, Remark_cell.ColumnIndex, sheet).Trim();
+                                    model.Subinventory = RollHeader[j].Subinventory;
+                                    model.Locator = RollHeader[j].Locator;
+                                    PaperRollDetail.Add(model);
+                                }
+                                else
+                                {
+                                    result.Msg = "數量不正確";
+                                    result.Success = true;
+                                    break;
+                                }
+
                             }
 
                         }
@@ -202,14 +161,13 @@ namespace CHPOUTSRCMES.Web.Util
                 return result;
             }
 
-            if (detail.Count != 0)
+            if (PaperRollDetail.Count == RollHeader.Count)
             {
-                result.Msg = "成功";
-                result.Success = true;
+                result = purchaseView.ImportPaperRollPickT(CONTAINER_NO, PaperRollDetail);
             }
             else
             {
-                result.Msg = "資料錯誤";
+                result.Msg = "匯入資料與表頭資料不正確";
                 result.Success = false;
             }
 
@@ -239,7 +197,7 @@ namespace CHPOUTSRCMES.Web.Util
             return result;
         }
 
-
+        
 
 
 
