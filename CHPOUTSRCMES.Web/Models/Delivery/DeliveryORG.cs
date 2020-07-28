@@ -471,7 +471,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
                             ORDER_NUMBER = org.ORDER_NUMBER,
                             OSP_BATCH_NO = d.OSP_BATCH_NO,
 
-                            ITEM_DESCRIPTION = org.ITEM_DESCRIPTION,
+                            ITEM_NUMBER = org.ITEM_DESCRIPTION,
 
                             TMP_ITEM_NUMBER = org.TMP_ITEM_DESCRIPTION,
 

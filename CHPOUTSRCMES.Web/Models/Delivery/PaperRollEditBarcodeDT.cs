@@ -11,7 +11,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
     {
         public long PICKED_ID { get; set; }
 
-        public long TripDetailDT_ID { get; set; } //DELIVERY_HEADER_ID
+        public long DlvHeaderId { get; set; } //DELIVERY_HEADER_ID
 
         public long PaperRollEditDT_ID { get; set; } //DELIVERY_DETAIL_ID
 
@@ -53,21 +53,21 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
             model = new List<PaperRollEditBarcodeDT>();
         }
 
-        public static List<PaperRollEditBarcodeDT> getDataList(long TripDetailDT_ID)
+        public static List<PaperRollEditBarcodeDT> getDataList(long DlvHeaderId)
         {
             var query = from data in PaperRollEditBarcodeData.model
-                        where data.TripDetailDT_ID == TripDetailDT_ID
+                        where data.DlvHeaderId == DlvHeaderId
                         select data;
             List<PaperRollEditBarcodeDT> list = query.ToList<PaperRollEditBarcodeDT>();
             return list;
         }
 
-        public static void addBarcode123(long PaperRollEditDT_ID, long TripDetailDT_ID)
+        public static void addBarcode123(long PaperRollEditDT_ID, long DlvHeaderId)
         {
             PaperRollEditBarcodeDT paperRollEditBarcodeDT = new PaperRollEditBarcodeDT();
             paperRollEditBarcodeDT.BARCODE = "W2005060001";
             paperRollEditBarcodeDT.ITEM_DESCRIPTION = "4FHIZA03000787RL00";
-            paperRollEditBarcodeDT.TripDetailDT_ID = TripDetailDT_ID;
+            paperRollEditBarcodeDT.DlvHeaderId = DlvHeaderId;
             paperRollEditBarcodeDT.PaperRollEditDT_ID = PaperRollEditDT_ID;
             paperRollEditBarcodeDT.PICKED_ID = 1;
             paperRollEditBarcodeDT.PRIMARY_QUANTITY = 1000;
@@ -81,12 +81,12 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
             model.Add(paperRollEditBarcodeDT);
         }
 
-        public static void addBarcode124(long PaperRollEditDT_ID, long TripDetailDT_ID)
+        public static void addBarcode124(long PaperRollEditDT_ID, long DlvHeaderId)
         {
             PaperRollEditBarcodeDT paperRollEditBarcodeDT = new PaperRollEditBarcodeDT();
             paperRollEditBarcodeDT.BARCODE = "W2005060004";
             paperRollEditBarcodeDT.ITEM_DESCRIPTION = "4FHIZA03000787RL00";
-            paperRollEditBarcodeDT.TripDetailDT_ID = TripDetailDT_ID;
+            paperRollEditBarcodeDT.DlvHeaderId = DlvHeaderId;
             paperRollEditBarcodeDT.PaperRollEditDT_ID = PaperRollEditDT_ID;
             paperRollEditBarcodeDT.PICKED_ID = 2;
             paperRollEditBarcodeDT.PRIMARY_QUANTITY = 1000;
@@ -100,12 +100,12 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
             model.Add(paperRollEditBarcodeDT);
         }
 
-        public static void addBarcode456(long PaperRollEditDT_ID, long TripDetailDT_ID)
+        public static void addBarcode456(long PaperRollEditDT_ID, long DlvHeaderId)
         {
             PaperRollEditBarcodeDT paperRollEditBarcodeDT = new PaperRollEditBarcodeDT();
             paperRollEditBarcodeDT.BARCODE = "W2005060002";
             paperRollEditBarcodeDT.ITEM_DESCRIPTION = "4FHIZA02500787RL00";
-            paperRollEditBarcodeDT.TripDetailDT_ID = TripDetailDT_ID;
+            paperRollEditBarcodeDT.DlvHeaderId = DlvHeaderId;
             paperRollEditBarcodeDT.PaperRollEditDT_ID = PaperRollEditDT_ID;
             paperRollEditBarcodeDT.PICKED_ID = 3;
             paperRollEditBarcodeDT.PRIMARY_QUANTITY = 1000;
@@ -119,12 +119,12 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
             model.Add(paperRollEditBarcodeDT);
         }
 
-        public static void addBarcode457(long PaperRollEditDT_ID, long TripDetailDT_ID)
+        public static void addBarcode457(long PaperRollEditDT_ID, long DlvHeaderId)
         {
             PaperRollEditBarcodeDT paperRollEditBarcodeDT = new PaperRollEditBarcodeDT();
             paperRollEditBarcodeDT.BARCODE = "W2005060005";
             paperRollEditBarcodeDT.ITEM_DESCRIPTION = "4FHIZA02500787RL00";
-            paperRollEditBarcodeDT.TripDetailDT_ID = TripDetailDT_ID;
+            paperRollEditBarcodeDT.DlvHeaderId = DlvHeaderId;
             paperRollEditBarcodeDT.PaperRollEditDT_ID = PaperRollEditDT_ID;
             paperRollEditBarcodeDT.PICKED_ID = 4;
             paperRollEditBarcodeDT.PRIMARY_QUANTITY = 1000;
@@ -138,12 +138,12 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
             model.Add(paperRollEditBarcodeDT);
         }
 
-        public static void addBarcode130(long PaperRollEditDT_ID, long TripDetailDT_ID)
+        public static void addBarcode130(long PaperRollEditDT_ID, long DlvHeaderId)
         {
             PaperRollEditBarcodeDT paperRollEditBarcodeDT = new PaperRollEditBarcodeDT();
             paperRollEditBarcodeDT.BARCODE = "W2005060003";
             paperRollEditBarcodeDT.ITEM_DESCRIPTION = "4FHIZA03000787RL00";
-            paperRollEditBarcodeDT.TripDetailDT_ID = TripDetailDT_ID;
+            paperRollEditBarcodeDT.DlvHeaderId = DlvHeaderId;
             paperRollEditBarcodeDT.PaperRollEditDT_ID = PaperRollEditDT_ID;
             paperRollEditBarcodeDT.PICKED_ID = 5;
             paperRollEditBarcodeDT.PRIMARY_QUANTITY = 1000;
@@ -157,12 +157,12 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
             model.Add(paperRollEditBarcodeDT);
         }
 
-        public static void addBarcode131(long PaperRollEditDT_ID, long TripDetailDT_ID)
+        public static void addBarcode131(long PaperRollEditDT_ID, long DlvHeaderId)
         {
             PaperRollEditBarcodeDT paperRollEditBarcodeDT = new PaperRollEditBarcodeDT();
             paperRollEditBarcodeDT.BARCODE = "W2005060006";
             paperRollEditBarcodeDT.ITEM_DESCRIPTION = "4FHIZA02000787RL00";
-            paperRollEditBarcodeDT.TripDetailDT_ID = TripDetailDT_ID;
+            paperRollEditBarcodeDT.DlvHeaderId = DlvHeaderId;
             paperRollEditBarcodeDT.PaperRollEditDT_ID = PaperRollEditDT_ID;
             paperRollEditBarcodeDT.PICKED_ID = 6;
             paperRollEditBarcodeDT.PRIMARY_QUANTITY = 1000;

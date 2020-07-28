@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.ComponentModel.DataAnnotations;
 using CHPOUTSRCMES.Web.ViewModels;
+using CHPOUTSRCMES.Web.DataModel.UnitOfWorks;
 
 namespace CHPOUTSRCMES.Web.Models.Delivery
 {
@@ -11,9 +12,9 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
     {
         public long ID { get; set; }
 
-        public long TripDetailDT_ID { get; set; }
+        public long DlvHeaderId { get; set; }
 
-        public string DT_RowId { get; set; }
+        //public string DT_RowId { get; set; }
 
         [Display(Name = "訂單編號")]
         public long ORDER_NUMBER { get; set; }
@@ -25,7 +26,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
         public string OSP_BATCH_NO { get; set; }
 
         [Display(Name = "料號名稱")]
-        public string ITEM_DESCRIPTION { get; set; } //要改為ITEM_NUMBER
+        public string ITEM_NUMBER { get; set; } //要改為ITEM_NUMBER ITEM_DESCRIPTION
 
         [Display(Name = "代紙料號名稱")]
         public string TMP_ITEM_NUMBER { get; set; }
@@ -43,7 +44,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
         public decimal REQUESTED_QUANTITY { get; set; }
 
         [Display(Name = "已揀數量")] //主單位已揀數合計
-        public decimal PICKED_QUANTITY { get; set; }
+        public decimal? PICKED_QUANTITY { get; set; }
 
         [Display(Name = "單位")] //主單位
         public string REQUESTED_QUANTITY_UOM { get; set; }
@@ -52,7 +53,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
         public decimal SRC_REQUESTED_QUANTITY { get; set; }
 
         [Display(Name = "已揀數量")] //交易單位已揀數合計 由主單位已揀數合計 換算過來
-        public decimal SRC_PICKED_QUANTITY { get; set; }
+        public decimal? SRC_PICKED_QUANTITY { get; set; }
 
         [Display(Name = "單位")] //交易單位
         public string SRC_REQUESTED_QUANTITY_UOM { get; set; }
@@ -72,17 +73,17 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
             model = new List<PaperRollEditDT>();
         }
 
-        public static void addDefault(long TripDetailDT_ID)
+        public static void addDefault(long DlvHeaderId)
         {
             id++;
             PaperRollEditDT paperRollData = new PaperRollEditDT();
             paperRollData.ID = id;
-            paperRollData.DT_RowId = "row_1";
-            paperRollData.TripDetailDT_ID = TripDetailDT_ID;
+            //paperRollData.DT_RowId = "row_1";
+            paperRollData.DlvHeaderId = DlvHeaderId;
             paperRollData.ORDER_NUMBER = 1192006168;
             paperRollData.ORDER_SHIP_NUMBER = "1.1";
             paperRollData.OSP_BATCH_NO = "";
-            paperRollData.ITEM_DESCRIPTION = "4FHIZA03000787RL00";
+            paperRollData.ITEM_NUMBER = "4FHIZA03000787RL00";
             paperRollData.TMP_ITEM_NUMBER = "";
             paperRollData.PAPER_TYPE = "FHIZ";
             paperRollData.BASIC_WEIGHT = "03000";
@@ -100,12 +101,12 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
             PaperRollEditDT paperRollData2 = new PaperRollEditDT();
             paperRollData2.BASIC_WEIGHT = "02500";
             paperRollData2.ID = id;
-            paperRollData2.DT_RowId = "row_2";
-            paperRollData2.TripDetailDT_ID = TripDetailDT_ID;
+            //paperRollData2.DT_RowId = "row_2";
+            paperRollData2.DlvHeaderId = DlvHeaderId;
             paperRollData2.ORDER_NUMBER = 1192006168;
             paperRollData2.ORDER_SHIP_NUMBER = "1.1";
             paperRollData2.OSP_BATCH_NO = "";
-            paperRollData2.ITEM_DESCRIPTION = "4FHIZA02500787RL00";
+            paperRollData2.ITEM_NUMBER = "4FHIZA02500787RL00";
             paperRollData2.TMP_ITEM_NUMBER = "";
             paperRollData2.PAPER_TYPE = "FHIZ";
             paperRollData2.BASIC_WEIGHT = "02500";
@@ -123,12 +124,12 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
             PaperRollEditDT paperRollData3 = new PaperRollEditDT();
             paperRollData3.BASIC_WEIGHT = "03500";
             paperRollData3.ID = id;
-            paperRollData3.DT_RowId = "row_3";
-            paperRollData3.TripDetailDT_ID = TripDetailDT_ID;
+            //paperRollData3.DT_RowId = "row_3";
+            paperRollData3.DlvHeaderId = DlvHeaderId;
             paperRollData3.ORDER_NUMBER = 1192006169;
             paperRollData3.ORDER_SHIP_NUMBER = "1.2";
             paperRollData3.OSP_BATCH_NO = "";
-            paperRollData3.ITEM_DESCRIPTION = "4FHIZA02000787RL00";
+            paperRollData3.ITEM_NUMBER = "4FHIZA02000787RL00";
             paperRollData3.TMP_ITEM_NUMBER = "";
             paperRollData3.PAPER_TYPE = "FHIZ";
             paperRollData3.BASIC_WEIGHT = "02000";
@@ -145,32 +146,34 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
 
         }
 
-        public static int getDataCount(long TripDetailDT_ID)
+        public static int getDataCount(long DlvHeaderId)
         {
             var query = from data in PaperRollEditData.model
-                        where TripDetailDT_ID == data.TripDetailDT_ID
+                        where DlvHeaderId == data.DlvHeaderId
                         select data;
             List<PaperRollEditDT> list = query.ToList<PaperRollEditDT>();
             return list.Count;
         }
 
-        public static List<PaperRollEditDT> getDataList(long TripDetailDT_ID)
+        public List<PaperRollEditDT> GetRollDetailDT(DeliveryUOW uow, long DlvHeaderId)
         {
-            var query = from data in PaperRollEditData.model
-                        where data.TripDetailDT_ID == TripDetailDT_ID
-                        select data;
-            List<PaperRollEditDT> list = query.ToList<PaperRollEditDT>();
-            return list;
+
+            return uow.GetRollDetailDT(DlvHeaderId);
+            //var query = from data in PaperRollEditData.model
+            //            where data.DlvHeaderId == DlvHeaderId
+            //            select data;
+            //List<PaperRollEditDT> list = query.ToList<PaperRollEditDT>();
+            //return list;
         }
 
 
         //Barcode 123
-        public static void updateA006(long PaperRollEditDT_ID, long TripDetailDT_ID)
+        public static void updateA006(long PaperRollEditDT_ID, long DlvHeaderId)
         {
             decimal addQty = 1000;
             foreach (PaperRollEditDT obj in model)
             {
-                if (obj.ID == PaperRollEditDT_ID && obj.TripDetailDT_ID == TripDetailDT_ID)
+                if (obj.ID == PaperRollEditDT_ID && obj.DlvHeaderId == DlvHeaderId)
                 {
                     decimal newQty = Convert.ToDecimal(obj.PICKED_QUANTITY) + addQty;
                     obj.PICKED_QUANTITY = newQty;
@@ -181,12 +184,12 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
         }
 
         //Barcode 456
-        public static void updateB001(long PaperRollEditDT_ID, long TripDetailDT_ID)
+        public static void updateB001(long PaperRollEditDT_ID, long DlvHeaderId)
         {
             decimal addQty = 1000;
             foreach (PaperRollEditDT obj in model)
             {
-                if (obj.ID == PaperRollEditDT_ID && obj.TripDetailDT_ID == TripDetailDT_ID)
+                if (obj.ID == PaperRollEditDT_ID && obj.DlvHeaderId == DlvHeaderId)
                 {
                     decimal newQty = Convert.ToDecimal(obj.PICKED_QUANTITY) + addQty;
                     obj.PICKED_QUANTITY = newQty;
@@ -197,12 +200,12 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
         }
 
         //Barcode 130 跟 1230 不同訂單編號
-        public static void updateA006s(long PaperRollEditDT_ID, long TripDetailDT_ID)
+        public static void updateA006s(long PaperRollEditDT_ID, long DlvHeaderId)
         {
             decimal addQty = 1000;
             foreach (PaperRollEditDT obj in model)
             {
-                if (obj.ID == PaperRollEditDT_ID && obj.TripDetailDT_ID == TripDetailDT_ID)
+                if (obj.ID == PaperRollEditDT_ID && obj.DlvHeaderId == DlvHeaderId)
                 {
                     decimal newQty = Convert.ToDecimal(obj.PICKED_QUANTITY) + addQty;
                     obj.PICKED_QUANTITY = newQty;
@@ -213,12 +216,12 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
         }
 
 
-        public static void remove(long PaperRollEditDT_ID, long TripDetailDT_ID)
+        public static void remove(long PaperRollEditDT_ID, long DlvHeaderId)
         {
             decimal addQty = -1000;
             foreach (PaperRollEditDT obj in model)
             {
-                if (obj.ID == PaperRollEditDT_ID && obj.TripDetailDT_ID == TripDetailDT_ID)
+                if (obj.ID == PaperRollEditDT_ID && obj.DlvHeaderId == DlvHeaderId)
                 {
                     decimal newQty = Convert.ToDecimal(obj.PICKED_QUANTITY) + addQty;
                     obj.PICKED_QUANTITY = newQty;
@@ -228,12 +231,12 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
             }
         }
 
-        public static void removeA006(long PaperRollEditDT_ID, long TripDetailDT_ID)
+        public static void removeA006(long PaperRollEditDT_ID, long DlvHeaderId)
         {
             decimal addQty = -1000;
             foreach (PaperRollEditDT obj in model)
             {
-                if (obj.ID == PaperRollEditDT_ID && obj.TripDetailDT_ID == TripDetailDT_ID)
+                if (obj.ID == PaperRollEditDT_ID && obj.DlvHeaderId == DlvHeaderId)
                 {
                     decimal newQty = Convert.ToDecimal(obj.PICKED_QUANTITY) + addQty;
                     obj.PICKED_QUANTITY = newQty;
@@ -243,12 +246,12 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
             }
         }
 
-        public static void removeB001(long PaperRollEditDT_ID, long TripDetailDT_ID)
+        public static void removeB001(long PaperRollEditDT_ID, long DlvHeaderId)
         {
             decimal addQty = -1000;
             foreach (PaperRollEditDT obj in model)
             {
-                if (obj.ID == PaperRollEditDT_ID && obj.TripDetailDT_ID == TripDetailDT_ID)
+                if (obj.ID == PaperRollEditDT_ID && obj.DlvHeaderId == DlvHeaderId)
                 {
                     decimal newQty = Convert.ToDecimal(obj.PICKED_QUANTITY) + addQty;
                     obj.PICKED_QUANTITY = newQty;
@@ -258,12 +261,12 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
             }
         }
 
-        public static void removeA006s(long PaperRollEditDT_ID, long TripDetailDT_ID)
+        public static void removeA006s(long PaperRollEditDT_ID, long DlvHeaderId)
         {
             decimal addQty = -1000;
             foreach (PaperRollEditDT obj in model)
             {
-                if (obj.ID == PaperRollEditDT_ID && obj.TripDetailDT_ID == TripDetailDT_ID)
+                if (obj.ID == PaperRollEditDT_ID && obj.DlvHeaderId == DlvHeaderId)
                 {
                     decimal newQty = Convert.ToDecimal(obj.PICKED_QUANTITY) + addQty;
                     obj.PICKED_QUANTITY = newQty;
@@ -276,7 +279,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
         public static bool checkBarcodeItemDesc(long PaperRollEditDT_ID, string ITEM_DESCRIPTION)
         {
             var query = from data in PaperRollEditData.model
-                        where PaperRollEditDT_ID == data.ID && ITEM_DESCRIPTION == data.ITEM_DESCRIPTION
+                        where PaperRollEditDT_ID == data.ID && ITEM_DESCRIPTION == data.ITEM_NUMBER
                         select data;
             List<PaperRollEditDT> list = query.ToList<PaperRollEditDT>();
             if (list.Count > 0)
@@ -290,7 +293,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
         }
 
         //檢查交運單是否揀完
-        public static bool checkDeliveryPickComplete(long TripDetailDT_ID)
+        public static bool checkDeliveryPickComplete(long DlvHeaderId)
         {
             //var query = from data in PaperRollEditData.model
             //            where data.PICKED_QUANTITY == data.REQUESTED_QUANTITY
@@ -307,12 +310,12 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
             //}
 
             var query = from data in PaperRollEditData.model
-                        where data.TripDetailDT_ID == TripDetailDT_ID
-                        group data by new { data.TripDetailDT_ID } into g
+                        where data.DlvHeaderId == DlvHeaderId
+                        group data by new { DlvHeaderId = data.DlvHeaderId } into g
                         select g.Sum(p => p.PICKED_QUANTITY);
 
             var query2 = from data in TripHeaderData.source
-                         where data.Id == TripDetailDT_ID
+                         where data.Id == DlvHeaderId
                          select data.REQUESTED_QUANTITY;
 
             if (query.ToList()[0] == query2.ToList()[0])
@@ -362,7 +365,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
                 case 5:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.TMP_ITEM_NUMBER) : models.OrderBy(x => x.TMP_ITEM_NUMBER);
                 case 6:
-                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.ITEM_DESCRIPTION) : models.OrderBy(x => x.ITEM_DESCRIPTION);
+                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.ITEM_NUMBER) : models.OrderBy(x => x.ITEM_NUMBER);
                 case 7:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.PAPER_TYPE) : models.OrderBy(x => x.PAPER_TYPE);
                 case 8:
@@ -403,7 +406,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
                 case 5:
                     return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.TMP_ITEM_NUMBER) : models.ThenBy(x => x.TMP_ITEM_NUMBER);
                 case 6:
-                    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.ITEM_DESCRIPTION) : models.ThenBy(x => x.ITEM_DESCRIPTION);
+                    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.ITEM_NUMBER) : models.ThenBy(x => x.ITEM_NUMBER);
                 case 7:
                     return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.PAPER_TYPE) : models.ThenBy(x => x.PAPER_TYPE);
                 case 8:

@@ -56,10 +56,10 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
     {
         public static List<FlatEditBarcodeDT> model = new List<FlatEditBarcodeDT>();
 
-        public static List<FlatEditBarcodeDT> getModel(long TripDetailDT_ID) //DELIVERY_HEADER_ID
+        public static List<FlatEditBarcodeDT> getModel(long DlvHeaderId) //DELIVERY_HEADER_ID
         {
             var query = from data in model
-                        where TripDetailDT_ID == data.FlatEditDT_ID
+                        where DlvHeaderId == data.FlatEditDT_ID
                         select data;
             List<FlatEditBarcodeDT> list = query.ToList<FlatEditBarcodeDT>();
             return list;

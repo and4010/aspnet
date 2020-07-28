@@ -152,7 +152,7 @@ $(document).ready(function () {
             "type": "POST",
             "datatype": "json",
             "data": {
-                TripDetailDT_ID: $("#TripDetailDT_ID").text()
+                DlvHeaderId: $("#DlvHeaderId").text()
             },
         },
         columns: [
@@ -288,7 +288,7 @@ $(document).ready(function () {
             type: "post",
             data: {
                 'PICKED_ID': list,
-                TripDetailDT_ID: $("#TripDetailDT_ID").text()
+                DlvHeaderId: $("#DlvHeaderId").text()
             },
             success: function (data) {
                 if (data.status) {
@@ -336,7 +336,7 @@ $(document).ready(function () {
             data: {
                 'BARCODE': BARCODE,
                 'SECONDARY_QUANTITY': SECONDARY_QUANTITY,
-                TripDetailDT_ID: $("#TripDetailDT_ID").text(),
+                DlvHeaderId: $("#DlvHeaderId").text(),
                 FlatEditDT_ID: $("#FlatEditDT_ID").text()
             },
             success: function (data) {

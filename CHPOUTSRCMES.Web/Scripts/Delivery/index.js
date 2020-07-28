@@ -70,10 +70,23 @@ $(document).ready(function () {
                     //'TRANSACTION_AUTHORIZE_DATEs': dates
                     'TripDetailDTList': TripDetailDTList
                 }
-
-
                 return JSON.stringify(data);
             },
+            success: function (data) {
+                if (data.status) {
+                    TripDataTablesBody.ajax.reload(null, false);
+                }
+                else {
+                    swal.fire(data.result);
+                }
+            },
+            error: function () {
+                swal.fire('更新出貨核准日失敗');
+            },
+            complete: function (data) {
+
+
+            }
         },
         //formOptions: {
         //    main: {
@@ -150,7 +163,7 @@ $(document).ready(function () {
             "<'row'<'col-sm-12'tr>>" +
             "<'row'<'col-sm-5'i><'col-sm-7'p>>",
         ajax: {
-            "url": "/Delivery/GetTripDetail",
+            "url": "/Delivery/DeliverySearch",
             "type": "POST",
             "datatype": "json",
             "data": function (d) {

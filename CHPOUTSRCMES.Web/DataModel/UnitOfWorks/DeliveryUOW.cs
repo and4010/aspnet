@@ -15,6 +15,7 @@ using NLog;
 using CHPOUTSRCMES.Web.Models.Delivery;
 using System.Text;
 using System.Data.SqlClient;
+using CHPOUTSRCMES.Web.Models;
 
 namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
 {
@@ -55,9 +56,9 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
         //     new SelectListItem() { Text = "已出貨", Value = "5" }
         //};
 
-        private Dictionary<string, string> DeliveryStatusDictionary = new Dictionary<string, string>()
+        public static Dictionary<string, string> DeliveryStatusDictionary = new Dictionary<string, string>()
         {
-            {DeliveryStatusCode.Cancle, "取消"},
+            {DeliveryStatusCode.Canceled, "已取消"},
             {DeliveryStatusCode.Unprinted, "未印"},
             {DeliveryStatusCode.UnPicked, "待出"},
             {DeliveryStatusCode.Picked, "已揀"},
@@ -73,9 +74,9 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
         public static class DeliveryStatusCode
         {
             /// <summary>
-            /// 取消
+            /// 已取消
             /// </summary>
-            public const string Cancle = "0";
+            public const string Canceled = "0";
             /// <summary>
             /// 未印
             /// </summary>
@@ -373,7 +374,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             var deliveryStatusList = new List<SelectListItem>();
             try
             {
-                deliveryStatusList.Add(new SelectListItem() { Text = DeliveryStatusDictionary[DeliveryStatusCode.Cancle], Value = DeliveryStatusCode.Cancle });
+                deliveryStatusList.Add(new SelectListItem() { Text = DeliveryStatusDictionary[DeliveryStatusCode.Canceled], Value = DeliveryStatusCode.Canceled });
                 deliveryStatusList.Add(new SelectListItem() { Text = DeliveryStatusDictionary[DeliveryStatusCode.Unprinted], Value = DeliveryStatusCode.Unprinted });
                 deliveryStatusList.Add(new SelectListItem() { Text = DeliveryStatusDictionary[DeliveryStatusCode.UnPicked], Value = DeliveryStatusCode.UnPicked });
                 deliveryStatusList.Add(new SelectListItem() { Text = DeliveryStatusDictionary[DeliveryStatusCode.Picked], Value = DeliveryStatusCode.Picked });
@@ -441,7 +442,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             List<SqlParameter> sqlParameterList = new List<SqlParameter>();
             List<string> cond = new List<string>();
             string prefixCmd = @"
-select h.AUTHORIZE_DATE,
+select CONVERT(char(10), h.AUTHORIZE_DATE,126) as AUTHORIZE_DATE,
 h.CUSTOMER_LOCATION_CODE,
 h.CUSTOMER_NAME,
 h.DELIVERY_NAME,
@@ -472,13 +473,13 @@ on h.DLV_HEADER_ID = d.DLV_HEADER_ID";
             if (shipBeginDateStatus != false)
             {
                 cond.Add("@shipBeginDate <= h.TRIP_ACTUAL_SHIP_DATE");
-                sqlParameterList.Add(new SqlParameter("@shipBeginDate", shipBeginDate) { SqlDbType = System.Data.SqlDbType.DateTime });
+                sqlParameterList.Add(SqlParamHelper.GetDataTime("@shipBeginDate", shipBeginDate));
             }
 
             if (shipEndDateStatus != false)
             {
                 cond.Add("h.TRIP_ACTUAL_SHIP_DATE <= @shipEndDate");
-                sqlParameterList.Add(new SqlParameter("@shipEndDate", shipEndDate) { SqlDbType = System.Data.SqlDbType.DateTime });
+                sqlParameterList.Add(SqlParamHelper.GetDataTime("@shipEndDate", shipEndDate));
             }
             if (DeliveryName != "")
             {
@@ -488,7 +489,7 @@ on h.DLV_HEADER_ID = d.DLV_HEADER_ID";
             if (SelectedSubinventory != "*")
             {
                 cond.Add("h.SUBINVENTORY_CODE = @SelectedSubinventory");
-                sqlParameterList.Add(new SqlParameter("@SelectedSubinventory", SelectedSubinventory));
+                sqlParameterList.Add(SqlParamHelper.R.SubinventoryCode("@SelectedSubinventory", SelectedSubinventory));
             }
             if (SelectedTrip != "*")
             {
@@ -498,7 +499,7 @@ on h.DLV_HEADER_ID = d.DLV_HEADER_ID";
             if (transactionDateStatus != false)
             {
                 cond.Add("h.TRANSACTION_DATE <= @tdate");
-                sqlParameterList.Add(new SqlParameter("@tdate", tdate) { SqlDbType = System.Data.SqlDbType.DateTime });
+                sqlParameterList.Add(SqlParamHelper.GetDataTime("@tdate", tdate));
             }
             if (SelectedDeliveryStatus != "*")
             {
@@ -567,41 +568,161 @@ on h.DLV_HEADER_ID = d.DLV_HEADER_ID";
             //return tempList;
         }
 
-
-        public void UpdateDeliveryStatus(List<long> dlvHeaderIds, string deliveryStatusCode)
+        /// <summary>
+        /// 取不重複的TripId
+        /// </summary>
+        /// <param name="dlvHeaderIds"></param>
+        /// <returns></returns>
+        public List<long> GetTripIdList(List<long> dlvHeaderIds)
         {
-            //取選擇所有選擇的TripId
-            List<long> tripIds = dlvHeaderTRepositiory.GetAll().AsNoTracking().Where(x => dlvHeaderIds.Contains(x.DlvHeaderId)).GroupBy(x => x.TripId).Select(x => x.Key).ToList();
-            if (tripIds.Count > 0)
-            {
-                //取所有要更新狀態的資料
-                var updateDatas = dlvHeaderTRepositiory.GetAll().AsNoTracking().Where(x => tripIds.Contains(x.TripId)).ToList();
-                if (updateDatas.Count == 0) return;
+            return dlvHeaderTRepositiory.GetAll().AsNoTracking().Where(x => dlvHeaderIds.Contains(x.DlvHeaderId)).GroupBy(x => x.TripId).Select(x => x.Key).ToList();
+        }
 
-                using (var txn = this.Context.Database.BeginTransaction())
+        /// <summary>
+        /// 取DLV_HEADER_T 資料
+        /// </summary>
+        /// <param name="dlvHeaderIds"></param>
+        /// <returns></returns>
+        public List<DLV_HEADER_T> GetDeliveryHeaderDataListFromTripId(List<long> tripIds)
+        {
+            return dlvHeaderTRepositiory.GetAll().AsNoTracking().Where(x => tripIds.Contains(x.TripId)).ToList();
+        }
+
+        /// <summary>
+        /// 取DLV_HEADER_T 資料
+        /// </summary>
+        /// <param name="dlvHeaderIds"></param>
+        /// <returns></returns>
+        public List<DLV_HEADER_T> GetDeliveryHeaderDataListFromHeaderId(long dlvHeaderId)
+        {
+            return dlvHeaderTRepositiory.GetAll().AsNoTracking().Where(x => dlvHeaderId == x.DlvHeaderId).ToList();
+        }
+
+        /// <summary>
+        /// 取DLV_DETAIL_T 資料
+        /// </summary>
+        /// <param name="dlvHeaderIds"></param>
+        /// <returns></returns>
+        public List<DLV_DETAIL_T> GetDeliveryDetailDataListFromHeaderId(long dlvHeaderId)
+        {
+            return dlvDetailTRepositiory.GetAll().AsNoTracking().Where(x => dlvHeaderId == x.DlvHeaderId).ToList();
+        }
+
+#region 捲筒
+        public List<PaperRollEditDT> GetRollDetailDT(long dlvHeaderId)
+        {
+            string cmd = @"
+select 
+DLV_DETAIL_ID as ID,
+DLV_HEADER_ID as DlvHeaderId,
+ROW_NUMBER() OVER(ORDER BY DLV_DETAIL_ID) AS SUB_ID,
+ORDER_NUMBER,
+ORDER_SHIP_NUMBER,
+OSP_BATCH_NO,
+ITEM_NUMBER,
+TMP_ITEM_NUMBER,
+PAPER_TYPE,
+BASIC_WEIGHT,
+SPECIFICATION,
+REQUESTED_PRIMARY_QUANTITY as REQUESTED_QUANTITY,
+(select SUM(p.PRIMARY_QUANTITY) from DLV_PICKED_T p
+inner join DLV_DETAIL_T d
+on p.DLV_DETAIL_ID = d.DLV_DETAIL_ID
+) as PICKED_QUANTITY,
+REQUESTED_PRIMARY_UOM as REQUESTED_QUANTITY_UOM,
+REQUESTED_TRANSACTION_QUANTITY as SRC_REQUESTED_QUANTITY,
+(select SUM(p.TRANSACTION_QUANTITY) from DLV_PICKED_T p
+inner join DLV_DETAIL_T d
+on p.DLV_DETAIL_ID = d.DLV_DETAIL_ID
+) as SRC_PICKED_QUANTITY,
+REQUESTED_TRANSACTION_UOM as SRC_REQUESTED_QUANTITY_UOM
+from DLV_DETAIL_T";
+
+            return this.Context.Database.SqlQuery<PaperRollEditDT>(cmd).ToList();
+
+        }
+
+
+#endregion
+        
+
+
+        /// <summary>
+        /// 更新交運單狀態
+        /// </summary>
+        /// <param name="updateDatas"></param>
+        /// <param name="deliveryStatusCode"></param>
+        /// <returns></returns>
+        public ResultModel UpdateDeliveryStatus(List<DLV_HEADER_T> updateDatas, string deliveryStatusCode)
+        {
+            if (updateDatas == null) return new ResultModel(false, "沒有交運單資料");
+            if (updateDatas.Count == 0) return new ResultModel(false, "沒有交運單資料");
+            using (var txn = this.Context.Database.BeginTransaction())
+            {
+                try
                 {
-                    try
+                    foreach (DLV_HEADER_T data in updateDatas)
                     {
-                        foreach (DLV_HEADER_T data in updateDatas)
-                        {
-                            data.DeliveryStatusCode = deliveryStatusCode;
-                            data.DeliveryStatusName = DeliveryStatusDictionary[deliveryStatusCode];
-                            dlvHeaderTRepositiory.Update(data);
-                        }
-                        dlvHeaderTRepositiory.SaveChanges();
+                        data.DeliveryStatusCode = deliveryStatusCode;
+                        data.DeliveryStatusName = DeliveryStatusDictionary[deliveryStatusCode];
+                        dlvHeaderTRepositiory.Update(data);
                     }
-                    catch (Exception ex)
-                    {
-                        logger.Error(LogUtilities.BuildExceptionMessage(ex));
-                        txn.Rollback();
-                    }
+                    dlvHeaderTRepositiory.SaveChanges();
+                    txn.Commit();
+                    return new ResultModel(true, "交運單狀態更新成功");
+                }
+                catch (Exception ex)
+                {
+                    logger.Error(LogUtilities.BuildExceptionMessage(ex));
+                    txn.Rollback();
+                    return new ResultModel(true, "交運單狀態更新失敗:" + ex.Message);
                 }
             }
         }
 
-        public void UpdateTransactionAuthorizeDates()
+       
+       
+        /// <summary>
+        /// 更新出貨核准日
+        /// </summary>
+        /// <param name="selectDatas"></param>
+        /// <returns></returns>
+        public ResultModel UpdateTransactionAuthorizeDates(TripDetailDTEditor selectDatas)
         {
+            //List<TripHeaderDT> result = new List<TripHeaderDT>();
 
+            //dlvHeaderTRepositiory.GetAll().AsNoTracking().Where(x => data.TripDetailDTList.  .Contains(x.DlvHeaderId)).GroupBy(x => x.TripId).Select(x => x.Key).ToList();
+
+            using (var txn = this.Context.Database.BeginTransaction())
+            {
+                try
+                {
+                    foreach (var selectData in selectDatas.TripDetailDTList)
+                    {
+                        var updateDatas = dlvHeaderTRepositiory.GetAll().AsNoTracking().Where(x => x.TripId == selectData.TRIP_ID).ToList();
+                        if (updateDatas.Count == 0)
+                        {
+                            continue;
+                        }
+
+                        foreach (DLV_HEADER_T data in updateDatas)
+                        {
+                            data.AuthorizeDate = Convert.ToDateTime(selectData.AUTHORIZE_DATE);
+                            //result.Add(data);
+                            dlvHeaderTRepositiory.Update(data);
+                        }
+                    }
+                    dlvHeaderTRepositiory.SaveChanges();
+                    txn.Commit();
+                    return new ResultModel(true, "更新出貨核准日成功");
+                }
+                catch (Exception ex)
+                {
+                    logger.Error(LogUtilities.BuildExceptionMessage(ex));
+                    txn.Rollback();
+                    return new ResultModel(false, "更新出貨核准日失敗:" + ex.Message);
+                }
+            }
         }
     }
 
