@@ -97,6 +97,13 @@ namespace CHPOUTSRCMES.Web.DataModel
         /// </summary>
         public DbSet<TRANSACTION_TYPE_T> TransactionTypeTs { set; get; }
 
+        #region 庫存
+        public DbSet<STOCK_T> STOCK_Ts { set; get; }
+
+        public DbSet<STOCK_HT> STOCK_HTs { set; get; }
+
+        #endregion
+
         #region 條碼檔
 
         /// <summary>

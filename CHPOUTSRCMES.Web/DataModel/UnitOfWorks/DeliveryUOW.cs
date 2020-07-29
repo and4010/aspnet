@@ -103,7 +103,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
         {
             try
             {
-                #region 第一筆測試資料
+                #region 第一筆測試資料 平版 令包
                 //DliveryHeaderRepositiory.getContext().Configuration.AutoDetectChangesEnabled = false;
                 dlvHeaderTRepositiory.Create(new DLV_HEADER_T()
                 {
@@ -153,15 +153,15 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                     OrderLineId = 1,
                     OrderShipNumber = "1.2",
                     PackingType = "令包",
-                    InventoryItemId = 1,
-                    ItemNumber = "4A003A01000310K266K",
-                    ItemDescription = "123",
-                    ReamWeight = "58.97",
+                    InventoryItemId = 504029,
+                    ItemNumber = "4DM00A03500214K512K",
+                    ItemDescription = "全塗灰銅卡",
+                    ReamWeight = "274.27",
                     ItemCategory = "平版",
-                    PaperType = "A003",
-                    BasicWeight = "01000",
-                    Specification = "310K266K",
-                    GrainDirection = "1",
+                    PaperType = "DM00",
+                    BasicWeight = "03500",
+                    Specification = "214K512K",
+                    GrainDirection = "L",
                     LocatorId = null,
                     LocatorCode = null,
                     SrcRequestedQuantity = 1.33742M,
@@ -185,7 +185,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                 }, true);
                 #endregion
 
-                #region 第二筆測試資料
+                #region 第二筆測試資料 平版 無令打件
                 dlvHeaderTRepositiory.Create(new DLV_HEADER_T()
                 {
                     DlvHeaderId = 2,
@@ -233,15 +233,15 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                     OrderLineId = 2,
                     OrderShipNumber = "1.1",
                     PackingType = "無令打件",
-                    InventoryItemId = 2,
-                    ItemNumber = "4AB23P00699350K250K",
-                    ItemDescription = "123",
-                    ReamWeight = "43.5",
+                    InventoryItemId = 505675,
+                    ItemNumber = "4DM00P0270008271130",
+                    ItemDescription = "全塗灰銅卡",
+                    ReamWeight = "278.13",
                     ItemCategory = "平版",
-                    PaperType = "AB23",
-                    BasicWeight = "00699",
-                    Specification = "350K250K",
-                    GrainDirection = "2",
+                    PaperType = "DM00",
+                    BasicWeight = "02700",
+                    Specification = "08271130",
+                    GrainDirection = "L",
                     LocatorId = null,
                     LocatorCode = null,
                     SrcRequestedQuantity = 0.37489M,
@@ -265,7 +265,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                 }, true);
                 #endregion
 
-                #region 第三筆測試資料
+                #region 第三筆測試資料 捲筒
                 dlvHeaderTRepositiory.Create(new DLV_HEADER_T()
                 {
                     DlvHeaderId = 3,
@@ -313,15 +313,15 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                     OrderLineId = 3,
                     OrderShipNumber = "1.1",
                     PackingType = "",
-                    InventoryItemId = 3,
-                    ItemNumber = "4FHIZA03000787RL00",
-                    ItemDescription = "123",
-                    ReamWeight = "43.5",
+                    InventoryItemId = 558705,
+                    ItemNumber = "4AH00A00900362KRL00",
+                    ItemDescription = "捲筒琉麗",
+                    ReamWeight = "2.2",
                     ItemCategory = "捲筒",
-                    PaperType = "FHIZ",
-                    BasicWeight = "03000",
-                    Specification = "787RL00",
-                    GrainDirection = "2",
+                    PaperType = "AH00",
+                    BasicWeight = "00900",
+                    Specification = "362KRL00",
+                    GrainDirection = "X",
                     LocatorId = null,
                     LocatorCode = null,
                     SrcRequestedQuantity = 1M,
@@ -706,8 +706,11 @@ DLV_HEADER_ID as DlvHeaderId,
 ROW_NUMBER() OVER(ORDER BY DLV_DETAIL_ID) AS SUB_ID,
 ORDER_NUMBER,
 ORDER_SHIP_NUMBER,
+OSP_BATCH_ID,
 OSP_BATCH_NO,
+INVENTORY_ITEM_ID,
 ITEM_NUMBER,
+TMP_ITEM_ID,
 TMP_ITEM_NUMBER,
 PAPER_TYPE,
 BASIC_WEIGHT,
@@ -725,7 +728,24 @@ where DLV_HEADER_ID = @DLV_HEADER_ID";
 
         }
 
+        public List<PaperRollEditBarcodeDT> GetRollPickDT(long dlvHeaderId)
+        {
+            string cmd = @"
+select
+DLV_PICKED_ID as PICKED_ID,
+ROW_NUMBER() OVER(ORDER BY DLV_DETAIL_ID) AS SUB_ID,
+DLV_HEADER_ID as DlvHeaderId,
+DLV_DETAIL_ID as PaperRollEditDT_ID,
+ITEM_NUMBER,
+BARCODE,
+PRIMARY_QUANTITY,
+PRIMARY_UOM
+from DLV_PICKED_T
+where DLV_HEADER_ID = @DLV_HEADER_ID";
 
+            return this.Context.Database.SqlQuery<PaperRollEditBarcodeDT>(cmd, new SqlParameter("@DLV_HEADER_ID", dlvHeaderId)).ToList();
+
+        }
         #endregion
 
 
@@ -744,8 +764,11 @@ DLV_DETAIL_ID as ID,
 ROW_NUMBER() OVER(ORDER BY DLV_DETAIL_ID) AS SUB_ID,
 ORDER_NUMBER,
 ORDER_SHIP_NUMBER,
+OSP_BATCH_ID,
 OSP_BATCH_NO,
+INVENTORY_ITEM_ID,
 ITEM_NUMBER,
+TMP_ITEM_ID,
 TMP_ITEM_NUMBER,
 REAM_WEIGHT,
 PACKING_TYPE,
@@ -765,9 +788,30 @@ where DLV_HEADER_ID = @DLV_HEADER_ID";
 
         }
 
+        public List<FlatEditBarcodeDT> GetFlatPickDT(long dlvHeaderId)
+        {
+            string cmd = @"
+select 
+DLV_PICKED_ID as PICKED_ID,
+ROW_NUMBER() OVER(ORDER BY DLV_DETAIL_ID) AS SUB_ID,
+DLV_HEADER_ID as DlvHeaderId,
+DLV_DETAIL_ID as FlatEditDT_ID,
+ITEM_NUMBER,
+BARCODE,
+REAM_WEIGHT,
+PACKING_TYPE,
+PRIMARY_QUANTITY,
+PRIMARY_UOM,
+SECONDARY_QUANTITY,
+SECONDARY_UOM
+from DLV_PICKED_T
+where DLV_HEADER_ID = @DLV_HEADER_ID"; ;
 
+            return this.Context.Database.SqlQuery<FlatEditBarcodeDT>(cmd, new SqlParameter("@DLV_HEADER_ID", dlvHeaderId)).ToList();
+
+        }
         #endregion
     }
 
-
+   
 }

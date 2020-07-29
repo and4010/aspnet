@@ -14,18 +14,34 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
 
         [Display(Name = "訂單編號")]
         public long ORDER_NUMBER { get; set; }
+
         [Display(Name = "訂單行號")]
         public string ORDER_SHIP_NUMBER { get; set; }
+
+        [Display(Name = "工單號碼ID")]
+        public long? OSP_BATCH_ID { get; set; }
+
         [Display(Name = "工單號碼")]
         public string OSP_BATCH_NO { get; set; }
+
+        [Display(Name = "代紙料號ID")]
+        public long? TMP_ITEM_ID { get; set; }
+        
         [Display(Name = "代紙料號")]
         public string TMP_ITEM_NUMBER { get; set; }
-        [Display(Name = "料號名稱")]
-        public string ITEM_NUMBER { get; set; } //要改為ITEM_NUMBER
+
+        [Display(Name = "料號ID")]
+        public long INVENTORY_ITEM_ID { get; set; }
+        
+        [Display(Name = "料號")]
+        public string ITEM_NUMBER { get; set; }
+
         [Display(Name = "令重")]
         public string REAM_WEIGHT { get; set; }
+
         [Display(Name = "包裝方式")]
         public string PACKING_TYPE { get; set; }
+
         [Display(Name = "需求數量")] //預計出庫量 主要數量
         public decimal REQUESTED_QUANTITY { get; set; }
 
@@ -347,7 +363,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
             {
                 foreach (FlatEditDT obj in model)
                 {
-                    if (obj.ID == barcodeData.FlatEditDT_ID)
+                    if (obj.ID == barcodeData.DLV_DETAIL_ID)
                     {
                         decimal newQty = (decimal)obj.PICKED_QUANTITY2 - barcodeData.SECONDARY_QUANTITY;
                         obj.PICKED_QUANTITY = newQty * 10;

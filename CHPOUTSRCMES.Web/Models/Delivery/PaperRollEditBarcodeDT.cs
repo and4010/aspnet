@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.ComponentModel.DataAnnotations;
 using CHPOUTSRCMES.Web.ViewModels;
+using CHPOUTSRCMES.Web.DataModel.UnitOfWorks;
 
 namespace CHPOUTSRCMES.Web.Models.Delivery
 {
@@ -11,12 +12,14 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
     {
         public long PICKED_ID { get; set; }
 
-        public long DlvHeaderId { get; set; } //DELIVERY_HEADER_ID
+        public long SUB_ID { get; set; }
 
-        public long PaperRollEditDT_ID { get; set; } //DELIVERY_DETAIL_ID
+        public long DlvHeaderId { get; set; } //DLV_HEADER_ID
+
+        public long DLV_DETAIL_ID { get; set; } //DLV_DETAIL_ID
 
         [Display(Name = "料號名稱")]
-        public string ITEM_DESCRIPTION { get; set; }
+        public string ITEM_NUMBER { get; set; }
 
         [Display(Name = "條碼號")]
         public string BARCODE { get; set; }
@@ -27,8 +30,8 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
         [Display(Name = "單位")] //主要單位
         public string PRIMARY_UOM { get; set; }
 
-        [Display(Name = "是否代紙")]
-        public string ISTMP { get; set; } //待判斷是否刪掉
+        //[Display(Name = "是否代紙")]
+        //public string ISTMP { get; set; } //待判斷是否刪掉
 
         [Display(Name = "建立人員")]
         public long CREATED_BY { get; set; }
@@ -39,8 +42,8 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
         [Display(Name = "更新日期")]
         public DateTime LAST_UPDATE_DATE { get; set; }
 
-        [Display(Name = "備註")]
-        public string REMARK { get; set; }
+        //[Display(Name = "備註")]
+        //public string REMARK { get; set; }
     }
 
 
@@ -62,22 +65,29 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
             return list;
         }
 
+        public List<PaperRollEditBarcodeDT> GetRollPickDT(DeliveryUOW uow, long DlvHeaderId)
+        {
+
+            return uow.GetRollPickDT(DlvHeaderId);
+
+        }
+
         public static void addBarcode123(long PaperRollEditDT_ID, long DlvHeaderId)
         {
             PaperRollEditBarcodeDT paperRollEditBarcodeDT = new PaperRollEditBarcodeDT();
             paperRollEditBarcodeDT.BARCODE = "W2005060001";
-            paperRollEditBarcodeDT.ITEM_DESCRIPTION = "4FHIZA03000787RL00";
+            paperRollEditBarcodeDT.ITEM_NUMBER = "4FHIZA03000787RL00";
             paperRollEditBarcodeDT.DlvHeaderId = DlvHeaderId;
-            paperRollEditBarcodeDT.PaperRollEditDT_ID = PaperRollEditDT_ID;
+            paperRollEditBarcodeDT.DLV_DETAIL_ID = PaperRollEditDT_ID;
             paperRollEditBarcodeDT.PICKED_ID = 1;
             paperRollEditBarcodeDT.PRIMARY_QUANTITY = 1000;
             paperRollEditBarcodeDT.PRIMARY_UOM = "KG";
-            paperRollEditBarcodeDT.ISTMP = "";
+            //paperRollEditBarcodeDT.ISTMP = "";
             paperRollEditBarcodeDT.CREATED_BY = 1;
             paperRollEditBarcodeDT.CREATION_DATE = DateTime.Now;
             paperRollEditBarcodeDT.LAST_UPDATED_BY = 1;
             paperRollEditBarcodeDT.LAST_UPDATE_DATE = DateTime.Now;
-            paperRollEditBarcodeDT.REMARK = "";
+            //paperRollEditBarcodeDT.REMARK = "";
             model.Add(paperRollEditBarcodeDT);
         }
 
@@ -85,18 +95,18 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
         {
             PaperRollEditBarcodeDT paperRollEditBarcodeDT = new PaperRollEditBarcodeDT();
             paperRollEditBarcodeDT.BARCODE = "W2005060004";
-            paperRollEditBarcodeDT.ITEM_DESCRIPTION = "4FHIZA03000787RL00";
+            paperRollEditBarcodeDT.ITEM_NUMBER = "4FHIZA03000787RL00";
             paperRollEditBarcodeDT.DlvHeaderId = DlvHeaderId;
-            paperRollEditBarcodeDT.PaperRollEditDT_ID = PaperRollEditDT_ID;
+            paperRollEditBarcodeDT.DLV_DETAIL_ID = PaperRollEditDT_ID;
             paperRollEditBarcodeDT.PICKED_ID = 2;
             paperRollEditBarcodeDT.PRIMARY_QUANTITY = 1000;
             paperRollEditBarcodeDT.PRIMARY_UOM = "KG";
-            paperRollEditBarcodeDT.ISTMP = "";
+            //paperRollEditBarcodeDT.ISTMP = "";
             paperRollEditBarcodeDT.CREATED_BY = 1;
             paperRollEditBarcodeDT.CREATION_DATE = DateTime.Now;
             paperRollEditBarcodeDT.LAST_UPDATED_BY = 1;
             paperRollEditBarcodeDT.LAST_UPDATE_DATE = DateTime.Now;
-            paperRollEditBarcodeDT.REMARK = "";
+            //paperRollEditBarcodeDT.REMARK = "";
             model.Add(paperRollEditBarcodeDT);
         }
 
@@ -104,18 +114,18 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
         {
             PaperRollEditBarcodeDT paperRollEditBarcodeDT = new PaperRollEditBarcodeDT();
             paperRollEditBarcodeDT.BARCODE = "W2005060002";
-            paperRollEditBarcodeDT.ITEM_DESCRIPTION = "4FHIZA02500787RL00";
+            paperRollEditBarcodeDT.ITEM_NUMBER = "4FHIZA02500787RL00";
             paperRollEditBarcodeDT.DlvHeaderId = DlvHeaderId;
-            paperRollEditBarcodeDT.PaperRollEditDT_ID = PaperRollEditDT_ID;
+            paperRollEditBarcodeDT.DLV_DETAIL_ID = PaperRollEditDT_ID;
             paperRollEditBarcodeDT.PICKED_ID = 3;
             paperRollEditBarcodeDT.PRIMARY_QUANTITY = 1000;
             paperRollEditBarcodeDT.PRIMARY_UOM = "KG";
-            paperRollEditBarcodeDT.ISTMP = "是";
+            //paperRollEditBarcodeDT.ISTMP = "是";
             paperRollEditBarcodeDT.CREATED_BY = 1;
             paperRollEditBarcodeDT.CREATION_DATE = DateTime.Now;
             paperRollEditBarcodeDT.LAST_UPDATED_BY = 1;
             paperRollEditBarcodeDT.LAST_UPDATE_DATE = DateTime.Now;
-            paperRollEditBarcodeDT.REMARK = "";
+            //paperRollEditBarcodeDT.REMARK = "";
             model.Add(paperRollEditBarcodeDT);
         }
 
@@ -123,18 +133,18 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
         {
             PaperRollEditBarcodeDT paperRollEditBarcodeDT = new PaperRollEditBarcodeDT();
             paperRollEditBarcodeDT.BARCODE = "W2005060005";
-            paperRollEditBarcodeDT.ITEM_DESCRIPTION = "4FHIZA02500787RL00";
+            paperRollEditBarcodeDT.ITEM_NUMBER = "4FHIZA02500787RL00";
             paperRollEditBarcodeDT.DlvHeaderId = DlvHeaderId;
-            paperRollEditBarcodeDT.PaperRollEditDT_ID = PaperRollEditDT_ID;
+            paperRollEditBarcodeDT.DLV_DETAIL_ID = PaperRollEditDT_ID;
             paperRollEditBarcodeDT.PICKED_ID = 4;
             paperRollEditBarcodeDT.PRIMARY_QUANTITY = 1000;
             paperRollEditBarcodeDT.PRIMARY_UOM = "KG";
-            paperRollEditBarcodeDT.ISTMP = "是";
+            //paperRollEditBarcodeDT.ISTMP = "是";
             paperRollEditBarcodeDT.CREATED_BY = 1;
             paperRollEditBarcodeDT.CREATION_DATE = DateTime.Now;
             paperRollEditBarcodeDT.LAST_UPDATED_BY = 1;
             paperRollEditBarcodeDT.LAST_UPDATE_DATE = DateTime.Now;
-            paperRollEditBarcodeDT.REMARK = "";
+            //paperRollEditBarcodeDT.REMARK = "";
             model.Add(paperRollEditBarcodeDT);
         }
 
@@ -142,18 +152,18 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
         {
             PaperRollEditBarcodeDT paperRollEditBarcodeDT = new PaperRollEditBarcodeDT();
             paperRollEditBarcodeDT.BARCODE = "W2005060003";
-            paperRollEditBarcodeDT.ITEM_DESCRIPTION = "4FHIZA03000787RL00";
+            paperRollEditBarcodeDT.ITEM_NUMBER = "4FHIZA03000787RL00";
             paperRollEditBarcodeDT.DlvHeaderId = DlvHeaderId;
-            paperRollEditBarcodeDT.PaperRollEditDT_ID = PaperRollEditDT_ID;
+            paperRollEditBarcodeDT.DLV_DETAIL_ID = PaperRollEditDT_ID;
             paperRollEditBarcodeDT.PICKED_ID = 5;
             paperRollEditBarcodeDT.PRIMARY_QUANTITY = 1000;
             paperRollEditBarcodeDT.PRIMARY_UOM = "KG";
-            paperRollEditBarcodeDT.ISTMP = "";
+            //paperRollEditBarcodeDT.ISTMP = "";
             paperRollEditBarcodeDT.CREATED_BY = 1;
             paperRollEditBarcodeDT.CREATION_DATE = DateTime.Now;
             paperRollEditBarcodeDT.LAST_UPDATED_BY = 1;
             paperRollEditBarcodeDT.LAST_UPDATE_DATE = DateTime.Now;
-            paperRollEditBarcodeDT.REMARK = "";
+            //paperRollEditBarcodeDT.REMARK = "";
             model.Add(paperRollEditBarcodeDT);
         }
 
@@ -161,18 +171,18 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
         {
             PaperRollEditBarcodeDT paperRollEditBarcodeDT = new PaperRollEditBarcodeDT();
             paperRollEditBarcodeDT.BARCODE = "W2005060006";
-            paperRollEditBarcodeDT.ITEM_DESCRIPTION = "4FHIZA02000787RL00";
+            paperRollEditBarcodeDT.ITEM_NUMBER = "4FHIZA02000787RL00";
             paperRollEditBarcodeDT.DlvHeaderId = DlvHeaderId;
-            paperRollEditBarcodeDT.PaperRollEditDT_ID = PaperRollEditDT_ID;
+            paperRollEditBarcodeDT.DLV_DETAIL_ID = PaperRollEditDT_ID;
             paperRollEditBarcodeDT.PICKED_ID = 6;
             paperRollEditBarcodeDT.PRIMARY_QUANTITY = 1000;
             paperRollEditBarcodeDT.PRIMARY_UOM = "KG";
-            paperRollEditBarcodeDT.ISTMP = "";
+            //paperRollEditBarcodeDT.ISTMP = "";
             paperRollEditBarcodeDT.CREATED_BY = 1;
             paperRollEditBarcodeDT.CREATION_DATE = DateTime.Now;
             paperRollEditBarcodeDT.LAST_UPDATED_BY = 1;
             paperRollEditBarcodeDT.LAST_UPDATE_DATE = DateTime.Now;
-            paperRollEditBarcodeDT.REMARK = "";
+            //paperRollEditBarcodeDT.REMARK = "";
             model.Add(paperRollEditBarcodeDT);
         }
 
@@ -214,7 +224,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
         {
             var query = from barcode in PaperRollEditBarcodeData.model
                         where PICKED_ID.Contains(barcode.PICKED_ID)
-                        select barcode.ITEM_DESCRIPTION;
+                        select barcode.ITEM_NUMBER;
 
             return query.ToList();
         }
@@ -255,18 +265,18 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
             {
                 default:
                 case 1:
-                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.PaperRollEditDT_ID) : models.OrderBy(x => x.PaperRollEditDT_ID);
+                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.DLV_DETAIL_ID) : models.OrderBy(x => x.DLV_DETAIL_ID);
                 case 2:
-                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.ITEM_DESCRIPTION) : models.OrderBy(x => x.ITEM_DESCRIPTION);
+                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.ITEM_NUMBER) : models.OrderBy(x => x.ITEM_NUMBER);
                 case 3:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.BARCODE) : models.OrderBy(x => x.BARCODE);
                 case 4:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.PRIMARY_QUANTITY) : models.OrderBy(x => x.PRIMARY_QUANTITY);
                 case 5:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.PRIMARY_UOM) : models.OrderBy(x => x.PRIMARY_UOM);
+                //case 6:
+                //    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.REMARK) : models.OrderBy(x => x.REMARK);
                 case 6:
-                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.REMARK) : models.OrderBy(x => x.REMARK);
-                case 7:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.LAST_UPDATE_DATE) : models.OrderBy(x => x.LAST_UPDATE_DATE);
 
             }
@@ -278,18 +288,18 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
             {
                 default:
                 case 1:
-                    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.PaperRollEditDT_ID) : models.ThenBy(x => x.PaperRollEditDT_ID);
+                    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.DLV_DETAIL_ID) : models.ThenBy(x => x.DLV_DETAIL_ID);
                 case 2:
-                    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.ITEM_DESCRIPTION) : models.ThenBy(x => x.ITEM_DESCRIPTION);
+                    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.ITEM_NUMBER) : models.ThenBy(x => x.ITEM_NUMBER);
                 case 3:
                     return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.BARCODE) : models.ThenBy(x => x.BARCODE);
                 case 4:
                     return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.PRIMARY_QUANTITY) : models.ThenBy(x => x.PRIMARY_QUANTITY);
                 case 5:
                     return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.PRIMARY_UOM) : models.ThenBy(x => x.PRIMARY_UOM);
+                //case 6:
+                //    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.REMARK) : models.ThenBy(x => x.REMARK);
                 case 6:
-                    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.REMARK) : models.ThenBy(x => x.REMARK);
-                case 7:
                     return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.LAST_UPDATE_DATE) : models.ThenBy(x => x.LAST_UPDATE_DATE);
 
             }

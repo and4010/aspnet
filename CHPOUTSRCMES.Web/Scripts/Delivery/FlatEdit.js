@@ -27,8 +27,10 @@ $(document).ready(function () {
          { data: null, defaultContent: '', className: 'select-checkbox', orderable: false, width: "40px" },
          { data: "ID", name: "項次", autoWidth: true },
          { data: "ORDER_NUMBER", name: "訂單", autoWidth: true },
-         { data: "ORDER_SHIP_NUMBER", name: "訂單行號", autoWidth: true },
-         { data: "OSP_BATCH_NO", name: "工單號碼", autoWidth: true },
+         { data: "ORDER_SHIP_NUMBER", name: "訂單行號", autoWidth: true },   
+         { data: "OSP_BATCH_ID", name: "代紙工單號碼ID", autoWidth: true, visible: false },
+         { data: "OSP_BATCH_NO", name: "代紙工單號碼", autoWidth: true },
+         { data: "TMP_ITEM_ID", name: "代紙料號ID", autoWidth: true, visible: false },
          { data: "TMP_ITEM_NUMBER", name: "代紙料號", autoWidth: true, className: "dt-body-left" },
          { data: "ITEM_NUMBER", name: "料號", autoWidth: true, className: "dt-body-left" },
          { data: "REAM_WEIGHT", name: "令重", autoWidth: true },
@@ -66,10 +68,12 @@ $(document).ready(function () {
             }
         },
         "preDrawCallback": function (settings) {
-            $("#FlatEditDT_ID").text("");
+            $("#SUB_ID").text("");
+            $("#DLV_DETAIL_ID").text("");
             $("#ORDER_NUMBER").text("");
             $("#ORDER_SHIP_NUMBER").text("");
-            $("#ITEM_DESCRIPTION").text("");
+            $("#INVENTORY_ITEM_ID").text("");
+            $("#ITEM_NUMBER").text("");
             $('#PACKING_TYPE').text("");
         }
 
@@ -77,16 +81,33 @@ $(document).ready(function () {
 
     FlatDataTablesBody.on('select', function (e, dt, type, indexes) {
         if (type === 'row') {
-            var FlatEditDT_ID = dt.rows(indexes).data().pluck('ID')[0];
-            $("#FlatEditDT_ID").text(FlatEditDT_ID);
+            var SUB_ID = dt.rows(indexes).data().pluck('SUB_ID')[0];
+            $("#SUB_ID").text(SUB_ID);
+            var DLV_DETAIL_ID = dt.rows(indexes).data().pluck('ID')[0];
+            $("#DLV_DETAIL_ID").text(DLV_DETAIL_ID);
+            //var FlatEditDT_ID = dt.rows(indexes).data().pluck('ID')[0];
+            //$("#FlatEditDT_ID").text(FlatEditDT_ID);
             var ORDER_NUMBER = dt.rows(indexes).data().pluck('ORDER_NUMBER')[0];
             $("#ORDER_NUMBER").text(ORDER_NUMBER);
             var ORDER_SHIP_NUMBER = dt.rows(indexes).data().pluck('ORDER_SHIP_NUMBER')[0];
             $("#ORDER_SHIP_NUMBER").text(ORDER_SHIP_NUMBER);
-            var ITEM_DESCRIPTION = dt.rows(indexes).data().pluck('ITEM_DESCRIPTION')[0];
-            $("#ITEM_DESCRIPTION").text(ITEM_DESCRIPTION);
+            var TMP_ITEM_ID = dt.rows(indexes).data().pluck('TMP_ITEM_ID')[0];
+            var INVENTORY_ITEM_ID = dt.rows(indexes).data().pluck('INVENTORY_ITEM_ID')[0];
+            if (TMP_ITEM_ID) {
+                $("#INVENTORY_ITEM_ID").text(TMP_ITEM_ID);
+            } else {
+                $("#INVENTORY_ITEM_ID").text(INVENTORY_ITEM_ID);
+            }
+            var TMP_ITEM_NUMBER = dt.rows(indexes).data().pluck('TMP_ITEM_NUMBER')[0];
+            var ITEM_NUMBER = dt.rows(indexes).data().pluck('ITEM_NUMBER')[0];
+            if (TMP_ITEM_NUMBER) {
+                $("#ITEM_NUMBER").text(TMP_ITEM_NUMBER);
+            } else {
+                $("#ITEM_NUMBER").text(ITEM_NUMBER);
+            }
             var PACKING_TYPE = dt.rows(indexes).data().pluck('PACKING_TYPE')[0];
             $('#PACKING_TYPE').text(PACKING_TYPE);
+            
 
             var rowsData = FlatDataTablesBody.rows({ page: 'current' }).data();
             for (i = 0 ; i < rowsData.length; i++) {
@@ -114,10 +135,12 @@ $(document).ready(function () {
 
     FlatDataTablesBody.on('deselect', function (e, dt, type, indexes) {
         if (type === 'row') {
-            $("#FlatEditDT_ID").text("");
+            $("#SUB_ID").text("");
+            $("#DLV_DETAIL_ID").text("");
             $("#ORDER_NUMBER").text("");
             $("#ORDER_SHIP_NUMBER").text("");
-            $("#ITEM_DESCRIPTION").text("");
+            $("#INVENTORY_ITEM_ID").text("");
+            $("#ITEM_NUMBER").text("");
             $("#PACKING_TYPE").text("");
             var PACKING_TYPE = dt.rows(indexes).data().pluck('PACKING_TYPE')[0];
             if (PACKING_TYPE == "令包") {
@@ -156,16 +179,16 @@ $(document).ready(function () {
         },
         columns: [
             { data: null, defaultContent: '', className: 'select-checkbox', orderable: false, width: "40px" },
-         { data: "FlatEditDT_ID", name: "項次", autoWidth: true },
+            { data: "SUB_ID", name: "項次", autoWidth: true },
           { data: "BARCODE", name: "條碼號", autoWidth: true },
-         { data: "ITEM_DESCRIPTION", name: "料號", autoWidth: true, className: "dt-body-left" },
+            { data: "ITEM_NUMBER", name: "料號", autoWidth: true, className: "dt-body-left" },
           { data: "REAM_WEIGHT", name: "令重", autoWidth: true },
          { data: "PACKING_TYPE", name: "包裝方式", autoWidth: true },
          { data: "PRIMARY_QUANTITY", name: "主要數量", autoWidth: true, className: "dt-body-right" },
          { data: "PRIMARY_UOM", name: "主要單位", autoWidth: true },
          { data: "SECONDARY_QUANTITY", name: "次要數量", autoWidth: true, className: "dt-body-right" },
          { data: "SECONDARY_UOM", name: "次要單位", autoWidth: true },
-         { data: "REMARK", name: "備註", autoWidth: true, className: "dt-body-left" },
+         //{ data: "REMARK", name: "備註", autoWidth: true, className: "dt-body-left" },
          { data: "LAST_UPDATE_DATE", name: "更新日期", autoWidth: true, visible: false }
         ],
 
@@ -315,8 +338,8 @@ $(document).ready(function () {
 
     function InputBarcode() {
 
-        var FlatEditDT_ID_Text = $('#FlatEditDT_ID').text();
-        if (!FlatEditDT_ID_Text) {
+        var DLV_DETAIL_ID = $('#DLV_DETAIL_ID').text();
+        if (!DLV_DETAIL_ID) {
             swal.fire('請選擇料號');
             event.preventDefault();
             return false;
@@ -336,7 +359,7 @@ $(document).ready(function () {
                 'BARCODE': BARCODE,
                 'SECONDARY_QUANTITY': SECONDARY_QUANTITY,
                 DlvHeaderId: $("#DlvHeaderId").text(),
-                FlatEditDT_ID: $("#FlatEditDT_ID").text()
+                DLV_DETAIL_ID: $("#DLV_DETAIL_ID").text()
             },
             success: function (data) {
                 if (data.status) {

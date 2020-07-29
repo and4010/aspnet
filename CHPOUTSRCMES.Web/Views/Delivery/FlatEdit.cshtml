@@ -199,9 +199,12 @@
 <div class="row row-std ">
 
     <div class="col-md-12">
+        <div style="display: none">
+            <span id="DLV_DETAIL_ID"></span>
+        </div>
         <div class="col col-md-2 input-lg form-group">
-            @Html.LabelFor(model => model.FlatEditDT_ID, new { @class = "input-lg" })
-            <span id="FlatEditDT_ID">@Html.DisplayFor(model => model.FlatEditDT_ID)</span>
+            @Html.LabelFor(model => model.SUB_ID, new { @class = "input-lg" })
+            <span id="SUB_ID">@Html.DisplayFor(model => model.SUB_ID)</span>
         </div>
         <div class="col col-md-4 input-lg form-group">
             @Html.LabelFor(model => model.ORDER_NUMBER, new { @class = "input-lg" })
@@ -216,9 +219,12 @@
 
 
     <div class="col-md-12">
+        <div style="display: none">
+            <span id="INVENTORY_ITEM_ID"></span>
+        </div>
         <div class="col col-md-6 input-lg form-group">
-            @Html.LabelFor(model => model.ITEM_DESCRIPTION, new { @class = "input-lg" })
-            <span id="ITEM_DESCRIPTION">@Html.DisplayFor(model => model.ITEM_DESCRIPTION)</span>
+            @Html.LabelFor(model => model.ITEM_NUMBER, new { @class = "input-lg" })
+            <span id="ITEM_NUMBER">@Html.DisplayFor(model => model.ITEM_NUMBER)</span>
         </div>
         <div class="col col-md-3 input-lg form-group">
             @Html.LabelFor(model => model.PACKING_TYPE, new { @class = "input-lg" })
@@ -356,9 +362,9 @@
                         <th>
                             @Html.DisplayName("單位")
                         </th>
-                        <th>
+                        @*<th>
                             @Html.DisplayName("備註")
-                        </th>
+                        </th>*@
                     </tr>
                 </thead>
                 <tbody>

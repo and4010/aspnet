@@ -79,10 +79,12 @@ $(document).ready(function () {
         //    $("#ITEM_DESCRIPTION").text("");
         //},
         "preDrawCallback": function (settings) {
-            $("#PaperRollEditDT_ID").text("");
+            $("#SUB_ID").text("");
+            $("#DLV_DETAIL_ID").text("");
             $("#ORDER_NUMBER").text("");
             $("#ORDER_SHIP_NUMBER").text("");
-            $("#ITEM_DESCRIPTION").text("");
+            $("#INVENTORY_ITEM_ID").text("");
+            $("#ITEM_NUMBER").text("");
         }
         //"initComplete": function(settings, json) {
         //    $("#PaperRollEditDT_ID").text("");
@@ -101,14 +103,31 @@ $(document).ready(function () {
 
     PaperRollDataTablesBody.on('select', function (e, dt, type, indexes) {
         if (type === 'row') {
-            var PaperRollEditDT_ID = dt.rows(indexes).data().pluck('ID')[0];
-            $("#PaperRollEditDT_ID").text(PaperRollEditDT_ID);
+            var SUB_ID = dt.rows(indexes).data().pluck('SUB_ID')[0];
+            $("#SUB_ID").text(SUB_ID);
+            var DLV_DETAIL_ID = dt.rows(indexes).data().pluck('ID')[0];
+            $("#DLV_DETAIL_ID").text(DLV_DETAIL_ID);
+            //var PaperRollEditDT_ID = dt.rows(indexes).data().pluck('ID')[0];
+            //$("#PaperRollEditDT_ID").text(PaperRollEditDT_ID);
             var ORDER_NUMBER = dt.rows(indexes).data().pluck('ORDER_NUMBER')[0];
             $("#ORDER_NUMBER").text(ORDER_NUMBER);
             var ORDER_SHIP_NUMBER = dt.rows(indexes).data().pluck('ORDER_SHIP_NUMBER')[0];
             $("#ORDER_SHIP_NUMBER").text(ORDER_SHIP_NUMBER);
-            var ITEM_DESCRIPTION = dt.rows(indexes).data().pluck('ITEM_DESCRIPTION')[0];
-            $("#ITEM_DESCRIPTION").text(ITEM_DESCRIPTION);
+            var TMP_ITEM_ID = dt.rows(indexes).data().pluck('TMP_ITEM_ID')[0];
+            var INVENTORY_ITEM_ID = dt.rows(indexes).data().pluck('INVENTORY_ITEM_ID')[0];
+            if (TMP_ITEM_ID) {
+                $("#INVENTORY_ITEM_ID").text(TMP_ITEM_ID);
+            } else {
+                $("#INVENTORY_ITEM_ID").text(INVENTORY_ITEM_ID);
+            }
+            var TMP_ITEM_NUMBER = dt.rows(indexes).data().pluck('TMP_ITEM_NUMBER')[0];
+            var ITEM_NUMBER = dt.rows(indexes).data().pluck('ITEM_NUMBER')[0];
+            if (TMP_ITEM_NUMBER) {
+                $("#ITEM_NUMBER").text(TMP_ITEM_NUMBER);
+            } else {
+                $("#ITEM_NUMBER").text(ITEM_NUMBER);
+            }
+            $("#ITEM_NUMBER").text(ITEM_NUMBER);
 
             var rowsData = PaperRollDataTablesBody.rows({ page: 'current' }).data();
             for (i = 0 ; i < rowsData.length; i++) {
@@ -131,10 +150,12 @@ $(document).ready(function () {
 
     PaperRollDataTablesBody.on('deselect', function (e, dt, type, indexes) {
         if (type === 'row') {
-            $("#PaperRollEditDT_ID").text("");
+            $("#SUB_ID").text("");
+            $("#DLV_DETAIL_ID").text("");
             $("#ORDER_NUMBER").text("");
             $("#ORDER_SHIP_NUMBER").text("");
-            $("#ITEM_DESCRIPTION").text("");
+            $("#INVENTORY_ITEM_ID").text("");
+            $("#ITEM_NUMBER").text("");
 
             var ID = dt.rows(indexes).data().pluck('ID')[0];
             var index = $.inArray(ID, selected);
@@ -197,12 +218,12 @@ $(document).ready(function () {
         },
         columns: [
          { data: null, defaultContent: '', className: 'select-checkbox', orderable: false, width: "40px" },
-         { data: "PaperRollEditDT_ID", name: "項次", autoWidth: true },
-         { data: "ITEM_DESCRIPTION", name: "料號", autoWidth: true, className: "dt-body-left" },
+         { data: "SUB_ID", name: "項次", autoWidth: true },
+         { data: "ITEM_NUMBER", name: "料號", autoWidth: true, className: "dt-body-left" },
          { data: "BARCODE", name: "條碼號", autoWidth: true },
          { data: "PRIMARY_QUANTITY", name: "主要數量", autoWidth: true, className: "dt-body-right" },
          { data: "PRIMARY_UOM", name: "主要單位", autoWidth: true },
-         { data: "REMARK", name: "備註", autoWidth: true, className: "dt-body-left" },
+         //{ data: "REMARK", name: "備註", autoWidth: true, className: "dt-body-left" },
          { data: "LAST_UPDATE_DATE", name: "更新日期", autoWidth: true, visible: false }
 
         ],
@@ -296,8 +317,8 @@ $(document).ready(function () {
     })
 
     function InputBarcode() {
-        var PaperRollEditDT_ID_Text = $('#PaperRollEditDT_ID').text();
-        if (!PaperRollEditDT_ID_Text) {
+        var DLV_DETAIL_ID = $('#DLV_DETAIL_ID').text();
+        if (!DLV_DETAIL_ID) {
             swal.fire('請選擇料號');
             event.preventDefault();
             return false;
@@ -311,7 +332,7 @@ $(document).ready(function () {
             data: {
                 BARCODE: $('#txtBARCODE').val(),
                 DlvHeaderId: $("#DlvHeaderId").text(),
-                PaperRollEditDT_ID: $("#PaperRollEditDT_ID").text()
+                DLV_DETAIL_ID: $("#DLV_DETAIL_ID").text()
             },
             success: function (data) {
                 if (data.status) {
