@@ -15,7 +15,7 @@ using CHPOUTSRCMES.Web.DataModel.UnitOfWorks;
 
 namespace CHPOUTSRCMES.Web.Controllers
 {
-
+    [Authorize]
     public class StockTransactionController : Controller
     {
         StockTransferData stockTransferData = new StockTransferData();

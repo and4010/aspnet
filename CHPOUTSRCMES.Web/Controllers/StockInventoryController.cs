@@ -14,6 +14,7 @@ using System.Web.Mvc;
 
 namespace CHPOUTSRCMES.Web.Controllers
 {
+    [Authorize]
     public class StockInventoryController : Controller
     {
         StockInventoryData stockInventoryData = new StockInventoryData();

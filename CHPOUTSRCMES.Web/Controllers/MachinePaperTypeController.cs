@@ -9,6 +9,7 @@ using System.Web.Mvc;
 
 namespace CHPOUTSRCMES.Web.Controllers
 {
+    [Authorize]
     public class MachinePaperTypeController : Controller
     {
         // GET: MachinePaperType

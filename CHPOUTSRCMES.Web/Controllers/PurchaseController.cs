@@ -18,6 +18,7 @@ using System.Web.UI.WebControls;
 
 namespace CHPOUTSRCMES.Web.Controllers
 {
+    [Authorize]
     public class PurchaseController : Controller
     {
 

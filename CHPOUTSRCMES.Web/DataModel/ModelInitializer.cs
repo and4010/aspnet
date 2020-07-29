@@ -120,12 +120,12 @@ namespace CHPOUTSRCMES.Web.DataModel
                         //把xlsx文件中的数据写入wk中
                         workbook = new XSSFWorkbook(fs);
                     }
-                    using (IdentityUOW identity = new IdentityUOW(context))
-                    {
-                        identity.generateRoles();
-                        identity.ImportUser(workbook);
-                    }
-                    
+                    IdentityUOW identity = new IdentityUOW(context);
+
+                    identity.generateRoles();
+                    identity.ImportUser(workbook);
+
+
                 }
             }
         }

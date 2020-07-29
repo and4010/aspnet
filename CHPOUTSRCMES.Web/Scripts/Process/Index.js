@@ -1,9 +1,8 @@
 ﻿var rowData
 var ProcessDataTables
 $(document).ready(function () {
-    
-    BtnEvent()
-    search()
+    BtnEvent();
+    search();
     //初始化日期
     $('#Demand_Date').datepicker({
         dateFormat: 'yy-mm-dd',

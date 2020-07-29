@@ -8,6 +8,7 @@ using System.Web.Mvc;
 
 namespace CHPOUTSRCMES.Web.Controllers
 {
+    [Authorize]
     public class InventoryController : Controller
     {
         // GET: Inventory

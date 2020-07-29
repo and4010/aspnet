@@ -12,6 +12,7 @@ using CHPOUTSRCMES.Web.Models.Information;
 
 namespace CHPOUTSRCMES.Web.Controllers
 {
+    [Authorize]
     public class ReasonController : Controller
     {
         // GET: Reason
