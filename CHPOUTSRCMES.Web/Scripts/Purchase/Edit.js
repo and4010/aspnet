@@ -48,13 +48,24 @@ function RollSave() {
     var status = $("#Status").val();
     var reason = $("#select-reason").val();
     var remak = $("#textarea").val();
-    var file = $('#fileinput')[0];
-    var fileList = file.files;
+    var Locator = $("#select-Locator").val();
+    var formData = new FormData();
+    for (var i = 0; i < files.length; i++) {
+        formData.append(files[i].name, files[i]);
+    }
+    formData.append("id", id);
+    formData.append("Reason", reason);
+    formData.append("Locator", Locator);
+    formData.append("Remark", remak);
+
     $.ajax({
         url: '/Purchase/RollEditSave',
         type: 'POST',
         datatype: 'json',
-        data: { remak: remak, id: id, status: status, reason: reason, fileList: fileList },
+        data: formData,
+        cache: false,
+        contentType: false,
+        processData: false,
         success: function (data) {
             if (data.boolean) {
                 window.history.go(-1);
@@ -107,7 +118,19 @@ function FlatSave() {
 
 
 function getServicePhoto() {
-
+    var id = $("#Id").val();
+    $.ajax({
+        "url": "/Purchase/GetPhoto",
+        "type": "POST",
+        "datatype": "json",
+        "data": { id: id },
+        success: function (data) {
+           
+        },
+        error: function (data) {
+            swal.fire(data);
+        },
+    });
 }
 
 //function getSpinnerValue() {

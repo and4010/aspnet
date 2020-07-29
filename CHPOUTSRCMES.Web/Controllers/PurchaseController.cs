@@ -11,9 +11,14 @@ using System.Web;
 using System.Linq;
 using CHPOUTSRCMES.Web.Models.Information;
 using System.Net;
+using Microsoft.Graph;
+using System.Drawing;
+using Image = System.Drawing.Image;
+using System.Web.UI.WebControls;
 
 namespace CHPOUTSRCMES.Web.Controllers
 {
+    [Authorize]
     public class PurchaseController : Controller
     {
 
@@ -91,23 +96,10 @@ namespace CHPOUTSRCMES.Web.Controllers
 
 
         [HttpPost, ActionName("RollBody")]
-        public JsonResult RollBody(DataTableAjaxPostViewModel data, string status)
+        public JsonResult RollBody(DataTableAjaxPostViewModel data, string status, string CabinetNumber)
         {
-            List<DetailModel.RollDetailModel> model;
-            if (status == "1")
-            {
-                model = new List<DetailModel.RollDetailModel>();
-            }
-            else if (status == "4")
-            {
-                if (PurchaseViewModel.StockInRoll.Count == 0)
-                {
-                    PurchaseViewModel.GetStockInRoll();
-                }
-            }
-
-            model = PurchaseViewModel.StockInRoll;
-
+            PurchaseViewModel viewModel = new PurchaseViewModel();
+            List<DetailModel.RollDetailModel> model = viewModel.GetPaperRollPickT(CabinetNumber);
             model = PurchaseViewModel.RollDetailModelDTOrder.Search(data, model);
             model = PurchaseViewModel.RollDetailModelDTOrder.Order(data.Order, model).ToList();
             var data1 = model.Skip(data.Start).Take(data.Length).ToList();
@@ -194,7 +186,7 @@ namespace CHPOUTSRCMES.Web.Controllers
             ViewBag.ReasonItems = model.GetReason();
 
 
-            model.RollDetailModel = model.GetRollEdit(id);
+            model.RollDetailModel = model.GetPaperRollEdit(id);
 
             return View(model);
         }
@@ -219,23 +211,23 @@ namespace CHPOUTSRCMES.Web.Controllers
         }
 
 
-        public ActionResult RollEdit(string id)
+        public ActionResult RollEdit(string Id,string CabinetNumber,string CreateDate)
         {
 
             PurchaseViewModel model = new PurchaseViewModel();
-            //string[] sarry = id.ToString().Split(new char[1] { '-' });
-            //var Id = sarry[0];
-            //var status = sarry[1];
-            //model.CreateDate = "2020-06-08 10:00:00";
-            //model.CabinetNumber = "TGBU6882663";
-            //model.Subinventory = "TB2";
-            //model.Status = status;
-
-            model.RollDetailModel = model.GetRollEdit(id);
+        
+            model.RollDetailModel = model.GetPaperRollEdit(Id);
             ViewBag.LocatorItems = model.GetLocator();
             ViewBag.ReasonItems = model.GetReason();
-
+            model.CabinetNumber = CabinetNumber;
+            model.CreateDate = CreateDate;
             return View(model);
+        }
+
+        [HttpPost]
+        public JsonResult RollEditParameter(string id = "", string cabinetNumber = "",string CreateDate ="")
+        {
+            return Json(new { id, cabinetNumber , CreateDate }, JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult FlatEdit(string Id,string CabinetNumber)
@@ -254,17 +246,25 @@ namespace CHPOUTSRCMES.Web.Controllers
         
         }
 
-        public ActionResult FlatEditView(string id = "",string cabinetNumber = "")
+        public JsonResult FlatEditParameter(string id = "",string cabinetNumber = "")
         {
-            return RedirectToAction("FlatEdit", "Purchas", new { Id = id, CabinetNumber = cabinetNumber });
+            return Json(new { id, cabinetNumber },JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
-        public JsonResult RollEditSave(string Remak, int id, string Status, string Reason, string imgFile)
+        public JsonResult RollEditSave(FormCollection formCollection)
         {
             PurchaseViewModel model = new PurchaseViewModel();
-
-            model.GetRollEditRemak(Remak, id, Status, Reason);
+            var Files = Request.Files;
+            //if(Files != null || Files.Count != 0)
+            //{
+            //    foreach (string i in Files)
+            //    {
+            //        HttpPostedFileBase hpf = Files[i] as HttpPostedFileBase;
+            //        model.SavePhoto(hpf);
+            //    }
+            //}
+            model.PaperRollEditNote(Files, Int64.Parse(formCollection["id"]), formCollection["Reason"], formCollection["Locator"], formCollection["Remark"]);
             var boolean = true;
 
             return Json(new { boolean }, JsonRequestBehavior.AllowGet);
@@ -280,7 +280,7 @@ namespace CHPOUTSRCMES.Web.Controllers
                 foreach (string i in Files)
                 {
                     HttpPostedFileBase hpf = Files[i] as HttpPostedFileBase;
-                    model.SavePhoto(hpf);
+                    //model.SavePhoto(hpf);
                 }
             }
 
@@ -343,7 +343,7 @@ namespace CHPOUTSRCMES.Web.Controllers
                     try
                     {
                         //file.SaveAs(Path.Combine(filelocation, file.FileName));
-                        ExcelImportRoll(file, data, ref detail, ref result, formCollection["CabinetNumber"]);
+                        ExcelImportRoll(file, ref detail, ref result, formCollection["CabinetNumber"]);
                     }
                     catch (Exception e)
                     {
@@ -362,21 +362,18 @@ namespace CHPOUTSRCMES.Web.Controllers
         }
 
         [HttpPost]
-        public JsonResult ExcelImportRoll(HttpPostedFileBase file, DataTableAjaxPostViewModel data, ref List<DetailModel.RollDetailModel> detail, ref ResultModel result, string CONTAINER_NO)
+        public JsonResult ExcelImportRoll(HttpPostedFileBase file, ref List<DetailModel.RollDetailModel> PaperRollModel, ref ResultModel result, string CONTAINER_NO)
         {
-
-            PurchaseViewModel purchaseView = new PurchaseViewModel();
-            List<DetailModel.RollModel> RollHeader = purchaseView.GetRollHeader(CONTAINER_NO);
-            var papper = new ExcelImport();
-            papper.PaperRollDetail(file, ref data, ref detail, ref result, RollHeader);
-            PurchaseViewModel.StockInRoll = detail;
-            return Json(new { draw = data.Draw, recordsFiltered = detail.Count, recordsTotal = detail.Count, data = detail, result }, JsonRequestBehavior.AllowGet);
+            var Excel = new ExcelImport();
+            Excel.PaperRollDetail(file, ref PaperRollModel, CONTAINER_NO, ref result);
+            return Json(new { data = PaperRollModel, result }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
-        public JsonResult ExcelDelete()
+        public JsonResult ExcelDelete(string CabinetNumber)
         {
-            PurchaseViewModel.StockInRoll = new List<DetailModel.RollDetailModel>();
+            PurchaseViewModel purchaseView = new PurchaseViewModel();
+            purchaseView.ExcelDelete(CabinetNumber);
             return Json(JsonRequestBehavior.AllowGet);
         }
 
@@ -483,6 +480,42 @@ namespace CHPOUTSRCMES.Web.Controllers
             //這是專門寫文字的
             //HttpContext.Current.Response.Write();
             Response.End();
+        }
+
+        [HttpPost]
+        public Image GetPhoto(int id)
+        {
+            PurchaseViewModel viewModel = new PurchaseViewModel();
+
+            var photo = viewModel.GetPhoto(id);
+
+            if (photo == null || photo.Count == 0) 
+            { 
+                return null; 
+            }
+            Image oImage = null;
+            Bitmap oBitmap = null;
+            //建立副本
+            try
+            {
+                for(int i = 0; i < photo.Count; i++)
+                {
+                    MemoryStream oMemoryStream = new MemoryStream(photo[i]);
+                    //設定資料流位置
+                    oMemoryStream.Position = 0;
+                    oImage = System.Drawing.Image.FromStream(oMemoryStream);
+                    //建立副本
+                    oBitmap = new Bitmap(oImage);
+                    //return oImage;
+                    return oBitmap;
+                }
+              
+            }
+            catch
+            {
+                return null;
+            }
+            return oBitmap;
         }
 
     }

@@ -5,7 +5,7 @@
     var mergeBacrodeEditor;
 
     $('#ddlOutSubinventory').change(function () {
-
+        
         var SUBINVENTORY_CODE = $("#ddlOutSubinventory").val();
         $.ajax({
             url: "/StockTransaction/GetLocatorList",

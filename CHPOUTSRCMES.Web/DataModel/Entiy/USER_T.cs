@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
@@ -9,7 +10,8 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy
     [Table("USER_T")]
     public class AppUser : IdentityUser
     {
-        //public string DisplayName { set; get; }
+        [StringLength(15)]
+        public string DisplayName { set; get; }
         //public string Email { set; get; }
 
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<AppUser> manager)

@@ -202,6 +202,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Purchase
         /// </summary>
         /// 
         [StringLength(80)]
+        [Column("LOTNUMBER")]
         [Required(AllowEmptyStrings = true)]
         public string LotNumber { set; get; }
 
@@ -210,6 +211,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Purchase
         /// </summary>
         /// 
         [StringLength(80)]
+        [Column("THEORY_WEIGHT")]
         [Required(AllowEmptyStrings = true)]
         public string TheoryWeight { set; get; }
 

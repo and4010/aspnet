@@ -52,7 +52,7 @@ namespace CHPOUTSRCMES.Web.Models.Purchase
 
         public class RollDetailModel
         {
-            public int Id { get; set; }
+            public long Id { get; set; }
 
             [Display(Name = "倉別")]
             public string Subinventory { get; set; }
@@ -79,13 +79,13 @@ namespace CHPOUTSRCMES.Web.Models.Purchase
             public string TheoreticalWeight { get; set; }
 
             [Display(Name = "交易數量")]
-            public string TransactionQuantity { get; set; }
+            public decimal TransactionQuantity { get; set; }
 
             [Display(Name = "交易單位")]
             public string TransactionUom { get; set; }
 
             [Display(Name = "主要數量")]
-            public string PrimanyQuantity { set; get; }
+            public decimal PrimanyQuantity { set; get; }
 
             [Display(Name = "主要單位")]
             public string PrimaryUom { set; get; }

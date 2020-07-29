@@ -14,6 +14,7 @@ using CHPOUTSRCMES.Web.DataModel.UnitOfWorks;
 
 namespace CHPOUTSRCMES.Web.Controllers
 {
+    [Authorize]
     public class DeliveryController : Controller
     {
         TripHeaderData tripHeaderData = new TripHeaderData();

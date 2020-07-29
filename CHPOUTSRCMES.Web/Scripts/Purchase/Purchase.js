@@ -27,21 +27,20 @@ $(document).ready(function () {
         if (data == null) {
             return false;
         }
-        window.location.href = "/Purchase/RollEdit/" + id + "-" + Status;
+        var CabinetNumber = $('#CabinetNumber').val();
+        var CreateDate = $('#CreateDate').val();
+        $.ajax({
+            url: '/Purchase/RollEditParameter/',
+            type: "POST",
+            data: { id: id, CabinetNumber: CabinetNumber, CreateDate: CreateDate },
+            success: function (data) {
+                window.location.href = "RollEdit?Id=" + data.id + "&CabinetNumber=" + data.cabinetNumber + "&CreateDate=" +data.CreateDate; 
+            },
+            error: function() {
+                swal("失敗")
+            }
 
-
-        //$.ajax({
-        //    url: '/Purchase/RollEdit/',
-        //    type: "POST",
-        //    data: { id: id, status: Status },
-        //    success: function () {
-        //        window.location.href = "/Purchase/RollEdit/" + id + "-" + Status
-        //    },
-        //    error: function() {
-        //        swal("失敗")
-        //    }
-
-        //})
+        })
     })
 
     //紙捲表身檢視事件
@@ -65,11 +64,11 @@ $(document).ready(function () {
         }
         var CabinetNumber = $('#CabinetNumber').val();
         $.ajax({
-            url: '/Purchase/FlatEditView/',
+            url: '/Purchase/FlatEditParameter/',
             type: "POST",
             data: { id: id, CabinetNumber: CabinetNumber },
-            success: function () {
-                window.location.href = "/Purchase/FlatEdit/";
+            success: function (data) {
+                window.location.href = "FlatEdit?Id=" + data.id + "&CabinetNumber=" + data.cabinetNumber; 
             },
             error: function () {
 
@@ -494,9 +493,22 @@ function Open(modal_dialog) {
     });
 
     modal_dialog.on('click', '#BtnCancel', function () {
-        $.ajax({
-            url: '/Purchas/ExcelDelete'
-        });
+        var CabinetNumber = $("#CabinetNumber").val();
+        var table = $('#ImportPaperRollTable').DataTable();
+        if (table.column(0).data().length) {
+            $.ajax({
+                "url": "/Purchase/ExcelDelete",
+                "type": "POST",
+                "datatype": "json",
+                "data": { CabinetNumber: CabinetNumber },
+                success: function (data) {
+                    swal.fire(data.result.Msg);
+                },
+                error: function (data) {
+                    swal.fire(data);
+                }
+            });
+        }
     });
 
     modal_dialog.on('click', '#btnDailogFlat', function (e) {
@@ -509,6 +521,7 @@ function Open(modal_dialog) {
 
 }
 
+//判斷匯入資料是否成功
 function ImportPaperRoll() {
 
 
@@ -519,7 +532,6 @@ function ImportPaperRoll() {
         formData.append("file", fileInput[0]);
         formData.append("CabinetNumber", CabinetNumber);
     }
-
     $.ajax({
         "url": "/Purchase/UploadFileRoll",
         "type": "POST",
@@ -544,6 +556,7 @@ function ImportPaperRoll() {
 
 }
 
+//顯示dailog紙捲資料
 function ImportPaperRollTable(data) {
 
     $('#ImportPaperRollTable').DataTable({
@@ -639,7 +652,7 @@ function ImportFlatTable(data) {
     });
 }
 
-//表頭
+//紙捲表頭
 function LoadPaperRollHeard() {
     var CabinetNumber = $("#CabinetNumber").val();
     //紙捲表頭
@@ -711,9 +724,9 @@ function LoadFlatHeader() {
     });
 }
 
-//detail 表身
+//紙捲表身
 function PaperRolldataTablesBody(Status) {
-
+    var CabinetNumber = $("#CabinetNumber").val();
     $('#PaperRolldataTablesBody').DataTable({
         "language": {
             "url": "/bower_components/datatables/language/zh-TW.json"
@@ -742,7 +755,7 @@ function PaperRolldataTablesBody(Status) {
             "url": "/Purchase/RollBody",
             "type": "POST",
             "datatype": "json",
-            "data": { Status: Status }
+            "data": { Status: Status, CabinetNumber: CabinetNumber }
         },
         columns: [
             {
@@ -791,6 +804,7 @@ function PaperRolldataTablesBody(Status) {
     });
 }
 
+//平張表身
 function FlatdataTablesBody(Status) {
     var CabinetNumber = $("#CabinetNumber").val();
     $('#FlatdataTablesBody').DataTable({

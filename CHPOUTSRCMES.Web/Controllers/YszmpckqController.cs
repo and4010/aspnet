@@ -9,6 +9,7 @@ using System.Web.Mvc;
 
 namespace CHPOUTSRCMES.Web.Controllers
 {
+    [Authorize]
     public class YszmpckqController : Controller
     {
         YszmpckqData yszmpckqDataData = new YszmpckqData();

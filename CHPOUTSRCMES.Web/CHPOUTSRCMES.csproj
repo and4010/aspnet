@@ -86,6 +86,12 @@
     <Reference Include="Microsoft.Extensions.Logging.Abstractions, Version=3.1.6.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Extensions.Logging.Abstractions.3.1.6\lib\netstandard2.0\Microsoft.Extensions.Logging.Abstractions.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Graph, Version=3.8.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Graph.3.8.0\lib\net461\Microsoft.Graph.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Graph.Core, Version=1.20.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Graph.Core.1.20.1\lib\net45\Microsoft.Graph.Core.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Owin, Version=4.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Owin.4.0.1\lib\net45\Microsoft.Owin.dll</HintPath>
       <Private>True</Private>
@@ -138,12 +144,33 @@
       <HintPath>..\packages\PdfSharp\PdfSharp.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Buffers, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Buffers.4.4.0\lib\netstandard2.0\System.Buffers.dll</HintPath>
+    </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Diagnostics.DiagnosticSource, Version=4.0.4.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Diagnostics.DiagnosticSource.4.6.0\lib\net46\System.Diagnostics.DiagnosticSource.dll</HintPath>
+    </Reference>
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Memory, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Memory.4.5.3\lib\netstandard2.0\System.Memory.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Numerics.Vectors, Version=4.1.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Numerics.Vectors.4.4.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.5.2\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Transactions" />
+    <Reference Include="System.ValueTuple, Version=4.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\System.ValueTuple.4.3.0\lib\portable-net40+sl4+win8+wp8\System.ValueTuple.dll</HintPath>
+    </Reference>
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -222,7 +249,7 @@
     <Compile Include="Controllers\TransferController.cs" />
     <Compile Include="Controllers\YszmpckqController.cs" />
     <Compile Include="DataAnnotation\Precision.cs" />
-    <Compile Include="DataModel\Entiy\AppUserManager.cs" />
+    <Compile Include="DataModel\Managers\AppUserManager.cs" />
     <Compile Include="DataModel\Entiy\Delivery\DLV_DETAIL_HT.cs" />
     <Compile Include="DataModel\Entiy\Delivery\DLV_DETAIL_T.cs" />
     <Compile Include="DataModel\Entiy\Delivery\DLV_HEADER_T.cs" />
@@ -238,6 +265,7 @@
     <Compile Include="DataModel\Entiy\LOG_ENTRY_T.cs" />
     <Compile Include="DataModel\Entiy\Information\ORG_ITEMS_T.cs" />
     <Compile Include="DataModel\Entiy\Information\USER_SUBINVENTORY_T.cs" />
+    <Compile Include="DataModel\Managers\AppRoleManager.cs" />
     <Compile Include="DataModel\ModelInitializer.cs" />
     <Compile Include="DataModel\Repositorys\GenericRepository.cs" />
     <Compile Include="DataModel\Repositorys\Interfaces\IRepository.cs" />
@@ -264,6 +292,7 @@
     <Compile Include="DataModel\Initializer.cs" />
     <Compile Include="DataModel\Repositorys\Interfaces\IItemsTRepository.cs" />
     <Compile Include="DataModel\Repositorys\ItemsTRepository.cs" />
+    <Compile Include="DataModel\UnitOfWorks\IdentityUOW.cs" />
     <Compile Include="DataModel\UnitOfWorks\MasterUOW.cs" />
     <Compile Include="DataModel\UnitOfWorks\Interfaces\IUnitOfWork.cs" />
     <Compile Include="DataModel\UnitOfWorks\PurchaseUOW.cs" />
@@ -359,6 +388,18 @@
     <Compile Include="ViewModels\YszmpckqViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="bower_components\adminlte\css\AdminLTE.css" />
+    <Content Include="bower_components\adminlte\css\AdminLTE.min.css" />
+    <Content Include="bower_components\adminlte\css\skins\skin-green-light.css" />
+    <Content Include="bower_components\adminlte\css\skins\skin-green-light.min.css" />
+    <Content Include="bower_components\adminlte\css\skins\skin-green.css" />
+    <Content Include="bower_components\adminlte\css\skins\skin-green.min.css" />
+    <Content Include="bower_components\adminlte\css\skins\_all-skins.css" />
+    <Content Include="bower_components\adminlte\css\skins\_all-skins.min.css" />
+    <Content Include="bower_components\adminlte\js\app.js" />
+    <Content Include="bower_components\adminlte\js\app.min.js" />
+    <Content Include="bower_components\adminlte\js\pages\dashboard.js" />
+    <Content Include="bower_components\adminlte\js\pages\dashboard2.js" />
     <Content Include="bower_components\bootstrap-datetimepicker\bootstrap-datetimepicker.css" />
     <Content Include="bower_components\bootstrap-datetimepicker\bootstrap-datetimepicker.js" />
     <Content Include="bower_components\bootstrap-datetimepicker\bootstrap-datetimepicker.min.css" />
@@ -808,6 +849,8 @@
     <Content Include="bower_components\editor\js\editor.jqueryui.min.js" />
     <Content Include="bower_components\editor\js\editor.semanticui.js" />
     <Content Include="bower_components\editor\js\editor.semanticui.min.js" />
+    <Content Include="bower_components\fastclick\fastclick.js" />
+    <Content Include="bower_components\fastclick\fastclick.min.js" />
     <Content Include="bower_components\flot.tooltip\js\excanvas.min.js" />
     <Content Include="bower_components\flot.tooltip\js\jquery.flot.js" />
     <Content Include="bower_components\flot.tooltip\js\jquery.flot.tooltip.js" />
@@ -1269,6 +1312,8 @@
     <Content Include="bower_components\raphael\license.txt" />
     <Content Include="bower_components\raphael\raphael-min.js" />
     <Content Include="bower_components\raphael\raphael.js" />
+    <Content Include="bower_components\slimScroll\jquery.slimscroll.js" />
+    <Content Include="bower_components\slimScroll\jquery.slimscroll.min.js" />
     <Content Include="bower_components\sweet-alert\sweet-alert-bootstrap.css" />
     <Content Include="bower_components\sweet-alert\sweet-alert-bootstrap.js" />
     <Content Include="bower_components\sweet-alert\sweet-alert.css" />
@@ -1314,6 +1359,8 @@
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
+    <Content Include="Img\favicon.ico" />
+    <Content Include="Img\paper2.png" />
     <Content Include="pngtree.jpg" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -1725,6 +1772,11 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Data\Excel\ERP0193164.xlsx" />
+    <Content Include="Data\Excel\MES_USERS.xlsx" />
+    <Content Include="bower_components\adminlte\.DS_Store" />
+    <Content Include="bower_components\adminlte\css\.DS_Store" />
+    <Content Include="bower_components\adminlte\css\skins\.DS_Store" />
+    <Content Include="bower_components\adminlte\js\.DS_Store" />
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>
@@ -1740,6 +1792,7 @@
     <Content Include="Scripts\Errors\General.js" />
     <Content Include="Scripts\flot-data.js" />
     <Content Include="Scripts\Account\Account.js" />
+    <Content Include="Scripts\GlobalFunc.js" />
     <Content Include="Scripts\Home\TestData.js" />
     <Content Include="Scripts\Inventory\Index.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
@@ -1870,6 +1923,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="bower_components\theme\" />
     <Folder Include="Jsons\Responses\" />
     <Folder Include="Views\Stock\" />
     <Folder Include="Views\Transfer\" />

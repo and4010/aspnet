@@ -13,6 +13,7 @@ using System.Web.Mvc;
 
 namespace CHPOUTSRCMES.Web.Controllers
 {
+    [Authorize]
     public class ObsoleteController : Controller
     {
         Top top = new Top();
