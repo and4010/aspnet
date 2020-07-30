@@ -18,26 +18,32 @@
             </a>
         </div>
         <div class="navbar-custom-menu">
-            
-            @if (Request.IsAuthenticated)
-            {
+            @{
+                if (Request.IsAuthenticated)
+                {
+                    using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        <ul class="nav navbar-nav">
+                            <li>
+                                <a href="#" data-toggle="control-sidebar"><i class="fa fa-user" aria-hidden="true"></i>@this.User.Identity.Name</a>
+                            </li>
+                            <li>
+                                <a href="javascript:GlobalFunc.logout();"><i class="fa fa-sign-out" aria-hidden="true"></i>登出</a>
+                            </li>
+                        </ul>
+                    }
+                }
+                else
+                {
                     <ul class="nav navbar-nav">
                         <li>
-                            <a href="#" data-toggle="control-sidebar"><i class="fa fa-user" aria-hidden="true"></i>@this.User.Identity.Name</a>
-                        </li>
-                        <li>
-                            <a href="#" data-toggle="control-sidebar"><i class="fa fa-sign-out" aria-hidden="true"></i>登出</a>
+                            <a href="@Url.Action("Login", "Account")" data-toggle="control-sidebar"><i class="fa fa-sign-in" aria-hidden="true"></i>登入</a>
                         </li>
                     </ul>
+                }
             }
-            else
-            {
-                <ul class="nav navbar-nav">
-                    <li>
-                        <a href="@Url.Action("Login", "Account")" data-toggle="control-sidebar"><i class="fa fa-sign-in" aria-hidden="true"></i>登入</a>
-                    </li>
-                </ul>
-            }
+
         </div>
     </nav>
 
@@ -47,7 +53,6 @@
     <!-- sidebar: style can be found in sidebar.less -->
     <section class="sidebar">
         <!-- Sidebar user panel -->
-
         <!-- sidebar menu: : style can be found in sidebar.less -->
         <ul class="sidebar-menu">
             @{
@@ -55,30 +60,30 @@
                 foreach (var item in toplist)
                 {
                     var url = item.isParent ? "" : @Url.Action(item.action, item.controller);
-                <li class="treeview">
-                    <a href="@url">
-                        <i class="@item.imageClass" aria-hidden="true"></i><span>@item.nameOption</span>
+                    <li class="treeview">
+                        <a href="@url">
+                            <i class="@item.imageClass" aria-hidden="true"></i><span>@item.nameOption</span>
+                            @if (item.isParent)
+                            {
+                                <span class="pull-right-container">
+                                    <i class="fa fa-angle-left fa-fw pull-right"></i>
+                                </span>
+                            }
+                        </a>
                         @if (item.isParent)
                         {
-                            <span class="pull-right-container">
-                                <i class="fa fa-angle-left fa-fw pull-right"></i>
-                            </span>
-                        }
-                    </a>
-                    @if (item.isParent)
-                    {
-                        var subList = Model.Where(x => x.parentId == item.Id && x.status).OrderBy(x => x.Id).ToList();
-                        if (subList.Count() > 0)
-                        {
-                        <ul class="treeview-menu">
-                            @foreach (var subItem in subList)
+                            var subList = Model.Where(x => x.parentId == item.Id && x.status).OrderBy(x => x.Id).ToList();
+                            if (subList.Count() > 0)
                             {
-                                <li style="padding-left: 21px;"><a href="@Url.Action(subItem.action, subItem.controller)">@subItem.nameOption</a></li>
+                                <ul class="treeview-menu">
+                                    @foreach (var subItem in subList)
+                                    {
+                                        <li style="padding-left: 21px;"><a href="@Url.Action(subItem.action, subItem.controller)">@subItem.nameOption</a></li>
+                                    }
+                                </ul>
                             }
-                        </ul>
                         }
-                    }
-                </li>
+                    </li>
 
                 }
             }

@@ -58,8 +58,13 @@ namespace CHPOUTSRCMES.Web.Controllers
         [AllowAnonymous]
         public ActionResult Login(string returnUrl)
         {
+            if(this.User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Index", "Home");
+            }
             var loginViewModel = CheckLoginCookie();
             ViewBag.ReturnUrl = returnUrl;
+            //return View("Login", "_Layout2", loginViewModel);
             return View(loginViewModel);
         }
 
@@ -108,13 +113,13 @@ namespace CHPOUTSRCMES.Web.Controllers
         // POST: /Account/LogOff
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult LogOff()
+        public JsonResult LogOff()
         {
             identityUOW.SignOut(authenticationManager);
             Session.Abandon();
             Session.Clear();
             Session.RemoveAll();
-            return RedirectToAction("Index", "Home");
+            return Json(new { status = true, message = "登出成功!!" });
         }
 
         private ActionResult RedirectToLocal(string returnUrl)

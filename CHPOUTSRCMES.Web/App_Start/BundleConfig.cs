@@ -20,8 +20,7 @@ namespace CHPOUTSRCMES.Web
             bundles.Add(new ScriptBundle("~/bundles/theme").Include(
                 "~/bower_components/slimScroll/jquery.slimscroll.min.js",
                "~/bower_components/fastclick/fastclick.js",
-               "~/bower_components/adminlte/js/app.js",
-               "~/Scripts/GlobalFunc.js"
+               "~/bower_components/adminlte/js/app.js"
                 ));
 
             bundles.Add(new ScriptBundle("~/bundles/jquerydatatable").Include(

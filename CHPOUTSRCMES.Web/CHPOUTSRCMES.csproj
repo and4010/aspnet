@@ -1325,6 +1325,10 @@
     <Content Include="bower_components\sweetalert2\sweetalert2.js" />
     <Content Include="bower_components\sweetalert2\sweetalert2.min.css" />
     <Content Include="bower_components\sweetalert2\sweetalert2.min.js" />
+    <Content Include="bower_components\theme-login\css\materialdesignicons.min.css" />
+    <Content Include="bower_components\theme-login\css\style.css" />
+    <Content Include="bower_components\theme-login\css\vendor.bundle.base.css" />
+    <Content Include="bower_components\theme-login\image\login_1.jpg" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\Delivery\index.css" />
@@ -1792,7 +1796,7 @@
     <Content Include="Scripts\Errors\General.js" />
     <Content Include="Scripts\flot-data.js" />
     <Content Include="Scripts\Account\Account.js" />
-    <Content Include="Scripts\GlobalFunc.js" />
+    <Content Include="bower_components\GlobalFunc.js" />
     <Content Include="Scripts\Home\TestData.js" />
     <Content Include="Scripts\Inventory\Index.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
@@ -1920,6 +1924,7 @@
     <Content Include="Views\StockInventory\Index.cshtml" />
     <Content Include="Views\StockInventory\_ProfitPartial.cshtml" />
     <Content Include="Views\StockTransaction\_MergeBarcodePartial.cshtml" />
+    <Content Include="Views\Shared\_Layout2.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

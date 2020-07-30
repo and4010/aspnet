@@ -1,0 +1,51 @@
+﻿<!DOCTYPE html>
+<html lang="zh-tw">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>CHP | 華紙資訊管理系統</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+
+    <link href="../Img/favicon.ico" rel="shortcut icon">
+    <link href="@Url.Content("~/bower_components/theme-login/css/materialdesignicons.min.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/bower_components/theme-login/css/vendor.bundle.base.css")" rel="stylesheet" type="text/css" />
+    
+
+    <!-- jQuery UI CSS -->
+    @Styles.Render("~/Content/jquery-ui-css")
+
+    <!-- jQuery -->
+    @Scripts.Render("~/bundles/jquery")
+
+    <!-- jQuery UI -->
+    @Scripts.Render("~/bundles/jquery-ui")
+
+    @Scripts.Render("~/bundles/bootstrap")
+
+</head>
+<body>
+    <div class="container-scroller">
+        <div class="container-fluid page-body-wrapper">
+
+            <!-- Main content -->
+            <section class="content">
+                @RenderBody()
+            </section>
+            <!-- Copyright -->
+            <footer class="footer-copyright text-center py-3">
+                © 2020 Copyright: - 中華紙漿股份有限公司  -程式版本: @ViewContext.Controller.GetType().Assembly.GetName().Version
+            </footer>
+            <!-- Copyright -->
+        </div>
+        <!-- page-body-wrapper ends -->
+    </div>
+    <!-- container-scroller -->
+
+    @RenderSection("scripts", required: false)
+</body>
+</html>
+
