@@ -109,36 +109,56 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
 
         }
 
-        public List<DetailModel.RollDetailModel> SaveRollBarcode(String Barcode, ref Boolean Boolean, ref Boolean BarcodeStatus)
+        /// <summary>
+        /// 紙捲儲存條碼已入庫
+        /// </summary>
+        /// <param name="Barcode"></param>
+        /// <returns></returns>
+        public int SavePaperRollBarcode(String Barcode)
         {
-            //List<DetailModel.RollDetailModel> model = StockInRoll;
-            //try
-            //{
-            //    var sr = model.First(r => r.Barcode == Barcode);
-            //    if (sr.Status == "已入庫")
-            //    {
-            //        BarcodeStatus = false;
-            //    }
-            //    else
-            //    {
-            //        sr.Status = "已入庫";
-            //    }
+            using (var context = new MesContext())
+            {
+                return new PurchaseUOW(context).SavePaperRollBarcode(Barcode);
+            }
 
-            //}
-            //catch (Exception e)
-            //{
-            //    Boolean = false;
-            //}
-
-
-            return null;
         }
 
+        /// <summary>
+        /// 平張儲存條碼已入庫
+        /// </summary>
+        /// <param name="Barcode"></param>
+        /// <returns></returns>
+        public int SaveFlatBarcode(string Barcode)
+        {
+            using (var context = new MesContext())
+            {
+                return new PurchaseUOW(context).SaveFlatBarcode(Barcode);
+            }
+        }
+
+        /// <summary>
+        /// 取得紙捲編輯資料
+        /// </summary>
+        /// <param name="Id"></param>
+        /// <returns></returns>
         public DetailModel.RollDetailModel GetPaperRollEdit(string Id)
         {
             using (var context = new MesContext())
             {
                 return new PurchaseUOW(context).GetPaperRollEdit(Id);
+            }
+        }
+
+        /// <summary>
+        /// 取得紙捲檢視資料
+        /// </summary>
+        /// <param name="Id"></param>
+        /// <returns></returns>
+        public DetailModel.RollDetailModel GetPaperRollView(string Id)
+        {
+            using (var context = new MesContext())
+            {
+                return new PurchaseUOW(context).GetPaperRollView(Id);
             }
         }
         /// <summary>
@@ -149,7 +169,7 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
         /// <param name="Reason"></param>
         /// <param name="Locator"></param>
         /// <param name="Remark"></param>
-        public void PaperRollEditNote(HttpFileCollectionBase File, long id, string Reason, string Locator, string Remark)
+        public bool PaperRollEditNote(HttpFileCollectionBase File, long id, string Reason, string Locator, string Remark)
         {
             using (var context = new MesContext())
             {
@@ -161,23 +181,33 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
                         new PurchaseUOW(context).SavePhoto(hpf,id);
                     }
                 }
-                new PurchaseUOW(context).PaperRollEdit(id, Reason, Locator, Remark);
+              return new PurchaseUOW(context).PaperRollEdit(id, Reason, Locator, Remark);
             }
         }
 
-        public Boolean GetFlatEditRemak(int id, string Reason, string remak)
+        /// <summary>
+        /// 編輯平張備註照片
+        /// </summary>
+        /// <param name="File"></param>
+        /// <param name="id"></param>
+        /// <param name="Reason"></param>
+        /// <param name="Locator"></param>
+        /// <param name="Remark"></param>
+        public bool FlatEditNote(HttpFileCollectionBase File, long id, string Reason, string Locator, string Remark)
         {
 
-            //var Id = StockInFlat.Single(r => r.Id == id);
-
-            //if (Id != null)
-            //{
-            //    Id.Remark = remak;
-            //    Id.Reason = Reason;
-            //}
-
-
-            return true;
+            using (var context = new MesContext())
+            {
+                if (File != null || File.Count != 0)
+                {
+                    foreach (string i in File)
+                    {
+                        HttpPostedFileBase hpf = File[i] as HttpPostedFileBase;
+                        new PurchaseUOW(context).SavePhoto(hpf, id);
+                    }
+                }
+               return new PurchaseUOW(context).FlatEdit(id, Reason, Locator, Remark);
+            }
         }
 
         /// <summary>
@@ -195,7 +225,7 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
 
 
         /// <summary>
-        /// 取得編輯
+        /// 取得平張編輯資料
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
@@ -207,30 +237,17 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
             }
         }
 
-        public List<DetailModel.FlatDetailModel> SaveFlatBarcode(string Barcode, ref Boolean Boolean, ref Boolean BarcodeStatus)
+        /// <summary>
+        /// 取得平張檢視資料
+        /// </summary>
+        /// <param name="Id"></param>
+        /// <returns></returns>
+        public DetailModel.FlatDetailModel GetFlatView(string Id)
         {
-            //List<DetailModel.FlatDetailModel> model = StockInFlat;
-            //try
-            //{
-            //    var sf = model.First(r => r.Barcode == Barcode);
-            //    if (sf.Status == "已入庫")
-            //    {
-            //        BarcodeStatus = false;
-            //    }
-            //    else
-            //    {
-            //        sf.Status = "已入庫";
-            //    }
-
-            //}
-            //catch (Exception e)
-            //{
-            //    Boolean = false;
-            //}
-
-
-
-            return null;
+            using (var context = new MesContext())
+            {
+                return new PurchaseUOW(context).GetFlatView(Id);
+            }
         }
 
         /// <summary>
@@ -260,22 +277,28 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
             
         }
 
+
+        //public DetailModel.RollDetailModel CheckLotNumber()
+        //{
+        //    DetailModel.RollDetailModel paperRollDetail = new DetailModel.RollDetailModel();
+        //    paperRollDetail.Item_No = "4FHIZA03000787RL00";
+        //    paperRollDetail.Subinventory = "TB2";
+        //    paperRollDetail.Locator = "SFG";
+        //    return paperRollDetail;
+        //}
+
         /// <summary>
-        /// 檢查櫃號
+        /// 已入庫完成更改表頭狀態
         /// </summary>
-        /// <returns></returns>
-        public DetailModel.RollDetailModel CheckLotNumber()
+        public Boolean ChageHeaderStatus(string ContainerNo)
         {
-            DetailModel.RollDetailModel paperRollDetail = new DetailModel.RollDetailModel();
-            paperRollDetail.Item_No = "4FHIZA03000787RL00";
-            paperRollDetail.Subinventory = "TB2";
-            paperRollDetail.Locator = "SFG";
-            return paperRollDetail;
+            using (var context = new MesContext())
+            {
+                return new PurchaseUOW(context).ChangeHeaderStatus(ContainerNo);
+            }
         }
 
-
-
-        public List<byte[]> GetPhoto(long id)
+        public List<string> GetPhoto(long id)
         {
             using (var context = new MesContext())
             {

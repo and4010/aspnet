@@ -51,7 +51,20 @@ $(document).ready(function () {
         if (data == null) {
             return false;
         }
-        window.location.href = "/Purchase/RollView/" + id;
+        var CabinetNumber = $('#CabinetNumber').val();
+        var CreateDate = $('#CreateDate').val();
+        $.ajax({
+            url: '/Purchase/RollViewParameter/',
+            type: "POST",
+            data: { id: id, CabinetNumber: CabinetNumber, CreateDate: CreateDate },
+            success: function (data) {
+                window.location.href = "RollView?Id=" + data.id + "&CabinetNumber=" + data.cabinetNumber + "&CreateDate=" + data.CreateDate;
+            },
+            error: function () {
+                swal("失敗")
+            }
+
+        })
     })
 
 
@@ -85,7 +98,20 @@ $(document).ready(function () {
         if (data == null) {
             return false;
         }
-        window.location.href = "/Purchase/FlatView/" + id;
+        var CabinetNumber = $('#CabinetNumber').val();
+        $.ajax({
+            url: '/Purchase/FlatViewParameter/',
+            type: "POST",
+            data: { id: id, CabinetNumber: CabinetNumber },
+            success: function (data) {
+                window.location.href = "FlatView?Id=" + data.id + "&CabinetNumber=" + data.cabinetNumber;
+            },
+            error: function () {
+
+                $.swal("失敗")
+            }
+
+        })
 
     });
 
@@ -217,46 +243,6 @@ function BtnOnClick() {
         var FlatSpan = $('#FlatSpan').text();
         var PaperRolldata = $('#PaperRolldataTablesBody').DataTable().column(15).data();
         var Flatdata = $('#FlatdataTablesBody').DataTable().column(10).data();
-
-        for (i = 0; i < PaperRolldata.length; i++) {
-            if (PaperRolldata[i] == "待入庫") {
-                Swal.fire({
-                    title: '確定要返回?',
-                    text: "尚有資料未入庫",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: '確定',
-                    cancelButtonText: '取消'
-                }).then(function (result) {
-                    if (result.value) {
-                        window.location.href = '/Purchase/Index';
-                    }
-                });
-                return;
-            }
-        }
-
-        for (i = 0; i < Flatdata.length; i++) {
-            if (Flatdata[i] == "待入庫") {
-                Swal.fire({
-                    title: '確定要返回?',
-                    text: "尚有資料未入庫",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: '確定',
-                    cancelButtonText: '取消'
-                }).then(function (result) {
-                    if (result.value) {
-                        window.location.href = '/Purchase/Index';
-                    }
-                });
-                return;
-            }
-        }
 
         if (PaperRollSpan != "0") {
             Swal.fire({
@@ -416,13 +402,15 @@ function InsertPaperRollBarcode(barcode) {
         "datatype": "json",
         "data": { barcode: barcode },
         success: function (data) {
-            if (!data.BarcodeStatus) {
+            if (data.status == 1) {
                 swal.fire("條碼已入庫");
                 return;
             }
-            if (data.Boolean) {
+            if (data.status == 0) {
                 PaperRolldataTablesBody();
                 PaperNavsNumber();
+            } else if (data.status == 2) {
+                swal.fire("此無條碼");
             } else {
                 swal.fire("此無條碼");
             }
@@ -440,16 +428,19 @@ function InsertFlatBarocde(barcode) {
         "datatype": "json",
         "data": { barcode: barcode },
         success: function (data) {
-            if (!data.BarcodeStatus) {
+            if (data.status == 1) {
                 swal.fire("條碼已入庫");
                 return;
             }
-            if (data.Boolean) {
+            if (data.status == 0) {
                 FlatdataTablesBody();
                 FlatNavsNumber();
+            } else if (data.status == 2) {
+                swal.fire("此無條碼");
             } else {
                 swal.fire("此無條碼");
             }
+
         }
     });
 

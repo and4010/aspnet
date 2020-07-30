@@ -308,9 +308,9 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             try
             {
                 var ctrpick = ctrPickedTRepositiory.Get(x => x.ItemCategory == "捲筒").ToList();
-                if(ctrpick.Count == PaperRollModel.Count)
+                if (ctrpick.Count == PaperRollModel.Count)
                 {
-                    return new ResultModel(false , "資料已存在無法匯入");
+                    return new ResultModel(false, "資料已存在無法匯入");
                 }
 
                 using (var db = new MesContext())
@@ -515,9 +515,47 @@ and d.ITEM_CATEGORY = N'捲筒'");
                         color = "#E60000"
                     });
                 }
+                if (header[i].Status == 0)
+                {
+                    fullCalendarEventModel.Add(new FullCalendarEventModel()
+                    {
+                        id = header[i].CtrHeaderId,
+                        title = header[i].Subinventory + "\n" + header[i].ContainerNo + "已入庫",
+                        start = ConvertDateTime.ConverYYYY(header[i].MvContainerDate),
+                        end = ConvertDateTime.ConverYYYY(header[i].MvContainerDate),
+                        allDay = false,
+                        url = objUrlHelper.Action("Detail", "Purchase", new
+                        {
+                            CONTAINER_NO = header[i].ContainerNo,
+                            Start = ConvertDateTime.ConverYYYY(header[i].MvContainerDate),
+                            Status = header[i].Status,
+                            Subinventory = header[i].Subinventory
+                        }),
+                        Status = header[i].Status,
+                    });
+                }
 
             }
             return fullCalendarEventModel;
+        }
+
+        public Boolean ChangeHeaderStatus(string ContainerNo)
+        {
+            var header = ctrHeaderTRepositiory.GetAll().GroupBy(x => x.ContainerNo == ContainerNo).Select(x => x.FirstOrDefault()).ToList();
+            if(header != null)
+            {
+                for (int i = 0; i < header.Count; i++) 
+                {
+                    header[i].Status = 0;
+                    ctrHeaderTRepositiory.Update(header[i], true);
+                }
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+           
         }
 
         /// <summary>
@@ -684,6 +722,7 @@ WHERE p.ITEM_CATEGORY = N'平張' and h.CONTAINER_NO  = @CONTAINER_NO");
                 return null;
             }
         }
+
         /// <summary>
         /// 取得捲筒編輯資料
         /// </summary>
@@ -693,7 +732,7 @@ WHERE p.ITEM_CATEGORY = N'平張' and h.CONTAINER_NO  = @CONTAINER_NO");
         {
             try
             {
-                using(var mesContext = new MesContext())
+                using (var mesContext = new MesContext())
                 {
                     StringBuilder query = new StringBuilder();
                     query.Append(
@@ -714,14 +753,63 @@ d.PRIMARY_UOM as PrimaryUom,
 d.LOT_NUMBER as LotNumber,
 p.STATUS as Status,
 p.REASON_DESC as Reason,
-p.NOTE as Remark
+p.NOTE as Remark,
+p.LAST_UPDATE_DATE as CreationDate,
+p.LAST_UPDATE_USER_NAME as CreatedUserName 
 FROM dbo.CTR_PICKED_T p
 LEFT JOIN dbo.CTR_HEADER_T h ON h.CTR_HEADER_ID = p.CTR_HEADER_ID
 LEFT JOIN dbo.CTR_DETAIL_T d ON d.CTR_HEADER_ID = p.CTR_HEADER_ID
 WHERE p.ITEM_CATEGORY = N'捲筒' and p.CTR_PICKED_ID  = @CTR_PICKED_ID");
                     return mesContext.Database.SqlQuery<DetailModel.RollDetailModel>(query.ToString(), new SqlParameter("@CTR_PICKED_ID", id)).SingleOrDefault();
                 }
-            }catch(Exception e)
+            }
+            catch (Exception e)
+            {
+                logger.Error(e.Message);
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// 取得捲筒檢視資料pickt歷史資料
+        /// </summary>
+        /// <returns></returns>
+        public DetailModel.RollDetailModel GetPaperRollView(string id)
+        {
+            try
+            {
+                using (var mesContext = new MesContext())
+                {
+                    StringBuilder query = new StringBuilder();
+                    query.Append(
+                    @"SELECT 
+p.CTR_PICKED_ID as Id,
+h.SUBINVENTORY as Subinventory, 
+p.LOCATOR_CODE as Locator,
+p.BARCODE as Barcode,
+p.SHIP_ITEM_NUMBER as Item_No,
+p.PAPER_TYPE as PaperType,
+p.BASIC_WEIGHT as BaseWeight,
+p.SPECIFICATION as Specification,
+d.THEORY_WEIGHT as TheoreticalWeight,
+d.TRANSACTION_QUANTITY as TransactionQuantity,
+d.TRANSACTION_UOM as TransactionUom,
+d.PRIMARY_QUANTITY as PrimanyQuantity,
+d.PRIMARY_UOM as PrimaryUom,
+d.LOT_NUMBER as LotNumber,
+p.STATUS as Status,
+p.REASON_DESC as Reason,
+p.NOTE as Remark,
+p.LAST_UPDATE_DATE as CreationDate,
+p.LAST_UPDATE_USER_NAME as CreatedUserName 
+FROM dbo.CTR_PICKED_HT p
+LEFT JOIN dbo.CTR_HEADER_T h ON h.CTR_HEADER_ID = p.CTR_HEADER_ID
+LEFT JOIN dbo.CTR_DETAIL_T d ON d.CTR_HEADER_ID = p.CTR_HEADER_ID
+WHERE p.ITEM_CATEGORY = N'捲筒' and p.CTR_PICKED_ID  = @CTR_PICKED_ID");
+                    return mesContext.Database.SqlQuery<DetailModel.RollDetailModel>(query.ToString(), new SqlParameter("@CTR_PICKED_ID", id)).SingleOrDefault();
+                }
+            }
+            catch (Exception e)
             {
                 logger.Error(e.Message);
                 return null;
@@ -735,24 +823,151 @@ WHERE p.ITEM_CATEGORY = N'捲筒' and p.CTR_PICKED_ID  = @CTR_PICKED_ID");
         /// <param name="Reason"></param>
         /// <param name="Locator"></param>
         /// <param name="Remark"></param>
-        public void PaperRollEdit(long id, string Reason, string Locator, string Remark)
+        public Boolean PaperRollEdit(long id, string Reason, string Locator, string Remark)
         {
             try
             {
                 using (var mes = new MesContext())
                 {
                     var ctrPickT = ctrPickedTRepositiory.Get(x => x.CtrPickedId == id).SingleOrDefault();
-                    ctrPickT.ReasonDesc = Reason == "請選擇" ? "" : Reason;
-                    ctrPickT.LocatorCode = Locator == "請選擇" ? "" : Locator;
+                    if (Reason != "請選擇")
+                    {
+                        ctrPickT.ReasonDesc = Reason;
+                    }
+                    if (Locator != "請選擇")
+                    {
+                        ctrPickT.LocatorCode = Locator;
+                    }
                     ctrPickT.Note = Remark;
                     ctrPickedTRepositiory.Update(ctrPickT, true);
+                    return true;
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 logger.Error(e.Message);
+                return false;
             }
 
+        }
+
+        /// <summary>
+        /// 平張寫入原因儲位
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="Reason"></param>
+        /// <param name="Locator"></param>
+        /// <param name="Remark"></param>
+        public Boolean FlatEdit(long id, string Reason, string Locator, string Remark)
+        {
+            try
+            {
+                using (var mes = new MesContext())
+                {
+                    var ctrPickT = ctrPickedTRepositiory.Get(x => x.CtrPickedId == id).SingleOrDefault();
+                    if (Reason != "請選擇")
+                    {
+                        ctrPickT.ReasonDesc = Reason;
+                    }
+                    if (Locator != "請選擇")
+                    {
+                        ctrPickT.LocatorCode = Locator;
+                    }
+                    ctrPickT.Note = Remark;
+                    ctrPickedTRepositiory.Update(ctrPickT, true);
+                    return true;
+                }
+            }
+            catch (Exception e)
+            {
+                logger.Error(e.Message);
+                return false;
+            }
+
+        }
+
+        /// <summary>
+        /// 紙捲條碼已入庫
+        /// </summary>
+        /// <param name="Barcode"></param>
+        /// <returns></returns>
+        public int SavePaperRollBarcode(String Barcode)
+        {
+            using (var txn = this.Context.Database.BeginTransaction())
+            {
+                try
+                {
+                    var ctrPickT = ctrPickedTRepositiory.Get(x => x.Barcode == Barcode).SingleOrDefault();
+                    if(ctrPickT != null)
+                    {
+                        if (ctrPickT.Status == "已入庫")
+                        {
+                            return 1;
+                        }
+                        else
+                        {
+                            ctrPickT.Status = "已入庫";
+                            ctrPickedTRepositiory.Update(ctrPickT, true);
+                            txn.Commit();
+                            return 0;
+                        }
+
+                    }
+                    else
+                    {
+                        return 2;
+                    }
+
+                }
+                catch (Exception e)
+                {
+                    txn.Rollback();
+                    logger.Error(e.Message);
+                    return 3;
+                }
+            }
+        }
+
+        /// <summary>
+        /// 平張條碼已入庫
+        /// </summary>
+        /// <param name="Barcode"></param>
+        /// <returns></returns>
+        public int SaveFlatBarcode(String Barcode) 
+        {
+            using (var txn = this.Context.Database.BeginTransaction())
+            {
+                try
+                {
+                    var ctrPickT = ctrPickedTRepositiory.Get(x => x.Barcode == Barcode).SingleOrDefault();
+                    if (ctrPickT != null)
+                    {
+                        if (ctrPickT.Status == "已入庫")
+                        {
+                            return 1;
+                        }
+                        else
+                        {
+                            ctrPickT.Status = "已入庫";
+                            ctrPickedTRepositiory.Update(ctrPickT,true);
+                            txn.Commit();
+                            return 0;
+                        }
+
+                    }
+                    else
+                    {
+                        return 2;
+                    }
+
+                }
+                catch (Exception e)
+                {
+                    txn.Rollback();
+                    logger.Error(e.Message);
+                    return 3;
+                }
+            }
         }
 
         /// <summary>
@@ -780,8 +995,52 @@ p.ROLL_REAM_WT as Pieces_Qty,
 d.ROLL_REAM_QTY as Qty,
 p.STATUS as Status,
 p.REASON_DESC as Reason,
-p.NOTE as Remark
+p.NOTE as Remark,
+p.LAST_UPDATE_DATE as CreationDate,
+p.LAST_UPDATE_USER_NAME as CreatedUserName 
 FROM dbo.CTR_PICKED_T p
+LEFT JOIN dbo.CTR_HEADER_T h ON h.CTR_HEADER_ID = p.CTR_HEADER_ID
+LEFT JOIN dbo.CTR_DETAIL_T d ON d.CTR_HEADER_ID = p.CTR_HEADER_ID
+WHERE p.ITEM_CATEGORY = N'平張' and p.CTR_PICKED_ID  = @CTR_PICKED_ID");
+                    return mesContext.Database.SqlQuery<DetailModel.FlatDetailModel>(query.ToString(), new SqlParameter("@CTR_PICKED_ID", id)).SingleOrDefault();
+                }
+            }
+            catch (Exception e)
+            {
+                logger.Error(e.Message.ToString());
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// 取得平張檢視歷史pcikt資料
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public DetailModel.FlatDetailModel GetFlatView(string id)
+        {
+            try
+            {
+                using (var mesContext = new MesContext())
+                {
+                    StringBuilder query = new StringBuilder();
+                    query.Append(
+                    @"SELECT 
+p.CTR_PICKED_ID as Id,
+h.SUBINVENTORY as Subinventory, 
+p.LOCATOR_CODE as Locator,
+p.BARCODE as Barcode,
+p.SHIP_ITEM_NUMBER as Item_No,
+p.REAM_WEIGHT as ReamWeight,
+p.PACKING_TYPE as PackingType,
+p.ROLL_REAM_WT as Pieces_Qty,
+d.ROLL_REAM_QTY as Qty,
+p.STATUS as Status,
+p.REASON_DESC as Reason,
+p.NOTE as Remark,
+p.LAST_UPDATE_DATE as CreationDate,
+p.LAST_UPDATE_USER_NAME as CreatedUserName 
+FROM dbo.CTR_PICKED_HT p
 LEFT JOIN dbo.CTR_HEADER_T h ON h.CTR_HEADER_ID = p.CTR_HEADER_ID
 LEFT JOIN dbo.CTR_DETAIL_T d ON d.CTR_HEADER_ID = p.CTR_HEADER_ID
 WHERE p.ITEM_CATEGORY = N'平張' and p.CTR_PICKED_ID  = @CTR_PICKED_ID");
@@ -865,8 +1124,7 @@ WHERE d1.ITEM_CATEGORY = N'捲筒' and h1.CONTAINER_NO  = @CONTAINER_NO");
             return 0;
         }
 
-
-        public void SavePhoto(HttpPostedFileBase file,long id)
+        public void SavePhoto(HttpPostedFileBase file, long id)
         {
             using (var txn = this.Context.Database.BeginTransaction())
             {
@@ -874,7 +1132,7 @@ WHERE d1.ITEM_CATEGORY = N'捲筒' and h1.CONTAINER_NO  = @CONTAINER_NO");
                 {
                     using (var mescontext = new MesContext())
                     {
-                        SaveCtrFileInfoT(VaryQualityLevel(file), file,id);
+                        SaveCtrFileInfoT(VaryQualityLevel(file), file, id);
                     }
                     txn.Commit();
                 }
@@ -891,7 +1149,7 @@ WHERE d1.ITEM_CATEGORY = N'捲筒' and h1.CONTAINER_NO  = @CONTAINER_NO");
         /// </summary>
         /// <param name="filebyte"></param>
         /// <param name="file"></param>
-        public void SaveCtrFileInfoT(byte[] filebyte, HttpPostedFileBase file,long id)
+        public void SaveCtrFileInfoT(byte[] filebyte, HttpPostedFileBase file, long id)
         {
             try
             {
@@ -996,7 +1254,7 @@ WHERE d1.ITEM_CATEGORY = N'捲筒' and h1.CONTAINER_NO  = @CONTAINER_NO");
 
         }
 
-        public List<byte[]> GetPhoto(long id)
+        public List<string> GetPhoto(long id)
         {
             using (var db = new MesContext())
             {
@@ -1006,14 +1264,14 @@ WHERE d1.ITEM_CATEGORY = N'捲筒' and h1.CONTAINER_NO  = @CONTAINER_NO");
                    d => d.CtrFileId,  //d代表db.CTR_FILES_Ts(cd可以自己定義名稱)，這邊放次資料表要串聯的key
                    (c, d) => new         //將兩個自定義名稱用小括胡包起來，接著透過 『=>』 可以自己選擇要取用要用資料 
                    {
-                      x = c.FileInstance,
-                      e = d.CtrPickedId
+                       x = c.FileInstance,
+                       e = d.CtrPickedId
                    }
-                   ).Where(x=> x.e == id).ToList();
-                List<byte[]> vs = new List<byte[]>();
-                for (int i =0; i<ctrPhoto.Count; i++)
+                   ).Where(x => x.e == id).ToList();
+                List<string> vs = new List<string>();
+                for (int i = 0; i < ctrPhoto.Count; i++)
                 {
-                    vs.Add(ctrPhoto[i].x);
+                    vs.Add(Convert.ToBase64String(ctrPhoto[i].x));
                 }
                 return vs;
             }

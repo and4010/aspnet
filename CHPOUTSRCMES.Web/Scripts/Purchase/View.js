@@ -1,7 +1,6 @@
 ﻿$(document).ready(function () {
     click();
 
-    addNewContent();
 });
 
 var imgSrc = []; //圖片路徑
@@ -15,11 +14,11 @@ function click() {
 
 
 //點擊預覽&&圖片放大
-function addNewContent() {
+function AddNewContent(obj) {
     $(imgBox).html("");
     for (var a = 0; a < imgSrc.length; a++) {
-        var oldBox = $('#imgBox').html();
-        $('#imgBox').html(oldBox + '<div class="imgContainer"><img title=' + imgName[a] + ' alt=' + imgName[a] + ' src=' + imgSrc[a] + ' onclick="imgDisplay(this)"></div>');
+        var oldBox = $(obj).html();
+        $(obj).html(oldBox + '<div class="imgContainer"><img title=' + imgName[a] + ' alt=' + imgName[a] + ' src=' + imgSrc[a] + ' onclick="imgDisplay(this)"></div>');
     };
 }
 
