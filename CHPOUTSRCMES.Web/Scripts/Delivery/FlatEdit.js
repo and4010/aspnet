@@ -28,14 +28,13 @@ $(document).ready(function () {
          { data: "ID", name: "項次", autoWidth: true },
          { data: "ORDER_NUMBER", name: "訂單", autoWidth: true },
          { data: "ORDER_SHIP_NUMBER", name: "訂單行號", autoWidth: true },   
-         { data: "OSP_BATCH_ID", name: "代紙工單號碼ID", autoWidth: true, visible: false },
+         { data: "OSP_BATCH_ID", name: "代紙工單號碼ID", autoWidth: true, visible: false},
          { data: "OSP_BATCH_NO", name: "代紙工單號碼", autoWidth: true },
          { data: "TMP_ITEM_ID", name: "代紙料號ID", autoWidth: true, visible: false },
          { data: "TMP_ITEM_NUMBER", name: "代紙料號", autoWidth: true, className: "dt-body-left" },
          { data: "ITEM_NUMBER", name: "料號", autoWidth: true, className: "dt-body-left" },
          { data: "REAM_WEIGHT", name: "令重", autoWidth: true },
          { data: "PACKING_TYPE", name: "包裝方式", autoWidth: true },
-
          { data: "REQUESTED_QUANTITY", name: "預計出庫量", autoWidth: true, className: "dt-body-right"},
          { data: "PICKED_QUANTITY", name: "出庫已揀數量", autoWidth: true, className: "dt-body-right" },
          { data: "REQUESTED_QUANTITY_UOM", name: "庫存單位", autoWidth: true },
@@ -50,7 +49,13 @@ $(document).ready(function () {
          //{ data: "REMARK", name: "備註", autoWidth: true },
 
         ],
-
+        //columnDefs: [
+        //    {
+        //        "targets": [4],
+        //        "visible": false,
+        //        "searchable": false
+        //    }
+        //    ],
         "order": [[1, 'asc']],
         select: {
             style: 'single',
