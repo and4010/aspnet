@@ -41,11 +41,13 @@ namespace CHPOUTSRCMES.Web.Controllers
         [Authorize(Roles="系統管理員, 華紙使用者")]
         public ActionResult Index()
         {
+            //取得使用者ID
             var id = this.User.Identity.GetUserId();
+            //取得使用者帳號
             var name = this.User.Identity.GetUserName();
-          
-            var userIdentity = (ClaimsIdentity)User.Identity;
             
+            //取得使用者角色
+            var userIdentity = (ClaimsIdentity)User.Identity;
             var claims = userIdentity.Claims;
             var roleClaimType = userIdentity.RoleClaimType;
             var roles = claims.Where(c => c.Type == ClaimTypes.Role).ToList();

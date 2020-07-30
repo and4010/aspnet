@@ -24,6 +24,7 @@
                     using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm" }))
                     {
                         @Html.AntiForgeryToken()
+                        
                         <ul class="nav navbar-nav">
                             <li>
                                 <a href="#" data-toggle="control-sidebar"><i class="fa fa-user" aria-hidden="true"></i>@this.User.Identity.Name</a>
