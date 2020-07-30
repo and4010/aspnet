@@ -16,17 +16,29 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
 
         //public string DT_RowId { get; set; }
 
+        public long SUB_ID { get; set; }
+
         [Display(Name = "訂單編號")]
         public long ORDER_NUMBER { get; set; }
 
         [Display(Name = "訂單行號")]
         public string ORDER_SHIP_NUMBER { get; set; }
 
+
+        [Display(Name = "工單號碼ID")]
+        public long? OSP_BATCH_ID { get; set; }
+
         [Display(Name = "工單號碼")]
         public string OSP_BATCH_NO { get; set; }
 
-        [Display(Name = "料號名稱")]
-        public string ITEM_NUMBER { get; set; } //要改為ITEM_NUMBER ITEM_DESCRIPTION
+        [Display(Name = "料號ID")]
+        public long INVENTORY_ITEM_ID { get; set; }
+
+        [Display(Name = "料號")]
+        public string ITEM_NUMBER { get; set; }
+
+        [Display(Name = "代紙料號ID")]
+        public long? TMP_ITEM_ID { get; set; }
 
         [Display(Name = "代紙料號名稱")]
         public string TMP_ITEM_NUMBER { get; set; }
@@ -165,7 +177,6 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
             //List<PaperRollEditDT> list = query.ToList<PaperRollEditDT>();
             //return list;
         }
-
 
         //Barcode 123
         public static void updateA006(long PaperRollEditDT_ID, long DlvHeaderId)

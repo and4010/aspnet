@@ -18,6 +18,8 @@ namespace CHPOUTSRCMES.Web.Controllers
     public class DeliveryController : Controller
     {
         TripHeaderData tripHeaderData = new TripHeaderData();
+        
+
         //
         // GET: /Delivery/
         public ActionResult Index()
@@ -194,8 +196,8 @@ namespace CHPOUTSRCMES.Web.Controllers
             {
                 using (DeliveryUOW uow = new DeliveryUOW(context))
                 {
-
-                    List<PaperRollEditDT> model = uow.GetRollDetailDT(DlvHeaderId);
+                    PaperRollEditData paperRollEditData = new PaperRollEditData();
+                    List<PaperRollEditDT> model = paperRollEditData.GetRollDetailDT(uow, DlvHeaderId);
                     var totalCount = model.Count;
                     string search = data.Search.Value;
                     if (!string.IsNullOrEmpty(search) && !string.IsNullOrWhiteSpace(search))
@@ -227,28 +229,35 @@ namespace CHPOUTSRCMES.Web.Controllers
         [HttpPost, ActionName("GetRollEditBarcode")]
         public JsonResult GetRollEditBarcode(DataTableAjaxPostViewModel data, long DlvHeaderId)
         {
-            List<PaperRollEditBarcodeDT> model = PaperRollEditBarcodeData.getDataList(DlvHeaderId);
-            var totalCount = model.Count;
-            string search = data.Search.Value;
-            if (!string.IsNullOrEmpty(search) && !string.IsNullOrWhiteSpace(search))
+            using (var context = new MesContext())
             {
-                // Apply search   
-                model = model.Where(p => (!string.IsNullOrEmpty(p.ITEM_DESCRIPTION) && p.ITEM_DESCRIPTION.ToLower().Contains(search.ToLower()))
-                    || (!string.IsNullOrEmpty(p.BARCODE) && p.BARCODE.ToLower().Contains(search.ToLower()))
-                    || p.PRIMARY_QUANTITY.ToString().ToLower().Contains(search.ToLower())
-                    || p.PRIMARY_UOM.ToString().ToLower().Contains(search.ToLower())
-                   || (!string.IsNullOrEmpty(p.REMARK) && p.REMARK.ToLower().Contains(search.ToLower()))
-                    ).ToList();
-            }
-            var filteredCount = model.Count;
-            model = PaperRollEditBarcodeDTOrder.Order(data.Order, model).ToList();
-            model = model.Skip(data.Start).Take(data.Length).ToList();
+                using (DeliveryUOW uow = new DeliveryUOW(context))
+                {
+                    PaperRollEditBarcodeData paperRollEditBarcodeData = new PaperRollEditBarcodeData();
+                    List<PaperRollEditBarcodeDT> model = paperRollEditBarcodeData.GetRollPickDT(uow, DlvHeaderId);
+                    var totalCount = model.Count;
+                    string search = data.Search.Value;
+                    if (!string.IsNullOrEmpty(search) && !string.IsNullOrWhiteSpace(search))
+                    {
+                        // Apply search   
+                        model = model.Where(p => (!string.IsNullOrEmpty(p.ITEM_NUMBER) && p.ITEM_NUMBER.ToLower().Contains(search.ToLower()))
+                            || (!string.IsNullOrEmpty(p.BARCODE) && p.BARCODE.ToLower().Contains(search.ToLower()))
+                            || p.PRIMARY_QUANTITY.ToString().ToLower().Contains(search.ToLower())
+                            || p.PRIMARY_UOM.ToString().ToLower().Contains(search.ToLower())
+                            //|| (!string.IsNullOrEmpty(p.REMARK) && p.REMARK.ToLower().Contains(search.ToLower()))
+                            ).ToList();
+                    }
+                    var filteredCount = model.Count;
+                    model = PaperRollEditBarcodeDTOrder.Order(data.Order, model).ToList();
+                    model = model.Skip(data.Start).Take(data.Length).ToList();
 
-            return Json(new { draw = data.Draw, recordsFiltered = filteredCount, recordsTotal = totalCount, data = model }, JsonRequestBehavior.AllowGet);
+                    return Json(new { draw = data.Draw, recordsFiltered = filteredCount, recordsTotal = totalCount, data = model }, JsonRequestBehavior.AllowGet);
+                }
+            }
         }
 
         [HttpPost, ActionName("InputRollEditBarcode")]
-        public ActionResult InputRollEditBarcode(string BARCODE, long DlvHeaderId, long PaperRollEditDT_ID)
+        public ActionResult InputRollEditBarcode(string BARCODE, long DlvHeaderId, long DLV_DETAIL_ID)
         {
 
             if (BARCODE == "W2005060001" || BARCODE == "W2005060002" || BARCODE == "W2005060003" || BARCODE == "W2005060004" || BARCODE == "W2005060005" || BARCODE == "W2005060006")
@@ -259,62 +268,62 @@ namespace CHPOUTSRCMES.Web.Controllers
                     if (BARCODE == "W2005060001")
                     {
                         ITEM_DESCRIPTION = "4FHIZA03000787RL00";
-                        if (!PaperRollEditData.checkBarcodeItemDesc(PaperRollEditDT_ID, ITEM_DESCRIPTION))
+                        if (!PaperRollEditData.checkBarcodeItemDesc(DLV_DETAIL_ID, ITEM_DESCRIPTION))
                         {
                             return new JsonResult { Data = new { status = false, result = "此條碼不符合已選擇的料號" } };
                         }
-                        PaperRollEditBarcodeData.addBarcode123(PaperRollEditDT_ID, DlvHeaderId);
-                        PaperRollEditData.updateA006(PaperRollEditDT_ID, DlvHeaderId);
+                        PaperRollEditBarcodeData.addBarcode123(DLV_DETAIL_ID, DlvHeaderId);
+                        PaperRollEditData.updateA006(DLV_DETAIL_ID, DlvHeaderId);
                     }
                     else if (BARCODE == "W2005060004")
                     {
                         ITEM_DESCRIPTION = "4FHIZA03000787RL00";
-                        if (!PaperRollEditData.checkBarcodeItemDesc(PaperRollEditDT_ID, ITEM_DESCRIPTION))
+                        if (!PaperRollEditData.checkBarcodeItemDesc(DLV_DETAIL_ID, ITEM_DESCRIPTION))
                         {
                             return new JsonResult { Data = new { status = false, result = "此條碼不符合已選擇的料號" } };
                         }
-                        PaperRollEditBarcodeData.addBarcode124(PaperRollEditDT_ID, DlvHeaderId);
-                        PaperRollEditData.updateA006(PaperRollEditDT_ID, DlvHeaderId);
+                        PaperRollEditBarcodeData.addBarcode124(DLV_DETAIL_ID, DlvHeaderId);
+                        PaperRollEditData.updateA006(DLV_DETAIL_ID, DlvHeaderId);
                     }
                     else if (BARCODE == "W2005060002")
                     {
                         ITEM_DESCRIPTION = "4FHIZA02500787RL00";
-                        if (!PaperRollEditData.checkBarcodeItemDesc(PaperRollEditDT_ID, ITEM_DESCRIPTION))
+                        if (!PaperRollEditData.checkBarcodeItemDesc(DLV_DETAIL_ID, ITEM_DESCRIPTION))
                         {
                             return new JsonResult { Data = new { status = false, result = "此條碼不符合已選擇的料號" } };
                         }
-                        PaperRollEditBarcodeData.addBarcode456(PaperRollEditDT_ID, DlvHeaderId);
-                        PaperRollEditData.updateB001(PaperRollEditDT_ID, DlvHeaderId);
+                        PaperRollEditBarcodeData.addBarcode456(DLV_DETAIL_ID, DlvHeaderId);
+                        PaperRollEditData.updateB001(DLV_DETAIL_ID, DlvHeaderId);
                     }
                     else if (BARCODE == "W2005060005")
                     {
                         ITEM_DESCRIPTION = "4FHIZA02500787RL00";
-                        if (!PaperRollEditData.checkBarcodeItemDesc(PaperRollEditDT_ID, ITEM_DESCRIPTION))
+                        if (!PaperRollEditData.checkBarcodeItemDesc(DLV_DETAIL_ID, ITEM_DESCRIPTION))
                         {
                             return new JsonResult { Data = new { status = false, result = "此條碼不符合已選擇的料號" } };
                         }
-                        PaperRollEditBarcodeData.addBarcode457(PaperRollEditDT_ID, DlvHeaderId);
-                        PaperRollEditData.updateB001(PaperRollEditDT_ID, DlvHeaderId);
+                        PaperRollEditBarcodeData.addBarcode457(DLV_DETAIL_ID, DlvHeaderId);
+                        PaperRollEditData.updateB001(DLV_DETAIL_ID, DlvHeaderId);
                     }
                     else if (BARCODE == "W2005060003")
                     {
                         ITEM_DESCRIPTION = "4FHIZA02000787RL00";
-                        if (!PaperRollEditData.checkBarcodeItemDesc(PaperRollEditDT_ID, ITEM_DESCRIPTION))
+                        if (!PaperRollEditData.checkBarcodeItemDesc(DLV_DETAIL_ID, ITEM_DESCRIPTION))
                         {
                             return new JsonResult { Data = new { status = false, result = "此條碼不符合已選擇的料號" } };
                         }
-                        PaperRollEditBarcodeData.addBarcode130(PaperRollEditDT_ID, DlvHeaderId);
-                        PaperRollEditData.updateA006s(PaperRollEditDT_ID, DlvHeaderId);
+                        PaperRollEditBarcodeData.addBarcode130(DLV_DETAIL_ID, DlvHeaderId);
+                        PaperRollEditData.updateA006s(DLV_DETAIL_ID, DlvHeaderId);
                     }
                     else if (BARCODE == "W2005060006")
                     {
                         ITEM_DESCRIPTION = "4FHIZA02000787RL00";
-                        if (!PaperRollEditData.checkBarcodeItemDesc(PaperRollEditDT_ID, ITEM_DESCRIPTION))
+                        if (!PaperRollEditData.checkBarcodeItemDesc(DLV_DETAIL_ID, ITEM_DESCRIPTION))
                         {
                             return new JsonResult { Data = new { status = false, result = "此條碼不符合已選擇的料號" } };
                         }
-                        PaperRollEditBarcodeData.addBarcode131(PaperRollEditDT_ID, DlvHeaderId);
-                        PaperRollEditData.updateA006s(PaperRollEditDT_ID, DlvHeaderId);
+                        PaperRollEditBarcodeData.addBarcode131(DLV_DETAIL_ID, DlvHeaderId);
+                        PaperRollEditData.updateA006s(DLV_DETAIL_ID, DlvHeaderId);
                     }
 
 
@@ -345,7 +354,7 @@ namespace CHPOUTSRCMES.Web.Controllers
                 {
                     foreach (PaperRollEditBarcodeDT item in items)
                     {
-                        PaperRollEditData.remove(item.PaperRollEditDT_ID, DlvHeaderId);
+                        PaperRollEditData.remove(item.DLV_DETAIL_ID, DlvHeaderId);
                         //if (item.ITEM_DESCRIPTION == "A006" && item.PaperRollEditDT_ID == 1)
                         //{
                         //    PaperRollEditData.removeA006(item.PaperRollEditDT_ID, TripDetailDT_ID);
@@ -375,69 +384,83 @@ namespace CHPOUTSRCMES.Web.Controllers
         }
 
         [HttpPost, ActionName("GetFlatEdit")]
-        public JsonResult GetFlatEdit(DataTableAjaxPostViewModel data, string DELIVERY_NAME, string TRIP_NAME)
+        public JsonResult GetFlatEdit(DataTableAjaxPostViewModel data, long DlvHeaderId)
         {
-            if (FlatEditData.getModel(DELIVERY_NAME, TRIP_NAME).Count == 0)
-            {
-                FlatEditData.addDefault();
-            }
 
-            List<FlatEditDT> model = FlatEditData.getModel(DELIVERY_NAME, TRIP_NAME);
-            var totalCount = model.Count;
-            string search = data.Search.Value;
-            if (!string.IsNullOrEmpty(search) && !string.IsNullOrWhiteSpace(search))
+            //if (FlatEditData.getModel(DELIVERY_NAME, TRIP_NAME).Count == 0)
+            //{
+            //    FlatEditData.addDefault();
+            //}
+            using (var context = new MesContext())
             {
-                // Apply search   
-                model = model.Where(p => (!string.IsNullOrEmpty(p.ORDER_NUMBER.ToString()) && p.ORDER_NUMBER.ToString().ToLower().Contains(search.ToLower()))
-                    || (!string.IsNullOrEmpty(p.ORDER_SHIP_NUMBER) && p.ORDER_SHIP_NUMBER.ToLower().Contains(search.ToLower()))
-                    || (!string.IsNullOrEmpty(p.OSP_BATCH_NO) && p.OSP_BATCH_NO.ToLower().Contains(search.ToLower()))
-                    || (!string.IsNullOrEmpty(p.ITEM_DESCRIPTION) && p.ITEM_DESCRIPTION.ToLower().Contains(search.ToLower()))
-                    || (!string.IsNullOrEmpty(p.REAM_WEIGHT) && p.REAM_WEIGHT.ToLower().Contains(search.ToLower()))
-                    || (!string.IsNullOrEmpty(p.PACKING_TYPE) && p.PACKING_TYPE.ToLower().Contains(search.ToLower()))
-                    || p.SRC_REQUESTED_QUANTITY.ToString().ToLower().Contains(search.ToLower())
-                    || (!string.IsNullOrEmpty(p.SRC_REQUESTED_QUANTITY_UOM) && p.SRC_REQUESTED_QUANTITY_UOM.ToLower().Contains(search.ToLower()))
-                    || p.REQUESTED_QUANTITY2.ToString().ToLower().Contains(search.ToLower())
-                    || (!string.IsNullOrEmpty(p.SRC_REQUESTED_QUANTITY_UOM2) && p.SRC_REQUESTED_QUANTITY_UOM2.ToLower().Contains(search.ToLower()))
-                    || p.REQUESTED_QUANTITY.ToString().ToLower().Contains(search.ToLower())
-                    || (!string.IsNullOrEmpty(p.REQUESTED_QUANTITY_UOM) && p.REQUESTED_QUANTITY_UOM.ToLower().Contains(search.ToLower()))
-                    || (!string.IsNullOrEmpty(p.REMARK) && p.REMARK.ToLower().Contains(search.ToLower()))
-                    ).ToList();
-            }
+                using (DeliveryUOW uow = new DeliveryUOW(context))
+                {
+                    FlatEditData flatEditData = new FlatEditData();
+                    List<FlatEditDT> model = flatEditData.GetFlatDetailDT(uow, DlvHeaderId);
+                    var totalCount = model.Count;
+                    string search = data.Search.Value;
+                    if (!string.IsNullOrEmpty(search) && !string.IsNullOrWhiteSpace(search))
+                    {
+                        // Apply search   
+                        model = model.Where(p => (!string.IsNullOrEmpty(p.ORDER_NUMBER.ToString()) && p.ORDER_NUMBER.ToString().ToLower().Contains(search.ToLower()))
+                            || (!string.IsNullOrEmpty(p.ORDER_SHIP_NUMBER) && p.ORDER_SHIP_NUMBER.ToLower().Contains(search.ToLower()))
+                            || (!string.IsNullOrEmpty(p.OSP_BATCH_NO) && p.OSP_BATCH_NO.ToLower().Contains(search.ToLower()))
+                            || (!string.IsNullOrEmpty(p.ITEM_NUMBER) && p.ITEM_NUMBER.ToLower().Contains(search.ToLower()))
+                            || (!string.IsNullOrEmpty(p.REAM_WEIGHT) && p.REAM_WEIGHT.ToLower().Contains(search.ToLower()))
+                            || (!string.IsNullOrEmpty(p.PACKING_TYPE) && p.PACKING_TYPE.ToLower().Contains(search.ToLower()))
+                            || p.SRC_REQUESTED_QUANTITY.ToString().ToLower().Contains(search.ToLower())
+                            || (!string.IsNullOrEmpty(p.SRC_REQUESTED_QUANTITY_UOM) && p.SRC_REQUESTED_QUANTITY_UOM.ToLower().Contains(search.ToLower()))
+                            || p.REQUESTED_QUANTITY2.ToString().ToLower().Contains(search.ToLower())
+                            || (!string.IsNullOrEmpty(p.REQUESTED_QUANTITY_UOM2) && p.REQUESTED_QUANTITY_UOM2.ToLower().Contains(search.ToLower()))
+                            || p.REQUESTED_QUANTITY.ToString().ToLower().Contains(search.ToLower())
+                            || (!string.IsNullOrEmpty(p.REQUESTED_QUANTITY_UOM) && p.REQUESTED_QUANTITY_UOM.ToLower().Contains(search.ToLower()))
+                            || (!string.IsNullOrEmpty(p.REMARK) && p.REMARK.ToLower().Contains(search.ToLower()))
+                            ).ToList();
+                    }
 
-            var filteredCount = model.Count;
-            model = FlatEditDTOrder.Order(data.Order, model).ToList();
-            model = model.Skip(data.Start).Take(data.Length).ToList();
-            return Json(new { draw = data.Draw, recordsFiltered = filteredCount, recordsTotal = totalCount, data = model }, JsonRequestBehavior.AllowGet);
+                    var filteredCount = model.Count;
+                    model = FlatEditDTOrder.Order(data.Order, model).ToList();
+                    model = model.Skip(data.Start).Take(data.Length).ToList();
+                    return Json(new { draw = data.Draw, recordsFiltered = filteredCount, recordsTotal = totalCount, data = model }, JsonRequestBehavior.AllowGet);
+                }
+            }
         }
 
         [HttpPost, ActionName("GetFlatEditBarcode")]
         public JsonResult GetFlatEditBarcode(DataTableAjaxPostViewModel data, long DlvHeaderId)
         {
-            List<FlatEditBarcodeDT> model = FlatEditBarcodeData.getModel(DlvHeaderId);
-            var totalCount = model.Count;
-            string search = data.Search.Value;
-            if (!string.IsNullOrEmpty(search) && !string.IsNullOrWhiteSpace(search))
+            using (var context = new MesContext())
             {
-                // Apply search   
-                model = model.Where(p => (!string.IsNullOrEmpty(p.BARCODE) && p.BARCODE.ToLower().Contains(search.ToLower()))
-                    || (!string.IsNullOrEmpty(p.ITEM_DESCRIPTION) && p.ITEM_DESCRIPTION.ToLower().Contains(search.ToLower()))
-                    || (!string.IsNullOrEmpty(p.REAM_WEIGHT) && p.REAM_WEIGHT.ToLower().Contains(search.ToLower()))
-                    || (!string.IsNullOrEmpty(p.PACKING_TYPE) && p.PACKING_TYPE.ToLower().Contains(search.ToLower()))
-                    || p.PRIMARY_QUANTITY.ToString().ToLower().Contains(search.ToLower())
-                    || p.PRIMARY_UOM.ToString().ToLower().Contains(search.ToLower())
-                    || p.SECONDARY_QUANTITY.ToString().ToLower().Contains(search.ToLower())
-                    || p.SECONDARY_UOM.ToString().ToLower().Contains(search.ToLower())
-                    || (!string.IsNullOrEmpty(p.REMARK) && p.REMARK.ToLower().Contains(search.ToLower()))
-                    ).ToList();
+                using (DeliveryUOW uow = new DeliveryUOW(context))
+                {
+                    FlatEditBarcodeData flatEditBarcodeData = new FlatEditBarcodeData();
+                    List<FlatEditBarcodeDT> model = flatEditBarcodeData.GetFlatPickDT(uow, DlvHeaderId);
+                    var totalCount = model.Count;
+                    string search = data.Search.Value;
+                    if (!string.IsNullOrEmpty(search) && !string.IsNullOrWhiteSpace(search))
+                    {
+                        // Apply search   
+                        model = model.Where(p => (!string.IsNullOrEmpty(p.BARCODE) && p.BARCODE.ToLower().Contains(search.ToLower()))
+                            || (!string.IsNullOrEmpty(p.ITEM_NUMBER) && p.ITEM_NUMBER.ToLower().Contains(search.ToLower()))
+                            || (!string.IsNullOrEmpty(p.REAM_WEIGHT) && p.REAM_WEIGHT.ToLower().Contains(search.ToLower()))
+                            || (!string.IsNullOrEmpty(p.PACKING_TYPE) && p.PACKING_TYPE.ToLower().Contains(search.ToLower()))
+                            || p.PRIMARY_QUANTITY.ToString().ToLower().Contains(search.ToLower())
+                            || p.PRIMARY_UOM.ToString().ToLower().Contains(search.ToLower())
+                            || p.SECONDARY_QUANTITY.ToString().ToLower().Contains(search.ToLower())
+                            || p.SECONDARY_UOM.ToString().ToLower().Contains(search.ToLower())
+                            //|| (!string.IsNullOrEmpty(p.REMARK) && p.REMARK.ToLower().Contains(search.ToLower()))
+                            ).ToList();
+                    }
+                    var filteredCount = model.Count;
+                    model = FlatEditBarcodeDTOrder.Order(data.Order, model).ToList();
+                    model = model.Skip(data.Start).Take(data.Length).ToList();
+                    return Json(new { draw = data.Draw, recordsFiltered = filteredCount, recordsTotal = totalCount, data = model }, JsonRequestBehavior.AllowGet);
+                }
             }
-            var filteredCount = model.Count;
-            model = FlatEditBarcodeDTOrder.Order(data.Order, model).ToList();
-            model = model.Skip(data.Start).Take(data.Length).ToList();
-            return Json(new { draw = data.Draw, recordsFiltered = filteredCount, recordsTotal = totalCount, data = model }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost, ActionName("InputFlatEditBarcode")]
-        public ActionResult InputFlatEditBarcode(string BARCODE, decimal? SECONDARY_QUANTITY, long DlvHeaderId, long FlatEditDT_ID)
+        public ActionResult InputFlatEditBarcode(string BARCODE, decimal? SECONDARY_QUANTITY, long DlvHeaderId, long DLV_DETAIL_ID)
         {
             //搜尋條碼資料
 
@@ -451,7 +474,7 @@ namespace CHPOUTSRCMES.Web.Controllers
                 if (SECONDARY_QUANTITY == null)
                 {
                     ITEM_DESCRIPTION = "4A003A01000310K266K";
-                    if (!FlatEditData.checkBarcodeItemDesc(FlatEditDT_ID, ITEM_DESCRIPTION))
+                    if (!FlatEditData.checkBarcodeItemDesc(DLV_DETAIL_ID, ITEM_DESCRIPTION))
                     {
                         return new JsonResult { Data = new { status = false, result = "此條碼不符合已選擇的料號" } };
                     }
@@ -470,7 +493,7 @@ namespace CHPOUTSRCMES.Web.Controllers
             else if (BARCODE == "P2005060002") //平張打件
             {
                 ITEM_DESCRIPTION = "4AB23P00699350K250K";
-                if (!FlatEditData.checkBarcodeItemDesc(FlatEditDT_ID, ITEM_DESCRIPTION))
+                if (!FlatEditData.checkBarcodeItemDesc(DLV_DETAIL_ID, ITEM_DESCRIPTION))
                 {
                     return new JsonResult { Data = new { status = false, result = "此條碼不符合已選擇的料號" } };
                 }
@@ -484,7 +507,7 @@ namespace CHPOUTSRCMES.Web.Controllers
             else if (BARCODE == "P2005060003") //平張打件
             {
                 ITEM_DESCRIPTION = "4DM00P03000297K476K";
-                if (!FlatEditData.checkBarcodeItemDesc(FlatEditDT_ID, ITEM_DESCRIPTION))
+                if (!FlatEditData.checkBarcodeItemDesc(DLV_DETAIL_ID, ITEM_DESCRIPTION))
                 {
                     return new JsonResult { Data = new { status = false, result = "此條碼不符合已選擇的料號" } };
                 }

@@ -39,7 +39,7 @@ namespace CHPOUTSRCMES.Web.DataModel
             readFromXls(context);
             new PurchaseUOW(context).generateTestData();
             new DeliveryUOW(context).generateTestData();
-
+            new StockUOW(context).generateTestData();
             base.Seed(context);
 
         }

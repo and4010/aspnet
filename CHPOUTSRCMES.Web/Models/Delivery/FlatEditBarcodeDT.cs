@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.ComponentModel.DataAnnotations;
 using CHPOUTSRCMES.Web.ViewModels;
+using CHPOUTSRCMES.Web.DataModel.UnitOfWorks;
 
 namespace CHPOUTSRCMES.Web.Models.Delivery
 {
@@ -11,13 +12,17 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
     {
         public long PICKED_ID { get; set; }
 
-        public long FlatEditDT_ID { get; set; }
+        public long SUB_ID { get; set; }
+
+        public long DLV_DETAIL_ID { get; set; } //DLV_DETAIL_ID
+
+        public long DlvHeaderId { get; set; } //DLV_HEADER_ID
 
         [Display(Name = "條碼號")]
         public string BARCODE { get; set; }
 
         [Display(Name = "料號名稱")]
-        public string ITEM_DESCRIPTION { get; set; }
+        public string ITEM_NUMBER { get; set; }
 
         [Display(Name = "令重")]
         public string REAM_WEIGHT { get; set; }
@@ -45,8 +50,8 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
         public long LAST_UPDATED_BY { get; set; }
         [Display(Name = "更新日期")]
         public DateTime LAST_UPDATE_DATE { get; set; }
-        [Display(Name = "備註")]
-        public string REMARK { get; set; }
+        //[Display(Name = "備註")]
+        //public string REMARK { get; set; }
     }
 
   
@@ -59,10 +64,15 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
         public static List<FlatEditBarcodeDT> getModel(long DlvHeaderId) //DELIVERY_HEADER_ID
         {
             var query = from data in model
-                        where DlvHeaderId == data.FlatEditDT_ID
+                        where DlvHeaderId == data.DLV_DETAIL_ID
                         select data;
             List<FlatEditBarcodeDT> list = query.ToList<FlatEditBarcodeDT>();
             return list;
+        }
+
+        public List<FlatEditBarcodeDT> GetFlatPickDT(DeliveryUOW uow, long DlvHeaderId)
+        {
+            return uow.GetFlatPickDT(DlvHeaderId);
         }
 
         public static void resetData()
@@ -76,9 +86,9 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
             barcodeData.BARCODE = "P2005060001";
             barcodeData.SECONDARY_QUANTITY = qty;
             barcodeData.SECONDARY_UOM = "RE";
-            barcodeData.FlatEditDT_ID = 1;
+            barcodeData.DLV_DETAIL_ID = 1;
             barcodeData.PICKED_ID = 1;
-            barcodeData.ITEM_DESCRIPTION = "4A003A01000310K266K";
+            barcodeData.ITEM_NUMBER = "4A003A01000310K266K";
             barcodeData.PACKING_TYPE = "令包";
             barcodeData.PRIMARY_QUANTITY = qty * 26.74838M;
             barcodeData.PRIMARY_UOM = "KG";
@@ -87,7 +97,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
             barcodeData.CREATION_DATE = DateTime.Now;
             barcodeData.LAST_UPDATED_BY = 1;
             barcodeData.LAST_UPDATE_DATE = DateTime.Now;
-            barcodeData.REMARK = "";
+            //barcodeData.REMARK = "";
             model.Add(barcodeData);
         }
 
@@ -97,9 +107,9 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
             barcodeData.BARCODE = "P2005060002";
             barcodeData.SECONDARY_QUANTITY = 19;
             barcodeData.SECONDARY_UOM = "RE";
-            barcodeData.FlatEditDT_ID = 2;
+            barcodeData.DLV_DETAIL_ID = 2;
             barcodeData.PICKED_ID = 2;
-            barcodeData.ITEM_DESCRIPTION = "4AB23P00699350K250K";
+            barcodeData.ITEM_NUMBER = "4AB23P00699350K250K";
             barcodeData.PACKING_TYPE = "無令打件";
             barcodeData.PRIMARY_QUANTITY = 374.8945M;
             barcodeData.PRIMARY_UOM = "KG";
@@ -108,7 +118,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
             barcodeData.CREATION_DATE = DateTime.Now;
             barcodeData.LAST_UPDATED_BY = 1;
             barcodeData.LAST_UPDATE_DATE = DateTime.Now;
-            barcodeData.REMARK = "";
+            //barcodeData.REMARK = "";
             model.Add(barcodeData);
         }
 
@@ -118,9 +128,9 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
             barcodeData.BARCODE = "P2005060003";
             barcodeData.SECONDARY_QUANTITY = 120;
             barcodeData.SECONDARY_UOM = "RE";
-            barcodeData.FlatEditDT_ID = 3;
+            barcodeData.DLV_DETAIL_ID = 3;
             barcodeData.PICKED_ID = 3;
-            barcodeData.ITEM_DESCRIPTION = "4DM00P03000297K476K";
+            barcodeData.ITEM_NUMBER = "4DM00P03000297K476K";
             barcodeData.PACKING_TYPE = "無令打件";
             barcodeData.PRIMARY_QUANTITY = 120 * 10;
             barcodeData.PRIMARY_UOM = "KG";
@@ -129,7 +139,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
             barcodeData.CREATION_DATE = DateTime.Now;
             barcodeData.LAST_UPDATED_BY = 1;
             barcodeData.LAST_UPDATE_DATE = DateTime.Now;
-            barcodeData.REMARK = "";
+            //barcodeData.REMARK = "";
             model.Add(barcodeData);
         }
 
@@ -141,7 +151,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
             barcodeData.SECONDARY_QUANTITY = qty;
             barcodeData.SECONDARY_UOM = "RE";
             barcodeData.PICKED_ID = model.Count;
-            barcodeData.ITEM_DESCRIPTION = "123";
+            barcodeData.ITEM_NUMBER = "123";
             barcodeData.PACKING_TYPE = packingType;
             barcodeData.PRIMARY_QUANTITY = qty * 2;
             barcodeData.PRIMARY_UOM = "KG";
@@ -150,7 +160,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
             barcodeData.CREATION_DATE = DateTime.Now;
             barcodeData.LAST_UPDATED_BY = 1;
             barcodeData.LAST_UPDATE_DATE = DateTime.Now;
-            barcodeData.REMARK = "";
+            //barcodeData.REMARK = "";
             model.Add(barcodeData);
         }
 
@@ -170,7 +180,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
         public static long getLastPickedID(string itemDesc)
         {
             var query = from barcodeData in FlatEditBarcodeData.model
-                        where itemDesc == barcodeData.ITEM_DESCRIPTION
+                        where itemDesc == barcodeData.ITEM_NUMBER
                         select barcodeData;
             List<FlatEditBarcodeDT> list = query.ToList<FlatEditBarcodeDT>();
             if (list.Count > 0)
@@ -266,11 +276,11 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
             {
                 default:
                 case 1:
-                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.FlatEditDT_ID) : models.OrderBy(x => x.FlatEditDT_ID);
+                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.DLV_DETAIL_ID) : models.OrderBy(x => x.DLV_DETAIL_ID);
                 case 2:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.BARCODE) : models.OrderBy(x => x.BARCODE);
                 case 3:
-                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.ITEM_DESCRIPTION) : models.OrderBy(x => x.ITEM_DESCRIPTION);
+                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.ITEM_NUMBER) : models.OrderBy(x => x.ITEM_NUMBER);
                 case 4:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.REAM_WEIGHT) : models.OrderBy(x => x.REAM_WEIGHT);
                 case 5:
@@ -283,9 +293,9 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.SECONDARY_QUANTITY) : models.OrderBy(x => x.SECONDARY_QUANTITY);
                 case 9:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.SECONDARY_UOM) : models.OrderBy(x => x.SECONDARY_UOM);
+                //case 10:
+                //    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.REMARK) : models.OrderBy(x => x.REMARK);
                 case 10:
-                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.REMARK) : models.OrderBy(x => x.REMARK);
-                case 11:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.LAST_UPDATE_DATE) : models.OrderBy(x => x.LAST_UPDATE_DATE);
             }
         }
@@ -296,11 +306,11 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
             {
                 default:
                 case 1:
-                    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.FlatEditDT_ID) : models.ThenBy(x => x.FlatEditDT_ID);
+                    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.DLV_DETAIL_ID) : models.ThenBy(x => x.DLV_DETAIL_ID);
                 case 2:
                     return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.BARCODE) : models.ThenBy(x => x.BARCODE);
                 case 3:
-                    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.ITEM_DESCRIPTION) : models.ThenBy(x => x.ITEM_DESCRIPTION);
+                    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.ITEM_NUMBER) : models.ThenBy(x => x.ITEM_NUMBER);
                 case 4:
                     return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.REAM_WEIGHT) : models.ThenBy(x => x.REAM_WEIGHT);
                 case 5:
@@ -313,9 +323,9 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
                     return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.SECONDARY_QUANTITY) : models.ThenBy(x => x.SECONDARY_QUANTITY);
                 case 9:
                     return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.SECONDARY_UOM) : models.ThenBy(x => x.SECONDARY_UOM);
+                //case 10:
+                //    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.REMARK) : models.ThenBy(x => x.REMARK);
                 case 10:
-                    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.REMARK) : models.ThenBy(x => x.REMARK);
-                case 11:
                     return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.LAST_UPDATE_DATE) : models.ThenBy(x => x.LAST_UPDATE_DATE);
             }
         }

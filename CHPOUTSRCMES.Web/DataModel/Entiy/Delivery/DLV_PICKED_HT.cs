@@ -97,10 +97,10 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Delivery
         /// 料號名稱
         /// </summary>
         /// 
-        [StringLength(240)]
-        [Required]
-        [Column("ITEM_DESCRIPTION")]
-        public string Item_Description { set; get; }
+        //[StringLength(240)]
+        //[Required]
+        //[Column("ITEM_DESCRIPTION")]
+        //public string Item_Description { set; get; }
 
         /// <summary>
         /// 包裝方式

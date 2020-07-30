@@ -41,7 +41,7 @@ namespace CHPOUTSRCMES.Web.ViewModels.Delivery
         //public string REMARK { get; set; }
 
         [Display(Name = "項次")]
-        public string FlatEditDT_ID { get; set; }
+        public string SUB_ID { get; set; }
 
         [Display(Name = "訂單")]
         public string ORDER_NUMBER { get; set; }
@@ -49,8 +49,8 @@ namespace CHPOUTSRCMES.Web.ViewModels.Delivery
         [Display(Name = "訂單行號")]
         public string ORDER_SHIP_NUMBER { get; set; }
 
-        [Display(Name = "料號名稱")]
-        public string ITEM_DESCRIPTION { get; set; }
+        [Display(Name = "料號")]
+        public string ITEM_NUMBER { get; set; }
 
         [Display(Name = "條碼號")]
         public string BARCODE { get; set; }

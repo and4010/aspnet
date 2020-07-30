@@ -17,15 +17,15 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy
         [Key]
         [Required]
         [Column("STOCK_HT_ID")]
-        public int StockHtId { set; get; }
+        public long StockHtId { set; get; }
         /// <summary>
         /// 庫存ID
         /// </summary>
         /// 
-        [Key]
+        
         [Required]
         [Column("STOCK_ID")]
-        public int StockId { set; get; }
+        public long StockId { set; get; }
 
         /// <summary>
         /// 庫存組織ID
@@ -33,7 +33,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy
         /// 
         [Required]
         [Column("ORGANIZATION_ID")]
-        public int OrganizationId { set; get; }
+        public long OrganizationId { set; get; }
 
         /// <summary>
         /// 庫存組織CODE
@@ -51,15 +51,14 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy
         [StringLength(10)]
         [Required]
         [Column("SUBINVENTORY_CODE")]
-        public string SsubinventoryCode { set; get; }
+        public string SubinventoryCode { set; get; }
 
         /// <summary>
         /// 儲位ID
         /// </summary>
         /// 
-        [Required]
         [Column("LOCATOR_ID")]
-        public int LocatorId { set; get; }
+        public long? LocatorId { set; get; }
 
 
         /// <summary>
@@ -67,7 +66,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy
         /// </summary>
         /// 
         [StringLength(163)]
-        [Required]
         [Column("LOCATOR_SEGMENTS")]
         public string LocatorSegments { set; get; }
 
@@ -161,7 +159,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy
         /// </summary>
         /// 
         [StringLength(30)]
-        [Required]
         [Column("PACKING_TYPE")]
         public string PackingType { set; get; }
 
@@ -171,7 +168,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy
         /// </summary>
         /// 
         [StringLength(32)]
-        [Required]
         [Column("OSP_BATCH_NO")]
         public string OspBatchNo { set; get; }
 
@@ -180,7 +176,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy
         /// </summary>
         /// 
         [StringLength(80)]
-        [Required]
         [Column("LOT_NUMBER")]
         public string LotNumber { set; get; }
 
@@ -278,9 +273,10 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy
         /// 建立人員
         /// </summary>
         /// 
+        [StringLength(128)]
         [Required]
         [Column("CREATED_BY")]
-        public long CreatedBy { set; get; }
+        public string CreatedBy { set; get; }
 
         /// <summary>
         /// 建立時間
@@ -295,9 +291,9 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy
         /// 更新人員
         /// </summary>
         /// 
-        [Required]
+        [StringLength(128)]
         [Column("LAST_UPDATE_BY")]
-        public long? LastUpdateBy { set; get; }
+        public string LastUpdateBy { set; get; }
 
         /// <summary>
         /// 更新時間

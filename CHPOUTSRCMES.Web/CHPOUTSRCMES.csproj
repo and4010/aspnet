@@ -296,6 +296,7 @@
     <Compile Include="DataModel\UnitOfWorks\MasterUOW.cs" />
     <Compile Include="DataModel\UnitOfWorks\Interfaces\IUnitOfWork.cs" />
     <Compile Include="DataModel\UnitOfWorks\PurchaseUOW.cs" />
+    <Compile Include="DataModel\UnitOfWorks\StockUOW.cs" />
     <Compile Include="DataModel\UnitOfWorks\UnitOfWork.cs" />
     <Compile Include="DataModel\UnitOfWorks\DeliveryUOW.cs" />
     <Compile Include="Domain\Data.cs" />
