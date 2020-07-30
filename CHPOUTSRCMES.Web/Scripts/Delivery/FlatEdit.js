@@ -25,12 +25,12 @@ $(document).ready(function () {
         },
         columns: [
          { data: null, defaultContent: '', className: 'select-checkbox', orderable: false, width: "40px" },
-         { data: "ID", name: "項次", autoWidth: true },
+         { data: "SUB_ID", name: "項次", autoWidth: true },
          { data: "ORDER_NUMBER", name: "訂單", autoWidth: true },
          { data: "ORDER_SHIP_NUMBER", name: "訂單行號", autoWidth: true },   
-         { data: "OSP_BATCH_ID", name: "代紙工單號碼ID", autoWidth: true, visible: false},
+         //{ data: "OSP_BATCH_ID", name: "代紙工單號碼ID", autoWidth: true, visible: false},
          { data: "OSP_BATCH_NO", name: "代紙工單號碼", autoWidth: true },
-         { data: "TMP_ITEM_ID", name: "代紙料號ID", autoWidth: true, visible: false },
+         //{ data: "TMP_ITEM_ID", name: "代紙料號ID", autoWidth: true, visible: false },
          { data: "TMP_ITEM_NUMBER", name: "代紙料號", autoWidth: true, className: "dt-body-left" },
          { data: "ITEM_NUMBER", name: "料號", autoWidth: true, className: "dt-body-left" },
          { data: "REAM_WEIGHT", name: "令重", autoWidth: true },
@@ -197,7 +197,7 @@ $(document).ready(function () {
          { data: "LAST_UPDATE_DATE", name: "更新日期", autoWidth: true, visible: false }
         ],
 
-        order: [[11, 'desc']],
+        order: [[10, 'desc']],
         select: {
             style: 'multi',
             //blurable: true,

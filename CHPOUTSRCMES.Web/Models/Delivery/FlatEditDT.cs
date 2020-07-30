@@ -12,6 +12,8 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
     {
         public long ID { get; set; } //DELIVERY_DETAIL_ID
 
+        public long SUB_ID { get; set; }
+
         [Display(Name = "訂單編號")]
         public long ORDER_NUMBER { get; set; }
 

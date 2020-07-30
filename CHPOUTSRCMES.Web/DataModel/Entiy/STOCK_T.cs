@@ -206,6 +206,14 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy
         public decimal PrimaryAvailableQty { set; get; }
 
         /// <summary>
+        ///主單位鎖定量
+        /// </summary>
+        /// 
+        [Required]
+        [Column("PRIMARY_LOCKED_QTY")]
+        public decimal PrimaryLockedQty { set; get; }
+
+        /// <summary>
         /// 次要單位
         /// </summary>
         /// 
@@ -221,12 +229,21 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy
         [Column("SECONDARY_TRANSACTION_QTY")]
         public decimal? SecondaryTransactionQty { set; get; }
 
+
         /// <summary>
         /// 次單位可異動數量
         /// </summary>
         /// 
         [Column("SECONDARY_AVAILABLE_QTY")]
         public decimal? SecondaryAvailableQty { set; get; }
+
+        /// <summary>
+        ///次單位鎖定量
+        /// </summary>
+        /// 
+        [Required]
+        [Column("SECONDARY_LOCKED_QTY")]
+        public decimal? SecondaryLockedQty { set; get; }
 
         /// <summary>
         /// 原因ID
@@ -295,5 +312,10 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy
         [DataType(DataType.Date)]
         [Column("LAST_UPDATE_DATE")]
         public DateTime? LastUpdateDate { set; get; }
+
+        public bool isRoll()
+        {
+            return this.ItemCategory.CompareTo("捲筒") == 0;
+        }
     }
 }
