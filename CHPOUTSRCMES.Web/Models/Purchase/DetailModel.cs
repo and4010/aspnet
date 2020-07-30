@@ -102,6 +102,11 @@ namespace CHPOUTSRCMES.Web.Models.Purchase
             [Display(Name = "備註")]
             public string Remark { get; set; }
 
+            [Display(Name = "更新時間")]
+            public DateTime CreationDate { get; set; }
+
+            [Display(Name = "更新人員")]
+            public string CreatedUserName { get; set; }
         }
 
 
@@ -188,6 +193,12 @@ namespace CHPOUTSRCMES.Web.Models.Purchase
 
             [Display(Name = "備註")]
             public string Remark { get; set; }
+
+            [Display(Name = "更新時間")]
+            public DateTime CreationDate { get; set; }
+
+            [Display(Name = "更新人員")]
+            public string CreatedUserName { get; set; }
         }
 
         public class ReasonModel

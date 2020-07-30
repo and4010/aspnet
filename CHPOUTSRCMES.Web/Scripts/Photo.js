@@ -13,6 +13,15 @@ function addNewContent(obj) {
     }
 }
 
+//點擊預覽&&圖片放大不含刪除
+function AddNewContent(obj) {
+    $(imgBox).html("");
+    for (var a = 0; a < imgSrc.length; a++) {
+        var oldBox = $(obj).html();
+        $(obj).html(oldBox + '<div class="imgContainer"><img title=' + imgName[a] + ' alt=' + imgName[a] + ' src=' + imgSrc[a] + ' onclick="imgDisplay(this)"></div>');
+    };
+}
+
 
 //圖片放大
 function imgDisplay(obj) {

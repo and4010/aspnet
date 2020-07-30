@@ -48,18 +48,10 @@ namespace CHPOUTSRCMES.Web.Controllers
         }
 
         [HttpPost]
-        public JsonResult ReturnIndex(string CabinetNumber, string CreateDate)
+        public JsonResult ReturnIndex(string CabinetNumber)
         {
             PurchaseViewModel purchaseViewModel = new PurchaseViewModel();
-            var fullcalendar = purchaseViewModel.GetFullCalendarModel();
-            var boolean = true;
-            var creatdate = fullcalendar.First(r => r.start == CreateDate);
-            if (creatdate != null)
-            {
-                creatdate.title = "TB2" + "\nTGBU6882663" + " 已入庫";
-                creatdate.Status = 0;
-                creatdate.url = @Url.Action("Detail", "Purchase", new { CONTAINER_NO = "TGBU6882663", Status = "0", start = CreateDate });
-            }
+            var boolean = purchaseViewModel.ChageHeaderStatus(CabinetNumber);
             return Json(new { boolean }, JsonRequestBehavior.AllowGet);
         }
 
@@ -175,23 +167,24 @@ namespace CHPOUTSRCMES.Web.Controllers
         }
 
 
-        public ActionResult RollView(string id)
+        public ActionResult RollView(string Id, string CabinetNumber, string CreateDate)
         {
             PurchaseViewModel model = new PurchaseViewModel();
-            model.CreateDate = "2020-06-08 10:00:00";
-            model.CabinetNumber = "TGBU6882663";
-            model.Subinventory = "TB2";
+            model.CabinetNumber = CabinetNumber;
+            model.CreateDate = CreateDate;
+            model.Subinventory = model.GetPaperRollView(Id).Subinventory;
+            model.RollDetailModel = model.GetPaperRollView(Id);
 
-            ViewBag.LocatorItems = model.GetLocator();
-            ViewBag.ReasonItems = model.GetReason();
-
-
-            model.RollDetailModel = model.GetPaperRollEdit(id);
 
             return View(model);
         }
 
-        public ActionResult FlatView(string id)
+        public ActionResult RollViewParameter(string id = "", string cabinetNumber = "", string CreateDate = "")
+        {
+            return Json(new { id, cabinetNumber, CreateDate }, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult FlatView(string id,string CabinetNumber)
         {
 
             
@@ -201,15 +194,19 @@ namespace CHPOUTSRCMES.Web.Controllers
             ViewBag.LocatorItems = model.GetLocator();
             ViewBag.ReasonItems = model.GetReason();
 
-            model.FlatDetailModel = model.GetFlatEdit(id);
+            model.FlatDetailModel = model.GetFlatView(id);
             //model.CreateDate = "2020-06-08 10:00:00";
-            //model.CabinetNumber = "TGBU6882663";
+            model.CabinetNumber = CabinetNumber;
             //model.Subinventory = "TB2";
 
 
             return View(model);
         }
 
+        public ActionResult FlatViewParameter(string id = "", string cabinetNumber = "")
+        {
+            return Json(new { id, cabinetNumber }, JsonRequestBehavior.AllowGet);
+        }
 
         public ActionResult RollEdit(string Id,string CabinetNumber,string CreateDate)
         {
@@ -264,9 +261,11 @@ namespace CHPOUTSRCMES.Web.Controllers
             //        model.SavePhoto(hpf);
             //    }
             //}
-            model.PaperRollEditNote(Files, Int64.Parse(formCollection["id"]), formCollection["Reason"], formCollection["Locator"], formCollection["Remark"]);
-            var boolean = true;
-
+            var boolean = model.PaperRollEditNote(Files, 
+                Int64.Parse(formCollection["id"]),
+                formCollection["Reason"], 
+                formCollection["Locator"], 
+                formCollection["Remark"]);
             return Json(new { boolean }, JsonRequestBehavior.AllowGet);
         }
 
@@ -275,47 +274,42 @@ namespace CHPOUTSRCMES.Web.Controllers
         {
             PurchaseViewModel model = new PurchaseViewModel();
             var Files = Request.Files;
-            if (Files != null || Files.Count != 0)
-            {
-                foreach (string i in Files)
-                {
-                    HttpPostedFileBase hpf = Files[i] as HttpPostedFileBase;
-                    //model.SavePhoto(hpf);
-                }
-            }
+            //if (Files != null || Files.Count != 0)
+            //{
+            //    foreach (string i in Files)
+            //    {
+            //        HttpPostedFileBase hpf = Files[i] as HttpPostedFileBase;
+            //        //model.SavePhoto(hpf);
+            //    }
+            //}
 
             //model.GetFlatEditRemak(int.Parse(formCollection["id"]),
             //   formCollection["reason"], formCollection["remak"]);
-            var boolean = true;
+            var boolean = model.FlatEditNote(Files, 
+                Int64.Parse(formCollection["id"]),
+                formCollection["Reason"],
+                formCollection["Locator"], 
+                formCollection["Remark"]);
             return Json(new { boolean }, JsonRequestBehavior.AllowGet);
         }
 
 
         [HttpPost]
-        public JsonResult RollSaveBarcode(DataTableAjaxPostViewModel data, string Barcode)
+        public JsonResult RollSaveBarcode(string Barcode)
         {
-            var Boolean = true;
-            var BarcodeStatus = true;
-            List<DetailModel.RollDetailModel> model;
             PurchaseViewModel purchaseViewModel = new PurchaseViewModel();
-            model = purchaseViewModel.SaveRollBarcode(Barcode, ref Boolean, ref BarcodeStatus);
-
-
-            return Json(new { Boolean, BarcodeStatus }, JsonRequestBehavior.AllowGet);
+            var status = purchaseViewModel.SavePaperRollBarcode(Barcode);
+            return Json(new { status }, JsonRequestBehavior.AllowGet);
         }
 
 
 
         [HttpPost]
-        public JsonResult FlatSaveBarcode(DataTableAjaxPostViewModel data, string Barcode)
+        public JsonResult FlatSaveBarcode(string Barcode)
         {
-            var Boolean = true;
-            var BarcodeStatus = true;
             PurchaseViewModel purchaseViewModel = new PurchaseViewModel();
-            List<DetailModel.FlatDetailModel> model;
-            model = purchaseViewModel.SaveFlatBarcode(Barcode, ref Boolean, ref BarcodeStatus);
-
-            return Json(new { Boolean, BarcodeStatus }, JsonRequestBehavior.AllowGet);
+            var status = purchaseViewModel.SaveFlatBarcode(Barcode);
+            return Json(new { status }, JsonRequestBehavior.AllowGet);
         }
 
 
@@ -483,39 +477,27 @@ namespace CHPOUTSRCMES.Web.Controllers
         }
 
         [HttpPost]
-        public Image GetPhoto(int id)
+        public JsonResult GetPhoto(int id)
         {
             PurchaseViewModel viewModel = new PurchaseViewModel();
-
-            var photo = viewModel.GetPhoto(id);
-
-            if (photo == null || photo.Count == 0) 
-            { 
-                return null; 
-            }
-            Image oImage = null;
-            Bitmap oBitmap = null;
-            //建立副本
+            //Image oImage = null;
+            //Bitmap oBitmap = null;
+            ////建立副本
             try
             {
-                for(int i = 0; i < photo.Count; i++)
+                var ListBytePhoto = viewModel.GetPhoto(id);
+
+                if (ListBytePhoto == null || ListBytePhoto.Count == 0)
                 {
-                    MemoryStream oMemoryStream = new MemoryStream(photo[i]);
-                    //設定資料流位置
-                    oMemoryStream.Position = 0;
-                    oImage = System.Drawing.Image.FromStream(oMemoryStream);
-                    //建立副本
-                    oBitmap = new Bitmap(oImage);
-                    //return oImage;
-                    return oBitmap;
+                    return Json(new {  }, JsonRequestBehavior.AllowGet);
                 }
-              
+                return Json(new { ListBytePhoto }, JsonRequestBehavior.AllowGet);
             }
-            catch
+            catch (Exception e)
             {
-                return null;
+                return Json(new { }, JsonRequestBehavior.AllowGet);
             }
-            return oBitmap;
+           
         }
 
     }

@@ -85,7 +85,7 @@ function FlatSave() {
     var remak = $("#textarea").val();
     var formData = new FormData();
     for (var i = 0; i < files.length; i++) {
-        formData.append(files[i].name ,files[i]);
+        formData.append(files[i].name, files[i]);
     }
     formData.append("id", id);
     formData.append("reason", reason);
@@ -125,7 +125,13 @@ function getServicePhoto() {
         "datatype": "json",
         "data": { id: id },
         success: function (data) {
-           
+            if (data.ListBytePhoto.length != 0) {
+                for (var i = 0; i < data.ListBytePhoto.length; i++) {
+                    imgSrc.push("data:image/jpeg;base64," + data.ListBytePhoto[i]);
+                }
+                AddNewContent($('#saveBox'));
+            }
+
         },
         error: function (data) {
             swal.fire(data);
