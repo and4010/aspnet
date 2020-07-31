@@ -10,7 +10,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy
     public class STOCK_HT
     {
         /// <summary>
-        /// 庫存ID
+        /// 庫存記錄ID
         /// </summary>
         /// 
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -28,7 +28,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy
         public long StockId { set; get; }
 
         /// <summary>
-        /// 庫存組織ID
+        /// 原庫存組織ID
         /// </summary>
         /// 
         [Required]
@@ -36,7 +36,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy
         public long OrganizationId { set; get; }
 
         /// <summary>
-        /// 庫存組織CODE
+        /// 原庫存組織CODE
         /// </summary>
         /// 
         [StringLength(3)]
@@ -45,7 +45,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy
         public string OrganizationCode { set; get; }
 
         /// <summary>
-        /// 倉庫
+        /// 原倉庫
         /// </summary>
         /// 
         [StringLength(10)]
@@ -54,7 +54,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy
         public string SubinventoryCode { set; get; }
 
         /// <summary>
-        /// 儲位ID
+        /// 原儲位ID
         /// </summary>
         /// 
         [Column("LOCATOR_ID")]

@@ -10,11 +10,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Interfaces
     /// </summary>
     public interface IHeader : IStatus
     {
-        ///// <summary>
-        ///// 轉成庫存狀態
-        ///// </summary>
-        ///// <param name="statusCode"></param>
-        ///// <returns></returns>
-        //string ToStockStatus(string statusCode);
+       
     }
 }

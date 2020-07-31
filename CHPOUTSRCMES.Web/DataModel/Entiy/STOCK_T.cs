@@ -209,9 +209,8 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy
         ///主單位鎖定量
         /// </summary>
         /// 
-        [Required]
         [Column("PRIMARY_LOCKED_QTY")]
-        public decimal PrimaryLockedQty { set; get; }
+        public decimal? PrimaryLockedQty { set; get; }
 
         /// <summary>
         /// 次要單位
@@ -241,7 +240,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy
         ///次單位鎖定量
         /// </summary>
         /// 
-        [Required]
         [Column("SECONDARY_LOCKED_QTY")]
         public decimal? SecondaryLockedQty { set; get; }
 

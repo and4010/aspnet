@@ -34,7 +34,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Delivery
         /// 
         [Required]
         [Column("DLV_HEADER_ID")]
-        public long Dlv_Header_Id { set; get; }
+        public long DlvHeaderId { set; get; }
 
         /// <summary>
         /// 庫存ID
@@ -66,7 +66,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Delivery
         /// 
         [StringLength(30)]
         [Column("LOCATOR_CODE")]
-        public string LOCATOR_CODE { set; get; }
+        public string LocatorCode { set; get; }
 
         /// <summary>
         /// 料號ID

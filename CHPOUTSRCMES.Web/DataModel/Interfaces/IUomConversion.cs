@@ -13,7 +13,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Interfaces
     //                                 ) ,5) QUANTITY"
 
 
-    internal interface IUomConversion
+    public interface IUomConversion
     {
        decimal Convert(long P_ITEM_ID, decimal P_FROM_QTY, string P_FROM_UOM, string P_TO_UOM, int Round = 5);
     }
