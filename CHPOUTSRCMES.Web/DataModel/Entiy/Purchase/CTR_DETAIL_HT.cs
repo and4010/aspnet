@@ -14,7 +14,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy
         /// 檔頭ID
         /// </summary>
         /// 
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
         [Required]
         [Column("CTR_DETAIL_HIS_ID")]

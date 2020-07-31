@@ -73,11 +73,11 @@ namespace CHPOUTSRCMES.Web.Controllers
 
 
         [HttpPost, ActionName("RollHeader")]
-        public JsonResult RollHeader(DataTableAjaxPostViewModel data, string CabinetNumber)
+        public JsonResult RollHeader(DataTableAjaxPostViewModel data, string CabinetNumber,string Status)
         {
             PurchaseViewModel purchaseViewModel = new PurchaseViewModel();
             List<DetailModel.RollModel> model;
-            model = purchaseViewModel.GetRollHeader(CabinetNumber);
+            model = purchaseViewModel.GetRollHeader(CabinetNumber, Status);
             return Json(new { draw = data.Draw, recordsFiltered = model.Count, recordsTotal = model.Count, data = model }, JsonRequestBehavior.AllowGet);
             //draw：為避免XSS攻擊，內建的控制。 
             //recordsTotal：篩選前的總資料數 
@@ -106,12 +106,12 @@ namespace CHPOUTSRCMES.Web.Controllers
 
 
         [HttpPost, ActionName("FlatHeader")]
-        public JsonResult FlatHeader(DataTableAjaxPostViewModel data, string CabinetNumber)
+        public JsonResult FlatHeader(DataTableAjaxPostViewModel data, string CabinetNumber, string Status)
         {
             PurchaseViewModel purchaseViewModel = new PurchaseViewModel();
             List<DetailModel.FlatModel> model;
 
-            model = purchaseViewModel.GetFlatHeader(CabinetNumber);
+            model = purchaseViewModel.GetFlatHeader(CabinetNumber, Status);
 
             return Json(new { draw = data.Draw, recordsFiltered = model.Count, recordsTotal = model.Count, data = model }, JsonRequestBehavior.AllowGet);
             //draw：為避免XSS攻擊，內建的控制。 
@@ -296,10 +296,10 @@ namespace CHPOUTSRCMES.Web.Controllers
 
             //model.GetFlatEditRemak(int.Parse(formCollection["id"]),
             //   formCollection["reason"], formCollection["remak"]);
-            var boolean = model.FlatEditNote(Files, 
+            var boolean = model.FlatEditNote(Files,
                 Int64.Parse(formCollection["id"]),
                 formCollection["Reason"],
-                formCollection["Locator"], 
+                formCollection["Locator"],
                 formCollection["Remark"],
                 id,
                 name);

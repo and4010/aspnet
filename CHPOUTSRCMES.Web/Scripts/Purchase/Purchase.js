@@ -1,12 +1,13 @@
 ﻿var PaperRolldataTablesHeader
 var FlatdataTablesHeader
+///狀態  0已入庫 1待入庫 2 取消
 $(document).ready(function () {
     EnableBarcode(true)
     LoadPaperRollHeard();
     LoadFlatHeader();
 
     ////取得狀態
-    //var Status = $("#Status").val();
+    var Status = $("#Status").val();
     //if (Status == "0") {
         PaperRolldataTablesBody();
         FlatdataTablesBody();
@@ -15,8 +16,7 @@ $(document).ready(function () {
     //    FlatdataTablesBody(Status);
     //}
     callDailog(Status);
-    onkey(Status);
-    BtnOnClick();
+    init(Status);
 
 
     //紙捲表身編輯事件
@@ -233,7 +233,98 @@ function callDailog(status) {
 
 }
 
-function BtnOnClick() {
+//初始化
+function init(status) {
+    //在關鍵字input按下Enter，執行n送出 紙捲
+    $("input[name=PaperRollKeyword]").keyup(function (event) {
+        if (event.keyCode === 13) {
+            $("#BtnPaperRollSaveBarcode").click();
+        }
+    });
+
+    //儲存紙捲條碼按鈕
+    $("#BtnPaperRollSaveBarcode").click(function (e) {
+        var barcode = $('#PaperRollBarcode').val();
+        var table = $('#PaperRolldataTablesBody').DataTable();
+        if (status == "0") {
+            swal.fire("已入庫無法儲存條碼")
+            e.preventDefault();
+            $('#PaperRollBarcode').select();
+            return;
+        }
+        if (barcode.length == 0) {
+            swal.fire("條碼請勿空白。");
+            return;
+        }
+        if (table.data().length == 0) {
+            swal.fire("表身無資料，請先匯入資料。");
+            return;
+        }
+        InsertPaperRollBarcode(barcode);
+        $('#PaperRollBarcode').select();
+    });
+
+    //條碼平張按鍵事件
+    $("input[name=FlatKeyword]").keyup(function (event) {
+        if (event.keyCode === 13) {
+            $("#BtnFlatSaveBarcode").click();
+        }
+    });
+
+    //儲存平張條碼按鈕
+    $("#BtnFlatSaveBarcode").click(function () {
+        var barcode = $('#FlatBarcode').val();
+        var table = $('#FlatdataTablesBody').DataTable();
+        if (status == "0") {
+            swal.fire("已入庫無法儲存條碼");
+            $('#FlatBarcode').select();
+            return;
+        }
+        if (barcode.length == 0) {
+            swal.fire("條碼請勿空白。");
+            return;
+        }
+        if (table.data().length == 0) {
+            swal.fire("表身無資料，請先匯入資料。");
+            return;
+        }
+        InsertFlatBarocde(barcode);
+        $('#FlatBarcode').select();
+
+    });
+
+    //檢查櫃號按鍵事件
+    $('input[name=CabinetNumber]').keyup(function (event) {
+        if (event.keyCode === 13) {
+            $("#BtnCabinetNumber").click();
+        }
+    });
+
+    //檢查櫃號按鈕
+    $('#BtnCabinetNumber').click(function (e) {
+        var InputCabinetNumber = $('#CheckCabinetNumber').val();
+        var ViewCabinetNumber = $("#CabinetNumber").val();
+        if (status == 0) {
+            return
+        }
+        $.ajax({
+            url: '/Purchase/CheckCabinetNumber',
+            datatype: 'json',
+            type: "POST",
+            data: { InputCabinetNumber: InputCabinetNumber, ViewCabinetNumber: ViewCabinetNumber },
+            success: function (data) {
+                if (data.boolean) {
+                    EnableBarcode(false);
+                } else {
+                    swal.fire("櫃號輸入不對請重新輸入");
+                }
+            },
+            error: function () {
+
+            }
+        });
+
+    });
 
     //存檔入庫
     $("#btnSaveInvenorty").click(function () {
@@ -310,91 +401,7 @@ function BtnOnClick() {
     })
 }
 
-function onkey(status) {
-    //在關鍵字input按下Enter，執行n送出 紙捲
-    $("input[name=PaperRollKeyword]").keyup(function (event) {
-        if (event.keyCode === 13) {
-            $("#BtnPaperRollSaveBarcode").click();
-        }
-    });
-
-    $("#BtnPaperRollSaveBarcode").click(function (e) {
-        var barcode = $('#PaperRollBarcode').val();
-        var table = $('#PaperRolldataTablesBody').DataTable();
-        if (status == "0") {
-            swal.fire("已入庫無法儲存條碼")
-            e.preventDefault();
-            $('#PaperRollBarcode').select();
-            return;
-        }
-        if (barcode.length == 0) {
-            swal.fire("條碼請勿空白。");
-            return;
-        }
-        if (table.data().length == 0) {
-            swal.fire("表身無資料，請先匯入資料。");
-            return;
-        }
-        InsertPaperRollBarcode(barcode);
-        $('#PaperRollBarcode').select();
-    });
-
-    $("input[name=FlatKeyword]").keyup(function (event) {
-        if (event.keyCode === 13) {
-            $("#BtnFlatSaveBarcode").click();
-        }
-    });
-
-    $("#BtnFlatSaveBarcode").click(function () {
-        var barcode = $('#FlatBarcode').val();
-        var table = $('#FlatdataTablesBody').DataTable();
-        if (status == "0") {
-            swal.fire("已入庫無法儲存條碼");
-            $('#FlatBarcode').select();
-            return;
-        }
-        if (barcode.length == 0) {
-            swal.fire("條碼請勿空白。");
-            return;
-        }
-        if (table.data().length == 0) {
-            swal.fire("表身無資料，請先匯入資料。");
-            return;
-        }
-        InsertFlatBarocde(barcode);
-        $('#FlatBarcode').select();
-
-    });
-
-    $('input[name=CabinetNumber]').keyup(function (event) {
-        if (event.keyCode === 13) {
-            $("#BtnCabinetNumber").click();
-        }
-    });
-
-    $('#BtnCabinetNumber').click(function (e) {
-        var InputCabinetNumber = $('#CheckCabinetNumber').val();
-        var ViewCabinetNumber = $("#CabinetNumber").val();
-        $.ajax({
-            url: '/Purchase/CheckCabinetNumber',
-            datatype: 'json',
-            type: "POST",
-            data: { InputCabinetNumber: InputCabinetNumber, ViewCabinetNumber: ViewCabinetNumber },
-            success: function (data) {
-                if (data.boolean) {
-                    EnableBarcode(false);
-                } else {
-                    swal.fire("櫃號輸入不對請重新輸入");
-                }
-            },
-            error: function () {
-
-            }
-        });
-
-    });
-}
-
+//儲存紙捲條碼
 function InsertPaperRollBarcode(barcode) {
     $.ajax({
         "url": "/Purchase/RollSaveBarcode",
@@ -419,7 +426,7 @@ function InsertPaperRollBarcode(barcode) {
     });
 
 }
-
+//儲存平張條碼
 function InsertFlatBarocde(barcode) {
 
     $.ajax({
@@ -646,6 +653,7 @@ function ImportFlatTable(data) {
 //紙捲表頭
 function LoadPaperRollHeard() {
     var CabinetNumber = $("#CabinetNumber").val();
+    var Status = $("#Status").val();
     //紙捲表頭
     PaperRolldataTablesHeader = $('#PaperRolldataTablesHeader').DataTable({
         "language": {
@@ -659,7 +667,7 @@ function LoadPaperRollHeard() {
             "url": "/Purchase/RollHeader",
             "type": "POST",
             "datatype": "json",
-            "data": { CabinetNumber: CabinetNumber }
+            "data": { CabinetNumber: CabinetNumber, Status: Status }
         },
         columns: [
             { data: "Id", "name": "項次", "autoWidth": true, "className": "dt-body-center" },
@@ -682,6 +690,7 @@ function LoadPaperRollHeard() {
 function LoadFlatHeader() {
     //平張表頭
     var CabinetNumber = $("#CabinetNumber").val();
+    var Status = $("#Status").val();
     FlatdataTablesHeader = $('#FlatdataTablesHeader').DataTable({
         "language": {
             "url": "/bower_components/datatables/language/zh-TW.json"
@@ -694,7 +703,7 @@ function LoadFlatHeader() {
             "url": "/Purchase/FlatHeader",
             "type": "POST",
             "datatype": "json",
-            "data": { CabinetNumber: CabinetNumber },
+            "data": { CabinetNumber: CabinetNumber, Status: Status},
         },
         columns: [
             { data: "Id", "name": "項次", "autoWidth": true, "className": "dt-body-center" },

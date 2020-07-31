@@ -38,6 +38,7 @@ function photoView() {
             imgFile.push(fileList[i]);
             files.push(fileList[i]);
         }
+        //photo.js使用
         addNewContent($('#imgBox'));
     });
 
@@ -89,9 +90,9 @@ function FlatSave() {
         formData.append(files[i].name, files[i]);
     }
     formData.append("id", id);
-    formData.append("reason", reason);
+    formData.append("Reason", reason);
     formData.append("Locator", Locator);
-    formData.append("remak", remak);
+    formData.append("Remark", remak);
 
 
 

@@ -17,12 +17,12 @@ namespace CHPOUTSRCMES.Web.Util
 {
     public class ExcelImport
     {
-
+        public const string PurchaseHeaderPending= "1";
         public ResultModel PaperRollDetail(HttpPostedFileBase file, ref List<DetailModel.RollDetailModel> PaperRollDetail,string CONTAINER_NO, ref ResultModel result,
             string createby, string userName)
         {
             PurchaseViewModel purchaseView = new PurchaseViewModel();
-            var RollHeader = purchaseView.GetRollHeader(CONTAINER_NO);
+            var RollHeader = purchaseView.GetRollHeader(CONTAINER_NO, PurchaseHeaderPending);
             IWorkbook workbook = null;
             DataTable dt = new DataTable();
             if (file.FileName.Substring(file.FileName.LastIndexOf(".")).Equals(".xls"))
@@ -124,7 +124,7 @@ namespace CHPOUTSRCMES.Web.Util
                                     model.BaseWeight = ExcelUtil.GetCellString(i, BaseWeight_cell.ColumnIndex, sheet).Trim();
                                     model.Specification = ExcelUtil.GetCellString(i, Specification_cell.ColumnIndex, sheet).Trim();
                                     model.TheoreticalWeight = ExcelUtil.GetCellString(i, TheoreticalWeight_cell.ColumnIndex, sheet).Trim();
-                                    model.TransactionQuantity = decimal.Parse( ExcelUtil.GetCellString(i, TheoreticalWeight_cell.ColumnIndex, sheet).Trim());
+                                    model.TransactionQuantity = decimal.Parse(ExcelUtil.GetCellString(i, TheoreticalWeight_cell.ColumnIndex, sheet).Trim());
                                     model.TransactionUom = RollHeader[j].TransactionUom;
                                     model.PrimanyQuantity = decimal.Parse(ExcelUtil.GetCellString(i, TheoreticalWeight_cell.ColumnIndex, sheet).Trim());
                                     model.PrimaryUom = ExcelUtil.GetCellString(i, PrimaryUom_cell.ColumnIndex, sheet).Trim();

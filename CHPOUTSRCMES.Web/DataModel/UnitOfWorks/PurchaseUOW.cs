@@ -560,8 +560,9 @@ and d.ITEM_CATEGORY = N'捲筒'");
                         {
                             header[i].Status = 0;
                             ctrHeaderTRepositiory.Update(header[i], true);
-                            PickToPickHT(header[i].HeaderId);
-                            PickTDelete(header[i].HeaderId);
+                            PickToPickHT(header[i].CtrHeaderId);
+                            PickTDelete(header[i].CtrHeaderId);
+                            DetailToDetailHT(header[i].CtrHeaderId);
                         }
                         txn.Commit();
                         return true;
@@ -577,6 +578,47 @@ and d.ITEM_CATEGORY = N'捲筒'");
                     logger.Error(e.Message);
                 }
                 return false;
+            }
+        }
+
+        /// <summary>
+        /// 取得平張header歷史資料
+        /// </summary>
+        /// <param name="CONTAINER_NO"></param>
+        /// <returns></returns>
+        public List<DetailModel.FlatModel> GetFlatHeaderHtList(string CONTAINER_NO)
+        {
+            try
+            {
+                using (var mesContext = new MesContext())
+                {
+                    StringBuilder query = new StringBuilder();
+                    query.Append(
+                    @"SELECT 
+Cast(d.CTR_HEADER_ID AS bigint) as Id,
+h.SUBINVENTORY AS Subinventory, 
+d.LOCATOR_CODE as Locator,
+d.SHIP_ITEM_NUMBER AS Item_No,
+d.REAM_WEIGHT AS ReamWeight,
+d.ROLL_REAM_QTY AS RollReamQty,
+d.PACKING_TYPE AS PackingType,
+d.ROLL_REAM_WT AS Pieces_Qty,
+d.TRANSACTION_QUANTITY AS TransactionQuantity,
+d.TRANSACTION_UOM AS TransactionUom,
+d.SECONDARY_QUANTITY AS TtlRollReam,
+d.SECONDARY_UOM AS TtlRollReamUom,
+d.PRIMARY_QUANTITY AS DeliveryQty,
+d.PRIMARY_UOM AS DeliveryUom
+FROM dbo.CTR_DETAIL_HT d
+LEFT JOIN dbo.CTR_HEADER_T h ON h.CTR_HEADER_ID = d.CTR_HEADER_ID
+WHERE d.ITEM_CATEGORY = N'平張' and h.CONTAINER_NO  = @CONTAINER_NO");
+                    return mesContext.Database.SqlQuery<DetailModel.FlatModel>(query.ToString(), new SqlParameter("@CONTAINER_NO", CONTAINER_NO)).ToList();
+                }
+            }
+            catch (Exception e)
+            {
+                logger.Error(e.Message.ToString());
+                return null;
             }
         }
 
@@ -608,7 +650,7 @@ d.SECONDARY_QUANTITY AS TtlRollReam,
 d.SECONDARY_UOM AS TtlRollReamUom,
 d.PRIMARY_QUANTITY AS DeliveryQty,
 d.PRIMARY_UOM AS DeliveryUom
-FROM dbo.CTR_DETAIL_T d
+FROM dbo.CTR_DETAIL_HT d
 LEFT JOIN dbo.CTR_HEADER_T h ON h.CTR_HEADER_ID = d.CTR_HEADER_ID
 WHERE d.ITEM_CATEGORY = N'平張' and h.CONTAINER_NO  = @CONTAINER_NO");
                     return mesContext.Database.SqlQuery<DetailModel.FlatModel>(query.ToString(), new SqlParameter("@CONTAINER_NO", CONTAINER_NO)).ToList();
@@ -648,6 +690,45 @@ d.TRANSACTION_UOM AS TransactionUom,
 d.PRIMARY_QUANTITY AS PrimanyQuantity,
 d.PRIMARY_UOM AS PrimaryUom
 FROM dbo.CTR_DETAIL_T d
+LEFT JOIN dbo.CTR_HEADER_T h ON h.CTR_HEADER_ID = d.CTR_HEADER_ID
+WHERE d.ITEM_CATEGORY = N'捲筒' and h.CONTAINER_NO  = @CONTAINER_NO");
+                    return mesContext.Database.SqlQuery<DetailModel.RollModel>(query.ToString(), new SqlParameter("@CONTAINER_NO", CONTAINER_NO)).ToList();
+                }
+            }
+            catch (Exception e)
+            {
+                logger.Error(e.Message.ToString());
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// 取得紙捲header歷史資料
+        /// </summary>
+        /// <param name="CONTAINER_NO"></param>
+        /// <returns></returns>
+        public List<DetailModel.RollModel> GetPaperRollHeaderHtList(string CONTAINER_NO)
+        {
+            try
+            {
+                using (var mesContext = new MesContext())
+                {
+                    StringBuilder query = new StringBuilder();
+                    query.Append(
+                    @"SELECT 
+Cast(d.CTR_HEADER_ID AS bigint) as Id,
+h.SUBINVENTORY AS Subinventory, 
+d.LOCATOR_CODE as Locator,
+d.SHIP_ITEM_NUMBER AS Item_No,
+d.PAPER_TYPE AS PaperType,
+d.BASIC_WEIGHT AS BaseWeight,
+d.SPECIFICATION AS Specification,
+d.ROLL_REAM_QTY AS RollReamQty,
+d.TRANSACTION_QUANTITY AS TransactionQuantity,
+d.TRANSACTION_UOM AS TransactionUom,
+d.PRIMARY_QUANTITY AS PrimanyQuantity,
+d.PRIMARY_UOM AS PrimaryUom
+FROM dbo.CTR_DETAIL_HT d
 LEFT JOIN dbo.CTR_HEADER_T h ON h.CTR_HEADER_ID = d.CTR_HEADER_ID
 WHERE d.ITEM_CATEGORY = N'捲筒' and h.CONTAINER_NO  = @CONTAINER_NO");
                     return mesContext.Database.SqlQuery<DetailModel.RollModel>(query.ToString(), new SqlParameter("@CONTAINER_NO", CONTAINER_NO)).ToList();
@@ -738,7 +819,7 @@ p.REASON_DESC as Reason,
 p.NOTE as Remark
 FROM dbo.CTR_PICKED_HT p
 LEFT JOIN dbo.CTR_HEADER_T h ON h.CTR_HEADER_ID = p.CTR_HEADER_ID
-LEFT JOIN dbo.CTR_DETAIL_T d ON d.CTR_HEADER_ID = p.CTR_HEADER_ID
+LEFT JOIN dbo.CTR_DETAIL_HT d ON d.CTR_HEADER_ID = p.CTR_HEADER_ID
 WHERE p.ITEM_CATEGORY = N'捲筒' and h.CONTAINER_NO  = @CONTAINER_NO");
                     return mesContext.Database.SqlQuery<DetailModel.RollDetailModel>(query.ToString(), new SqlParameter("@CONTAINER_NO", CONTAINER_NO)).ToList();
                 }
@@ -818,7 +899,7 @@ p.REASON_DESC as Reason,
 p.NOTE as Remark
 FROM dbo.CTR_PICKED_HT p
 LEFT JOIN dbo.CTR_HEADER_T h ON h.CTR_HEADER_ID = p.CTR_HEADER_ID
-LEFT JOIN dbo.CTR_DETAIL_T d ON d.CTR_HEADER_ID = p.CTR_HEADER_ID
+LEFT JOIN dbo.CTR_DETAIL_HT d ON d.CTR_HEADER_ID = p.CTR_HEADER_ID
 WHERE p.ITEM_CATEGORY = N'平張' and h.CONTAINER_NO  = @CONTAINER_NO");
                     return mesContext.Database.SqlQuery<DetailModel.FlatDetailModel>(query.ToString(), new SqlParameter("@CONTAINER_NO", CONTAINER_NO)).ToList();
                 }
@@ -911,7 +992,7 @@ p.LAST_UPDATE_DATE as CreationDate,
 p.LAST_UPDATE_USER_NAME as CreatedUserName 
 FROM dbo.CTR_PICKED_HT p
 LEFT JOIN dbo.CTR_HEADER_T h ON h.CTR_HEADER_ID = p.CTR_HEADER_ID
-LEFT JOIN dbo.CTR_DETAIL_T d ON d.CTR_HEADER_ID = p.CTR_HEADER_ID
+LEFT JOIN dbo.CTR_DETAIL_HT d ON d.CTR_HEADER_ID = p.CTR_HEADER_ID
 WHERE p.ITEM_CATEGORY = N'捲筒' and p.CTR_PICKED_ID  = @CTR_PICKED_ID");
                     return mesContext.Database.SqlQuery<DetailModel.RollDetailModel>(query.ToString(), new SqlParameter("@CTR_PICKED_ID", id)).SingleOrDefault();
                 }
@@ -1185,7 +1266,7 @@ p.LAST_UPDATE_DATE as CreationDate,
 p.LAST_UPDATE_USER_NAME as CreatedUserName 
 FROM dbo.CTR_PICKED_HT p
 LEFT JOIN dbo.CTR_HEADER_T h ON h.CTR_HEADER_ID = p.CTR_HEADER_ID
-LEFT JOIN dbo.CTR_DETAIL_T d ON d.CTR_HEADER_ID = p.CTR_HEADER_ID
+LEFT JOIN dbo.CTR_DETAIL_HT d ON d.CTR_HEADER_ID = p.CTR_HEADER_ID
 WHERE p.ITEM_CATEGORY = N'平張' and p.CTR_PICKED_ID  = @CTR_PICKED_ID");
                     return mesContext.Database.SqlQuery<DetailModel.FlatDetailModel>(query.ToString(), new SqlParameter("@CTR_PICKED_ID", id)).SingleOrDefault();
                 }
@@ -1467,7 +1548,7 @@ where p.CTR_HEADER_ID = @CTR_HEADER_ID");
         }
 
         /// <summary>
-        /// 入庫檢或刪除
+        /// 入庫檢貨刪除
         /// </summary>
         /// <param name="CTR_HEADER_ID"></param>
         public void PickTDelete(long CTR_HEADER_ID)
@@ -1489,6 +1570,55 @@ where CTR_HEADER_ID = @CTR_HEADER_ID");
                 logger.Error(e.Message);
             }
         }
+
+        /// <summary>
+        /// 存檔入庫明細轉歷史明細
+        /// </summary>
+        /// <param name="CTR_HEADER_ID"></param>
+        public void DetailToDetailHT(long CTR_HEADER_ID)
+        {
+            try
+            {
+                using (var mesContext = new MesContext())
+                {
+                    StringBuilder query = new StringBuilder();
+                    query.Append(
+                    @"INSERT INTO [CTR_DETAIL_HT]
+			([CTR_DETAIL_ID],[CTR_HEADER_ID],[PROCESS_CODE],[SERVER_CODE],
+			[BATCH_ID],[BATCH_LINE_ID],[HEADER_ID],[LINE_ID],[DETAIL_ID],
+			[LOCATOR_ID],[LOCATOR_CODE],[INVENTORY_ITEM_ID],[SHIP_ITEM_NUMBER],[PAPER_TYPE],
+			[BASIC_WEIGHT],[REAM_WEIGHT],[ROLL_REAM_QTY] ,[ROLL_REAM_WT],[TTL_ROLL_REAM],
+			[SPECIFICATION],[PACKING_TYPE],[SHIP_MT_QTY],[TRANSACTION_QUANTITY],[TRANSACTION_UOM],
+			[PRIMARY_QUANTITY] ,[PRIMARY_UOM],[SECONDARY_QUANTITY],[SECONDARY_UOM],[LOT_NUMBER],
+			[THEORY_WEIGHT],[ITEM_CATEGORY],[ATTRIBUTE1],[ATTRIBUTE2],[ATTRIBUTE3],
+			[ATTRIBUTE4],[ATTRIBUTE5],[ATTRIBUTE6],[ATTRIBUTE7],[ATTRIBUTE8],
+			[ATTRIBUTE9],[ATTRIBUTE10],[ATTRIBUTE11],[ATTRIBUTE12],[ATTRIBUTE13] ,[ATTRIBUTE14],
+		    [ATTRIBUTE15],[CREATED_BY],[CREATED_USER_NAME],[CREATION_DATE],
+			[LAST_UPDATE_BY],[LAST_UPDATE_USER_NAME] ,[LAST_UPDATE_DATE])
+SELECT [CTR_DETAIL_ID],[CTR_HEADER_ID],[PROCESS_CODE],[SERVER_CODE],
+			[BATCH_ID],[BATCH_LINE_ID],[HEADER_ID],[LINE_ID],[DETAIL_ID],
+			[LOCATOR_ID],[LOCATOR_CODE],[INVENTORY_ITEM_ID],[SHIP_ITEM_NUMBER],[PAPER_TYPE],
+			[BASIC_WEIGHT],[REAM_WEIGHT],[ROLL_REAM_QTY] ,[ROLL_REAM_WT],[TTL_ROLL_REAM],
+			[SPECIFICATION],[PACKING_TYPE],[SHIP_MT_QTY],[TRANSACTION_QUANTITY],[TRANSACTION_UOM],
+			[PRIMARY_QUANTITY] ,[PRIMARY_UOM],[SECONDARY_QUANTITY],[SECONDARY_UOM],[LOT_NUMBER],
+			[THEORY_WEIGHT],[ITEM_CATEGORY],[ATTRIBUTE1],[ATTRIBUTE2],[ATTRIBUTE3],
+			[ATTRIBUTE4],[ATTRIBUTE5],[ATTRIBUTE6],[ATTRIBUTE7],[ATTRIBUTE8],
+			[ATTRIBUTE9],[ATTRIBUTE10],[ATTRIBUTE11],[ATTRIBUTE12],[ATTRIBUTE13] ,[ATTRIBUTE14],
+		    [ATTRIBUTE15],[CREATED_BY],[CREATED_USER_NAME],[CREATION_DATE],
+			[LAST_UPDATE_BY],[LAST_UPDATE_USER_NAME] ,[LAST_UPDATE_DATE]
+FROM CTR_DETAIL_T D
+where D.CTR_HEADER_ID = @CTR_HEADER_ID
+delete CTR_DETAIL_T where CTR_HEADER_ID = @CTR_HEADER_ID");
+                    mesContext.Database.ExecuteSqlCommand(query.ToString(), new SqlParameter("@CTR_HEADER_ID", CTR_HEADER_ID));
+                }
+
+            }
+            catch (Exception e)
+            {
+                logger.Error(e.Message);
+            }
+        }
+
 
 
 

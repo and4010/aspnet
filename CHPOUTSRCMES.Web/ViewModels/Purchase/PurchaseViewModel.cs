@@ -53,20 +53,49 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
             }
         }
 
-        public List<DetailModel.RollModel> GetRollHeader(string CONTAINER_NO)
+        /// <summary>
+        /// 取得紙捲表頭資料
+        /// </summary>
+        /// <param name="CONTAINER_NO"></param>
+        /// <param name=""></param>
+        /// <returns></returns>
+        public List<DetailModel.RollModel> GetRollHeader(string CONTAINER_NO, string Status)
         {
             using (var context = new MesContext())
             {
-                return new PurchaseUOW(context).GetPaperRollHeaderList(CONTAINER_NO);
+                if(Status == "1")
+                {
+                    return new PurchaseUOW(context).GetPaperRollHeaderList(CONTAINER_NO);
+                }
+                else
+                {
+                    return new PurchaseUOW(context).GetPaperRollHeaderHtList(CONTAINER_NO);
+                }
+               
             }
         }
 
-        public List<DetailModel.FlatModel> GetFlatHeader(string CONTAINER_NO)
+        /// <summary>
+        /// 取得平張表頭資料
+        /// </summary>
+        /// <param name="CONTAINER_NO"></param>
+        /// <param name="Status"></param>
+        /// <returns></returns>
+        public List<DetailModel.FlatModel> GetFlatHeader(string CONTAINER_NO,string Status)
         {
 
             using (var context = new MesContext())
             {
-                return new PurchaseUOW(context).GetFlatHeaderList(CONTAINER_NO);
+                if(Status == "1")
+                {
+                    return new PurchaseUOW(context).GetFlatHeaderList(CONTAINER_NO);
+                }
+                else
+                {
+                    return new PurchaseUOW(context).GetFlatHeaderHtList(CONTAINER_NO);
+                }
+
+                
             }
         }
 
