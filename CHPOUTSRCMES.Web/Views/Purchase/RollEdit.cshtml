@@ -136,16 +136,20 @@
                 <textarea style="width:250px;height:250px;" class="form-control col-md-4" rows="3" id="textarea">@Html.DisplayFor(model =>model.RollDetailModel.Remark)</textarea>
             </div>
         </form>
-        <div class="col-md-6" id="saveBox">
-            <img class="col-md-6" id="SaveImg" onclick="imgDisplay(this)" src="" alt="" />
-        </div>
         <div class="col-md-6" id="imgBox">
             <img class="col-md-6" id="img" onclick="imgDisplay(this)"
                  src="" alt="" />
         </div>
     </div>
+    <div  class="col-md-12">
+        <div class="col-md-6" id="saveBox">
+            @*<img class="col-md-6" id="SaveImg" onclick="imgDisplay(this)" src="" alt="" />*@
+        </div>
+        <br />
+    </div>
 
     <br />
+
     <div class="col-md-12">
         @*<button class="btn btn-primary col-lg-offset-10" id="BtnReturn">返回</button>*@
         <button class="btn btn-danger" id="BtnRollSave">存檔</button>

@@ -15,7 +15,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy
         /// 揀貨歷史ID
         /// </summary>
         /// 
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
         [Required]
         [Column("CTR_HIS_ID")]
@@ -216,7 +216,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy
         /// </summary>
         /// 
         [StringLength(80)]
-        [Required]
+        [Required(AllowEmptyStrings = true)]
         [Column("LOT_NUMBER")]
         public string LotNumber { set; get; }
 
@@ -224,8 +224,8 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy
         /// 理論重(批號數量)
         /// </summary>
         /// 
-        [StringLength(30)]
-        [Required]
+        [StringLength(80)]
+        [Required(AllowEmptyStrings = true)]
         [Column("THEORY_WEIGHT")]
         public string TheoryWeight { set; get; }
 

@@ -7,12 +7,13 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<link href="@Url.Content("~/Content/photo.css")" rel="stylesheet" type="text/css" />
 
 @section scripts {
 
     <script src="~/Scripts/Purchase/View.js"></script>
 }
-
+@Html.HiddenFor(model => model.FlatDetailModel.Id, new { id = "Id" })
 
 
 <div class="row">
@@ -87,7 +88,7 @@
                 @Html.DisplayFor(model => model.FlatDetailModel.CreatedUserName) @Html.DisplayFor(model => model.FlatDetailModel.CreationDate)
             </div>
         </div>
-        
+
     </div>
 
 

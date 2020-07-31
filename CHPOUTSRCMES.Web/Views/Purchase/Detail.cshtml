@@ -36,7 +36,7 @@
         <div class="col-md-4">
             <h4>
                 倉庫
-               @Html.DisplayFor(model => model.Subinventory)
+                @Html.DisplayFor(model => model.Subinventory)
             </h4>
         </div>
 
@@ -450,9 +450,16 @@
 
 
     </div>
-    <div class="row row-std col-md-12">
-        <button class="btn btn-danger externalBtn" id="btnSaveInvenorty">存檔入庫</button>
-    </div>
+    @{
+        if (Model.Status == "1")
+        {
+            <div class="row row-std col-md-12">
+                <button class="btn btn-danger externalBtn" id="btnSaveInvenorty">存檔入庫</button>
+            </div>
+        }
+
+    }
+
 
 </div>
 

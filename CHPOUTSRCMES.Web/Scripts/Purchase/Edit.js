@@ -38,6 +38,7 @@ function photoView() {
             imgFile.push(fileList[i]);
             files.push(fileList[i]);
         }
+        //photo.js使用
         addNewContent($('#imgBox'));
     });
 
@@ -83,13 +84,15 @@ function FlatSave() {
     var status = $("#Status").val();
     var reason = $("#select-reason").val();
     var remak = $("#textarea").val();
+    var Locator = $("#select-Locator").val();
     var formData = new FormData();
     for (var i = 0; i < files.length; i++) {
         formData.append(files[i].name, files[i]);
     }
     formData.append("id", id);
-    formData.append("reason", reason);
-    formData.append("remak", remak);
+    formData.append("Reason", reason);
+    formData.append("Locator", Locator);
+    formData.append("Remark", remak);
 
 
 
@@ -100,10 +103,8 @@ function FlatSave() {
         "data": formData,
         success: function (data) {
             if (data.boolean) {
-                swal.fire("");
-            } else {
-                swal.fire("");
-            }
+                window.history.go(-1);
+            } 
         },
         error: function (data) {
             swal.fire(data);
@@ -125,13 +126,15 @@ function getServicePhoto() {
         "datatype": "json",
         "data": { id: id },
         success: function (data) {
-            if (data.ListBytePhoto.length != 0) {
-                for (var i = 0; i < data.ListBytePhoto.length; i++) {
-                    imgSrc.push("data:image/jpeg;base64," + data.ListBytePhoto[i]);
+            if (data.ListBytePhoto != null) {
+                if (data.ListBytePhoto.length != 0) {
+                    for (var i = 0; i < data.ListBytePhoto.length; i++) {
+                        imgSrc.push("data:image/jpeg;base64," + data.ListBytePhoto[i]);
+                    }
+                    AddNewContent($('#saveBox'));
                 }
-                AddNewContent($('#saveBox'));
             }
-
+          
         },
         error: function (data) {
             swal.fire(data);
