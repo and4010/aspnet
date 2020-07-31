@@ -74,7 +74,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Delivery
         /// 
         [StringLength(30)]
         [Column("LOCATOR_CODE")]
-        public string LOCATOR_CODE { set; get; }
+        public string LocatorCode { set; get; }
 
         /// <summary>
         /// 料號ID

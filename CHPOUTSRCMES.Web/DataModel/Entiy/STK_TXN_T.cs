@@ -18,7 +18,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy
         [Key]
         [Required]
         [Column("STK_TXN_ID")]
-        public int StkTxnId { set; get; }
+        public long StkTxnId { set; get; }
 
 
         /// <summary>
@@ -27,7 +27,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy
         /// 
         [Required]
         [Column("STOCK_ID")]
-        public int StockId { set; get; }
+        public long StockId { set; get; }
 
         /// <summary>
         /// 庫存組織ID
@@ -47,14 +47,14 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy
         public string OrganizationCode { set; get; }
 
 
-        /// <summary>
-        /// 庫存組織名稱
-        /// </summary>
-        /// 
-        [StringLength(240)]
-        [Required]
-        [Column("ORGANIZATION_NAME")]
-        public string OrganizationName { set; get; }
+        ///// <summary>
+        ///// 庫存組織名稱
+        ///// </summary>
+        ///// 
+        //[StringLength(240)]
+        //[Required]
+        //[Column("ORGANIZATION_NAME")]
+        //public string OrganizationName { set; get; }
 
 
         /// <summary>
@@ -67,79 +67,72 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy
         public string SubinventoryCode { set; get; }
 
 
-        /// <summary>
-        /// 倉庫名稱
-        /// </summary>
-        /// 
-        [StringLength(50)]
-        [Required]
-        [Column("SUBINVENTORY_NAME")]
-        public string SubinventoryName { set; get; }
+        ///// <summary>
+        ///// 倉庫名稱
+        ///// </summary>
+        ///// 
+        //[StringLength(50)]
+        //[Required]
+        //[Column("SUBINVENTORY_NAME")]
+        //public string SubinventoryName { set; get; }
 
 
         /// <summary>
         /// 儲位ID
         /// </summary>
         /// 
-        [Required]
         [Column("LOCATOR_ID")]
-        public long LocatorId { set; get; }
+        public long? LocatorId { set; get; }
 
         /// <summary>
-        /// 庫存組織ID
+        /// 目的庫存組織ID
         /// </summary>
         /// 
-        [Required]
         [Column("DST_ORGANIZATION_ID")]
-        public long DstOrganizationId { set; get; }
+        public long? DstOrganizationId { set; get; }
 
         /// <summary>
-        /// 庫存組織CODE
+        /// 目的庫存組織CODE
         /// </summary>
         /// 
         [StringLength(3)]
-        [Required]
         [Column("DST_ORGANIZATION_CODE")]
         public string DstOrganizationCode { set; get; }
 
 
-        /// <summary>
-        /// 庫存組織名稱
-        /// </summary>
-        /// 
-        [StringLength(240)]
-        [Required]
-        [Column("DST_ORGANIZATION_NAME")]
-        public string DstOrganizationName { set; get; }
+        ///// <summary>
+        ///// 目的庫存組織名稱
+        ///// </summary>
+        ///// 
+        //[StringLength(240)]
+        //[Column("DST_ORGANIZATION_NAME")]
+        //public string DstOrganizationName { set; get; }
 
 
         /// <summary>
-        /// 倉庫
+        /// 目的倉庫
         /// </summary>
         /// 
         [StringLength(10)]
-        [Required]
         [Column("DST_SUBINVENTORY_CODE")]
         public string DstSubinventoryCode { set; get; }
 
 
-        /// <summary>
-        /// 倉庫名稱
-        /// </summary>
-        /// 
-        [StringLength(50)]
-        [Required]
-        [Column("DST_SUBINVENTORY_NAME")]
-        public string DstSubinventoryName { set; get; }
+        ///// <summary>
+        ///// 目的倉庫名稱
+        ///// </summary>
+        ///// 
+        //[StringLength(50)]
+        //[Column("DST_SUBINVENTORY_NAME")]
+        //public string DstSubinventoryName { set; get; }
 
 
         /// <summary>
-        /// 儲位ID
+        /// 目的儲位ID
         /// </summary>
         /// 
-        [Required]
         [Column("DST_LOCATOR_ID")]
-        public long DstLocatorId { set; get; }
+        public long? DstLocatorId { set; get; }
 
 
         /// <summary>
@@ -208,7 +201,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy
         [StringLength(3)]
         [Required]
         [Column("PRY_UOM_CODE")]
-        public string PrimaryUomCode { set; get; }
+        public string PryUomCode { set; get; }
 
         /// <summary>
         ///主單位原數量
@@ -229,7 +222,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy
         ///主單位異動量
         /// </summary>
         /// 
-        [Column("PRY_AFT_QTY")]
+        [Column("PRY_CHG_QTY")]
         public decimal PryChgQty { set; get; }
 
         /// <summary>
@@ -247,6 +240,15 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy
         /// 
         [Column("SEC_BEF_QTY")]
         public decimal? SecBefQty { set; get; }
+
+
+        /// <summary>
+        ///次單位異動量
+        /// </summary>
+        /// 
+        [Column("SEC_CHG_QTY")]
+        public decimal SecChgQty { set; get; }
+        
 
         /// <summary>
         /// 次單位可異動數量
@@ -304,9 +306,10 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy
         /// 建立人員
         /// </summary>
         /// 
+        [StringLength(128)]
         [Required]
         [Column("CREATED_BY")]
-        public long CreatedBy { set; get; }
+        public string CreatedBy { set; get; }
 
         /// <summary>
         /// 建立時間
@@ -321,9 +324,9 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy
         /// 更新人員
         /// </summary>
         /// 
-        [Required]
+        [StringLength(128)]
         [Column("LAST_UPDATE_BY")]
-        public long? LastUpdateBy { set; get; }
+        public string LastUpdateBy { set; get; }
 
         /// <summary>
         /// 更新時間

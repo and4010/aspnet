@@ -2,12 +2,9 @@
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using System.Transactions;
-using System.Web;
 using CHPOUTSRCMES.Web.DataModel.Entiy.Information;
 using CHPOUTSRCMES.Web.DataModel.Entiy.Interfaces;
 using CHPOUTSRCMES.Web.DataModel.Entiy.Repositorys;
-using CHPOUTSRCMES.Web.DataModel.UnitOfWorks.Interfaces;
 using CHPOUTSRCMES.Web.Util;
 using NLog;
 using NPOI.SS.UserModel;
@@ -15,12 +12,14 @@ using System.Web.UI.WebControls;
 using System.Web.Mvc;
 using CHPOUTSRCMES.Web.Models.Information;
 using CHPOUTSRCMES.Web.Models;
-using System.Text;
 using System.Data.SqlClient;
+using CHPOUTSRCMES.Web.DataModel.Entiy;
+using CHPOUTSRCMES.Web.DataModel.Interfaces;
+using static CHPOUTSRCMES.Web.DataModel.UnitOfWorks.DeliveryUOW;
 
 namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
 {
-    public class MasterUOW: UnitOfWork
+    public class MasterUOW : UnitOfWork
     {
         private ILogger logger = LogManager.GetCurrentClassLogger();
 
@@ -68,7 +67,24 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
         /// 原因
         /// </summary>
         private readonly IRepository<STK_REASON_T> stkReasonTRepositiory;
+        /// <summary>
+        /// 庫存
+        /// </summary>
+        private readonly IRepository<STOCK_T> stockTRepositiory;
+        /// <summary>
+        /// 庫存歷史
+        /// </summary>
+        private readonly IRepository<STOCK_HT> stockHtRepositiory;
+        /// <summary>
+        /// 異動記錄
+        /// </summary>
+        private readonly IRepository<STK_TXN_T> stkTxnTRepositiory;
 
+        public IUomConversion uomConversion;
+
+        public CategoryCode categoryCode = new CategoryCode();
+
+        public ActionCode actionCode = new ActionCode();
 
         /// <summary>
         /// 
@@ -87,41 +103,497 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             this.transactionTypeRepositiory = new GenericRepository<TRANSACTION_TYPE_T>(this);
             this.bcdMiscRepositiory = new GenericRepository<BCD_MISC_T>(this);
             this.stkReasonTRepositiory = new GenericRepository<STK_REASON_T>(this);
+            this.stockTRepositiory = new GenericRepository<STOCK_T>(this);
+            this.stockHtRepositiory = new GenericRepository<STOCK_HT>(this);
+            this.stkTxnTRepositiory = new GenericRepository<STK_TXN_T>(this);
+            this.uomConversion = new FakeUomConversion();
+        }
+
+        public class CategoryCode : ICategory
+        {
+            public const string Delivery = "C0";
+            public string GetDesc(string category)
+            {
+                switch (category)
+                {
+                    case Delivery:
+                        return "進貨";
+                    default:
+                        return "";
+                }
+            }
+        }
+
+        public class ActionCode : IAction
+        {
+            public const string Deleted = "A0";
+            public const string Picked = "A1";
+            public const string Shipped = "A2";
+
+            public string GetDesc(string category)
+            {
+                switch (category)
+                {
+                    case Deleted:
+                        return "刪除";
+                    case Picked:
+                        return "已揀";
+                    case Shipped:
+                        return "已出貨";
+                    default:
+                        return "";
+                }
+            }
+        }
+
+        #region 庫存
+        //public IDetail stockStatusCode = new StockStatusCode();
+
+        /// <summary>
+        /// 庫存狀態
+        /// </summary>
+        public class StockStatusCode : IStatus
+        {
+            /// <summary>
+            /// 在庫
+            /// </summary>
+            public const string InStock = "S0";
+            /// <summary>
+            /// 出貨已揀
+            /// </summary>
+            public const string DeliveryPicked = "S1";
+            /// <summary>
+            /// 已出貨
+            /// </summary>
+            public const string Shipped = "S2";
+
+
+            public string GetDesc(string statusCode)
+            {
+                switch (statusCode)
+                {
+                    case InStock:
+                        return "在庫";
+                    case DeliveryPicked:
+                        return "出貨已揀";
+                    case Shipped:
+                        return "已出貨";
+                    default:
+                        return "";
+                }
+            }
+
+            //public string ToStockStatus(string statusCode)
+            //{
+            //    switch (statusCode)
+            //    {
+            //        case DeliveryStatusCode.Canceled:
+            //            return InStock;
+            //        //case Unprinted:
+            //        //    return "未印";
+            //        //case UnPicked:
+            //        //    return "待出";
+            //        case DeliveryStatusCode.Picked:
+            //            return StockStatusCode.DeliveryPicked;
+            //        //case UnAuthorized:
+            //        //    return "待核准";
+            //        case DeliveryStatusCode.Shipped:
+            //            return StockStatusCode.Shipped;
+            //        default:
+            //            return "";
+            //    }
+            //}
+        }
+
+
+        public ResultDataModel<STOCK_T> CheckStock1(string barcode, decimal primaryQty, decimal? secondaryQty)
+        {
+            var stock = stockTRepositiory.GetAll().FirstOrDefault(x => x.Barcode == barcode);
+
+            if (stock == null)
+            {
+                return new ResultDataModel<STOCK_T>(false, "查無庫存", stock);
+            }
+
+            if (secondaryQty == null)
+            {
+                if (stock.PrimaryAvailableQty + primaryQty >= 0) //出貨時數量為負數，刪除時(庫存還原)Qty為正數
+                {
+                    return new ResultDataModel<STOCK_T>(true, "庫存足夠", stock);
+                }
+                else
+                {
+                    return new ResultDataModel<STOCK_T>(false, "庫存量不足", stock);
+                }
+            }
+            else
+            {
+                if (stock.PrimaryAvailableQty + primaryQty >= 0 && stock.SecondaryAvailableQty + secondaryQty >= 0)
+                {
+                    return new ResultDataModel<STOCK_T>(true, "庫存足夠", stock);
+                }
+                else
+                {
+                    return new ResultDataModel<STOCK_T>(false, "庫存量不足", stock);
+                }
+
+            }
+           
+        }
+
+
+        /// <summary>
+        /// 庫存檢查
+        /// </summary>
+        /// <param name="barcode"></param>
+        /// <param name="qty"></param>
+        /// <param name="uom"></param>
+        /// <returns></returns>
+        public ResultDataModel<STOCK_T> CheckStock(string barcode, decimal qty, string uom)
+        {
+            var stock = stockTRepositiory.GetAll().FirstOrDefault(x => x.Barcode == barcode);
+
+            if (uom.CompareTo(stock.PrimaryUomCode) == 0) //傳入的單位是否為主要單位
+            {
+                return CheckStockForPrimaryQty(stock, qty);
+            }
+            else if (uom.CompareTo(stock.SecondaryUomCode) == 0) //傳入的單位是否為次要單位
+            {
+                return CheckStockForSecondaryQty(stock, qty);
+            }
+            else
+            {
+                return new ResultDataModel<STOCK_T>(false, "庫存檢查失敗：單位錯誤", stock);
+            }
+        }
+
+
+        /// <summary>
+        /// 檢查庫存(主單位)
+        /// </summary>
+        /// <param name="barcode"></param>
+        /// <param name="primaryQty"></param>
+        /// <returns></returns>
+        public ResultDataModel<STOCK_T> CheckStockForPrimaryQty(string barcode, decimal primaryQty)
+        {
+            return CheckStockForPrimaryQty(stockTRepositiory.GetAll().AsNoTracking().FirstOrDefault(x => x.Barcode == barcode), primaryQty);
         }
 
         /// <summary>
-        /// 
+        /// 檢查庫存(主單位)
         /// </summary>
-        /// <param name="context"></param>
-        /// <param name="itemsTRepository"></param>
-        /// <param name="orgItemRepository"></param>
-        /// <param name="organizationRepositiory"></param>
-        /// <param name="subinventoryRepositiory"></param>
-        /// <param name="locatorTRepositiory"></param>
-        /// <param name="relatedTRepositiory"></param>
-        /// <param name="yszmpckqTRepositiory"></param>
-        /// <param name="machinePaperTypeRepositiory"></param>
-        /// <param name="transactionTypeRepositiory"></param>
-        /// <param name="bcdMiscRepositiory"></param>
-        public MasterUOW( DbContext context,
-            IItemsTRepository itemsTRepository, IRepository<ORG_ITEMS_T> orgItemRepository,
-            IRepository<ORGANIZATION_T> organizationRepositiory, IRepository<SUBINVENTORY_T> subinventoryRepositiory,
-            IRepository<LOCATOR_T> locatorTRepositiory, IRepository<RELATED_T> relatedTRepositiory,
-            IRepository<YSZMPCKQ_T> yszmpckqTRepositiory, IRepository<MACHINE_PAPER_TYPE_T> machinePaperTypeRepositiory,
-            IRepository<TRANSACTION_TYPE_T> transactionTypeRepositiory, IRepository<BCD_MISC_T> bcdMiscRepositiory
-            ) : base(context)
+        /// <param name="barcode"></param>
+        /// <param name="primaryQty"></param>
+        /// <returns></returns>
+        public ResultDataModel<STOCK_T> CheckStockForPrimaryQty(STOCK_T stock, decimal primaryQty)
         {
-            this.itemsTRepositiory = itemsTRepository;
-            this.orgItemRepositityory = orgItemRepository;
-            this.organizationRepositiory = organizationRepositiory;
-            this.subinventoryRepositiory = subinventoryRepositiory;
-            this.locatorTRepositiory = locatorTRepositiory;
-            this.relatedTRepositiory = relatedTRepositiory;
-            this.yszmpckqTRepositiory = yszmpckqTRepositiory;
-            this.machinePaperTypeRepositiory = machinePaperTypeRepositiory;
-            this.transactionTypeRepositiory = transactionTypeRepositiory;
-            this.bcdMiscRepositiory = bcdMiscRepositiory;
+            if (stock == null)
+            {
+                return new ResultDataModel<STOCK_T>(false, "查無庫存", stock);
+            }
+            //if (primaryQty < 0 && stock.StatusCode != StockStatusCode.InStock)
+            //{
+            //    return new ResultModel(false, "沒有庫存");
+            //}
+            if (stock.PrimaryAvailableQty + primaryQty >= 0)
+            {
+                return new ResultDataModel<STOCK_T>(true, "庫存足夠", stock);
+            }
+            else
+            {
+                return new ResultDataModel<STOCK_T>(false, "庫存量不足", stock);
+            }
         }
+        /// <summary>
+        /// 檢查庫存(副單位)
+        /// </summary>
+        /// <param name="barcode"></param>
+        /// <param name="secondaryQty"></param>
+        /// <returns></returns>
+        public ResultDataModel<STOCK_T> CheckStockForSecondaryQty(string barcode, decimal secondaryQty)
+        {
+            return CheckStockForSecondaryQty(stockTRepositiory.GetAll().AsNoTracking().FirstOrDefault(x => x.Barcode == barcode), secondaryQty);
+        }
+        /// <summary>
+        /// 檢查庫存(副單位)
+        /// </summary>
+        /// <param name="barcode"></param>
+        /// <param name="secondaryQty"></param>
+        /// <returns></returns>
+        public ResultDataModel<STOCK_T> CheckStockForSecondaryQty(STOCK_T stock, decimal secondaryQty)
+        {
+            if (stock == null)
+            {
+                return new ResultDataModel<STOCK_T>(false, "查無庫存", stock);
+            }
+            //if (secondaryQty < 0 && stock.StatusCode != StockStatusCode.InStock)
+            //{
+            //    return new ResultModel(false, "沒有庫存");
+            //}
+            if (stock.SecondaryAvailableQty + secondaryQty >= 0)
+            {
+                return new ResultDataModel<STOCK_T>(false, "庫存足夠", stock);
+            }
+            else
+            {
+                return new ResultDataModel<STOCK_T>(false, "庫存量不足", stock);
+            }
+        }
+
+
+
+        /// <summary>
+        /// 更新庫存量及狀態
+        /// </summary>
+        /// <param name="barcode">條碼</param>
+        /// <param name="qty">庫存異動量：正數加庫存、負數扣庫存</param>
+        /// <param name="uom">單位</param>
+        /// <param name="detail">作業狀態轉換介面</param>
+        /// <param name="statusCode">作業狀態碼</param>
+        /// <param name="lockQty">鎖單量，揀貨用</param>
+        /// <returns>更新後庫存</returns>
+        //public ResultDataModel<STOCK_T> UpdateStock(string barcode, decimal qty, string uom, IDetail detail, string statusCode, string doc, bool lockQty = false)
+        //{
+        //    var stock = stockTRepositiory.GetAll().FirstOrDefault(x => x.Barcode == barcode);
+        //    if (stock == null)
+        //    {
+        //        return new ResultDataModel<STOCK_T>(false, "查無庫存", null);
+        //    }
+
+        //    return UpdateStock(stock, qty, uom, detail, statusCode, lockQty);
+        //}
+
+        /// <summary>
+        /// 更新庫存量及狀態
+        /// </summary>
+        /// <param name="stock">庫存</param>
+        /// <param name="qty">庫存異動量：正數加庫存、負數扣庫存</param>
+        /// <param name="uom">單位</param>
+        /// <param name="detail">作業狀態轉換介面</param>
+        /// <param name="statusCode">作業狀態碼</param>
+        /// <param name="lockQty">鎖單量，揀貨用</param>
+        /// <returns>更新後庫存</returns>
+        public ResultDataModel<STOCK_T> UpdateStock(STOCK_T stock, STK_TXN_T stkTxnT, decimal priQty, decimal? secQty, string uom, IDetail detail, string statusCode, string lastUpdatedBy, DateTime addDate, bool lockQty = false)
+        {
+            decimal newSecQty = secQty == null ? (decimal)secQty : 0;
+
+            if (secQty == null) 
+            {
+                //捲筒出貨、雜項異動
+                if (stock.PrimaryAvailableQty >)
+                {
+
+                }
+            }
+            else
+            {
+
+            }
+
+
+            if (uom.CompareTo(stock.PrimaryUomCode) == 0)//傳入的單位是否為主要單位
+            {
+                var result = CheckStockForPrimaryQty(stock, qty);
+                if (!result.Success) return new ResultDataModel<STOCK_T>(result.Success, result.Msg, null); //檢查數量失敗
+                stkTxnT.PryChgQty = qty;
+                stkTxnT.PryBefQty = stock.PrimaryAvailableQty;
+                stock.PrimaryAvailableQty += qty; //計算主單位數量
+                stkTxnT.PryAftQty = stock.PrimaryAvailableQty;
+                if (lockQty) stock.PrimaryLockedQty += -1 * qty; //是揀貨時 計算鎖單量
+                if (stock.PrimaryAvailableQty == 0)
+                {
+                    stock.StatusCode = detail.ToStockStatus(statusCode); //無庫存量時 標記狀態
+                }
+                else
+                {
+                    stock.StatusCode = StockStatusCode.InStock; //有庫存 標記在庫
+                }
+                stkTxnT.StatusCode = stock.StatusCode;
+
+                //平版
+                if (!stock.isRoll())
+                {
+                    //convert to secondary uom
+                    stkTxnT.SecChgQty = uomConversion.Convert(stock.InventoryItemId, qty, stock.PrimaryUomCode, stock.SecondaryUomCode); //平版 次單位 異動量 數量換算
+                    stkTxnT.SecBefQty = stock.SecondaryAvailableQty;
+                    stock.SecondaryAvailableQty = uomConversion.Convert(stock.InventoryItemId, (decimal)stock.PrimaryAvailableQty, stock.PrimaryUomCode, stock.SecondaryUomCode); //平版 次單位 異動後 數量換算
+                    stkTxnT.SecAftQty = stock.SecondaryAvailableQty;
+                    stock.SecondaryLockedQty = uomConversion.Convert(stock.InventoryItemId, (decimal)stock.PrimaryLockedQty, stock.PrimaryUomCode, stock.SecondaryUomCode); //平版 次單位 鎖定量 數量換算
+                }
+            }
+            else if (uom.CompareTo(stock.SecondaryUomCode) == 0)//傳入的單位是否為次要單位
+            {
+                if (stock.isRoll())
+                {
+                    return new ResultDataModel<STOCK_T>(false, "捲筒沒有次要單位", null);
+                }
+
+                //平版
+                var result = CheckStockForSecondaryQty(stock, qty);
+                if (!result.Success) return new ResultDataModel<STOCK_T>(result.Success, result.Msg, null);
+                stkTxnT.SecChgQty = qty;
+                stkTxnT.SecBefQty = stock.SecondaryAvailableQty;
+                stock.SecondaryAvailableQty += qty; //計算次單位數量
+                stkTxnT.SecAftQty = stock.SecondaryAvailableQty;
+                if (lockQty) stock.SecondaryLockedQty += -1 * qty;
+                stkTxnT.PryChgQty = uomConversion.Convert(stock.InventoryItemId, qty, stock.SecondaryUomCode, stock.PrimaryUomCode); //平版 主單位 異動量 數量換算
+                stkTxnT.PryBefQty = stock.PrimaryAvailableQty;
+                stock.PrimaryAvailableQty = uomConversion.Convert(stock.InventoryItemId, (decimal)stock.SecondaryAvailableQty, stock.SecondaryUomCode, stock.PrimaryUomCode); //平版 主單位 異動後 數量換算
+                stkTxnT.PryAftQty = stock.PrimaryAvailableQty;
+                stock.PrimaryLockedQty = uomConversion.Convert(stock.InventoryItemId, (decimal)stock.SecondaryLockedQty, stock.SecondaryUomCode, stock.PrimaryUomCode); //平版 主單位 鎖定量 數量換算
+                if (stock.SecondaryAvailableQty == 0)
+                {
+                    stock.StatusCode = detail.ToStockStatus(statusCode);
+                }
+                else
+                {
+                    stock.StatusCode = StockStatusCode.InStock;
+                }
+                stkTxnT.StatusCode = stock.StatusCode;
+            }
+            else
+            {
+                // never happen??
+                return new ResultDataModel<STOCK_T>(false, "庫存檢查失敗：單位錯誤", stock);
+            }
+
+            stock.LastUpdateBy = lastUpdatedBy;
+            stkTxnT.LastUpdateBy = stock.LastUpdateBy;
+            stock.LastUpdateDate = addDate;
+            stkTxnT.LastUpdateDate = stock.LastUpdateDate;
+
+            stockTRepositiory.Update(stock);
+            stkTxnTRepositiory.Update(stkTxnT);
+
+            return new ResultDataModel<STOCK_T>(true, "庫存更新成功", stock);
+        }
+
+        ///// <summary>
+        ///// 更新庫存量及狀態
+        ///// </summary>
+        ///// <param name="stock">庫存</param>
+        ///// <param name="qty">庫存異動量：正數加庫存、負數扣庫存</param>
+        ///// <param name="uom">單位</param>
+        ///// <param name="detail">作業狀態轉換介面</param>
+        ///// <param name="statusCode">作業狀態碼</param>
+        ///// <param name="lockQty">鎖單量，揀貨用</param>
+        ///// <returns>更新後庫存</returns>
+        //public ResultDataModel<STOCK_T> UpdateStock(STOCK_T stock, STK_TXN_T stkTxnT, decimal qty, string uom, IDetail detail, string statusCode, string lastUpdatedBy, DateTime addDate, bool lockQty = false)
+        //{
+        //    if (uom.CompareTo(stock.PrimaryUomCode) == 0)//傳入的單位是否為主要單位
+        //    {
+        //        var result = CheckStockForPrimaryQty(stock, qty);
+        //        if (!result.Success) return new ResultDataModel<STOCK_T>(result.Success, result.Msg, null); //檢查數量失敗
+        //        stkTxnT.PryChgQty = qty;
+        //        stkTxnT.PryBefQty = stock.PrimaryAvailableQty;
+        //        stock.PrimaryAvailableQty += qty; //計算主單位數量
+        //        stkTxnT.PryAftQty = stock.PrimaryAvailableQty;
+        //        if (lockQty) stock.PrimaryLockedQty += -1 * qty; //是揀貨時 計算鎖單量
+        //        if (stock.PrimaryAvailableQty == 0)
+        //        {
+        //            stock.StatusCode = detail.ToStockStatus(statusCode); //無庫存量時 標記狀態
+        //        }
+        //        else
+        //        {
+        //            stock.StatusCode = StockStatusCode.InStock; //有庫存 標記在庫
+        //        }
+        //        stkTxnT.StatusCode = stock.StatusCode;
+
+        //        //平版
+        //        if (!stock.isRoll())
+        //        {
+        //            //convert to secondary uom
+        //            stkTxnT.SecChgQty = uomConversion.Convert(stock.InventoryItemId, qty, stock.PrimaryUomCode, stock.SecondaryUomCode); //平版 次單位 異動量 數量換算
+        //            stkTxnT.SecBefQty = stock.SecondaryAvailableQty;
+        //            stock.SecondaryAvailableQty = uomConversion.Convert(stock.InventoryItemId, (decimal)stock.PrimaryAvailableQty, stock.PrimaryUomCode, stock.SecondaryUomCode); //平版 次單位 異動後 數量換算
+        //            stkTxnT.SecAftQty = stock.SecondaryAvailableQty;
+        //            stock.SecondaryLockedQty = uomConversion.Convert(stock.InventoryItemId, (decimal)stock.PrimaryLockedQty, stock.PrimaryUomCode, stock.SecondaryUomCode); //平版 次單位 鎖定量 數量換算
+        //        }
+        //    }
+        //    else if (uom.CompareTo(stock.SecondaryUomCode) == 0)//傳入的單位是否為次要單位
+        //    {
+        //        if (stock.isRoll())
+        //        {
+        //            return new ResultDataModel<STOCK_T>(false, "捲筒沒有次要單位", null);
+        //        }
+
+        //        //平版
+        //        var result = CheckStockForSecondaryQty(stock, qty);
+        //        if (!result.Success) return new ResultDataModel<STOCK_T>(result.Success, result.Msg, null);
+        //        stkTxnT.SecChgQty = qty;
+        //        stkTxnT.SecBefQty = stock.SecondaryAvailableQty;
+        //        stock.SecondaryAvailableQty += qty; //計算次單位數量
+        //        stkTxnT.SecAftQty = stock.SecondaryAvailableQty;
+        //        if (lockQty) stock.SecondaryLockedQty += -1 * qty;
+        //        stkTxnT.PryChgQty = uomConversion.Convert(stock.InventoryItemId, qty, stock.SecondaryUomCode, stock.PrimaryUomCode); //平版 主單位 異動量 數量換算
+        //        stkTxnT.PryBefQty = stock.PrimaryAvailableQty;
+        //        stock.PrimaryAvailableQty = uomConversion.Convert(stock.InventoryItemId, (decimal)stock.SecondaryAvailableQty, stock.SecondaryUomCode, stock.PrimaryUomCode); //平版 主單位 異動後 數量換算
+        //        stkTxnT.PryAftQty = stock.PrimaryAvailableQty;
+        //        stock.PrimaryLockedQty = uomConversion.Convert(stock.InventoryItemId, (decimal)stock.SecondaryLockedQty, stock.SecondaryUomCode, stock.PrimaryUomCode); //平版 主單位 鎖定量 數量換算
+        //        if (stock.SecondaryAvailableQty == 0)
+        //        {
+        //            stock.StatusCode = detail.ToStockStatus(statusCode);
+        //        }
+        //        else
+        //        {
+        //            stock.StatusCode = StockStatusCode.InStock;
+        //        }
+        //        stkTxnT.StatusCode = stock.StatusCode;
+        //    }
+        //    else
+        //    {
+        //        // never happen??
+        //        return new ResultDataModel<STOCK_T>(false, "庫存檢查失敗：單位錯誤", stock);
+        //    }
+
+        //    stock.LastUpdateBy = lastUpdatedBy;
+        //    stkTxnT.LastUpdateBy = stock.LastUpdateBy;
+        //    stock.LastUpdateDate = addDate;
+        //    stkTxnT.LastUpdateDate = stock.LastUpdateDate;
+
+        //    stockTRepositiory.Update(stock);
+        //    stkTxnTRepositiory.Update(stkTxnT);
+
+        //    return new ResultDataModel<STOCK_T>(true, "庫存更新成功", stock);
+        //}
+
+        public STK_TXN_T CreateStockRecord(STOCK_T stock, long? dstOrganizationId, string dstOrganizationCode, string dstSubinventoryCode, long? dstLocatorId, string categoryCode, string actionCode, string doc)
+        {
+            return new STK_TXN_T
+            {
+                StockId = stock.StockId,
+                OrganizationId = stock.OrganizationId,
+                OrganizationCode = stock.OrganizationCode,
+                SubinventoryCode = stock.SubinventoryCode,
+                LocatorId = stock.LocatorId,
+                Barcode = stock.Barcode,
+                InventoryItemId = stock.InventoryItemId,
+                ItemNumber = stock.ItemNumber,
+                ItemDescription = stock.ItemDescription,
+                ItemCategory = stock.ItemCategory,
+                DstOrganizationId = dstOrganizationId,
+                DstOrganizationCode = dstOrganizationCode,
+                DstSubinventoryCode = dstSubinventoryCode,
+                DstLocatorId = dstLocatorId,
+                Category = this.categoryCode.GetDesc(categoryCode),
+                Action = this.actionCode.GetDesc(actionCode),
+                Note = stock.Note,
+                Doc = doc,
+                LotNumber = stock.LotNumber,
+                PryUomCode = stock.PrimaryUomCode,
+                SecUomCode = stock.SecondaryUomCode
+            };
+        }
+
+        public ResultModel AddStockRecord(STK_TXN_T data)
+        {
+            stkTxnTRepositiory.Create(data);
+
+            return new ResultModel(true, "庫存更新成功");
+        }
+
+        #endregion
+
 
         #region 測試資料產生
         /// <summary>
@@ -569,7 +1041,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                     //搜尋未執行 SaveChanges 的資料
                     var org = this.Context.ChangeTracker.Entries<SUBINVENTORY_T>().Where(x => x.Entity.SubinventoryCode == subCode).FirstOrDefault();
                     //搜尋已執行 SaveChanges 的資料
-                   // var org = subinventoryRepositiory.Get(x => x.OrganizationID == id && x.SubinventoryCode == subCode).FirstOrDefault();
+                    // var org = subinventoryRepositiory.Get(x => x.OrganizationID == id && x.SubinventoryCode == subCode).FirstOrDefault();
                     if (org == null)
                     {
                         SUBINVENTORY_T sUBINVENTORY_T = new SUBINVENTORY_T();
@@ -1180,7 +1652,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                 throw new Exception("找不到LAST_UPDATE_DATE欄位");
             }
 
-            
+
             for (int j = TransactionTypeId_cell.RowIndex + 1; j <= noOfRow; j++)
             {
                 try
@@ -1313,6 +1785,139 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             }
         }
 
+        /// <summary>
+        /// 產生庫存測試資料
+        /// </summary>
+        public void generateStockTestData()
+        {
+            try
+            {
+                #region 第一筆測試資料 平版 令包
+
+                stockTRepositiory.Create(new STOCK_T()
+                {
+                    OrganizationId = 265,
+                    OrganizationCode = "FTY",
+                    SubinventoryCode = "TB2",
+                    LocatorId = null,
+                    LocatorSegments = "",
+                    Barcode = "A2007290001",
+                    InventoryItemId = 504029,
+                    ItemNumber = "4DM00A03500214K512K",
+                    ItemDescription = "全塗灰銅卡",
+                    ReamWeight = "274.27",
+                    ItemCategory = "平版",
+                    PaperType = "DM00",
+                    BasicWeight = "03500",
+                    Specification = "214K512K",
+                    PackingType = "令包",
+                    RollReamWt = 100,
+                    ReasonCode = "",
+                    ReasonDesc = "",
+                    OspBatchNo = "P9B0288",
+                    LotNumber = "",
+                    StatusCode = "",
+                    PrimaryTransactionQty = 1000,
+                    PrimaryAvailableQty = 1000,
+                    PrimaryUomCode = "KG",
+                    SecondaryTransactionQty = 100,
+                    SecondaryAvailableQty = 100,
+                    SecondaryUomCode = "RE",
+                    Note = "",
+                    CreatedBy = "1",
+                    CreationDate = DateTime.Now,
+                    LastUpdateBy = "1",
+                    LastUpdateDate = DateTime.Now,
+                }, true);
+
+                #endregion
+
+                #region 第二筆測試資料 平版 無令打件
+                stockTRepositiory.Create(new STOCK_T()
+                {
+                    OrganizationId = 265,
+                    OrganizationCode = "FTY",
+                    SubinventoryCode = "TB2",
+                    LocatorId = null,
+                    LocatorSegments = "",
+                    Barcode = "A2007290002",
+                    InventoryItemId = 505675,
+                    ItemNumber = "4DM00P0270008271130",
+                    ItemDescription = "全塗灰銅卡",
+                    ReamWeight = "278.13",
+                    ItemCategory = "平版",
+                    PaperType = "DM00",
+                    BasicWeight = "02700",
+                    Specification = "08271130",
+                    PackingType = "無令打件",
+                    RollReamWt = 100,
+                    ReasonCode = "",
+                    ReasonDesc = "",
+                    OspBatchNo = "P2010087",
+                    LotNumber = "",
+                    StatusCode = "",
+                    PrimaryTransactionQty = 1000,
+                    PrimaryAvailableQty = 1000,
+                    PrimaryUomCode = "KG",
+                    SecondaryTransactionQty = 100,
+                    SecondaryAvailableQty = 100,
+                    SecondaryUomCode = "RE",
+                    Note = "",
+                    CreatedBy = "1",
+                    CreationDate = DateTime.Now,
+                    LastUpdateBy = "1",
+                    LastUpdateDate = DateTime.Now,
+                }, true);
+
+                #endregion
+
+                #region 第三筆測試資料 平版 無令打件
+                stockTRepositiory.Create(new STOCK_T()
+                {
+                    OrganizationId = 265,
+                    OrganizationCode = "FTY",
+                    SubinventoryCode = "SFG",
+                    LocatorId = null,
+                    LocatorSegments = "",
+                    Barcode = "A2007290003",
+                    InventoryItemId = 558705,
+                    ItemNumber = "4AH00A00900362KRL00",
+                    ItemDescription = "捲筒琉麗",
+                    ReamWeight = "2.2",
+                    ItemCategory = "捲筒",
+                    PaperType = "AH00",
+                    BasicWeight = "00900",
+                    Specification = "362KRL00",
+                    PackingType = "",
+                    RollReamWt = 1,
+                    ReasonCode = "",
+                    ReasonDesc = "",
+                    OspBatchNo = "",
+                    LotNumber = "1234567890",
+                    StatusCode = "",
+                    PrimaryTransactionQty = 1000,
+                    PrimaryAvailableQty = 1000,
+                    PrimaryUomCode = "KG",
+                    SecondaryTransactionQty = null,
+                    SecondaryAvailableQty = null,
+                    SecondaryUomCode = "",
+                    Note = "",
+                    CreatedBy = "1",
+                    CreationDate = DateTime.Now,
+                    LastUpdateBy = "1",
+                    LastUpdateDate = DateTime.Now,
+                }, true);
+
+                #endregion
+            }
+            catch (Exception ex)
+            {
+                logger.Error(LogUtilities.BuildExceptionMessage(ex));
+            }
+
+
+        }
+
         #endregion 測試資料產生
 
         /// <summary>
@@ -1327,27 +1932,27 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
         public ResultDataModel<List<string>> GenerateBarcodes(long organiztionId, string subinventoryCode, string prefix, int requestQty, string userId)
         {
             ResultDataModel<List<string>> result = null;
-                try
-                {
-                    var pOrg = SqlParamHelper.GetBigInt("@organizationId", organiztionId);
-                    var pSub = SqlParamHelper.R.SubinventoryCode("@subinventory", subinventoryCode);
-                    var pPrefix = SqlParamHelper.GetNVarChar("@prefix", prefix);
-                    var pReqQty = SqlParamHelper.GetInt("@requestQty", requestQty);
-                    var pCode = SqlParamHelper.GetInt("@code", 0, System.Data.ParameterDirection.Output);
-                    var pMsg = SqlParamHelper.GetNVarChar("@message", "", 500, System.Data.ParameterDirection.Output);
-                    var pUser = SqlParamHelper.GetNVarChar("@user", userId, 128);
+            try
+            {
+                var pOrg = SqlParamHelper.GetBigInt("@organizationId", organiztionId);
+                var pSub = SqlParamHelper.R.SubinventoryCode("@subinventory", subinventoryCode);
+                var pPrefix = SqlParamHelper.GetNVarChar("@prefix", prefix);
+                var pReqQty = SqlParamHelper.GetInt("@requestQty", requestQty);
+                var pCode = SqlParamHelper.GetInt("@code", 0, System.Data.ParameterDirection.Output);
+                var pMsg = SqlParamHelper.GetNVarChar("@message", "", 500, System.Data.ParameterDirection.Output);
+                var pUser = SqlParamHelper.GetNVarChar("@user", userId, 128);
 
-                    var list = this.Context.Database.SqlQuery<string>("dbo.SP_GenerateBarcodes @organizationId, @subinventory, @prefix, @requestQty, @code output, @message output, @user",
-                        pOrg, pSub, pPrefix, pReqQty, pCode, pMsg, pUser).ToList();
+                var list = this.Context.Database.SqlQuery<string>("dbo.SP_GenerateBarcodes @organizationId, @subinventory, @prefix, @requestQty, @code output, @message output, @user",
+                    pOrg, pSub, pPrefix, pReqQty, pCode, pMsg, pUser).ToList();
 
-                    result = new ResultDataModel<List<string>>(Convert.ToInt32(pCode.Value), Convert.ToString(pMsg.Value), list);
-                }
-                catch (Exception ex)
-                {
-                    result = new ResultDataModel<List<string>>(-1, ex.Message, null);
-                    logger.Error(ex, "產生條碼出現例外!!");
-                }
-                return result;
+                result = new ResultDataModel<List<string>>(Convert.ToInt32(pCode.Value), Convert.ToString(pMsg.Value), list);
+            }
+            catch (Exception ex)
+            {
+                result = new ResultDataModel<List<string>>(-1, ex.Message, null);
+                logger.Error(ex, "產生條碼出現例外!!");
+            }
+            return result;
         }
 
         /// <summary>
@@ -1427,7 +2032,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                           {
                               Text = x.ReasonCode + "-" + x.ReasonDesc,
                               Value = x.ReasonCode
-                          }) ;
+                          });
 
             reasonList.AddRange(tempList);
             return reasonList;
@@ -1458,7 +2063,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             {
                 logger.Error(LogUtilities.BuildExceptionMessage(ex));
             }
-            
+
 
             //organizationList.AddRange(tempList);
             return organizationList;
@@ -1536,7 +2141,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             }
 
             var locatorList = new List<SelectListItem>();
-            
+
             if (ORGANIZATION_ID == "*" && SUBINVENTORY_CODE == "*")
             {
                 var tempList = locatorTRepositiory.GetAll().AsNoTracking()
@@ -1681,7 +2286,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                     LOCATOR_ID = "*";
                 }
 
-                
+
                 List<string> cond = new List<string>();
                 List<SqlParameter> sqlParameterList = new List<SqlParameter>();
                 string prefixCmd = @"
@@ -1710,7 +2315,7 @@ on s.ORGANIZATION_ID = l.ORGANIZATION_ID and s.SUBINVENTORY_CODE = l.SUBINVENTOR
                 {
                     cond.Add("o.ORGANIZATION_ID = @ORGANIZATION_ID");
                     sqlParameterList.Add(new SqlParameter("@ORGANIZATION_ID", orgId.ToString()));
-                    
+
                 }
                 if (SUBINVENTORY_CODE != "*")
                 {
@@ -1728,13 +2333,13 @@ on s.ORGANIZATION_ID = l.ORGANIZATION_ID and s.SUBINVENTORY_CODE = l.SUBINVENTOR
                 if (sqlParameterList.Count > 0)
                 {
                     return this.Context.Database.SqlQuery<OrgSubinventoryDT>(commandText, sqlParameterList.ToArray()).ToList();
-                    
+
                 }
                 else
                 {
                     return this.Context.Database.SqlQuery<OrgSubinventoryDT>(commandText).ToList();
                 }
-                
+
                 //var tempList = this.Context.Database.SqlQuery<OrgSubinventoryDT>(cmd.ToString(),
                 //    new SqlParameter("@ORGANIZATION_ID", orgId),
                 //    new SqlParameter("@SUBINVENTORY_CODE", SUBINVENTORY_CODE),

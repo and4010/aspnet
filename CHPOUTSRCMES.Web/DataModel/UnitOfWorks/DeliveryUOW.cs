@@ -16,6 +16,7 @@ using CHPOUTSRCMES.Web.Models.Delivery;
 using System.Text;
 using System.Data.SqlClient;
 using CHPOUTSRCMES.Web.Models;
+using CHPOUTSRCMES.Web.DataModel.Interfaces;
 
 namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
 {
@@ -56,47 +57,199 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
         //     new SelectListItem() { Text = "已出貨", Value = "5" }
         //};
 
-        public static Dictionary<string, string> DeliveryStatusDictionary = new Dictionary<string, string>()
+        //public static Dictionary<string, string> DeliveryStatusDictionary = new Dictionary<string, string>()
+        //{
+        //    {DeliveryStatusCode.Canceled, "已取消"},
+        //    {DeliveryStatusCode.Unprinted, "未印"},
+        //    {DeliveryStatusCode.UnPicked, "待出"},
+        //    {DeliveryStatusCode.Picked, "已揀"},
+        //    {DeliveryStatusCode.UnAuthorized, "待核准"},
+        //    {DeliveryStatusCode.Authorized, "已出貨"},
+        //};
+
+        public IHeader deliveryStatusCode = new DeliveryStatusCode();
+        
+        public IDetail pickSatus = new PickStatus();
+        
+
+        public ResultModel AddPickDT(long dlvHeaderId, long dlvDetailId, string deliveryName, string barcode, decimal qty, string uom, string addUser, string addUserName, string status)
         {
-            {DeliveryStatusCode.Canceled, "已取消"},
-            {DeliveryStatusCode.Unprinted, "未印"},
-            {DeliveryStatusCode.UnPicked, "待出"},
-            {DeliveryStatusCode.Picked, "已揀"},
-            {DeliveryStatusCode.UnAuthorized, "待核准"},
-            {DeliveryStatusCode.Authorized, "已出貨"},
-        };
+            //庫存檢查
+            var checkResult = CheckStock(barcode, qty, uom);
+            if (!checkResult.Success) return new ResultModel( checkResult.Success, checkResult.Msg);
+            var stock = checkResult.Data;
+            var addDate = DateTime.Now;
+            //產生異動記錄
+            STK_TXN_T stkTxnT = CreateStockRecord(stock, null, "", "", null, CategoryCode.Delivery, ActionCode.Picked, deliveryName);
+            //更新庫存
+            var updaeStockResult = UpdateStock(stock, stkTxnT, qty, uom, pickSatus, PickStatus.Picked, addUser, addDate);
+            if (!updaeStockResult.Success) return new ResultModel(updaeStockResult.Success, updaeStockResult.Msg);
+            var afStock = updaeStockResult.Data;
+            //新增一筆PickDT
+            dlvPickedTRepositiory.Create(new DLV_PICKED_T
+            {
+                Stock_Id = stock.StockId,
+                LocatorId = stock.LocatorId,
+                LocatorCode = stock.LocatorSegments,
+                DlvHeaderId = dlvHeaderId,
+                DlvDetailId = dlvDetailId,
+                Barcode = stock.Barcode,
+                InventoryItemId = stock.InventoryItemId,
+                Item_Number = stock.ItemNumber,
+                PackingType = stock.PackingType,
+                LotQuantity = null,
+                Lot_Number = stock.LotNumber,
+                ReamWeight = stock.ReamWeight,
+                PrimaryQuantity = stock.PrimaryAvailableQty,
+                PrimaryUom = stock.PrimaryUomCode,
+                SecondaryQuantity = (decimal)stock.SecondaryAvailableQty,
+                SecondaryUom = stock.SecondaryUomCode,
+                TransactionQuantity = uomConversion.Convert(stock.InventoryItemId, stock.PrimaryAvailableQty, stock.PrimaryUomCode, stock)
+                CreatedBy = addUser,
+                CreatedUserName = addUserName,
+                CreationDate = addDate,
+                LastUpdateBy = addUser,
+                LastUpdateUserName = addUserName,
+                LastUpdateDate = addDate,
+                Status = status,
 
 
+            });
+
+            return new ResultModel(true, "");
+        }
+
+        public void DelPickDT(string barcode)
+        {
+            //庫存檢查
+
+            //刪除一筆PickDT
+
+            //新增一筆庫存異動紀錄
+
+            //更新庫存
+            //UpdateStock(barcode, 1, "KG", pickSatus, PickStatus.Deleted);
+        }
+
+
+
+        public class PickStatus : IDetail
+        {
+            /// <summary>
+            /// 已刪除
+            /// </summary>
+            public const string Deleted = "DS0";
+            /// <summary>
+            /// 已揀
+            /// </summary>
+            public const string Picked = "DS1";
+            /// <summary>
+            /// 已出貨
+            /// </summary>
+            public const string Shipped = "DS2";
+
+            public string GetDesc(string statusCode)
+            {
+                switch (statusCode)
+                {
+                    case Deleted:
+                        return "已刪除";
+                    case Picked:
+                        return "已揀";
+                    case Shipped:
+                        return "已出貨";
+                    default:
+                        return "";
+                }
+            }
+
+            public string ToStockStatus(string statusCode)
+            {
+                switch (statusCode)
+                {
+                    case Deleted:
+                        return StockStatusCode.InStock;
+                    case Picked:
+                        return StockStatusCode.DeliveryPicked;
+                    case Shipped:
+                        return StockStatusCode.Shipped;
+                    default:
+                        return "";
+                }
+            }
+        }
 
         /// <summary>
-        /// 下拉選單OPTION種類
+        /// 單號狀態種類
         /// </summary>
-        public static class DeliveryStatusCode
+        public class DeliveryStatusCode : IHeader
         {
             /// <summary>
             /// 已取消
             /// </summary>
-            public const string Canceled = "0";
+            public const string Canceled = "DH0";
             /// <summary>
             /// 未印
             /// </summary>
-            public const string Unprinted = "1";
+            public const string Unprinted = "DH1";
             /// <summary>
             /// 待出
             /// </summary>
-            public const string UnPicked = "2";
+            public const string UnPicked = "DH2";
             /// <summary>
             /// 已揀
             /// </summary>
-            public const string Picked = "3";
+            public const string Picked = "DH3";
             /// <summary>
             /// 待核准
             /// </summary>
-            public const string UnAuthorized = "4";
+            public const string UnAuthorized = "DH4";
             /// <summary>
             /// 已出貨
             /// </summary>
-            public const string Authorized = "5";
+            public const string Shipped = "DH5";
+
+            public string GetDesc(string statusCode)
+            {
+                switch (statusCode)
+                {
+                    case Canceled:
+                        return "已取消";
+                    case Unprinted:
+                        return "未印";
+                    case UnPicked:
+                        return "待出";
+                    case Picked:
+                        return "已揀";
+                    case UnAuthorized:
+                        return "待核准";
+                    case Shipped:
+                        return "已出貨";
+                    default:
+                        return "";
+                }
+            }
+
+            //public string ToStockStatus(string statusCode)
+            //{
+            //    switch (statusCode)
+            //    {
+            //        case Canceled:
+            //            return StockStatusCode.InStock;
+            //        //case Unprinted:
+            //        //    return "未印";
+            //        //case UnPicked:
+            //        //    return "待出";
+            //        case Picked:
+            //            return StockStatusCode.DeliveryPicked;
+            //        //case UnAuthorized:
+            //        //    return "待核准";
+            //        case Shipped:
+            //            return StockStatusCode.Shipped;
+            //        default:
+            //            return "";
+            //    }
+            //}
         }
 
         public void generateTestData()
@@ -333,7 +486,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                     OspBatchId = null,
                     OspBatchNo = "",
                     OspBatchType = "",
-                    TmpItemId = null,
+                    TmpItemId = 123,
                     TmpItemNumber = "",
                     TmpItemDescription = "",
                     CreatedBy = "1",
@@ -374,12 +527,12 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             var deliveryStatusList = new List<SelectListItem>();
             try
             {
-                deliveryStatusList.Add(new SelectListItem() { Text = DeliveryStatusDictionary[DeliveryStatusCode.Canceled], Value = DeliveryStatusCode.Canceled });
-                deliveryStatusList.Add(new SelectListItem() { Text = DeliveryStatusDictionary[DeliveryStatusCode.Unprinted], Value = DeliveryStatusCode.Unprinted });
-                deliveryStatusList.Add(new SelectListItem() { Text = DeliveryStatusDictionary[DeliveryStatusCode.UnPicked], Value = DeliveryStatusCode.UnPicked });
-                deliveryStatusList.Add(new SelectListItem() { Text = DeliveryStatusDictionary[DeliveryStatusCode.Picked], Value = DeliveryStatusCode.Picked });
-                deliveryStatusList.Add(new SelectListItem() { Text = DeliveryStatusDictionary[DeliveryStatusCode.UnAuthorized], Value = DeliveryStatusCode.UnAuthorized });
-                deliveryStatusList.Add(new SelectListItem() { Text = DeliveryStatusDictionary[DeliveryStatusCode.Authorized], Value = DeliveryStatusCode.Authorized });
+                deliveryStatusList.Add(new SelectListItem() { Text = deliveryStatusCode.GetDesc(DeliveryStatusCode.Canceled), Value = DeliveryStatusCode.Canceled });
+                deliveryStatusList.Add(new SelectListItem() { Text = deliveryStatusCode.GetDesc(DeliveryStatusCode.Unprinted), Value = DeliveryStatusCode.Unprinted });
+                deliveryStatusList.Add(new SelectListItem() { Text = deliveryStatusCode.GetDesc(DeliveryStatusCode.UnPicked), Value = DeliveryStatusCode.UnPicked });
+                deliveryStatusList.Add(new SelectListItem() { Text = deliveryStatusCode.GetDesc(DeliveryStatusCode.Picked), Value = DeliveryStatusCode.Picked });
+                deliveryStatusList.Add(new SelectListItem() { Text = deliveryStatusCode.GetDesc(DeliveryStatusCode.UnAuthorized), Value = DeliveryStatusCode.UnAuthorized });
+                deliveryStatusList.Add(new SelectListItem() { Text = deliveryStatusCode.GetDesc(DeliveryStatusCode.Shipped), Value = DeliveryStatusCode.Shipped });
 
                 var a = deliveryStatusList.Select(x => new SelectListItem() { Text = x.Text, Value = x.Value }).Where(x => x.Value == "1");
             }
@@ -618,7 +771,7 @@ on h.DLV_HEADER_ID = d.DLV_HEADER_ID";
         /// <param name="updateDatas"></param>
         /// <param name="deliveryStatusCode"></param>
         /// <returns></returns>
-        public ResultModel UpdateDeliveryStatus(List<DLV_HEADER_T> updateDatas, string deliveryStatusCode)
+        public ResultModel UpdateDeliveryStatus(List<DLV_HEADER_T> updateDatas, string statusCode)
         {
             if (updateDatas == null) return new ResultModel(false, "沒有交運單資料");
             if (updateDatas.Count == 0) return new ResultModel(false, "沒有交運單資料");
@@ -628,8 +781,8 @@ on h.DLV_HEADER_ID = d.DLV_HEADER_ID";
                 {
                     foreach (DLV_HEADER_T data in updateDatas)
                     {
-                        data.DeliveryStatusCode = deliveryStatusCode;
-                        data.DeliveryStatusName = DeliveryStatusDictionary[deliveryStatusCode];
+                        data.DeliveryStatusCode = statusCode;
+                        data.DeliveryStatusName = deliveryStatusCode.GetDesc(statusCode);
                         dlvHeaderTRepositiory.Update(data);
                     }
                     dlvHeaderTRepositiory.SaveChanges();
@@ -810,6 +963,8 @@ where DLV_HEADER_ID = @DLV_HEADER_ID"; ;
             return this.Context.Database.SqlQuery<FlatEditBarcodeDT>(cmd, new SqlParameter("@DLV_HEADER_ID", dlvHeaderId)).ToList();
 
         }
+
+
         #endregion
     }
 

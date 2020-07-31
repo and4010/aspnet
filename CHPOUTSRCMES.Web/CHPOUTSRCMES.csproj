@@ -247,6 +247,13 @@
     <Compile Include="Controllers\TransferController.cs" />
     <Compile Include="Controllers\YszmpckqController.cs" />
     <Compile Include="DataAnnotation\Precision.cs" />
+    <Compile Include="DataModel\FakeUomConversion.cs" />
+    <Compile Include="DataModel\Interfaces\IAction.cs" />
+    <Compile Include="DataModel\Interfaces\IDetail.cs" />
+    <Compile Include="DataModel\Interfaces\IHeader.cs" />
+    <Compile Include="DataModel\Interfaces\IStatus.cs" />
+    <Compile Include="DataModel\Interfaces\IUomConversion.cs" />
+    <Compile Include="DataModel\Interfaces\IWork.cs" />
     <Compile Include="DataModel\Managers\AppUserManager.cs" />
     <Compile Include="DataModel\Entiy\Delivery\DLV_DETAIL_HT.cs" />
     <Compile Include="DataModel\Entiy\Delivery\DLV_DETAIL_T.cs" />
@@ -294,7 +301,6 @@
     <Compile Include="DataModel\UnitOfWorks\MasterUOW.cs" />
     <Compile Include="DataModel\UnitOfWorks\Interfaces\IUnitOfWork.cs" />
     <Compile Include="DataModel\UnitOfWorks\PurchaseUOW.cs" />
-    <Compile Include="DataModel\UnitOfWorks\StockUOW.cs" />
     <Compile Include="DataModel\UnitOfWorks\UnitOfWork.cs" />
     <Compile Include="DataModel\UnitOfWorks\DeliveryUOW.cs" />
     <Compile Include="Domain\Data.cs" />

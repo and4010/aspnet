@@ -502,7 +502,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
             {
                 if (data.DeliveryStatusCode != DeliveryUOW.DeliveryStatusCode.Picked)
                 {
-                    return new ResultModel(false, "交運單" + data.DeliveryName + "狀態須為" + DeliveryUOW.DeliveryStatusDictionary[DeliveryUOW.DeliveryStatusCode.Picked]);
+                    return new ResultModel(false, "交運單" + data.DeliveryName + "狀態須為" + uow.deliveryStatusCode.GetDesc(DeliveryUOW.DeliveryStatusCode.Picked));
                 }
             }
 
@@ -592,7 +592,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
             {
                 if (data.DeliveryStatusCode != DeliveryUOW.DeliveryStatusCode.UnAuthorized)
                 {
-                    return new ResultModel(false, "交運單" + data.DeliveryName + "狀態須為" + DeliveryUOW.DeliveryStatusDictionary[DeliveryUOW.DeliveryStatusCode.UnAuthorized]);
+                    return new ResultModel(false, "交運單" + data.DeliveryName + "狀態須為" + uow.deliveryStatusCode.GetDesc(DeliveryUOW.DeliveryStatusCode.UnAuthorized));
                 }
             }
 
@@ -758,11 +758,11 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
             {
                 if (data.DeliveryStatusCode != DeliveryUOW.DeliveryStatusCode.UnAuthorized)
                 {
-                    return new ResultModel(false, "交運單" + data.DeliveryName + "狀態須為" + DeliveryUOW.DeliveryStatusDictionary[DeliveryUOW.DeliveryStatusCode.UnAuthorized]);
+                    return new ResultModel(false, "交運單" + data.DeliveryName + "狀態須為" + uow.deliveryStatusCode.GetDesc(DeliveryUOW.DeliveryStatusCode.UnAuthorized));
                 }
             }
 
-            ResultModel result = uow.UpdateDeliveryStatus(updateDatas, DeliveryUOW.DeliveryStatusCode.Authorized);
+            ResultModel result = uow.UpdateDeliveryStatus(updateDatas, DeliveryUOW.DeliveryStatusCode.Shipped);
             if (result.Success)
             {
                 return new ResultModel(true, "出貨核准成功");
@@ -845,7 +845,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
             {
                 if (data.DeliveryStatusCode != DeliveryUOW.DeliveryStatusCode.UnAuthorized)
                 {
-                    return new ResultModel(false, "交運單" + data.DeliveryName + "狀態須為" + DeliveryUOW.DeliveryStatusDictionary[DeliveryUOW.DeliveryStatusCode.UnAuthorized]);
+                    return new ResultModel(false, "交運單" + data.DeliveryName + "狀態須為" + uow.deliveryStatusCode.GetDesc(DeliveryUOW.DeliveryStatusCode.UnAuthorized));
                 }
             }
 
@@ -931,11 +931,11 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
             {
                 if (data.DeliveryStatusCode == DeliveryUOW.DeliveryStatusCode.Canceled)
                 {
-                    return new ResultModel(false, "航程號" + data.DeliveryName + DeliveryUOW.DeliveryStatusDictionary[DeliveryUOW.DeliveryStatusCode.Canceled]);
+                    return new ResultModel(false, "航程號" + data.DeliveryName + uow.deliveryStatusCode.GetDesc(DeliveryUOW.DeliveryStatusCode.Canceled));
                 }
-                if (data.DeliveryStatusCode == DeliveryUOW.DeliveryStatusCode.Authorized)
+                if (data.DeliveryStatusCode == DeliveryUOW.DeliveryStatusCode.Shipped)
                 {
-                    return new ResultModel(false, "航程號" + data.DeliveryName + DeliveryUOW.DeliveryStatusDictionary[DeliveryUOW.DeliveryStatusCode.Authorized]);
+                    return new ResultModel(false, "航程號" + data.DeliveryName + uow.deliveryStatusCode.GetDesc(DeliveryUOW.DeliveryStatusCode.Shipped));
                 }
 
             }
