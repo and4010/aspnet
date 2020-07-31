@@ -77,7 +77,7 @@ $(document).ready(function () {
         };
 
 
-        calendar.addEventSource('/Purchase/GetEvents/' + date);
+        calendar.addEventSource('/Purchase/GetEvents/' + sw.options[sw.selectedIndex].value);
         calendar.gotoDate(date);
 
 
@@ -105,7 +105,7 @@ $(document).ready(function () {
             calendar.getEventSources()[0].remove();
         }
 
-        calendar.addEventSource('/Purchase/GetEvents/' + date);
+        calendar.addEventSource('/Purchase/GetEvents/' + sw.options[sw.selectedIndex].value);
         calendar.gotoDate(date);
 
         //var date = selectedYear + "-" + "12" + "-01";
@@ -136,10 +136,34 @@ $(document).ready(function () {
         if (calendar.getEventSources()[0] != null) {
             calendar.getEventSources()[0].remove();
         };
-        calendar.addEventSource('/Purchase/GetEvents/' + date);
+        calendar.addEventSource('/Purchase/GetEvents/' + warehouse);
         //calendar.events = '/Purchase/GetEvents';
         //calendar.refetchEvents();
-        calendar.gotoDate(date);
+        //calendar.gotoDate(date);
+        //});
+    });
+
+    $("#select-warehouse").on('click', function () {
+
+        //showPdf(1);
+        //winPrintDialogBox();
+
+
+        var year = sy.options[sy.selectedIndex].value;
+
+        var month = sm.options[sm.selectedIndex].value;
+
+        var warehouse = sw.options[sw.selectedIndex].value;
+
+        var date = year + "-" + month + "-01";
+
+        if (calendar.getEventSources()[0] != null) {
+            calendar.getEventSources()[0].remove();
+        };
+        calendar.addEventSource('/Purchase/GetEvents/' + warehouse);
+        //calendar.events = '/Purchase/GetEvents';
+        //calendar.refetchEvents();
+        //calendar.gotoDate(date);
         //});
     });
 
@@ -164,8 +188,8 @@ function calendarinit(calendar, sy, sm, sw) {
         calendar.getEventSources()[0].remove();
     };
 
-    calendar.addEventSource('/Purchase/GetEvents/');
-    calendar.gotoDate(year + "-" + month + "-01");
+    calendar.addEventSource('/Purchase/GetEvents/' + warehouse);
+    //calendar.gotoDate(year + "-" + month + "-01");
 
     //var date = calendar.getDate()
     //var year = calendar.formatDate(date, { year: 'numeric' }).substring(0,4);

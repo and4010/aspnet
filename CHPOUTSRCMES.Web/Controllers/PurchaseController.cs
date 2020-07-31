@@ -15,6 +15,7 @@ using Microsoft.Graph;
 using System.Drawing;
 using Image = System.Drawing.Image;
 using System.Web.UI.WebControls;
+using Microsoft.AspNet.Identity;
 
 namespace CHPOUTSRCMES.Web.Controllers
 {
@@ -43,7 +44,7 @@ namespace CHPOUTSRCMES.Web.Controllers
         public JsonResult GetEvents(string id)
         {
             PurchaseViewModel purchaseViewModel = new PurchaseViewModel();
-            var fullcalendar = purchaseViewModel.GetFullCalendarModel();
+            var fullcalendar = purchaseViewModel.GetFullCalendarModel(id);
             return Json(fullcalendar.ToArray(), JsonRequestBehavior.AllowGet);
         }
 
@@ -91,7 +92,7 @@ namespace CHPOUTSRCMES.Web.Controllers
         public JsonResult RollBody(DataTableAjaxPostViewModel data, string status, string CabinetNumber)
         {
             PurchaseViewModel viewModel = new PurchaseViewModel();
-            List<DetailModel.RollDetailModel> model = viewModel.GetPaperRollPickT(CabinetNumber);
+            List<DetailModel.RollDetailModel> model = viewModel.GetPaperRollPickT(CabinetNumber,status);
             model = PurchaseViewModel.RollDetailModelDTOrder.Search(data, model);
             model = PurchaseViewModel.RollDetailModelDTOrder.Order(data.Order, model).ToList();
             var data1 = model.Skip(data.Start).Take(data.Length).ToList();
@@ -123,11 +124,11 @@ namespace CHPOUTSRCMES.Web.Controllers
 
 
         [HttpPost, ActionName("FlatBody")]
-        public JsonResult FlatBody(DataTableAjaxPostViewModel data, string CabinetNumber)
+        public JsonResult FlatBody(DataTableAjaxPostViewModel data, string status, string CabinetNumber)
         {
 
             PurchaseViewModel viewModel = new PurchaseViewModel();
-            List<DetailModel.FlatDetailModel> model = viewModel.GetFlatPickT(CabinetNumber);
+            List<DetailModel.FlatDetailModel> model = viewModel.GetFlatPickT(CabinetNumber, status);
 
             model = PurchaseViewModel.FlatDetailModelDTOrder.Search(data, model);
             model = PurchaseViewModel.FlatDetailModelDTOrder.Order(data.Order, model).ToList();
@@ -253,6 +254,10 @@ namespace CHPOUTSRCMES.Web.Controllers
         {
             PurchaseViewModel model = new PurchaseViewModel();
             var Files = Request.Files;
+            //取得使用者ID
+            var id = this.User.Identity.GetUserId();
+            //取得使用者帳號
+            var name = this.User.Identity.GetUserName();
             //if(Files != null || Files.Count != 0)
             //{
             //    foreach (string i in Files)
@@ -265,7 +270,9 @@ namespace CHPOUTSRCMES.Web.Controllers
                 Int64.Parse(formCollection["id"]),
                 formCollection["Reason"], 
                 formCollection["Locator"], 
-                formCollection["Remark"]);
+                formCollection["Remark"],
+                id,
+                name);
             return Json(new { boolean }, JsonRequestBehavior.AllowGet);
         }
 
@@ -274,6 +281,10 @@ namespace CHPOUTSRCMES.Web.Controllers
         {
             PurchaseViewModel model = new PurchaseViewModel();
             var Files = Request.Files;
+            //取得使用者ID
+            var id = this.User.Identity.GetUserId();
+            //取得使用者帳號
+            var name = this.User.Identity.GetUserName();
             //if (Files != null || Files.Count != 0)
             //{
             //    foreach (string i in Files)
@@ -289,7 +300,9 @@ namespace CHPOUTSRCMES.Web.Controllers
                 Int64.Parse(formCollection["id"]),
                 formCollection["Reason"],
                 formCollection["Locator"], 
-                formCollection["Remark"]);
+                formCollection["Remark"],
+                id,
+                name);
             return Json(new { boolean }, JsonRequestBehavior.AllowGet);
         }
 
@@ -297,8 +310,12 @@ namespace CHPOUTSRCMES.Web.Controllers
         [HttpPost]
         public JsonResult RollSaveBarcode(string Barcode)
         {
+            //取得使用者ID
+            var id = this.User.Identity.GetUserId();
+            //取得使用者帳號
+            var name = this.User.Identity.GetUserName();
             PurchaseViewModel purchaseViewModel = new PurchaseViewModel();
-            var status = purchaseViewModel.SavePaperRollBarcode(Barcode);
+            var status = purchaseViewModel.SavePaperRollBarcode(Barcode,id,name);
             return Json(new { status }, JsonRequestBehavior.AllowGet);
         }
 
@@ -307,8 +324,12 @@ namespace CHPOUTSRCMES.Web.Controllers
         [HttpPost]
         public JsonResult FlatSaveBarcode(string Barcode)
         {
+            //取得使用者ID
+            var id = this.User.Identity.GetUserId();
+            //取得使用者帳號
+            var name = this.User.Identity.GetUserName();
             PurchaseViewModel purchaseViewModel = new PurchaseViewModel();
-            var status = purchaseViewModel.SaveFlatBarcode(Barcode);
+            var status = purchaseViewModel.SaveFlatBarcode(Barcode,id,name);
             return Json(new { status }, JsonRequestBehavior.AllowGet);
         }
 
@@ -358,8 +379,12 @@ namespace CHPOUTSRCMES.Web.Controllers
         [HttpPost]
         public JsonResult ExcelImportRoll(HttpPostedFileBase file, ref List<DetailModel.RollDetailModel> PaperRollModel, ref ResultModel result, string CONTAINER_NO)
         {
+            //取得使用者ID
+            var id = this.User.Identity.GetUserId();
+            //取得使用者帳號
+            var name = this.User.Identity.GetUserName();
             var Excel = new ExcelImport();
-            Excel.PaperRollDetail(file, ref PaperRollModel, CONTAINER_NO, ref result);
+            Excel.PaperRollDetail(file, ref PaperRollModel, CONTAINER_NO, ref result,id,name);
             return Json(new { data = PaperRollModel, result }, JsonRequestBehavior.AllowGet);
         }
 
@@ -495,7 +520,7 @@ namespace CHPOUTSRCMES.Web.Controllers
             }
             catch (Exception e)
             {
-                return Json(new { }, JsonRequestBehavior.AllowGet);
+                return Json(new {  }, JsonRequestBehavior.AllowGet);
             }
            
         }

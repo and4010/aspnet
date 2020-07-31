@@ -4,13 +4,14 @@
     ViewBag.Title = "檢視明細(紙捲)";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<link href="@Url.Content("~/Content/photo.css")" rel="stylesheet" type="text/css" />
 
 @section scripts {
 
     <script src="~/Scripts/Purchase/View.js"></script>
 }
 
-
+@Html.HiddenFor(model => model.RollDetailModel.Id, new { id = "Id" })
 
 <div class="row">
     <div class="col-md-12">
@@ -130,7 +131,6 @@
         </div>
 
     </div>
-
 
 
 </div>

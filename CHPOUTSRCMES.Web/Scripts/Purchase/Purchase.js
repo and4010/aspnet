@@ -5,15 +5,15 @@ $(document).ready(function () {
     LoadPaperRollHeard();
     LoadFlatHeader();
 
-    //取得狀態
-    var Status = $("#Status").val();
-    if (Status == "0") {
-        PaperRolldataTablesBody(Status);
-        FlatdataTablesBody(Status);
-    } else {
-        PaperRolldataTablesBody(Status);
-        FlatdataTablesBody(Status);
-    }
+    ////取得狀態
+    //var Status = $("#Status").val();
+    //if (Status == "0") {
+        PaperRolldataTablesBody();
+        FlatdataTablesBody();
+    //} else {
+    //    PaperRolldataTablesBody(Status);
+    //    FlatdataTablesBody(Status);
+    //}
     callDailog(Status);
     onkey(Status);
     BtnOnClick();
@@ -716,8 +716,9 @@ function LoadFlatHeader() {
 }
 
 //紙捲表身
-function PaperRolldataTablesBody(Status) {
+function PaperRolldataTablesBody() {
     var CabinetNumber = $("#CabinetNumber").val();
+    var Status = $("#Status").val();
     $('#PaperRolldataTablesBody').DataTable({
         "language": {
             "url": "/bower_components/datatables/language/zh-TW.json"
@@ -779,7 +780,7 @@ function PaperRolldataTablesBody(Status) {
             { data: "PrimanyQuantity", "name": "主要數量", "autoWidth": true, "className": "dt-body-right" },
             { data: "PrimaryUom", "name": "主要單位", "autoWidth": true, "className": "dt-body-center" },
             { data: "LotNumber", "name": "捲號", "autoWidth": true, "className": "dt-body-center" },
-            { data: "Remark", "name": "備註", "autoWidth": true, "className": "dt-body-left" },
+            { data: "Remark", "name": "備註", "autoWidth": true, "className": "dt-body-center" },
             {
                 data: null, "width": "40px", "render": function (data) {
                     if (Status == "1") {
@@ -796,7 +797,8 @@ function PaperRolldataTablesBody(Status) {
 }
 
 //平張表身
-function FlatdataTablesBody(Status) {
+function FlatdataTablesBody() {
+    var Status = $("#Status").val();
     var CabinetNumber = $("#CabinetNumber").val();
     $('#FlatdataTablesBody').DataTable({
         "language": {
@@ -818,7 +820,7 @@ function FlatdataTablesBody(Status) {
             "url": "/Purchase/FlatBody",
             "type": "POST",
             "datatype": "json",
-            "data": { CabinetNumber: CabinetNumber }
+            "data": { Status: Status, CabinetNumber: CabinetNumber }
         },
         columns: [
             {
@@ -847,7 +849,7 @@ function FlatdataTablesBody(Status) {
             { data: "PackingType", "name": "包裝方式", "autoWidth": true, "className": "dt-body-center" },
             { data: "Pieces_Qty", "name": "每件令數", "autoWidth": true, "className": "dt-body-right" },
             { data: "Qty", "name": "數量(頓)", "autoWidth": true, "className": "dt-body-right" },
-            { data: "Remark", "name": "備註", "autoWidth": true, "className": "dt-body-left" },
+            { data: "Remark", "name": "備註", "autoWidth": true, "className": "dt-body-center" },
             {
                 data: null, "width": "40px", "render": function (data) {
                     if (Status == "1") {

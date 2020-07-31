@@ -42,11 +42,14 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
         public DetailModel.RollDetailModel RollDetailModel { set; get; }
         public DetailModel.FlatDetailModel FlatDetailModel { set; get; }
 
-        public List<FullCalendarEventModel> GetFullCalendarModel()
+
+
+
+        public List<FullCalendarEventModel> GetFullCalendarModel(string Subinventory)
         {
             using (var context = new MesContext())
             {
-                return new PurchaseUOW(context).getFullCalenderList();
+                return new PurchaseUOW(context).getFullCalenderList(Subinventory);
             }
         }
 
@@ -74,11 +77,11 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
         /// <param name="CONTAINER_NO"></param>
         /// <param name="PaperRollModel"></param>
         /// <returns></returns>
-        public ResultModel ImportPaperRollPickT(string CONTAINER_NO, List<DetailModel.RollDetailModel> PaperRollModel)
+        public ResultModel ImportPaperRollPickT(string CONTAINER_NO, List<DetailModel.RollDetailModel> PaperRollModel, string createby, string userName)
         {
             using(var context = new MesContext())
             {
-              return new PurchaseUOW(context).ImportPaperRollDetail(CONTAINER_NO, PaperRollModel);
+              return new PurchaseUOW(context).ImportPaperRollDetail(CONTAINER_NO, PaperRollModel, createby, userName);
             }
         }
 
@@ -87,11 +90,18 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
         /// </summary>
         /// <param name="CONTAINER_NO"></param>
         /// <returns></returns>
-        public List<DetailModel.RollDetailModel> GetPaperRollPickT(string CONTAINER_NO)
+        public List<DetailModel.RollDetailModel> GetPaperRollPickT(string CONTAINER_NO,string Status)
         {
             using (var context = new MesContext())
             {
-                return new PurchaseUOW(context).GetPaperRollDetailList(CONTAINER_NO);
+                if (Status == "1")
+                {
+                    return new PurchaseUOW(context).GetPaperRollDetailList(CONTAINER_NO);
+                }
+                else
+                {
+                    return new PurchaseUOW(context).GetHtPaperRollDetailList(CONTAINER_NO);
+                }
             }
         }
         /// <summary>
@@ -99,12 +109,19 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
         /// </summary>
         /// <param name="CONTAINER_NO"></param>
         /// <returns></returns>
-        public List<DetailModel.FlatDetailModel> GetFlatPickT(string CONTAINER_NO)
+        public List<DetailModel.FlatDetailModel> GetFlatPickT(string CONTAINER_NO,string Status)
         {
 
             using (var context = new MesContext())
             {
-                return new PurchaseUOW(context).GetFlatDetailList(CONTAINER_NO);
+                if (Status == "1")
+                {
+                    return new PurchaseUOW(context).GetFlatDetailList(CONTAINER_NO);
+                }
+                else
+                {
+                    return new PurchaseUOW(context).GetHtFlatDetailList(CONTAINER_NO);
+                }
             }
 
         }
@@ -114,11 +131,11 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
         /// </summary>
         /// <param name="Barcode"></param>
         /// <returns></returns>
-        public int SavePaperRollBarcode(String Barcode)
+        public int SavePaperRollBarcode(String Barcode, string LastUpdateBy, string LastUpdateUserName)
         {
             using (var context = new MesContext())
             {
-                return new PurchaseUOW(context).SavePaperRollBarcode(Barcode);
+                return new PurchaseUOW(context).SavePaperRollBarcode(Barcode, LastUpdateBy, LastUpdateUserName);
             }
 
         }
@@ -128,11 +145,11 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
         /// </summary>
         /// <param name="Barcode"></param>
         /// <returns></returns>
-        public int SaveFlatBarcode(string Barcode)
+        public int SaveFlatBarcode(string Barcode, string LastUpdateBy, string LastUpdateUserName)
         {
             using (var context = new MesContext())
             {
-                return new PurchaseUOW(context).SaveFlatBarcode(Barcode);
+                return new PurchaseUOW(context).SaveFlatBarcode(Barcode,LastUpdateBy, LastUpdateUserName);
             }
         }
 
@@ -169,7 +186,7 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
         /// <param name="Reason"></param>
         /// <param name="Locator"></param>
         /// <param name="Remark"></param>
-        public bool PaperRollEditNote(HttpFileCollectionBase File, long id, string Reason, string Locator, string Remark)
+        public bool PaperRollEditNote(HttpFileCollectionBase File, long id, string Reason, string Locator, string Remark, string LastUpdateBy, string LastUpdateUserName)
         {
             using (var context = new MesContext())
             {
@@ -178,10 +195,10 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
                     foreach (string i in File)
                     {
                         HttpPostedFileBase hpf = File[i] as HttpPostedFileBase;
-                        new PurchaseUOW(context).SavePhoto(hpf,id);
+                        new PurchaseUOW(context).SavePhoto(hpf,id, LastUpdateBy);
                     }
                 }
-              return new PurchaseUOW(context).PaperRollEdit(id, Reason, Locator, Remark);
+              return new PurchaseUOW(context).PaperRollEdit(id, Reason, Locator, Remark, LastUpdateBy, LastUpdateUserName);
             }
         }
 
@@ -193,7 +210,7 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
         /// <param name="Reason"></param>
         /// <param name="Locator"></param>
         /// <param name="Remark"></param>
-        public bool FlatEditNote(HttpFileCollectionBase File, long id, string Reason, string Locator, string Remark)
+        public bool FlatEditNote(HttpFileCollectionBase File, long id, string Reason, string Locator, string Remark, string LastUpdateBy, string LastUpdateUserName)
         {
 
             using (var context = new MesContext())
@@ -203,10 +220,10 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
                     foreach (string i in File)
                     {
                         HttpPostedFileBase hpf = File[i] as HttpPostedFileBase;
-                        new PurchaseUOW(context).SavePhoto(hpf, id);
+                        new PurchaseUOW(context).SavePhoto(hpf, id, LastUpdateBy);
                     }
                 }
-               return new PurchaseUOW(context).FlatEdit(id, Reason, Locator, Remark);
+               return new PurchaseUOW(context).FlatEdit(id, Reason, Locator, Remark, LastUpdateBy, LastUpdateUserName);
             }
         }
 

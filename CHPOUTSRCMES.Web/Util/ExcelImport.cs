@@ -18,7 +18,8 @@ namespace CHPOUTSRCMES.Web.Util
     public class ExcelImport
     {
 
-        public ResultModel PaperRollDetail(HttpPostedFileBase file, ref List<DetailModel.RollDetailModel> PaperRollDetail,string CONTAINER_NO, ref ResultModel result)
+        public ResultModel PaperRollDetail(HttpPostedFileBase file, ref List<DetailModel.RollDetailModel> PaperRollDetail,string CONTAINER_NO, ref ResultModel result,
+            string createby, string userName)
         {
             PurchaseViewModel purchaseView = new PurchaseViewModel();
             var RollHeader = purchaseView.GetRollHeader(CONTAINER_NO);
@@ -163,7 +164,7 @@ namespace CHPOUTSRCMES.Web.Util
 
             if (PaperRollDetail.Count == RollHeader.Count)
             {
-                result = purchaseView.ImportPaperRollPickT(CONTAINER_NO, PaperRollDetail);
+                result = purchaseView.ImportPaperRollPickT(CONTAINER_NO, PaperRollDetail, createby,userName);
             }
             else
             {

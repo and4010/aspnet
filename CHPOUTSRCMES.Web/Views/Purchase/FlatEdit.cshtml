@@ -88,7 +88,7 @@
     <div class="col-md-12">
         <label class="col-md-1 text-right">儲位</label>
         <div class="col-md-1 form-inline">
-            @Html.DropDownListFor(model => model.Locator, LocatorItems, new { @class = "form-control", id = "select-warehouse" })
+            @Html.DropDownListFor(model => model.Locator, LocatorItems, new { @class = "form-control", id = "select-Locator" })
         </div>
     </div>
 
@@ -115,12 +115,15 @@
                 <textarea style="width:250px;height:250px;" class="form-control col-md-4" rows="3" id="textarea"></textarea>
             </div>
         </form>
-        <div class="col-md-6" id="SaveImg">
-            <img class="col-md-6" id="SaveImg" onclick="imgDisplay(this)" src="" alt="" />
-        </div>
         <div class="col-md-6" id="imgBox">
             <img class="col-md-6" id="img" onclick="imgDisplay(this)"
                  src="" alt="" />
+        </div>
+    </div>
+
+    <div class="col-md-12">
+        <div class="col-md-6" id="saveBox">
+            @*<img class="col-md-6" id="SaveImg" onclick="imgDisplay(this)" src="" alt="" />*@
         </div>
     </div>
 

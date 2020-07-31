@@ -202,7 +202,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Purchase
         /// </summary>
         /// 
         [StringLength(80)]
-        [Column("LOTNUMBER")]
+        [Column("LOT_NUMBER")]
         [Required(AllowEmptyStrings = true)]
         public string LotNumber { set; get; }
 
