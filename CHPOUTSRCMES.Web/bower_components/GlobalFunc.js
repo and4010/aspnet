@@ -1,6 +1,5 @@
 ﻿
 var GlobalFunc = {
-
     logout: function () {
         //Swal.fire('登出');
         Swal.fire({

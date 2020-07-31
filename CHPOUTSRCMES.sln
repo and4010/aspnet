@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CHPOUTSRCMES", "CHPOUTSRCME
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CHPOUTSRCMES.Tests", "CHPOUTSRCMES.Web.Tests\CHPOUTSRCMES.Tests.csproj", "{C91E7BF6-F06C-4D79-ACE7-7CD0F79246C1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CHPOUTSRCMES.TASK", "CHPOUTSRCMES.RUNNER\CHPOUTSRCMES.TASK.csproj", "{21FFC0E3-196F-48E8-A0E2-1F23AAE2730F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{C91E7BF6-F06C-4D79-ACE7-7CD0F79246C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C91E7BF6-F06C-4D79-ACE7-7CD0F79246C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C91E7BF6-F06C-4D79-ACE7-7CD0F79246C1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{21FFC0E3-196F-48E8-A0E2-1F23AAE2730F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{21FFC0E3-196F-48E8-A0E2-1F23AAE2730F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{21FFC0E3-196F-48E8-A0E2-1F23AAE2730F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{21FFC0E3-196F-48E8-A0E2-1F23AAE2730F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -262,6 +262,7 @@ namespace CHPOUTSRCMES.Web.Controllers
 
 
         [HttpPost]
+        [Authorize(Roles ="系統管理員")]
         public ActionResult DeafultPassword(string id)
         {
 
