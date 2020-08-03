@@ -330,7 +330,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                     {
                         cTR_PICKED_T.CtrHeaderId = ctrDetail[i].d.HeaderId;
                         cTR_PICKED_T.CtrDetailId = ctrDetail[i].d.CtrDetailId;
-                        cTR_PICKED_T.StockId = i + 1;
+                        cTR_PICKED_T.StockId = null;
                         cTR_PICKED_T.LocatorId = ctrDetail[i].d.LocatorId;
                         cTR_PICKED_T.LocatorCode = ctrDetail[i].d.LocatorCode;
                         cTR_PICKED_T.Barcode = GenerateBarcodes(ctrDetail[i].e.OrganizationId, ctrDetail[i].e.Subinventory, "W", PaperRollModel.Count, "伊麗星").Data[i];
@@ -430,7 +430,7 @@ and d.ITEM_CATEGORY = N'捲筒'");
                     {
                         cTR_PICKED_T.CtrHeaderId = HeaderId;
                         cTR_PICKED_T.CtrDetailId = ctrDetail[i].CtrDetailId;
-                        cTR_PICKED_T.StockId = i + 1;
+                        cTR_PICKED_T.StockId = null;
                         cTR_PICKED_T.LocatorId = ctrDetail[i].LocatorId;
                         cTR_PICKED_T.LocatorCode = ctrDetail[i].LocatorCode;
                         cTR_PICKED_T.Barcode = GenerateBarcodes(ctrheader.OrganizationId, ctrheader.Subinventory, "P", ctrDetail.Count, decimal.ToInt32(ctrDetail[i].RollReamQty).ToString()).Data[i];
@@ -469,6 +469,7 @@ and d.ITEM_CATEGORY = N'捲筒'");
             catch (Exception e)
             {
                 logger.Error(e.Message);
+                new ResultModel(false, e.Message.ToString());
             }
 
         }
@@ -547,7 +548,7 @@ and d.ITEM_CATEGORY = N'捲筒'");
         /// </summary>
         /// <param name="ContainerNo"></param>
         /// <returns></returns>
-        public Boolean ChangeHeaderStatus(string ContainerNo)
+        public ResultModel ChangeHeaderStatus(string ContainerNo)
         {
             using (var txn = this.Context.Database.BeginTransaction())
             {
@@ -560,24 +561,26 @@ and d.ITEM_CATEGORY = N'捲筒'");
                         {
                             header[i].Status = 0;
                             ctrHeaderTRepositiory.Update(header[i], true);
+                            ConvertStock(header[i].CtrHeaderId);
+                            StockRecord(header[i].CtrHeaderId);
                             PickToPickHT(header[i].CtrHeaderId);
                             PickTDelete(header[i].CtrHeaderId);
                             DetailToDetailHT(header[i].CtrHeaderId);
                         }
                         txn.Commit();
-                        return true;
+                        return new ResultModel(true, "成功"); ;
                     }
                     else
                     {
-                        return false;
+                        return new ResultModel(false, "失敗"); ;
                     }
                 }
                 catch (Exception e)
                 {
                     txn.Rollback();
                     logger.Error(e.Message);
+                    return new ResultModel(false, e.Message.ToString());
                 }
-                return false;
             }
         }
 
@@ -618,7 +621,7 @@ WHERE d.ITEM_CATEGORY = N'平張' and h.CONTAINER_NO  = @CONTAINER_NO");
             catch (Exception e)
             {
                 logger.Error(e.Message.ToString());
-                return null;
+                return new List<DetailModel.FlatModel>();
             }
         }
 
@@ -650,7 +653,7 @@ d.SECONDARY_QUANTITY AS TtlRollReam,
 d.SECONDARY_UOM AS TtlRollReamUom,
 d.PRIMARY_QUANTITY AS DeliveryQty,
 d.PRIMARY_UOM AS DeliveryUom
-FROM dbo.CTR_DETAIL_HT d
+FROM dbo.CTR_DETAIL_T d
 LEFT JOIN dbo.CTR_HEADER_T h ON h.CTR_HEADER_ID = d.CTR_HEADER_ID
 WHERE d.ITEM_CATEGORY = N'平張' and h.CONTAINER_NO  = @CONTAINER_NO");
                     return mesContext.Database.SqlQuery<DetailModel.FlatModel>(query.ToString(), new SqlParameter("@CONTAINER_NO", CONTAINER_NO)).ToList();
@@ -659,7 +662,7 @@ WHERE d.ITEM_CATEGORY = N'平張' and h.CONTAINER_NO  = @CONTAINER_NO");
             catch (Exception e)
             {
                 logger.Error(e.Message.ToString());
-                return null;
+                return new List<DetailModel.FlatModel>();
             }
         }
 
@@ -698,7 +701,7 @@ WHERE d.ITEM_CATEGORY = N'捲筒' and h.CONTAINER_NO  = @CONTAINER_NO");
             catch (Exception e)
             {
                 logger.Error(e.Message.ToString());
-                return null;
+                return new List<DetailModel.RollModel>();
             }
         }
 
@@ -737,7 +740,7 @@ WHERE d.ITEM_CATEGORY = N'捲筒' and h.CONTAINER_NO  = @CONTAINER_NO");
             catch (Exception e)
             {
                 logger.Error(e.Message.ToString());
-                return null;
+                return new List<DetailModel.RollModel>();
             }
         }
 
@@ -782,7 +785,7 @@ WHERE p.ITEM_CATEGORY = N'捲筒' and h.CONTAINER_NO  = @CONTAINER_NO");
             catch (Exception e)
             {
                 logger.Error(e.Message.ToString());
-                return null;
+                return new List<DetailModel.RollDetailModel>();
             }
         }
 
@@ -827,7 +830,7 @@ WHERE p.ITEM_CATEGORY = N'捲筒' and h.CONTAINER_NO  = @CONTAINER_NO");
             catch (Exception e)
             {
                 logger.Error(e.Message.ToString());
-                return null;
+                return new List<DetailModel.RollDetailModel>();
             }
         }
 
@@ -853,7 +856,7 @@ p.SHIP_ITEM_NUMBER as Item_No,
 p.REAM_WEIGHT as ReamWeight,
 p.PACKING_TYPE as PackingType,
 p.ROLL_REAM_WT as Pieces_Qty,
-d.ROLL_REAM_QTY as Qty,
+CAST(1 AS decimal) as Qty,
 p.STATUS as Status,
 p.REASON_DESC as Reason,
 p.NOTE as Remark
@@ -867,7 +870,7 @@ WHERE p.ITEM_CATEGORY = N'平張' and h.CONTAINER_NO  = @CONTAINER_NO");
             catch (Exception e)
             {
                 logger.Error(e.Message.ToString());
-                return null;
+                return new List<DetailModel.FlatDetailModel>();
             }
         }
 
@@ -893,7 +896,7 @@ p.SHIP_ITEM_NUMBER as Item_No,
 p.REAM_WEIGHT as ReamWeight,
 p.PACKING_TYPE as PackingType,
 p.ROLL_REAM_WT as Pieces_Qty,
-d.ROLL_REAM_QTY as Qty,
+CAST(1 AS decimal) as Qty,
 p.STATUS as Status,
 p.REASON_DESC as Reason,
 p.NOTE as Remark
@@ -907,7 +910,7 @@ WHERE p.ITEM_CATEGORY = N'平張' and h.CONTAINER_NO  = @CONTAINER_NO");
             catch (Exception e)
             {
                 logger.Error(e.Message.ToString());
-                return null;
+                return new List<DetailModel.FlatDetailModel>();
             }
         }
 
@@ -954,7 +957,7 @@ WHERE p.ITEM_CATEGORY = N'捲筒' and p.CTR_PICKED_ID  = @CTR_PICKED_ID");
             catch (Exception e)
             {
                 logger.Error(e.Message);
-                return null;
+                return new DetailModel.RollDetailModel();
             }
         }
 
@@ -1000,7 +1003,7 @@ WHERE p.ITEM_CATEGORY = N'捲筒' and p.CTR_PICKED_ID  = @CTR_PICKED_ID");
             catch (Exception e)
             {
                 logger.Error(e.Message);
-                return null;
+                return new DetailModel.RollDetailModel();
             }
         }
 
@@ -1232,7 +1235,7 @@ WHERE p.ITEM_CATEGORY = N'平張' and p.CTR_PICKED_ID  = @CTR_PICKED_ID");
             catch (Exception e)
             {
                 logger.Error(e.Message.ToString());
-                return null;
+                return new DetailModel.FlatDetailModel();
             }
         }
 
@@ -1274,7 +1277,7 @@ WHERE p.ITEM_CATEGORY = N'平張' and p.CTR_PICKED_ID  = @CTR_PICKED_ID");
             catch (Exception e)
             {
                 logger.Error(e.Message.ToString());
-                return null;
+                return new DetailModel.FlatDetailModel();
             }
         }
 
@@ -1309,8 +1312,8 @@ WHERE d1.ITEM_CATEGORY = N'平張' and h1.CONTAINER_NO  = @CONTAINER_NO");
             catch (Exception e)
             {
                 logger.Error(e.Message);
+                return 0;
             }
-            return 0;
         }
 
         /// <summary>
@@ -1344,8 +1347,8 @@ WHERE d1.ITEM_CATEGORY = N'捲筒' and h1.CONTAINER_NO  = @CONTAINER_NO");
             catch (Exception e)
             {
                 logger.Error(e.Message);
+                return 0;
             }
-            return 0;
         }
 
         public void SavePhoto(HttpPostedFileBase file, long id, string createby)
@@ -1458,8 +1461,9 @@ WHERE d1.ITEM_CATEGORY = N'捲筒' and h1.CONTAINER_NO  = @CONTAINER_NO");
             catch (Exception e)
             {
                 logger.Error(e.Message);
+                return null;
             }
-            return null;
+
         }
 
         /// <summary>
@@ -1619,8 +1623,94 @@ delete CTR_DETAIL_T where CTR_HEADER_ID = @CTR_HEADER_ID");
             }
         }
 
+        /// <summary>
+        /// 轉入庫存
+        /// </summary>
+        /// <param name="CTR_HEADER_ID"></param>
+        public void ConvertStock(long CTR_HEADER_ID)
+        {
+            try
+            {
+                using (var mesContext = new MesContext())
+                {
+                    StringBuilder query = new StringBuilder();
+                    query.Append(
+                    @"INSERT INTO [STOCK_T]
+([ORGANIZATION_ID],[ORGANIZATION_CODE] ,[SUBINVENTORY_CODE] ,[LOCATOR_ID],[LOCATOR_SEGMENTS]
+,[INVENTORY_ITEM_ID] ,[ITEM_NUMBER] ,[ITEM_DESCRIPTION] ,[ITEM_CATEGORY] ,[PAPER_TYPE]
+,[BASIC_WEIGHT],[REAM_WEIGHT],[ROLL_REAM_WT],[SPECIFICATION] ,[PACKING_TYPE]
+,[OSP_BATCH_NO] ,[LOT_NUMBER] ,[BARCODE],[PRIMARY_UOM_CODE],[PRIMARY_TRANSACTION_QTY]
+,[PRIMARY_AVAILABLE_QTY],[PRIMARY_LOCKED_QTY],[SECONDARY_UOM_CODE],[SECONDARY_TRANSACTION_QTY],[SECONDARY_AVAILABLE_QTY]
+,[SECONDARY_LOCKED_QTY],[REASON_CODE],[REASON_DESC] ,[NOTE],[STATUS_CODE]
+,[CREATED_BY],[CREATION_DATE] ,[LAST_UPDATE_BY],[LAST_UPDATE_DATE])
+SELECT 
+H.ORGANIZATION_ID,H.ORGANIZATION_CODE,H.SUBINVENTORY,P.LOCATOR_ID,P.LOCATOR_CODE,
+P.INVENTORY_ITEM_ID,P.SHIP_ITEM_NUMBER,'',P.ITEM_CATEGORY,P.PAPER_TYPE,
+P.BASIC_WEIGHT,P.REAM_WEIGHT,P.ROLL_REAM_WT,P.SPECIFICATION,P.PACKING_TYPE,
+'',P.LOT_NUMBER,P.BARCODE,P.PRIMARY_UOM,P.PRIMARY_QUANTITY,
+0,0,P.SECONDARY_UOM,P.SECONDARY_QUANTITY,0,
+0,P.REASON_CODE,P.REASON_DESC,P.NOTE,P.STATUS,
+P.CREATED_BY,GETDATE(),P.LAST_UPDATE_BY,GETDATE()
+FROM CTR_PICKED_T P
+left join CTR_HEADER_T H on H.CTR_HEADER_ID = P.CTR_HEADER_ID
+left join CTR_DETAIL_T D on D.CTR_DETAIL_ID = P.CTR_DETAIL_ID
+where P.CTR_HEADER_ID = @CTR_HEADER_ID
+UPDATE P
+SET P.STOCK_ID = S.STOCK_ID
+FROM CTR_PICKED_T P
+JOIN STOCK_T S ON P.BARCODE = S.BARCODE
+JOIN CTR_DETAIL_T D on D.CTR_DETAIL_ID = P.CTR_DETAIL_ID
+JOIN CTR_HEADER_T H on H.CTR_HEADER_ID = P.CTR_HEADER_ID
+WHERE P.CTR_HEADER_ID = @CTR_HEADER_ID");
+                    mesContext.Database.ExecuteSqlCommand(query.ToString(), new SqlParameter("@CTR_HEADER_ID", CTR_HEADER_ID));
+                }
+            } catch (Exception e)
+            {
+                logger.Error(e.Message);
+            }
+        }
 
 
+        /// <summary>
+        /// 庫存異動紀錄
+        /// </summary>
+        /// <param name="CTR_HEADER_ID"></param>
+        public void StockRecord(long CTR_HEADER_ID)
+        {
+            try
+            {
+                using (var mesContext = new MesContext())
+                {
+                    StringBuilder query = new StringBuilder();
+                    query.Append(
+                    @"INSERT INTO [dbo].[STK_TXN_T]
+           ([STOCK_ID],[ORGANIZATION_ID] ,[ORGANIZATION_CODE],[SUBINVENTORY_CODE]
+           ,[LOCATOR_ID],[DST_ORGANIZATION_ID]  ,[DST_ORGANIZATION_CODE],[DST_SUBINVENTORY_CODE] ,[DST_LOCATOR_ID]
+           ,[INVENTORY_ITEM_ID],[ITEM_NUMBER],[ITEM_DESCRIPTION] ,[ITEM_CATEGORY] ,[LOT_NUMBER]
+           ,[BARCODE],[PRY_UOM_CODE] ,[PRY_BEF_QTY],[PRY_AFT_QTY],[PRY_CHG_QTY]
+           ,[SEC_UOM_CODE] ,[SEC_BEF_QTY],[SEC_CHG_QTY],[SEC_AFT_QTY],[CATEGORY]
+           ,[DOC],[ACTION],[NOTE],[STATUS_CODE],[CREATED_BY]
+           ,[CREATION_DATE],[LAST_UPDATE_BY],[LAST_UPDATE_DATE])
+SELECT T.[STOCK_ID],T.[ORGANIZATION_ID] ,T.[ORGANIZATION_CODE],[SUBINVENTORY_CODE]
+           ,T.[LOCATOR_ID],''  ,'','' ,''
+           ,T.[INVENTORY_ITEM_ID],[ITEM_NUMBER],[ITEM_DESCRIPTION] ,T.[ITEM_CATEGORY] ,T.[LOT_NUMBER]
+           ,T.[BARCODE],PRIMARY_UOM_CODE ,PRIMARY_TRANSACTION_QTY,null,null
+           ,SECONDARY_UOM_CODE ,SECONDARY_TRANSACTION_QTY,null,null,N'入庫'
+           ,'',N'入庫',T.[NOTE],[STATUS_CODE],T.[CREATED_BY]
+           ,GETDATE(),T.[LAST_UPDATE_BY],GETDATE()
+FROM STOCK_T T
+JOIN CTR_PICKED_T P ON P.BARCODE = T.BARCODE
+JOIN CTR_DETAIL_T D on D.CTR_DETAIL_ID = P.CTR_DETAIL_ID
+JOIN CTR_HEADER_T H on H.CTR_HEADER_ID = P.CTR_HEADER_ID
+WHERE D.CTR_HEADER_ID = @CTR_HEADER_ID");
+                    mesContext.Database.ExecuteSqlCommand(query.ToString(), new SqlParameter("@CTR_HEADER_ID", CTR_HEADER_ID));
+                }
+            }
+            catch (Exception e)
+            {
+                logger.Error(e.Message);
+            }
+        }
 
         public class PurchaseStatusCode
         {

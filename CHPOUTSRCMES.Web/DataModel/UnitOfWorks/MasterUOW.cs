@@ -379,11 +379,11 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
 
             if (secQty == null) 
             {
-                //捲筒出貨、雜項異動
-                if (stock.PrimaryAvailableQty >)
-                {
+            //    //捲筒出貨、雜項異動
+            //    if (stock.PrimaryAvailableQty )
+            //    {
 
-                }
+            //    }
             }
             else
             {
@@ -393,13 +393,13 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
 
             if (uom.CompareTo(stock.PrimaryUomCode) == 0)//傳入的單位是否為主要單位
             {
-                var result = CheckStockForPrimaryQty(stock, qty);
-                if (!result.Success) return new ResultDataModel<STOCK_T>(result.Success, result.Msg, null); //檢查數量失敗
-                stkTxnT.PryChgQty = qty;
-                stkTxnT.PryBefQty = stock.PrimaryAvailableQty;
-                stock.PrimaryAvailableQty += qty; //計算主單位數量
-                stkTxnT.PryAftQty = stock.PrimaryAvailableQty;
-                if (lockQty) stock.PrimaryLockedQty += -1 * qty; //是揀貨時 計算鎖單量
+                //var result = CheckStockForPrimaryQty(stock, qty);
+                //if (!result.Success) return new ResultDataModel<STOCK_T>(result.Success, result.Msg, null); //檢查數量失敗
+                //stkTxnT.PryChgQty = qty;
+                //stkTxnT.PryBefQty = stock.PrimaryAvailableQty;
+                //stock.PrimaryAvailableQty += qty; //計算主單位數量
+                //stkTxnT.PryAftQty = stock.PrimaryAvailableQty;
+                //if (lockQty) stock.PrimaryLockedQty += -1 * qty; //是揀貨時 計算鎖單量
                 if (stock.PrimaryAvailableQty == 0)
                 {
                     stock.StatusCode = detail.ToStockStatus(statusCode); //無庫存量時 標記狀態
@@ -414,7 +414,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                 if (!stock.isRoll())
                 {
                     //convert to secondary uom
-                    stkTxnT.SecChgQty = uomConversion.Convert(stock.InventoryItemId, qty, stock.PrimaryUomCode, stock.SecondaryUomCode); //平版 次單位 異動量 數量換算
+                    //stkTxnT.SecChgQty = uomConversion.Convert(stock.InventoryItemId, qty, stock.PrimaryUomCode, stock.SecondaryUomCode); //平版 次單位 異動量 數量換算
                     stkTxnT.SecBefQty = stock.SecondaryAvailableQty;
                     stock.SecondaryAvailableQty = uomConversion.Convert(stock.InventoryItemId, (decimal)stock.PrimaryAvailableQty, stock.PrimaryUomCode, stock.SecondaryUomCode); //平版 次單位 異動後 數量換算
                     stkTxnT.SecAftQty = stock.SecondaryAvailableQty;
@@ -429,14 +429,14 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                 }
 
                 //平版
-                var result = CheckStockForSecondaryQty(stock, qty);
-                if (!result.Success) return new ResultDataModel<STOCK_T>(result.Success, result.Msg, null);
-                stkTxnT.SecChgQty = qty;
-                stkTxnT.SecBefQty = stock.SecondaryAvailableQty;
-                stock.SecondaryAvailableQty += qty; //計算次單位數量
-                stkTxnT.SecAftQty = stock.SecondaryAvailableQty;
-                if (lockQty) stock.SecondaryLockedQty += -1 * qty;
-                stkTxnT.PryChgQty = uomConversion.Convert(stock.InventoryItemId, qty, stock.SecondaryUomCode, stock.PrimaryUomCode); //平版 主單位 異動量 數量換算
+                //var result = CheckStockForSecondaryQty(stock, qty);
+                //if (!result.Success) return new ResultDataModel<STOCK_T>(result.Success, result.Msg, null);
+                //stkTxnT.SecChgQty = qty;
+                //stkTxnT.SecBefQty = stock.SecondaryAvailableQty;
+                //stock.SecondaryAvailableQty += qty; //計算次單位數量
+                //stkTxnT.SecAftQty = stock.SecondaryAvailableQty;
+                //if (lockQty) stock.SecondaryLockedQty += -1 * qty;
+                //stkTxnT.PryChgQty = uomConversion.Convert(stock.InventoryItemId, qty, stock.SecondaryUomCode, stock.PrimaryUomCode); //平版 主單位 異動量 數量換算
                 stkTxnT.PryBefQty = stock.PrimaryAvailableQty;
                 stock.PrimaryAvailableQty = uomConversion.Convert(stock.InventoryItemId, (decimal)stock.SecondaryAvailableQty, stock.SecondaryUomCode, stock.PrimaryUomCode); //平版 主單位 異動後 數量換算
                 stkTxnT.PryAftQty = stock.PrimaryAvailableQty;

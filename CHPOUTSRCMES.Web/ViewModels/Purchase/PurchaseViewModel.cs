@@ -336,7 +336,7 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
         /// <summary>
         /// 已入庫完成更改表頭狀態
         /// </summary>
-        public Boolean ChageHeaderStatus(string ContainerNo)
+        public ResultModel ChageHeaderStatus(string ContainerNo)
         {
             using (var context = new MesContext())
             {

@@ -82,9 +82,9 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             //產生異動記錄
             STK_TXN_T stkTxnT = CreateStockRecord(stock, null, "", "", null, CategoryCode.Delivery, ActionCode.Picked, deliveryName);
             //更新庫存
-            var updaeStockResult = UpdateStock(stock, stkTxnT, qty, uom, pickSatus, PickStatus.Picked, addUser, addDate);
-            if (!updaeStockResult.Success) return new ResultModel(updaeStockResult.Success, updaeStockResult.Msg);
-            var afStock = updaeStockResult.Data;
+            //var updaeStockResult = UpdateStock(stock, stkTxnT, qty, uom, pickSatus, PickStatus.Picked, addUser, addDate);
+            //if (!updaeStockResult.Success) return new ResultModel(updaeStockResult.Success, updaeStockResult.Msg);
+            //var afStock = updaeStockResult.Data;
             //新增一筆PickDT
             dlvPickedTRepositiory.Create(new DLV_PICKED_T
             {
@@ -104,7 +104,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                 PrimaryUom = stock.PrimaryUomCode,
                 SecondaryQuantity = (decimal)stock.SecondaryAvailableQty,
                 SecondaryUom = stock.SecondaryUomCode,
-                TransactionQuantity = uomConversion.Convert(stock.InventoryItemId, stock.PrimaryAvailableQty, stock.PrimaryUomCode, stock)
+                TransactionQuantity = uomConversion.Convert(stock.InventoryItemId, stock.PrimaryAvailableQty, stock.PrimaryUomCode, ""),
                 CreatedBy = addUser,
                 CreatedUserName = addUserName,
                 CreationDate = addDate,
@@ -114,7 +114,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                 Status = status,
 
 
-            });
+            }) ;
 
             return new ResultModel(true, "");
         }
