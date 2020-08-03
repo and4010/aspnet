@@ -48,8 +48,8 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Delivery
         /// 狀態
         /// </summary>
         /// 
+        [Required(AllowEmptyStrings = true)]
         [StringLength(10)]
-        [Required]
         [Column("STATUS")]
         public string Status { set; get; }
 
@@ -159,9 +159,8 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Delivery
         /// 次要數量
         /// </summary>
         /// 
-        [Required]
         [Column("SECONDARY_QUANTITY")]
-        public decimal SecondaryQuantity { set; get; }
+        public decimal? SecondaryQuantity { set; get; }
 
         /// <summary>
         /// 次要單位

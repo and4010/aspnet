@@ -70,15 +70,15 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
         /// <summary>
         /// 庫存
         /// </summary>
-        private readonly IRepository<STOCK_T> stockTRepositiory;
+        public readonly IRepository<STOCK_T> stockTRepositiory;
         /// <summary>
         /// 庫存歷史
         /// </summary>
-        private readonly IRepository<STOCK_HT> stockHtRepositiory;
+        public readonly IRepository<STOCK_HT> stockHtRepositiory;
         /// <summary>
         /// 異動記錄
         /// </summary>
-        private readonly IRepository<STK_TXN_T> stkTxnTRepositiory;
+        public readonly IRepository<STK_TXN_T> stkTxnTRepositiory;
 
         public IUomConversion uomConversion;
 
@@ -205,8 +205,41 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             //}
         }
 
+        /// <summary>
+        /// 庫存檢查
+        /// </summary>
+        /// <param name="barcode"></param>
+        /// <param name="qty">令包數量(次單位)</param>
+        /// <returns></returns>
+        public ResultDataModel<STOCK_T> CheckStock(string barcode, decimal? qty)
+        {
+            var stock = stockTRepositiory.GetAll().FirstOrDefault(x => x.Barcode == barcode);
 
-        public ResultDataModel<STOCK_T> CheckStock1(string barcode, decimal primaryQty, decimal? secondaryQty)
+            if (stock == null)
+            {
+                return new ResultDataModel<STOCK_T>(false, "查無庫存", stock);
+            }
+            if (qty != null) //判斷是否為拆板(包裝方式為令包時)
+            {
+                //為拆板，須檢查拆板的數量
+                if (stock.SecondaryAvailableQty + qty >= 0) //揀貨時為負qty，刪除時為正qty。刪除時不須檢查庫存
+                {
+                    return new ResultDataModel<STOCK_T>(true, "庫存足夠", stock);
+                }
+                else
+                {
+                    return new ResultDataModel<STOCK_T>(false, "庫存量不足", stock);
+                }
+            }
+            else
+            {
+                //非拆板，不須檢查庫存
+                return new ResultDataModel<STOCK_T>(true, "非拆板，不須檢查庫存", stock);
+            }
+
+        }
+
+        public ResultDataModel<STOCK_T> CheckStock(string barcode, decimal primaryQty, decimal? secondaryQty)
         {
             var stock = stockTRepositiory.GetAll().FirstOrDefault(x => x.Barcode == barcode);
 
@@ -238,7 +271,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                 }
 
             }
-           
+
         }
 
 
@@ -373,97 +406,83 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
         /// <param name="statusCode">作業狀態碼</param>
         /// <param name="lockQty">鎖單量，揀貨用</param>
         /// <returns>更新後庫存</returns>
-        public ResultDataModel<STOCK_T> UpdateStock(STOCK_T stock, STK_TXN_T stkTxnT, decimal priQty, decimal? secQty, string uom, IDetail detail, string statusCode, string lastUpdatedBy, DateTime addDate, bool lockQty = false)
+        public ResultDataModel<STOCK_T> UpdateStock(STOCK_T stock, STK_TXN_T stkTxnT, decimal? priQty, decimal? secQty, IDetail detail, string statusCode, string lastUpdatedBy, DateTime addDate, bool lockQty = false)
         {
             decimal newSecQty = secQty == null ? (decimal)secQty : 0;
 
-            if (secQty == null) 
+            //主要單位及次要單位 其一必須有值
+            if(!priQty.HasValue && !secQty.HasValue)
             {
-            //    //捲筒出貨、雜項異動
-            //    if (stock.PrimaryAvailableQty )
-            //    {
-
-            //    }
-            }
-            else
-            {
-
+                return new ResultDataModel<STOCK_T>(-1, "主要單位及次要單位兩者其中之一必須要有值!!", null);
             }
 
+            //捲筒主要單位計算必須為公斤
+            //平版為次要單位(雜項異動例外為主單位，因此不判斷)
+            if (stock.isRoll() && (!priQty.HasValue || priQty.Value == 0))
+            {
+                return new ResultDataModel<STOCK_T>(-2, $"{stock.ItemCategory}的主要單位必須要有值!!", null);
+            }
 
-            //if (uom.CompareTo(stock.PrimaryUomCode) == 0)//傳入的單位是否為主要單位
-            //{
-            //    var result = CheckStockForPrimaryQty(stock, qty);
-            //    if (!result.Success) return new ResultDataModel<STOCK_T>(result.Success, result.Msg, null); //檢查數量失敗
-            //    stkTxnT.PryChgQty = qty;
-            //    stkTxnT.PryBefQty = stock.PrimaryAvailableQty;
-            //    stock.PrimaryAvailableQty += qty; //計算主單位數量
-            //    stkTxnT.PryAftQty = stock.PrimaryAvailableQty;
-            //    if (lockQty) stock.PrimaryLockedQty += -1 * qty; //是揀貨時 計算鎖單量
-            //    if (stock.PrimaryAvailableQty == 0)
-            //    {
-            //        stock.StatusCode = detail.ToStockStatus(statusCode); //無庫存量時 標記狀態
-            //    }
-            //    else
-            //    {
-            //        stock.StatusCode = StockStatusCode.InStock; //有庫存 標記在庫
-            //    }
-            //    stkTxnT.StatusCode = stock.StatusCode;
+            //雜項異動處理 平版+主要單位，先換成次單位
+            if(!stock.isRoll() && priQty.HasValue && !secQty.HasValue)
+            {
+                var model = uomConversion.Convert(stock.InventoryItemId, priQty.Value, stock.PrimaryUomCode, stock.SecondaryUomCode);
 
-            //    //平版
-            //    if (!stock.isRoll())
-            //    {
-            //        //convert to secondary uom
-            //        stkTxnT.SecChgQty = uomConversion.Convert(stock.InventoryItemId, qty, stock.PrimaryUomCode, stock.SecondaryUomCode); //平版 次單位 異動量 數量換算
-            //        stkTxnT.SecBefQty = stock.SecondaryAvailableQty;
-            //        stock.SecondaryAvailableQty = uomConversion.Convert(stock.InventoryItemId, (decimal)stock.PrimaryAvailableQty, stock.PrimaryUomCode, stock.SecondaryUomCode); //平版 次單位 異動後 數量換算
-            //        stkTxnT.SecAftQty = stock.SecondaryAvailableQty;
-            //        stock.SecondaryLockedQty = uomConversion.Convert(stock.InventoryItemId, (decimal)stock.PrimaryLockedQty, stock.PrimaryUomCode, stock.SecondaryUomCode); //平版 次單位 鎖定量 數量換算
-            //    }
-            //}
-            //else if (uom.CompareTo(stock.SecondaryUomCode) == 0)//傳入的單位是否為次要單位
-            //{
-            //    if (stock.isRoll())
-            //    {
-            //        return new ResultDataModel<STOCK_T>(false, "捲筒沒有次要單位", null);
-            //    }
+                if(!model.Success) return new ResultDataModel<STOCK_T>(-3, model.Msg, null);
 
-            //    //平版
-            //    var result = CheckStockForSecondaryQty(stock, qty);
-            //    if (!result.Success) return new ResultDataModel<STOCK_T>(result.Success, result.Msg, null);
-            //    stkTxnT.SecChgQty = qty;
-            //    stkTxnT.SecBefQty = stock.SecondaryAvailableQty;
-            //    stock.SecondaryAvailableQty += qty; //計算次單位數量
-            //    stkTxnT.SecAftQty = stock.SecondaryAvailableQty;
-            //    if (lockQty) stock.SecondaryLockedQty += -1 * qty;
-            //    stkTxnT.PryChgQty = uomConversion.Convert(stock.InventoryItemId, qty, stock.SecondaryUomCode, stock.PrimaryUomCode); //平版 主單位 異動量 數量換算
-            //    stkTxnT.PryBefQty = stock.PrimaryAvailableQty;
-            //    stock.PrimaryAvailableQty = uomConversion.Convert(stock.InventoryItemId, (decimal)stock.SecondaryAvailableQty, stock.SecondaryUomCode, stock.PrimaryUomCode); //平版 主單位 異動後 數量換算
-            //    stkTxnT.PryAftQty = stock.PrimaryAvailableQty;
-            //    stock.PrimaryLockedQty = uomConversion.Convert(stock.InventoryItemId, (decimal)stock.SecondaryLockedQty, stock.SecondaryUomCode, stock.PrimaryUomCode); //平版 主單位 鎖定量 數量換算
-            //    if (stock.SecondaryAvailableQty == 0)
-            //    {
-            //        stock.StatusCode = detail.ToStockStatus(statusCode);
-            //    }
-            //    else
-            //    {
-            //        stock.StatusCode = StockStatusCode.InStock;
-            //    }
-            //    stkTxnT.StatusCode = stock.StatusCode;
-            //}
-            //else
-            //{
-            //    // never happen??
-            //    return new ResultDataModel<STOCK_T>(false, "庫存檢查失敗：單位錯誤", stock);
-            //}
+                secQty = model.Data;
+            }
 
-            //stock.LastUpdateBy = lastUpdatedBy;
-            //stkTxnT.LastUpdateBy = stock.LastUpdateBy;
-            //stock.LastUpdateDate = addDate;
-            //stkTxnT.LastUpdateDate = stock.LastUpdateDate;
+            //平版 + 次單位，先換算主單位
+            if(!stock.isRoll() && secQty.HasValue && !priQty.HasValue)
+            {
+                var model = uomConversion.Convert(stock.InventoryItemId, secQty.Value, stock.SecondaryUomCode, stock.PrimaryUomCode);
 
-            //stockTRepositiory.Update(stock);
-            //stkTxnTRepositiory.Update(stkTxnT);
+                if (!model.Success) return new ResultDataModel<STOCK_T>(-4, model.Msg, null);
+
+                priQty = model.Data;
+            }
+
+            //計算主單位數量
+            var pryBeforeValue = stock.PrimaryAvailableQty;
+            var pryAfterValue = pryBeforeValue + priQty.Value; 
+           
+            stock.PrimaryAvailableQty = pryAfterValue;
+            //是揀貨時 計算鎖單量
+            if (lockQty) stock.PrimaryLockedQty += -1 * priQty.Value; 
+
+            //記錄異動表
+            stkTxnT.PryChgQty = priQty;
+            stkTxnT.PryBefQty = pryBeforeValue;
+            stkTxnT.PryAftQty = pryAfterValue;
+                
+            if(!stock.isRoll() && secQty.HasValue)
+            {
+                var secBeforeValue = stock.SecondaryAvailableQty;
+                var secAfterValue = secBeforeValue + secQty.Value;
+
+                stock.SecondaryAvailableQty = secAfterValue;
+                //是揀貨時 計算鎖單量
+                if (lockQty) stock.SecondaryLockedQty += -1 * secQty.Value;
+
+                stkTxnT.SecChgQty = secQty;
+                stkTxnT.SecBefQty = secBeforeValue;
+                stkTxnT.SecAftQty = secAfterValue;
+            }
+
+            //記錄異動人員
+            stock.LastUpdateBy = lastUpdatedBy;
+            stock.LastUpdateDate = addDate;
+            //記錄庫存狀態
+            stock.StatusCode = stock.PrimaryAvailableQty == 0 ? detail.ToStockStatus(statusCode) : StockStatusCode.InStock;
+            stkTxnT.CreatedBy = stock.CreatedBy;
+            stkTxnT.CreationDate = stock.CreationDate;
+            stkTxnT.LastUpdateBy = null;
+            stkTxnT.LastUpdateDate = null;
+            stkTxnT.StatusCode = stock.StatusCode;
+
+            stockTRepositiory.Update(stock);
+            stkTxnTRepositiory.Create(stkTxnT);
 
             return new ResultDataModel<STOCK_T>(true, "庫存更新成功", stock);
         }
