@@ -14,7 +14,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy
         /// 庫存ID
         /// </summary>
         /// 
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
         [Required]
         [Column("STK_TXN_ID")]
@@ -140,7 +140,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy
         /// </summary>
         /// 
         [Required]
-        [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         [Column("INVENTORY_ITEM_ID")]
         public long InventoryItemId { set; get; }
@@ -180,7 +179,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy
         /// </summary>
         /// 
         [StringLength(80)]
-        [Required]
         [Column("LOT_NUMBER")]
         public string LotNumber { set; get; }
 
@@ -247,7 +245,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy
         /// </summary>
         /// 
         [Column("SEC_CHG_QTY")]
-        public decimal SecChgQty { set; get; }
+        public decimal? SecChgQty { set; get; }
         
 
         /// <summary>
@@ -290,7 +288,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy
         /// </summary>
         /// 
         [StringLength(250)]
-        [Required]
         [Column("NOTE")]
         public string Note { set; get; }
 

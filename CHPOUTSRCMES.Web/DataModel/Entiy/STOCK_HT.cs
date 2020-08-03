@@ -265,6 +265,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy
         /// 狀態碼
         /// </summary>
         /// 
+        [Required(AllowEmptyStrings = true)]
         [StringLength(10)]
         [Column("STATUS_CODE")]
         public string StatusCode { set; get; }

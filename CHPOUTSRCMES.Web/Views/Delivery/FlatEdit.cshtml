@@ -89,7 +89,7 @@
                         <th rowspan="2" colspan="1"></th>
                         <th rowspan="2" colspan="1">項次</th>
                         <th rowspan="1" colspan="2">訂單</th>
-                        <th rowspan="1" colspan="7">商品</th>
+                        <th rowspan="1" colspan="5">商品</th>
                         <th rowspan="1" colspan="3">主單位</th>
                         <th rowspan="1" colspan="3">次單位</th>
                         <th rowspan="1" colspan="3">交易單位</th>
@@ -105,15 +105,15 @@
                         <th>
                             @Html.DisplayName("訂單行號")
                         </th>
-                        <th>
+                        @*<th>
                             @Html.DisplayName("工單號碼ID")
-                        </th>
+                        </th>*@
                         <th>
                             @Html.DisplayName("工單號碼")
                         </th>
-                        <th>
+                        @*<th>
                             @Html.DisplayName("代紙料號ID")
-                        </th>
+                        </th>*@
                         <th>
                             @Html.DisplayName("代紙料號")
                         </th>
@@ -227,6 +227,12 @@
     <div class="col-md-12">
         <div style="display: none">
             <span id="INVENTORY_ITEM_ID"></span>
+        </div>
+        <div style="display: none">
+            <span id="PICK_STATUS"></span>
+        </div>
+        <div style="display: none">
+            <span id="SRC_REQUESTED_QUANTITY_UOM"></span>
         </div>
         <div class="col col-md-6 input-lg form-group">
             @Html.LabelFor(model => model.ITEM_NUMBER, new { @class = "input-lg" })

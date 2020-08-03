@@ -9,11 +9,11 @@ namespace CHPOUTSRCMES.Web.Models
     {
         public const int CODE_SUCCESS = 0;
 
-        public bool Success { get; set; }
+        //public bool Success { get; set; }
 
-        public int Code { set; get; }
+        //public int Code { set; get; }
 
-        public string Msg { get; set; }
+        //public string Msg { get; set; }
 
         public T Data { set; get; }
 

@@ -107,12 +107,15 @@ $(document).ready(function () {
             var ITEM_NUMBER = dt.rows(indexes).data().pluck('ITEM_NUMBER')[0];
             if (TMP_ITEM_NUMBER) {
                 $("#ITEM_NUMBER").text(TMP_ITEM_NUMBER);
+                $("#PICK_STATUS").text("TMP");
             } else {
                 $("#ITEM_NUMBER").text(ITEM_NUMBER);
+                $("#PICK_STATUS").text("");
             }
             var PACKING_TYPE = dt.rows(indexes).data().pluck('PACKING_TYPE')[0];
             $('#PACKING_TYPE').text(PACKING_TYPE);
-            
+            var SRC_REQUESTED_QUANTITY_UOM = dt.rows(indexes).data().pluck('SRC_REQUESTED_QUANTITY_UOM')[0];
+            $('#SRC_REQUESTED_QUANTITY_UOM').text(SRC_REQUESTED_QUANTITY_UOM);
 
             var rowsData = FlatDataTablesBody.rows({ page: 'current' }).data();
             for (i = 0 ; i < rowsData.length; i++) {
@@ -147,6 +150,8 @@ $(document).ready(function () {
             $("#INVENTORY_ITEM_ID").text("");
             $("#ITEM_NUMBER").text("");
             $("#PACKING_TYPE").text("");
+            $("#PICK_STATUS").text("");
+            $('#SRC_REQUESTED_QUANTITY_UOM').text("");
             var PACKING_TYPE = dt.rows(indexes).data().pluck('PACKING_TYPE')[0];
             if (PACKING_TYPE == "令包") {
                 $("#SECONDARY_QUANTITY").hide();
@@ -264,8 +269,10 @@ $(document).ready(function () {
 
     $('#txtBARCODE').keydown(function (e) {
         if (e.keyCode == 13) {
-
-            InputBarcode();
+            if ($('#SECONDARY_QUANTITY').is(":visible")) {
+                $('#txtSECONDARY_QUANTITY').focus();
+            }
+            //InputBarcode();
 
             //InputBarcode();
             //$('#txtSECONDARY_QUANTITY').attr('disabled', true);
@@ -364,26 +371,33 @@ $(document).ready(function () {
                 'BARCODE': BARCODE,
                 'SECONDARY_QUANTITY': SECONDARY_QUANTITY,
                 DlvHeaderId: $("#DlvHeaderId").text(),
-                DLV_DETAIL_ID: $("#DLV_DETAIL_ID").text()
+                DLV_DETAIL_ID: $("#DLV_DETAIL_ID").text(),
+                DELIVERY_NAME: $("#DELIVERY_NAME").text(),
+                PICK_STATUS: $("#PICK_STATUS").text(),
+                SRC_REQUESTED_QUANTITY_UOM: $('#SRC_REQUESTED_QUANTITY_UOM').text()
             },
             success: function (data) {
                 if (data.status) {
-                    if (data.result == "令包") {
-                        //$("#SECONDARY_QUANTITY").show();
-                        $('#txtSECONDARY_QUANTITY').focus();
-                        //$('#PACKING_TYPE').text("令包");
-                    }
-                    if (data.result == "令包_條碼儲存成功") {
-                        FlatBarcodeDataTablesBody.ajax.reload();
-                        FlatDataTablesBody.ajax.reload(null, false);
-                        UpdateDeliveryDetailViewHeader();
-                    }
-                    if (data.result == "無令打件_條碼儲存成功") {
-                        //$('#PACKING_TYPE').text("無令打件");
-                        FlatBarcodeDataTablesBody.ajax.reload();
-                        FlatDataTablesBody.ajax.reload(null, false);
-                        UpdateDeliveryDetailViewHeader();
-                    }
+                    FlatBarcodeDataTablesBody.ajax.reload();
+                    FlatDataTablesBody.ajax.reload(null, false);
+                    //UpdateDeliveryDetailViewHeader();
+
+                    //if (data.result == "令包") {
+                    //    //$("#SECONDARY_QUANTITY").show();
+                    //    $('#txtSECONDARY_QUANTITY').focus();
+                    //    //$('#PACKING_TYPE').text("令包");
+                    //}
+                    //if (data.result == "令包_條碼儲存成功") {
+                    //    FlatBarcodeDataTablesBody.ajax.reload();
+                    //    FlatDataTablesBody.ajax.reload(null, false);
+                    //    UpdateDeliveryDetailViewHeader();
+                    //}
+                    //if (data.result == "無令打件_條碼儲存成功") {
+                    //    //$('#PACKING_TYPE').text("無令打件");
+                    //    FlatBarcodeDataTablesBody.ajax.reload();
+                    //    FlatDataTablesBody.ajax.reload(null, false);
+                    //    UpdateDeliveryDetailViewHeader();
+                    //}
                 }
                 else {
                     swal.fire({

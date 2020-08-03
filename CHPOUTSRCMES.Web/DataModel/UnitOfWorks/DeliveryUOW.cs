@@ -71,52 +71,101 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
         
         public IDetail pickSatus = new PickStatus();
         
-
-        public ResultModel AddPickDT(long dlvHeaderId, long dlvDetailId, string deliveryName, string barcode, decimal qty, string uom, string addUser, string addUserName, string status)
+        
+        /// <summary>
+        /// 新增揀貨明細
+        /// </summary>
+        /// <param name="dlvHeaderId"></param>
+        /// <param name="dlvDetailId"></param>
+        /// <param name="deliveryName"></param>
+        /// <param name="barcode"></param>
+        /// <param name="qty">令包數量</param>
+        /// <param name="addUser"></param>
+        /// <param name="addUserName"></param>
+        /// <param name="status">揀貨明細狀態</param>
+        /// <param name="transactionUomCode">交易單位</param>
+        /// <returns></returns>
+        public ResultModel AddPickDT(long dlvHeaderId, long dlvDetailId, string deliveryName, string barcode, decimal? qty, string addUser, string addUserName, string status, string transactionUomCode)
         {
+            //qty = qty * -1;            
             //庫存檢查
-            var checkResult = CheckStock(barcode, qty, uom);
+            var checkResult = CheckStock(barcode, qty * -1);
+            //var checkResult = CheckStock(barcode, qty, uom);
             if (!checkResult.Success) return new ResultModel( checkResult.Success, checkResult.Msg);
-            var stock = checkResult.Data;
-            var addDate = DateTime.Now;
-            //產生異動記錄
-            STK_TXN_T stkTxnT = CreateStockRecord(stock, null, "", "", null, CategoryCode.Delivery, ActionCode.Picked, deliveryName);
-            //更新庫存
-            var updaeStockResult = UpdateStock(stock, stkTxnT, qty, uom, pickSatus, PickStatus.Picked, addUser, addDate);
-            if (!updaeStockResult.Success) return new ResultModel(updaeStockResult.Success, updaeStockResult.Msg);
-            var afStock = updaeStockResult.Data;
-            //新增一筆PickDT
-            dlvPickedTRepositiory.Create(new DLV_PICKED_T
+
+            using (var txn = this.Context.Database.BeginTransaction())
             {
-                Stock_Id = stock.StockId,
-                LocatorId = stock.LocatorId,
-                LocatorCode = stock.LocatorSegments,
-                DlvHeaderId = dlvHeaderId,
-                DlvDetailId = dlvDetailId,
-                Barcode = stock.Barcode,
-                InventoryItemId = stock.InventoryItemId,
-                Item_Number = stock.ItemNumber,
-                PackingType = stock.PackingType,
-                LotQuantity = null,
-                Lot_Number = stock.LotNumber,
-                ReamWeight = stock.ReamWeight,
-                PrimaryQuantity = stock.PrimaryAvailableQty,
-                PrimaryUom = stock.PrimaryUomCode,
-                SecondaryQuantity = (decimal)stock.SecondaryAvailableQty,
-                SecondaryUom = stock.SecondaryUomCode,
-                TransactionQuantity = uomConversion.Convert(stock.InventoryItemId, stock.PrimaryAvailableQty, stock.PrimaryUomCode, stock)
-                CreatedBy = addUser,
-                CreatedUserName = addUserName,
-                CreationDate = addDate,
-                LastUpdateBy = addUser,
-                LastUpdateUserName = addUserName,
-                LastUpdateDate = addDate,
-                Status = status,
+                try
+                {
+                    var stock = checkResult.Data;
 
+                    //產生異動記錄
+                    STK_TXN_T stkTxnT = CreateStockRecord(stock, null, "", "", null, CategoryCode.Delivery, ActionCode.Picked, deliveryName);
 
-            });
+                    decimal priQty = 0;
+                    decimal? secQty = null;
+                    if (qty != null)
+                    {
+                        //有令包數量時為拆板，須把令包數量轉換成主單位數量
+                        priQty = uomConversion.Convert(stock.InventoryItemId, (decimal)qty, stock.SecondaryUomCode, stock.PrimaryUomCode);
+                        secQty = qty;
+                    }
+                    else
+                    {
+                        //非拆板時
+                        priQty = stock.PrimaryAvailableQty;
+                        secQty = stock.SecondaryAvailableQty;
+                    }
 
-            return new ResultModel(true, "");
+                    //更新庫存
+                    var addDate = DateTime.Now;
+                    var updaeStockResult = UpdateStock(stock, stkTxnT, priQty * -1, secQty * -1, pickSatus, PickStatus.Picked, addUser, addDate, true);
+                    if (!updaeStockResult.Success) return new ResultModel(updaeStockResult.Success, updaeStockResult.Msg);
+                    var afStock = updaeStockResult.Data;
+                    //新增一筆PickDT
+                    dlvPickedTRepositiory.Create(new DLV_PICKED_T
+                    {
+                        Stock_Id = stock.StockId,
+                        LocatorId = stock.LocatorId,
+                        LocatorCode = stock.LocatorSegments,
+                        DlvHeaderId = dlvHeaderId,
+                        DlvDetailId = dlvDetailId,
+                        Barcode = stock.Barcode,
+                        InventoryItemId = stock.InventoryItemId,
+                        Item_Number = stock.ItemNumber,
+                        PackingType = stock.PackingType,
+                        LotQuantity = null,
+                        Lot_Number = stock.LotNumber,
+                        ReamWeight = stock.ReamWeight,
+                        PrimaryQuantity = priQty,
+                        PrimaryUom = stock.PrimaryUomCode,
+                        SecondaryQuantity = secQty,
+                        SecondaryUom = stock.SecondaryUomCode,
+                        TransactionQuantity = uomConversion.Convert(stock.InventoryItemId, stock.PrimaryAvailableQty, stock.PrimaryUomCode, transactionUomCode),
+                        TransactionUom = transactionUomCode,
+                        CreatedBy = addUser,
+                        CreatedUserName = addUserName,
+                        CreationDate = addDate,
+                        LastUpdateBy = addUser,
+                        LastUpdateUserName = addUserName,
+                        LastUpdateDate = addDate,
+                        Status = status
+                    });
+
+                    stockTRepositiory.SaveChanges();
+                    stkTxnTRepositiory.SaveChanges();
+                    dlvPickedTRepositiory.SaveChanges();
+
+                    txn.Commit();
+                    return new ResultModel(true, "新增揀貨明細成功");
+                }
+                catch(Exception ex)
+                {
+                    logger.Error(LogUtilities.BuildExceptionMessage(ex));
+                    txn.Rollback();
+                    return new ResultModel(false, "新增揀貨明細失敗:" + ex.Message);
+                } 
+            }
         }
 
         public void DelPickDT(string barcode)

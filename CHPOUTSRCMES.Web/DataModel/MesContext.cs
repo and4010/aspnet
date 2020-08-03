@@ -102,6 +102,8 @@ namespace CHPOUTSRCMES.Web.DataModel
 
         public DbSet<STOCK_HT> STOCK_HTs { set; get; }
 
+        public DbSet<STK_TXN_T> STK_TXN_Ts { set; get; }
+
         #endregion
 
         #region 條碼檔

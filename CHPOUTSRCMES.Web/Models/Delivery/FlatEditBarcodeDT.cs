@@ -80,7 +80,12 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
             model = new List<FlatEditBarcodeDT>();
         }
 
-        public static void addBarcode123(decimal qty)
+        public ResultModel AddPickDT(DeliveryUOW uow, long dlvHeaderId, long dlvDetailId, string deliveryName, string barcode, decimal? qty, string addUser, string addUserName, string status, string transactionUomCode)
+        {
+            return uow.AddPickDT(dlvHeaderId, dlvDetailId, deliveryName, barcode, qty, addUser, addUserName, status, transactionUomCode);
+        }
+
+            public static void addBarcode123(decimal qty)
         {
             FlatEditBarcodeDT barcodeData = new FlatEditBarcodeDT();
             barcodeData.BARCODE = "P2005060001";

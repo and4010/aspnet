@@ -11,6 +11,7 @@ using DataTables;
 using System.Collections.Specialized;
 using CHPOUTSRCMES.Web.DataModel;
 using CHPOUTSRCMES.Web.DataModel.UnitOfWorks;
+using Microsoft.AspNet.Identity;
 
 namespace CHPOUTSRCMES.Web.Controllers
 {
@@ -257,89 +258,103 @@ namespace CHPOUTSRCMES.Web.Controllers
         }
 
         [HttpPost, ActionName("InputRollEditBarcode")]
-        public ActionResult InputRollEditBarcode(string BARCODE, long DlvHeaderId, long DLV_DETAIL_ID)
+        public ActionResult InputRollEditBarcode(string BARCODE, long DlvHeaderId, long DLV_DETAIL_ID, string DELIVERY_NAME, string PICK_STATUS, string SRC_REQUESTED_QUANTITY_UOM)
         {
-
-            if (BARCODE == "W2005060001" || BARCODE == "W2005060002" || BARCODE == "W2005060003" || BARCODE == "W2005060004" || BARCODE == "W2005060005" || BARCODE == "W2005060006")
+            using (var context = new MesContext())
             {
-                if (!PaperRollEditBarcodeData.checkBarcodeExist(BARCODE))
+                using (DeliveryUOW uow = new DeliveryUOW(context))
                 {
-                    string ITEM_DESCRIPTION = "";
-                    if (BARCODE == "W2005060001")
-                    {
-                        ITEM_DESCRIPTION = "4FHIZA03000787RL00";
-                        if (!PaperRollEditData.checkBarcodeItemDesc(DLV_DETAIL_ID, ITEM_DESCRIPTION))
-                        {
-                            return new JsonResult { Data = new { status = false, result = "此條碼不符合已選擇的料號" } };
-                        }
-                        PaperRollEditBarcodeData.addBarcode123(DLV_DETAIL_ID, DlvHeaderId);
-                        PaperRollEditData.updateA006(DLV_DETAIL_ID, DlvHeaderId);
-                    }
-                    else if (BARCODE == "W2005060004")
-                    {
-                        ITEM_DESCRIPTION = "4FHIZA03000787RL00";
-                        if (!PaperRollEditData.checkBarcodeItemDesc(DLV_DETAIL_ID, ITEM_DESCRIPTION))
-                        {
-                            return new JsonResult { Data = new { status = false, result = "此條碼不符合已選擇的料號" } };
-                        }
-                        PaperRollEditBarcodeData.addBarcode124(DLV_DETAIL_ID, DlvHeaderId);
-                        PaperRollEditData.updateA006(DLV_DETAIL_ID, DlvHeaderId);
-                    }
-                    else if (BARCODE == "W2005060002")
-                    {
-                        ITEM_DESCRIPTION = "4FHIZA02500787RL00";
-                        if (!PaperRollEditData.checkBarcodeItemDesc(DLV_DETAIL_ID, ITEM_DESCRIPTION))
-                        {
-                            return new JsonResult { Data = new { status = false, result = "此條碼不符合已選擇的料號" } };
-                        }
-                        PaperRollEditBarcodeData.addBarcode456(DLV_DETAIL_ID, DlvHeaderId);
-                        PaperRollEditData.updateB001(DLV_DETAIL_ID, DlvHeaderId);
-                    }
-                    else if (BARCODE == "W2005060005")
-                    {
-                        ITEM_DESCRIPTION = "4FHIZA02500787RL00";
-                        if (!PaperRollEditData.checkBarcodeItemDesc(DLV_DETAIL_ID, ITEM_DESCRIPTION))
-                        {
-                            return new JsonResult { Data = new { status = false, result = "此條碼不符合已選擇的料號" } };
-                        }
-                        PaperRollEditBarcodeData.addBarcode457(DLV_DETAIL_ID, DlvHeaderId);
-                        PaperRollEditData.updateB001(DLV_DETAIL_ID, DlvHeaderId);
-                    }
-                    else if (BARCODE == "W2005060003")
-                    {
-                        ITEM_DESCRIPTION = "4FHIZA02000787RL00";
-                        if (!PaperRollEditData.checkBarcodeItemDesc(DLV_DETAIL_ID, ITEM_DESCRIPTION))
-                        {
-                            return new JsonResult { Data = new { status = false, result = "此條碼不符合已選擇的料號" } };
-                        }
-                        PaperRollEditBarcodeData.addBarcode130(DLV_DETAIL_ID, DlvHeaderId);
-                        PaperRollEditData.updateA006s(DLV_DETAIL_ID, DlvHeaderId);
-                    }
-                    else if (BARCODE == "W2005060006")
-                    {
-                        ITEM_DESCRIPTION = "4FHIZA02000787RL00";
-                        if (!PaperRollEditData.checkBarcodeItemDesc(DLV_DETAIL_ID, ITEM_DESCRIPTION))
-                        {
-                            return new JsonResult { Data = new { status = false, result = "此條碼不符合已選擇的料號" } };
-                        }
-                        PaperRollEditBarcodeData.addBarcode131(DLV_DETAIL_ID, DlvHeaderId);
-                        PaperRollEditData.updateA006s(DLV_DETAIL_ID, DlvHeaderId);
-                    }
-
-
-                    TripHeaderData.ChangeDeliveryStatus(DlvHeaderId, PaperRollEditData.checkDeliveryPickComplete(DlvHeaderId));
-                    return new JsonResult { Data = new { status = true, result = "條碼儲存成功" } };
+                    //取得使用者ID
+                    var id = this.User.Identity.GetUserId();
+                    //取得使用者帳號
+                    var name = this.User.Identity.GetUserName();
+                    PaperRollEditBarcodeData paperRollEditBarcodeData = new PaperRollEditBarcodeData();
+                    var result = paperRollEditBarcodeData.AddPickDT(uow, DlvHeaderId, DLV_DETAIL_ID, DELIVERY_NAME, BARCODE, null, id, name, PICK_STATUS, SRC_REQUESTED_QUANTITY_UOM);
+                    return new JsonResult { Data = new { status = result.Success, result = result.Msg } };
                 }
-                else
-                {
-                    return new JsonResult { Data = new { status = false, result = "條碼重複輸入" } };
-                }
+            }
 
-            }
-            else
-            {
-                return new JsonResult { Data = new { status = false, result = "找不到條碼資料" } };
-            }
+
+            //        if (BARCODE == "W2005060001" || BARCODE == "W2005060002" || BARCODE == "W2005060003" || BARCODE == "W2005060004" || BARCODE == "W2005060005" || BARCODE == "W2005060006")
+            //{
+            //    if (!PaperRollEditBarcodeData.checkBarcodeExist(BARCODE))
+            //    {
+            //        string ITEM_DESCRIPTION = "";
+            //        if (BARCODE == "W2005060001")
+            //        {
+            //            ITEM_DESCRIPTION = "4FHIZA03000787RL00";
+            //            if (!PaperRollEditData.checkBarcodeItemDesc(DLV_DETAIL_ID, ITEM_DESCRIPTION))
+            //            {
+            //                return new JsonResult { Data = new { status = false, result = "此條碼不符合已選擇的料號" } };
+            //            }
+            //            PaperRollEditBarcodeData.addBarcode123(DLV_DETAIL_ID, DlvHeaderId);
+            //            PaperRollEditData.updateA006(DLV_DETAIL_ID, DlvHeaderId);
+            //        }
+            //        else if (BARCODE == "W2005060004")
+            //        {
+            //            ITEM_DESCRIPTION = "4FHIZA03000787RL00";
+            //            if (!PaperRollEditData.checkBarcodeItemDesc(DLV_DETAIL_ID, ITEM_DESCRIPTION))
+            //            {
+            //                return new JsonResult { Data = new { status = false, result = "此條碼不符合已選擇的料號" } };
+            //            }
+            //            PaperRollEditBarcodeData.addBarcode124(DLV_DETAIL_ID, DlvHeaderId);
+            //            PaperRollEditData.updateA006(DLV_DETAIL_ID, DlvHeaderId);
+            //        }
+            //        else if (BARCODE == "W2005060002")
+            //        {
+            //            ITEM_DESCRIPTION = "4FHIZA02500787RL00";
+            //            if (!PaperRollEditData.checkBarcodeItemDesc(DLV_DETAIL_ID, ITEM_DESCRIPTION))
+            //            {
+            //                return new JsonResult { Data = new { status = false, result = "此條碼不符合已選擇的料號" } };
+            //            }
+            //            PaperRollEditBarcodeData.addBarcode456(DLV_DETAIL_ID, DlvHeaderId);
+            //            PaperRollEditData.updateB001(DLV_DETAIL_ID, DlvHeaderId);
+            //        }
+            //        else if (BARCODE == "W2005060005")
+            //        {
+            //            ITEM_DESCRIPTION = "4FHIZA02500787RL00";
+            //            if (!PaperRollEditData.checkBarcodeItemDesc(DLV_DETAIL_ID, ITEM_DESCRIPTION))
+            //            {
+            //                return new JsonResult { Data = new { status = false, result = "此條碼不符合已選擇的料號" } };
+            //            }
+            //            PaperRollEditBarcodeData.addBarcode457(DLV_DETAIL_ID, DlvHeaderId);
+            //            PaperRollEditData.updateB001(DLV_DETAIL_ID, DlvHeaderId);
+            //        }
+            //        else if (BARCODE == "W2005060003")
+            //        {
+            //            ITEM_DESCRIPTION = "4FHIZA02000787RL00";
+            //            if (!PaperRollEditData.checkBarcodeItemDesc(DLV_DETAIL_ID, ITEM_DESCRIPTION))
+            //            {
+            //                return new JsonResult { Data = new { status = false, result = "此條碼不符合已選擇的料號" } };
+            //            }
+            //            PaperRollEditBarcodeData.addBarcode130(DLV_DETAIL_ID, DlvHeaderId);
+            //            PaperRollEditData.updateA006s(DLV_DETAIL_ID, DlvHeaderId);
+            //        }
+            //        else if (BARCODE == "W2005060006")
+            //        {
+            //            ITEM_DESCRIPTION = "4FHIZA02000787RL00";
+            //            if (!PaperRollEditData.checkBarcodeItemDesc(DLV_DETAIL_ID, ITEM_DESCRIPTION))
+            //            {
+            //                return new JsonResult { Data = new { status = false, result = "此條碼不符合已選擇的料號" } };
+            //            }
+            //            PaperRollEditBarcodeData.addBarcode131(DLV_DETAIL_ID, DlvHeaderId);
+            //            PaperRollEditData.updateA006s(DLV_DETAIL_ID, DlvHeaderId);
+            //        }
+
+
+            //        TripHeaderData.ChangeDeliveryStatus(DlvHeaderId, PaperRollEditData.checkDeliveryPickComplete(DlvHeaderId));
+            //        return new JsonResult { Data = new { status = true, result = "條碼儲存成功" } };
+            //    }
+            //    else
+            //    {
+            //        return new JsonResult { Data = new { status = false, result = "條碼重複輸入" } };
+            //    }
+
+            //}
+            //else
+            //{
+            //    return new JsonResult { Data = new { status = false, result = "找不到條碼資料" } };
+            //}
         }
 
         [HttpPost, ActionName("DeleteRollEditBarcode")]
@@ -460,69 +475,84 @@ namespace CHPOUTSRCMES.Web.Controllers
         }
 
         [HttpPost, ActionName("InputFlatEditBarcode")]
-        public ActionResult InputFlatEditBarcode(string BARCODE, decimal? SECONDARY_QUANTITY, long DlvHeaderId, long DLV_DETAIL_ID)
+        public ActionResult InputFlatEditBarcode(string BARCODE, decimal? SECONDARY_QUANTITY, long DlvHeaderId, long DLV_DETAIL_ID, string DELIVERY_NAME, string PICK_STATUS, string SRC_REQUESTED_QUANTITY_UOM)
         {
-            //搜尋條碼資料
+            using (var context = new MesContext())
+            {
+                using (DeliveryUOW uow = new DeliveryUOW(context))
+                {
+                    
+                    //取得使用者ID
+                    var id = this.User.Identity.GetUserId();
+                    //取得使用者帳號
+                    var name = this.User.Identity.GetUserName();
+                    FlatEditBarcodeData flatEditBarcodeData = new FlatEditBarcodeData();
+                    var result = flatEditBarcodeData.AddPickDT(uow, DlvHeaderId, DLV_DETAIL_ID, DELIVERY_NAME, BARCODE, SECONDARY_QUANTITY, id, name, PICK_STATUS, SRC_REQUESTED_QUANTITY_UOM);
+                    return new JsonResult { Data = new { status = result.Success, result = result.Msg } };
+                }
+            }
 
-            if (FlatEditBarcodeData.checkBarcodeExist(BARCODE))
-            {
-                return new JsonResult { Data = new { status = false, result = "條碼重複輸入" } };
-            }
-            string ITEM_DESCRIPTION = "";
-            if (BARCODE == "P2005060001")//平張令包
-            {
-                if (SECONDARY_QUANTITY == null)
-                {
-                    ITEM_DESCRIPTION = "4A003A01000310K266K";
-                    if (!FlatEditData.checkBarcodeItemDesc(DLV_DETAIL_ID, ITEM_DESCRIPTION))
-                    {
-                        return new JsonResult { Data = new { status = false, result = "此條碼不符合已選擇的料號" } };
-                    }
-                    return new JsonResult { Data = new { status = true, result = "令包" } };
-                }
-                else
-                {
-                    //儲存條碼資料
-                    FlatEditBarcodeData.addBarcode123((decimal)SECONDARY_QUANTITY);
-                    FlatEditData.updateF001((decimal)SECONDARY_QUANTITY);
-                    //FlatEditBarcodeData.add(BARCODE, (decimal)SECONDARY_QUANTITY, PACKING_TYPE);
-                    TripHeaderData.ChangeDeliveryStatus(DlvHeaderId, FlatEditData.checkDeliveryPickComplete(DlvHeaderId));
-                    return new JsonResult { Data = new { status = true, result = "令包_條碼儲存成功" } };
-                }
-            }
-            else if (BARCODE == "P2005060002") //平張打件
-            {
-                ITEM_DESCRIPTION = "4AB23P00699350K250K";
-                if (!FlatEditData.checkBarcodeItemDesc(DLV_DETAIL_ID, ITEM_DESCRIPTION))
-                {
-                    return new JsonResult { Data = new { status = false, result = "此條碼不符合已選擇的料號" } };
-                }
-                //儲存條碼資料
-                FlatEditBarcodeData.addBarcode456();
-                FlatEditData.updateF002();
-                //FlatEditBarcodeData.add(BARCODE, 9, PACKING_TYPE);
-                TripHeaderData.ChangeDeliveryStatus(DlvHeaderId, FlatEditData.checkDeliveryPickComplete(DlvHeaderId));
-                return new JsonResult { Data = new { status = true, result = "無令打件_條碼儲存成功" } };
-            }
-            else if (BARCODE == "P2005060003") //平張打件
-            {
-                ITEM_DESCRIPTION = "4DM00P03000297K476K";
-                if (!FlatEditData.checkBarcodeItemDesc(DLV_DETAIL_ID, ITEM_DESCRIPTION))
-                {
-                    return new JsonResult { Data = new { status = false, result = "此條碼不符合已選擇的料號" } };
-                }
-                //儲存條碼資料
-                FlatEditBarcodeData.addBarcode130();
-                FlatEditData.updateF003();
-                //FlatEditBarcodeData.add(BARCODE, 9, PACKING_TYPE);
-                TripHeaderData.ChangeDeliveryStatus(DlvHeaderId, FlatEditData.checkDeliveryPickComplete(DlvHeaderId));
-                return new JsonResult { Data = new { status = true, result = "無令打件_條碼儲存成功" } };
-            }
-            else
-            {
-                //找不到條碼資料
-                return new JsonResult { Data = new { status = false, result = "找不到條碼資料" } };
-            }
+            //        //搜尋條碼資料
+
+            //        if (FlatEditBarcodeData.checkBarcodeExist(BARCODE))
+            //{
+            //    return new JsonResult { Data = new { status = false, result = "條碼重複輸入" } };
+            //}
+            //string ITEM_DESCRIPTION = "";
+            //if (BARCODE == "P2005060001")//平張令包
+            //{
+            //    if (SECONDARY_QUANTITY == null)
+            //    {
+            //        ITEM_DESCRIPTION = "4A003A01000310K266K";
+            //        if (!FlatEditData.checkBarcodeItemDesc(DLV_DETAIL_ID, ITEM_DESCRIPTION))
+            //        {
+            //            return new JsonResult { Data = new { status = false, result = "此條碼不符合已選擇的料號" } };
+            //        }
+            //        return new JsonResult { Data = new { status = true, result = "令包" } };
+            //    }
+            //    else
+            //    {
+            //        //儲存條碼資料
+            //        FlatEditBarcodeData.addBarcode123((decimal)SECONDARY_QUANTITY);
+            //        FlatEditData.updateF001((decimal)SECONDARY_QUANTITY);
+            //        //FlatEditBarcodeData.add(BARCODE, (decimal)SECONDARY_QUANTITY, PACKING_TYPE);
+            //        TripHeaderData.ChangeDeliveryStatus(DlvHeaderId, FlatEditData.checkDeliveryPickComplete(DlvHeaderId));
+            //        return new JsonResult { Data = new { status = true, result = "令包_條碼儲存成功" } };
+            //    }
+            //}
+            //else if (BARCODE == "P2005060002") //平張打件
+            //{
+            //    ITEM_DESCRIPTION = "4AB23P00699350K250K";
+            //    if (!FlatEditData.checkBarcodeItemDesc(DLV_DETAIL_ID, ITEM_DESCRIPTION))
+            //    {
+            //        return new JsonResult { Data = new { status = false, result = "此條碼不符合已選擇的料號" } };
+            //    }
+            //    //儲存條碼資料
+            //    FlatEditBarcodeData.addBarcode456();
+            //    FlatEditData.updateF002();
+            //    //FlatEditBarcodeData.add(BARCODE, 9, PACKING_TYPE);
+            //    TripHeaderData.ChangeDeliveryStatus(DlvHeaderId, FlatEditData.checkDeliveryPickComplete(DlvHeaderId));
+            //    return new JsonResult { Data = new { status = true, result = "無令打件_條碼儲存成功" } };
+            //}
+            //else if (BARCODE == "P2005060003") //平張打件
+            //{
+            //    ITEM_DESCRIPTION = "4DM00P03000297K476K";
+            //    if (!FlatEditData.checkBarcodeItemDesc(DLV_DETAIL_ID, ITEM_DESCRIPTION))
+            //    {
+            //        return new JsonResult { Data = new { status = false, result = "此條碼不符合已選擇的料號" } };
+            //    }
+            //    //儲存條碼資料
+            //    FlatEditBarcodeData.addBarcode130();
+            //    FlatEditData.updateF003();
+            //    //FlatEditBarcodeData.add(BARCODE, 9, PACKING_TYPE);
+            //    TripHeaderData.ChangeDeliveryStatus(DlvHeaderId, FlatEditData.checkDeliveryPickComplete(DlvHeaderId));
+            //    return new JsonResult { Data = new { status = true, result = "無令打件_條碼儲存成功" } };
+            //}
+            //else
+            //{
+            //    //找不到條碼資料
+            //    return new JsonResult { Data = new { status = false, result = "找不到條碼資料" } };
+            //}
         }
 
         [HttpPost, ActionName("DeleteFlatEditBarcode")]

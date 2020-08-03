@@ -124,10 +124,14 @@ $(document).ready(function () {
             var ITEM_NUMBER = dt.rows(indexes).data().pluck('ITEM_NUMBER')[0];
             if (TMP_ITEM_NUMBER) {
                 $("#ITEM_NUMBER").text(TMP_ITEM_NUMBER);
+                $("#PICK_STATUS").text("TMP");
             } else {
                 $("#ITEM_NUMBER").text(ITEM_NUMBER);
+                $("#PICK_STATUS").text("");
             }
             $("#ITEM_NUMBER").text(ITEM_NUMBER);
+            var SRC_REQUESTED_QUANTITY_UOM = dt.rows(indexes).data().pluck('SRC_REQUESTED_QUANTITY_UOM')[0];
+            $('#SRC_REQUESTED_QUANTITY_UOM').text(SRC_REQUESTED_QUANTITY_UOM);
 
             var rowsData = PaperRollDataTablesBody.rows({ page: 'current' }).data();
             for (i = 0 ; i < rowsData.length; i++) {
@@ -156,7 +160,8 @@ $(document).ready(function () {
             $("#ORDER_SHIP_NUMBER").text("");
             $("#INVENTORY_ITEM_ID").text("");
             $("#ITEM_NUMBER").text("");
-
+            $("#PICK_STATUS").text("");
+            $('#SRC_REQUESTED_QUANTITY_UOM').text("");
             var ID = dt.rows(indexes).data().pluck('ID')[0];
             var index = $.inArray(ID, selected);
             selected.splice(index, 1);
@@ -332,7 +337,10 @@ $(document).ready(function () {
             data: {
                 BARCODE: $('#txtBARCODE').val(),
                 DlvHeaderId: $("#DlvHeaderId").text(),
-                DLV_DETAIL_ID: $("#DLV_DETAIL_ID").text()
+                DLV_DETAIL_ID: $("#DLV_DETAIL_ID").text(),
+                DELIVERY_NAME: $("#DELIVERY_NAME").text(),
+                PICK_STATUS: $("#PICK_STATUS").text(),
+                SRC_REQUESTED_QUANTITY_UOM: $('#SRC_REQUESTED_QUANTITY_UOM').text()
             },
             success: function (data) {
                 if (data.status) {
