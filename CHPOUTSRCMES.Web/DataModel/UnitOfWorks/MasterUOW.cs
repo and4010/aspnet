@@ -433,8 +433,14 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                 secQty = model.Data;
             }
 
+            //平版次要單位計算必須有值
+            if (!stock.isRoll() && (!secQty.HasValue || secQty.Value == 0))
+            {
+                return new ResultDataModel<STOCK_T>(-2, $"{stock.ItemCategory}的次要單位必須要有值!!", null);
+            }
+
             //平版 + 次單位，先換算主單位
-            if(!stock.isRoll() && secQty.HasValue && !priQty.HasValue)
+            if (!stock.isRoll() && secQty.HasValue && !priQty.HasValue)
             {
                 var model = uomConversion.Convert(stock.InventoryItemId, secQty.Value, stock.SecondaryUomCode, stock.PrimaryUomCode);
 
@@ -455,7 +461,8 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             stkTxnT.PryChgQty = priQty;
             stkTxnT.PryBefQty = pryBeforeValue;
             stkTxnT.PryAftQty = pryAfterValue;
-                
+            
+            //平版次單位計算
             if(!stock.isRoll() && secQty.HasValue)
             {
                 var secBeforeValue = stock.SecondaryAvailableQty;
