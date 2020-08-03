@@ -133,6 +133,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\NPOI.2.3.0\lib\net40\NPOI.OpenXmlFormats.dll</HintPath>
     </Reference>
+    <Reference Include="Oracle.ManagedDataAccess, Version=4.122.19.1, Culture=neutral, PublicKeyToken=89b483f429c47342, processorArchitecture=MSIL">
+      <HintPath>..\packages\Oracle.ManagedDataAccess.19.8.0\lib\net40\Oracle.ManagedDataAccess.dll</HintPath>
+    </Reference>
     <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
       <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
       <Private>True</Private>
@@ -247,6 +250,7 @@
     <Compile Include="Controllers\TransferController.cs" />
     <Compile Include="Controllers\YszmpckqController.cs" />
     <Compile Include="DataAnnotation\Precision.cs" />
+    <Compile Include="DataModel\UomConversion.cs" />
     <Compile Include="DataModel\FakeUomConversion.cs" />
     <Compile Include="DataModel\Interfaces\IAction.cs" />
     <Compile Include="DataModel\Interfaces\IDetail.cs" />

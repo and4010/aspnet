@@ -1,4 +1,5 @@
 ﻿using CHPOUTSRCMES.Web.DataModel.Interfaces;
+using CHPOUTSRCMES.Web.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,11 +9,15 @@ namespace CHPOUTSRCMES.Web.DataModel
 {
     public class FakeUomConversion : IUomConversion
     {
-        public decimal Convert(long P_ITEM_ID, decimal P_FROM_QTY, string P_FROM_UOM, string P_TO_UOM, int Round = 5)
+        public ResultDataModel<decimal> Convert(long P_ITEM_ID, decimal P_FROM_QTY, string P_FROM_UOM, string P_TO_UOM, int Round = 5)
         {
-            if (P_FROM_UOM == "RE") return P_FROM_QTY * 1.1m;
-            if (P_FROM_UOM == "KG") return P_FROM_QTY * 2m;
-            return P_FROM_QTY * 1m;
+            ResultDataModel<decimal> model = new ResultDataModel<decimal>(true, "", 0m);
+           
+            if (P_FROM_UOM == "RE") model.Data =  P_FROM_QTY * 1.1m;
+            else if (P_FROM_UOM == "KG") model.Data = P_FROM_QTY * 2m;
+            else model.Data = P_FROM_QTY * 1m;
+
+            return model;
         }
     }
 }

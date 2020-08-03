@@ -69,6 +69,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataModel\Views\XXIFV050_ITEMS_FTY_V.cs" />
+    <Compile Include="DataModel\Views\XXCINV_TRANSACTION_TYPE_V.cs" />
+    <Compile Include="DataModel\Views\XXCINV_OSP_RELATED_ITEM_V.cs" />
+    <Compile Include="DataModel\Views\XXCPO_MACHINE_PAPER_TYPE_V.cs" />
+    <Compile Include="DataModel\Views\XXCOM_YSZMPCKQ_V.cs" />
     <Compile Include="DataModel\Views\XXCINV_SUBINVENTORY_V.cs" />
     <Compile Include="FormMasterView.cs">
       <SubType>Form</SubType>

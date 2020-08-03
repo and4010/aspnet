@@ -29,7 +29,9 @@ namespace CHPOUTSRCMES.TASK
         /// 取消權杖
         /// </summary>
         private CancellationToken cancelToken { set; get; }
-
+        /// <summary>
+        /// 
+        /// </summary>
         private List<ITasker> taskers { set; get; }
 
         private Dictionary<string, Task> taskList { set; get; }
@@ -43,7 +45,9 @@ namespace CHPOUTSRCMES.TASK
 
         internal MainForm MainForm => _mainForm ?? (_mainForm = new MainForm());
 
-
+        /// <summary>
+        /// 
+        /// </summary>
         public MainController()
         {
             taskScheduler = new LimitedConcurrencyLevelTaskScheduler(20);
@@ -198,20 +202,30 @@ namespace CHPOUTSRCMES.TASK
             }));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         internal void testConnection()
         {
 
-            string cnstr = System.Configuration.ConfigurationManager.ConnectionStrings["oracleContext"].ToString();
+            string cnstr = System.Configuration.ConfigurationManager.ConnectionStrings["OracleContext"].ToString();
             using (var cn = new Oracle.ManagedDataAccess.Client.OracleConnection(cnstr))
             {
                 SqlMapper.AddTypeMap(typeof(DateTime), System.Data.DbType.Date);
                 cn.Open();
-                var result = cn.Query<XXCINV_SUBINVENTORY_V>(@"SELECT * FROM XXCINV_SUBINVENTORY_V").FirstOrDefault();
-                LogInfo(result.ORGANIZATION_CODE);
+                var count1 = cn.Query<XXCINV_SUBINVENTORY_V>(@"SELECT * FROM XXCINV_SUBINVENTORY_V").Count();
+                var count2 = cn.Query<XXCINV_OSP_RELATED_ITEM_V>(@"SELECT * FROM XXCINV_OSP_RELATED_ITEM_V").Count();
+                var count3 = cn.Query<XXCOM_YSZMPCKQ_V>(@"SELECT * FROM XXCOM_YSZMPCKQ_V").Count();
+                var count4 = cn.Query<XXIFV050_ITEMS_FTY_V>(@"SELECT * FROM XXCPO_MACHINE_PAPER_TYPE_V").Count();
+                var count5 = cn.Query<XXIFV050_ITEMS_FTY_V>(@"SELECT * FROM XXIFV050_ITEMS_FTY_V").Count();
+                var quantity = cn.Query<decimal>(@"SELECT ROUND(TPMC_ADMIN.UOM_CONVERSION(1, 1, 'KG', 'RE'), 5) QUANTITY FROM dual").SingleOrDefault();
             }
         }
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="disposing"></param>
         protected virtual void Dispose(bool disposing)
         {
             if (!this.disposed)
@@ -224,6 +238,9 @@ namespace CHPOUTSRCMES.TASK
             this.disposed = true;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public void Dispose()
         {
             Dispose(true);

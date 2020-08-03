@@ -24,7 +24,13 @@ namespace CHPOUTSRCMES.Web
             {
             }
 
-            logger.Info("Info");
+            using (UomConversion uomConversion = new UomConversion())
+            {
+                var model = uomConversion.Convert(1, 1, "KG", "MT");
+                logger.Info(model.ToString());
+            }
+
+                logger.Info("Info");
             logger.Warn("Warn");
             logger.Debug("Debug");
             logger.Error("Error");

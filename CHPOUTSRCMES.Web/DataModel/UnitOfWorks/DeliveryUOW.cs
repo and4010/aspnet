@@ -75,46 +75,46 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
         public ResultModel AddPickDT(long dlvHeaderId, long dlvDetailId, string deliveryName, string barcode, decimal qty, string uom, string addUser, string addUserName, string status)
         {
             //庫存檢查
-            var checkResult = CheckStock(barcode, qty, uom);
-            if (!checkResult.Success) return new ResultModel( checkResult.Success, checkResult.Msg);
-            var stock = checkResult.Data;
-            var addDate = DateTime.Now;
-            //產生異動記錄
-            STK_TXN_T stkTxnT = CreateStockRecord(stock, null, "", "", null, CategoryCode.Delivery, ActionCode.Picked, deliveryName);
-            //更新庫存
-            var updaeStockResult = UpdateStock(stock, stkTxnT, qty, uom, pickSatus, PickStatus.Picked, addUser, addDate);
-            if (!updaeStockResult.Success) return new ResultModel(updaeStockResult.Success, updaeStockResult.Msg);
-            var afStock = updaeStockResult.Data;
-            //新增一筆PickDT
-            dlvPickedTRepositiory.Create(new DLV_PICKED_T
-            {
-                Stock_Id = stock.StockId,
-                LocatorId = stock.LocatorId,
-                LocatorCode = stock.LocatorSegments,
-                DlvHeaderId = dlvHeaderId,
-                DlvDetailId = dlvDetailId,
-                Barcode = stock.Barcode,
-                InventoryItemId = stock.InventoryItemId,
-                Item_Number = stock.ItemNumber,
-                PackingType = stock.PackingType,
-                LotQuantity = null,
-                Lot_Number = stock.LotNumber,
-                ReamWeight = stock.ReamWeight,
-                PrimaryQuantity = stock.PrimaryAvailableQty,
-                PrimaryUom = stock.PrimaryUomCode,
-                SecondaryQuantity = (decimal)stock.SecondaryAvailableQty,
-                SecondaryUom = stock.SecondaryUomCode,
-                TransactionQuantity = uomConversion.Convert(stock.InventoryItemId, stock.PrimaryAvailableQty, stock.PrimaryUomCode, stock)
-                CreatedBy = addUser,
-                CreatedUserName = addUserName,
-                CreationDate = addDate,
-                LastUpdateBy = addUser,
-                LastUpdateUserName = addUserName,
-                LastUpdateDate = addDate,
-                Status = status,
+            //var checkResult = CheckStock(barcode, qty, uom);
+            //if (!checkResult.Success) return new ResultModel( checkResult.Success, checkResult.Msg);
+            //var stock = checkResult.Data;
+            //var addDate = DateTime.Now;
+            ////產生異動記錄
+            //STK_TXN_T stkTxnT = CreateStockRecord(stock, null, "", "", null, CategoryCode.Delivery, ActionCode.Picked, deliveryName);
+            ////更新庫存
+            //var updaeStockResult = UpdateStock(stock, stkTxnT, qty, uom, pickSatus, PickStatus.Picked, addUser, addDate);
+            //if (!updaeStockResult.Success) return new ResultModel(updaeStockResult.Success, updaeStockResult.Msg);
+            //var afStock = updaeStockResult.Data;
+            ////新增一筆PickDT
+            //dlvPickedTRepositiory.Create(new DLV_PICKED_T
+            //{
+            //    Stock_Id = stock.StockId,
+            //    LocatorId = stock.LocatorId,
+            //    LocatorCode = stock.LocatorSegments,
+            //    DlvHeaderId = dlvHeaderId,
+            //    DlvDetailId = dlvDetailId,
+            //    Barcode = stock.Barcode,
+            //    InventoryItemId = stock.InventoryItemId,
+            //    Item_Number = stock.ItemNumber,
+            //    PackingType = stock.PackingType,
+            //    LotQuantity = null,
+            //    Lot_Number = stock.LotNumber,
+            //    ReamWeight = stock.ReamWeight,
+            //    PrimaryQuantity = stock.PrimaryAvailableQty,
+            //    PrimaryUom = stock.PrimaryUomCode,
+            //    SecondaryQuantity = (decimal)stock.SecondaryAvailableQty,
+            //    SecondaryUom = stock.SecondaryUomCode,
+            //    TransactionQuantity = uomConversion.Convert(stock.InventoryItemId, stock.PrimaryAvailableQty, stock.PrimaryUomCode, stock)
+            //    CreatedBy = addUser,
+            //    CreatedUserName = addUserName,
+            //    CreationDate = addDate,
+            //    LastUpdateBy = addUser,
+            //    LastUpdateUserName = addUserName,
+            //    LastUpdateDate = addDate,
+            //    Status = status,
 
 
-            });
+            //});
 
             return new ResultModel(true, "");
         }

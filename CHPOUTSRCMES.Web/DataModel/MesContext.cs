@@ -11,6 +11,8 @@ using System.Web;
 using Microsoft.AspNet.Identity.EntityFramework;
 using CHPOUTSRCMES.Web.DataModel.Entiy.Information;
 using CHPOUTSRCMES.Web.DataModel.Entiy.Delivery;
+using System.Web.Configuration;
+using System.Data;
 
 namespace CHPOUTSRCMES.Web.DataModel
 {
@@ -26,9 +28,7 @@ namespace CHPOUTSRCMES.Web.DataModel
             {
                 Database.Initialize(true);
             }
-
         }
-
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -52,10 +52,7 @@ namespace CHPOUTSRCMES.Web.DataModel
             return new MesContext();
         }
 
-        /// <summary>
-        /// NLOG
-        /// </summary>
-        public DbSet<LOG_ENTRY_T> LogEntries { set; get; }
+        #region 主檔 (來自ERP)
         /// <summary>
         ///  料號
         /// </summary>
@@ -83,11 +80,8 @@ namespace CHPOUTSRCMES.Web.DataModel
         /// <summary>
         /// 餘切規格
         /// </summary>
-        public DbSet<RELATED_T> ReLatedTs { set; get; }
-        /// <summary>
-        /// 貨故原因
-        /// </summary>
-        public DbSet<STK_REASON_T> StockReasonTs { set; get; }
+        public DbSet<RELATED_T> RelatedTs { set; get; }
+
         /// <summary>
         /// 令重包數
         /// </summary>
@@ -96,6 +90,16 @@ namespace CHPOUTSRCMES.Web.DataModel
         /// 庫存交易類別
         /// </summary>
         public DbSet<TRANSACTION_TYPE_T> TransactionTypeTs { set; get; }
+        #endregion 主檔 (來自ERP)
+
+        /// <summary>
+        /// 貨故原因
+        /// </summary>
+        public DbSet<STK_REASON_T> StockReasonTs { set; get; }
+        /// <summary>
+        /// NLOG
+        /// </summary>
+        public DbSet<LOG_ENTRY_T> LogEntries { set; get; }
 
         #region 庫存
         public DbSet<STOCK_T> STOCK_Ts { set; get; }

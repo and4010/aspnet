@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CHPOUTSRCMES.Web.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,6 +16,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Interfaces
 
     public interface IUomConversion
     {
-       decimal Convert(long P_ITEM_ID, decimal P_FROM_QTY, string P_FROM_UOM, string P_TO_UOM, int Round = 5);
+       ResultDataModel<decimal> Convert(long P_ITEM_ID, decimal P_FROM_QTY, string P_FROM_UOM, string P_TO_UOM, int Round = 5);
     }
 }
