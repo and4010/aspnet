@@ -379,11 +379,11 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
 
             if (secQty == null) 
             {
-                //捲筒出貨、雜項異動
-                if (stock.PrimaryAvailableQty > 0)
-                {
+            //    //捲筒出貨、雜項異動
+            //    if (stock.PrimaryAvailableQty )
+            //    {
 
-                }
+            //    }
             }
             else
             {

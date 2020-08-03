@@ -14,7 +14,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy
         /// 庫存ID
         /// </summary>
         /// 
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
         [Required]
         [Column("STK_TXN_ID")]
@@ -140,7 +140,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy
         /// </summary>
         /// 
         [Required]
-        [Key]
+        //[Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         [Column("INVENTORY_ITEM_ID")]
         public long InventoryItemId { set; get; }
@@ -207,23 +207,22 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy
         ///主單位原數量
         /// </summary>
         /// 
-        [Required]
         [Column("PRY_BEF_QTY")]
-        public decimal PryBefQty { set; get; }
+        public decimal? PryBefQty { set; get; }
 
         /// <summary>
         ///主單位異動後數量
         /// </summary>
         /// 
         [Column("PRY_AFT_QTY")]
-        public decimal PryAftQty { set; get; }
+        public decimal? PryAftQty { set; get; }
 
         /// <summary>
         ///主單位異動量
         /// </summary>
         /// 
         [Column("PRY_CHG_QTY")]
-        public decimal PryChgQty { set; get; }
+        public decimal? PryChgQty { set; get; }
 
         /// <summary>
         /// 次要單位
@@ -247,7 +246,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy
         /// </summary>
         /// 
         [Column("SEC_CHG_QTY")]
-        public decimal SecChgQty { set; get; }
+        public decimal? SecChgQty { set; get; }
         
 
         /// <summary>

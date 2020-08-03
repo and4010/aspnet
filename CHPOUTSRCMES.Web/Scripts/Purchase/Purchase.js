@@ -377,7 +377,7 @@ function init(status) {
             datatype: 'json',
             data: { CabinetNumber: CabinetNumber, CreateDate: CreateDate },
             success: function (data) {
-                if (data.boolean) {
+                if (data.resultModel.Success) {
                     window.location.href = '/Purchase/Index';
                 }
             }

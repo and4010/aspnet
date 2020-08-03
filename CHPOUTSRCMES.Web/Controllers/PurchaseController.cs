@@ -52,8 +52,8 @@ namespace CHPOUTSRCMES.Web.Controllers
         public JsonResult ReturnIndex(string CabinetNumber)
         {
             PurchaseViewModel purchaseViewModel = new PurchaseViewModel();
-            var boolean = purchaseViewModel.ChageHeaderStatus(CabinetNumber);
-            return Json(new { boolean }, JsonRequestBehavior.AllowGet);
+            var resultModel = purchaseViewModel.ChageHeaderStatus(CabinetNumber);
+            return Json(new { resultModel }, JsonRequestBehavior.AllowGet);
         }
 
 
