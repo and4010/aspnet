@@ -50,6 +50,7 @@ namespace CHPOUTSRCMES.Web.DataModel
                     ).SingleOrDefault();
 
                 model.Data = data;
+                model.Success = true;
                 model.Code = ResultModel.CODE_SUCCESS;
                 model.Msg = "";
 

@@ -10,6 +10,7 @@ using System.Web.UI.WebControls;
 using CHPOUTSRCMES.Web.Models.Information;
 using CHPOUTSRCMES.Web.DataModel.UnitOfWorks;
 using CHPOUTSRCMES.Web.DataModel.Entiy.Delivery;
+using static CHPOUTSRCMES.Web.DataModel.UnitOfWorks.DeliveryUOW;
 
 namespace CHPOUTSRCMES.Web.Models.Delivery
 {
@@ -442,47 +443,39 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
             return viewModel;
         }
 
-        public FlatEditViewModel GetFlatEditViewModel(DeliveryUOW uow, long dlvHeaderId)
+        public DeliveryDetailViewHeader GetDeliveryDetailViewHeader(DeliveryUOW uow, long dlvHeaderId)
         {
+            DeliveryDetailViewHeader viewModel = new DeliveryDetailViewHeader();
             var headerDataList = uow.GetDeliveryHeaderDataListFromHeaderId(dlvHeaderId);
-            FlatEditViewModel viewModel = new FlatEditViewModel();
-            viewModel.DeliveryDetailViewHeader = new DeliveryDetailViewHeader();
             if (headerDataList.Count > 0)
             {
-                viewModel.DeliveryDetailViewHeader.CUSTOMER_LOCATION_CODE = headerDataList[0].CustomerLocationCode;
-                viewModel.DeliveryDetailViewHeader.CUSTOMER_NAME = headerDataList[0].CustomerName;
-                viewModel.DeliveryDetailViewHeader.DELIVERY_NAME = headerDataList[0].DeliveryName;
-                viewModel.DeliveryDetailViewHeader.DELIVERY_STATUS = headerDataList[0].DeliveryStatusName;
-                viewModel.DeliveryDetailViewHeader.DlvHeaderId = headerDataList[0].DlvHeaderId;
-                viewModel.DeliveryDetailViewHeader.REMARK = headerDataList[0].Note;
-                viewModel.DeliveryDetailViewHeader.SHIP_CUSTOMER_NAME = headerDataList[0].ShipCustomerName;
-                viewModel.DeliveryDetailViewHeader.SHIP_LOCATION_CODE = headerDataList[0].ShipLocationCode;
-                viewModel.DeliveryDetailViewHeader.TRIP_ACTUAL_SHIP_DATE = headerDataList[0].TripActualShipDate;
-                viewModel.DeliveryDetailViewHeader.TRIP_CAR = headerDataList[0].TripCar;
-                viewModel.DeliveryDetailViewHeader.TRIP_NAME = headerDataList[0].TripName;
+                viewModel.CUSTOMER_LOCATION_CODE = headerDataList[0].CustomerLocationCode;
+                viewModel.CUSTOMER_NAME = headerDataList[0].CustomerName;
+                viewModel.DELIVERY_NAME = headerDataList[0].DeliveryName;
+                viewModel.DELIVERY_STATUS = headerDataList[0].DeliveryStatusName;
+                viewModel.DlvHeaderId = headerDataList[0].DlvHeaderId;
+                viewModel.REMARK = headerDataList[0].Note;
+                viewModel.SHIP_CUSTOMER_NAME = headerDataList[0].ShipCustomerName;
+                viewModel.SHIP_LOCATION_CODE = headerDataList[0].ShipLocationCode;
+                viewModel.TRIP_ACTUAL_SHIP_DATE = headerDataList[0].TripActualShipDate;
+                viewModel.TRIP_CAR = headerDataList[0].TripCar;
+                viewModel.TRIP_NAME = headerDataList[0].TripName;
             }
+            return viewModel;
+        }
+
+        public FlatEditViewModel GetFlatEditViewModel(DeliveryUOW uow, long dlvHeaderId)
+        {
+            FlatEditViewModel viewModel = new FlatEditViewModel();
+            viewModel.DeliveryDetailViewHeader = GetDeliveryDetailViewHeader(uow, dlvHeaderId);
             return viewModel;
         }
 
         public PaperRollEditViewModel GetPaperRollEditViewModel(DeliveryUOW uow, long dlvHeaderId)
         {
-            var headerDataList = uow.GetDeliveryHeaderDataListFromHeaderId(dlvHeaderId);
+           
             PaperRollEditViewModel viewModel = new PaperRollEditViewModel();
-            viewModel.DeliveryDetailViewHeader = new DeliveryDetailViewHeader();
-            if (headerDataList.Count > 0)
-            {
-                viewModel.DeliveryDetailViewHeader.CUSTOMER_LOCATION_CODE = headerDataList[0].CustomerLocationCode;
-                viewModel.DeliveryDetailViewHeader.CUSTOMER_NAME = headerDataList[0].CustomerName;
-                viewModel.DeliveryDetailViewHeader.DELIVERY_NAME = headerDataList[0].DeliveryName;
-                viewModel.DeliveryDetailViewHeader.DELIVERY_STATUS = headerDataList[0].DeliveryStatusName;
-                viewModel.DeliveryDetailViewHeader.DlvHeaderId = headerDataList[0].DlvHeaderId;
-                viewModel.DeliveryDetailViewHeader.REMARK = headerDataList[0].Note;
-                viewModel.DeliveryDetailViewHeader.SHIP_CUSTOMER_NAME = headerDataList[0].ShipCustomerName;
-                viewModel.DeliveryDetailViewHeader.SHIP_LOCATION_CODE = headerDataList[0].ShipLocationCode;
-                viewModel.DeliveryDetailViewHeader.TRIP_ACTUAL_SHIP_DATE = headerDataList[0].TripActualShipDate;
-                viewModel.DeliveryDetailViewHeader.TRIP_CAR = headerDataList[0].TripCar;
-                viewModel.DeliveryDetailViewHeader.TRIP_NAME = headerDataList[0].TripName;
-            }
+            viewModel.DeliveryDetailViewHeader = GetDeliveryDetailViewHeader(uow, dlvHeaderId);
             return viewModel;
         }
 
@@ -1025,41 +1018,79 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
 
         }
 
-        //public static ResultModel UpdateTransactionAuthorizeDates(TripDetailDTEditor data)
-        //{
-        //    if (data == null)
-        //    {
-        //        return new ResultModel(false, "更改出貨核准日失敗，資料來源為空");
-        //    }
+        public ResultModel AddPickDT(DeliveryUOW uow, long dlvHeaderId, long dlvDetailId, string deliveryName, string barcode, decimal? qty, string addUser, string addUserName, string status)
+        {
+            var addResult = uow.AddPickDT(dlvHeaderId, dlvDetailId, deliveryName, barcode, qty, addUser, addUserName, status);
+            if (!addResult.Success)
+            {
+                return addResult;
+            }
+            return CheckPicked(uow, dlvHeaderId);
+        }
 
-        //    int updatedCount = 0;
+        public ResultModel CheckPicked(DeliveryUOW uow, long dlvHeaderId)
+        {
+            var pickedResult = uow.CheckPicked(dlvHeaderId);
+            if (!pickedResult.Success)
+            {
+                return pickedResult;
+            }
+            var updateDatas = uow.GetDeliveryHeaderDataListFromHeaderId(dlvHeaderId);
+            if (updateDatas.Count == 0) return new ResultModel(false, "找不到交運單資料");
 
-        //    foreach (var sourceTripDetailDT in source)
-        //    {
-        //        foreach (var selectedData in data.TripDetailDTList){
-        //            if (sourceTripDetailDT.Id == selectedData.Id){
-        //                sourceTripDetailDT.TRANSACTION_AUTHORIZE_DATE = selectedData.TRANSACTION_AUTHORIZE_DATE;
-        //                updatedCount++;
-        //            }
-        //        }
-        //    }
+            return uow.UpdateDeliveryStatus(updateDatas, pickedResult.Msg);
+        }
 
-        //    if (updatedCount == 0)
-        //    {
-        //        return new ResultModel(false, "更改出貨核准日失敗，全部資料比對不到");
-        //    }
-        //    else if (updatedCount != data.TripDetailDTList.Count)
-        //    {
-        //        return new ResultModel(false, "更改出貨核准日失敗，部分資料比對不到");
-        //    }
-        //    else
-        //    {
-        //        return new ResultModel(true, "更改出貨核准日成功");
-        //    }
+        public ResultModel DelPickDT(DeliveryUOW uow, List<long> dlvPickedId, string addUser)
+        {
+            var pickedDataList = uow.GetDeliveryPickDataListFromPickedId(dlvPickedId);
+            if (pickedDataList.Count == 0) return new ResultModel(false, "揀貨明細找不到資料");
+            if (pickedDataList.Count != dlvPickedId.Count) return new ResultModel(false, "刪除揀貨明細數量比對錯誤");
 
-        //}
+            var delResult = uow.DelPickDT(pickedDataList, addUser);
 
-        public ResultModel UpdateTransactionAuthorizeDates(DeliveryUOW uow, TripDetailDTEditor data)
+            if (!delResult.Success)
+            {
+                return delResult;
+            }
+            return CheckPicked(uow, pickedDataList[0].DlvHeaderId);
+        }
+
+            //public static ResultModel UpdateTransactionAuthorizeDates(TripDetailDTEditor data)
+            //{
+            //    if (data == null)
+            //    {
+            //        return new ResultModel(false, "更改出貨核准日失敗，資料來源為空");
+            //    }
+
+            //    int updatedCount = 0;
+
+            //    foreach (var sourceTripDetailDT in source)
+            //    {
+            //        foreach (var selectedData in data.TripDetailDTList){
+            //            if (sourceTripDetailDT.Id == selectedData.Id){
+            //                sourceTripDetailDT.TRANSACTION_AUTHORIZE_DATE = selectedData.TRANSACTION_AUTHORIZE_DATE;
+            //                updatedCount++;
+            //            }
+            //        }
+            //    }
+
+            //    if (updatedCount == 0)
+            //    {
+            //        return new ResultModel(false, "更改出貨核准日失敗，全部資料比對不到");
+            //    }
+            //    else if (updatedCount != data.TripDetailDTList.Count)
+            //    {
+            //        return new ResultModel(false, "更改出貨核准日失敗，部分資料比對不到");
+            //    }
+            //    else
+            //    {
+            //        return new ResultModel(true, "更改出貨核准日成功");
+            //    }
+
+            //}
+
+            public ResultModel UpdateTransactionAuthorizeDates(DeliveryUOW uow, TripDetailDTEditor data)
         {
             return uow.UpdateTransactionAuthorizeDates(data);
 
@@ -1181,4 +1212,9 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
         public List<TripHeaderDT> TripDetailDTList { get; set; }
     }
 
+    public class PickDTEditor
+    {
+        public string Action { get; set; }
+        public List<long> DlvPickedIdList { get; set; }
+    }
 }

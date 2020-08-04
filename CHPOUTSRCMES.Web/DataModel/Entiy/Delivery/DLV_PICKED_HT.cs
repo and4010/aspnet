@@ -107,7 +107,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Delivery
         /// </summary>
         /// 
         [StringLength(30)]
-        [Required]
+        [Required(AllowEmptyStrings = true)]
         [Column("PACKING_TYPE")]
         public string PackingType { set; get; }
 

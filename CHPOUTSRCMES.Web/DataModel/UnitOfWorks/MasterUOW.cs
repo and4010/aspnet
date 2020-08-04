@@ -205,6 +205,11 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             //}
         }
 
+        public STOCK_T GetStock(string barcode)
+        {
+            return stockTRepositiory.GetAll().FirstOrDefault(x => x.Barcode == barcode);
+        }
+
         /// <summary>
         /// 庫存檢查
         /// </summary>
@@ -375,16 +380,16 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
 
 
 
-        /// <summary>
-        /// 更新庫存量及狀態
-        /// </summary>
-        /// <param name="barcode">條碼</param>
-        /// <param name="qty">庫存異動量：正數加庫存、負數扣庫存</param>
-        /// <param name="uom">單位</param>
-        /// <param name="detail">作業狀態轉換介面</param>
-        /// <param name="statusCode">作業狀態碼</param>
-        /// <param name="lockQty">鎖單量，揀貨用</param>
-        /// <returns>更新後庫存</returns>
+        ///// <summary>
+        ///// 更新庫存量及狀態
+        ///// </summary>
+        ///// <param name="barcode">條碼</param>
+        ///// <param name="qty">庫存異動量：正數加庫存、負數扣庫存</param>
+        ///// <param name="uom">單位</param>
+        ///// <param name="detail">作業狀態轉換介面</param>
+        ///// <param name="statusCode">作業狀態碼</param>
+        ///// <param name="lockQty">鎖單量，揀貨用</param>
+        ///// <returns>更新後庫存</returns>
         //public ResultDataModel<STOCK_T> UpdateStock(string barcode, decimal qty, string uom, IDetail detail, string statusCode, string doc, bool lockQty = false)
         //{
         //    var stock = stockTRepositiory.GetAll().FirstOrDefault(x => x.Barcode == barcode);
@@ -396,22 +401,26 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
         //    return UpdateStock(stock, qty, uom, detail, statusCode, lockQty);
         //}
 
+
+
         /// <summary>
         /// 更新庫存量及狀態
         /// </summary>
         /// <param name="stock">庫存</param>
-        /// <param name="qty">庫存異動量：正數加庫存、負數扣庫存</param>
-        /// <param name="uom">單位</param>
+        /// <param name="stkTxnT">異動記錄</param>
+        /// <param name="priQty">主單位異動量</param>
+        /// <param name="secQty">次單位異動量</param>
         /// <param name="detail">作業狀態轉換介面</param>
         /// <param name="statusCode">作業狀態碼</param>
+        /// <param name="lastUpdatedBy"></param>
+        /// <param name="addDate"></param>
         /// <param name="lockQty">鎖單量，揀貨用</param>
         /// <returns>更新後庫存</returns>
-        public ResultDataModel<STOCK_T> UpdateStock(STOCK_T stock, STK_TXN_T stkTxnT, decimal? priQty, decimal? secQty, IDetail detail, string statusCode, string lastUpdatedBy, DateTime addDate, bool lockQty = false)
+        public ResultDataModel<STOCK_T> UpdateStock(STOCK_T stock, STK_TXN_T stkTxnT, ref decimal? priQty, ref decimal? secQty, IDetail detail, string statusCode, string lastUpdatedBy, DateTime addDate, bool lockQty = false)
         {
-            decimal newSecQty = secQty == null ? (decimal)secQty : 0;
 
             //主要單位及次要單位 其一必須有值
-            if(!priQty.HasValue && !secQty.HasValue)
+            if (!priQty.HasValue && !secQty.HasValue)
             {
                 return new ResultDataModel<STOCK_T>(-1, "主要單位及次要單位兩者其中之一必須要有值!!", null);
             }
@@ -424,11 +433,11 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             }
 
             //雜項異動處理 平版+主要單位，先換成次單位
-            if(!stock.isRoll() && priQty.HasValue && !secQty.HasValue)
+            if (!stock.isRoll() && priQty.HasValue && !secQty.HasValue)
             {
                 var model = uomConversion.Convert(stock.InventoryItemId, priQty.Value, stock.PrimaryUomCode, stock.SecondaryUomCode);
 
-                if(!model.Success) return new ResultDataModel<STOCK_T>(-3, model.Msg, null);
+                if (!model.Success) return new ResultDataModel<STOCK_T>(-3, model.Msg, null);
 
                 secQty = model.Data;
             }
@@ -451,19 +460,19 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
 
             //計算主單位數量
             var pryBeforeValue = stock.PrimaryAvailableQty;
-            var pryAfterValue = pryBeforeValue + priQty.Value; 
-           
+            var pryAfterValue = pryBeforeValue + priQty.Value;
+
             stock.PrimaryAvailableQty = pryAfterValue;
             //是揀貨時 計算鎖單量
-            if (lockQty) stock.PrimaryLockedQty += -1 * priQty.Value; 
+            if (lockQty) stock.PrimaryLockedQty += -1 * priQty.Value;
 
             //記錄異動表
             stkTxnT.PryChgQty = priQty;
             stkTxnT.PryBefQty = pryBeforeValue;
             stkTxnT.PryAftQty = pryAfterValue;
-            
+
             //平版次單位計算
-            if(!stock.isRoll() && secQty.HasValue)
+            if (!stock.isRoll() && secQty.HasValue)
             {
                 var secBeforeValue = stock.SecondaryAvailableQty;
                 var secAfterValue = secBeforeValue + secQty.Value;
@@ -1897,7 +1906,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
 
                 #endregion
 
-                #region 第三筆測試資料 平版 無令打件
+                #region 第三筆測試資料 捲筒
                 stockTRepositiory.Create(new STOCK_T()
                 {
                     OrganizationId = 265,
@@ -1920,6 +1929,45 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                     ReasonDesc = "",
                     OspBatchNo = "",
                     LotNumber = "1234567890",
+                    StatusCode = "",
+                    PrimaryTransactionQty = 1000,
+                    PrimaryAvailableQty = 1000,
+                    PrimaryUomCode = "KG",
+                    SecondaryTransactionQty = null,
+                    SecondaryAvailableQty = null,
+                    SecondaryUomCode = "",
+                    Note = "",
+                    CreatedBy = "1",
+                    CreationDate = DateTime.Now,
+                    LastUpdateBy = "1",
+                    LastUpdateDate = DateTime.Now,
+                }, true);
+
+                #endregion
+
+                #region 捲筒
+                stockTRepositiory.Create(new STOCK_T()
+                {
+                    OrganizationId = 265,
+                    OrganizationCode = "FTY",
+                    SubinventoryCode = "TB2",
+                    LocatorId = null,
+                    LocatorSegments = "",
+                    Barcode = "A2007290004",
+                    InventoryItemId = 559299,
+                    ItemNumber = "4AK0XA008001320RL00",
+                    ItemDescription = "Express捲特級銅版",
+                    ReamWeight = "2.2",
+                    ItemCategory = "捲筒",
+                    PaperType = "AK0X",
+                    BasicWeight = "00800",
+                    Specification = "1320RL00",
+                    PackingType = "",
+                    RollReamWt = 1,
+                    ReasonCode = "",
+                    ReasonDesc = "",
+                    OspBatchNo = "",
+                    LotNumber = "1234567891",
                     StatusCode = "",
                     PrimaryTransactionQty = 1000,
                     PrimaryAvailableQty = 1000,

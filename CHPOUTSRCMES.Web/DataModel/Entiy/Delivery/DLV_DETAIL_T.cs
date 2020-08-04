@@ -195,15 +195,13 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Delivery
         /// 預計出庫次要數量
         /// </summary>
         /// 
-        [Required]
         [Column("REQUESTED_SECONDARY_QUANTITY")]
-        public decimal RequestedQuantity2 { set; get; }
+        public decimal? RequestedQuantity2 { set; get; }
 
         /// <summary>
         /// 次要單位
         /// </summary>
         /// 
-        [Required]
         [StringLength(3)]
         [Column("REQUESTED_SECONDARY_UOM")]
         public string RequestedQuantityUom2 { set; get; }

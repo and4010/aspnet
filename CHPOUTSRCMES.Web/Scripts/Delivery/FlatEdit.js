@@ -165,6 +165,101 @@ $(document).ready(function () {
         }
     });
 
+    var editor = new $.fn.dataTable.Editor({
+        "language": {
+            "url": "/bower_components/datatables/language/zh-TW.json"
+        },
+        ajax: {
+            url: '/Delivery/PickDTEditor',
+            type: "POST",
+            dataType: "json",
+            contentType: 'application/json',
+            data: function (d) {
+                var DlvPickedIdList = [];
+                $.each(d.data, function (key, value) {
+                    DlvPickedIdList.push(d.data[key]['PICKED_ID']);
+                });
+
+                var data = {
+                    'action': d.action,
+                    'DlvPickedIdList': DlvPickedIdList
+                }
+                return JSON.stringify(data);
+            },
+            success: function (data) {
+                if (data.status) {
+                   
+                        FlatBarcodeDataTablesBody.ajax.reload();
+                        FlatDataTablesBody.ajax.reload(null, false);
+                        UpdateDeliveryDetailViewHeader();
+                    
+                }
+                else {
+                    swal.fire(data.result);
+                }
+            }
+        },
+        table: "#FlatBarcodeDataTablesBody",
+        formOptions: {
+            main: {
+                onBackground: 'none'
+            }
+        },
+        idSrc: 'PICKED_ID',
+        //fields: [
+        //    {
+        //        name: "ID"
+        //    },
+        //    {
+        //        label: "倉庫",
+        //        name: "SUBINVENTORY_CODE"
+        //    },
+        //    {
+        //        label: "儲位",
+        //        name: "SEGMENT3"
+        //    },
+        //    {
+        //        label: "料號",
+        //        name: "ITEM_NO"
+        //    },
+        //    {
+        //        label: "捲號",
+        //        name: "LOT_NUMBER"
+        //    },
+        //    {
+        //        label: "數量",
+        //        name: "PRIMARY_AVAILABLE_QTY"
+        //    },
+        //    {
+        //        label: "備註",
+        //        name: "NOTE"
+        //    }
+
+        //],
+        i18n: {
+            create: {
+                button: "新增",
+                title: "新增",
+                submit: "確定",
+                action: 'btn-primary'
+            },
+            remove: {
+                button: '刪除',
+                title: "刪除",
+                submit: "確定",
+                confirm: {
+                    "_": "你確定要刪除這筆資料?",
+                    "1": "你確定要刪除這筆資料?"
+                }
+            },
+            edit: {
+                button: '編輯',
+                title: "編輯",
+                submit: "確定",
+            }
+        }
+    });
+
 
     var FlatBarcodeDataTablesBody = $('#FlatBarcodeDataTablesBody').DataTable({
         language: {
@@ -247,7 +342,14 @@ $(document).ready(function () {
 
                      },
                      enabled: false
-                 },
+                },
+                {
+                    extend: "remove",
+                    text: '刪除',
+                    name: 'remove',
+                    className: 'btn-danger',
+                    editor: editor,
+                },
                 {
                     text: '<span class="glyphicon glyphicon-print"></span>&nbsp列印標籤',
                     //className: 'btn-default btn-sm',
@@ -373,14 +475,13 @@ $(document).ready(function () {
                 DlvHeaderId: $("#DlvHeaderId").text(),
                 DLV_DETAIL_ID: $("#DLV_DETAIL_ID").text(),
                 DELIVERY_NAME: $("#DELIVERY_NAME").text(),
-                PICK_STATUS: $("#PICK_STATUS").text(),
-                SRC_REQUESTED_QUANTITY_UOM: $('#SRC_REQUESTED_QUANTITY_UOM').text()
+                PICK_STATUS: $("#PICK_STATUS").text()
             },
             success: function (data) {
                 if (data.status) {
                     FlatBarcodeDataTablesBody.ajax.reload();
                     FlatDataTablesBody.ajax.reload(null, false);
-                    //UpdateDeliveryDetailViewHeader();
+                    UpdateDeliveryDetailViewHeader();
 
                     //if (data.result == "令包") {
                     //    //$("#SECONDARY_QUANTITY").show();

@@ -99,7 +99,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Delivery
         /// </summary>
         /// 
         [StringLength(30)]
-        [Required]
+        [Required(AllowEmptyStrings = true)]
         [Column("PACKING_TYPE")]
         public string PackingType { set; get; }
 
@@ -166,7 +166,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Delivery
         /// 次要單位
         /// </summary>
         /// 
-        [Required]
         [StringLength(3)]
         [Column("SECONDARY_UOM")]
         public string SecondaryUom { set; get; }

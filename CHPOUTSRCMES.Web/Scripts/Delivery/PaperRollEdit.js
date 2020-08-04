@@ -339,21 +339,15 @@ $(document).ready(function () {
                 DlvHeaderId: $("#DlvHeaderId").text(),
                 DLV_DETAIL_ID: $("#DLV_DETAIL_ID").text(),
                 DELIVERY_NAME: $("#DELIVERY_NAME").text(),
-                PICK_STATUS: $("#PICK_STATUS").text(),
-                SRC_REQUESTED_QUANTITY_UOM: $('#SRC_REQUESTED_QUANTITY_UOM').text()
+                PICK_STATUS: $("#PICK_STATUS").text()
             },
             success: function (data) {
                 if (data.status) {
 
-                    if (data.result == "條碼儲存成功") {
-                        //ImportPaperRollBarcodeEditDT();
-                        //ImportPaperRollEditDT();
-
-                        PaperRollDataTablesBody.ajax.reload(null, false);
-                        PaperRollBarcodeDataTablesBody.ajax.reload();
-                        UpdateDeliveryDetailViewHeader();
-
-                    }
+                    PaperRollDataTablesBody.ajax.reload(null, false);
+                    PaperRollBarcodeDataTablesBody.ajax.reload();
+                    UpdateDeliveryDetailViewHeader();
+                    
                 }
                 else {
 

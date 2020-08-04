@@ -68,10 +68,10 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
         //};
 
         public IHeader deliveryStatusCode = new DeliveryStatusCode();
-        
+
         public IDetail pickSatus = new PickStatus();
-        
-        
+
+
         /// <summary>
         /// 新增揀貨明細
         /// </summary>
@@ -85,47 +85,54 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
         /// <param name="status">揀貨明細狀態</param>
         /// <param name="transactionUomCode">交易單位</param>
         /// <returns></returns>
-        public ResultModel AddPickDT(long dlvHeaderId, long dlvDetailId, string deliveryName, string barcode, decimal? qty, string addUser, string addUserName, string status, string transactionUomCode)
+        public ResultModel AddPickDT(long dlvHeaderId, long dlvDetailId, string deliveryName, string barcode, decimal? qty, string addUser, string addUserName, string status)
         {
             //qty = qty * -1;            
             //庫存檢查
             var checkResult = CheckStock(barcode, qty * -1);
             //var checkResult = CheckStock(barcode, qty, uom);
-            if (!checkResult.Success) return new ResultModel( checkResult.Success, checkResult.Msg);
+            if (!checkResult.Success) return new ResultModel(checkResult.Success, checkResult.Msg);
+            var stock = checkResult.Data;
+            var detailData = dlvDetailTRepositiory.GetAll().AsNoTracking().FirstOrDefault(x => x.DlvDetailId == dlvDetailId);
+            if (stock.ItemNumber != detailData.ItemNumber)
+            {
+                return new ResultModel(false, "此條碼不符合已選擇的料號");
+            }
+            var pickData = dlvPickedTRepositiory.GetAll().AsNoTracking().Where(x => x.Barcode == barcode).ToList();
+            if (pickData.Count > 0) return new ResultModel(false, "條碼重複輸入");
+
 
             using (var txn = this.Context.Database.BeginTransaction())
             {
                 try
                 {
-                    var stock = checkResult.Data;
 
                     //產生異動記錄
                     STK_TXN_T stkTxnT = CreateStockRecord(stock, null, "", "", null, CategoryCode.Delivery, ActionCode.Picked, deliveryName);
 
-                    decimal priQty = 0;
+                    decimal? priQty = null;
                     decimal? secQty = null;
                     if (qty != null)
                     {
                         //有令包數量時為拆板
-                        priQty = 0;
-                        secQty = qty;
+                        priQty = null;
+                        secQty = qty * -1;
                     }
                     else
                     {
                         //非拆板時
-                        priQty = stock.PrimaryAvailableQty;
-                        secQty = stock.SecondaryAvailableQty;
+                        priQty = stock.PrimaryAvailableQty * -1;
+                        secQty = stock.SecondaryAvailableQty * -1;
                     }
 
                     //更新庫存
                     var addDate = DateTime.Now;
-                    var updaeStockResult = UpdateStock(stock, stkTxnT, priQty * -1, secQty * -1, pickSatus, PickStatus.Picked, addUser, addDate, true);
+                    var updaeStockResult = UpdateStock(stock, stkTxnT, ref priQty, ref secQty, pickSatus, PickStatus.Picked, addUser, addDate, true);
                     if (!updaeStockResult.Success) return new ResultModel(updaeStockResult.Success, updaeStockResult.Msg);
-                    var afStock = updaeStockResult.Data;
 
-                    var model = uomConversion.Convert(stock.InventoryItemId, stock.PrimaryAvailableQty, stock.PrimaryUomCode, transactionUomCode);
+                    var model = uomConversion.Convert(stock.InventoryItemId, priQty != null ? (decimal)priQty * -1 : 0, stock.PrimaryUomCode, detailData.SrcRequestedQuantityUom);
 
-                    if(!model.Success)
+                    if (!model.Success)
                     {
                         //轉換失敗 該如何處理??
                     }
@@ -144,12 +151,12 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                         LotQuantity = null,
                         Lot_Number = stock.LotNumber,
                         ReamWeight = stock.ReamWeight,
-                        PrimaryQuantity = priQty,
+                        PrimaryQuantity = priQty != null ? (decimal)priQty * -1 : 0,
                         PrimaryUom = stock.PrimaryUomCode,
-                        SecondaryQuantity = secQty,
+                        SecondaryQuantity = secQty * -1,
                         SecondaryUom = stock.SecondaryUomCode,
                         TransactionQuantity = model.Data,
-                        TransactionUom = transactionUomCode,
+                        TransactionUom = detailData.SrcRequestedQuantityUom,
                         CreatedBy = addUser,
                         CreatedUserName = addUserName,
                         CreationDate = addDate,
@@ -166,25 +173,99 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                     txn.Commit();
                     return new ResultModel(true, "新增揀貨明細成功");
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     logger.Error(LogUtilities.BuildExceptionMessage(ex));
                     txn.Rollback();
                     return new ResultModel(false, "新增揀貨明細失敗:" + ex.Message);
-                } 
+                }
             }
         }
 
-        public void DelPickDT(string barcode)
+        /// <summary>
+        /// 檢查是否此Header是否揀畢
+        /// </summary>
+        /// <param name="dlvHeaderId"></param>
+        /// <returns></returns>
+        public ResultModel CheckPicked(long dlvHeaderId)
         {
-            //庫存檢查
+            try
+            {
+                string cmd = @"
+           select 
+d.DLV_DETAIL_ID as ID
+from DLV_DETAIL_T d
+JOIN DLV_HEADER_T h ON h.DLV_HEADER_ID = d.DLV_HEADER_ID
+LEFT JOIN DLV_PICKED_T p ON p.DLV_HEADER_ID = d.DLV_HEADER_ID AND p.DLV_DETAIL_ID = d.DLV_DETAIL_ID
+where h.DLV_HEADER_ID = @DLV_HEADER_ID
+GROUP BY d.DLV_DETAIL_ID
+HAVING SUM(ISNULL(p.PRIMARY_QUANTITY, 0)) <> MIN(d.REQUESTED_PRIMARY_QUANTITY) 
+OR SUM(ISNULL(p.SECONDARY_QUANTITY, 0)) <> MIN(d.REQUESTED_SECONDARY_QUANTITY)";
 
-            //刪除一筆PickDT
+                var list = this.Context.Database.SqlQuery<PaperRollEditDT>(cmd, new SqlParameter("@DLV_HEADER_ID", dlvHeaderId)).ToList();
+                if (list.Count == 0) //為0表示應揀量等於已揀量
+                {
+                    return new ResultModel(true, DeliveryStatusCode.Picked);
+                }
+                else
+                {
+                    return new ResultModel(true, DeliveryStatusCode.UnPicked);
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(LogUtilities.BuildExceptionMessage(ex));
+                return new ResultModel(false, "檢查是否揀畢失敗:" + ex.Message);
+            }
 
-            //新增一筆庫存異動紀錄
 
-            //更新庫存
-            //UpdateStock(barcode, 1, "KG", pickSatus, PickStatus.Deleted);
+        }
+
+
+        /// <summary>
+        /// 刪除揀貨明細
+        /// </summary>
+        /// <param name="pickedDataList"></param>
+        /// <param name="addUser"></param>
+        /// <returns></returns>
+        public ResultModel DelPickDT(List<DLV_PICKED_T> pickedDataList, string addUser)
+        {
+            if (pickedDataList == null || pickedDataList.Count == 0) return new ResultModel(false, "沒有揀貨資料");
+            long dlvHeaderId = pickedDataList[0].DlvHeaderId;
+            var headerData = dlvHeaderTRepositiory.GetAll().AsNoTracking().Where(x => x.DlvHeaderId == dlvHeaderId).ToList();
+            if (headerData.Count == 0) return new ResultModel(false, "無法取得交運單資料");
+
+            using (var txn = this.Context.Database.BeginTransaction())
+            {
+                try
+                {
+                    foreach (DLV_PICKED_T data in pickedDataList)
+                    {
+                        var stock = GetStock(data.Barcode);
+                        if (stock == null) throw new Exception("找不到庫存資料");
+                        STK_TXN_T stkTxnT = CreateStockRecord(stock, null, "", "", null, CategoryCode.Delivery, ActionCode.Deleted, headerData[0].DeliveryName);
+                        decimal? priQty = data.PrimaryQuantity;
+                        decimal? secQty = data.SecondaryQuantity;
+                        var addDate = DateTime.Now;
+                        var updaeStockResult = UpdateStock(stock, stkTxnT, ref priQty, ref secQty, pickSatus, PickStatus.Deleted, addUser, addDate, true);
+                        if (!updaeStockResult.Success) throw new Exception(updaeStockResult.Msg);
+                        dlvPickedTRepositiory.Delete(data);
+                    }
+
+                    stockTRepositiory.SaveChanges();
+                    stkTxnTRepositiory.SaveChanges();
+                    dlvPickedTRepositiory.SaveChanges();
+
+                    txn.Commit();
+                    return new ResultModel(true, "刪除揀貨明細成功");
+                }
+                catch (Exception ex)
+                {
+                    logger.Error(LogUtilities.BuildExceptionMessage(ex));
+                    txn.Rollback();
+                    return new ResultModel(false, "刪除揀貨明細失敗:" + ex.Message);
+                }
+            }
         }
 
 
@@ -352,6 +433,8 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                     LastUpdateUserName = "華紙",
                     LastUpdateDate = DateTime.Now,
                 }, true);
+
+
                 //DliveryHeaderRepositiory.getContext().Configuration.AutoDetectChangesEnabled = true;
 
                 dlvDetailTRepositiory.Create(new DLV_DETAIL_T()
@@ -373,9 +456,9 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                     GrainDirection = "L",
                     LocatorId = null,
                     LocatorCode = null,
-                    SrcRequestedQuantity = 1.33742M,
+                    SrcRequestedQuantity = 0.1M,
                     SrcRequestedQuantityUom = "MT",
-                    RequestedQuantity = 1337.419M,
+                    RequestedQuantity = 100M,
                     RequestedQuantityUom = "KG",
                     RequestedQuantity2 = 50,
                     RequestedQuantityUom2 = "RE",
@@ -394,10 +477,91 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                 }, true);
                 #endregion
 
-                #region 第二筆測試資料 平版 無令打件
+                #region 第二筆測試資料 捲筒
                 dlvHeaderTRepositiory.Create(new DLV_HEADER_T()
                 {
                     DlvHeaderId = 2,
+                    OrgId = 1,
+                    OrgName = "1",
+                    OrganizationId = 265,
+                    OrganizationCode = "FTY",
+                    SubinventoryCode = "TB2",
+                    TripCar = "PN01",
+                    TripId = 1,
+                    TripName = "Y191226-1036357",
+                    TripActualShipDate = Convert.ToDateTime("2019-12-26"),
+                    DeliveryId = 1,
+                    DeliveryName = "FTY1912000547",
+                    ItemCategory = "捲筒",
+                    CustomerId = 1,
+                    CustomerNumber = "1",
+                    CustomerName = "保吉",
+                    CustomerLocationCode = "福安印刷",
+                    ShipCustomerId = 1,
+                    ShipCustomerNumber = "1",
+                    ShipCustomerName = "保吉紙業有限公司",
+                    ShipLocationCode = "台南市安南區府安路5段119巷",
+                    FreightTermsName = "台南",
+                    DeliveryStatusCode = "1",
+                    DeliveryStatusName = "未印",
+                    TransactionBy = null,
+                    TransactionDate = null,
+                    AuthorizeBy = null,
+                    AuthorizeDate = null,
+                    Note = "FT1.P9B0288",
+                    CreatedBy = "1",
+                    CreatedUserName = "華紙",
+                    CreationDate = DateTime.Now,
+                    LastUpdateBy = "1",
+                    LastUpdateUserName = "華紙",
+                    LastUpdateDate = DateTime.Now,
+                }, true);
+
+                dlvDetailTRepositiory.Create(new DLV_DETAIL_T()
+                {
+                    DlvDetailId = 2,
+                    DlvHeaderId = 2,
+                    OrderNumber = 1192006167,
+                    OrderLineId = 1,
+                    OrderShipNumber = "1.2",
+                    PackingType = "",
+                    InventoryItemId = 559299,
+                    ItemNumber = "4AK0XA008001320RL00",
+                    ItemDescription = "Express捲特級銅版",
+                    ReamWeight = "2.2",
+                    ItemCategory = "捲筒",
+                    PaperType = "AK0X",
+                    BasicWeight = "00800",
+                    Specification = "1320RL00",
+                    GrainDirection = "X",
+                    LocatorId = null,
+                    LocatorCode = null,
+                    SrcRequestedQuantity = 1M,
+                    SrcRequestedQuantityUom = "MT",
+                    RequestedQuantity = 1000M,
+                    RequestedQuantityUom = "KG",
+                    RequestedQuantity2 = null,
+                    RequestedQuantityUom2 = "",
+                    OspBatchId = null,
+                    OspBatchNo = "",
+                    OspBatchType = "",
+                    TmpItemId = null,
+                    TmpItemNumber = "",
+                    TmpItemDescription = "",
+                    CreatedBy = "1",
+                    CreatedUserName = "華紙",
+                    CreationDate = DateTime.Now,
+                    LastUpdateBy = "1",
+                    LastUpdateUserName = "華紙",
+                    LastUpdateDate = DateTime.Now,
+                }, true);
+
+                #endregion
+
+                #region 第三筆測試資料 平版 無令打件
+                dlvHeaderTRepositiory.Create(new DLV_HEADER_T()
+                {
+                    DlvHeaderId = 3,
                     OrgId = 1,
                     OrgName = "1",
                     OrganizationId = 265,
@@ -436,8 +600,8 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
 
                 dlvDetailTRepositiory.Create(new DLV_DETAIL_T()
                 {
-                    DlvDetailId = 2,
-                    DlvHeaderId = 2,
+                    DlvDetailId = 3,
+                    DlvHeaderId = 3,
                     OrderNumber = 1202000114,
                     OrderLineId = 2,
                     OrderShipNumber = "1.1",
@@ -474,10 +638,10 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                 }, true);
                 #endregion
 
-                #region 第三筆測試資料 捲筒
+                #region 第四筆測試資料 捲筒
                 dlvHeaderTRepositiory.Create(new DLV_HEADER_T()
                 {
-                    DlvHeaderId = 3,
+                    DlvHeaderId = 4,
                     OrgId = 1,
                     OrgName = "1",
                     OrganizationId = 265,
@@ -516,8 +680,8 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
 
                 dlvDetailTRepositiory.Create(new DLV_DETAIL_T()
                 {
-                    DlvDetailId = 3,
-                    DlvHeaderId = 3,
+                    DlvDetailId = 4,
+                    DlvHeaderId = 4,
                     OrderNumber = 1192006168,
                     OrderLineId = 3,
                     OrderShipNumber = "1.1",
@@ -537,12 +701,12 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                     SrcRequestedQuantityUom = "MT",
                     RequestedQuantity = 1000M,
                     RequestedQuantityUom = "KG",
-                    RequestedQuantity2 = 10,
-                    RequestedQuantityUom2 = "RE",
+                    RequestedQuantity2 = null,
+                    RequestedQuantityUom2 = "",
                     OspBatchId = null,
                     OspBatchNo = "",
                     OspBatchType = "",
-                    TmpItemId = 123,
+                    TmpItemId = null,
                     TmpItemNumber = "",
                     TmpItemDescription = "",
                     CreatedBy = "1",
@@ -818,8 +982,16 @@ on h.DLV_HEADER_ID = d.DLV_HEADER_ID";
         }
 
 
-        
+        public List<DLV_PICKED_T> GetDeliveryPickDataListFromPickedId(long dlvPickedId)
+        { 
+            return dlvPickedTRepositiory.GetAll().AsNoTracking().Where(x => dlvPickedId == x.DlvPickedId).ToList();
+        }
 
+        public List<DLV_PICKED_T> GetDeliveryPickDataListFromPickedId(List<long> dlvPickedId)
+        {
+            return dlvPickedTRepositiory.GetAll().Where(x => dlvPickedId.Contains(x.DlvPickedId)).ToList();
+        }
+        
 
         /// <summary>
         /// 更新交運單狀態
@@ -854,8 +1026,8 @@ on h.DLV_HEADER_ID = d.DLV_HEADER_ID";
             }
         }
 
-       
-       
+
+
         /// <summary>
         /// 更新出貨核准日
         /// </summary>
@@ -909,29 +1081,58 @@ on h.DLV_HEADER_ID = d.DLV_HEADER_ID";
         public List<PaperRollEditDT> GetRollDetailDT(long dlvHeaderId)
         {
             string cmd = @"
-select 
-DLV_DETAIL_ID as ID,
-DLV_HEADER_ID as DlvHeaderId,
-ROW_NUMBER() OVER(ORDER BY DLV_DETAIL_ID) AS SUB_ID,
-ORDER_NUMBER,
-ORDER_SHIP_NUMBER,
-OSP_BATCH_ID,
-OSP_BATCH_NO,
-INVENTORY_ITEM_ID,
-ITEM_NUMBER,
-TMP_ITEM_ID,
-TMP_ITEM_NUMBER,
-PAPER_TYPE,
-BASIC_WEIGHT,
-SPECIFICATION,
-REQUESTED_PRIMARY_QUANTITY as REQUESTED_QUANTITY,
-(select SUM(PRIMARY_QUANTITY) from DLV_PICKED_T where DLV_HEADER_ID = @DLV_HEADER_ID) as PICKED_QUANTITY,
-REQUESTED_PRIMARY_UOM as REQUESTED_QUANTITY_UOM,
-REQUESTED_TRANSACTION_QUANTITY as SRC_REQUESTED_QUANTITY,
-(select SUM(TRANSACTION_QUANTITY) from DLV_PICKED_T where DLV_HEADER_ID = @DLV_HEADER_ID) as SRC_PICKED_QUANTITY,
-REQUESTED_TRANSACTION_UOM as SRC_REQUESTED_QUANTITY_UOM
-from DLV_DETAIL_T
-where DLV_HEADER_ID = @DLV_HEADER_ID";
+            select
+d.DLV_DETAIL_ID as ID,
+ROW_NUMBER() OVER(ORDER BY d.DLV_DETAIL_ID) AS SUB_ID,
+MIN(d.ORDER_NUMBER) AS ORDER_NUMBER,
+MIN(d.ORDER_SHIP_NUMBER) AS ORDER_SHIP_NUMBER,
+MIN(d.OSP_BATCH_ID) AS OSP_BATCH_ID,
+MIN(d.OSP_BATCH_NO) AS OSP_BATCH_NO,
+MIN(d.INVENTORY_ITEM_ID) AS INVENTORY_ITEM_ID,
+MIN(d.ITEM_NUMBER) AS ITEM_NUMBER,
+MIN(d.TMP_ITEM_ID) AS TMP_ITEM_ID,
+MIN(d.TMP_ITEM_NUMBER) AS TMP_ITEM_NUMBER,
+
+MIN(d.PAPER_TYPE) AS PAPER_TYPE,
+MIN(d.BASIC_WEIGHT) AS BASIC_WEIGHT,
+MIN(d.SPECIFICATION) AS SPECIFICATION,
+
+MIN(d.REQUESTED_TRANSACTION_QUANTITY) AS SRC_REQUESTED_QUANTITY,
+SUM(ISNULL(p.TRANSACTION_QUANTITY, 0)) AS SRC_PICKED_QUANTITY,
+MIN(d.REQUESTED_TRANSACTION_UOM) AS SRC_REQUESTED_QUANTITY_UOM,
+
+MIN(d.REQUESTED_PRIMARY_QUANTITY) as REQUESTED_QUANTITY,
+SUM(ISNULL(p.PRIMARY_QUANTITY, 0)) AS PICKED_QUANTITY,
+MIN(d.REQUESTED_PRIMARY_UOM) AS REQUESTED_QUANTITY_UOM
+
+from DLV_DETAIL_T d
+LEFT JOIN DLV_PICKED_T p ON p.DLV_HEADER_ID = d.DLV_HEADER_ID AND p.DLV_DETAIL_ID = d.DLV_DETAIL_ID
+where d.DLV_HEADER_ID = @DLV_HEADER_ID
+GROUP BY d.DLV_DETAIL_ID";
+            //string cmd = @"
+            //select 
+            //DLV_DETAIL_ID as ID,
+            //DLV_HEADER_ID as DlvHeaderId,
+            //ROW_NUMBER() OVER(ORDER BY DLV_DETAIL_ID) AS SUB_ID,
+            //ORDER_NUMBER,
+            //ORDER_SHIP_NUMBER,
+            //OSP_BATCH_ID,
+            //OSP_BATCH_NO,
+            //INVENTORY_ITEM_ID,
+            //ITEM_NUMBER,
+            //TMP_ITEM_ID,
+            //TMP_ITEM_NUMBER,
+            //PAPER_TYPE,
+            //BASIC_WEIGHT,
+            //SPECIFICATION,
+            //REQUESTED_PRIMARY_QUANTITY as REQUESTED_QUANTITY,
+            //(select SUM(PRIMARY_QUANTITY) from DLV_PICKED_T where DLV_HEADER_ID = @DLV_HEADER_ID) as PICKED_QUANTITY,
+            //REQUESTED_PRIMARY_UOM as REQUESTED_QUANTITY_UOM,
+            //REQUESTED_TRANSACTION_QUANTITY as SRC_REQUESTED_QUANTITY,
+            //(select SUM(TRANSACTION_QUANTITY) from DLV_PICKED_T where DLV_HEADER_ID = @DLV_HEADER_ID) as SRC_PICKED_QUANTITY,
+            //REQUESTED_TRANSACTION_UOM as SRC_REQUESTED_QUANTITY_UOM
+            //from DLV_DETAIL_T
+            //where DLV_HEADER_ID = @DLV_HEADER_ID";
 
             return this.Context.Database.SqlQuery<PaperRollEditDT>(cmd, new SqlParameter("@DLV_HEADER_ID", dlvHeaderId)).ToList();
 
@@ -969,29 +1170,60 @@ where DLV_HEADER_ID = @DLV_HEADER_ID";
         {
             string cmd = @"
 select 
-DLV_DETAIL_ID as ID,
-ROW_NUMBER() OVER(ORDER BY DLV_DETAIL_ID) AS SUB_ID,
-ORDER_NUMBER,
-ORDER_SHIP_NUMBER,
-OSP_BATCH_ID,
-OSP_BATCH_NO,
-INVENTORY_ITEM_ID,
-ITEM_NUMBER,
-TMP_ITEM_ID,
-TMP_ITEM_NUMBER,
-REAM_WEIGHT,
-PACKING_TYPE,
-REQUESTED_PRIMARY_QUANTITY as REQUESTED_QUANTITY,
-(select SUM(PRIMARY_QUANTITY) from DLV_PICKED_T where DLV_HEADER_ID = @DLV_HEADER_ID) as PICKED_QUANTITY,
-REQUESTED_PRIMARY_UOM as REQUESTED_QUANTITY_UOM,
-[REQUESTED_SECONDARY_QUANTITY] as REQUESTED_QUANTITY2,
-(select SUM(SECONDARY_QUANTITY) from DLV_PICKED_T where DLV_HEADER_ID = @DLV_HEADER_ID) as PICKED_QUANTITY2,
-[REQUESTED_SECONDARY_UOM] as REQUESTED_QUANTITY_UOM2,
-REQUESTED_TRANSACTION_QUANTITY as SRC_REQUESTED_QUANTITY,
-(select SUM(TRANSACTION_QUANTITY) from DLV_PICKED_T where DLV_HEADER_ID = @DLV_HEADER_ID) as SRC_PICKED_QUANTITY,
-REQUESTED_TRANSACTION_UOM as SRC_REQUESTED_QUANTITY_UOM
-from DLV_DETAIL_T
-where DLV_HEADER_ID = @DLV_HEADER_ID";
+d.DLV_DETAIL_ID as ID,
+ROW_NUMBER() OVER(ORDER BY d.DLV_DETAIL_ID) AS SUB_ID,
+MIN(d.ORDER_NUMBER) AS ORDER_NUMBER,
+MIN(d.ORDER_SHIP_NUMBER) AS ORDER_SHIP_NUMBER,
+MIN(d.OSP_BATCH_ID) AS OSP_BATCH_ID,
+MIN(d.OSP_BATCH_NO) AS OSP_BATCH_NO,
+MIN(d.INVENTORY_ITEM_ID) AS INVENTORY_ITEM_ID,
+MIN(d.ITEM_NUMBER) AS ITEM_NUMBER,
+MIN(d.TMP_ITEM_ID) AS TMP_ITEM_ID,
+MIN(d.TMP_ITEM_NUMBER) AS TMP_ITEM_NUMBER,
+MIN(d.REAM_WEIGHT) AS REAM_WEIGHT,
+MIN(d.PACKING_TYPE) AS PACKING_TYPE,
+
+MIN(d.REQUESTED_TRANSACTION_QUANTITY) AS SRC_REQUESTED_QUANTITY,
+SUM(ISNULL(p.TRANSACTION_QUANTITY, 0)) AS SRC_PICKED_QUANTITY,
+MIN(d.REQUESTED_TRANSACTION_UOM) AS SRC_REQUESTED_QUANTITY_UOM,
+
+MIN(d.REQUESTED_PRIMARY_QUANTITY) as REQUESTED_QUANTITY,
+SUM(ISNULL(p.PRIMARY_QUANTITY, 0)) AS PICKED_QUANTITY,
+MIN(d.REQUESTED_PRIMARY_UOM) AS REQUESTED_QUANTITY_UOM,
+
+MIN(d.REQUESTED_SECONDARY_QUANTITY) AS REQUESTED_QUANTITY2,
+SUM(ISNULL(p.SECONDARY_QUANTITY, 0)) AS PICKED_QUANTITY2,
+MIN(d.REQUESTED_SECONDARY_UOM) AS REQUESTED_QUANTITY_UOM2
+from DLV_DETAIL_T d
+LEFT JOIN DLV_PICKED_T p ON p.DLV_HEADER_ID = d.DLV_HEADER_ID AND p.DLV_DETAIL_ID = d.DLV_DETAIL_ID
+where d.DLV_HEADER_ID = @DLV_HEADER_ID
+GROUP BY d.DLV_DETAIL_ID";
+
+            //            string cmd = @"
+            //select 
+            //DLV_DETAIL_ID as ID,
+            //ROW_NUMBER() OVER(ORDER BY DLV_DETAIL_ID) AS SUB_ID,
+            //ORDER_NUMBER,
+            //ORDER_SHIP_NUMBER,
+            //OSP_BATCH_ID,
+            //OSP_BATCH_NO,
+            //INVENTORY_ITEM_ID,
+            //ITEM_NUMBER,
+            //TMP_ITEM_ID,
+            //TMP_ITEM_NUMBER,
+            //REAM_WEIGHT,
+            //PACKING_TYPE,
+            //REQUESTED_PRIMARY_QUANTITY as REQUESTED_QUANTITY,
+            //(select SUM(PRIMARY_QUANTITY) from DLV_PICKED_T where DLV_HEADER_ID = @DLV_HEADER_ID) as PICKED_QUANTITY,
+            //REQUESTED_PRIMARY_UOM as REQUESTED_QUANTITY_UOM,
+            //[REQUESTED_SECONDARY_QUANTITY] as REQUESTED_QUANTITY2,
+            //(select SUM(SECONDARY_QUANTITY) from DLV_PICKED_T where DLV_HEADER_ID = @DLV_HEADER_ID) as PICKED_QUANTITY2,
+            //[REQUESTED_SECONDARY_UOM] as REQUESTED_QUANTITY_UOM2,
+            //REQUESTED_TRANSACTION_QUANTITY as SRC_REQUESTED_QUANTITY,
+            //(select SUM(TRANSACTION_QUANTITY) from DLV_PICKED_T where DLV_HEADER_ID = @DLV_HEADER_ID) as SRC_PICKED_QUANTITY,
+            //REQUESTED_TRANSACTION_UOM as SRC_REQUESTED_QUANTITY_UOM
+            //from DLV_DETAIL_T
+            //where DLV_HEADER_ID = @DLV_HEADER_ID";
 
             return this.Context.Database.SqlQuery<FlatEditDT>(cmd, new SqlParameter("@DLV_HEADER_ID", dlvHeaderId)).ToList();
 
@@ -1024,5 +1256,5 @@ where DLV_HEADER_ID = @DLV_HEADER_ID"; ;
         #endregion
     }
 
-   
+
 }
