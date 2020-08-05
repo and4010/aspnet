@@ -20,7 +20,8 @@ $(document).ready(function () {
             "type": "Post",
             "datatype": "json",
             "data": {
-                DlvHeaderId: $("#DlvHeaderId").text()
+                DlvHeaderId: $("#DlvHeaderId").text(),
+                DELIVERY_STATUS_NAME: $("#DELIVERY_STATUS").text()
             },
         },
         columns: [
@@ -279,7 +280,8 @@ $(document).ready(function () {
             "type": "POST",
             "datatype": "json",
             "data": {
-                DlvHeaderId: $("#DlvHeaderId").text()
+                DlvHeaderId: $("#DlvHeaderId").text(),
+                DELIVERY_STATUS_NAME: $("#DELIVERY_STATUS").text()
             },
         },
         columns: [
@@ -316,33 +318,33 @@ $(document).ready(function () {
             buttons: [
                 'selectAll',
                 'selectNone',
-                 {
-                     text: '刪除',
-                     className: 'btn-danger',
-                     action: function () {
-                         var selectedData = FlatBarcodeDataTablesBody.rows('.selected').data();
-                         if (selectedData.length == 0) {
-                             swal.fire("請選擇要刪除的條碼");
-                             return;
-                         }
+                // {
+                //     text: '刪除',
+                //     className: 'btn-danger',
+                //     action: function () {
+                //         var selectedData = FlatBarcodeDataTablesBody.rows('.selected').data();
+                //         if (selectedData.length == 0) {
+                //             swal.fire("請選擇要刪除的條碼");
+                //             return;
+                //         }
 
-                         swal.fire({
-                             title: "條碼資料刪除",
-                             text: "確定刪除嗎?",
-                             type: "warning",
-                             showCancelButton: true,
-                             confirmButtonColor: "#DD6B55",
-                             confirmButtonText: "確定",
-                             cancelButtonText: "取消"
-                         }).then(function (result) {
-                             if (result.value) {
-                                 DeleteBarcode(selectedData);
-                             }
-                         });
+                //         swal.fire({
+                //             title: "條碼資料刪除",
+                //             text: "確定刪除嗎?",
+                //             type: "warning",
+                //             showCancelButton: true,
+                //             confirmButtonColor: "#DD6B55",
+                //             confirmButtonText: "確定",
+                //             cancelButtonText: "取消"
+                //         }).then(function (result) {
+                //             if (result.value) {
+                //                 DeleteBarcode(selectedData);
+                //             }
+                //         });
 
-                     },
-                     enabled: false
-                },
+                //     },
+                //     enabled: false
+                //},
                 {
                     extend: "remove",
                     text: '刪除',

@@ -14,7 +14,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Delivery
         /// 出庫明細歷史ID
         /// </summary>
         /// 
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
         [Required]
         [Column("DLV_DETAIL_HIS_ID")]
@@ -203,15 +203,13 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Delivery
         /// 預計出庫次要數量
         /// </summary>
         /// 
-        [Required]
         [Column("REQUESTED_SECONDARY_QUANTITY")]
-        public decimal RequestedQuantity2 { set; get; }
+        public decimal? RequestedQuantity2 { set; get; }
 
         /// <summary>
         /// 次要單位
         /// </summary>
         /// 
-        [Required]
         [StringLength(3)]
         [Column("REQUESTED_SECONDARY_UOM")]
         public string RequestedQuantityUom2 { set; get; }
@@ -276,6 +274,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Delivery
         /// 建立人員名稱
         /// </summary>
         /// 
+        [StringLength(128)]
         [Required]
         [Column("CREATED_USER_NAME")]
         public string CreatedUserName { set; get; }
@@ -301,6 +300,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Delivery
         /// 更新人員名稱
         /// </summary>
         /// 
+        [StringLength(128)]
         [Column("LAST_UPDATE_USER_NAME")]
         public string LastUpdateUserName { set; get; }
 

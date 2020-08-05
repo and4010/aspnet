@@ -304,42 +304,42 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
         }
 
         //檢查交運單是否揀完
-        public static bool checkDeliveryPickComplete(long DlvHeaderId)
-        {
-            //var query = from data in PaperRollEditData.model
-            //            where data.PICKED_QUANTITY == data.REQUESTED_QUANTITY
-            //            select data;
+        //public static bool checkDeliveryPickComplete(long DlvHeaderId)
+        //{
+        //    //var query = from data in PaperRollEditData.model
+        //    //            where data.PICKED_QUANTITY == data.REQUESTED_QUANTITY
+        //    //            select data;
 
-            //List<PaperRollEditDT> list = query.ToList<PaperRollEditDT>();
-            //if (list.Count > 0 && list.Count == model.Count)
-            //{
-            //    return true;
-            //}
-            //else
-            //{
-            //    return false;
-            //}
+        //    //List<PaperRollEditDT> list = query.ToList<PaperRollEditDT>();
+        //    //if (list.Count > 0 && list.Count == model.Count)
+        //    //{
+        //    //    return true;
+        //    //}
+        //    //else
+        //    //{
+        //    //    return false;
+        //    //}
 
-            var query = from data in PaperRollEditData.model
-                        where data.DlvHeaderId == DlvHeaderId
-                        group data by new { DlvHeaderId = data.DlvHeaderId } into g
-                        select g.Sum(p => p.PICKED_QUANTITY);
+        //    var query = from data in PaperRollEditData.model
+        //                where data.DlvHeaderId == DlvHeaderId
+        //                group data by new { DlvHeaderId = data.DlvHeaderId } into g
+        //                select g.Sum(p => p.PICKED_QUANTITY);
 
-            var query2 = from data in TripHeaderData.source
-                         where data.Id == DlvHeaderId
-                         select data.REQUESTED_QUANTITY;
+        //    var query2 = from data in TripHeaderData.source
+        //                 where data.Id == DlvHeaderId
+        //                 select data.REQUESTED_QUANTITY;
 
-            if (query.ToList()[0] == query2.ToList()[0])
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+        //    if (query.ToList()[0] == query2.ToList()[0])
+        //    {
+        //        return true;
+        //    }
+        //    else
+        //    {
+        //        return false;
+        //    }
 
 
-        }
+        //}
     }
 
     internal class PaperRollEditDTOrder

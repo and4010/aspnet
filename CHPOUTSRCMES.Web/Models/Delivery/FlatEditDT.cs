@@ -102,10 +102,9 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
             return list;
         }
 
-        public List<FlatEditDT> GetFlatDetailDT(DeliveryUOW uow, long DlvHeaderId)
+        public List<FlatEditDT> GetFlatDetailDT(DeliveryUOW uow, long DlvHeaderId, string DELIVERY_STATUS_NAME)
         {
-
-            return uow.GetFlatDetailDT(DlvHeaderId);
+            return uow.GetFlatDetailDT(DlvHeaderId, DELIVERY_STATUS_NAME);
             //var query = from data in PaperRollEditData.model
             //            where data.DlvHeaderId == DlvHeaderId
             //            select data;

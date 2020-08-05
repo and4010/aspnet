@@ -198,6 +198,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Delivery
         /// 建立人員名稱
         /// </summary>
         /// 
+        [StringLength(128)]
         [Required]
         [Column("CREATED_USER_NAME")]
         public string CreatedUserName { set; get; }
@@ -223,6 +224,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Delivery
         /// 更新人員名稱
         /// </summary>
         /// 
+        [StringLength(128)]
         [Column("LAST_UPDATE_USER_NAME")]
         public string LastUpdateUserName { set; get; }
 

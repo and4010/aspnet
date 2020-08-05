@@ -170,6 +170,26 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                     stkTxnTRepositiory.SaveChanges();
                     dlvPickedTRepositiory.SaveChanges();
 
+                    //更新Header狀態
+                    var pickedResult = CheckPicked(dlvHeaderId);
+                    if (!pickedResult.Success)
+                    {
+                        throw new Exception(pickedResult.Msg);
+                    }
+                    var updateDatas = GetDeliveryHeaderDataListFromHeaderId(dlvHeaderId);
+                    if (updateDatas.Count == 0) throw new Exception("找不到交運單資料");
+                    foreach (DLV_HEADER_T data in updateDatas)
+                    {
+                        data.DeliveryStatusCode = pickedResult.Msg;
+                        data.DeliveryStatusName = deliveryStatusCode.GetDesc(pickedResult.Msg);
+                        dlvHeaderTRepositiory.Update(data);
+                        data.LastUpdateBy = addUser;
+                        data.LastUpdateUserName = addUserName;
+                        data.LastUpdateDate = addDate;
+                    }
+                    dlvHeaderTRepositiory.SaveChanges();
+                   
+
                     txn.Commit();
                     return new ResultModel(true, "新增揀貨明細成功");
                 }
@@ -228,7 +248,7 @@ OR SUM(ISNULL(p.SECONDARY_QUANTITY, 0)) <> MIN(d.REQUESTED_SECONDARY_QUANTITY)";
         /// <param name="pickedDataList"></param>
         /// <param name="addUser"></param>
         /// <returns></returns>
-        public ResultModel DelPickDT(List<DLV_PICKED_T> pickedDataList, string addUser)
+        public ResultModel DelPickDT(List<DLV_PICKED_T> pickedDataList, string addUser, string addUserName)
         {
             if (pickedDataList == null || pickedDataList.Count == 0) return new ResultModel(false, "沒有揀貨資料");
             long dlvHeaderId = pickedDataList[0].DlvHeaderId;
@@ -239,6 +259,7 @@ OR SUM(ISNULL(p.SECONDARY_QUANTITY, 0)) <> MIN(d.REQUESTED_SECONDARY_QUANTITY)";
             {
                 try
                 {
+                    var addDate = DateTime.Now;
                     foreach (DLV_PICKED_T data in pickedDataList)
                     {
                         var stock = GetStock(data.Barcode);
@@ -246,7 +267,6 @@ OR SUM(ISNULL(p.SECONDARY_QUANTITY, 0)) <> MIN(d.REQUESTED_SECONDARY_QUANTITY)";
                         STK_TXN_T stkTxnT = CreateStockRecord(stock, null, "", "", null, CategoryCode.Delivery, ActionCode.Deleted, headerData[0].DeliveryName);
                         decimal? priQty = data.PrimaryQuantity;
                         decimal? secQty = data.SecondaryQuantity;
-                        var addDate = DateTime.Now;
                         var updaeStockResult = UpdateStock(stock, stkTxnT, ref priQty, ref secQty, pickSatus, PickStatus.Deleted, addUser, addDate, true);
                         if (!updaeStockResult.Success) throw new Exception(updaeStockResult.Msg);
                         dlvPickedTRepositiory.Delete(data);
@@ -255,6 +275,26 @@ OR SUM(ISNULL(p.SECONDARY_QUANTITY, 0)) <> MIN(d.REQUESTED_SECONDARY_QUANTITY)";
                     stockTRepositiory.SaveChanges();
                     stkTxnTRepositiory.SaveChanges();
                     dlvPickedTRepositiory.SaveChanges();
+
+                    //更新Header狀態
+                    var pickedResult = CheckPicked(dlvHeaderId);
+                    if (!pickedResult.Success)
+                    {
+                        throw new Exception(pickedResult.Msg);
+                    }
+                    var updateDatas = GetDeliveryHeaderDataListFromHeaderId(dlvHeaderId);
+                    if (updateDatas.Count == 0) throw new Exception("找不到交運單資料");
+                    foreach (DLV_HEADER_T data in updateDatas)
+                    {
+                        data.DeliveryStatusCode = pickedResult.Msg;
+                        data.DeliveryStatusName = deliveryStatusCode.GetDesc(pickedResult.Msg);
+                        dlvHeaderTRepositiory.Update(data);
+                        data.LastUpdateBy = addUser;
+                        data.LastUpdateUserName = addUserName;
+                        data.LastUpdateDate = addDate;
+                    }
+                    dlvHeaderTRepositiory.SaveChanges();
+
 
                     txn.Commit();
                     return new ResultModel(true, "刪除揀貨明細成功");
@@ -419,8 +459,8 @@ OR SUM(ISNULL(p.SECONDARY_QUANTITY, 0)) <> MIN(d.REQUESTED_SECONDARY_QUANTITY)";
                     ShipCustomerName = "保吉紙業有限公司",
                     ShipLocationCode = "台南市安南區府安路5段119巷",
                     FreightTermsName = "台南",
-                    DeliveryStatusCode = "1",
-                    DeliveryStatusName = "未印",
+                    DeliveryStatusCode = DeliveryStatusCode.Unprinted,
+                    DeliveryStatusName = deliveryStatusCode.GetDesc(DeliveryStatusCode.Unprinted),
                     TransactionBy = null,
                     TransactionDate = null,
                     AuthorizeBy = null,
@@ -502,8 +542,8 @@ OR SUM(ISNULL(p.SECONDARY_QUANTITY, 0)) <> MIN(d.REQUESTED_SECONDARY_QUANTITY)";
                     ShipCustomerName = "保吉紙業有限公司",
                     ShipLocationCode = "台南市安南區府安路5段119巷",
                     FreightTermsName = "台南",
-                    DeliveryStatusCode = "1",
-                    DeliveryStatusName = "未印",
+                    DeliveryStatusCode = DeliveryStatusCode.Unprinted,
+                    DeliveryStatusName = deliveryStatusCode.GetDesc(DeliveryStatusCode.Unprinted),
                     TransactionBy = null,
                     TransactionDate = null,
                     AuthorizeBy = null,
@@ -583,8 +623,8 @@ OR SUM(ISNULL(p.SECONDARY_QUANTITY, 0)) <> MIN(d.REQUESTED_SECONDARY_QUANTITY)";
                     ShipCustomerName = "中華彩色印刷股份有限公司",
                     ShipLocationCode = "新北市新店區寶橋路229號",
                     FreightTermsName = "台北",
-                    DeliveryStatusCode = "1",
-                    DeliveryStatusName = "未印",
+                    DeliveryStatusCode = DeliveryStatusCode.Unprinted,
+                    DeliveryStatusName = deliveryStatusCode.GetDesc(DeliveryStatusCode.Unprinted),
                     TransactionBy = null,
                     TransactionDate = null,
                     AuthorizeBy = null,
@@ -617,11 +657,11 @@ OR SUM(ISNULL(p.SECONDARY_QUANTITY, 0)) <> MIN(d.REQUESTED_SECONDARY_QUANTITY)";
                     GrainDirection = "L",
                     LocatorId = null,
                     LocatorCode = null,
-                    SrcRequestedQuantity = 0.37489M,
+                    SrcRequestedQuantity = 0.1M,
                     SrcRequestedQuantityUom = "MT",
-                    RequestedQuantity = 374.8945M,
+                    RequestedQuantity = 100M,
                     RequestedQuantityUom = "KG",
-                    RequestedQuantity2 = 19,
+                    RequestedQuantity2 = 50,
                     RequestedQuantityUom2 = "RE",
                     OspBatchId = 2,
                     OspBatchNo = "P2010087",
@@ -663,8 +703,8 @@ OR SUM(ISNULL(p.SECONDARY_QUANTITY, 0)) <> MIN(d.REQUESTED_SECONDARY_QUANTITY)";
                     ShipCustomerName = "中華彩色印刷股份有限公司",
                     ShipLocationCode = "新北市新店區寶橋路229號",
                     FreightTermsName = "台北",
-                    DeliveryStatusCode = "1",
-                    DeliveryStatusName = "未印",
+                    DeliveryStatusCode = DeliveryStatusCode.Unprinted,
+                    DeliveryStatusName = deliveryStatusCode.GetDesc(DeliveryStatusCode.Unprinted),
                     TransactionBy = null,
                     TransactionDate = null,
                     AuthorizeBy = null,
@@ -815,68 +855,88 @@ OR SUM(ISNULL(p.SECONDARY_QUANTITY, 0)) <> MIN(d.REQUESTED_SECONDARY_QUANTITY)";
             List<SqlParameter> sqlParameterList = new List<SqlParameter>();
             List<string> cond = new List<string>();
             string prefixCmd = @"
-select CONVERT(char(10), h.AUTHORIZE_DATE,126) as AUTHORIZE_DATE,
-h.CUSTOMER_LOCATION_CODE,
-h.CUSTOMER_NAME,
-h.DELIVERY_NAME,
-h.DELIVERY_STATUS_NAME as DELIVERY_STATUS,
-h.ITEM_CATEGORY as DetailType,
-h.FREIGHT_TERMS_NAME,
-h.DLV_HEADER_ID as Id,
-h.NOTE,
-h.SUBINVENTORY_CODE,
-h.SHIP_CUSTOMER_NAME,
-h.SHIP_LOCATION_CODE,
-h.TRIP_ACTUAL_SHIP_DATE,
-h.TRANSACTION_DATE,
-h.TRIP_CAR,
-h.TRIP_ID,
-h.TRIP_NAME,
-d.REQUESTED_PRIMARY_QUANTITY,
-d.REQUESTED_PRIMARY_UOM,
-d.REQUESTED_SECONDARY_QUANTITY,
-d.REQUESTED_SECONDARY_UOM,
-d.REQUESTED_TRANSACTION_QUANTITY,
-d.REQUESTED_TRANSACTION_UOM,
-ROW_NUMBER() OVER(ORDER BY h.DLV_HEADER_ID) AS SUB_ID
-from DLV_HEADER_T h
-inner join DLV_DETAIL_T d
-on h.DLV_HEADER_ID = d.DLV_HEADER_ID";
+select CONVERT(char(10), AUTHORIZE_DATE,126) as AUTHORIZE_DATE,
+CUSTOMER_LOCATION_CODE,
+CUSTOMER_NAME,
+DELIVERY_NAME,
+DELIVERY_STATUS_NAME as DELIVERY_STATUS,
+ITEM_CATEGORY as DetailType,
+FREIGHT_TERMS_NAME,
+DLV_HEADER_ID as Id,
+NOTE,
+SUBINVENTORY_CODE,
+SHIP_CUSTOMER_NAME,
+SHIP_LOCATION_CODE,
+TRIP_ACTUAL_SHIP_DATE,
+TRANSACTION_DATE,
+TRIP_CAR,
+TRIP_ID,
+TRIP_NAME,
+ROW_NUMBER() OVER(ORDER BY DLV_HEADER_ID) AS SUB_ID
+from DLV_HEADER_T";
+            //            string prefixCmd = @"
+            //select CONVERT(char(10), h.AUTHORIZE_DATE,126) as AUTHORIZE_DATE,
+            //h.CUSTOMER_LOCATION_CODE,
+            //h.CUSTOMER_NAME,
+            //h.DELIVERY_NAME,
+            //h.DELIVERY_STATUS_NAME as DELIVERY_STATUS,
+            //h.ITEM_CATEGORY as DetailType,
+            //h.FREIGHT_TERMS_NAME,
+            //h.DLV_HEADER_ID as Id,
+            //h.NOTE,
+            //h.SUBINVENTORY_CODE,
+            //h.SHIP_CUSTOMER_NAME,
+            //h.SHIP_LOCATION_CODE,
+            //h.TRIP_ACTUAL_SHIP_DATE,
+            //h.TRANSACTION_DATE,
+            //h.TRIP_CAR,
+            //h.TRIP_ID,
+            //h.TRIP_NAME,
+            //d.REQUESTED_PRIMARY_QUANTITY,
+            //d.REQUESTED_PRIMARY_UOM,
+            //d.REQUESTED_SECONDARY_QUANTITY,
+            //d.REQUESTED_SECONDARY_UOM,
+            //d.REQUESTED_TRANSACTION_QUANTITY,
+            //d.REQUESTED_TRANSACTION_UOM,
+            //ROW_NUMBER() OVER(ORDER BY h.DLV_HEADER_ID) AS SUB_ID
+            //from DLV_HEADER_T h
+            //inner join DLV_DETAIL_T d
+            //on h.DLV_HEADER_ID = d.DLV_HEADER_ID";
 
             if (shipBeginDateStatus != false)
             {
-                cond.Add("@shipBeginDate <= h.TRIP_ACTUAL_SHIP_DATE");
+                cond.Add("@shipBeginDate <= TRIP_ACTUAL_SHIP_DATE");
                 sqlParameterList.Add(SqlParamHelper.GetDataTime("@shipBeginDate", shipBeginDate));
             }
 
             if (shipEndDateStatus != false)
             {
-                cond.Add("h.TRIP_ACTUAL_SHIP_DATE <= @shipEndDate");
+                cond.Add("TRIP_ACTUAL_SHIP_DATE <= @shipEndDate");
                 sqlParameterList.Add(SqlParamHelper.GetDataTime("@shipEndDate", shipEndDate));
             }
             if (DeliveryName != "")
             {
-                cond.Add("h.DELIVERY_NAME = @DeliveryName");
+                cond.Add("DELIVERY_NAME = @DeliveryName");
                 sqlParameterList.Add(new SqlParameter("@DeliveryName", DeliveryName));
             }
             if (SelectedSubinventory != "*")
             {
-                cond.Add("h.SUBINVENTORY_CODE = @SelectedSubinventory");
+                cond.Add("SUBINVENTORY_CODE = @SelectedSubinventory");
                 sqlParameterList.Add(SqlParamHelper.R.SubinventoryCode("@SelectedSubinventory", SelectedSubinventory));
             }
             if (SelectedTrip != "*")
             {
-                cond.Add("h.TRIP_ID = @tripId");
+                cond.Add("TRIP_ID = @tripId");
                 sqlParameterList.Add(new SqlParameter("@tripId", tripId));
             }
             if (transactionDateStatus != false)
             {
-                cond.Add("h.TRANSACTION_DATE <= @tdate");
+                cond.Add("TRANSACTION_DATE = @tdate");
                 sqlParameterList.Add(SqlParamHelper.GetDataTime("@tdate", tdate));
             }
             if (SelectedDeliveryStatus != "*")
             {
-                cond.Add("h.DELIVERY_STATUS_CODE <= @SelectedDeliveryStatus");
+                cond.Add("DELIVERY_STATUS_CODE = @SelectedDeliveryStatus");
                 sqlParameterList.Add(new SqlParameter("@SelectedDeliveryStatus", SelectedDeliveryStatus));
             }
 
@@ -991,15 +1051,15 @@ on h.DLV_HEADER_ID = d.DLV_HEADER_ID";
         {
             return dlvPickedTRepositiory.GetAll().Where(x => dlvPickedId.Contains(x.DlvPickedId)).ToList();
         }
-        
+
 
         /// <summary>
-        /// 更新交運單狀態
+        /// 變更出貨申請
         /// </summary>
         /// <param name="updateDatas"></param>
         /// <param name="deliveryStatusCode"></param>
         /// <returns></returns>
-        public ResultModel UpdateDeliveryStatus(List<DLV_HEADER_T> updateDatas, string statusCode)
+        public ResultModel ChangeDeliveryConfirm(List<DLV_HEADER_T> updateDatas, string statusCode, string userId, string userName)
         {
             if (updateDatas == null) return new ResultModel(false, "沒有交運單資料");
             if (updateDatas.Count == 0) return new ResultModel(false, "沒有交運單資料");
@@ -1007,11 +1067,263 @@ on h.DLV_HEADER_ID = d.DLV_HEADER_ID";
             {
                 try
                 {
+                    DateTime now = DateTime.Now;
+                    foreach (DLV_HEADER_T data in updateDatas)
+                    {
+                        data.TransactionDate = now;
+                        data.TransactionBy = userId;
+                        data.TransactionByUserNmae = userName;
+                        data.DeliveryStatusCode = statusCode;
+                        data.DeliveryStatusName = deliveryStatusCode.GetDesc(statusCode);
+                        dlvHeaderTRepositiory.Update(data);
+                        data.LastUpdateBy = userId;
+                        data.LastUpdateUserName = userName;
+                        data.LastUpdateDate = now;
+                    }
+                    dlvHeaderTRepositiory.SaveChanges();
+                    txn.Commit();
+                    return new ResultModel(true, "變更出貨申請成功");
+                }
+                catch (Exception ex)
+                {
+                    logger.Error(LogUtilities.BuildExceptionMessage(ex));
+                    txn.Rollback();
+                    return new ResultModel(false, "變更出貨申請失敗:" + ex.Message);
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// 出貨核准
+        /// </summary>
+        /// <param name="updateDatas">要核准的Header資料</param>
+        /// <param name="authorizeDate">核准日期</param>
+        /// <param name="userId"></param>
+        /// <param name="userName"></param>
+        /// <returns></returns>
+        public ResultModel DeliveryAuthorize(List<DLV_HEADER_T> updateDatas, DateTime authorizeDate, string userId, string userName)
+        {
+            if (updateDatas == null || updateDatas.Count == 0) return new ResultModel(false, "沒有交運單資料");
+            using (var txn = this.Context.Database.BeginTransaction())
+            {
+                try
+                {
+                    DateTime now = DateTime.Now;
+                    string deliveryStatusName = deliveryStatusCode.GetDesc(DeliveryStatusCode.Shipped);
+                    //改出貨核准日期、狀態改為已出貨
+                    foreach (DLV_HEADER_T data in updateDatas)
+                    {
+                        //更新出貨檔頭
+                        data.AuthorizeBy = userId;
+                        data.AuthorizeByUserName = userName;
+                        data.AuthorizeDate = authorizeDate;
+                        data.DeliveryStatusCode = DeliveryStatusCode.Shipped;
+                        data.DeliveryStatusName = deliveryStatusName;
+                        data.LastUpdateBy = userId;
+                        data.LastUpdateUserName = userName;
+                        data.LastUpdateDate = now;
+                        dlvHeaderTRepositiory.Update(data);
+
+                        //複製出貨明細資料到出貨歷史明細
+                        string cmd = @"
+INSERT INTO [DLV_DETAIL_HT]
+(
+	[DLV_DETAIL_ID]
+      ,[DLV_HEADER_ID]
+      ,[Order_Number]
+      ,[ORDER_LINE_ID]
+      ,[ORDER_SHIP_NUMBER]
+      ,[PACKING_TYPE]
+      ,[INVENTORY_ITEM_ID]
+      ,[ITEM_NUMBER]
+      ,[ITEM_DESCRIPTION]
+      ,[REAM_WEIGHT]
+      ,[ITEM_CATEGORY]
+      ,[PAPER_TYPE]
+      ,[BASIC_WEIGHT]
+      ,[SPECIFICATION]
+      ,[GRAIN_DIRECTION]
+      ,[LOCATOR_ID]
+      ,[LOCATOR_CODE]
+      ,[REQUESTED_TRANSACTION_QUANTITY]
+      ,[REQUESTED_TRANSACTION_UOM]
+      ,[REQUESTED_PRIMARY_QUANTITY]
+      ,[REQUESTED_PRIMARY_UOM]
+      ,[REQUESTED_SECONDARY_QUANTITY]
+      ,[REQUESTED_SECONDARY_UOM]
+      ,[OSP_BATCH_ID]
+      ,[OSP_BATCH_NO]
+      ,[OSP_BATCH_TYPE]
+      ,[TMP_ITEM_ID]
+      ,[TMP_ITEM_NUMBER]
+      ,[TMP_ITEM_DESCRIPTION]
+      ,[CREATED_BY]
+      ,[CREATED_USER_NAME]
+      ,[CREATION_DATE]
+      ,[LAST_UPDATE_BY]
+      ,[LAST_UPDATE_USER_NAME]
+      ,[LAST_UPDATE_DATE]
+)
+SELECT [DLV_DETAIL_ID]
+      ,[DLV_HEADER_ID]
+      ,[Order_Number]
+      ,[ORDER_LINE_ID]
+      ,[ORDER_SHIP_NUMBER]
+      ,[PACKING_TYPE]
+      ,[INVENTORY_ITEM_ID]
+      ,[ITEM_NUMBER]
+      ,[ITEM_DESCRIPTION]
+      ,[REAM_WEIGHT]
+      ,[ITEM_CATEGORY]
+      ,[PAPER_TYPE]
+      ,[BASIC_WEIGHT]
+      ,[SPECIFICATION]
+      ,[GRAIN_DIRECTION]
+      ,[LOCATOR_ID]
+      ,[LOCATOR_CODE]
+      ,[REQUESTED_TRANSACTION_QUANTITY]
+      ,[REQUESTED_TRANSACTION_UOM]
+      ,[REQUESTED_PRIMARY_QUANTITY]
+      ,[REQUESTED_PRIMARY_UOM]
+      ,[REQUESTED_SECONDARY_QUANTITY]
+      ,[REQUESTED_SECONDARY_UOM]
+      ,[OSP_BATCH_ID]
+      ,[OSP_BATCH_NO]
+      ,[OSP_BATCH_TYPE]
+      ,[TMP_ITEM_ID]
+      ,[TMP_ITEM_NUMBER]
+      ,[TMP_ITEM_DESCRIPTION]
+      ,[CREATED_BY]
+      ,[CREATED_USER_NAME]
+      ,[CREATION_DATE]
+      ,[LAST_UPDATE_BY]
+      ,[LAST_UPDATE_USER_NAME]
+      ,[LAST_UPDATE_DATE]
+  FROM [DLV_DETAIL_T]
+  WHERE DLV_HEADER_ID = @DLV_HEADER_ID
+";
+                        if (this.Context.Database.ExecuteSqlCommand(cmd, new SqlParameter("@DLV_HEADER_ID", data.DlvHeaderId)) <= 0)
+                        {
+                            throw new Exception("複製出貨明細資料到出貨歷史明細失敗");
+                        }
+                        //刪除出貨明細資料
+                        cmd = @"
+  DELETE FROM [DLV_DETAIL_T]
+  WHERE DLV_HEADER_ID = @DLV_HEADER_ID";
+                        if (this.Context.Database.ExecuteSqlCommand(cmd, new SqlParameter("@DLV_HEADER_ID", data.DlvHeaderId)) <= 0)
+                        {
+                            throw new Exception("刪除出貨明細資料失敗");
+                        }
+                        //複製出貨揀貨資料到出貨歷史揀貨
+                        cmd = @"
+INSERT INTO [DLV_PICKED_HT](
+[DLV_PICKED_ID]
+      ,[DLV_DETAIL_ID]
+      ,[DLV_HEADER_ID]
+      ,[STOCK_ID]
+      ,[STATUS]
+      ,[LOCATOR_ID]
+      ,[LOCATOR_CODE]
+      ,[INVENTORY_ITEM_ID]
+      ,[ITEM_NUMBER]
+      ,[PACKING_TYPE]
+      ,[REAM_WEIGHT]
+      ,[BARCODE]
+      ,[TRANSACTION_QUANTITY]
+      ,[TRANSACTION_UOM]
+      ,[PRIMARY_QUANTITY]
+      ,[PRIMARY_UOM]
+      ,[SECONDARY_QUANTITY]
+      ,[SECONDARY_UOM]
+      ,[LOT_NUMBER]
+      ,[LOT_QUANTITY]
+      ,[CREATED_BY]
+      ,[CREATED_USER_NAME]
+      ,[CREATION_DATE]
+      ,[LAST_UPDATE_BY]
+      ,[LAST_UPDATE_USER_NAME]
+      ,[LAST_UPDATE_DATE]
+)
+SELECT [DLV_PICKED_ID]
+      ,[DLV_DETAIL_ID]
+      ,[DLV_HEADER_ID]
+      ,[STOCK_ID]
+      ,[STATUS]
+      ,[LOCATOR_ID]
+      ,[LOCATOR_CODE]
+      ,[INVENTORY_ITEM_ID]
+      ,[ITEM_NUMBER]
+      ,[PACKING_TYPE]
+      ,[REAM_WEIGHT]
+      ,[BARCODE]
+      ,[TRANSACTION_QUANTITY]
+      ,[TRANSACTION_UOM]
+      ,[PRIMARY_QUANTITY]
+      ,[PRIMARY_UOM]
+      ,[SECONDARY_QUANTITY]
+      ,[SECONDARY_UOM]
+      ,[LOT_NUMBER]
+      ,[LOT_QUANTITY]
+      ,[CREATED_BY]
+      ,[CREATED_USER_NAME]
+      ,[CREATION_DATE]
+      ,[LAST_UPDATE_BY]
+      ,[LAST_UPDATE_USER_NAME]
+      ,[LAST_UPDATE_DATE]
+  FROM [DLV_PICKED_T]
+  WHERE DLV_HEADER_ID = @DLV_HEADER_ID";
+                        if (this.Context.Database.ExecuteSqlCommand(cmd, new SqlParameter("@DLV_HEADER_ID", data.DlvHeaderId)) <= 0)
+                        {
+                            throw new Exception("複製出貨揀貨資料到出貨歷史揀貨失敗");
+                        }
+                        //刪除出貨明細資料
+                        cmd = @"
+  DELETE FROM [DLV_PICKED_T]
+  WHERE DLV_HEADER_ID = @DLV_HEADER_ID";
+                        if (this.Context.Database.ExecuteSqlCommand(cmd, new SqlParameter("@DLV_HEADER_ID", data.DlvHeaderId)) <= 0)
+                        {
+                            throw new Exception("刪除出貨揀貨資料失敗");
+                        }
+                    }
+
+                    dlvHeaderTRepositiory.SaveChanges();
+
+                    txn.Commit();
+                    return new ResultModel(true, "出貨核准成功");
+                }
+                catch (Exception ex)
+                {
+                    logger.Error(LogUtilities.BuildExceptionMessage(ex));
+                    txn.Rollback();
+                    return new ResultModel(false, "出貨核准失敗:" + ex.Message);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 更新交運單狀態
+        /// </summary>
+        /// <param name="updateDatas"></param>
+        /// <param name="deliveryStatusCode"></param>
+        /// <returns></returns>
+        public ResultModel UpdateDeliveryStatus(List<DLV_HEADER_T> updateDatas, string statusCode, string userId, string userName)
+        {
+            if (updateDatas == null) return new ResultModel(false, "沒有交運單資料");
+            if (updateDatas.Count == 0) return new ResultModel(false, "沒有交運單資料");
+            using (var txn = this.Context.Database.BeginTransaction())
+            {
+                try
+                {
+                    DateTime now = DateTime.Now;
                     foreach (DLV_HEADER_T data in updateDatas)
                     {
                         data.DeliveryStatusCode = statusCode;
                         data.DeliveryStatusName = deliveryStatusCode.GetDesc(statusCode);
                         dlvHeaderTRepositiory.Update(data);
+                        data.LastUpdateBy = userId;
+                        data.LastUpdateUserName = userName;
+                        data.LastUpdateDate = now;
                     }
                     dlvHeaderTRepositiory.SaveChanges();
                     txn.Commit();
@@ -1021,7 +1333,7 @@ on h.DLV_HEADER_ID = d.DLV_HEADER_ID";
                 {
                     logger.Error(LogUtilities.BuildExceptionMessage(ex));
                     txn.Rollback();
-                    return new ResultModel(true, "交運單狀態更新失敗:" + ex.Message);
+                    return new ResultModel(false, "交運單狀態更新失敗:" + ex.Message);
                 }
             }
         }
@@ -1033,7 +1345,7 @@ on h.DLV_HEADER_ID = d.DLV_HEADER_ID";
         /// </summary>
         /// <param name="selectDatas"></param>
         /// <returns></returns>
-        public ResultModel UpdateTransactionAuthorizeDates(TripDetailDTEditor selectDatas)
+        public ResultModel UpdateTransactionAuthorizeDates(TripDetailDTEditor selectDatas, string userId, string userName)
         {
             //List<TripHeaderDT> result = new List<TripHeaderDT>();
 
@@ -1043,18 +1355,21 @@ on h.DLV_HEADER_ID = d.DLV_HEADER_ID";
             {
                 try
                 {
+                    DateTime now = DateTime.Now;
                     foreach (var selectData in selectDatas.TripDetailDTList)
                     {
                         var updateDatas = dlvHeaderTRepositiory.GetAll().AsNoTracking().Where(x => x.TripId == selectData.TRIP_ID).ToList();
                         if (updateDatas.Count == 0)
                         {
-                            continue;
+                            throw new Exception("無法取得航程號資料");
                         }
 
                         foreach (DLV_HEADER_T data in updateDatas)
                         {
                             data.AuthorizeDate = Convert.ToDateTime(selectData.AUTHORIZE_DATE);
-                            //result.Add(data);
+                            data.LastUpdateBy = userId;
+                            data.LastUpdateUserName = userName;
+                            data.LastUpdateDate = now;
                             dlvHeaderTRepositiory.Update(data);
                         }
                     }
@@ -1166,9 +1481,45 @@ where DLV_HEADER_ID = @DLV_HEADER_ID";
         /// </summary>
         /// <param name="dlvHeaderId"></param>
         /// <returns></returns>
-        public List<FlatEditDT> GetFlatDetailDT(long dlvHeaderId)
+        public List<FlatEditDT> GetFlatDetailDT(long dlvHeaderId,string DELIVERY_STATUS_NAME)
         {
-            string cmd = @"
+            string cmd = "";
+            if (DELIVERY_STATUS_NAME == deliveryStatusCode.GetDesc(DeliveryStatusCode.Shipped))
+            {
+                cmd = @"
+select 
+d.DLV_DETAIL_ID as ID,
+ROW_NUMBER() OVER(ORDER BY d.DLV_DETAIL_ID) AS SUB_ID,
+MIN(d.ORDER_NUMBER) AS ORDER_NUMBER,
+MIN(d.ORDER_SHIP_NUMBER) AS ORDER_SHIP_NUMBER,
+MIN(d.OSP_BATCH_ID) AS OSP_BATCH_ID,
+MIN(d.OSP_BATCH_NO) AS OSP_BATCH_NO,
+MIN(d.INVENTORY_ITEM_ID) AS INVENTORY_ITEM_ID,
+MIN(d.ITEM_NUMBER) AS ITEM_NUMBER,
+MIN(d.TMP_ITEM_ID) AS TMP_ITEM_ID,
+MIN(d.TMP_ITEM_NUMBER) AS TMP_ITEM_NUMBER,
+MIN(d.REAM_WEIGHT) AS REAM_WEIGHT,
+MIN(d.PACKING_TYPE) AS PACKING_TYPE,
+
+MIN(d.REQUESTED_TRANSACTION_QUANTITY) AS SRC_REQUESTED_QUANTITY,
+SUM(ISNULL(p.TRANSACTION_QUANTITY, 0)) AS SRC_PICKED_QUANTITY,
+MIN(d.REQUESTED_TRANSACTION_UOM) AS SRC_REQUESTED_QUANTITY_UOM,
+
+MIN(d.REQUESTED_PRIMARY_QUANTITY) as REQUESTED_QUANTITY,
+SUM(ISNULL(p.PRIMARY_QUANTITY, 0)) AS PICKED_QUANTITY,
+MIN(d.REQUESTED_PRIMARY_UOM) AS REQUESTED_QUANTITY_UOM,
+
+MIN(d.REQUESTED_SECONDARY_QUANTITY) AS REQUESTED_QUANTITY2,
+SUM(ISNULL(p.SECONDARY_QUANTITY, 0)) AS PICKED_QUANTITY2,
+MIN(d.REQUESTED_SECONDARY_UOM) AS REQUESTED_QUANTITY_UOM2
+from DLV_DETAIL_HT d
+LEFT JOIN DLV_PICKED_HT p ON p.DLV_HEADER_ID = d.DLV_HEADER_ID AND p.DLV_DETAIL_ID = d.DLV_DETAIL_ID
+where d.DLV_HEADER_ID = @DLV_HEADER_ID
+GROUP BY d.DLV_DETAIL_ID";
+            }
+            else
+            {
+                cmd = @"
 select 
 d.DLV_DETAIL_ID as ID,
 ROW_NUMBER() OVER(ORDER BY d.DLV_DETAIL_ID) AS SUB_ID,
@@ -1198,6 +1549,8 @@ from DLV_DETAIL_T d
 LEFT JOIN DLV_PICKED_T p ON p.DLV_HEADER_ID = d.DLV_HEADER_ID AND p.DLV_DETAIL_ID = d.DLV_DETAIL_ID
 where d.DLV_HEADER_ID = @DLV_HEADER_ID
 GROUP BY d.DLV_DETAIL_ID";
+            }
+           
 
             //            string cmd = @"
             //select 

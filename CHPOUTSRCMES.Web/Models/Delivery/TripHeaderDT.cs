@@ -80,24 +80,24 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
         public decimal SRC_REQUESTED_QUANTITY { get; set; }
 
 
-        [Display(Name = "訂單主單位")]
-        public string SRC_REQUESTED_QUANTITY_UOM { get; set; }
+        //[Display(Name = "訂單主單位")]
+        //public string SRC_REQUESTED_QUANTITY_UOM { get; set; }
 
 
-        [Display(Name = "預計出庫輔數量")]
-        public decimal REQUESTED_QUANTITY2 { get; set; }
+        //[Display(Name = "預計出庫輔數量")]
+        //public decimal REQUESTED_QUANTITY2 { get; set; }
 
 
-        [Display(Name = "輔單位(RE)")]
-        public string REQUESTED_QUANTITY_UOM2 { get; set; }
+        //[Display(Name = "輔單位(RE)")]
+        //public string REQUESTED_QUANTITY_UOM2 { get; set; }
 
 
-        [Display(Name = "預計出庫量")]
-        public decimal REQUESTED_QUANTITY { get; set; }
+        //[Display(Name = "預計出庫量")]
+        //public decimal REQUESTED_QUANTITY { get; set; }
 
 
-        [Display(Name = "庫存單位(KG)")]
-        public string REQUESTED_QUANTITY_UOM { get; set; }
+        //[Display(Name = "庫存單位(KG)")]
+        //public string REQUESTED_QUANTITY_UOM { get; set; }
 
 
         [Display(Name = "出貨倉庫")]
@@ -155,171 +155,171 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
             //model = new List<TripDetailDT>();
         }
 
-        public static void AddDefaultData()
-        {
-            #region 產生資料
-            source = new List<TripHeaderDT>();
-            #region 平版
-            source.Add(new TripHeaderDT()
-            {
-                Id = 1,
-                //ORG_ID = 1,
-                CUSTOMER_LOCATION_CODE = "福安印刷",
-                CUSTOMER_NAME = "保吉",
-                SHIP_LOCATION_CODE = "台南市安南區府安路5段119巷",
-                SHIP_CUSTOMER_NAME = "保吉紙業有限公司",
-                TRIP_ID = 1,
-                DELIVERY_NAME = "FTY1912000547",
-                TRIP_CAR = "PN01",
-                FREIGHT_TERMS_NAME = "台南",
-                //ITEM_DESCRIPTION = "A001",
-                //ORDER_NUMBER = 1,
-                //ORDER_SHIP_NUMBER = "OSN001",
-                DELIVERY_STATUS = "未印",
-                DetailType = "平版",
-                //PAPER_TYPE = "塗佈白紙板",
-                //BASIC_WEIGHT = "03500",
-                //SPECIFICATION = "214K512K",
-                //GRAIN_DIRECTION = "L",
-                //PACKING_TYPE = "無令打件",
-                //訂單原始數量
-                SRC_REQUESTED_QUANTITY = 1.33742M,
-                //訂單主單位
-                SRC_REQUESTED_QUANTITY_UOM = "MT",
-                //預計出庫輔數量
-                REQUESTED_QUANTITY2 = 50,
-                //輔單位(RE)
-                REQUESTED_QUANTITY_UOM2 = "RE",
-                //預計出庫量
-                REQUESTED_QUANTITY = 1337.419M,
-                //庫存單位(KG)
-                REQUESTED_QUANTITY_UOM = "KG",
-                //出貨倉庫
-                SUBINVENTORY_CODE = "TB2",
-                //出貨倉庫名稱
-                //SUBINVENTORY_NAME = "TB2",
-                //組車日
-                TRIP_ACTUAL_SHIP_DATE = Convert.ToDateTime("2019-12-26"),
-                //航程號
-                TRIP_NAME = "Y191226-1036357",
-                //預計出貨確認日
-                TRANSACTION_DATE = Convert.ToDateTime("2019-12-26"),
-                //出貨核准日
-                AUTHORIZE_DATE = "2019-12-26",
-                //備註
-                NOTE = "FT1.P9B0288",
-            });
-            #endregion
+        //public static void AddDefaultData()
+        //{
+        //    #region 產生資料
+        //    source = new List<TripHeaderDT>();
+        //    #region 平版
+        //    source.Add(new TripHeaderDT()
+        //    {
+        //        Id = 1,
+        //        //ORG_ID = 1,
+        //        CUSTOMER_LOCATION_CODE = "福安印刷",
+        //        CUSTOMER_NAME = "保吉",
+        //        SHIP_LOCATION_CODE = "台南市安南區府安路5段119巷",
+        //        SHIP_CUSTOMER_NAME = "保吉紙業有限公司",
+        //        TRIP_ID = 1,
+        //        DELIVERY_NAME = "FTY1912000547",
+        //        TRIP_CAR = "PN01",
+        //        FREIGHT_TERMS_NAME = "台南",
+        //        //ITEM_DESCRIPTION = "A001",
+        //        //ORDER_NUMBER = 1,
+        //        //ORDER_SHIP_NUMBER = "OSN001",
+        //        DELIVERY_STATUS = "未印",
+        //        DetailType = "平版",
+        //        //PAPER_TYPE = "塗佈白紙板",
+        //        //BASIC_WEIGHT = "03500",
+        //        //SPECIFICATION = "214K512K",
+        //        //GRAIN_DIRECTION = "L",
+        //        //PACKING_TYPE = "無令打件",
+        //        //訂單原始數量
+        //        SRC_REQUESTED_QUANTITY = 1.33742M,
+        //        //訂單主單位
+        //        SRC_REQUESTED_QUANTITY_UOM = "MT",
+        //        //預計出庫輔數量
+        //        REQUESTED_QUANTITY2 = 50,
+        //        //輔單位(RE)
+        //        REQUESTED_QUANTITY_UOM2 = "RE",
+        //        //預計出庫量
+        //        REQUESTED_QUANTITY = 1337.419M,
+        //        //庫存單位(KG)
+        //        REQUESTED_QUANTITY_UOM = "KG",
+        //        //出貨倉庫
+        //        SUBINVENTORY_CODE = "TB2",
+        //        //出貨倉庫名稱
+        //        //SUBINVENTORY_NAME = "TB2",
+        //        //組車日
+        //        TRIP_ACTUAL_SHIP_DATE = Convert.ToDateTime("2019-12-26"),
+        //        //航程號
+        //        TRIP_NAME = "Y191226-1036357",
+        //        //預計出貨確認日
+        //        TRANSACTION_DATE = Convert.ToDateTime("2019-12-26"),
+        //        //出貨核准日
+        //        AUTHORIZE_DATE = "2019-12-26",
+        //        //備註
+        //        NOTE = "FT1.P9B0288",
+        //    });
+        //    #endregion
 
-            #region 捲筒
-            source.Add(new TripHeaderDT()
-            {
-                Id = 2,
-                //ORG_ID = 7,
-                CUSTOMER_LOCATION_CODE = "中華彩色",
-                CUSTOMER_NAME = "中華彩色",
-                SHIP_LOCATION_CODE = "新北市新店區寶橋路229號",
-                SHIP_CUSTOMER_NAME = "中華彩色印刷股份有限公司",
-                TRIP_ID = 2,
-                DELIVERY_NAME = "FTY2001000140",
-                TRIP_CAR = "PTB2",
-                FREIGHT_TERMS_NAME = "台北",
-                //ITEM_DESCRIPTION = "A006",
-                //ORDER_NUMBER = 6,
-                //ORDER_SHIP_NUMBER = "OSN006",
-                DELIVERY_STATUS = "未印",
-                DetailType = "平版",
-                //PAPER_TYPE = "塗佈白紙板",
-                //BASIC_WEIGHT = "03500",
-                //SPECIFICATION = "214K512K",
-                //GRAIN_DIRECTION = "L",
-                //PACKING_TYPE = "無令打件",
-                //訂單原始數量
-                SRC_REQUESTED_QUANTITY = 0.37489M,
-                //訂單主單位
-                SRC_REQUESTED_QUANTITY_UOM = "MT",
-                //預計出庫輔數量
-                REQUESTED_QUANTITY2 = 19,
-                //輔單位(RE)
-                REQUESTED_QUANTITY_UOM2 = "RE",
-                //預計出庫量
-                REQUESTED_QUANTITY = 374.8945M,
-                //庫存單位(KG)
-                REQUESTED_QUANTITY_UOM = "KG",
-                //出貨倉庫
-                SUBINVENTORY_CODE = "TB2",
-                //出貨倉庫名稱
-                //SUBINVENTORY_NAME = "TB2",
-                //組車日
-                TRIP_ACTUAL_SHIP_DATE = Convert.ToDateTime("2020-01-09"),
-                //航程號
-                TRIP_NAME = "Y200109-1052058",
-                //預計出貨確認日
-                TRANSACTION_DATE = Convert.ToDateTime("2020-01-09"),
-                //出貨核准日
-                AUTHORIZE_DATE = "2020-01-09",
-                //備註
-                NOTE = "FT1.早上到X002010031大道季刊98期/P2010087",
-            });
+        //    #region 捲筒
+        //    source.Add(new TripHeaderDT()
+        //    {
+        //        Id = 2,
+        //        //ORG_ID = 7,
+        //        CUSTOMER_LOCATION_CODE = "中華彩色",
+        //        CUSTOMER_NAME = "中華彩色",
+        //        SHIP_LOCATION_CODE = "新北市新店區寶橋路229號",
+        //        SHIP_CUSTOMER_NAME = "中華彩色印刷股份有限公司",
+        //        TRIP_ID = 2,
+        //        DELIVERY_NAME = "FTY2001000140",
+        //        TRIP_CAR = "PTB2",
+        //        FREIGHT_TERMS_NAME = "台北",
+        //        //ITEM_DESCRIPTION = "A006",
+        //        //ORDER_NUMBER = 6,
+        //        //ORDER_SHIP_NUMBER = "OSN006",
+        //        DELIVERY_STATUS = "未印",
+        //        DetailType = "平版",
+        //        //PAPER_TYPE = "塗佈白紙板",
+        //        //BASIC_WEIGHT = "03500",
+        //        //SPECIFICATION = "214K512K",
+        //        //GRAIN_DIRECTION = "L",
+        //        //PACKING_TYPE = "無令打件",
+        //        //訂單原始數量
+        //        SRC_REQUESTED_QUANTITY = 0.37489M,
+        //        //訂單主單位
+        //        SRC_REQUESTED_QUANTITY_UOM = "MT",
+        //        //預計出庫輔數量
+        //        REQUESTED_QUANTITY2 = 19,
+        //        //輔單位(RE)
+        //        REQUESTED_QUANTITY_UOM2 = "RE",
+        //        //預計出庫量
+        //        REQUESTED_QUANTITY = 374.8945M,
+        //        //庫存單位(KG)
+        //        REQUESTED_QUANTITY_UOM = "KG",
+        //        //出貨倉庫
+        //        SUBINVENTORY_CODE = "TB2",
+        //        //出貨倉庫名稱
+        //        //SUBINVENTORY_NAME = "TB2",
+        //        //組車日
+        //        TRIP_ACTUAL_SHIP_DATE = Convert.ToDateTime("2020-01-09"),
+        //        //航程號
+        //        TRIP_NAME = "Y200109-1052058",
+        //        //預計出貨確認日
+        //        TRANSACTION_DATE = Convert.ToDateTime("2020-01-09"),
+        //        //出貨核准日
+        //        AUTHORIZE_DATE = "2020-01-09",
+        //        //備註
+        //        NOTE = "FT1.早上到X002010031大道季刊98期/P2010087",
+        //    });
 
-            #endregion
+        //    #endregion
 
-            #region 捲筒
-            source.Add(new TripHeaderDT()
-            {
-                Id = 3,
-                //ORG_ID = 8,
-                CUSTOMER_LOCATION_CODE = "中華彩色",
-                CUSTOMER_NAME = "中華彩色",
-                SHIP_LOCATION_CODE = "新北市新店區寶橋路229號",
-                SHIP_CUSTOMER_NAME = "中華彩色印刷股份有限公司",
-                TRIP_ID = 3,
-                DELIVERY_NAME = "FTY2001000152",
-                TRIP_CAR = "PTB2",
-                FREIGHT_TERMS_NAME = "台北",
-                //ITEM_DESCRIPTION = "A006",
-                //ORDER_NUMBER = 6,
-                //ORDER_SHIP_NUMBER = "OSN006",
-                DELIVERY_STATUS = "未印",
-                DetailType = "捲筒",
-                //PAPER_TYPE = "塗佈白紙板",
-                //BASIC_WEIGHT = "03500",
-                //SPECIFICATION = "214K512K",
-                //GRAIN_DIRECTION = "L",
-                //PACKING_TYPE = "無令打件",
-                //訂單原始數量
-                SRC_REQUESTED_QUANTITY = 3,
-                //訂單主單位
-                SRC_REQUESTED_QUANTITY_UOM = "MT",
-                //預計出庫輔數量
-                REQUESTED_QUANTITY2 = 0,
-                //輔單位(RE)
-                REQUESTED_QUANTITY_UOM2 = "",
-                //預計出庫量
-                REQUESTED_QUANTITY = 3000,
-                //庫存單位(KG)
-                REQUESTED_QUANTITY_UOM = "KG",
-                //出貨倉庫
-                SUBINVENTORY_CODE = "SFG",
-                //出貨倉庫名稱
-                //SUBINVENTORY_NAME = "SFG",
-                //組車日
-                TRIP_ACTUAL_SHIP_DATE = Convert.ToDateTime("2020-04-22"),
-                //航程號
-                TRIP_NAME = "Y200109-1052060",
-                //預計出貨確認日
-                TRANSACTION_DATE = Convert.ToDateTime("2020-04-22"),
-                //出貨核准日
-                AUTHORIZE_DATE = "2020-04-22",
-                //備註
-                NOTE = "",
-            });
+        //    #region 捲筒
+        //    source.Add(new TripHeaderDT()
+        //    {
+        //        Id = 3,
+        //        //ORG_ID = 8,
+        //        CUSTOMER_LOCATION_CODE = "中華彩色",
+        //        CUSTOMER_NAME = "中華彩色",
+        //        SHIP_LOCATION_CODE = "新北市新店區寶橋路229號",
+        //        SHIP_CUSTOMER_NAME = "中華彩色印刷股份有限公司",
+        //        TRIP_ID = 3,
+        //        DELIVERY_NAME = "FTY2001000152",
+        //        TRIP_CAR = "PTB2",
+        //        FREIGHT_TERMS_NAME = "台北",
+        //        //ITEM_DESCRIPTION = "A006",
+        //        //ORDER_NUMBER = 6,
+        //        //ORDER_SHIP_NUMBER = "OSN006",
+        //        DELIVERY_STATUS = "未印",
+        //        DetailType = "捲筒",
+        //        //PAPER_TYPE = "塗佈白紙板",
+        //        //BASIC_WEIGHT = "03500",
+        //        //SPECIFICATION = "214K512K",
+        //        //GRAIN_DIRECTION = "L",
+        //        //PACKING_TYPE = "無令打件",
+        //        //訂單原始數量
+        //        SRC_REQUESTED_QUANTITY = 3,
+        //        //訂單主單位
+        //        SRC_REQUESTED_QUANTITY_UOM = "MT",
+        //        //預計出庫輔數量
+        //        REQUESTED_QUANTITY2 = 0,
+        //        //輔單位(RE)
+        //        REQUESTED_QUANTITY_UOM2 = "",
+        //        //預計出庫量
+        //        REQUESTED_QUANTITY = 3000,
+        //        //庫存單位(KG)
+        //        REQUESTED_QUANTITY_UOM = "KG",
+        //        //出貨倉庫
+        //        SUBINVENTORY_CODE = "SFG",
+        //        //出貨倉庫名稱
+        //        //SUBINVENTORY_NAME = "SFG",
+        //        //組車日
+        //        TRIP_ACTUAL_SHIP_DATE = Convert.ToDateTime("2020-04-22"),
+        //        //航程號
+        //        TRIP_NAME = "Y200109-1052060",
+        //        //預計出貨確認日
+        //        TRANSACTION_DATE = Convert.ToDateTime("2020-04-22"),
+        //        //出貨核准日
+        //        AUTHORIZE_DATE = "2020-04-22",
+        //        //備註
+        //        NOTE = "",
+        //    });
 
-            #endregion
+        //    #endregion
 
-            #endregion
+        //    #endregion
 
-        }
+        //}
 
         public static List<TripHeaderDT> GetData(int id)
         {
@@ -471,6 +471,13 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
             return viewModel;
         }
 
+        public FlatViewModel GetFlatViewModel(DeliveryUOW uow, long dlvHeaderId)
+        {
+            FlatViewModel viewModel = new FlatViewModel();
+            viewModel.DeliveryDetailViewHeader = GetDeliveryDetailViewHeader(uow, dlvHeaderId);
+            return viewModel;
+        }
+
         public PaperRollEditViewModel GetPaperRollEditViewModel(DeliveryUOW uow, long dlvHeaderId)
         {
            
@@ -479,7 +486,27 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
             return viewModel;
         }
 
-        public ResultModel DeliveryConfirm(DeliveryUOW uow, List<long> ids)
+        public PaperRollViewModel GetPaperRollViewModel(DeliveryUOW uow, long dlvHeaderId)
+        {
+            PaperRollViewModel viewModel = new PaperRollViewModel();
+            viewModel.DeliveryDetailViewHeader = GetDeliveryDetailViewHeader(uow, dlvHeaderId);
+            return viewModel;
+        }
+
+        //public ResultModel DeliveryConfirm(DeliveryUOW uow, List<long> ids, string userId, string userName)
+        //{
+        //   var result =  ChangeDeliveryConfirm(uow, ids, DeliveryStatusCode.UnAuthorized, userId, userName);
+        //    if (result.Success)
+        //    {
+        //        return new ResultModel(true, "出貨申請成功");
+        //    }
+        //    else
+        //    {
+        //        return result;
+        //    }
+        //}
+
+        public ResultModel DeliveryConfirm(DeliveryUOW uow, List<long> ids, string userId, string userName)
         {
             List<long> tripIds = uow.GetTripIdList(ids);
             if (tripIds.Count == 0)
@@ -499,7 +526,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
                 }
             }
 
-            ResultModel result = uow.UpdateDeliveryStatus(updateDatas, DeliveryUOW.DeliveryStatusCode.UnAuthorized);
+            ResultModel result = uow.ChangeDeliveryConfirm(updateDatas, DeliveryStatusCode.UnAuthorized, userId, userName);
             if (result.Success)
             {
                 return new ResultModel(true, "出貨申請成功");
@@ -509,67 +536,9 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
                 return result;
             }
 
-            //var query = from tripDetail in source
-            //            where ids.Contains(tripDetail.Id)
-            //            group tripDetail by new
-            //            {
-            //                tripDetail.TRIP_ID
-            //            } into g
-            //            select new
-            //            {
-            //                g.Key.TRIP_ID
-            //            };
-
-
-
-            //ResultModel result = new ResultModel(true, "出貨確認成功");
-
-            //foreach (TripHeaderDT sourceData in source)
-            //{
-            //    if (result.Success == false)
-            //    {
-            //        break;
-            //    }
-            //    foreach (var q in query)
-            //    {
-            //        if (sourceData.TRIP_ID == q.TRIP_ID)
-            //        {
-            //            if (sourceData.DELIVERY_STATUS != "已揀")
-            //            {
-            //                result.Success = false;
-            //                result.Msg = "交運單" + sourceData.DELIVERY_NAME + "狀態須為已揀";
-            //                break;
-            //            }
-            //        }
-            //    }
-            //}
-
-            //if (result.Success == false)
-            //{
-            //    return result;
-            //}
-
-            //foreach (TripHeaderDT sourceData in source)
-            //{
-            //    foreach (var q in query)
-            //    {
-            //        if (sourceData.TRIP_ID == q.TRIP_ID)
-            //        {
-            //            if (sourceData.DELIVERY_STATUS == "已揀")
-            //            {
-            //                sourceData.DELIVERY_STATUS = "待核准";
-            //                //obj.TRANSACTION_DATE = Convert.ToDateTime(DateTime.Now.ToString("yyyy-MM-dd"));
-            //            }
-            //        }
-            //    }
-            //}
-
-            //return result;
-
-
         }
 
-        public ResultModel CancelConfirm(DeliveryUOW uow, List<long> ids)
+        public ResultModel CancelConfirm(DeliveryUOW uow, List<long> ids, string userId, string userName)
         {
             List<long> tripIds = uow.GetTripIdList(ids);
             if (tripIds.Count == 0)
@@ -589,7 +558,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
                 }
             }
 
-            ResultModel result = uow.UpdateDeliveryStatus(updateDatas, DeliveryUOW.DeliveryStatusCode.Picked);
+            ResultModel result = uow.ChangeDeliveryConfirm(updateDatas, DeliveryUOW.DeliveryStatusCode.Picked, userId, userName);
             if (result.Success)
             {
                 return new ResultModel(true, "取消申請成功");
@@ -656,7 +625,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
 
         }
 
-        public ResultModel PrintPickList(DeliveryUOW uow, List<long> ids)
+        public ResultModel PrintPickList(DeliveryUOW uow, List<long> ids, string userId, string userName)
         {
             //列印備貨單 待寫
 
@@ -671,12 +640,15 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
             if (updateDatas.Count == 0) return new ResultModel(false, "找不到航程號資料");
 
             //檢查交運單狀態
-            //foreach (DLV_HEADER_T data in updateDatas)
-            //{
-               
-            //}
+            foreach (DLV_HEADER_T data in updateDatas)
+            {
+                if (!(data.DeliveryStatusCode == DeliveryUOW.DeliveryStatusCode.Unprinted || data.DeliveryStatusCode == DeliveryStatusCode.UnPicked))
+                {
+                    return new ResultModel(false, "交運單" + data.DeliveryName + "狀態須為" + uow.deliveryStatusCode.GetDesc(DeliveryUOW.DeliveryStatusCode.Unprinted) + "或" + uow.deliveryStatusCode.GetDesc(DeliveryUOW.DeliveryStatusCode.UnPicked));
+                }
+            }
 
-            ResultModel result = uow.UpdateDeliveryStatus(updateDatas, DeliveryUOW.DeliveryStatusCode.UnPicked);
+            ResultModel result = uow.UpdateDeliveryStatus(updateDatas, DeliveryUOW.DeliveryStatusCode.UnPicked, userId, userName);
             if (result.Success)
             {
                 return new ResultModel(true, "列印備貨單成功");
@@ -735,14 +707,13 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
             //return result;
         }
 
-        public ResultModel DeliveryAuthorize(DeliveryUOW uow, List<long> ids)
+        public ResultModel DeliveryAuthorize(DeliveryUOW uow, TripDetailDTEditor selectDatas, string userId, string userName)
         {
-            List<long> tripIds = uow.GetTripIdList(ids);
+            List<long> tripIds = selectDatas.TripDetailDTList.Select(x => x.TRIP_ID).ToList();
             if (tripIds.Count == 0)
             {
                 return new ResultModel(false, "找不到航程號資料 ");
             }
-
             var updateDatas = uow.GetDeliveryHeaderDataListFromTripId(tripIds);
             if (updateDatas.Count == 0) return new ResultModel(false, "找不到航程號資料");
 
@@ -755,15 +726,11 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
                 }
             }
 
-            ResultModel result = uow.UpdateDeliveryStatus(updateDatas, DeliveryUOW.DeliveryStatusCode.Shipped);
-            if (result.Success)
-            {
-                return new ResultModel(true, "出貨核准成功");
-            }
-            else
-            {
-                return result;
-            }
+            DateTime AuthorizeDate = Convert.ToDateTime(selectDatas.TripDetailDTList[0].AUTHORIZE_DATE);
+
+            return uow.DeliveryAuthorize(updateDatas, AuthorizeDate, userId, userName);
+
+            
 
 
             //var query = from tripDetail in source
@@ -822,7 +789,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
 
         }
 
-        public ResultModel CancelAuthorize(DeliveryUOW uow, List<long> ids)
+        public ResultModel CancelAuthorize(DeliveryUOW uow, List<long> ids, string userId, string userName)
         {
             List<long> tripIds = uow.GetTripIdList(ids);
             if (tripIds.Count == 0)
@@ -842,7 +809,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
                 }
             }
 
-            ResultModel result = uow.UpdateDeliveryStatus(updateDatas, DeliveryUOW.DeliveryStatusCode.Picked);
+            ResultModel result = uow.UpdateDeliveryStatus(updateDatas, DeliveryUOW.DeliveryStatusCode.Picked, userId, userName);
             if (result.Success)
             {
                 return new ResultModel(true, "取消核准成功");
@@ -908,7 +875,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
 
         }
 
-        public ResultModel CancelTrip(DeliveryUOW uow, List<long> ids)
+        public ResultModel CancelTrip(DeliveryUOW uow, List<long> ids, string userId, string userName)
         {
             List<long> tripIds = uow.GetTripIdList(ids);
             if (tripIds.Count == 0)
@@ -933,7 +900,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
 
             }
 
-            ResultModel result = uow.UpdateDeliveryStatus(updateDatas, DeliveryUOW.DeliveryStatusCode.Canceled);
+            ResultModel result = uow.UpdateDeliveryStatus(updateDatas, DeliveryUOW.DeliveryStatusCode.Canceled, userId, userName);
             if (result.Success)
             {
                 return new ResultModel(true, "取消航程號成功");
@@ -1020,15 +987,16 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
 
         public ResultModel AddPickDT(DeliveryUOW uow, long dlvHeaderId, long dlvDetailId, string deliveryName, string barcode, decimal? qty, string addUser, string addUserName, string status)
         {
-            var addResult = uow.AddPickDT(dlvHeaderId, dlvDetailId, deliveryName, barcode, qty, addUser, addUserName, status);
-            if (!addResult.Success)
-            {
-                return addResult;
-            }
-            return CheckPicked(uow, dlvHeaderId);
+            return uow.AddPickDT(dlvHeaderId, dlvDetailId, deliveryName, barcode, qty, addUser, addUserName, status);
+            //var addResult = uow.AddPickDT(dlvHeaderId, dlvDetailId, deliveryName, barcode, qty, addUser, addUserName, status);
+            //if (!addResult.Success)
+            //{
+            //    return addResult;
+            //}
+            //return CheckPicked(uow, dlvHeaderId, addUser, addUserName);
         }
 
-        public ResultModel CheckPicked(DeliveryUOW uow, long dlvHeaderId)
+        public ResultModel CheckPicked(DeliveryUOW uow, long dlvHeaderId, string userId, string userName)
         {
             var pickedResult = uow.CheckPicked(dlvHeaderId);
             if (!pickedResult.Success)
@@ -1038,22 +1006,23 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
             var updateDatas = uow.GetDeliveryHeaderDataListFromHeaderId(dlvHeaderId);
             if (updateDatas.Count == 0) return new ResultModel(false, "找不到交運單資料");
 
-            return uow.UpdateDeliveryStatus(updateDatas, pickedResult.Msg);
+            return uow.UpdateDeliveryStatus(updateDatas, pickedResult.Msg, userId, userName);
         }
 
-        public ResultModel DelPickDT(DeliveryUOW uow, List<long> dlvPickedId, string addUser)
+        public ResultModel DelPickDT(DeliveryUOW uow, List<long> dlvPickedId, string userId, string userName)
         {
             var pickedDataList = uow.GetDeliveryPickDataListFromPickedId(dlvPickedId);
             if (pickedDataList.Count == 0) return new ResultModel(false, "揀貨明細找不到資料");
             if (pickedDataList.Count != dlvPickedId.Count) return new ResultModel(false, "刪除揀貨明細數量比對錯誤");
 
-            var delResult = uow.DelPickDT(pickedDataList, addUser);
+            return uow.DelPickDT(pickedDataList, userId, userName);
+            //var delResult = uow.DelPickDT(pickedDataList, userId, userName);
 
-            if (!delResult.Success)
-            {
-                return delResult;
-            }
-            return CheckPicked(uow, pickedDataList[0].DlvHeaderId);
+            //if (!delResult.Success)
+            //{
+            //    return delResult;
+            //}
+            //return CheckPicked(uow, pickedDataList[0].DlvHeaderId, userId, userName);
         }
 
             //public static ResultModel UpdateTransactionAuthorizeDates(TripDetailDTEditor data)
@@ -1090,9 +1059,9 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
 
             //}
 
-            public ResultModel UpdateTransactionAuthorizeDates(DeliveryUOW uow, TripDetailDTEditor data)
+            public ResultModel UpdateTransactionAuthorizeDates(DeliveryUOW uow, TripDetailDTEditor data, string userId, string userNmae)
         {
-            return uow.UpdateTransactionAuthorizeDates(data);
+            return uow.UpdateTransactionAuthorizeDates(data, userId, userNmae);
 
             //List<TripHeaderDT> result = new List<TripHeaderDT>();
 

@@ -31,27 +31,28 @@ $(document).ready(function () {
             "type": "POST",
             "datatype": "json",
             "data": {
-                DlvHeaderId: $("#DlvHeaderId").text()
+                DlvHeaderId: $("#DlvHeaderId").text(),
+                DELIVERY_STATUS_NAME: $("#DELIVERY_STATUS").text()
             }
         },
         columns: [
-         { data: null, defaultContent: '', className: 'select-checkbox', orderable: false, width: "40px" },
-         { data: "SUB_ID", name: "項次", autoWidth: true },
-         { data: "ORDER_NUMBER", name: "訂單", autoWidth: true },
-         { data: "ORDER_SHIP_NUMBER", name: "訂單行號", autoWidth: true },
-         { data: "OSP_BATCH_NO", name: "工單號碼", autoWidth: true },
-         { data: "TMP_ITEM_NUMBER", name: "代紙料號", autoWidth: true, className: "dt-body-left" },
-         { data: "ITEM_NUMBER", name: "料號", autoWidth: true, className: "dt-body-left" },
-         { data: "PAPER_TYPE", name: "紙別", autoWidth: true },
-         { data: "BASIC_WEIGHT", name: "基重", autoWidth: true },
-         { data: "SPECIFICATION", name: "規格", autoWidth: true },
-         { data: "REQUESTED_QUANTITY", name: "預計出庫量", autoWidth: true, className: "dt-body-right" },
-         { data: "PICKED_QUANTITY", name: "出庫已揀數量", autoWidth: true, className: "dt-body-right" },
-         { data: "REQUESTED_QUANTITY_UOM", name: "庫存單位", autoWidth: true },
-         { data: "SRC_REQUESTED_QUANTITY", name: "訂單原始數量", autoWidth: true, className: "dt-body-right" },
-         { data: "SRC_PICKED_QUANTITY", name: "訂單已揀數量", autoWidth: true, className: "dt-body-right" },
-         { data: "SRC_REQUESTED_QUANTITY_UOM", name: "訂單主單位", autoWidth: true },
-         //{ data: "REMARK", name: "備註", autoWidth: true },
+            { data: null, defaultContent: '', className: 'select-checkbox', orderable: false, width: "40px" },
+            { data: "SUB_ID", name: "項次", autoWidth: true },
+            { data: "ORDER_NUMBER", name: "訂單", autoWidth: true },
+            { data: "ORDER_SHIP_NUMBER", name: "訂單行號", autoWidth: true },
+            { data: "OSP_BATCH_NO", name: "工單號碼", autoWidth: true },
+            { data: "TMP_ITEM_NUMBER", name: "代紙料號", autoWidth: true, className: "dt-body-left" },
+            { data: "ITEM_NUMBER", name: "料號", autoWidth: true, className: "dt-body-left" },
+            { data: "PAPER_TYPE", name: "紙別", autoWidth: true },
+            { data: "BASIC_WEIGHT", name: "基重", autoWidth: true },
+            { data: "SPECIFICATION", name: "規格", autoWidth: true },
+            { data: "REQUESTED_QUANTITY", name: "預計出庫量", autoWidth: true, className: "dt-body-right" },
+            { data: "PICKED_QUANTITY", name: "出庫已揀數量", autoWidth: true, className: "dt-body-right" },
+            { data: "REQUESTED_QUANTITY_UOM", name: "庫存單位", autoWidth: true },
+            { data: "SRC_REQUESTED_QUANTITY", name: "訂單原始數量", autoWidth: true, className: "dt-body-right" },
+            { data: "SRC_PICKED_QUANTITY", name: "訂單已揀數量", autoWidth: true, className: "dt-body-right" },
+            { data: "SRC_REQUESTED_QUANTITY_UOM", name: "訂單主單位", autoWidth: true },
+            //{ data: "REMARK", name: "備註", autoWidth: true },
 
 
         ],
@@ -134,7 +135,7 @@ $(document).ready(function () {
             $('#SRC_REQUESTED_QUANTITY_UOM').text(SRC_REQUESTED_QUANTITY_UOM);
 
             var rowsData = PaperRollDataTablesBody.rows({ page: 'current' }).data();
-            for (i = 0 ; i < rowsData.length; i++) {
+            for (i = 0; i < rowsData.length; i++) {
                 for (j = 0; j < selected.length; j++) {
                     if (selected[j] == rowsData[i].ID) {
                         selected.splice(j, 1);
@@ -198,6 +199,101 @@ $(document).ready(function () {
     //    //$(this).toggleClass('selected');
     //});
 
+    var editor = new $.fn.dataTable.Editor({
+        "language": {
+            "url": "/bower_components/datatables/language/zh-TW.json"
+        },
+        ajax: {
+            url: '/Delivery/PickDTEditor',
+            type: "POST",
+            dataType: "json",
+            contentType: 'application/json',
+            data: function (d) {
+                var DlvPickedIdList = [];
+                $.each(d.data, function (key, value) {
+                    DlvPickedIdList.push(d.data[key]['PICKED_ID']);
+                });
+
+                var data = {
+                    'action': d.action,
+                    'DlvPickedIdList': DlvPickedIdList
+                }
+                return JSON.stringify(data);
+            },
+            success: function (data) {
+                if (data.status) {
+
+                    PaperRollDataTablesBody.ajax.reload(null, false);
+                    PaperRollBarcodeDataTablesBody.ajax.reload();
+                    UpdateDeliveryDetailViewHeader();
+
+                }
+                else {
+                    swal.fire(data.result);
+                }
+            }
+        },
+        table: "#PaperRollBarcodeDataTablesBody",
+        formOptions: {
+            main: {
+                onBackground: 'none'
+            }
+        },
+        idSrc: 'PICKED_ID',
+        //fields: [
+        //    {
+        //        name: "ID"
+        //    },
+        //    {
+        //        label: "倉庫",
+        //        name: "SUBINVENTORY_CODE"
+        //    },
+        //    {
+        //        label: "儲位",
+        //        name: "SEGMENT3"
+        //    },
+        //    {
+        //        label: "料號",
+        //        name: "ITEM_NO"
+        //    },
+        //    {
+        //        label: "捲號",
+        //        name: "LOT_NUMBER"
+        //    },
+        //    {
+        //        label: "數量",
+        //        name: "PRIMARY_AVAILABLE_QTY"
+        //    },
+        //    {
+        //        label: "備註",
+        //        name: "NOTE"
+        //    }
+
+        //],
+        i18n: {
+            create: {
+                button: "新增",
+                title: "新增",
+                submit: "確定",
+                action: 'btn-primary'
+            },
+            remove: {
+                button: '刪除',
+                title: "刪除",
+                submit: "確定",
+                confirm: {
+                    "_": "你確定要刪除這筆資料?",
+                    "1": "你確定要刪除這筆資料?"
+                }
+            },
+            edit: {
+                button: '編輯',
+                title: "編輯",
+                submit: "確定",
+            }
+        }
+    });
+
 
     var PaperRollBarcodeDataTablesBody = $('#PaperRollBarcodeDataTablesBody').DataTable({
         language: {
@@ -218,18 +314,19 @@ $(document).ready(function () {
             "type": "Post",
             "datatype": "json",
             "data": {
-                DlvHeaderId: $("#DlvHeaderId").text()
+                DlvHeaderId: $("#DlvHeaderId").text(),
+                DELIVERY_STATUS_NAME: $("#DELIVERY_STATUS").text()
             },
         },
         columns: [
-         { data: null, defaultContent: '', className: 'select-checkbox', orderable: false, width: "40px" },
-         { data: "SUB_ID", name: "項次", autoWidth: true },
-         { data: "ITEM_NUMBER", name: "料號", autoWidth: true, className: "dt-body-left" },
-         { data: "BARCODE", name: "條碼號", autoWidth: true },
-         { data: "PRIMARY_QUANTITY", name: "主要數量", autoWidth: true, className: "dt-body-right" },
-         { data: "PRIMARY_UOM", name: "主要單位", autoWidth: true },
-         //{ data: "REMARK", name: "備註", autoWidth: true, className: "dt-body-left" },
-         { data: "LAST_UPDATE_DATE", name: "更新日期", autoWidth: true, visible: false }
+            { data: null, defaultContent: '', className: 'select-checkbox', orderable: false, width: "40px" },
+            { data: "SUB_ID", name: "項次", autoWidth: true },
+            { data: "ITEM_NUMBER", name: "料號", autoWidth: true, className: "dt-body-left" },
+            { data: "BARCODE", name: "條碼號", autoWidth: true },
+            { data: "PRIMARY_QUANTITY", name: "主要數量", autoWidth: true, className: "dt-body-right" },
+            { data: "PRIMARY_UOM", name: "主要單位", autoWidth: true },
+            //{ data: "REMARK", name: "備註", autoWidth: true, className: "dt-body-left" },
+            { data: "LAST_UPDATE_DATE", name: "更新日期", autoWidth: true, visible: false }
 
         ],
 
@@ -251,43 +348,50 @@ $(document).ready(function () {
             },
 
             buttons: [
-            'selectAll',
-            'selectNone',
-            {
-                text: '刪除',
-                className: 'btn-danger',
-                action: function () {
-                    var selectedData = PaperRollBarcodeDataTablesBody.rows('.selected').data();
-                    if (selectedData.length == 0) {
-                        swal.fire("請選擇要刪除的條碼");
-                        return;
-                    }
+                'selectAll',
+                'selectNone',
+                //{
+                //    text: '刪除',
+                //    className: 'btn-danger',
+                //    action: function () {
+                //        var selectedData = PaperRollBarcodeDataTablesBody.rows('.selected').data();
+                //        if (selectedData.length == 0) {
+                //            swal.fire("請選擇要刪除的條碼");
+                //            return;
+                //        }
 
-                    swal.fire({
-                        title: "條碼資料刪除",
-                        text: "確定刪除嗎?",
-                        type: "warning",
-                        showCancelButton: true,
-                        confirmButtonColor: "#DD6B55",
-                        confirmButtonText: "確定",
-                        cancelButtonText: "取消"
-                    }).then(function (result) {
-                        if (result.value) {
-                            DeleteBarcode(selectedData);
-                        }
-                    });
+                //        swal.fire({
+                //            title: "條碼資料刪除",
+                //            text: "確定刪除嗎?",
+                //            type: "warning",
+                //            showCancelButton: true,
+                //            confirmButtonColor: "#DD6B55",
+                //            confirmButtonText: "確定",
+                //            cancelButtonText: "取消"
+                //        }).then(function (result) {
+                //            if (result.value) {
+                //                DeleteBarcode(selectedData);
+                //            }
+                //        });
+                //    },
+                //    enabled: false
+                //    },
+                {
+                    extend: "remove",
+                    text: '刪除',
+                    name: 'remove',
+                    className: 'btn-danger',
+                    editor: editor,
                 },
-                enabled: false
-            },
-            {
-                text: '<span class="glyphicon glyphicon-print"></span>&nbsp列印標籤',
-                //className: 'btn-default btn-sm',
-                action: function (e) {
-                    PrintLable(PaperRollBarcodeDataTablesBody, "/Home/GetLabel", "3");
-                },
-                className: "btn-primary",
-                enabled: false
-            }
+                {
+                    text: '<span class="glyphicon glyphicon-print"></span>&nbsp列印標籤',
+                    //className: 'btn-default btn-sm',
+                    action: function (e) {
+                        PrintLable(PaperRollBarcodeDataTablesBody, "/Home/GetLabel", "3");
+                    },
+                    className: "btn-primary",
+                    enabled: false
+                }
             ],
         }
 
@@ -347,7 +451,7 @@ $(document).ready(function () {
                     PaperRollDataTablesBody.ajax.reload(null, false);
                     PaperRollBarcodeDataTablesBody.ajax.reload();
                     UpdateDeliveryDetailViewHeader();
-                    
+
                 }
                 else {
 
@@ -377,7 +481,7 @@ $(document).ready(function () {
 
 
         var list = [];
-        for (i = 0 ; i < selectedData.length; i++) {
+        for (i = 0; i < selectedData.length; i++) {
             list.push(selectedData[i].PICKED_ID);
         }
 

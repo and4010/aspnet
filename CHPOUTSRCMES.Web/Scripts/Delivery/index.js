@@ -1,5 +1,6 @@
 ﻿var selected = [];
 var editor;
+var deliveryAuthorizeEditor;
 
 $(document).ready(function () {
 
@@ -146,6 +147,124 @@ $(document).ready(function () {
     });
 
 
+    deliveryAuthorizeEditor = new $.fn.dataTable.Editor({
+        "language": {
+            "url": "/bower_components/datatables/language/zh-TW.json"
+        },
+        ajax: {
+            url: '/Delivery/DeliveryAuthorize',
+            "type": "POST",
+            "dataType": "json",
+            contentType: 'application/json',
+            "data": function (d) {
+                var tripDetailDTData = d.data;
+                //var ids = [];
+                //var dates = [];
+                var TripDetailDTList = [];
+                var size = Object.keys(tripDetailDTData).length;
+                for (var i = 0; i < size; i++) {
+                    var TRIP_ID = Object.keys(tripDetailDTData)[i];
+                    var AUTHORIZE_DATE = Object.values(tripDetailDTData[TRIP_ID])[0];
+                    //ids.push(tripDetailDT_ID);
+                    //dates.push(TRANSACTION_AUTHORIZE_DATE);
+                    var TRIP_ID_REPEAT = false;
+
+                    for (var j = 0; j < TripDetailDTList.length; j++) {
+                        if (TripDetailDTList[j] == TRIP_ID) {
+                            TRIP_ID_REPEAT = true;
+                            break;
+                        }
+                    }
+
+                    if (TRIP_ID_REPEAT == false) {
+                        var TripDetailDT = {
+                            'TRIP_ID': TRIP_ID,
+                            'AUTHORIZE_DATE': AUTHORIZE_DATE
+                        }
+                        TripDetailDTList.push(TripDetailDT);
+                    }
+                }
+                var data = {
+                    'action': d.action,
+                    //'TripDetailDT_IDs': ids,
+                    //'TRANSACTION_AUTHORIZE_DATEs': dates
+                    'TripDetailDTList': TripDetailDTList
+                }
+                return JSON.stringify(data);
+            },
+            success: function (data) {
+                if (data.status) {
+                    TripDataTablesBody.ajax.reload(null, false);
+                }
+                else {
+                    swal.fire(data.result);
+                }
+            },
+            error: function () {
+                swal.fire('出貨核准失敗');
+            },
+            complete: function (data) {
+
+
+            }
+        },
+        //formOptions: {
+        //    main: {
+        //        buttons:  true
+
+        //    }
+        //},
+
+        table: "#TripDataTablesBody",
+        idSrc: 'TRIP_ID',
+        //template: '#customForm',
+        fields: [
+            {
+                label: "出貨核准日:",
+                name: "AUTHORIZE_DATE",
+                type: 'date',
+                dateFormat: 'yy-mm-dd',
+                opts: {
+                    minDate: GetTransactionAuthorizeMinDate(),
+                    maxDate: GetTransactionAuthorizeMaxDate(),
+                    changeMonth: true,
+                    changeYear: true
+                }
+
+
+            }
+        ],
+        i18n: {
+            create: {
+                button: "新增",
+                title: "新增出貨核准日",
+                submit: "確定"
+            },
+            edit: {
+                button: "編輯核准日",
+                title: "編輯出貨核准日",
+                submit: "確定",
+                'className': 'btn-danger'
+            },
+            remove: {
+                button: "刪除",
+                title: "確定要刪除??",
+                submit: "確定",
+                confirm: {
+                    _: "確定要刪除 %d ?",
+                }
+            },
+            multi: {
+                "title": "多欄位異動",
+                "info": "請注意，您一次選擇多個不同的出貨核准日，此次異動將會變成同樣的出貨核准日！",
+                "restore": "取消更改",
+                "noMulti": "This input can be edited individually, but not part of a group."
+            },
+        }
+
+
+    });
+
     var TripDataTablesBody = $('#TripDataTablesBody').DataTable({
         //"scrollX": true,
         language: {
@@ -177,75 +296,75 @@ $(document).ready(function () {
             },
         },
         columns: [
-         { data: null, defaultContent: '', className: 'select-checkbox', orderable: false, width: "40px" },
-         { data: "SUB_ID", name: "項次", "autoWidth": true },
-         { data: "FREIGHT_TERMS_NAME", name: "內銷地區別", "autoWidth": true },
-         { data: "TRIP_NAME", name: "航程號", "autoWidth": true },
-         { data: "DELIVERY_NAME", name: "交運單", "autoWidth": true },
-          { data: "DetailType", name: "作業別", "autoWidth": true },
-         { data: "DELIVERY_STATUS", name: "狀態", "autoWidth": true },
-         { data: "CUSTOMER_NAME", name: "客戶", "autoWidth": true },
-         { data: "CUSTOMER_LOCATION_CODE", name: "送貨地點", "autoWidth": true },
-         //{ data: "ORDER_NUMBER", name: "訂單", "autoWidth": true },
-         //{ data: "ORDER_SHIP_NUMBER", name: "訂單行號", "autoWidth": true },
-         //{ data: "ITEM_DESCRIPTION", name: "料號名稱", "autoWidth": true },
-         //{ data: "PAPER_TYPE", name: "紙別", "autoWidth": true },
-         //{ data: "BASIC_WEIGHT", name: "基重", "autoWidth": true },
+            { data: null, defaultContent: '', className: 'select-checkbox', orderable: false, width: "40px" },
+            { data: "SUB_ID", name: "項次", "autoWidth": true },
+            { data: "FREIGHT_TERMS_NAME", name: "內銷地區別", "autoWidth": true },
+            { data: "TRIP_NAME", name: "航程號", "autoWidth": true },
+            { data: "DELIVERY_NAME", name: "交運單", "autoWidth": true },
+            { data: "DetailType", name: "作業別", "autoWidth": true },
+            { data: "DELIVERY_STATUS", name: "狀態", "autoWidth": true },
+            { data: "CUSTOMER_NAME", name: "客戶", "autoWidth": true },
+            { data: "CUSTOMER_LOCATION_CODE", name: "送貨地點", "autoWidth": true },
+            //{ data: "ORDER_NUMBER", name: "訂單", "autoWidth": true },
+            //{ data: "ORDER_SHIP_NUMBER", name: "訂單行號", "autoWidth": true },
+            //{ data: "ITEM_DESCRIPTION", name: "料號名稱", "autoWidth": true },
+            //{ data: "PAPER_TYPE", name: "紙別", "autoWidth": true },
+            //{ data: "BASIC_WEIGHT", name: "基重", "autoWidth": true },
 
-         //{ data: "SPECIFICATION", name: "規格", "autoWidth": true },
-         //{ data: "GRAIN_DIRECTION", name: "絲向", "autoWidth": true },
-         //{ data: "PACKING_TYPE", name: "包裝方式", "autoWidth": true },
-         //{ data: "SRC_REQUESTED_QUANTITY", name: "訂單原始數量", "autoWidth": true },
-         //{ data: "SRC_REQUESTED_QUANTITY_UOM", name: "訂單主單位", "autoWidth": true },
-         //{ data: "REQUESTED_QUANTITY2", name: "預計出庫輔數量", "autoWidth": true },
-         //{ data: "SRC_REQUESTED_QUANTITY_UOM2", name: "輔單位(RE)", "autoWidth": true },
-         //{ data: "REQUESTED_QUANTITY", name: "預計出庫量", "autoWidth": true },
-         //{ data: "REQUESTED_QUANTITY_UOM", name: "庫存單位(KG)", "autoWidth": true },
-         { data: "SUBINVENTORY_CODE", name: "出貨倉庫", "autoWidth": true },
-         {
-             data: "TRIP_ACTUAL_SHIP_DATE", name: "組車日", "autoWidth": true, "mRender": function (data, type, full) {
-                 if (data != null) {
-                     var dtStart = new Date(parseInt(data.substr(6)));
-                     var dtStartWrapper = moment(dtStart);
-                     return dtStartWrapper.format('YYYY-MM-DD');
-                 } else {
-                     return '';
-                 }
-             }
-         },
+            //{ data: "SPECIFICATION", name: "規格", "autoWidth": true },
+            //{ data: "GRAIN_DIRECTION", name: "絲向", "autoWidth": true },
+            //{ data: "PACKING_TYPE", name: "包裝方式", "autoWidth": true },
+            //{ data: "SRC_REQUESTED_QUANTITY", name: "訂單原始數量", "autoWidth": true },
+            //{ data: "SRC_REQUESTED_QUANTITY_UOM", name: "訂單主單位", "autoWidth": true },
+            //{ data: "REQUESTED_QUANTITY2", name: "預計出庫輔數量", "autoWidth": true },
+            //{ data: "SRC_REQUESTED_QUANTITY_UOM2", name: "輔單位(RE)", "autoWidth": true },
+            //{ data: "REQUESTED_QUANTITY", name: "預計出庫量", "autoWidth": true },
+            //{ data: "REQUESTED_QUANTITY_UOM", name: "庫存單位(KG)", "autoWidth": true },
+            { data: "SUBINVENTORY_CODE", name: "出貨倉庫", "autoWidth": true },
+            {
+                data: "TRIP_ACTUAL_SHIP_DATE", name: "組車日", "autoWidth": true, "mRender": function (data, type, full) {
+                    if (data != null) {
+                        var dtStart = new Date(parseInt(data.substr(6)));
+                        var dtStartWrapper = moment(dtStart);
+                        return dtStartWrapper.format('YYYY-MM-DD');
+                    } else {
+                        return '';
+                    }
+                }
+            },
 
-         {
-             data: "TRANSACTION_DATE", name: "出貨申請日", "autoWidth": true, "mRender": function (data, type, full) {
-                 if (data != null) {
-                     var dtStart = new Date(parseInt(data.substr(6)));
-                     var dtStartWrapper = moment(dtStart);
-                     return dtStartWrapper.format('YYYY-MM-DD');
-                 } else {
-                     return '';
-                 }
-             }
-         },
-         {
-             data: "AUTHORIZE_DATE", name: "出貨核准日", "autoWidth": true,
-         },
-         { data: "NOTE", name: "備註", "autoWidth": true, className: "dt-body-left" },
+            {
+                data: "TRANSACTION_DATE", name: "出貨申請日", "autoWidth": true, "mRender": function (data, type, full) {
+                    if (data != null) {
+                        var dtStart = new Date(parseInt(data.substr(6)));
+                        var dtStartWrapper = moment(dtStart);
+                        return dtStartWrapper.format('YYYY-MM-DD');
+                    } else {
+                        return '';
+                    }
+                }
+            },
+            {
+                data: "AUTHORIZE_DATE", name: "出貨核准日", "autoWidth": true,
+            },
+            { data: "NOTE", name: "備註", "autoWidth": true, className: "dt-body-left" },
 
-         {
-             data: null, "autoWidth": true, orderable: false,
-             render: function (data, type, row, meta) {
-                 if (data.DELIVERY_STATUS == null || data.DELIVERY_STATUS == "取消" || data.DELIVERY_STATUS == "未印") {
-                     return null
-                 }
-                 if (data.DELIVERY_STATUS == "待出" || data.DELIVERY_STATUS == "已揀") {
-                     //return '<a href="' + data.DELIVERY_NAME + '">出貨</a>';
-                     return '<button class="btn btn-danger btn-sm btn-edit"><i class="fa fa-pencil"></i>出貨</button>'
-                 }
-                 if (data.DELIVERY_STATUS == "待核准" || data.DELIVERY_STATUS == "已出貨") {
-                     //return '<a href="' + data.DELIVERY_NAME + '">紀錄</a>';
-                     return '<button class="btn btn-primary btn-sm btn-view"><i class="glyphicon glyphicon-eye-open"></i>紀錄</button>'
-                 }
-             }
-         }
+            {
+                data: null, "autoWidth": true, orderable: false,
+                render: function (data, type, row, meta) {
+                    if (data.DELIVERY_STATUS == null || data.DELIVERY_STATUS == "已取消" || data.DELIVERY_STATUS == "未印") {
+                        return null
+                    }
+                    if (data.DELIVERY_STATUS == "待出" || data.DELIVERY_STATUS == "已揀") {
+                        //return '<a href="' + data.DELIVERY_NAME + '">出貨</a>';
+                        return '<button class="btn btn-danger btn-sm btn-edit"><i class="fa fa-pencil"></i>出貨</button>'
+                    }
+                    if (data.DELIVERY_STATUS == "待核准" || data.DELIVERY_STATUS == "已出貨") {
+                        //return '<a href="' + data.DELIVERY_NAME + '">紀錄</a>';
+                        return '<button class="btn btn-primary btn-sm btn-view"><i class="glyphicon glyphicon-eye-open"></i>紀錄</button>'
+                    }
+                }
+            }
 
         ],
 
@@ -267,104 +386,104 @@ $(document).ready(function () {
             },
 
             buttons: [
-            'selectAll',
-            'selectNone',
-            {
-                extend: 'excel',
-                text: '匯出Excel',
-                className: 'btn-primary'
-            },
-            {
-                text: '列印備貨單',
-                className: 'btn-primary',
-                action: function () {
-                    PrintPickList();
-                }
-            },
-            //{
-            //    extend: 'edit',
-            //    editor: editor,
-            //    className: "btn-danger"
-            //},
-            //{
-            //    extend: 'edit',
-            //    editor: editor,
-            //    formButtons: {
-            //        text: 'Save',
-            //        action: function () { this.submit(); },
-            //        className: 'btn btn-danger'
-            //    }
-            //},
-
-            {
-                text: '編輯核准日',
-                className: 'btn-danger',
-                action: function (e, dt, node, config) {
-                    var count = dt.rows({ selected: true }).count();
-
-                    if (count == 0) {
-                        return;
+                'selectAll',
+                'selectNone',
+                {
+                    extend: 'excel',
+                    text: '匯出Excel',
+                    className: 'btn-primary'
+                },
+                {
+                    text: '列印備貨單',
+                    className: 'btn-primary',
+                    action: function () {
+                        PrintPickList();
                     }
-                    //var data = dt.rows({ selected: true }).data().pluck('Id')[0];
+                },
+                //{
+                //    extend: 'edit',
+                //    editor: editor,
+                //    className: "btn-danger"
+                //},
+                //{
+                //    extend: 'edit',
+                //    editor: editor,
+                //    formButtons: {
+                //        text: 'Save',
+                //        action: function () { this.submit(); },
+                //        className: 'btn btn-danger'
+                //    }
+                //},
 
-                    //var Id = dt.rows(indexes).data().pluck('Id')[0];
+                {
+                    text: '編輯核准日',
+                    className: 'btn-danger',
+                    action: function (e, dt, node, config) {
+                        var count = dt.rows({ selected: true }).count();
 
-                    for (i = 0 ; i < count ; i++) {
-
-                        if (dt.rows({ selected: true }).data().pluck('DELIVERY_STATUS')[i] == '已出貨') {
-                            swal.fire('已出貨，無法再修改核准日');
+                        if (count == 0) {
                             return;
                         }
-                        if (dt.rows({ selected: true }).data().pluck('DELIVERY_STATUS')[i] == '取消') {
-                            swal.fire('已取消，無法再修改核准日');
-                            return;
+                        //var data = dt.rows({ selected: true }).data().pluck('Id')[0];
+
+                        //var Id = dt.rows(indexes).data().pluck('Id')[0];
+
+                        for (i = 0; i < count; i++) {
+
+                            if (dt.rows({ selected: true }).data().pluck('DELIVERY_STATUS')[i] == '已出貨') {
+                                swal.fire('已出貨，無法再修改核准日');
+                                return;
+                            }
+                            if (dt.rows({ selected: true }).data().pluck('DELIVERY_STATUS')[i] == '已取消') {
+                                swal.fire('已取消，無法再修改核准日');
+                                return;
+                            }
+                            //if (data[i].DELIVERY_STATUS == '已出貨') {
+                            //    swal.fire('已出貨，無法再修改核准日');
+                            //    return;
+                            //}
                         }
-                        //if (data[i].DELIVERY_STATUS == '已出貨') {
-                        //    swal.fire('已出貨，無法再修改核准日');
-                        //    return;
-                        //}
+
+                        editor.edit(TripDataTablesBody.rows({ selected: true }).indexes())
+                            .title('編輯出貨核准日')
+                            .buttons({
+                                text: '確定',
+                                action: function () {
+                                    this.submit();
+                                },
+                                className: 'btn-danger'
+                            });
                     }
-
-                    editor.edit(TripDataTablesBody.rows({ selected: true }).indexes())
-                    .title('編輯出貨核准日')
-                    .buttons({
-                        text: '確定',
-                        action: function () {
-                            this.submit();
-                        },
-                        className: 'btn-danger'
-                    });
                 }
-            }
 
-            //{
-            //    text: '出貨確認',
-            //    className: 'btn-primary',
-            //    action: function () {
-            //        DeliveryConfirm();
-            //    }
-            //},
-            //{
-            //    text: '取消確認',
-            //    className: 'btn-warning',
-            //    action: function () {
-            //        CancelConfirm();
-            //    }
-            //},
-            //{
-            //    text: '出貨核准',
-            //    className: 'btn-danger',
-            //    action: function () {
-            //        DeliveryAuthorize();
-            //    }
-            //},
-            //{
-            //    text: '取消核准',
-            //    className: 'btn-warning',
-            //    action: function () {
-            //        CancelAuthorize();
-            //    }
-            //}
+                //{
+                //    text: '出貨確認',
+                //    className: 'btn-primary',
+                //    action: function () {
+                //        DeliveryConfirm();
+                //    }
+                //},
+                //{
+                //    text: '取消確認',
+                //    className: 'btn-warning',
+                //    action: function () {
+                //        CancelConfirm();
+                //    }
+                //},
+                //{
+                //    text: '出貨核准',
+                //    className: 'btn-danger',
+                //    action: function () {
+                //        DeliveryAuthorize();
+                //    }
+                //},
+                //{
+                //    text: '取消核准',
+                //    className: 'btn-warning',
+                //    action: function () {
+                //        CancelAuthorize();
+                //    }
+                //}
             ],
         },
 
@@ -523,7 +642,7 @@ $(document).ready(function () {
             return false;
         }
 
-        for (var i = 0; i < data.length ; i++) {
+        for (var i = 0; i < data.length; i++) {
             if (data[i].DELIVERY_STATUS != '已揀') {
                 swal.fire('交運單' + data[i].DELIVERY_NAME + '狀態須為已揀');
                 return false;
@@ -553,7 +672,7 @@ $(document).ready(function () {
             return false;
         }
 
-        for (var i = 0; i < data.length ; i++) {
+        for (var i = 0; i < data.length; i++) {
             if (data[i].DELIVERY_STATUS != '待核准') {
                 swal.fire('交運單' + data[i].DELIVERY_NAME + '狀態須為待核准');
                 return false;
@@ -587,38 +706,38 @@ $(document).ready(function () {
             return false;
         }
 
-        for (var i = 0; i < data.length ; i++) {
+        for (var i = 0; i < data.length; i++) {
             if (data[i].DELIVERY_STATUS != '待核准') {
                 swal.fire('交運單' + data[i].DELIVERY_NAME + '狀態須為待核准');
                 return false;
             }
         }
 
-        editor.edit(TripDataTablesBody.rows({ selected: true }).indexes())
+        deliveryAuthorizeEditor.edit(TripDataTablesBody.rows({ selected: true }).indexes())
             .title('出貨核准')
             .buttons([
+                //{
+                //    text: '駁回',
+                //    className: 'btn-danger',
+                //    action: function () {
+                //        swal.fire({
+                //            title: "駁回",
+                //            text: "確定駁回出貨嗎?",
+                //            type: "warning",
+                //            showCancelButton: true,
+                //            confirmButtonColor: "#DD6B55",
+                //            confirmButtonText: "確定",
+                //            cancelButtonText: "取消"
+                //        }).then(function (result) {
+                //            if (result.value) {
+                //                //editor.submit();
+                //                CancelAuthorize(data);
+                //            }
+                //        });
+                //    },
+                //},
                 {
-                    text: '駁回',
-                    className: 'btn-danger',
-                    action: function () {
-                        swal.fire({
-                            title: "駁回",
-                            text: "確定駁回出貨嗎?",
-                            type: "warning",
-                            showCancelButton: true,
-                            confirmButtonColor: "#DD6B55",
-                            confirmButtonText: "確定",
-                            cancelButtonText: "取消"
-                        }).then(function (result) {
-                            if (result.value) {
-                                editor.submit();
-                                CancelAuthorize(data);
-                            }
-                        });
-                    },
-                },
-                {
-                    text: '核准',
+                    text: '確定',
                     className: 'btn-danger',
                     action: function () {
                         swal.fire({
@@ -631,8 +750,8 @@ $(document).ready(function () {
                             cancelButtonText: "取消"
                         }).then(function (result) {
                             if (result.value) {
-                                editor.submit();
-                                DeliveryAuthorize(data);
+                                deliveryAuthorizeEditor.submit();
+                                //DeliveryAuthorize(data);
                             }
                         });
                     }
@@ -647,7 +766,7 @@ $(document).ready(function () {
             return false;
         }
 
-        for (var i = 0; i < data.length ; i++) {
+        for (var i = 0; i < data.length; i++) {
             if (data[i].DELIVERY_STATUS != '待核准') {
                 swal.fire('交運單' + data[i].DELIVERY_NAME + '狀態須為待核准');
                 return false;
@@ -678,8 +797,8 @@ $(document).ready(function () {
             return false;
         }
 
-        for (var i = 0; i < data.length ; i++) {
-            if (data[i].DELIVERY_STATUS == '取消') {
+        for (var i = 0; i < data.length; i++) {
+            if (data[i].DELIVERY_STATUS == '已取消') {
                 swal.fire('交運單' + data[i].DELIVERY_NAME + '已取消');
                 return false;
             }
@@ -725,7 +844,7 @@ $(document).ready(function () {
 
 
         var list = [];
-        for (i = 0 ; i < data.length; i++) {
+        for (i = 0; i < data.length; i++) {
             list.push(data[i].Id);
         }
 
@@ -737,9 +856,7 @@ $(document).ready(function () {
             },
             success: function (data) {
                 if (data.status) {
-                    if (data.result == "出貨確認成功") {
-                        TripDataTablesBody.ajax.reload(null, false);
-                    }
+                    TripDataTablesBody.ajax.reload(null, false);
                 }
                 else {
                     swal.fire(data.result);
@@ -760,7 +877,7 @@ $(document).ready(function () {
 
 
         var list = [];
-        for (i = 0 ; i < data.length; i++) {
+        for (i = 0; i < data.length; i++) {
             list.push(data[i].Id);
         }
 
@@ -772,9 +889,9 @@ $(document).ready(function () {
             },
             success: function (data) {
                 if (data.status) {
-                    if (data.result == "取消出貨確認成功") {
-                        TripDataTablesBody.ajax.reload(null, false);
-                    }
+
+                    TripDataTablesBody.ajax.reload(null, false);
+
                 }
                 else {
                     swal.fire(data.result);
@@ -798,7 +915,7 @@ $(document).ready(function () {
         }
 
         var list = [];
-        for (i = 0 ; i < data.length; i++) {
+        for (i = 0; i < data.length; i++) {
             list.push(data[i].Id);
         }
 
@@ -810,9 +927,9 @@ $(document).ready(function () {
             },
             success: function (data) {
                 if (data.status) {
-                    if (data.result == "列印備貨單成功") {
-                        TripDataTablesBody.ajax.reload(null, false);
-                    }
+
+                    TripDataTablesBody.ajax.reload(null, false);
+
                 }
                 else {
                     swal.fire(data.result);
@@ -833,7 +950,7 @@ $(document).ready(function () {
 
 
         var list = [];
-        for (i = 0 ; i < data.length; i++) {
+        for (i = 0; i < data.length; i++) {
             list.push(data[i].Id);
         }
 
@@ -845,9 +962,9 @@ $(document).ready(function () {
             },
             success: function (data) {
                 if (data.status) {
-                    if (data.result == "出貨核准成功") {
-                        TripDataTablesBody.ajax.reload(null, false);
-                    }
+
+                    TripDataTablesBody.ajax.reload(null, false);
+
                 }
                 else {
                     swal.fire(data.result);
@@ -868,7 +985,7 @@ $(document).ready(function () {
 
 
         var list = [];
-        for (i = 0 ; i < data.length; i++) {
+        for (i = 0; i < data.length; i++) {
             list.push(data[i].Id);
         }
 
@@ -880,9 +997,9 @@ $(document).ready(function () {
             },
             success: function (data) {
                 if (data.status) {
-                    if (data.result == "取消出貨核准成功") {
-                        TripDataTablesBody.ajax.reload(null, false);
-                    }
+
+                    TripDataTablesBody.ajax.reload(null, false);
+
                 }
                 else {
                     swal.fire(data.result);
@@ -904,7 +1021,7 @@ $(document).ready(function () {
 
 
         var list = [];
-        for (i = 0 ; i < data.length; i++) {
+        for (i = 0; i < data.length; i++) {
             list.push(data[i].Id);
         }
 
@@ -916,9 +1033,9 @@ $(document).ready(function () {
             },
             success: function (data) {
                 if (data.status) {
-                    if (data.result == "取消航程號成功") {
-                        TripDataTablesBody.ajax.reload(null, false);
-                    }
+
+                    TripDataTablesBody.ajax.reload(null, false);
+
                 }
                 else {
                     swal.fire(data.result);
