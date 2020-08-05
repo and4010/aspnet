@@ -27,7 +27,7 @@ namespace CHPOUTSRCMES.Web.Models.Information
         public string Last_update_by { set; get; }
 
         [Display(Name = "建立日期")]
-        public DateTime Last_Create_date { set; get; }
+        public DateTime? Last_Create_date { set; get; }
 
     }
 }

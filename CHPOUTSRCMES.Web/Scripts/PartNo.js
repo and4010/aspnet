@@ -1,6 +1,10 @@
 ﻿$(document).ready(function () {
     onclick();
     LoadTable();
+    $("#Organization_code").combobox()
+    $("#Catalog_elem_val_050").combobox()
+    $("#Catalog_elem_val_020").combobox()
+    $("#Catalog_elem_val_070").combobox()
 });
 
 function LoadTable(Catalog_elem_val_050, Catalog_elem_val_020, Catalog_elem_val_070, Organization_code) {
@@ -11,7 +15,7 @@ function LoadTable(Catalog_elem_val_050, Catalog_elem_val_020, Catalog_elem_val_
         },
         processing: true,
         serverSide: true,
-        //scrollX: true,
+        scrollX: true,
         autoWidth: false,
         destroy:true,
         dom:

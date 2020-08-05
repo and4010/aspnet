@@ -16,6 +16,9 @@ using System.Data.SqlClient;
 using CHPOUTSRCMES.Web.DataModel.Entiy;
 using CHPOUTSRCMES.Web.DataModel.Interfaces;
 using static CHPOUTSRCMES.Web.DataModel.UnitOfWorks.DeliveryUOW;
+using NPOI.OpenXml4Net.OPC.Internal;
+using CHPOUTSRCMES.Web.ViewModels;
+using System.Text;
 
 namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
 {
@@ -1946,6 +1949,104 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
 
         #endregion 測試資料產生
 
+        #region 原因
+
+        /// <summary>
+        /// 取得原因
+        /// </summary>
+        public List<ReasonModel> GetReason()
+        {
+            try
+            {
+                using (var mesContext = new MesContext())
+                {
+                    StringBuilder query = new StringBuilder();
+                    query.Append(
+                    @"select
+ [REASON_CODE] as Reason_code,
+ [REASON_DESC] as Reason_desc,
+ [CREATED_BY] as Create_by,
+ [CREATION_DATE] as Create_date,
+ [LAST_UPDATE_BY] as Last_update_by,
+ [LAST_UPDATE_DATE] as Last_Create_date
+ from STK_REASON_T");
+                    return mesContext.Database.SqlQuery<ReasonModel>(query.ToString()).ToList();
+                }
+            }
+            catch (Exception e)
+            {
+                logger.Error(e.Message.ToString());
+                return new List<ReasonModel>();
+            }
+        }
+
+        /// <summary>
+        /// 新增編輯刪除原因
+        /// </summary>
+        public ResultModel SetReasonValue(ReasonViewModel.ReasonEditor ReasonEditor, string id, string name)
+        {
+            try
+            {
+                using (var mesContext = new MesContext())
+                {
+                    if (ReasonEditor.ReasonModel.Reason_code.Length == 0 && ReasonEditor.ReasonModel.Reason_desc.Length == 0)
+                    {
+                      return new ResultModel(false, "不得空白");
+                    }
+                    else
+                    {
+                        if (ReasonEditor.Action == "edit")
+                        {
+                            var ID = stkReasonTRepositiory.Get(r => r.ReasonCode == ReasonEditor.ReasonModel.Reason_code).SingleOrDefault();
+
+                            if (ID != null)
+                            {
+                                ID.ReasonDesc = ReasonEditor.ReasonModel.Reason_desc;
+                                stkReasonTRepositiory.Update(ID,true);
+                                return new ResultModel(true, "");
+                            }
+                        }
+
+                        if (ReasonEditor.Action == "create")
+                        {
+                            var d = stkReasonTRepositiory.Get(r => r.ReasonCode.ToString() == ReasonEditor.ReasonModel.Reason_code).SingleOrDefault();
+                            if (d == null)
+                            {
+                                STK_REASON_T sTK_REASON_T = new STK_REASON_T();
+                                sTK_REASON_T.ReasonCode = ReasonEditor.ReasonModel.Reason_code;
+                                sTK_REASON_T.ReasonDesc = ReasonEditor.ReasonModel.Reason_desc;
+                                sTK_REASON_T.CreatedBy = id;
+                                sTK_REASON_T.CreationDate = DateTime.Now;
+                                stkReasonTRepositiory.Create(sTK_REASON_T, true);
+                                return new ResultModel(true, "");
+                            }
+                            else
+                            {
+                                return new ResultModel(false, "原因ID代碼已存在");
+                            }
+
+                        }
+
+                        if (ReasonEditor.Action == "remove")
+                        {
+                            var ID = stkReasonTRepositiory.Get(r => r.ReasonCode.ToString() == ReasonEditor.ReasonModel.Reason_code).SingleOrDefault();
+                            stkReasonTRepositiory.Delete(ID,true);
+                            return new ResultModel(true, "");
+                        }
+                        return new ResultModel(false, "");
+                    }
+                }
+     
+            }
+            catch(Exception e)
+            {
+                logger.Error(e.Message);
+                return new ResultModel(false, e.Message);
+            }
+        }
+        
+        #endregion
+
         /// <summary>
         /// 產生條碼清單 (請用交易TRANSACTION)
         /// </summary>
@@ -2042,13 +2143,21 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             return locatorList;
         }
 
+        /// <summary>
+        /// 取得原因下拉式選單內容
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
         public List<SelectListItem> GetReasonDropDownList(DropDownListType type)
         {
             var reasonList = createDropDownList(type);
             reasonList.AddRange(getReasonList());
             return reasonList;
         }
-
+        /// <summary>
+        /// 取得原因SelectListItem
+        /// </summary>
+        /// <returns></returns>
         private List<SelectListItem> getReasonList()
         {
             var reasonList = new List<SelectListItem>();

@@ -10,7 +10,7 @@ namespace CHPOUTSRCMES.Web.Models.Information
     {
 
         [Display(Name = "庫存組織ID")]
-        public int Organization_id { set; get; }
+        public long Organization_id { set; get; }
 
         [Display(Name = "庫存組織")]
         public string Organization_code { set; get; }
@@ -37,13 +37,13 @@ namespace CHPOUTSRCMES.Web.Models.Information
         public string Supplier_name { set; get; }
 
         [Display(Name = "建立人員ID")]
-        public string Created_by { set; get; }
+        public long Created_by { set; get; }
 
         [Display(Name = "建立日期")]
         public DateTime Creation_date { set; get; }
 
         [Display(Name = "最後更新人員ID")]
-        public string Last_updated_by { set; get; }
+        public long Last_updated_by { set; get; }
 
         [Display(Name = "最後更新日期")]
         public DateTime Last_update_date { set; get; }

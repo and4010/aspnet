@@ -266,14 +266,14 @@ namespace CHPOUTSRCMES.Web.Controllers
             //        model.SavePhoto(hpf);
             //    }
             //}
-            var boolean = model.PaperRollEditNote(Files, 
+            var resultModel = model.PaperRollEditNote(Files, 
                 Int64.Parse(formCollection["id"]),
                 formCollection["Reason"], 
                 formCollection["Locator"], 
                 formCollection["Remark"],
                 id,
                 name);
-            return Json(new { boolean }, JsonRequestBehavior.AllowGet);
+            return Json(new { resultModel }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
@@ -296,14 +296,14 @@ namespace CHPOUTSRCMES.Web.Controllers
 
             //model.GetFlatEditRemak(int.Parse(formCollection["id"]),
             //   formCollection["reason"], formCollection["remak"]);
-            var boolean = model.FlatEditNote(Files,
+            var resultModel = model.FlatEditNote(Files,
                 Int64.Parse(formCollection["id"]),
                 formCollection["Reason"],
                 formCollection["Locator"],
                 formCollection["Remark"],
                 id,
                 name);
-            return Json(new { boolean }, JsonRequestBehavior.AllowGet);
+            return Json(new { resultModel }, JsonRequestBehavior.AllowGet);
         }
 
 
