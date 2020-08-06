@@ -71,9 +71,9 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
             return list;
         }
 
-        public List<FlatEditBarcodeDT> GetFlatPickDT(DeliveryUOW uow, long DlvHeaderId)
+        public List<FlatEditBarcodeDT> GetFlatPickDT(DeliveryUOW uow, long DlvHeaderId, string DELIVERY_STATUS_NAME)
         {
-            return uow.GetFlatPickDT(DlvHeaderId);
+            return uow.GetFlatPickDT(DlvHeaderId, DELIVERY_STATUS_NAME);
         }
 
         public static void resetData()

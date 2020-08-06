@@ -375,6 +375,8 @@ $(document).ready(function () {
         if (e.keyCode == 13) {
             if ($('#SECONDARY_QUANTITY').is(":visible")) {
                 $('#txtSECONDARY_QUANTITY').focus();
+            } else {
+                InputBarcode();
             }
             //InputBarcode();
 

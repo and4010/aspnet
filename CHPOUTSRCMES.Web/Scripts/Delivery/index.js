@@ -496,6 +496,7 @@ $(document).ready(function () {
         }
     });
 
+
     //var data = editor.field('TRANSACTION_AUTHORIZE_DATE').def();
 
     //editor.field('TRANSACTION_AUTHORIZE_DATE').def(function () {
@@ -1056,7 +1057,13 @@ $(document).ready(function () {
     function refresh() {
 
         TripDataTablesBody.ajax.reload();
-
+        if ($('#Advanced').text() == false) {
+            //TripDataTablesBody.buttons('.abc').nodes().addClass('hidden');
+            //TripDataTablesBody.buttons('.abc').nodes().css("display", "none");
+            //TripDataTablesBody.buttons().destroy();
+            
+            
+        }
     }
 
     refresh();

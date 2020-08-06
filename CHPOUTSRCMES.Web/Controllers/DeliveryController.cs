@@ -13,6 +13,7 @@ using CHPOUTSRCMES.Web.DataModel;
 using CHPOUTSRCMES.Web.DataModel.UnitOfWorks;
 using Microsoft.AspNet.Identity;
 using CHPOUTSRCMES.Web.DataModel.Entiy.Delivery;
+using System.Security.Claims;
 
 namespace CHPOUTSRCMES.Web.Controllers
 {
@@ -30,7 +31,12 @@ namespace CHPOUTSRCMES.Web.Controllers
             {
                 using (DeliveryUOW uow = new DeliveryUOW(context))
                 {
-                    DeliverySearchViewModel viewModel = tripHeaderData.GetDeliverySearchViewModel(uow);
+                    //取得使用者角色
+                    var userIdentity = (ClaimsIdentity)User.Identity;
+                    var claims = userIdentity.Claims;
+                    var roleClaimType = userIdentity.RoleClaimType;
+                    var roles = claims.Where(c => c.Type == ClaimTypes.Role).ToList();
+                    DeliverySearchViewModel viewModel = tripHeaderData.GetDeliverySearchViewModel(uow, roles);
                     return View(viewModel);
                 }
             }
@@ -187,7 +193,7 @@ namespace CHPOUTSRCMES.Web.Controllers
         }
 
         [HttpPost, ActionName("GetRollEdit")]
-        public JsonResult GetRollEdit(DataTableAjaxPostViewModel data, long DlvHeaderId)
+        public JsonResult GetRollEdit(DataTableAjaxPostViewModel data, long DlvHeaderId, string DELIVERY_STATUS_NAME)
         {
             //if (PaperRollEditData.getDataCount(DlvHeaderId) == 0)
             //{
@@ -199,7 +205,7 @@ namespace CHPOUTSRCMES.Web.Controllers
                 using (DeliveryUOW uow = new DeliveryUOW(context))
                 {
                     PaperRollEditData paperRollEditData = new PaperRollEditData();
-                    List<PaperRollEditDT> model = paperRollEditData.GetRollDetailDT(uow, DlvHeaderId);
+                    List<PaperRollEditDT> model = paperRollEditData.GetRollDetailDT(uow, DlvHeaderId, DELIVERY_STATUS_NAME);
                     var totalCount = model.Count;
                     string search = data.Search.Value;
                     if (!string.IsNullOrEmpty(search) && !string.IsNullOrWhiteSpace(search))
@@ -229,14 +235,14 @@ namespace CHPOUTSRCMES.Web.Controllers
         }
 
         [HttpPost, ActionName("GetRollEditBarcode")]
-        public JsonResult GetRollEditBarcode(DataTableAjaxPostViewModel data, long DlvHeaderId)
+        public JsonResult GetRollEditBarcode(DataTableAjaxPostViewModel data, long DlvHeaderId, string DELIVERY_STATUS_NAME)
         {
             using (var context = new MesContext())
             {
                 using (DeliveryUOW uow = new DeliveryUOW(context))
                 {
                     PaperRollEditBarcodeData paperRollEditBarcodeData = new PaperRollEditBarcodeData();
-                    List<PaperRollEditBarcodeDT> model = paperRollEditBarcodeData.GetRollPickDT(uow, DlvHeaderId);
+                    List<PaperRollEditBarcodeDT> model = paperRollEditBarcodeData.GetRollPickDT(uow, DlvHeaderId, DELIVERY_STATUS_NAME);
                     var totalCount = model.Count;
                     string search = data.Search.Value;
                     if (!string.IsNullOrEmpty(search) && !string.IsNullOrWhiteSpace(search))
@@ -442,14 +448,14 @@ namespace CHPOUTSRCMES.Web.Controllers
         }
 
         [HttpPost, ActionName("GetFlatEditBarcode")]
-        public JsonResult GetFlatEditBarcode(DataTableAjaxPostViewModel data, long DlvHeaderId)
+        public JsonResult GetFlatEditBarcode(DataTableAjaxPostViewModel data, long DlvHeaderId, string DELIVERY_STATUS_NAME)
         {
             using (var context = new MesContext())
             {
                 using (DeliveryUOW uow = new DeliveryUOW(context))
                 {
                     FlatEditBarcodeData flatEditBarcodeData = new FlatEditBarcodeData();
-                    List<FlatEditBarcodeDT> model = flatEditBarcodeData.GetFlatPickDT(uow, DlvHeaderId);
+                    List<FlatEditBarcodeDT> model = flatEditBarcodeData.GetFlatPickDT(uow, DlvHeaderId, DELIVERY_STATUS_NAME);
                     var totalCount = model.Count;
                     string search = data.Search.Value;
                     if (!string.IsNullOrEmpty(search) && !string.IsNullOrWhiteSpace(search))

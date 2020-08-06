@@ -16,6 +16,7 @@ using System.Data.SqlClient;
 using CHPOUTSRCMES.Web.DataModel.Entiy;
 using CHPOUTSRCMES.Web.DataModel.Interfaces;
 using static CHPOUTSRCMES.Web.DataModel.UnitOfWorks.DeliveryUOW;
+using System.IO;
 
 namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
 {
@@ -107,6 +108,13 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             this.stockHtRepositiory = new GenericRepository<STOCK_HT>(this);
             this.stkTxnTRepositiory = new GenericRepository<STK_TXN_T>(this);
             this.uomConversion = new UomConversion();
+        }
+
+        public class UserRole
+        {
+            public const string Adm = "系統管理員";
+            public const string ChpUser = "華紙使用者";
+            public const string User = "使用者";
         }
 
         public class CategoryCode : ICategory
@@ -2482,6 +2490,27 @@ on s.ORGANIZATION_ID = l.ORGANIZATION_ID and s.SUBINVENTORY_CODE = l.SUBINVENTOR
                 return new List<OrgSubinventoryDT>();
             }
             //return result;
+        }
+
+        /// <summary>
+        /// 標籤列印
+        /// </summary>
+        /// <param name="labels">標籤內容</param>
+        /// <returns></returns>
+        public ActionResult PrintLable(List<LabelModel> labels)
+        {
+            Util.PdfLableUtil pdf = new PdfLableUtil();
+            var result = pdf.GeneratePdfLabels2(labels);
+            if (!result.Success)
+            {
+                throw new Exception("產生PDF發生錯誤:" + result.Msg);
+            }
+            string labelFullPath = result.Msg;
+            var fileStream = new FileStream(labelFullPath,
+                                FileMode.Open,
+                                FileAccess.Read
+                                );
+            return new FileStreamResult(fileStream, "application/pdf");
         }
     }
 }

@@ -1393,9 +1393,68 @@ SELECT [DLV_PICKED_ID]
         /// </summary>
         /// <param name="dlvHeaderId"></param>
         /// <returns></returns>
-        public List<PaperRollEditDT> GetRollDetailDT(long dlvHeaderId)
+        public List<PaperRollEditDT> GetRollDetailDT(long dlvHeaderId, string DELIVERY_STATUS_NAME)
         {
-            string cmd = @"
+            string cmd = "";
+            if (DELIVERY_STATUS_NAME == deliveryStatusCode.GetDesc(DeliveryStatusCode.Shipped))
+            {
+                cmd = @"
+            select
+d.DLV_DETAIL_ID as ID,
+ROW_NUMBER() OVER(ORDER BY d.DLV_DETAIL_ID) AS SUB_ID,
+MIN(d.ORDER_NUMBER) AS ORDER_NUMBER,
+MIN(d.ORDER_SHIP_NUMBER) AS ORDER_SHIP_NUMBER,
+MIN(d.OSP_BATCH_ID) AS OSP_BATCH_ID,
+MIN(d.OSP_BATCH_NO) AS OSP_BATCH_NO,
+MIN(d.INVENTORY_ITEM_ID) AS INVENTORY_ITEM_ID,
+MIN(d.ITEM_NUMBER) AS ITEM_NUMBER,
+MIN(d.TMP_ITEM_ID) AS TMP_ITEM_ID,
+MIN(d.TMP_ITEM_NUMBER) AS TMP_ITEM_NUMBER,
+
+MIN(d.PAPER_TYPE) AS PAPER_TYPE,
+MIN(d.BASIC_WEIGHT) AS BASIC_WEIGHT,
+MIN(d.SPECIFICATION) AS SPECIFICATION,
+
+MIN(d.REQUESTED_TRANSACTION_QUANTITY) AS SRC_REQUESTED_QUANTITY,
+SUM(ISNULL(p.TRANSACTION_QUANTITY, 0)) AS SRC_PICKED_QUANTITY,
+MIN(d.REQUESTED_TRANSACTION_UOM) AS SRC_REQUESTED_QUANTITY_UOM,
+
+MIN(d.REQUESTED_PRIMARY_QUANTITY) as REQUESTED_QUANTITY,
+SUM(ISNULL(p.PRIMARY_QUANTITY, 0)) AS PICKED_QUANTITY,
+MIN(d.REQUESTED_PRIMARY_UOM) AS REQUESTED_QUANTITY_UOM
+
+from DLV_DETAIL_HT d
+LEFT JOIN DLV_PICKED_HT p ON p.DLV_HEADER_ID = d.DLV_HEADER_ID AND p.DLV_DETAIL_ID = d.DLV_DETAIL_ID
+where d.DLV_HEADER_ID = @DLV_HEADER_ID
+GROUP BY d.DLV_DETAIL_ID";
+                //string cmd = @"
+                //select 
+                //DLV_DETAIL_ID as ID,
+                //DLV_HEADER_ID as DlvHeaderId,
+                //ROW_NUMBER() OVER(ORDER BY DLV_DETAIL_ID) AS SUB_ID,
+                //ORDER_NUMBER,
+                //ORDER_SHIP_NUMBER,
+                //OSP_BATCH_ID,
+                //OSP_BATCH_NO,
+                //INVENTORY_ITEM_ID,
+                //ITEM_NUMBER,
+                //TMP_ITEM_ID,
+                //TMP_ITEM_NUMBER,
+                //PAPER_TYPE,
+                //BASIC_WEIGHT,
+                //SPECIFICATION,
+                //REQUESTED_PRIMARY_QUANTITY as REQUESTED_QUANTITY,
+                //(select SUM(PRIMARY_QUANTITY) from DLV_PICKED_T where DLV_HEADER_ID = @DLV_HEADER_ID) as PICKED_QUANTITY,
+                //REQUESTED_PRIMARY_UOM as REQUESTED_QUANTITY_UOM,
+                //REQUESTED_TRANSACTION_QUANTITY as SRC_REQUESTED_QUANTITY,
+                //(select SUM(TRANSACTION_QUANTITY) from DLV_PICKED_T where DLV_HEADER_ID = @DLV_HEADER_ID) as SRC_PICKED_QUANTITY,
+                //REQUESTED_TRANSACTION_UOM as SRC_REQUESTED_QUANTITY_UOM
+                //from DLV_DETAIL_T
+                //where DLV_HEADER_ID = @DLV_HEADER_ID";
+            }
+            else
+            {
+                cmd = @"
             select
 d.DLV_DETAIL_ID as ID,
 ROW_NUMBER() OVER(ORDER BY d.DLV_DETAIL_ID) AS SUB_ID,
@@ -1424,38 +1483,32 @@ from DLV_DETAIL_T d
 LEFT JOIN DLV_PICKED_T p ON p.DLV_HEADER_ID = d.DLV_HEADER_ID AND p.DLV_DETAIL_ID = d.DLV_DETAIL_ID
 where d.DLV_HEADER_ID = @DLV_HEADER_ID
 GROUP BY d.DLV_DETAIL_ID";
-            //string cmd = @"
-            //select 
-            //DLV_DETAIL_ID as ID,
-            //DLV_HEADER_ID as DlvHeaderId,
-            //ROW_NUMBER() OVER(ORDER BY DLV_DETAIL_ID) AS SUB_ID,
-            //ORDER_NUMBER,
-            //ORDER_SHIP_NUMBER,
-            //OSP_BATCH_ID,
-            //OSP_BATCH_NO,
-            //INVENTORY_ITEM_ID,
-            //ITEM_NUMBER,
-            //TMP_ITEM_ID,
-            //TMP_ITEM_NUMBER,
-            //PAPER_TYPE,
-            //BASIC_WEIGHT,
-            //SPECIFICATION,
-            //REQUESTED_PRIMARY_QUANTITY as REQUESTED_QUANTITY,
-            //(select SUM(PRIMARY_QUANTITY) from DLV_PICKED_T where DLV_HEADER_ID = @DLV_HEADER_ID) as PICKED_QUANTITY,
-            //REQUESTED_PRIMARY_UOM as REQUESTED_QUANTITY_UOM,
-            //REQUESTED_TRANSACTION_QUANTITY as SRC_REQUESTED_QUANTITY,
-            //(select SUM(TRANSACTION_QUANTITY) from DLV_PICKED_T where DLV_HEADER_ID = @DLV_HEADER_ID) as SRC_PICKED_QUANTITY,
-            //REQUESTED_TRANSACTION_UOM as SRC_REQUESTED_QUANTITY_UOM
-            //from DLV_DETAIL_T
-            //where DLV_HEADER_ID = @DLV_HEADER_ID";
-
+            }
             return this.Context.Database.SqlQuery<PaperRollEditDT>(cmd, new SqlParameter("@DLV_HEADER_ID", dlvHeaderId)).ToList();
 
         }
 
-        public List<PaperRollEditBarcodeDT> GetRollPickDT(long dlvHeaderId)
+        public List<PaperRollEditBarcodeDT> GetRollPickDT(long dlvHeaderId, string DELIVERY_STATUS_NAME)
         {
-            string cmd = @"
+            string cmd = "";
+            if (DELIVERY_STATUS_NAME == deliveryStatusCode.GetDesc(DeliveryStatusCode.Shipped))
+            {
+                cmd = @"
+select
+DLV_PICKED_ID as PICKED_ID,
+ROW_NUMBER() OVER(ORDER BY DLV_DETAIL_ID) AS SUB_ID,
+DLV_HEADER_ID as DlvHeaderId,
+DLV_DETAIL_ID as PaperRollEditDT_ID,
+ITEM_NUMBER,
+BARCODE,
+PRIMARY_QUANTITY,
+PRIMARY_UOM
+from DLV_PICKED_HT
+where DLV_HEADER_ID = @DLV_HEADER_ID";
+            }
+            else
+            {
+                cmd = @"
 select
 DLV_PICKED_ID as PICKED_ID,
 ROW_NUMBER() OVER(ORDER BY DLV_DETAIL_ID) AS SUB_ID,
@@ -1467,7 +1520,7 @@ PRIMARY_QUANTITY,
 PRIMARY_UOM
 from DLV_PICKED_T
 where DLV_HEADER_ID = @DLV_HEADER_ID";
-
+            }
             return this.Context.Database.SqlQuery<PaperRollEditBarcodeDT>(cmd, new SqlParameter("@DLV_HEADER_ID", dlvHeaderId)).ToList();
 
         }
@@ -1582,9 +1635,32 @@ GROUP BY d.DLV_DETAIL_ID";
 
         }
 
-        public List<FlatEditBarcodeDT> GetFlatPickDT(long dlvHeaderId)
+        public List<FlatEditBarcodeDT> GetFlatPickDT(long dlvHeaderId, string DELIVERY_STATUS_NAME)
         {
-            string cmd = @"
+            string cmd = "";
+            if (DELIVERY_STATUS_NAME == deliveryStatusCode.GetDesc(DeliveryStatusCode.Shipped))
+            {
+                cmd = @"
+select 
+DLV_PICKED_ID as PICKED_ID,
+ROW_NUMBER() OVER(ORDER BY DLV_DETAIL_ID) AS SUB_ID,
+DLV_HEADER_ID as DlvHeaderId,
+DLV_DETAIL_ID as FlatEditDT_ID,
+ITEM_NUMBER,
+BARCODE,
+REAM_WEIGHT,
+PACKING_TYPE,
+PRIMARY_QUANTITY,
+PRIMARY_UOM,
+SECONDARY_QUANTITY,
+SECONDARY_UOM
+from DLV_PICKED_HT
+where DLV_HEADER_ID = @DLV_HEADER_ID"; ;
+
+            }
+            else
+            {
+                cmd = @"
 select 
 DLV_PICKED_ID as PICKED_ID,
 ROW_NUMBER() OVER(ORDER BY DLV_DETAIL_ID) AS SUB_ID,
@@ -1600,13 +1676,16 @@ SECONDARY_QUANTITY,
 SECONDARY_UOM
 from DLV_PICKED_T
 where DLV_HEADER_ID = @DLV_HEADER_ID"; ;
-
+            }
             return this.Context.Database.SqlQuery<FlatEditBarcodeDT>(cmd, new SqlParameter("@DLV_HEADER_ID", dlvHeaderId)).ToList();
 
         }
 
 
         #endregion
+
+
+         
     }
 
 

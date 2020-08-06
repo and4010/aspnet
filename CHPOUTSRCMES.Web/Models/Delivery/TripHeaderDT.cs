@@ -11,6 +11,7 @@ using CHPOUTSRCMES.Web.Models.Information;
 using CHPOUTSRCMES.Web.DataModel.UnitOfWorks;
 using CHPOUTSRCMES.Web.DataModel.Entiy.Delivery;
 using static CHPOUTSRCMES.Web.DataModel.UnitOfWorks.DeliveryUOW;
+using System.Security.Claims;
 
 namespace CHPOUTSRCMES.Web.Models.Delivery
 {
@@ -401,7 +402,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
             return query;
         }
 
-        public DeliverySearchViewModel GetDeliverySearchViewModel(DeliveryUOW uow)
+        public DeliverySearchViewModel GetDeliverySearchViewModel(DeliveryUOW uow, List<Claim> roles)
         {
             DeliverySearchViewModel viewModel = new DeliverySearchViewModel();
             //viewModel.SelectedDeliveryStatus = "";
@@ -439,6 +440,22 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
             //viewModel.DeliveryStatusItems = deliveryStatusList.Select(i => new SelectListItem() { Text = i.Text, Value = i.Value });
 
             viewModel.DeliveryStatusItems = uow.GetDeliveryStatusDropDownList(MasterUOW.DropDownListType.All);
+
+            if (roles != null && roles.Count > 0)
+            {
+                foreach(Claim role in roles)
+                {
+                    if (role.Value == MasterUOW.UserRole.Adm || role.Value == MasterUOW.UserRole.ChpUser)
+                    {
+                        viewModel.Advanced = true;
+                        break;
+                    }
+                    else
+                    {
+                        viewModel.Advanced = false;
+                    }
+                }
+            }
 
             return viewModel;
         }
