@@ -26,3 +26,22 @@
 	text-align: center;
 }
 
+.dataTables_wrapper {
+	width: 800px !important;
+	margin: 0 auto !important;
+	width: 100% !important;
+}
+th, td {
+	white-space: nowrap !important;
+}
+/*紙捲表頭顯示scrollX*/
+.dataTables_scrollHead {
+	width: 100% !important;
+}
+.dataTables_scrollHeadInner {
+	width: 100% !important;
+}
+.dataTables_scrollBody {
+	width: 100% !important;
+}
+/*紙捲表頭顯示scrollX*/

@@ -228,8 +228,17 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Delivery
         /// 出貨確認人員
         /// </summary>
         /// 
+        [StringLength(128)]
         [Column("TRANSACTION_BY")]
-        public long? TransactionBy { set; get; }
+        public string TransactionBy { set; get; }
+
+        /// <summary>
+        /// 出貨確認人員名稱
+        /// </summary>
+        /// 
+        [StringLength(128)]
+        [Column("TRANSACTION_USER_NAME")]
+        public string TransactionByUserNmae { set; get; }
 
         /// <summary>
         /// 出貨確認日期
@@ -245,8 +254,17 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Delivery
         /// 出貨核准人員
         /// </summary>
         /// 
+        [StringLength(128)]
         [Column("AUTHORIZE_BY")]
-        public long? AuthorizeBy { set; get; }
+        public string AuthorizeBy { set; get; }
+
+        /// <summary>
+        /// 出貨核准人員名稱
+        /// </summary>
+        /// 
+        [StringLength(128)]
+        [Column("AUTHORIZE_USER_NAME")]
+        public string AuthorizeByUserName { set; get; }
 
         /// <summary>
         /// 出貨核准日期
@@ -278,6 +296,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Delivery
         /// 建立人員名稱
         /// </summary>
         /// 
+        [StringLength(128)]
         [Required]
         [Column("CREATED_USER_NAME")]
         public string CreatedUserName { set; get; }
@@ -303,6 +322,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Delivery
         /// 更新人員名稱
         /// </summary>
         /// 
+        [StringLength(128)]
         [Column("LAST_UPDATE_USER_NAME")]
         public string LastUpdateUserName { set; get; }
 

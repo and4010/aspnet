@@ -1,4 +1,6 @@
-﻿using CHPOUTSRCMES.Web.Models;
+﻿using CHPOUTSRCMES.Web.DataModel;
+using CHPOUTSRCMES.Web.DataModel.UnitOfWorks;
+using CHPOUTSRCMES.Web.Models;
 using CHPOUTSRCMES.Web.Models.Information;
 using System;
 using System.Collections.Generic;
@@ -12,79 +14,21 @@ namespace CHPOUTSRCMES.Web.ViewModels
     {
         public MachinePaperType MachinePaperType { set; get; }
 
-        public static List<MachinePaperType> model = new List<MachinePaperType>();
-
-
-        public List<MachinePaperType> GetMachinePaperTypes()
-        {
-         
-
-            model.Add(new MachinePaperType
-            {
-                Organization_id = 265,
-                Organization_code = "FTY",
-                Machine_code = "FTY01-A003-6502",
-                Machine_meaning = "01-A003-6502",
-                Description = "一力星-01",
-                Paper_type = "A003",
-                Machine_num = "01",
-                Supplier_num = "6502",
-                Supplier_name = "一力星有限公司",
-                Created_by = "華紙管理員",
-                Creation_date = DateTime.Now,
-                Last_updated_by = "華紙管理員",
-                Last_update_date = DateTime.Now
-            }) ;
-
-            model.Add(new MachinePaperType
-            {
-                Organization_id = 265,
-                Organization_code = "FTY",
-                Machine_code = "FTY01-AF23-6502",
-                Machine_meaning = "01-AF23-6502",
-                Description = "一力星-01",
-                Paper_type = "AF23",
-                Machine_num = "01",
-                Supplier_num = "6502",
-                Supplier_name = "一力星有限公司",
-                Created_by = "華紙管理員",
-                Creation_date = DateTime.Now,
-                Last_updated_by = "華紙管理員",
-                Last_update_date = DateTime.Now
-            });
-
-
-            return model;
-        }
 
         public IEnumerable<SelectListItem> GetOrganization_code()
         {
-            List<ListItem> Organization_code = new List<ListItem>();
-            Organization_code.Add(new ListItem("全部", "*"));
-            Organization_code.Add(new ListItem("FTY", "FTY"));
-            return Organization_code.Select(i => new SelectListItem() { Text = i.Text, Value = i.Value });
+            using (var context = new MesContext())
+            {
+                return new MaincheTypeUOW(context).GetOrganization_code();
+            }
         }
 
-        public List<MachinePaperType> search(string Organization_code)
+        public List<MachinePaperType> GetMachinePaperTypes(string Organization_code)
         {
-            //ResultModel result = new ResultModel(true, "搜尋成功");
-            try
+            using (var context = new MesContext())
             {
-
-                var query = model.Where(
-                  x =>
-                  Organization_code == "*" || x.Organization_code != null && x.Organization_code.ToLower() == Organization_code.ToLower()).ToList();
-
-                //dtData = query;
-                return query;
+                return new MaincheTypeUOW(context).GetMachinePaperTypes(Organization_code);
             }
-            catch (Exception e)
-            {
-                //result.Msg = e.Message;
-                //result.Success = false;
-                return new List<MachinePaperType>();
-            }
-            //return result;
         }
 
         public static IOrderedEnumerable<MachinePaperType> Order(List<Order> orders, IEnumerable<MachinePaperType> models)

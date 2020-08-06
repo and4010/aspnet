@@ -12,6 +12,8 @@ using System.Collections.Specialized;
 using CHPOUTSRCMES.Web.DataModel;
 using CHPOUTSRCMES.Web.DataModel.UnitOfWorks;
 using Microsoft.AspNet.Identity;
+using CHPOUTSRCMES.Web.DataModel.Entiy.Delivery;
+using System.Security.Claims;
 
 namespace CHPOUTSRCMES.Web.Controllers
 {
@@ -29,7 +31,12 @@ namespace CHPOUTSRCMES.Web.Controllers
             {
                 using (DeliveryUOW uow = new DeliveryUOW(context))
                 {
-                    DeliverySearchViewModel viewModel = tripHeaderData.GetDeliverySearchViewModel(uow);
+                    //取得使用者角色
+                    var userIdentity = (ClaimsIdentity)User.Identity;
+                    var claims = userIdentity.Claims;
+                    var roleClaimType = userIdentity.RoleClaimType;
+                    var roles = claims.Where(c => c.Type == ClaimTypes.Role).ToList();
+                    DeliverySearchViewModel viewModel = tripHeaderData.GetDeliverySearchViewModel(uow, roles);
                     return View(viewModel);
                 }
             }
@@ -61,12 +68,12 @@ namespace CHPOUTSRCMES.Web.Controllers
                             || (!string.IsNullOrEmpty(p.DELIVERY_NAME) && p.DELIVERY_NAME.ToLower().Contains(search.ToLower()))
                             || (!string.IsNullOrEmpty(p.CUSTOMER_NAME) && p.CUSTOMER_NAME.ToLower().Contains(search.ToLower()))
                             || (!string.IsNullOrEmpty(p.CUSTOMER_LOCATION_CODE) && p.CUSTOMER_LOCATION_CODE.ToLower().Contains(search.ToLower()))
-                            || p.SRC_REQUESTED_QUANTITY.ToString().ToLower().Contains(search.ToLower())
-                            || (!string.IsNullOrEmpty(p.SRC_REQUESTED_QUANTITY_UOM) && p.SRC_REQUESTED_QUANTITY_UOM.ToLower().Contains(search.ToLower()))
-                            || p.REQUESTED_QUANTITY2.ToString().ToLower().Contains(search.ToLower())
-                            || (!string.IsNullOrEmpty(p.REQUESTED_QUANTITY_UOM2) && p.REQUESTED_QUANTITY_UOM2.ToLower().Contains(search.ToLower()))
-                            || p.REQUESTED_QUANTITY.ToString().ToLower().Contains(search.ToLower())
-                            || (!string.IsNullOrEmpty(p.REQUESTED_QUANTITY_UOM) && p.REQUESTED_QUANTITY_UOM.ToLower().Contains(search.ToLower()))
+                            //|| p.SRC_REQUESTED_QUANTITY.ToString().ToLower().Contains(search.ToLower())
+                            //|| (!string.IsNullOrEmpty(p.SRC_REQUESTED_QUANTITY_UOM) && p.SRC_REQUESTED_QUANTITY_UOM.ToLower().Contains(search.ToLower()))
+                            //|| p.REQUESTED_QUANTITY2.ToString().ToLower().Contains(search.ToLower())
+                            //|| (!string.IsNullOrEmpty(p.REQUESTED_QUANTITY_UOM2) && p.REQUESTED_QUANTITY_UOM2.ToLower().Contains(search.ToLower()))
+                            //|| p.REQUESTED_QUANTITY.ToString().ToLower().Contains(search.ToLower())
+                            //|| (!string.IsNullOrEmpty(p.REQUESTED_QUANTITY_UOM) && p.REQUESTED_QUANTITY_UOM.ToLower().Contains(search.ToLower()))
                             || (!string.IsNullOrEmpty(p.SUBINVENTORY_CODE) && p.SUBINVENTORY_CODE.ToLower().Contains(search.ToLower()))
                             || (p.TRIP_ACTUAL_SHIP_DATE.HasValue && p.TRIP_ACTUAL_SHIP_DATE.Value.ToString("yyyy-MM-dd").ToLower().Contains(search.ToLower()))
                             || (!string.IsNullOrEmpty(p.TRIP_NAME) && p.TRIP_NAME.ToLower().Contains(search.ToLower()))
@@ -186,7 +193,7 @@ namespace CHPOUTSRCMES.Web.Controllers
         }
 
         [HttpPost, ActionName("GetRollEdit")]
-        public JsonResult GetRollEdit(DataTableAjaxPostViewModel data, long DlvHeaderId)
+        public JsonResult GetRollEdit(DataTableAjaxPostViewModel data, long DlvHeaderId, string DELIVERY_STATUS_NAME)
         {
             //if (PaperRollEditData.getDataCount(DlvHeaderId) == 0)
             //{
@@ -198,7 +205,7 @@ namespace CHPOUTSRCMES.Web.Controllers
                 using (DeliveryUOW uow = new DeliveryUOW(context))
                 {
                     PaperRollEditData paperRollEditData = new PaperRollEditData();
-                    List<PaperRollEditDT> model = paperRollEditData.GetRollDetailDT(uow, DlvHeaderId);
+                    List<PaperRollEditDT> model = paperRollEditData.GetRollDetailDT(uow, DlvHeaderId, DELIVERY_STATUS_NAME);
                     var totalCount = model.Count;
                     string search = data.Search.Value;
                     if (!string.IsNullOrEmpty(search) && !string.IsNullOrWhiteSpace(search))
@@ -228,14 +235,14 @@ namespace CHPOUTSRCMES.Web.Controllers
         }
 
         [HttpPost, ActionName("GetRollEditBarcode")]
-        public JsonResult GetRollEditBarcode(DataTableAjaxPostViewModel data, long DlvHeaderId)
+        public JsonResult GetRollEditBarcode(DataTableAjaxPostViewModel data, long DlvHeaderId, string DELIVERY_STATUS_NAME)
         {
             using (var context = new MesContext())
             {
                 using (DeliveryUOW uow = new DeliveryUOW(context))
                 {
                     PaperRollEditBarcodeData paperRollEditBarcodeData = new PaperRollEditBarcodeData();
-                    List<PaperRollEditBarcodeDT> model = paperRollEditBarcodeData.GetRollPickDT(uow, DlvHeaderId);
+                    List<PaperRollEditBarcodeDT> model = paperRollEditBarcodeData.GetRollPickDT(uow, DlvHeaderId, DELIVERY_STATUS_NAME);
                     var totalCount = model.Count;
                     string search = data.Search.Value;
                     if (!string.IsNullOrEmpty(search) && !string.IsNullOrWhiteSpace(search))
@@ -258,7 +265,7 @@ namespace CHPOUTSRCMES.Web.Controllers
         }
 
         [HttpPost, ActionName("InputRollEditBarcode")]
-        public ActionResult InputRollEditBarcode(string BARCODE, long DlvHeaderId, long DLV_DETAIL_ID, string DELIVERY_NAME, string PICK_STATUS, string SRC_REQUESTED_QUANTITY_UOM)
+        public ActionResult InputRollEditBarcode(string BARCODE, long DlvHeaderId, long DLV_DETAIL_ID, string DELIVERY_NAME, string PICK_STATUS)
         {
             using (var context = new MesContext())
             {
@@ -268,8 +275,7 @@ namespace CHPOUTSRCMES.Web.Controllers
                     var id = this.User.Identity.GetUserId();
                     //取得使用者帳號
                     var name = this.User.Identity.GetUserName();
-                    PaperRollEditBarcodeData paperRollEditBarcodeData = new PaperRollEditBarcodeData();
-                    var result = paperRollEditBarcodeData.AddPickDT(uow, DlvHeaderId, DLV_DETAIL_ID, DELIVERY_NAME, BARCODE, null, id, name, PICK_STATUS, SRC_REQUESTED_QUANTITY_UOM);
+                    var result = tripHeaderData.AddPickDT(uow, DlvHeaderId, DLV_DETAIL_ID, DELIVERY_NAME, BARCODE, null, id, name, PICK_STATUS);
                     return new JsonResult { Data = new { status = result.Success, result = result.Msg } };
                 }
             }
@@ -357,51 +363,51 @@ namespace CHPOUTSRCMES.Web.Controllers
             //}
         }
 
-        [HttpPost, ActionName("DeleteRollEditBarcode")]
-        public ActionResult DeleteRollEditBarcode(List<long> PICKED_ID, long DlvHeaderId)
-        {
-            bool result = false;
-            List<PaperRollEditBarcodeDT> items = PaperRollEditBarcodeData.getItemList(PICKED_ID);
-            if (items.Count > 0)
-            {
-                result = PaperRollEditBarcodeData.remove(PICKED_ID);
-                if (result)
-                {
-                    foreach (PaperRollEditBarcodeDT item in items)
-                    {
-                        PaperRollEditData.remove(item.DLV_DETAIL_ID, DlvHeaderId);
-                        //if (item.ITEM_DESCRIPTION == "A006" && item.PaperRollEditDT_ID == 1)
-                        //{
-                        //    PaperRollEditData.removeA006(item.PaperRollEditDT_ID, TripDetailDT_ID);
-                        //}
-                        //else if (item.ITEM_DESCRIPTION == "B001")
-                        //{
-                        //    PaperRollEditData.removeB001(item.PaperRollEditDT_ID, TripDetailDT_ID);
-                        //}
-                        //else if (item.ITEM_DESCRIPTION == "A006" && item.PaperRollEditDT_ID == 3)
-                        //{
-                        //    PaperRollEditData.removeA006s(item.PaperRollEditDT_ID, TripDetailDT_ID);
-                        //}
-                    }
-                    TripHeaderData.ChangeDeliveryStatus(DlvHeaderId, PaperRollEditData.checkDeliveryPickComplete(DlvHeaderId));
-                    return new JsonResult { Data = new { status = true, result = "條碼刪除成功" } };
-                }
-                else
-                {
-                    return new JsonResult { Data = new { status = false, result = "條碼刪除失敗" } };
-                }
-            }
-            else
-            {
-                return new JsonResult { Data = new { status = false, result = "條碼刪除失敗" } };
-            }
+        //[HttpPost, ActionName("DeleteRollEditBarcode")]
+        //public ActionResult DeleteRollEditBarcode(List<long> PICKED_ID, long DlvHeaderId)
+        //{
+        //    bool result = false;
+        //    List<PaperRollEditBarcodeDT> items = PaperRollEditBarcodeData.getItemList(PICKED_ID);
+        //    if (items.Count > 0)
+        //    {
+        //        result = PaperRollEditBarcodeData.remove(PICKED_ID);
+        //        if (result)
+        //        {
+        //            foreach (PaperRollEditBarcodeDT item in items)
+        //            {
+        //                PaperRollEditData.remove(item.DLV_DETAIL_ID, DlvHeaderId);
+        //                //if (item.ITEM_DESCRIPTION == "A006" && item.PaperRollEditDT_ID == 1)
+        //                //{
+        //                //    PaperRollEditData.removeA006(item.PaperRollEditDT_ID, TripDetailDT_ID);
+        //                //}
+        //                //else if (item.ITEM_DESCRIPTION == "B001")
+        //                //{
+        //                //    PaperRollEditData.removeB001(item.PaperRollEditDT_ID, TripDetailDT_ID);
+        //                //}
+        //                //else if (item.ITEM_DESCRIPTION == "A006" && item.PaperRollEditDT_ID == 3)
+        //                //{
+        //                //    PaperRollEditData.removeA006s(item.PaperRollEditDT_ID, TripDetailDT_ID);
+        //                //}
+        //            }
+        //            TripHeaderData.ChangeDeliveryStatus(DlvHeaderId, PaperRollEditData.checkDeliveryPickComplete(DlvHeaderId));
+        //            return new JsonResult { Data = new { status = true, result = "條碼刪除成功" } };
+        //        }
+        //        else
+        //        {
+        //            return new JsonResult { Data = new { status = false, result = "條碼刪除失敗" } };
+        //        }
+        //    }
+        //    else
+        //    {
+        //        return new JsonResult { Data = new { status = false, result = "條碼刪除失敗" } };
+        //    }
 
-        }
+        //}
 
         [HttpPost, ActionName("GetFlatEdit")]
-        public JsonResult GetFlatEdit(DataTableAjaxPostViewModel data, long DlvHeaderId)
+        public JsonResult GetFlatEdit(DataTableAjaxPostViewModel data, long DlvHeaderId, string DELIVERY_STATUS_NAME)
         {
-
+            
             //if (FlatEditData.getModel(DELIVERY_NAME, TRIP_NAME).Count == 0)
             //{
             //    FlatEditData.addDefault();
@@ -411,7 +417,7 @@ namespace CHPOUTSRCMES.Web.Controllers
                 using (DeliveryUOW uow = new DeliveryUOW(context))
                 {
                     FlatEditData flatEditData = new FlatEditData();
-                    List<FlatEditDT> model = flatEditData.GetFlatDetailDT(uow, DlvHeaderId);
+                    List<FlatEditDT> model = flatEditData.GetFlatDetailDT(uow, DlvHeaderId, DELIVERY_STATUS_NAME);
                     var totalCount = model.Count;
                     string search = data.Search.Value;
                     if (!string.IsNullOrEmpty(search) && !string.IsNullOrWhiteSpace(search))
@@ -442,14 +448,14 @@ namespace CHPOUTSRCMES.Web.Controllers
         }
 
         [HttpPost, ActionName("GetFlatEditBarcode")]
-        public JsonResult GetFlatEditBarcode(DataTableAjaxPostViewModel data, long DlvHeaderId)
+        public JsonResult GetFlatEditBarcode(DataTableAjaxPostViewModel data, long DlvHeaderId, string DELIVERY_STATUS_NAME)
         {
             using (var context = new MesContext())
             {
                 using (DeliveryUOW uow = new DeliveryUOW(context))
                 {
                     FlatEditBarcodeData flatEditBarcodeData = new FlatEditBarcodeData();
-                    List<FlatEditBarcodeDT> model = flatEditBarcodeData.GetFlatPickDT(uow, DlvHeaderId);
+                    List<FlatEditBarcodeDT> model = flatEditBarcodeData.GetFlatPickDT(uow, DlvHeaderId, DELIVERY_STATUS_NAME);
                     var totalCount = model.Count;
                     string search = data.Search.Value;
                     if (!string.IsNullOrEmpty(search) && !string.IsNullOrWhiteSpace(search))
@@ -475,7 +481,7 @@ namespace CHPOUTSRCMES.Web.Controllers
         }
 
         [HttpPost, ActionName("InputFlatEditBarcode")]
-        public ActionResult InputFlatEditBarcode(string BARCODE, decimal? SECONDARY_QUANTITY, long DlvHeaderId, long DLV_DETAIL_ID, string DELIVERY_NAME, string PICK_STATUS, string SRC_REQUESTED_QUANTITY_UOM)
+        public ActionResult InputFlatEditBarcode(string BARCODE, decimal? SECONDARY_QUANTITY, long DlvHeaderId, long DLV_DETAIL_ID, string DELIVERY_NAME, string PICK_STATUS)
         {
             using (var context = new MesContext())
             {
@@ -486,8 +492,7 @@ namespace CHPOUTSRCMES.Web.Controllers
                     var id = this.User.Identity.GetUserId();
                     //取得使用者帳號
                     var name = this.User.Identity.GetUserName();
-                    FlatEditBarcodeData flatEditBarcodeData = new FlatEditBarcodeData();
-                    var result = flatEditBarcodeData.AddPickDT(uow, DlvHeaderId, DLV_DETAIL_ID, DELIVERY_NAME, BARCODE, SECONDARY_QUANTITY, id, name, PICK_STATUS, SRC_REQUESTED_QUANTITY_UOM);
+                    var result = tripHeaderData.AddPickDT(uow, DlvHeaderId, DLV_DETAIL_ID, DELIVERY_NAME, BARCODE, SECONDARY_QUANTITY, id, name, PICK_STATUS);
                     return new JsonResult { Data = new { status = result.Success, result = result.Msg } };
                 }
             }
@@ -599,33 +604,41 @@ namespace CHPOUTSRCMES.Web.Controllers
         }
 
 
-        public ActionResult FlatView(string id)
+        public ActionResult FlatView(long id)
         {
-            TripHeaderDT detailData = null;
-            if (string.IsNullOrEmpty(id))
+            using (var context = new MesContext())
             {
-                detailData = TripHeaderData.GetData()[0];
+                using (DeliveryUOW uow = new DeliveryUOW(context))
+                {
+                    return View(tripHeaderData.GetFlatViewModel(uow, id));
+                }
             }
-            else
-            {
-                detailData = TripHeaderData.GetData(Convert.ToInt32(id))[0];
-            }
-            FlatViewModel model = new FlatViewModel();
-            model.DeliveryDetailViewHeader = new DeliveryDetailViewHeader();
-            model.DeliveryDetailViewHeader.DlvHeaderId = detailData.Id;
-            model.DeliveryDetailViewHeader.CUSTOMER_LOCATION_CODE = detailData.CUSTOMER_LOCATION_CODE;
-            model.DeliveryDetailViewHeader.CUSTOMER_NAME = detailData.CUSTOMER_NAME;
-            model.DeliveryDetailViewHeader.DELIVERY_NAME = detailData.DELIVERY_NAME;
-            //model.DeliveryDetailViewHeader.ORDER_NUMBER = Convert.ToString(detailData.ORDER_NUMBER);
-            model.DeliveryDetailViewHeader.REMARK = detailData.NOTE;
-            model.DeliveryDetailViewHeader.SHIP_CUSTOMER_NAME = detailData.SHIP_CUSTOMER_NAME;
-            model.DeliveryDetailViewHeader.SHIP_LOCATION_CODE = detailData.SHIP_LOCATION_CODE;
-            model.DeliveryDetailViewHeader.TRIP_ACTUAL_SHIP_DATE = detailData.TRIP_ACTUAL_SHIP_DATE;
-            model.DeliveryDetailViewHeader.TRIP_CAR = detailData.TRIP_CAR;
-            model.DeliveryDetailViewHeader.TRIP_NAME = detailData.TRIP_NAME;
-            model.DeliveryDetailViewHeader.DELIVERY_STATUS = detailData.DELIVERY_STATUS;
 
-            return View(model);
+            //TripHeaderDT detailData = null;
+            //if (string.IsNullOrEmpty(id))
+            //{
+            //    detailData = TripHeaderData.GetData()[0];
+            //}
+            //else
+            //{
+            //    detailData = TripHeaderData.GetData(Convert.ToInt32(id))[0];
+            //}
+            //FlatViewModel model = new FlatViewModel();
+            //model.DeliveryDetailViewHeader = new DeliveryDetailViewHeader();
+            //model.DeliveryDetailViewHeader.DlvHeaderId = detailData.Id;
+            //model.DeliveryDetailViewHeader.CUSTOMER_LOCATION_CODE = detailData.CUSTOMER_LOCATION_CODE;
+            //model.DeliveryDetailViewHeader.CUSTOMER_NAME = detailData.CUSTOMER_NAME;
+            //model.DeliveryDetailViewHeader.DELIVERY_NAME = detailData.DELIVERY_NAME;
+            ////model.DeliveryDetailViewHeader.ORDER_NUMBER = Convert.ToString(detailData.ORDER_NUMBER);
+            //model.DeliveryDetailViewHeader.REMARK = detailData.NOTE;
+            //model.DeliveryDetailViewHeader.SHIP_CUSTOMER_NAME = detailData.SHIP_CUSTOMER_NAME;
+            //model.DeliveryDetailViewHeader.SHIP_LOCATION_CODE = detailData.SHIP_LOCATION_CODE;
+            //model.DeliveryDetailViewHeader.TRIP_ACTUAL_SHIP_DATE = detailData.TRIP_ACTUAL_SHIP_DATE;
+            //model.DeliveryDetailViewHeader.TRIP_CAR = detailData.TRIP_CAR;
+            //model.DeliveryDetailViewHeader.TRIP_NAME = detailData.TRIP_NAME;
+            //model.DeliveryDetailViewHeader.DELIVERY_STATUS = detailData.DELIVERY_STATUS;
+
+            //return View(model);
         }
 
         public ActionResult InsteadView(string id)
@@ -633,38 +646,46 @@ namespace CHPOUTSRCMES.Web.Controllers
             return View();
         }
 
-        public ActionResult RollView(string id)
+        public ActionResult RollView(long id)
         {
-            TripHeaderDT detailData = null;
-            if (string.IsNullOrEmpty(id))
+            using (var context = new MesContext())
             {
-                detailData = TripHeaderData.GetData()[0];
+                using (DeliveryUOW uow = new DeliveryUOW(context))
+                {
+                    return View(tripHeaderData.GetPaperRollViewModel(uow, id));
+                }
             }
-            else
-            {
-                detailData = TripHeaderData.GetData(Convert.ToInt32(id))[0];
-            }
-            PaperRollViewModel model = new PaperRollViewModel();
-            model.DeliveryDetailViewHeader = new DeliveryDetailViewHeader();
-            model.DeliveryDetailViewHeader.DlvHeaderId = detailData.Id;
-            model.DeliveryDetailViewHeader.CUSTOMER_LOCATION_CODE = detailData.CUSTOMER_LOCATION_CODE;
-            model.DeliveryDetailViewHeader.CUSTOMER_NAME = detailData.CUSTOMER_NAME;
-            model.DeliveryDetailViewHeader.DELIVERY_NAME = detailData.DELIVERY_NAME;
-            //model.DeliveryDetailViewHeader.ORDER_NUMBER = Convert.ToString(detailData.ORDER_NUMBER);
-            model.DeliveryDetailViewHeader.REMARK = detailData.NOTE;
-            model.DeliveryDetailViewHeader.SHIP_CUSTOMER_NAME = detailData.SHIP_CUSTOMER_NAME;
-            model.DeliveryDetailViewHeader.SHIP_LOCATION_CODE = detailData.SHIP_LOCATION_CODE;
-            model.DeliveryDetailViewHeader.TRIP_ACTUAL_SHIP_DATE = detailData.TRIP_ACTUAL_SHIP_DATE;
-            model.DeliveryDetailViewHeader.TRIP_CAR = detailData.TRIP_CAR;
-            model.DeliveryDetailViewHeader.TRIP_NAME = detailData.TRIP_NAME;
-            model.DeliveryDetailViewHeader.DELIVERY_STATUS = detailData.DELIVERY_STATUS;
 
-            //DeliveryDetailViewHeader deliveryDetailViewHeader = new DeliveryDetailViewHeader();
-            //deliveryDetailViewHeader.TRIP_NAME = "Y191226-1036357";
-            //deliveryDetailViewHeader.DELIVERY_NAME = "FTY1910000150";
-            //model.DeliveryDetailViewHeader = deliveryDetailViewHeader;
+            //TripHeaderDT detailData = null;
+            //if (string.IsNullOrEmpty(id))
+            //{
+            //    detailData = TripHeaderData.GetData()[0];
+            //}
+            //else
+            //{
+            //    detailData = TripHeaderData.GetData(Convert.ToInt32(id))[0];
+            //}
+            //PaperRollViewModel model = new PaperRollViewModel();
+            //model.DeliveryDetailViewHeader = new DeliveryDetailViewHeader();
+            //model.DeliveryDetailViewHeader.DlvHeaderId = detailData.Id;
+            //model.DeliveryDetailViewHeader.CUSTOMER_LOCATION_CODE = detailData.CUSTOMER_LOCATION_CODE;
+            //model.DeliveryDetailViewHeader.CUSTOMER_NAME = detailData.CUSTOMER_NAME;
+            //model.DeliveryDetailViewHeader.DELIVERY_NAME = detailData.DELIVERY_NAME;
+            ////model.DeliveryDetailViewHeader.ORDER_NUMBER = Convert.ToString(detailData.ORDER_NUMBER);
+            //model.DeliveryDetailViewHeader.REMARK = detailData.NOTE;
+            //model.DeliveryDetailViewHeader.SHIP_CUSTOMER_NAME = detailData.SHIP_CUSTOMER_NAME;
+            //model.DeliveryDetailViewHeader.SHIP_LOCATION_CODE = detailData.SHIP_LOCATION_CODE;
+            //model.DeliveryDetailViewHeader.TRIP_ACTUAL_SHIP_DATE = detailData.TRIP_ACTUAL_SHIP_DATE;
+            //model.DeliveryDetailViewHeader.TRIP_CAR = detailData.TRIP_CAR;
+            //model.DeliveryDetailViewHeader.TRIP_NAME = detailData.TRIP_NAME;
+            //model.DeliveryDetailViewHeader.DELIVERY_STATUS = detailData.DELIVERY_STATUS;
 
-            return View(model);
+            ////DeliveryDetailViewHeader deliveryDetailViewHeader = new DeliveryDetailViewHeader();
+            ////deliveryDetailViewHeader.TRIP_NAME = "Y191226-1036357";
+            ////deliveryDetailViewHeader.DELIVERY_NAME = "FTY1910000150";
+            ////model.DeliveryDetailViewHeader = deliveryDetailViewHeader;
+
+            //return View(model);
         }
 
         [HttpPost]
@@ -674,7 +695,11 @@ namespace CHPOUTSRCMES.Web.Controllers
             {
                 using (DeliveryUOW uow = new DeliveryUOW(context))
                 {
-                    ResultModel result = tripHeaderData.DeliveryConfirm(uow, id);
+                    //取得使用者ID
+                    var userId = this.User.Identity.GetUserId();
+                    //取得使用者帳號
+                    var name = this.User.Identity.GetUserName();
+                    ResultModel result = tripHeaderData.DeliveryConfirm(uow, id, userId, name);
                     return new JsonResult { Data = new { status = result.Success, result = result.Msg } };
                 }
             }
@@ -698,7 +723,11 @@ namespace CHPOUTSRCMES.Web.Controllers
             {
                 using (DeliveryUOW uow = new DeliveryUOW(context))
                 {
-                    ResultModel result = tripHeaderData.CancelConfirm(uow, id);
+                    //取得使用者ID
+                    var userId = this.User.Identity.GetUserId();
+                    //取得使用者帳號
+                    var name = this.User.Identity.GetUserName();
+                    ResultModel result = tripHeaderData.CancelConfirm(uow, id, userId, name);
                     return new JsonResult { Data = new { status = result.Success, result = result.Msg } };
                 }
             }
@@ -711,20 +740,28 @@ namespace CHPOUTSRCMES.Web.Controllers
             {
                 using (DeliveryUOW uow = new DeliveryUOW(context))
                 {
-                    ResultModel result = tripHeaderData.PrintPickList(uow, id);
+                    //取得使用者ID
+                    var userId = this.User.Identity.GetUserId();
+                    //取得使用者帳號
+                    var name = this.User.Identity.GetUserName();
+                    ResultModel result = tripHeaderData.PrintPickList(uow, id, userId, name);
                     return new JsonResult { Data = new { status = result.Success, result = result.Msg } };
                 }
             }
         }
 
         [HttpPost]
-        public ActionResult DeliveryAuthorize(List<long> id)
+        public ActionResult DeliveryAuthorize(TripDetailDTEditor selectDatas)
         {
             using (var context = new MesContext())
             {
                 using (DeliveryUOW uow = new DeliveryUOW(context))
                 {
-                    ResultModel result = tripHeaderData.DeliveryAuthorize(uow, id);
+                    //取得使用者ID
+                    var userId = this.User.Identity.GetUserId();
+                    //取得使用者帳號
+                    var name = this.User.Identity.GetUserName();
+                    ResultModel result = tripHeaderData.DeliveryAuthorize(uow, selectDatas, userId, name);
                     return new JsonResult { Data = new { status = result.Success, result = result.Msg } };
                 }
             }
@@ -737,7 +774,11 @@ namespace CHPOUTSRCMES.Web.Controllers
             {
                 using (DeliveryUOW uow = new DeliveryUOW(context))
                 {
-                    ResultModel result = tripHeaderData.CancelAuthorize(uow, id);
+                    //取得使用者ID
+                    var userId = this.User.Identity.GetUserId();
+                    //取得使用者帳號
+                    var name = this.User.Identity.GetUserName();
+                    ResultModel result = tripHeaderData.CancelAuthorize(uow, id, userId, name);
                     return new JsonResult { Data = new { status = result.Success, result = result.Msg } };
                 }
             }
@@ -750,7 +791,11 @@ namespace CHPOUTSRCMES.Web.Controllers
             {
                 using (DeliveryUOW uow = new DeliveryUOW(context))
                 {
-                    ResultModel result = tripHeaderData.CancelTrip(uow, id);
+                    //取得使用者ID
+                    var userId = this.User.Identity.GetUserId();
+                    //取得使用者帳號
+                    var name = this.User.Identity.GetUserName();
+                    ResultModel result = tripHeaderData.CancelTrip(uow, id, userId, name);
                     return new JsonResult { Data = new { status = result.Success, result = result.Msg } };
                 }
             }
@@ -759,21 +804,15 @@ namespace CHPOUTSRCMES.Web.Controllers
         [HttpPost]
         public ActionResult UpdateDeliveryDetailViewHeader(long DlvHeaderId)
         {
-            DeliveryDetailViewHeader model = new DeliveryDetailViewHeader();
-            TripHeaderDT detailData = TripHeaderData.GetData(Convert.ToInt32(DlvHeaderId))[0];
-            model.CUSTOMER_LOCATION_CODE = detailData.CUSTOMER_LOCATION_CODE;
-            model.CUSTOMER_NAME = detailData.CUSTOMER_NAME;
-            model.DELIVERY_NAME = detailData.DELIVERY_NAME;
-            //model.ORDER_NUMBER = Convert.ToString(detailData.ORDER_NUMBER);
-            model.REMARK = detailData.NOTE;
-            model.SHIP_CUSTOMER_NAME = detailData.SHIP_CUSTOMER_NAME;
-            model.SHIP_LOCATION_CODE = detailData.SHIP_LOCATION_CODE;
-            model.TRIP_ACTUAL_SHIP_DATE = detailData.TRIP_ACTUAL_SHIP_DATE;
-            model.TRIP_CAR = detailData.TRIP_CAR;
-            model.TRIP_NAME = detailData.TRIP_NAME;
-            model.DlvHeaderId = detailData.Id;
-            model.DELIVERY_STATUS = detailData.DELIVERY_STATUS;
-            return PartialView("_DeliveryPartial", model);
+            using (var context = new MesContext())
+            {
+                using (DeliveryUOW uow = new DeliveryUOW(context))
+                {
+                    TripHeaderData tripHeaderData = new TripHeaderData();
+                    DeliveryDetailViewHeader viewModel = tripHeaderData.GetDeliveryDetailViewHeader(uow ,Convert.ToInt32(DlvHeaderId));
+                    return PartialView("_DeliveryPartial", viewModel);
+                }
+            }
         }
 
 
@@ -784,9 +823,38 @@ namespace CHPOUTSRCMES.Web.Controllers
             {
                 using (DeliveryUOW uow = new DeliveryUOW(context))
                 {
-                    ResultModel result = tripHeaderData.UpdateTransactionAuthorizeDates(uow, selectedData);
+                    //取得使用者ID
+                    var userId = this.User.Identity.GetUserId();
+                    //取得使用者帳號
+                    var name = this.User.Identity.GetUserName();
+                    ResultModel result = tripHeaderData.UpdateTransactionAuthorizeDates(uow, selectedData, userId, name);
                     return new JsonResult { Data = new { status = result.Success, result = result.Msg } };
                     //return new JsonResult { Data = new { data } };
+                }
+            }
+        }
+
+
+        [HttpPost]
+        public ActionResult PickDTEditor(PickDTEditor pickDTEditor)
+        {
+            using (var context = new MesContext())
+            {
+                using (DeliveryUOW uow = new DeliveryUOW(context))
+                {
+                    if (pickDTEditor.Action == "remove")
+                    {
+                        //取得使用者ID
+                        var id = this.User.Identity.GetUserId();
+                        //取得使用者帳號
+                        var name = this.User.Identity.GetUserName();
+                        ResultModel result = tripHeaderData.DelPickDT(uow, pickDTEditor.DlvPickedIdList, id, name);
+                        return new JsonResult { Data = new { status = result.Success, result = result.Msg } };
+                    }
+                    else
+                    {
+                        return new JsonResult { Data = new { status = false, result = "Action無法辨識" } };
+                    }
                 }
             }
         }

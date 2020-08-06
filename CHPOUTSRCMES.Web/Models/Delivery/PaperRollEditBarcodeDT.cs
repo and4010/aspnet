@@ -65,17 +65,17 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
             return list;
         }
 
-        public List<PaperRollEditBarcodeDT> GetRollPickDT(DeliveryUOW uow, long DlvHeaderId)
+        public List<PaperRollEditBarcodeDT> GetRollPickDT(DeliveryUOW uow, long DlvHeaderId, string DELIVERY_STATUS_NAME)
         {
 
-            return uow.GetRollPickDT(DlvHeaderId);
+            return uow.GetRollPickDT(DlvHeaderId, DELIVERY_STATUS_NAME);
 
         }
 
 
-        public ResultModel AddPickDT(DeliveryUOW uow, long dlvHeaderId, long dlvDetailId, string deliveryName, string barcode, decimal? qty, string addUser, string addUserName, string status, string transactionUomCode)
+        public ResultModel AddPickDT(DeliveryUOW uow, long dlvHeaderId, long dlvDetailId, string deliveryName, string barcode, decimal? qty, string addUser, string addUserName, string status)
         {
-            return uow.AddPickDT(dlvHeaderId, dlvDetailId, deliveryName, barcode, qty, addUser, addUserName, status, transactionUomCode);
+            return uow.AddPickDT(dlvHeaderId, dlvDetailId, deliveryName, barcode, qty, addUser, addUserName, status);
         }
 
         public static void addBarcode123(long PaperRollEditDT_ID, long DlvHeaderId)

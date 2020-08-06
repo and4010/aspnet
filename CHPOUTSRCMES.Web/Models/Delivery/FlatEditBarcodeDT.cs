@@ -5,6 +5,7 @@ using System.Web;
 using System.ComponentModel.DataAnnotations;
 using CHPOUTSRCMES.Web.ViewModels;
 using CHPOUTSRCMES.Web.DataModel.UnitOfWorks;
+using static CHPOUTSRCMES.Web.DataModel.UnitOfWorks.DeliveryUOW;
 
 namespace CHPOUTSRCMES.Web.Models.Delivery
 {
@@ -70,9 +71,9 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
             return list;
         }
 
-        public List<FlatEditBarcodeDT> GetFlatPickDT(DeliveryUOW uow, long DlvHeaderId)
+        public List<FlatEditBarcodeDT> GetFlatPickDT(DeliveryUOW uow, long DlvHeaderId, string DELIVERY_STATUS_NAME)
         {
-            return uow.GetFlatPickDT(DlvHeaderId);
+            return uow.GetFlatPickDT(DlvHeaderId, DELIVERY_STATUS_NAME);
         }
 
         public static void resetData()
@@ -80,10 +81,6 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
             model = new List<FlatEditBarcodeDT>();
         }
 
-        public ResultModel AddPickDT(DeliveryUOW uow, long dlvHeaderId, long dlvDetailId, string deliveryName, string barcode, decimal? qty, string addUser, string addUserName, string status, string transactionUomCode)
-        {
-            return uow.AddPickDT(dlvHeaderId, dlvDetailId, deliveryName, barcode, qty, addUser, addUserName, status, transactionUomCode);
-        }
 
             public static void addBarcode123(decimal qty)
         {

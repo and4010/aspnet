@@ -68,8 +68,10 @@ function RollSave() {
         contentType: false,
         processData: false,
         success: function (data) {
-            if (data.boolean) {
+            if (data.resultModel.Success) {
                 window.history.go(-1);
+            } else {
+                swal.fire(data.resultModel.Msg)
             }
         },
         error: function (data) {
@@ -102,9 +104,11 @@ function FlatSave() {
         "datatype": "json",
         "data": formData,
         success: function (data) {
-            if (data.boolean) {
+            if (data.resultModel.Success) {
                 window.history.go(-1);
-            } 
+            } else {
+                swal.fire(data.resultModel.Msg)
+            }
         },
         error: function (data) {
             swal.fire(data);

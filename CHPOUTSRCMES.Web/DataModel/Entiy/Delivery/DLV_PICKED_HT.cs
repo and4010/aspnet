@@ -107,7 +107,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Delivery
         /// </summary>
         /// 
         [StringLength(30)]
-        [Required]
+        [Required(AllowEmptyStrings = true)]
         [Column("PACKING_TYPE")]
         public string PackingType { set; get; }
 
@@ -167,7 +167,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Delivery
         /// 次要數量
         /// </summary>
         /// 
-        [Required]
+        
         [Column("SECONDARY_QUANTITY")]
         public decimal? SecondaryQuantity { set; get; }
 
@@ -175,7 +175,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Delivery
         /// 次要單位
         /// </summary>
         /// 
-        [Required]
+        
         [StringLength(3)]
         [Column("SECONDARY_UOM")]
         public string SecondaryUom { set; get; }
@@ -208,6 +208,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Delivery
         /// 建立人員名稱
         /// </summary>
         /// 
+        [StringLength(128)]
         [Required]
         [Column("CREATED_USER_NAME")]
         public string CreatedUserName { set; get; }
@@ -233,6 +234,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Delivery
         /// 更新人員名稱
         /// </summary>
         /// 
+        [StringLength(128)]
         [Column("LAST_UPDATE_USER_NAME")]
         public string LastUpdateUserName { set; get; }
 

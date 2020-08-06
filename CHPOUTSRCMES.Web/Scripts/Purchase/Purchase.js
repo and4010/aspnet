@@ -138,12 +138,12 @@ $(document).ready(function () {
 
 
     //列印標籤紙捲
-    $('.row-std').on('click', '.btn-label', function (e) {
+    $('#PaperRollLabel').on('click', function (e) {
         PrintLable($('#PaperRolldataTablesBody').DataTable(), "/Home/GetLabel", "4");
     })
 
     //列印標籤平張
-    $('.row-std').on('click', '.btn-label2', function (e) {
+    $('#FlatLabel').on('click', function (e) {
         PrintLable($('#FlatdataTablesBody').DataTable(), "/Home/GetLabel", "4");
     })
 
@@ -732,13 +732,13 @@ function PaperRolldataTablesBody() {
         "language": {
             "url": "/bower_components/datatables/language/zh-TW.json"
         },
-        //scrollX: true,
+        scrollX: true,
         destroy: true,
-        autoWidth: false,
+        autoWidth: true,
         serverSide: true,
         processing: true,
         columnDefs: [{
-            orderable: false, targets: [0, 17], width: "70px",
+            orderable: false, targets: [0, 17], width: "50px",
         }],
         dom:
             "<'row'<'col-sm-2'l><'col-sm-7'B><'col-sm-3'f>>" +

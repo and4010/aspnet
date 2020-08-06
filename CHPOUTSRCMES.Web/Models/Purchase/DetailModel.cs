@@ -103,7 +103,7 @@ namespace CHPOUTSRCMES.Web.Models.Purchase
             public string Remark { get; set; }
 
             [Display(Name = "更新時間")]
-            public DateTime CreationDate { get; set; }
+            public DateTime? CreationDate { get; set; }
 
             [Display(Name = "更新人員")]
             public string CreatedUserName { get; set; }
@@ -195,7 +195,7 @@ namespace CHPOUTSRCMES.Web.Models.Purchase
             public string Remark { get; set; }
 
             [Display(Name = "更新時間")]
-            public DateTime CreationDate { get; set; }
+            public DateTime? CreationDate { get; set; }
 
             [Display(Name = "更新人員")]
             public string CreatedUserName { get; set; }

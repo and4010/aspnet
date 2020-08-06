@@ -27,19 +27,15 @@ namespace CHPOUTSRCMES.Web.Controllers
         {
             MachinePaperTypeViewModel machinePaperTypeViewModel = new MachinePaperTypeViewModel();
 
-            if (MachinePaperTypeViewModel.model.Count == 0)
-            {
-                machinePaperTypeViewModel.GetMachinePaperTypes();
-            }
 
-            List<MachinePaperType> model = machinePaperTypeViewModel.search(Organization_code);
+            List<MachinePaperType> model = machinePaperTypeViewModel.GetMachinePaperTypes(Organization_code);
 
 
             model = MachinePaperTypeViewModel.Search(data, model);
             model = MachinePaperTypeViewModel.Order(data.Order, model).ToList();
-            model = model.Skip(data.Start).Take(data.Length).ToList();
+            var data1 = model.Skip(data.Start).Take(data.Length).ToList();
 
-            return Json(new { draw = data.Draw, recordsFiltered = model.Count, recordsTotal = model.Count, data = model }, JsonRequestBehavior.AllowGet);
+            return Json(new { draw = data.Draw, recordsFiltered = model.Count, recordsTotal = model.Count, data = data1 }, JsonRequestBehavior.AllowGet);
         }
 
 

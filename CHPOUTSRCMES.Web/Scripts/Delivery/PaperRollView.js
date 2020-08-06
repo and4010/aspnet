@@ -24,17 +24,18 @@
             "type": "POST",
             "datatype": "json",
             "data": {
-                DlvHeaderId: $("#DlvHeaderId").text()
+                DlvHeaderId: $("#DlvHeaderId").text(),
+                DELIVERY_STATUS_NAME: $("#DELIVERY_STATUS").text()
             }
         },
         columns: [
          //{ data: null, defaultContent: '', className: 'select-checkbox', orderable: false, width: "40px" },
-         { data: "ID", name: "項次", autoWidth: true },
+            { data: "SUB_ID", name: "項次", autoWidth: true },
          { data: "ORDER_NUMBER", name: "訂單", autoWidth: true },
          { data: "ORDER_SHIP_NUMBER", name: "訂單行號", autoWidth: true },
          { data: "OSP_BATCH_NO", name: "工單號碼", autoWidth: true },
          { data: "TMP_ITEM_NUMBER", name: "代紙料號", autoWidth: true, className: "dt-body-left" },
-         { data: "ITEM_DESCRIPTION", name: "料號名稱", autoWidth: true, className: "dt-body-left" },
+            { data: "ITEM_NUMBER", name: "料號名稱", autoWidth: true, className: "dt-body-left" },
          { data: "PAPER_TYPE", name: "紙別", autoWidth: true },
          { data: "BASIC_WEIGHT", name: "基重", autoWidth: true },
          { data: "SPECIFICATION", name: "規格", autoWidth: true },
@@ -70,17 +71,18 @@
             "type": "Post",
             "datatype": "json",
             "data": {
-                DlvHeaderId: $("#DlvHeaderId").text()
+                DlvHeaderId: $("#DlvHeaderId").text(),
+                DELIVERY_STATUS_NAME: $("#DELIVERY_STATUS").text()
             },
         },
         columns: [
          //{ data: null, defaultContent: '', className: 'select-checkbox', orderable: false, width: "40px" },
-         { data: "PaperRollEditDT_ID", name: "項次", autoWidth: true },
-         { data: "ITEM_DESCRIPTION", name: "料號", autoWidth: true, className: "dt-body-left" },
+            { data: "SUB_ID", name: "項次", autoWidth: true },
+            { data: "ITEM_NUMBER", name: "料號", autoWidth: true, className: "dt-body-left" },
          { data: "BARCODE", name: "條碼號", autoWidth: true },
          { data: "PRIMARY_QUANTITY", name: "主要數量", autoWidth: true, className: "dt-body-right" },
          { data: "PRIMARY_UOM", name: "主要單位", autoWidth: true },
-         { data: "REMARK", name: "備註", autoWidth: true, className: "dt-body-left" },
+         //{ data: "REMARK", name: "備註", autoWidth: true, className: "dt-body-left" },
          { data: "LAST_UPDATE_DATE", name: "更新日期", autoWidth: true, visible: false },
         ],
 

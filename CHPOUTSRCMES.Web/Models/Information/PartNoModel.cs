@@ -12,7 +12,7 @@ namespace CHPOUTSRCMES.Web.Models.Information
         public int Id { get; set; }
 
         [Display(Name = "庫存組織CODE")]
-        public string Organization_code { set; get; } 
+        public long Organization_code { set; get; } 
 
         [Display(Name = "存貨分類")]
         public string Category_code_inv { set; get; }
@@ -36,7 +36,7 @@ namespace CHPOUTSRCMES.Web.Models.Information
         public string Item_number { set; get; }
 
         [Display(Name = "料號ID")]
-        public int Inventory_item_id { set; get; }
+        public long Inventory_item_id { set; get; }
 
         [Display(Name = "英文摘要")]
         public string Item_desc_eng { set; get; }
@@ -102,15 +102,15 @@ namespace CHPOUTSRCMES.Web.Models.Information
         public string Catalog_elem_val_140 { set; get; }
 
         [Display(Name = "建立人員ID")]
-        public string Created_by { set; get; }
+        public long Created_by { set; get; }
 
         [Display(Name = "建立日期")]
         public DateTime Creation_Date { set; get; }
 
         [Display(Name = "最後更新人員ID")]
-        public string Last_Updated_by { set; get; }
+        public long Last_Updated_by { set; get; }
 
         [Display(Name = "最後更新日期")]
-        public DateTime Last_Update_Date { set; get; }
+        public DateTime? Last_Update_Date { set; get; }
     }
 }

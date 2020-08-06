@@ -31,5 +31,8 @@ namespace CHPOUTSRCMES.Web.ViewModels.Delivery
         public IEnumerable<SelectListItem> DeliveryStatusItems { set; get; }
         [Display(Name = "狀態")]
         public string SelectedDeliveryStatus { set; get; }
+
+        
+        public bool Advanced { set; get; }
     }
 }

@@ -13,6 +13,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Web.Services.Protocols;
 using Microsoft.Graph;
+using NLog;
 
 namespace CHPOUTSRCMES.Web.ViewModels.Purchase
 {
@@ -34,7 +35,7 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
         public string Status { set; get; }
 
         public List<DetailModel> Purchase { get; set; }
-
+        private ILogger logger = LogManager.GetCurrentClassLogger();
 
 
         public DetailModel Detail { set; get; }
@@ -42,7 +43,20 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
         public DetailModel.RollDetailModel RollDetailModel { set; get; }
         public DetailModel.FlatDetailModel FlatDetailModel { set; get; }
 
+        /// <summary>
+        /// 已入庫
+        /// </summary>
+        public const string PurchaseHeaderAlready = "0";
 
+        /// <summary>
+        /// 待入庫
+        /// </summary>
+        public const string PurchaseHeaderPending = "1";
+
+        /// <summary>
+        /// 取消
+        /// </summary>
+        public const string PurchaseHeaderCancel = "2";
 
 
         public List<FullCalendarEventModel> GetFullCalendarModel(string Subinventory)
@@ -63,7 +77,7 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
         {
             using (var context = new MesContext())
             {
-                if(Status == "1")
+                if (Status == PurchaseHeaderPending)
                 {
                     return new PurchaseUOW(context).GetPaperRollHeaderList(CONTAINER_NO);
                 }
@@ -71,7 +85,7 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
                 {
                     return new PurchaseUOW(context).GetPaperRollHeaderHtList(CONTAINER_NO);
                 }
-               
+
             }
         }
 
@@ -81,12 +95,12 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
         /// <param name="CONTAINER_NO"></param>
         /// <param name="Status"></param>
         /// <returns></returns>
-        public List<DetailModel.FlatModel> GetFlatHeader(string CONTAINER_NO,string Status)
+        public List<DetailModel.FlatModel> GetFlatHeader(string CONTAINER_NO, string Status)
         {
 
             using (var context = new MesContext())
             {
-                if(Status == "1")
+                if (Status == PurchaseHeaderPending)
                 {
                     return new PurchaseUOW(context).GetFlatHeaderList(CONTAINER_NO);
                 }
@@ -95,7 +109,7 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
                     return new PurchaseUOW(context).GetFlatHeaderHtList(CONTAINER_NO);
                 }
 
-                
+
             }
         }
 
@@ -108,9 +122,9 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
         /// <returns></returns>
         public ResultModel ImportPaperRollPickT(string CONTAINER_NO, List<DetailModel.RollDetailModel> PaperRollModel, string createby, string userName)
         {
-            using(var context = new MesContext())
+            using (var context = new MesContext())
             {
-              return new PurchaseUOW(context).ImportPaperRollDetail(CONTAINER_NO, PaperRollModel, createby, userName);
+                return new PurchaseUOW(context).ImportPaperRollDetail(CONTAINER_NO, PaperRollModel, createby, userName);
             }
         }
 
@@ -119,11 +133,11 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
         /// </summary>
         /// <param name="CONTAINER_NO"></param>
         /// <returns></returns>
-        public List<DetailModel.RollDetailModel> GetPaperRollPickT(string CONTAINER_NO,string Status)
+        public List<DetailModel.RollDetailModel> GetPaperRollPickT(string CONTAINER_NO, string Status)
         {
             using (var context = new MesContext())
             {
-                if (Status == "1")
+                if (Status == PurchaseHeaderPending)
                 {
                     return new PurchaseUOW(context).GetPaperRollDetailList(CONTAINER_NO);
                 }
@@ -138,12 +152,12 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
         /// </summary>
         /// <param name="CONTAINER_NO"></param>
         /// <returns></returns>
-        public List<DetailModel.FlatDetailModel> GetFlatPickT(string CONTAINER_NO,string Status)
+        public List<DetailModel.FlatDetailModel> GetFlatPickT(string CONTAINER_NO, string Status)
         {
 
             using (var context = new MesContext())
             {
-                if (Status == "1")
+                if (Status == PurchaseHeaderPending)
                 {
                     return new PurchaseUOW(context).GetFlatDetailList(CONTAINER_NO);
                 }
@@ -178,7 +192,7 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
         {
             using (var context = new MesContext())
             {
-                return new PurchaseUOW(context).SaveFlatBarcode(Barcode,LastUpdateBy, LastUpdateUserName);
+                return new PurchaseUOW(context).SaveFlatBarcode(Barcode, LastUpdateBy, LastUpdateUserName);
             }
         }
 
@@ -215,19 +229,19 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
         /// <param name="Reason"></param>
         /// <param name="Locator"></param>
         /// <param name="Remark"></param>
-        public bool PaperRollEditNote(HttpFileCollectionBase File, long id, string Reason, string Locator, string Remark, string LastUpdateBy, string LastUpdateUserName)
+        public ResultModel PaperRollEditNote(HttpFileCollectionBase File, long id, string Reason, string Locator, string Remark, string LastUpdateBy, string LastUpdateUserName)
         {
             using (var context = new MesContext())
             {
-                if (File != null || File.Count != 0)
-                {
-                    foreach (string i in File)
-                    {
-                        HttpPostedFileBase hpf = File[i] as HttpPostedFileBase;
-                        new PurchaseUOW(context).SavePhoto(hpf,id, LastUpdateBy);
-                    }
-                }
-              return new PurchaseUOW(context).PaperRollEdit(id, Reason, Locator, Remark, LastUpdateBy, LastUpdateUserName);
+                //if (File != null || File.Count != 0)
+                //{
+                //    foreach (string i in File)
+                //    {
+                //        HttpPostedFileBase hpf = File[i] as HttpPostedFileBase;
+                //        new PurchaseUOW(context).SavePhoto(hpf, id, LastUpdateBy);
+                //    }
+                //}
+                return new PurchaseUOW(context).PaperRollEdit(File,id, Reason, Locator, Remark, LastUpdateBy, LastUpdateUserName);
             }
         }
 
@@ -239,20 +253,21 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
         /// <param name="Reason"></param>
         /// <param name="Locator"></param>
         /// <param name="Remark"></param>
-        public bool FlatEditNote(HttpFileCollectionBase File, long id, string Reason, string Locator, string Remark, string LastUpdateBy, string LastUpdateUserName)
+        public ResultModel FlatEditNote(HttpFileCollectionBase File, long id, string Reason, string Locator, string Remark, string LastUpdateBy, string LastUpdateUserName)
         {
 
             using (var context = new MesContext())
             {
-                if (File != null || File.Count != 0)
-                {
-                    foreach (string i in File)
-                    {
-                        HttpPostedFileBase hpf = File[i] as HttpPostedFileBase;
-                        new PurchaseUOW(context).SavePhoto(hpf, id, LastUpdateBy);
-                    }
-                }
-               return new PurchaseUOW(context).FlatEdit(id, Reason, Locator, Remark, LastUpdateBy, LastUpdateUserName);
+
+                //if (File != null || File.Count != 0)
+                //{
+                //    foreach (string i in File)
+                //    {
+                //        HttpPostedFileBase hpf = File[i] as HttpPostedFileBase;
+                //        new PurchaseUOW(context).SavePhoto(hpf, id, LastUpdateBy);
+                //    }
+                //}
+                return new PurchaseUOW(context).FlatEdit(File,id, Reason, Locator, Remark, LastUpdateBy, LastUpdateUserName);
             }
         }
 
@@ -265,7 +280,7 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
         {
             using (var context = new MesContext())
             {
-               return new PurchaseUOW(context).DeleteExcel(CONTAINER_NO);
+                return new PurchaseUOW(context).DeleteExcel(CONTAINER_NO);
             }
         }
 
@@ -320,7 +335,7 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
             {
                 return new PurchaseUOW(context).GetPaperRollNumberTab(CabinetNumber);
             }
-            
+
         }
 
 
@@ -348,7 +363,7 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
         {
             using (var context = new MesContext())
             {
-               return new PurchaseUOW(context).GetPhoto(id);
+                return new PurchaseUOW(context).GetPhoto(id);
             }
 
         }
@@ -598,7 +613,7 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
 
         }
 
-        
+
         internal class FlatDetailModelDTOrder
         {
             public static IOrderedEnumerable<DetailModel.FlatDetailModel> Order(List<Order> orders, IEnumerable<DetailModel.FlatDetailModel> models)
