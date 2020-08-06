@@ -62,6 +62,15 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Delivery
         public string Status { set; get; }
 
         /// <summary>
+        /// 棧板狀態
+        /// </summary>
+        /// 
+        [Required]
+        [StringLength(10)]
+        [Column("PALLET_STATUS")]
+        public string PalletStatus { set; get; }
+
+        /// <summary>
         /// 出貨儲位ID
         /// </summary>
         /// 

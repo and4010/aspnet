@@ -12,6 +12,7 @@ using CHPOUTSRCMES.Web.DataModel.UnitOfWorks;
 using CHPOUTSRCMES.Web.DataModel.Entiy.Delivery;
 using static CHPOUTSRCMES.Web.DataModel.UnitOfWorks.DeliveryUOW;
 using System.Security.Claims;
+using NLog;
 
 namespace CHPOUTSRCMES.Web.Models.Delivery
 {
@@ -147,6 +148,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
 
     public class TripHeaderData
     {
+        private ILogger logger = LogManager.GetCurrentClassLogger();
         public static List<TripHeaderDT> source = new List<TripHeaderDT>();
         //public static List<TripDetailDT> model = new List<TripDetailDT>();
 
@@ -443,7 +445,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
 
             if (roles != null && roles.Count > 0)
             {
-                foreach(Claim role in roles)
+                foreach (Claim role in roles)
                 {
                     if (role.Value == MasterUOW.UserRole.Adm || role.Value == MasterUOW.UserRole.ChpUser)
                     {
@@ -497,7 +499,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
 
         public PaperRollEditViewModel GetPaperRollEditViewModel(DeliveryUOW uow, long dlvHeaderId)
         {
-           
+
             PaperRollEditViewModel viewModel = new PaperRollEditViewModel();
             viewModel.DeliveryDetailViewHeader = GetDeliveryDetailViewHeader(uow, dlvHeaderId);
             return viewModel;
@@ -747,7 +749,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
 
             return uow.DeliveryAuthorize(updateDatas, AuthorizeDate, userId, userName);
 
-            
+
 
 
             //var query = from tripDetail in source
@@ -1002,9 +1004,9 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
 
         }
 
-        public ResultModel AddPickDT(DeliveryUOW uow, long dlvHeaderId, long dlvDetailId, string deliveryName, string barcode, decimal? qty, string addUser, string addUserName, string status)
+        public ResultModel AddPickDT(DeliveryUOW uow, long dlvHeaderId, long dlvDetailId, string deliveryName, string barcode, decimal? qty, string addUser, string addUserName)
         {
-            return uow.AddPickDT(dlvHeaderId, dlvDetailId, deliveryName, barcode, qty, addUser, addUserName, status);
+            return uow.AddPickDT(dlvHeaderId, dlvDetailId, deliveryName, barcode, qty, addUser, addUserName);
             //var addResult = uow.AddPickDT(dlvHeaderId, dlvDetailId, deliveryName, barcode, qty, addUser, addUserName, status);
             //if (!addResult.Success)
             //{
@@ -1042,41 +1044,41 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
             //return CheckPicked(uow, pickedDataList[0].DlvHeaderId, userId, userName);
         }
 
-            //public static ResultModel UpdateTransactionAuthorizeDates(TripDetailDTEditor data)
-            //{
-            //    if (data == null)
-            //    {
-            //        return new ResultModel(false, "更改出貨核准日失敗，資料來源為空");
-            //    }
+        //public static ResultModel UpdateTransactionAuthorizeDates(TripDetailDTEditor data)
+        //{
+        //    if (data == null)
+        //    {
+        //        return new ResultModel(false, "更改出貨核准日失敗，資料來源為空");
+        //    }
 
-            //    int updatedCount = 0;
+        //    int updatedCount = 0;
 
-            //    foreach (var sourceTripDetailDT in source)
-            //    {
-            //        foreach (var selectedData in data.TripDetailDTList){
-            //            if (sourceTripDetailDT.Id == selectedData.Id){
-            //                sourceTripDetailDT.TRANSACTION_AUTHORIZE_DATE = selectedData.TRANSACTION_AUTHORIZE_DATE;
-            //                updatedCount++;
-            //            }
-            //        }
-            //    }
+        //    foreach (var sourceTripDetailDT in source)
+        //    {
+        //        foreach (var selectedData in data.TripDetailDTList){
+        //            if (sourceTripDetailDT.Id == selectedData.Id){
+        //                sourceTripDetailDT.TRANSACTION_AUTHORIZE_DATE = selectedData.TRANSACTION_AUTHORIZE_DATE;
+        //                updatedCount++;
+        //            }
+        //        }
+        //    }
 
-            //    if (updatedCount == 0)
-            //    {
-            //        return new ResultModel(false, "更改出貨核准日失敗，全部資料比對不到");
-            //    }
-            //    else if (updatedCount != data.TripDetailDTList.Count)
-            //    {
-            //        return new ResultModel(false, "更改出貨核准日失敗，部分資料比對不到");
-            //    }
-            //    else
-            //    {
-            //        return new ResultModel(true, "更改出貨核准日成功");
-            //    }
+        //    if (updatedCount == 0)
+        //    {
+        //        return new ResultModel(false, "更改出貨核准日失敗，全部資料比對不到");
+        //    }
+        //    else if (updatedCount != data.TripDetailDTList.Count)
+        //    {
+        //        return new ResultModel(false, "更改出貨核准日失敗，部分資料比對不到");
+        //    }
+        //    else
+        //    {
+        //        return new ResultModel(true, "更改出貨核准日成功");
+        //    }
 
-            //}
+        //}
 
-            public ResultModel UpdateTransactionAuthorizeDates(DeliveryUOW uow, TripDetailDTEditor data, string userId, string userNmae)
+        public ResultModel UpdateTransactionAuthorizeDates(DeliveryUOW uow, TripDetailDTEditor data, string userId, string userNmae)
         {
             return uow.UpdateTransactionAuthorizeDates(data, userId, userNmae);
 
@@ -1096,6 +1098,12 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
 
             //return result;
 
+        }
+
+        public ActionResult PritLabel(DeliveryUOW uow, List<long> PICKED_IDs, string userName)
+        {
+            var resultData = uow.GetLabels(PICKED_IDs, userName);
+            return uow.PrintLable(resultData.Data);
         }
     }
 

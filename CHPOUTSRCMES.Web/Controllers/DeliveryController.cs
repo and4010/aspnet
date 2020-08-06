@@ -265,7 +265,7 @@ namespace CHPOUTSRCMES.Web.Controllers
         }
 
         [HttpPost, ActionName("InputRollEditBarcode")]
-        public ActionResult InputRollEditBarcode(string BARCODE, long DlvHeaderId, long DLV_DETAIL_ID, string DELIVERY_NAME, string PICK_STATUS)
+        public ActionResult InputRollEditBarcode(string BARCODE, long DlvHeaderId, long DLV_DETAIL_ID, string DELIVERY_NAME)
         {
             using (var context = new MesContext())
             {
@@ -275,7 +275,7 @@ namespace CHPOUTSRCMES.Web.Controllers
                     var id = this.User.Identity.GetUserId();
                     //取得使用者帳號
                     var name = this.User.Identity.GetUserName();
-                    var result = tripHeaderData.AddPickDT(uow, DlvHeaderId, DLV_DETAIL_ID, DELIVERY_NAME, BARCODE, null, id, name, PICK_STATUS);
+                    var result = tripHeaderData.AddPickDT(uow, DlvHeaderId, DLV_DETAIL_ID, DELIVERY_NAME, BARCODE, null, id, name);
                     return new JsonResult { Data = new { status = result.Success, result = result.Msg } };
                 }
             }
@@ -481,7 +481,7 @@ namespace CHPOUTSRCMES.Web.Controllers
         }
 
         [HttpPost, ActionName("InputFlatEditBarcode")]
-        public ActionResult InputFlatEditBarcode(string BARCODE, decimal? SECONDARY_QUANTITY, long DlvHeaderId, long DLV_DETAIL_ID, string DELIVERY_NAME, string PICK_STATUS)
+        public ActionResult InputFlatEditBarcode(string BARCODE, decimal? SECONDARY_QUANTITY, long DlvHeaderId, long DLV_DETAIL_ID, string DELIVERY_NAME)
         {
             using (var context = new MesContext())
             {
@@ -492,7 +492,7 @@ namespace CHPOUTSRCMES.Web.Controllers
                     var id = this.User.Identity.GetUserId();
                     //取得使用者帳號
                     var name = this.User.Identity.GetUserName();
-                    var result = tripHeaderData.AddPickDT(uow, DlvHeaderId, DLV_DETAIL_ID, DELIVERY_NAME, BARCODE, SECONDARY_QUANTITY, id, name, PICK_STATUS);
+                    var result = tripHeaderData.AddPickDT(uow, DlvHeaderId, DLV_DETAIL_ID, DELIVERY_NAME, BARCODE, SECONDARY_QUANTITY, id, name);
                     return new JsonResult { Data = new { status = result.Success, result = result.Msg } };
                 }
             }
@@ -855,6 +855,22 @@ namespace CHPOUTSRCMES.Web.Controllers
                     {
                         return new JsonResult { Data = new { status = false, result = "Action無法辨識" } };
                     }
+                }
+            }
+        }
+
+
+        [HttpPost]
+        public ActionResult PrintLabel(List<long> PICKED_ID)
+        {
+            using (var context = new MesContext())
+            {
+                using (DeliveryUOW uow = new DeliveryUOW(context))
+                {
+                    //取得使用者帳號
+                    var name = this.User.Identity.GetUserName();
+                    return tripHeaderData.PritLabel(uow, PICKED_ID, name);
+                    //return new JsonResult { Data = new { status = false, result = "" } };
                 }
             }
         }

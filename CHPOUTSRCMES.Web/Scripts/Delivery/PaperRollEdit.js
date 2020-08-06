@@ -326,8 +326,8 @@ $(document).ready(function () {
             { data: "PRIMARY_QUANTITY", name: "主要數量", autoWidth: true, className: "dt-body-right" },
             { data: "PRIMARY_UOM", name: "主要單位", autoWidth: true },
             //{ data: "REMARK", name: "備註", autoWidth: true, className: "dt-body-left" },
-            { data: "LAST_UPDATE_DATE", name: "更新日期", autoWidth: true, visible: false }
-
+            { data: "LAST_UPDATE_DATE", name: "更新日期", autoWidth: true, visible: false },
+            { data: "PICKED_ID", name: "PICKED_ID", autoWidth: true, visible: false }
         ],
 
         "order": [[6, 'desc']],
@@ -387,7 +387,7 @@ $(document).ready(function () {
                     text: '<span class="glyphicon glyphicon-print"></span>&nbsp列印標籤',
                     //className: 'btn-default btn-sm',
                     action: function (e) {
-                        PrintLable(PaperRollBarcodeDataTablesBody, "/Home/GetLabel", "3");
+                        PrintLable(PaperRollBarcodeDataTablesBody, "/Delivery/PrintLabel", "7");
                     },
                     className: "btn-primary",
                     enabled: false
@@ -442,8 +442,7 @@ $(document).ready(function () {
                 BARCODE: $('#txtBARCODE').val(),
                 DlvHeaderId: $("#DlvHeaderId").text(),
                 DLV_DETAIL_ID: $("#DLV_DETAIL_ID").text(),
-                DELIVERY_NAME: $("#DELIVERY_NAME").text(),
-                PICK_STATUS: $("#PICK_STATUS").text()
+                DELIVERY_NAME: $("#DELIVERY_NAME").text()
             },
             success: function (data) {
                 if (data.status) {
