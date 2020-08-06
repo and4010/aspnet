@@ -252,6 +252,7 @@
     <Compile Include="DataAnnotation\Precision.cs" />
     <Compile Include="DataModel\UnitOfWorks\ItemNoUOW.cs" />
     <Compile Include="DataModel\UnitOfWorks\MaincheTypeUOW.cs" />
+    <Compile Include="DataModel\UnitOfWorks\RelatedUOW.cs" />
     <Compile Include="DataModel\UomConversion.cs" />
     <Compile Include="DataModel\FakeUomConversion.cs" />
     <Compile Include="DataModel\Interfaces\IAction.cs" />
