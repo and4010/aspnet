@@ -1,4 +1,6 @@
-﻿using CHPOUTSRCMES.Web.Models;
+﻿using CHPOUTSRCMES.Web.DataModel;
+using CHPOUTSRCMES.Web.DataModel.UnitOfWorks;
+using CHPOUTSRCMES.Web.Models;
 using CHPOUTSRCMES.Web.Models.Information;
 using CHPOUTSRCMES.Web.Models.Purchase;
 using CHPOUTSRCMES.Web.ViewModels.Purchase;
@@ -15,25 +17,29 @@ namespace CHPOUTSRCMES.Web.ViewModels
     {
         public ReasonModel ReasonModel { set; get; }
 
-        public static List<ReasonModel> models = new List<ReasonModel>(); 
-
-
 
         public List<ReasonModel> GetReason()
         {
-            models.Add(new ReasonModel {
-                Reason_code= "A",
-                Reason_desc = "破損",
-                Create_by = "華紙管理員",
-                Create_date = DateTime.Now,
-                Last_update_by = "華紙管理員",
-                Last_Create_date = DateTime.Now,
-            });
+            using (var context = new MesContext())
+            {
+                return new MasterUOW(context).GetReason();
 
-
-            return models;
+            }
         }
 
+        public ResultModel SetReasonValue(ReasonViewModel.ReasonEditor ReasonEditor,string id,string name)
+        {
+            using (var context = new MesContext())
+            {
+              return new MasterUOW(context).SetReasonValue(ReasonEditor,id,name);
+            }
+        }
+
+        public class ReasonEditor
+        {
+            public string Action { get; set; }
+            public ReasonModel ReasonModel { get; set; }
+        }
 
         internal class ReasonModelDTOrder
         {
