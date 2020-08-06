@@ -18,10 +18,8 @@ namespace CHPOUTSRCMES.TASK
             using (var controller = MainController.Instance)
             {
                 controller.StartTimer();
-#if DEBUG
-                controller.GenerateTestTasker();
-                controller.testConnection();
-#endif
+                //controller.AddMasterTasker();
+
                 Application.Run(controller.MainForm);
                 controller.StopTimer();
             }

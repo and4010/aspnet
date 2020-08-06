@@ -4,37 +4,41 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CHPOUTSRCMES.TASK.DataModel.Views
+namespace CHPOUTSRCMES.TASK.Models.Views
 {
     /// <summary>
-    /// 餘切規格(N)
+    /// 庫存交易類別(N)
     /// </summary>
-    public class XXCINV_OSP_RELATED_ITEM_V
+    public class XXCINV_TRANSACTION_TYPE_V
     {
         /// <summary>
-        /// 組成成份料號ID
+        /// 異動型態ID
         /// </summary>
-        public long INVENTORY_ITEM_ID { set; get; }
+        public long TRANSACTION_TYPE_ID { set; get; }
         /// <summary>
-        /// 組成成份料號
+        /// 異動型態
         /// </summary>
-        public string ITEM_NUMBER { set; get; }
+        public string TRANSACTION_TYPE_NAME { set; get; }
         /// <summary>
-        /// 組成成份料號摘要
+        /// 異動型態摘要
         /// </summary>
-        public string ITEM_DESCRIPTION { set; get; }
+        public string DESCRIPTION { set; get; }
         /// <summary>
-        /// 餘切料號ID
+        /// 異動作業ID
         /// </summary>
-        public long RELATED_ITEM_ID { set; get; }
+        public long TRANSACTION_ACTION_ID { set; get; }
         /// <summary>
-        /// 餘切料號
+        /// 異動作業
         /// </summary>
-        public string RELATED_ITEM_NUMBER { set; get; }
+        public string TRANSACTION_ACTION_NAME { set; get; }
         /// <summary>
-        /// 餘切料號摘要
+        /// 來源型態ID
         /// </summary>
-        public string RELATED_ITEM_DESCRIPTION { set; get; }
+        public long TRANSACTION_SOURCE_TYPE_ID { set; get; }
+        /// <summary>
+        /// 來源型態
+        /// </summary>
+        public string TRANSACTION_SOURCE_TYPE_NAME { set; get; }
         /// <summary>
         /// 建立人員ID
         /// </summary>

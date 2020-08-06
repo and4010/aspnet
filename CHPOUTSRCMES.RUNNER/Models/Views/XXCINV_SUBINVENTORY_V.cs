@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CHPOUTSRCMES.TASK.DataModel.Views
+namespace CHPOUTSRCMES.TASK.Models.Views
 {
     /// <summary>
     /// 組織倉庫儲位

@@ -4,49 +4,57 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CHPOUTSRCMES.TASK.DataModel.Views
+namespace CHPOUTSRCMES.TASK.Models.Views
 {
     /// <summary>
-    /// 紙別機台(N)
+    /// 令重包數(N)
     /// </summary>
-    public class XXCPO_MACHINE_PAPER_TYPE_V
+    public class XXCOM_YSZMPCKQ_V
     {
-        /// <summary>
-        /// 庫存組織ID
-        /// </summary>
-        public long ORGANIZATION_ID { set; get; }
         /// <summary>
         /// 庫存組織
         /// </summary>
+        public long ORGANIZATION_ID { set; get; }
+        /// <summary>
+        /// 庫存組織CODE
+        /// </summary>
         public string ORGANIZATION_CODE { set; get; }
         /// <summary>
-        /// 機台紙別代碼
+        /// 加工廠
         /// </summary>
-        public string MACHINE_CODE { set; get; }
-        /// <summary>
-        /// 機台紙別意義
-        /// </summary>
-        public string MACHINE_MEANING { set; get; }
-        /// <summary>
-        /// 機台紙別摘要
-        /// </summary>
-        public string DESCRIPTION { set; get; }
+        public string OSP_SUBINVENTORY { set; get; }
         /// <summary>
         /// 紙別
         /// </summary>
-        public string PAPER_TYPE { set; get; }
+        public string PSTYP { set; get; }
         /// <summary>
-        /// 機台
+        /// 基重上限
         /// </summary>
-        public string MACHINE_NUM { set; get; }
+        public decimal BWETUP { set; get; }
         /// <summary>
-        /// 供應商編號
+        /// 基重下限
         /// </summary>
-        public string SUPPLIER_NUM { set; get; }
+        public decimal BWETDN { set; get; }
         /// <summary>
-        /// 供應商名稱
+        /// 令重上限
         /// </summary>
-        public string SUPPLIER_NAME { set; get; }
+        public decimal RWTUP { set; get; }
+        /// <summary>
+        /// 令重下限
+        /// </summary>
+        public decimal RWTDN { set; get; }
+        /// <summary>
+        /// 包數
+        /// </summary>
+        public decimal PCKQ { set; get; }
+        /// <summary>
+        /// 每包張數
+        /// </summary>
+        public decimal PAPER_QTY { set; get; }
+        /// <summary>
+        /// 每件令數
+        /// </summary>
+        public decimal PIECES_QTY { set; get; }
         /// <summary>
         /// 建立人員ID
         /// </summary>
@@ -63,5 +71,6 @@ namespace CHPOUTSRCMES.TASK.DataModel.Views
         /// 最後更新日期
         /// </summary>
         public DateTime LAST_UPDATE_DATE { set; get; }
+
     }
 }
