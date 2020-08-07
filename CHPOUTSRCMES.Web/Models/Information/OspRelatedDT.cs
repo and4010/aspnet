@@ -20,7 +20,7 @@ namespace CHPOUTSRCMES.Web.Models.Information
         public string ITEM_NUMBER { set; get; }
         public string ITEM_DESCRIPTION { set; get; }
         public long RELATED_ITEM_ID { set; get; }
-        public string RELATED_ITEMNUMBER { set; get; }
+        public string RELATED_ITEM_NUMBER { set; get; }
         public string RELATED_ITEM_DESCRIPTION { set; get; }
         public long CREATED_BY { get; set; }
         public string CREATED_BY_NAME { get; set; }
@@ -58,7 +58,7 @@ namespace CHPOUTSRCMES.Web.Models.Information
         {
             using (var context = new MesContext())
             {
-                return new RelatedUOW(context).GetOrganizationDropDownList(DropDownListType.All);
+                return new RelatedUOW(context).GetRelatedItem(ORGANIZATION_ID, INVENTORY_ITEM_ID);
             }
         }
 
@@ -68,68 +68,10 @@ namespace CHPOUTSRCMES.Web.Models.Information
 
         public List<OspRelatedDT> search(string ORGANIZATION_ID, string INVENTORY_ITEM_ID, string RELATED_ITEM_ID)
         {
-            //ResultModel result = new ResultModel(true, "搜尋成功");
-            try
+            using (var context = new MesContext())
             {
-                long orgId = 0;
-                long inventoryItemId = 0;
-                long relatedItemId = 0;
-
-                try
-                {
-                    if (!string.IsNullOrEmpty(ORGANIZATION_ID) && ORGANIZATION_ID != "*")
-                    {
-                        orgId = Convert.ToInt64(ORGANIZATION_ID);
-                    }
-                }
-                catch
-                {
-                    ORGANIZATION_ID = "*";
-                }
-
-                try
-                {
-                    if (!string.IsNullOrEmpty(INVENTORY_ITEM_ID) && INVENTORY_ITEM_ID != "*")
-                    {
-                        inventoryItemId = Convert.ToInt64(INVENTORY_ITEM_ID);
-                    }
-                }
-                catch
-                {
-                    INVENTORY_ITEM_ID = "*";
-                }
-
-                try
-                {
-                    if (!string.IsNullOrEmpty(RELATED_ITEM_ID) && RELATED_ITEM_ID != "*")
-                    {
-                        relatedItemId = Convert.ToInt64(RELATED_ITEM_ID);
-                    }
-                }
-                catch
-                {
-                    RELATED_ITEM_ID = "*";
-                }
-
-
-
-                //var query = testSource.Where(
-                //  x =>
-                //  (ORGANIZATION_ID == "*" || x.ORGANIZATION_ID == orgId) &&
-                //  (INVENTORY_ITEM_ID == "*" || x.INVENTORY_ITEM_ID == inventoryItemId) &&
-                //  (RELATED_ITEM_ID == "*" || x.RELATED_ITEM_ID == relatedItemId)
-                //  ).ToList();
-
-                //dtData = query;
-                return new List<OspRelatedDT>();
+                return new RelatedUOW(context).search(ORGANIZATION_ID, INVENTORY_ITEM_ID, RELATED_ITEM_ID);
             }
-            catch (Exception e)
-            {
-                //result.Msg = e.Message;
-                //result.Success = false;
-                return new List<OspRelatedDT>();
-            }
-            //return result;
         }
 
         public OspRelatedViewModel getViewModel()
@@ -175,7 +117,7 @@ namespace CHPOUTSRCMES.Web.Models.Information
                 case 1:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.ITEM_DESCRIPTION) : models.OrderBy(x => x.ITEM_DESCRIPTION);
                 case 2:
-                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.RELATED_ITEMNUMBER) : models.OrderBy(x => x.RELATED_ITEMNUMBER);
+                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.RELATED_ITEM_NUMBER) : models.OrderBy(x => x.RELATED_ITEM_NUMBER);
                 case 3:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.RELATED_ITEM_DESCRIPTION) : models.OrderBy(x => x.RELATED_ITEM_DESCRIPTION);
                 case 4:
@@ -199,7 +141,7 @@ namespace CHPOUTSRCMES.Web.Models.Information
                 case 1:
                     return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.ITEM_DESCRIPTION) : models.ThenBy(x => x.ITEM_DESCRIPTION);
                 case 2:
-                    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.RELATED_ITEMNUMBER) : models.ThenBy(x => x.RELATED_ITEMNUMBER);
+                    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.RELATED_ITEM_NUMBER) : models.ThenBy(x => x.RELATED_ITEM_NUMBER);
                 case 3:
                     return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.RELATED_ITEM_DESCRIPTION) : models.ThenBy(x => x.RELATED_ITEM_DESCRIPTION);
                 case 4:

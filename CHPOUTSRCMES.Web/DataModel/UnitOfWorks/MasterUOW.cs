@@ -1277,16 +1277,16 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             //{
             //    throw new Exception("找不到RELATED_ITEM_ID欄位");
             //}
+            ItemNumber_cell = ExcelUtil.FindCell("ITEM", sheet);
+            if (ItemNumber_cell == null)
+            {
+                throw new Exception("找不到ITEM欄位");
+            }
 
             InventoryItemId_cell = ExcelUtil.FindCell("INVENTORY_ITEM_ID", sheet);
             if (InventoryItemId_cell == null)
             {
                 throw new Exception("找不到INVENTORY_ITEM_ID欄位");
-            }
-            ItemNumber_cell = ExcelUtil.FindCell("ITEM", sheet);
-            if (ItemNumber_cell == null)
-            {
-                throw new Exception("找不到ITEM欄位");
             }
 
             ItemDescription_cell = ExcelUtil.FindCell("ITEM_DESCRIPTION", sheet);
@@ -1294,16 +1294,17 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             {
                 throw new Exception("找不到ITEM_DESCRIPTION欄位");
             }
-            RelatedItemId_cell = ExcelUtil.FindCell("RELATED_ITEM_ID", sheet);
-            if (RelatedItemId_cell == null)
-            {
-                throw new Exception("找不到RELATED_ITEM_ID欄位");
-            }
             RelatedItemNumber_cell = ExcelUtil.FindCell("RELATED_ITEM", sheet);
             if (RelatedItemNumber_cell == null)
             {
                 throw new Exception("找不到RELATED_ITEM欄位");
             }
+            RelatedItemId_cell = ExcelUtil.FindCell("RELATED_ITEM_ID", sheet);
+            if (RelatedItemId_cell == null)
+            {
+                throw new Exception("找不到RELATED_ITEM_ID欄位");
+            }
+
             RelatedItemDescription_cell = ExcelUtil.FindCell("RELATED_ITEM_DESCRIPTION", sheet);
             if (RelatedItemDescription_cell == null)
             {

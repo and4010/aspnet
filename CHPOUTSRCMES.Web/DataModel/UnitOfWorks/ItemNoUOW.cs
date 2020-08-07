@@ -47,7 +47,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                      {
                          Text = x.Key,
                          Value = x.Key,
-                     });
+                     }).ToList();
                 SpecList.Add(new SelectListItem() { Text = "全部", Value = "*" });
                 SpecList.AddRange(tempList);
             }
@@ -73,7 +73,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                      {
                          Text = x.Key,
                          Value = x.Key,
-                     });
+                     }).ToList();
                 TypeList.Add(new SelectListItem() { Text = "全部", Value = "*" });
                 TypeList.AddRange(tempList);
             }
@@ -100,7 +100,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                      {
                          Text = x.Key,
                          Value = x.Key,
-                     });
+                     }).ToList();
                 TypeList.Add(new SelectListItem() { Text = "全部", Value = "*" });
                 TypeList.AddRange(tempList);
             }
@@ -137,7 +137,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                         {
                             Text = s.Key,
                             Value = s.Key,
-                        });
+                        }).ToList();
                     OrgList.Add(new SelectListItem() { Text = "全部", Value = "*" });
                     OrgList.AddRange(tempList);
                 }
