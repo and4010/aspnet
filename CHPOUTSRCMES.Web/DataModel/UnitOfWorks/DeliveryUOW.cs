@@ -94,7 +94,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             if (!checkResult.Success) return new ResultModel(checkResult.Success, checkResult.Msg);
             var stock = checkResult.Data;
             var detailData = dlvDetailTRepositiory.GetAll().AsNoTracking().FirstOrDefault(x => x.DlvDetailId == dlvDetailId);
-            if (detailData.OspBatchId == null)
+            if (detailData.TmpItemId == null)
             {
                 if (stock.ItemNumber != detailData.ItemNumber)
                 {
