@@ -352,8 +352,69 @@ $(document).ready(function () {
                     name: 'remove',
                     className: 'btn-danger',
                     editor: editor,
-                    enabled: false
+                    enabled: false,
+                    init: function (api, node, config) {
+                        $(node).removeClass('btn-default')
+                    }
+                    //action: function (e, dt, node, config) {
+                    //    var count = dt.rows({ selected: true }).count();
+
+                    //    if (count == 0) {
+                    //        return;
+                    //    }
+                    //    editor.submit();
+                    //    //editor.edit(TripDataTablesBody.rows({ selected: true }).indexes())
+                    //    //    .title('刪除')
+                    //    //    .buttons({
+                    //    //        text: '刪除',
+                    //    //        action: function () {
+                    //    //            this.submit();
+                    //    //        },
+                    //    //        className: 'btn-danger'
+                    //    //    });
+
+                    //}
+                    //action: function () {
+                    //    var selectedData = FlatBarcodeDataTablesBody.rows('.selected').data();
+                    //    if (selectedData.length == 0) {
+                    //        swal.fire("請選擇要刪除的條碼");
+                    //        return;
+                    //    }
+                    //    editor.edit(TripDataTablesBody.rows({ selected: true }).indexes())
+                    //        .title('刪除')
+                    //        .buttons({
+                    //            text: '刪除',
+                    //            action: function () {
+                    //                this.submit();
+                    //            },
+                    //            className: 'btn-danger'
+                    //        });
+                    //}
                 },
+                //{
+                //    text: '刪除',
+                //    className: 'btn-danger',
+                //    init: function (api, node, config) {
+                //        $(node).removeClass('btn-default')
+                //    },
+                //    action: function (e, dt, node, config) {
+                //        var count = dt.rows({ selected: true }).count();
+
+                //        if (count == 0) {
+                //            return;
+                //        }
+
+                //        editor.remove(FlatBarcodeDataTablesBody.rows({ selected: true }).indexes())
+                //            .title('刪除')
+                //            .buttons({
+                //                text: '確定',
+                //                action: function () {
+                //                    this.submit();
+                //                },
+                //                className: 'btn-danger'
+                //            });
+                //    }
+                //},
                 {
                     text: '<span class="glyphicon glyphicon-print"></span>&nbsp列印標籤',
                     //className: 'btn-default btn-sm',
@@ -361,7 +422,10 @@ $(document).ready(function () {
                         PrintLable(FlatBarcodeDataTablesBody, "/Delivery/PrintLabel", "11");
                     },
                     className: "btn-primary",
-                    enabled: false
+                    enabled: false,
+                    init: function (api, node, config) {
+                        $(node).removeClass('btn-default')
+                    }
                 }
             ],
         }

@@ -382,6 +382,10 @@ $(document).ready(function () {
                     name: 'remove',
                     className: 'btn-danger',
                     editor: editor,
+                    enabled: false,
+                    init: function (api, node, config) {
+                        $(node).removeClass('btn-default')
+                    }
                 },
                 {
                     text: '<span class="glyphicon glyphicon-print"></span>&nbsp列印標籤',
@@ -390,7 +394,10 @@ $(document).ready(function () {
                         PrintLable(PaperRollBarcodeDataTablesBody, "/Delivery/PrintLabel", "7");
                     },
                     className: "btn-primary",
-                    enabled: false
+                    enabled: false,
+                    init: function (api, node, config) {
+                        $(node).removeClass('btn-default')
+                    },
                 }
             ],
         }
