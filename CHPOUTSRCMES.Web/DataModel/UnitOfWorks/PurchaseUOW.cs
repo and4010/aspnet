@@ -1463,7 +1463,7 @@ WHERE d1.ITEM_CATEGORY = N'捲筒' and h1.CONTAINER_NO  = @CONTAINER_NO");
                         //    // EncoderParameter object in the array.  
                         EncoderParameters myEncoderParameters = new EncoderParameters(1);
                         System.Drawing.Imaging.Encoder myEncoder = System.Drawing.Imaging.Encoder.Quality;
-                        myEncoderParameters.Param[0] = new EncoderParameter(myEncoder, 10L);
+                        myEncoderParameters.Param[0] = new EncoderParameter(myEncoder, 30L);
                         thumb.Save(samllfile, jpgInfo, myEncoderParameters);
                         return samllfile.ToArray();
                     }
