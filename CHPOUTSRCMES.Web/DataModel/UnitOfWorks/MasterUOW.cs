@@ -921,7 +921,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             {
                 try
                 {
-                    var id = Int64.Parse(ExcelUtil.GetCellString(j, InventoryItemId_cell.ColumnIndex, sheet).Trim());
+                    var id = Int64.Parse(ExcelUtil.GetStringCellValue(j, InventoryItemId_cell.ColumnIndex, sheet).Trim());
                     //搜尋未執行 SaveChanges 的資料
                     var org = this.Context.ChangeTracker.Entries<ITEMS_T>().Where(x => x.Entity.InventoryItemId == id).FirstOrDefault();
                     //搜尋已執行 SaveChanges 的資料
@@ -929,45 +929,45 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                     if (org == null || org.Entity.InventoryItemId <= 0)
                     {
                         ITEMS_T iTEMS_T = new ITEMS_T();
-                        iTEMS_T.InventoryItemId = Int64.Parse(ExcelUtil.GetCellString(j, InventoryItemId_cell.ColumnIndex, sheet).Trim());
-                        iTEMS_T.ItemNumber = ExcelUtil.GetCellString(j, Item_number_cell.ColumnIndex, sheet).Trim();
-                        iTEMS_T.CategoryCodeInv = ExcelUtil.GetCellString(j, CategoryCodeInv_cell.ColumnIndex, sheet).Trim();
-                        iTEMS_T.CategoryNameInv = ExcelUtil.GetCellString(j, CategoryNameInv_cell.ColumnIndex, sheet).Trim();
-                        iTEMS_T.CategoryCodeCost = ExcelUtil.GetCellString(j, CategoryCodeCost_cell.ColumnIndex, sheet).Trim();
-                        iTEMS_T.CategoryNameCost = ExcelUtil.GetCellString(j, CategoryNameCost_cell.ColumnIndex, sheet).Trim();
-                        iTEMS_T.CategoryCodeControl = ExcelUtil.GetCellString(j, CategoryCodeControl_cell.ColumnIndex, sheet).Trim();
-                        iTEMS_T.CategoryNameControl = ExcelUtil.GetCellString(j, CategoryNameControl_cell.ColumnIndex, sheet).Trim();
-                        iTEMS_T.ItemDescEng = ExcelUtil.GetCellString(j, ItemDescEng_cell.ColumnIndex, sheet).Trim();
-                        iTEMS_T.ItemDescSch = ExcelUtil.GetCellString(j, ItemDescSch_cell.ColumnIndex, sheet).Trim();
-                        iTEMS_T.ItemDescTch = ExcelUtil.GetCellString(j, ItemDescTch_cell.ColumnIndex, sheet).Trim();
-                        iTEMS_T.PrimaryUomCode = ExcelUtil.GetCellString(j, PrimaryUomCode_cell.ColumnIndex, sheet).Trim();
-                        iTEMS_T.SecondaryUomCode = ExcelUtil.GetCellString(j, SecondaryUomCode_cell.ColumnIndex, sheet).Trim();
-                        iTEMS_T.InventoryItemStatusCode = ExcelUtil.GetCellString(j, InventoryItemStatusCode_cell.ColumnIndex, sheet).Trim();
-                        iTEMS_T.ItemType = ExcelUtil.GetCellString(j, ItemType_cell.ColumnIndex, sheet).Trim();
-                        iTEMS_T.CatalogElemVal010 = ExcelUtil.GetCellString(j, CatalogElemVal010_cell.ColumnIndex, sheet).Trim();
-                        iTEMS_T.CatalogElemVal020 = ExcelUtil.GetCellString(j, CatalogElemVal020_cell.ColumnIndex, sheet).Trim();
-                        iTEMS_T.CatalogElemVal030 = ExcelUtil.GetCellString(j, CatalogElemVal030_cell.ColumnIndex, sheet).Trim();
-                        iTEMS_T.CatalogElemVal040 = ExcelUtil.GetCellString(j, CatalogElemVal040_cell.ColumnIndex, sheet).Trim();
-                        iTEMS_T.CatalogElemVal050 = ExcelUtil.GetCellString(j, CatalogElemVal050_cell.ColumnIndex, sheet).Trim();
-                        iTEMS_T.CatalogElemVal060 = ExcelUtil.GetCellString(j, CatalogElemVal060_cell.ColumnIndex, sheet).Trim();
-                        iTEMS_T.CatalogElemVal070 = ExcelUtil.GetCellString(j, CatalogElemVal070_cell.ColumnIndex, sheet).Trim();
-                        iTEMS_T.CatalogElemVal080 = ExcelUtil.GetCellString(j, CatalogElemVal080_cell.ColumnIndex, sheet).Trim();
-                        iTEMS_T.CatalogElemVal090 = ExcelUtil.GetCellString(j, CatalogElemVal090_cell.ColumnIndex, sheet).Trim();
-                        iTEMS_T.CatalogElemVal100 = ExcelUtil.GetCellString(j, CatalogElemVal100_cell.ColumnIndex, sheet).Trim();
-                        iTEMS_T.CatalogElemVal110 = ExcelUtil.GetCellString(j, CatalogElemVal110_cell.ColumnIndex, sheet).Trim();
-                        iTEMS_T.CatalogElemVal120 = ExcelUtil.GetCellString(j, CatalogElemVal120_cell.ColumnIndex, sheet).Trim();
-                        iTEMS_T.CatalogElemVal130 = ExcelUtil.GetCellString(j, CatalogElemVal130_cell.ColumnIndex, sheet).Trim();
-                        iTEMS_T.CatalogElemVal140 = ExcelUtil.GetCellString(j, CatalogElemVal140_cell.ColumnIndex, sheet).Trim();
+                        iTEMS_T.InventoryItemId = ExcelUtil.GetLongCellValue(j, InventoryItemId_cell.ColumnIndex, sheet);
+                        iTEMS_T.ItemNumber = ExcelUtil.GetStringCellValue(j, Item_number_cell.ColumnIndex, sheet).Trim();
+                        iTEMS_T.CategoryCodeInv = ExcelUtil.GetStringCellValue(j, CategoryCodeInv_cell.ColumnIndex, sheet).Trim();
+                        iTEMS_T.CategoryNameInv = ExcelUtil.GetStringCellValue(j, CategoryNameInv_cell.ColumnIndex, sheet).Trim();
+                        iTEMS_T.CategoryCodeCost = ExcelUtil.GetStringCellValue(j, CategoryCodeCost_cell.ColumnIndex, sheet).Trim();
+                        iTEMS_T.CategoryNameCost = ExcelUtil.GetStringCellValue(j, CategoryNameCost_cell.ColumnIndex, sheet).Trim();
+                        iTEMS_T.CategoryCodeControl = ExcelUtil.GetStringCellValue(j, CategoryCodeControl_cell.ColumnIndex, sheet).Trim();
+                        iTEMS_T.CategoryNameControl = ExcelUtil.GetStringCellValue(j, CategoryNameControl_cell.ColumnIndex, sheet).Trim();
+                        iTEMS_T.ItemDescEng = ExcelUtil.GetStringCellValue(j, ItemDescEng_cell.ColumnIndex, sheet).Trim();
+                        iTEMS_T.ItemDescSch = ExcelUtil.GetStringCellValue(j, ItemDescSch_cell.ColumnIndex, sheet).Trim();
+                        iTEMS_T.ItemDescTch = ExcelUtil.GetStringCellValue(j, ItemDescTch_cell.ColumnIndex, sheet).Trim();
+                        iTEMS_T.PrimaryUomCode = ExcelUtil.GetStringCellValue(j, PrimaryUomCode_cell.ColumnIndex, sheet).Trim();
+                        iTEMS_T.SecondaryUomCode = ExcelUtil.GetStringCellValue(j, SecondaryUomCode_cell.ColumnIndex, sheet).Trim();
+                        iTEMS_T.InventoryItemStatusCode = ExcelUtil.GetStringCellValue(j, InventoryItemStatusCode_cell.ColumnIndex, sheet).Trim();
+                        iTEMS_T.ItemType = ExcelUtil.GetStringCellValue(j, ItemType_cell.ColumnIndex, sheet).Trim();
+                        iTEMS_T.CatalogElemVal010 = ExcelUtil.GetStringCellValue(j, CatalogElemVal010_cell.ColumnIndex, sheet).Trim();
+                        iTEMS_T.CatalogElemVal020 = ExcelUtil.GetStringCellValue(j, CatalogElemVal020_cell.ColumnIndex, sheet).Trim();
+                        iTEMS_T.CatalogElemVal030 = ExcelUtil.GetStringCellValue(j, CatalogElemVal030_cell.ColumnIndex, sheet).Trim();
+                        iTEMS_T.CatalogElemVal040 = ExcelUtil.GetStringCellValue(j, CatalogElemVal040_cell.ColumnIndex, sheet).Trim();
+                        iTEMS_T.CatalogElemVal050 = ExcelUtil.GetStringCellValue(j, CatalogElemVal050_cell.ColumnIndex, sheet).Trim();
+                        iTEMS_T.CatalogElemVal060 = ExcelUtil.GetStringCellValue(j, CatalogElemVal060_cell.ColumnIndex, sheet).Trim();
+                        iTEMS_T.CatalogElemVal070 = ExcelUtil.GetStringCellValue(j, CatalogElemVal070_cell.ColumnIndex, sheet).Trim();
+                        iTEMS_T.CatalogElemVal080 = ExcelUtil.GetStringCellValue(j, CatalogElemVal080_cell.ColumnIndex, sheet).Trim();
+                        iTEMS_T.CatalogElemVal090 = ExcelUtil.GetStringCellValue(j, CatalogElemVal090_cell.ColumnIndex, sheet).Trim();
+                        iTEMS_T.CatalogElemVal100 = ExcelUtil.GetStringCellValue(j, CatalogElemVal100_cell.ColumnIndex, sheet).Trim();
+                        iTEMS_T.CatalogElemVal110 = ExcelUtil.GetStringCellValue(j, CatalogElemVal110_cell.ColumnIndex, sheet).Trim();
+                        iTEMS_T.CatalogElemVal120 = ExcelUtil.GetStringCellValue(j, CatalogElemVal120_cell.ColumnIndex, sheet).Trim();
+                        iTEMS_T.CatalogElemVal130 = ExcelUtil.GetStringCellValue(j, CatalogElemVal130_cell.ColumnIndex, sheet).Trim();
+                        iTEMS_T.CatalogElemVal140 = ExcelUtil.GetStringCellValue(j, CatalogElemVal140_cell.ColumnIndex, sheet).Trim();
                         iTEMS_T.ControlFlag = "";
-                        iTEMS_T.CreatedBy = Int64.Parse(ExcelUtil.GetCellString(j, CreatedBy_cell.ColumnIndex, sheet).Trim());
-                        iTEMS_T.CreationDate = DateTime.Parse(ExcelUtil.GetCellString(j, CreationDate_cell.ColumnIndex, sheet).Trim());
-                        iTEMS_T.LastUpdateBy = Int64.Parse(ExcelUtil.GetCellString(j, LastUpdateBy_cell.ColumnIndex, sheet).Trim());
-                        iTEMS_T.LastUpdateDate = DateTime.Parse(ExcelUtil.GetCellString(j, LastUpdateDate_cell.ColumnIndex, sheet).Trim());
+                        iTEMS_T.CreatedBy = ExcelUtil.GetLongCellValue(j, CreatedBy_cell.ColumnIndex, sheet);
+                        iTEMS_T.CreationDate = ExcelUtil.GetDateTimeCellValue(j, CreationDate_cell.ColumnIndex, sheet, DateTime.Now);
+                        iTEMS_T.LastUpdateBy = ExcelUtil.GetLongCellValue(j, LastUpdateBy_cell.ColumnIndex, sheet);
+                        iTEMS_T.LastUpdateDate = ExcelUtil.GetDateTimeCellValue(j, LastUpdateDate_cell.ColumnIndex, sheet, DateTime.Now);
                         itemsTRepositiory.Create(iTEMS_T);
 
 
                         ORG_ITEMS_T oRG_ITEMS_T = new ORG_ITEMS_T();
-                        var oCode = ExcelUtil.GetCellString(j, ORGANIZATION_CODE_cell.ColumnIndex, sheet).Trim();
+                        var oCode = ExcelUtil.GetStringCellValue(j, ORGANIZATION_CODE_cell.ColumnIndex, sheet).Trim();
                         //搜尋未執行 SaveChanges 的資料
                         var data = this.Context.ChangeTracker.Entries<ORGANIZATION_T>().Where(x => x.Entity.OrganizationCode == oCode).FirstOrDefault();
                         //搜尋已執行 SaveChanges 的資料
@@ -975,7 +975,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                         if (data != null)
                         {
                             var entity = data.Entity;
-                            oRG_ITEMS_T.InventoryItemId = Int64.Parse(ExcelUtil.GetCellString(j, InventoryItemId_cell.ColumnIndex, sheet).Trim());
+                            oRG_ITEMS_T.InventoryItemId = ExcelUtil.GetLongCellValue(j, InventoryItemId_cell.ColumnIndex, sheet);
                             oRG_ITEMS_T.OrganizationId = entity.OrganizationId;
                             orgItemRepositityory.Create(oRG_ITEMS_T);
                         }
@@ -1082,8 +1082,8 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             {
                 try
                 {
-                    var id = Int64.Parse(ExcelUtil.GetCellString(j, organizationId_cell.ColumnIndex, sheet).Trim());
-                    var subCode = ExcelUtil.GetCellString(j, subinventoryCode_cell.ColumnIndex, sheet).Trim();
+                    var id = Int64.Parse(ExcelUtil.GetStringCellValue(j, organizationId_cell.ColumnIndex, sheet).Trim());
+                    var subCode = ExcelUtil.GetStringCellValue(j, subinventoryCode_cell.ColumnIndex, sheet).Trim();
                     //搜尋未執行 SaveChanges 的資料
                     var org = this.Context.ChangeTracker.Entries<SUBINVENTORY_T>().Where(x => x.Entity.SubinventoryCode == subCode).FirstOrDefault();
                     //搜尋已執行 SaveChanges 的資料
@@ -1091,12 +1091,12 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                     if (org == null)
                     {
                         SUBINVENTORY_T sUBINVENTORY_T = new SUBINVENTORY_T();
-                        sUBINVENTORY_T.OrganizationId = Int64.Parse(ExcelUtil.GetCellString(j, organizationId_cell.ColumnIndex, sheet).Trim());
-                        sUBINVENTORY_T.SubinventoryCode = ExcelUtil.GetCellString(j, subinventoryCode_cell.ColumnIndex, sheet).Trim();
-                        sUBINVENTORY_T.SubinventoryName = ExcelUtil.GetCellString(j, subinventoryName_cell.ColumnIndex, sheet).Trim();
-                        sUBINVENTORY_T.OspFlag = ExcelUtil.GetCellString(j, ospFlag_cell.ColumnIndex, sheet).Trim();
+                        sUBINVENTORY_T.OrganizationId = ExcelUtil.GetLongCellValue(j, organizationId_cell.ColumnIndex, sheet);
+                        sUBINVENTORY_T.SubinventoryCode = ExcelUtil.GetStringCellValue(j, subinventoryCode_cell.ColumnIndex, sheet).Trim();
+                        sUBINVENTORY_T.SubinventoryName = ExcelUtil.GetStringCellValue(j, subinventoryName_cell.ColumnIndex, sheet).Trim();
+                        sUBINVENTORY_T.OspFlag = ExcelUtil.GetStringCellValue(j, ospFlag_cell.ColumnIndex, sheet).Trim();
                         sUBINVENTORY_T.ControlFlag = "";
-                        sUBINVENTORY_T.LocatorType = Int64.Parse(ExcelUtil.GetCellString(j, LocatorType_cell.ColumnIndex, sheet).Trim());
+                        sUBINVENTORY_T.LocatorType = ExcelUtil.GetLongCellValue(j, LocatorType_cell.ColumnIndex, sheet);
                         subinventoryRepositiory.Create(sUBINVENTORY_T);
                     }
                 }
@@ -1210,7 +1210,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             {
                 try
                 {
-                    string idString = ExcelUtil.GetCellString(j, LocatorId_cell.ColumnIndex, sheet).Trim();
+                    string idString = ExcelUtil.GetStringCellValue(j, LocatorId_cell.ColumnIndex, sheet).Trim();
                     if (string.IsNullOrEmpty(idString)) continue;
 
                     var id = Int64.Parse(idString);
@@ -1221,21 +1221,21 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                     if (org == null || org.Entity.LocatorId <= 0)
                     {
                         LOCATOR_T lOCATOR_T = new LOCATOR_T();
-                        lOCATOR_T.OrganizationId = Int64.Parse(ExcelUtil.GetCellString(j, organizationId_cell.ColumnIndex, sheet).Trim());
-                        lOCATOR_T.SubinventoryCode = ExcelUtil.GetCellString(j, subinventoryCode_cell.ColumnIndex, sheet).Trim();
-                        lOCATOR_T.LocatorId = Int64.Parse(ExcelUtil.GetCellString(j, LocatorId_cell.ColumnIndex, sheet).Trim());
+                        lOCATOR_T.OrganizationId = ExcelUtil.GetLongCellValue(j, organizationId_cell.ColumnIndex, sheet);
+                        lOCATOR_T.SubinventoryCode = ExcelUtil.GetStringCellValue(j, subinventoryCode_cell.ColumnIndex, sheet).Trim();
+                        lOCATOR_T.LocatorId = ExcelUtil.GetLongCellValue(j, LocatorId_cell.ColumnIndex, sheet);
                         //lOCATOR_T.LocatorType = Int64.Parse(ExcelUtil.GetCellString(j, LocatorType_cell.ColumnIndex, sheet).Trim());
-                        lOCATOR_T.LocatorSegments = ExcelUtil.GetCellString(j, LocatorSegments_cell.ColumnIndex, sheet).Trim();
-                        lOCATOR_T.LocatorDesc = ExcelUtil.GetCellString(j, LocatorDesc_cell.ColumnIndex, sheet).Trim();
-                        lOCATOR_T.Segment1 = ExcelUtil.GetCellString(j, Segment1_cell.ColumnIndex, sheet).Trim();
-                        lOCATOR_T.Segment2 = ExcelUtil.GetCellString(j, Segment2_cell.ColumnIndex, sheet).Trim();
-                        lOCATOR_T.Segment3 = ExcelUtil.GetCellString(j, Segment3_cell.ColumnIndex, sheet).Trim();
-                        lOCATOR_T.Segment4 = ExcelUtil.GetCellString(j, Segment4_cell.ColumnIndex, sheet).Trim();
+                        lOCATOR_T.LocatorSegments = ExcelUtil.GetStringCellValue(j, LocatorSegments_cell.ColumnIndex, sheet).Trim();
+                        lOCATOR_T.LocatorDesc = ExcelUtil.GetStringCellValue(j, LocatorDesc_cell.ColumnIndex, sheet).Trim();
+                        lOCATOR_T.Segment1 = ExcelUtil.GetStringCellValue(j, Segment1_cell.ColumnIndex, sheet).Trim();
+                        lOCATOR_T.Segment2 = ExcelUtil.GetStringCellValue(j, Segment2_cell.ColumnIndex, sheet).Trim();
+                        lOCATOR_T.Segment3 = ExcelUtil.GetStringCellValue(j, Segment3_cell.ColumnIndex, sheet).Trim();
+                        lOCATOR_T.Segment4 = ExcelUtil.GetStringCellValue(j, Segment4_cell.ColumnIndex, sheet).Trim();
                         lOCATOR_T.ControlFlag = "";
-                        lOCATOR_T.LocatorStatus = Int64.Parse(ExcelUtil.GetCellString(j, LocatorStatus_cell.ColumnIndex, sheet).Trim());
-                        lOCATOR_T.LocatorStatusCode = ExcelUtil.GetCellString(j, LocatorStatusCode_cell.ColumnIndex, sheet).Trim();
-                        lOCATOR_T.LocatorPickingOrder = Int64.Parse(ExcelUtil.GetCellString(j, LocatorPickingOrder_cell.ColumnIndex, sheet).Trim());
-                        lOCATOR_T.LocatorDisableDate = null;
+                        lOCATOR_T.LocatorStatus = ExcelUtil.GetLongOrNullCellValue(j, LocatorStatus_cell.ColumnIndex, sheet);
+                        lOCATOR_T.LocatorStatusCode = ExcelUtil.GetStringCellValue(j, LocatorStatusCode_cell.ColumnIndex, sheet).Trim();
+                        lOCATOR_T.LocatorPickingOrder = ExcelUtil.GetLongOrNullCellValue(j, LocatorPickingOrder_cell.ColumnIndex, sheet);
+                        lOCATOR_T.LocatorDisableDate = ExcelUtil.GetDateTimeOrNullCellValue(j, LocatorDisableDate_cell.ColumnIndex, sheet);
                         locatorTRepositiory.Create(lOCATOR_T);
                     }
                 }
@@ -1329,7 +1329,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             {
                 try
                 {
-                    var id = Int64.Parse(ExcelUtil.GetCellString(j, InventoryItemId_cell.ColumnIndex, sheet).Trim());
+                    var id = Int64.Parse(ExcelUtil.GetStringCellValue(j, InventoryItemId_cell.ColumnIndex, sheet).Trim());
                     //搜尋未執行 SaveChanges 的資料
                     var org = this.Context.ChangeTracker.Entries<RELATED_T>().Where(x => x.Entity.InventoryItemId == id).FirstOrDefault();
                     //搜尋已執行 SaveChanges 的資料
@@ -1337,16 +1337,16 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                     if (org == null || org.Entity.InventoryItemId <= 0)
                     {
                         RELATED_T rELATED_T = new RELATED_T();
-                        rELATED_T.InventoryItemId = Int64.Parse(ExcelUtil.GetCellString(j, InventoryItemId_cell.ColumnIndex, sheet).Trim());
-                        rELATED_T.ItemNumber = ExcelUtil.GetCellString(j, ItemNumber_cell.ColumnIndex, sheet).Trim();
-                        rELATED_T.ItemDescription = ExcelUtil.GetCellString(j, ItemDescription_cell.ColumnIndex, sheet).Trim();
-                        rELATED_T.RelatedItemId = Int64.Parse(ExcelUtil.GetCellString(j, RelatedItemId_cell.ColumnIndex, sheet).Trim());
-                        rELATED_T.RelatedItemNumber = ExcelUtil.GetCellString(j, RelatedItemNumber_cell.ColumnIndex, sheet).Trim();
-                        rELATED_T.RelatedItemDescription = ExcelUtil.GetCellString(j, RelatedItemDescription_cell.ColumnIndex, sheet).Trim();
-                        rELATED_T.CreatedBy = Int64.Parse(ExcelUtil.GetCellString(j, CreatedBy_cell.ColumnIndex, sheet).Trim());
-                        rELATED_T.CreationDate = DateTime.Parse(ExcelUtil.GetCellString(j, CreationDate_cell.ColumnIndex, sheet).Trim());
-                        rELATED_T.LastUpdateBy = Int64.Parse(ExcelUtil.GetCellString(j, LastUpdateBy_cell.ColumnIndex, sheet).Trim());
-                        rELATED_T.LastUpdateDate = DateTime.Parse(ExcelUtil.GetCellString(j, LastUpdateDate_cell.ColumnIndex, sheet).Trim());
+                        rELATED_T.InventoryItemId = ExcelUtil.GetLongCellValue(j, InventoryItemId_cell.ColumnIndex, sheet);
+                        rELATED_T.ItemNumber = ExcelUtil.GetStringCellValue(j, ItemNumber_cell.ColumnIndex, sheet).Trim();
+                        rELATED_T.ItemDescription = ExcelUtil.GetStringCellValue(j, ItemDescription_cell.ColumnIndex, sheet).Trim();
+                        rELATED_T.RelatedItemId = ExcelUtil.GetLongCellValue(j, RelatedItemId_cell.ColumnIndex, sheet);
+                        rELATED_T.RelatedItemNumber = ExcelUtil.GetStringCellValue(j, RelatedItemNumber_cell.ColumnIndex, sheet).Trim();
+                        rELATED_T.RelatedItemDescription = ExcelUtil.GetStringCellValue(j, RelatedItemDescription_cell.ColumnIndex, sheet).Trim();
+                        rELATED_T.CreatedBy = ExcelUtil.GetLongCellValue(j, CreatedBy_cell.ColumnIndex, sheet);
+                        rELATED_T.CreationDate = ExcelUtil.GetDateTimeCellValue(j, CreationDate_cell.ColumnIndex, sheet);
+                        rELATED_T.LastUpdateBy = ExcelUtil.GetLongCellValue(j, LastUpdateBy_cell.ColumnIndex, sheet);
+                        rELATED_T.LastUpdateDate = ExcelUtil.GetDateTimeCellValue(j, LastUpdateDate_cell.ColumnIndex, sheet);
                         rELATED_T.ControlFlag = "";
                         relatedTRepositiory.Create(rELATED_T);
 
@@ -1470,21 +1470,21 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                     //if (org == null || org.InventoryItemId <= 0)
                     //{
                     YSZMPCKQ_T ySZMPCKQ_T = new YSZMPCKQ_T();
-                    ySZMPCKQ_T.OrganizationId = Int64.Parse(ExcelUtil.GetCellString(j, OrganizationId_cell.ColumnIndex, sheet).Trim());
-                    ySZMPCKQ_T.OrganizationCode = ExcelUtil.GetCellString(j, OrganizationCode_cell.ColumnIndex, sheet).Trim();
-                    ySZMPCKQ_T.OspSubinventory = ExcelUtil.GetCellString(j, OspSubinventory_cell.ColumnIndex, sheet).Trim();
-                    ySZMPCKQ_T.Pstyp = ExcelUtil.GetCellString(j, Pstyp_cell.ColumnIndex, sheet).Trim();
-                    ySZMPCKQ_T.Bwetup = ExcelUtil.GetCellString(j, Bwetup_cell.ColumnIndex, sheet).Trim() == "" ? 0 : Decimal.Parse(ExcelUtil.GetCellString(j, Bwetup_cell.ColumnIndex, sheet).Trim());
-                    ySZMPCKQ_T.Bwetdn = ExcelUtil.GetCellString(j, Bwetdn_cell.ColumnIndex, sheet).Trim() == "" ? 0 : Decimal.Parse(ExcelUtil.GetCellString(j, Bwetdn_cell.ColumnIndex, sheet).Trim());
-                    ySZMPCKQ_T.Rwtup = ExcelUtil.GetCellString(j, Rwtup_cell.ColumnIndex, sheet).Trim() == "" ? 0 : Decimal.Parse(ExcelUtil.GetCellString(j, Rwtup_cell.ColumnIndex, sheet).Trim());
-                    ySZMPCKQ_T.Rwtdn = ExcelUtil.GetCellString(j, Rwtdn_cell.ColumnIndex, sheet).Trim() == "" ? 0 : Decimal.Parse(ExcelUtil.GetCellString(j, Rwtdn_cell.ColumnIndex, sheet).Trim());
-                    ySZMPCKQ_T.Pckq = ExcelUtil.GetCellString(j, Pckq_cell.ColumnIndex, sheet).Trim() == "" ? 0 : Int64.Parse(ExcelUtil.GetCellString(j, Pckq_cell.ColumnIndex, sheet).Trim());
-                    ySZMPCKQ_T.PaperQty = ExcelUtil.GetCellString(j, PaperQty_cell.ColumnIndex, sheet).Trim() == "" ? 0 : Int64.Parse(ExcelUtil.GetCellString(j, PaperQty_cell.ColumnIndex, sheet).Trim());
-                    ySZMPCKQ_T.PiecesQty = ExcelUtil.GetCellString(j, PiecesQty_cell.ColumnIndex, sheet).Trim() == "" ? 0 : Int64.Parse(ExcelUtil.GetCellString(j, PiecesQty_cell.ColumnIndex, sheet).Trim());
-                    ySZMPCKQ_T.CreatedBy = ExcelUtil.GetCellString(j, CreatedBy_cell.ColumnIndex, sheet).Trim() == "" ? 0 : Int64.Parse(ExcelUtil.GetCellString(j, CreatedBy_cell.ColumnIndex, sheet).Trim());
-                    ySZMPCKQ_T.CreationDate = DateTime.Parse(ExcelUtil.GetCellString(j, CreationDate_cell.ColumnIndex, sheet).Trim());
-                    ySZMPCKQ_T.LastUpdateBy = Int64.Parse(ExcelUtil.GetCellString(j, LastUpdateBy_cell.ColumnIndex, sheet).Trim());
-                    ySZMPCKQ_T.LastUpdateDate = DateTime.Parse(ExcelUtil.GetCellString(j, LastUpdateDate_cell.ColumnIndex, sheet).Trim());
+                    ySZMPCKQ_T.OrganizationId = ExcelUtil.GetLongCellValue(j, OrganizationId_cell.ColumnIndex, sheet);
+                    ySZMPCKQ_T.OrganizationCode = ExcelUtil.GetStringCellValue(j, OrganizationCode_cell.ColumnIndex, sheet).Trim();
+                    ySZMPCKQ_T.OspSubinventory = ExcelUtil.GetStringCellValue(j, OspSubinventory_cell.ColumnIndex, sheet).Trim();
+                    ySZMPCKQ_T.Pstyp = ExcelUtil.GetStringCellValue(j, Pstyp_cell.ColumnIndex, sheet).Trim();
+                    ySZMPCKQ_T.Bwetup = ExcelUtil.GetDecimalCellValue(j, Bwetup_cell.ColumnIndex, sheet);
+                    ySZMPCKQ_T.Bwetdn = ExcelUtil.GetDecimalCellValue(j, Bwetdn_cell.ColumnIndex, sheet);
+                    ySZMPCKQ_T.Rwtup = ExcelUtil.GetDecimalCellValue(j, Rwtup_cell.ColumnIndex, sheet);
+                    ySZMPCKQ_T.Rwtdn = ExcelUtil.GetDecimalCellValue(j, Rwtdn_cell.ColumnIndex, sheet);
+                    ySZMPCKQ_T.Pckq = ExcelUtil.GetLongCellValue(j, Pckq_cell.ColumnIndex, sheet);
+                    ySZMPCKQ_T.PaperQty = ExcelUtil.GetLongCellValue(j, PaperQty_cell.ColumnIndex, sheet);
+                    ySZMPCKQ_T.PiecesQty = ExcelUtil.GetLongCellValue(j, PiecesQty_cell.ColumnIndex, sheet);
+                    ySZMPCKQ_T.CreatedBy = ExcelUtil.GetLongCellValue(j, CreatedBy_cell.ColumnIndex, sheet);
+                    ySZMPCKQ_T.CreationDate = ExcelUtil.GetDateTimeCellValue(j, CreationDate_cell.ColumnIndex, sheet);
+                    ySZMPCKQ_T.LastUpdateBy = ExcelUtil.GetLongCellValue(j, LastUpdateBy_cell.ColumnIndex, sheet);
+                    ySZMPCKQ_T.LastUpdateDate = ExcelUtil.GetDateTimeCellValue(j, LastUpdateDate_cell.ColumnIndex, sheet);
                     ySZMPCKQ_T.ControlFlag = "";
                     yszmpckqTRepositiory.Create(ySZMPCKQ_T);
                     //}
@@ -1589,7 +1589,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             {
                 try
                 {
-                    var MachineCode = ExcelUtil.GetCellString(j, MachineCode_cell.ColumnIndex, sheet).Trim();
+                    var MachineCode = ExcelUtil.GetStringCellValue(j, MachineCode_cell.ColumnIndex, sheet).Trim();
                     //搜尋未執行 SaveChanges 的資料
                     var org = this.Context.ChangeTracker.Entries<MACHINE_PAPER_TYPE_T>().Where(x => x.Entity.MachineCode == MachineCode).FirstOrDefault();
                     //搜尋已執行 SaveChanges 的資料
@@ -1597,19 +1597,19 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                     if (org == null || string.IsNullOrEmpty(org.Entity.MachineCode))
                     {
                         MACHINE_PAPER_TYPE_T mACHINE_PAPER_TYPE_T = new MACHINE_PAPER_TYPE_T();
-                        mACHINE_PAPER_TYPE_T.OrganizationId = Int64.Parse(ExcelUtil.GetCellString(j, OrganizationId_cell.ColumnIndex, sheet).Trim());
-                        mACHINE_PAPER_TYPE_T.OrganizationCode = ExcelUtil.GetCellString(j, OrganizationCode_cell.ColumnIndex, sheet).Trim();
-                        mACHINE_PAPER_TYPE_T.MachineCode = ExcelUtil.GetCellString(j, MachineCode_cell.ColumnIndex, sheet).Trim();
-                        mACHINE_PAPER_TYPE_T.MachineMeaning = ExcelUtil.GetCellString(j, MachineMeaning_cell.ColumnIndex, sheet).Trim();
-                        mACHINE_PAPER_TYPE_T.Description = ExcelUtil.GetCellString(j, Description_cell.ColumnIndex, sheet).Trim();
-                        mACHINE_PAPER_TYPE_T.PaperType = ExcelUtil.GetCellString(j, PaperType_cell.ColumnIndex, sheet).Trim();
-                        mACHINE_PAPER_TYPE_T.MachineNum = ExcelUtil.GetCellString(j, MachineNum_cell.ColumnIndex, sheet).Trim();
-                        mACHINE_PAPER_TYPE_T.SupplierNum = ExcelUtil.GetCellString(j, SupplierNum_cell.ColumnIndex, sheet).Trim();
-                        mACHINE_PAPER_TYPE_T.SupplierName = ExcelUtil.GetCellString(j, SupplierName_cell.ColumnIndex, sheet).Trim();
-                        mACHINE_PAPER_TYPE_T.CreatedBy = Int64.Parse(ExcelUtil.GetCellString(j, CreatedBy_cell.ColumnIndex, sheet).Trim());
-                        mACHINE_PAPER_TYPE_T.CreationDate = DateTime.Parse(ExcelUtil.GetCellString(j, CreationDate_cell.ColumnIndex, sheet).Trim());
-                        mACHINE_PAPER_TYPE_T.LastUpdateBy = Int64.Parse(ExcelUtil.GetCellString(j, LastUpdateBy_cell.ColumnIndex, sheet).Trim());
-                        mACHINE_PAPER_TYPE_T.LastUpdateDate = DateTime.Parse(ExcelUtil.GetCellString(j, LastUpdateDate_cell.ColumnIndex, sheet).Trim());
+                        mACHINE_PAPER_TYPE_T.OrganizationId = ExcelUtil.GetLongCellValue(j, OrganizationId_cell.ColumnIndex, sheet);
+                        mACHINE_PAPER_TYPE_T.OrganizationCode = ExcelUtil.GetStringCellValue(j, OrganizationCode_cell.ColumnIndex, sheet).Trim();
+                        mACHINE_PAPER_TYPE_T.MachineCode = ExcelUtil.GetStringCellValue(j, MachineCode_cell.ColumnIndex, sheet).Trim();
+                        mACHINE_PAPER_TYPE_T.MachineMeaning = ExcelUtil.GetStringCellValue(j, MachineMeaning_cell.ColumnIndex, sheet).Trim();
+                        mACHINE_PAPER_TYPE_T.Description = ExcelUtil.GetStringCellValue(j, Description_cell.ColumnIndex, sheet).Trim();
+                        mACHINE_PAPER_TYPE_T.PaperType = ExcelUtil.GetStringCellValue(j, PaperType_cell.ColumnIndex, sheet).Trim();
+                        mACHINE_PAPER_TYPE_T.MachineNum = ExcelUtil.GetStringCellValue(j, MachineNum_cell.ColumnIndex, sheet).Trim();
+                        mACHINE_PAPER_TYPE_T.SupplierNum = ExcelUtil.GetStringCellValue(j, SupplierNum_cell.ColumnIndex, sheet).Trim();
+                        mACHINE_PAPER_TYPE_T.SupplierName = ExcelUtil.GetStringCellValue(j, SupplierName_cell.ColumnIndex, sheet).Trim();
+                        mACHINE_PAPER_TYPE_T.CreatedBy = ExcelUtil.GetLongCellValue(j, CreatedBy_cell.ColumnIndex, sheet);
+                        mACHINE_PAPER_TYPE_T.CreationDate = ExcelUtil.GetDateTimeCellValue(j, CreationDate_cell.ColumnIndex, sheet);
+                        mACHINE_PAPER_TYPE_T.LastUpdateBy = ExcelUtil.GetLongCellValue(j, LastUpdateBy_cell.ColumnIndex, sheet);
+                        mACHINE_PAPER_TYPE_T.LastUpdateDate = ExcelUtil.GetDateTimeCellValue(j, LastUpdateDate_cell.ColumnIndex, sheet);
                         mACHINE_PAPER_TYPE_T.ControlFlag = "";
                         machinePaperTypeRepositiory.Create(mACHINE_PAPER_TYPE_T);
                     }
@@ -1703,7 +1703,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             {
                 try
                 {
-                    var TransactionTypeId = Int64.Parse(ExcelUtil.GetCellString(j, TransactionTypeId_cell.ColumnIndex, sheet).Trim());
+                    var TransactionTypeId = Int64.Parse(ExcelUtil.GetStringCellValue(j, TransactionTypeId_cell.ColumnIndex, sheet).Trim());
                     //搜尋未執行 SaveChanges 的資料
                     var org = this.Context.ChangeTracker.Entries<TRANSACTION_TYPE_T>().Where(x => x.Entity.TransactionTypeId == TransactionTypeId).FirstOrDefault();
                     //搜尋已執行 SaveChanges 的資料
@@ -1711,17 +1711,17 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                     if (org == null || org.Entity.TransactionTypeId <= 0)
                     {
                         TRANSACTION_TYPE_T tRANSACTION_TYPE_T = new TRANSACTION_TYPE_T();
-                        tRANSACTION_TYPE_T.TransactionTypeId = Int64.Parse(ExcelUtil.GetCellString(j, TransactionTypeId_cell.ColumnIndex, sheet).Trim());
-                        tRANSACTION_TYPE_T.TransactionTypeName = ExcelUtil.GetCellString(j, TransactionTypeName_cell.ColumnIndex, sheet).Trim();
-                        tRANSACTION_TYPE_T.Description = ExcelUtil.GetCellString(j, Description_cell.ColumnIndex, sheet).Trim();
-                        tRANSACTION_TYPE_T.TransactionActionId = Int64.Parse(ExcelUtil.GetCellString(j, TransactionActionId_cell.ColumnIndex, sheet).Trim());
-                        tRANSACTION_TYPE_T.TransactionActionName = ExcelUtil.GetCellString(j, TransactionActionName_cell.ColumnIndex, sheet).Trim();
-                        tRANSACTION_TYPE_T.TransactionSourceTypeId = Int64.Parse(ExcelUtil.GetCellString(j, TransactionSourceTypeId_cell.ColumnIndex, sheet).Trim());
-                        tRANSACTION_TYPE_T.TransactionSourceTypeName = ExcelUtil.GetCellString(j, TransactionSourceTypeName_cell.ColumnIndex, sheet).Trim();
-                        tRANSACTION_TYPE_T.CreatedBy = Int64.Parse(ExcelUtil.GetCellString(j, CreatedBy_cell.ColumnIndex, sheet).Trim());
-                        tRANSACTION_TYPE_T.CreationDate = DateTime.Parse(ExcelUtil.GetCellString(j, CreationDate_cell.ColumnIndex, sheet).Trim());
-                        tRANSACTION_TYPE_T.LastUpdateBy = Int64.Parse(ExcelUtil.GetCellString(j, LastUpdateBy_cell.ColumnIndex, sheet).Trim());
-                        tRANSACTION_TYPE_T.LastUpdateDate = DateTime.Parse(ExcelUtil.GetCellString(j, LastUpdateDate_cell.ColumnIndex, sheet).Trim());
+                        tRANSACTION_TYPE_T.TransactionTypeId = ExcelUtil.GetLongCellValue(j, TransactionTypeId_cell.ColumnIndex, sheet);
+                        tRANSACTION_TYPE_T.TransactionTypeName = ExcelUtil.GetStringCellValue(j, TransactionTypeName_cell.ColumnIndex, sheet).Trim();
+                        tRANSACTION_TYPE_T.Description = ExcelUtil.GetStringCellValue(j, Description_cell.ColumnIndex, sheet).Trim();
+                        tRANSACTION_TYPE_T.TransactionActionId = ExcelUtil.GetLongCellValue(j, TransactionActionId_cell.ColumnIndex, sheet);
+                        tRANSACTION_TYPE_T.TransactionActionName = ExcelUtil.GetStringCellValue(j, TransactionActionName_cell.ColumnIndex, sheet).Trim();
+                        tRANSACTION_TYPE_T.TransactionSourceTypeId = ExcelUtil.GetLongCellValue(j, TransactionSourceTypeId_cell.ColumnIndex, sheet);
+                        tRANSACTION_TYPE_T.TransactionSourceTypeName = ExcelUtil.GetStringCellValue(j, TransactionSourceTypeName_cell.ColumnIndex, sheet).Trim();
+                        tRANSACTION_TYPE_T.CreatedBy = ExcelUtil.GetLongCellValue(j, CreatedBy_cell.ColumnIndex, sheet);
+                        tRANSACTION_TYPE_T.CreationDate = ExcelUtil.GetDateTimeCellValue(j, CreationDate_cell.ColumnIndex, sheet);
+                        tRANSACTION_TYPE_T.LastUpdateBy = ExcelUtil.GetLongCellValue(j, LastUpdateBy_cell.ColumnIndex, sheet);
+                        tRANSACTION_TYPE_T.LastUpdateDate = ExcelUtil.GetDateTimeCellValue(j, LastUpdateDate_cell.ColumnIndex, sheet);
                         tRANSACTION_TYPE_T.ControlFlag = "";
                         transactionTypeRepositiory.Create(tRANSACTION_TYPE_T);
                     }

@@ -116,24 +116,21 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Information
         /// <summary>
         /// 儲位狀態ID
         /// </summary>
-        [Required]
         [Column("LOCATOR_STATUS")]
-        public long LocatorStatus { set; get; }
+        public long? LocatorStatus { set; get; }
 
         /// <summary>
         /// 儲位狀態
         /// </summary>
         [StringLength(50)]
-        [Required]
         [Column("LOCATOR_STATUS_CODE")]
         public string LocatorStatusCode { set; get; }
 
         /// <summary>
         /// 儲位撿料順序
         /// </summary>
-        [Required]
         [Column("LOCATOR_PICKING_ORDER")]
-        public long LocatorPickingOrder { set; get; }
+        public long? LocatorPickingOrder { set; get; }
 
         /// <summary>
         /// 儲位終止日期

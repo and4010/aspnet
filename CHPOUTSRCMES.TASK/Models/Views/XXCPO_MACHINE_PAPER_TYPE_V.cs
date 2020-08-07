@@ -7,54 +7,46 @@ using System.Threading.Tasks;
 namespace CHPOUTSRCMES.TASK.Models.Views
 {
     /// <summary>
-    /// 令重包數(N)
+    /// 紙別機台(N)
     /// </summary>
-    public class XXCOM_YSZMPCKQ_V
+    public class XXCPO_MACHINE_PAPER_TYPE_V
     {
         /// <summary>
-        /// 庫存組織
+        /// 庫存組織ID
         /// </summary>
         public long ORGANIZATION_ID { set; get; }
         /// <summary>
-        /// 庫存組織CODE
+        /// 庫存組織
         /// </summary>
         public string ORGANIZATION_CODE { set; get; }
         /// <summary>
-        /// 加工廠
+        /// 機台紙別代碼
         /// </summary>
-        public string OSP_SUBINVENTORY { set; get; }
+        public string MACHINE_CODE { set; get; }
+        /// <summary>
+        /// 機台紙別意義
+        /// </summary>
+        public string MACHINE_MEANING { set; get; }
+        /// <summary>
+        /// 機台紙別摘要
+        /// </summary>
+        public string DESCRIPTION { set; get; }
         /// <summary>
         /// 紙別
         /// </summary>
-        public string PSTYP { set; get; }
+        public string PAPER_TYPE { set; get; }
         /// <summary>
-        /// 基重上限
+        /// 機台
         /// </summary>
-        public decimal BWETUP { set; get; }
+        public string MACHINE_NUM { set; get; }
         /// <summary>
-        /// 基重下限
+        /// 供應商編號
         /// </summary>
-        public decimal BWETDN { set; get; }
+        public string SUPPLIER_NUM { set; get; }
         /// <summary>
-        /// 令重上限
+        /// 供應商名稱
         /// </summary>
-        public decimal RWTUP { set; get; }
-        /// <summary>
-        /// 令重下限
-        /// </summary>
-        public decimal RWTDN { set; get; }
-        /// <summary>
-        /// 包數
-        /// </summary>
-        public decimal PCKQ { set; get; }
-        /// <summary>
-        /// 每包張數
-        /// </summary>
-        public decimal PAPER_QTY { set; get; }
-        /// <summary>
-        /// 每件令數
-        /// </summary>
-        public decimal PIECES_QTY { set; get; }
+        public string VENDOR_NAME { set; get; }
         /// <summary>
         /// 建立人員ID
         /// </summary>
@@ -71,6 +63,5 @@ namespace CHPOUTSRCMES.TASK.Models.Views
         /// 最後更新日期
         /// </summary>
         public DateTime LAST_UPDATE_DATE { set; get; }
-
     }
 }

@@ -1,19 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Runtime.Remoting.Contexts;
-using System.Threading.Tasks;
-using System.Linq;
-using CHPOUTSRCMES.TASK.Models.Repository;
-using CHPOUTSRCMES.TASK.Models.Repository.Interface;
-using CHPOUTSRCMES.TASK.Models.UnitOfWork;
+﻿using CHPOUTSRCMES.TASK.Models.Repository.Interface;
+using CHPOUTSRCMES.TASK.Models.Repository.Oracle;
 using CHPOUTSRCMES.TASK.Models.Views;
 using Dapper;
+using NLog;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace BatchPrint.Model.UnitOfWork
+namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
 {
     public class MasterUOW : UnitOfWork
     {
+        private Logger logger = LogManager.GetCurrentClassLogger();
+
 #if DEBUG
         private string schemaName = "TPMC_ADMIN";
         private string schemaNameOfUomConversion = "TPMC_ADMIN";
@@ -25,17 +26,14 @@ namespace BatchPrint.Model.UnitOfWork
         public string SchemaName
         {
             set { schemaName = value;  }
-            get { return SchemaName + (SchemaName.Length > 0 ? "." : ""); }
+            get { return schemaName + (schemaName.Length > 0 ? "." : ""); }
         }
-
-        
 
         public string SchemaNameOfUomConversion
         {
             set { schemaNameOfUomConversion = value; }
             get { return schemaNameOfUomConversion + (schemaNameOfUomConversion.Length > 0 ? "." : ""); }
         }
-
 
         private IGenericRepository<XXCINV_SUBINVENTORY_V> subinventoryRepository = null;
         public IGenericRepository<XXCINV_SUBINVENTORY_V> SubinventoryRespository => subinventoryRepository ?? 
@@ -45,9 +43,9 @@ namespace BatchPrint.Model.UnitOfWork
         public IGenericRepository<XXCINV_TRANSACTION_TYPE_V> TransactionTypeRepository => transactionTypeRepository ?? 
             (transactionTypeRepository = new GenericRepository<XXCINV_TRANSACTION_TYPE_V>(Context, $"{SchemaName}XXCINV_TRANSACTION_TYPE_V"));
 
-        private IGenericRepository<XXIFV050_ITEMS_FTY_V> itemRepository = null;
-        public IGenericRepository<XXIFV050_ITEMS_FTY_V> ItemRepository => itemRepository ?? 
-            (itemRepository = new GenericRepository<XXIFV050_ITEMS_FTY_V>(Context, $"{SchemaName}XXIFV050_ITEMS_FTY_V"));
+        private ItemRepository itemRepository = null;
+        public ItemRepository ItemRepository => itemRepository ?? 
+            (itemRepository = new ItemRepository(Context, $"{SchemaName}XXIFV050_ITEMS_FTY_V"));
 
         private IGenericRepository<XXCOM_YSZMPCKQ_V> yszmpckqRepository = null;
         public IGenericRepository<XXCOM_YSZMPCKQ_V> YszmpckqRepository => yszmpckqRepository ?? 
@@ -66,7 +64,6 @@ namespace BatchPrint.Model.UnitOfWork
         {
         }
 
-
         public async Task<IEnumerable<XXCINV_SUBINVENTORY_V>> GetSubinventoryListAsync()
         {
             var list = await SubinventoryRespository.GetAllAsync();
@@ -81,7 +78,7 @@ namespace BatchPrint.Model.UnitOfWork
 
         public async Task<IEnumerable<XXIFV050_ITEMS_FTY_V>> GetItemListAsync()
         {
-            var list = await ItemRepository.GetAllAsync();
+            var list = await ItemRepository.GetRangeAsync(10, 10);
             return list;
         }
 
@@ -104,31 +101,82 @@ namespace BatchPrint.Model.UnitOfWork
         }
 
 
-        public async Task<decimal> UomConvertAsync(long itemId, decimal amount, string fromUom, string toUom, int round = 5) 
+        public async Task<decimal?> UomConvertAsync(long itemId, decimal amount, string fromUom, string toUom, int round = 5) 
         {
-            DynamicParameters parameters = new DynamicParameters();
-            parameters.Add(":ITEM_ID", itemId);
-            parameters.Add(":FROM_QTY", amount);
-            parameters.Add(":FROM_UOM", fromUom);
-            parameters.Add(":TO_UOM", toUom);
-            parameters.Add(":ROUND", round);
+            try
+            {
+                DynamicParameters parameters = new DynamicParameters();
+                parameters.Add(":ITEM_ID", itemId);
+                parameters.Add(":FROM_QTY", amount);
+                parameters.Add(":FROM_UOM", fromUom);
+                parameters.Add(":TO_UOM", toUom);
+                parameters.Add(":ROUND", round);
 
+                return await Context.QueryFirstAsync<decimal>(
+$"SELECT ROUND({SchemaNameOfUomConversion}UOM_CONVERSION(:ITEM_ID, :FROM_QTY, :FROM_UOM, :TO_UOM), :ROUND) QUANTITY FROM DUAL", parameters
+                    );
+            }
+            catch(Exception ex)
+            {
+                logger.Error(ex);
+            }
+            
 
-            var data = await Context.QueryFirstAsync<decimal>(
-                $"SELECT ROUND({SchemaNameOfUomConversion}UOM_CONVERSION(:ITEM_ID, :FROM_QTY, :FROM_UOM, :TO_UOM), :ROUND) QUANTITY FROM DUAL", parameters
-                );
-
-            return data;
+            return null;
         }
 
         public XXIFV050_ITEMS_FTY_V GetItemAsync(string itemNo)
         {
-            
-            DynamicParameters itemQueryParams = new DynamicParameters();
-            itemQueryParams.Add(":ITEM_NO", itemNo, DbType.String, ParameterDirection.Input, 40);
-            var item = Context.Query<XXIFV050_ITEMS_FTY_V>($"SELECT * FROM XXOSP.XXIFV050_ITEMS_FTY_V WHERE ITEM_NUMBER = :ITEM_NO", itemQueryParams).SingleOrDefault();
+            try
+            {
+                DynamicParameters itemQueryParams = new DynamicParameters();
+                itemQueryParams.Add(":ITEM_NO", itemNo, DbType.String, ParameterDirection.Input, 40);
+                string cmd =
+$@"SELECT INVENTORY_ITEM_ID
+,ITEM_NUMBER
+,CATEGORY_CODE_INV
+,CATEGORY_NAME_INV
+,CATEGORY_CODE_COST
+,CATEGORY_NAME_COST
+,CATEGORY_CODE_CONTROL
+,CATEGORY_NAME_CONTROL
+,ITEM_DESC_ENG
+,ITEM_DESC_SCH
+,ITEM_DESC_TCH
+,PRIMARY_UOM_CODE
+,SECONDARY_UOM_CODE
+,INVENTORY_ITEM_STATUS_CODE
+,ITEM_TYPE
+,CATALOG_ELEM_VAL_010
+,CATALOG_ELEM_VAL_020
+,CATALOG_ELEM_VAL_030
+,CATALOG_ELEM_VAL_040
+,CATALOG_ELEM_VAL_050
+,CATALOG_ELEM_VAL_060
+,CATALOG_ELEM_VAL_070
+,CATALOG_ELEM_VAL_080
+,CATALOG_ELEM_VAL_090
+,CATALOG_ELEM_VAL_100
+,CATALOG_ELEM_VAL_110
+,CATALOG_ELEM_VAL_120
+,CATALOG_ELEM_VAL_130
+,CATALOG_ELEM_VAL_140
+,CREATED_BY
+,CREATION_DATE
+,LAST_UPDATED_BY
+,LAST_UPDATE_DATE FROM {SchemaName}XXIFV050_ITEMS_FTY_V WHERE ITEM_NUMBER = :ITEM_NO";
 
-            return item;
+
+                 return Context.Query<XXIFV050_ITEMS_FTY_V>(cmd, itemQueryParams).SingleOrDefault();
+
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+
+
+            return null;
         }
     }
 }

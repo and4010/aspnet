@@ -1,6 +1,8 @@
-﻿using BatchPrint.Model.UnitOfWork;
+﻿using CHPOUTSRCMES.TASK.Models.UnitOfWork;
 using CHPOUTSRCMES.TASK.Models.Views;
+using Dapper;
 using NLog.Internal;
+using Oracle.ManagedDataAccess.Client;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -77,11 +79,11 @@ namespace CHPOUTSRCMES.TASK.Forms
         {
             Task.Run(() =>
             {
-                string conStr = System.Configuration.ConfigurationManager.ConnectionStrings["OracleContext"].ToString();
-                using (var conn = new Oracle.ManagedDataAccess.Client.OracleConnection(conStr))
+                using (var conn = new OracleConnection(Controller.ErpConnStr))
                 {
                     using (MasterUOW uow = new MasterUOW(conn, false))
                     {
+                        SqlMapper.AddTypeMap(typeof(DateTime), System.Data.DbType.Date);
                         getSubinventoryList(uow);
                         getTransactionTypeList(uow);
                         getMachinePaperTypeList(uow);
@@ -108,17 +110,25 @@ namespace CHPOUTSRCMES.TASK.Forms
                 return;
             }
 
-            if (source == null)
+            try
             {
-                source = new BindingSource();
-                source.DataSource = list;
-                view.DataSource = source;
-                view.Invalidate();
+
+                if (source == null)
+                {
+                    source = new BindingSource();
+                    source.DataSource = list;
+                    view.DataSource = source;
+                    view.Invalidate();
+                }
+                else
+                {
+                    source.DataSource = list;
+                    source.ResetBindings(false);
+                }
             }
-            else
+            catch (Exception ex)
             {
-                source.DataSource = list;
-                source.ResetBindings(false);
+
             }
         }
 

@@ -1,27 +1,36 @@
-﻿using CHPOUTSRCMES.TASK.Models.Views;
-using CHPOUTSRCMES.TASK.Forms;
+﻿using CHPOUTSRCMES.TASK.Forms;
+using CHPOUTSRCMES.TASK.Models.UnitOfWork;
+using CHPOUTSRCMES.TASK.Models.Views;
 using CHPOUTSRCMES.TASK.Tasks;
 using CHPOUTSRCMES.TASK.Tasks.Interfaces;
-using Dapper;
 using NLog;
+using Oracle.ManagedDataAccess.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using BatchPrint.Model.UnitOfWork;
-using Oracle.ManagedDataAccess.Client;
 
 namespace CHPOUTSRCMES.TASK
 {
     public class MainController :IDisposable
     {
 
-        private static MainController _instance;
+        private static MainController instance;
 
-        internal static MainController Instance => _instance ?? (_instance = new MainController());
+        internal static MainController Instance => instance ?? (instance = new MainController());
 
         private Logger logger = LogManager.GetCurrentClassLogger();
+
+        private String erpConnStr;
+
+        internal String ErpConnStr => erpConnStr ?? (erpConnStr =
+#if DEBUG
+            System.Configuration.ConfigurationManager.ConnectionStrings["OracleTestContext"].ToString()
+#else
+            System.Configuration.ConfigurationManager.ConnectionStrings["ErpContext"].ToString()
+#endif
+            );
         
         private bool disposed = false;
         /// <summary>
@@ -167,66 +176,6 @@ namespace CHPOUTSRCMES.TASK
             Console.WriteLine(message);
         }
 
-        internal void GenerateTestTasker()
-        {
-            AddTasker(new Tasker("測試一", 1, (tasker, token) =>
-            {
-                LogInfo($"{DateTime.Now.ToString("HH:mm:ss")}-{tasker.Name}-{tasker.Unit}-開始");
-
-                int count = 5;
-                while (count-- > 0)
-                {
-                    Thread.Sleep(1000);
-                }
-                LogInfo($"{DateTime.Now.ToString("HH:mm:ss")}-{tasker.Name}-{tasker.Unit}-結束");
-            }));
-
-            AddTasker(new Tasker("測試二", 2, (tasker, token) =>
-            {
-                LogInfo($"{DateTime.Now.ToString("HH:mm:ss")}-{tasker.Name}-{tasker.Unit}-開始");
-                int count = 5;
-                while (count-- > 0)
-                {
-                    Thread.Sleep(1000);
-                }
-                LogInfo($"{DateTime.Now.ToString("HH:mm:ss")}-{tasker.Name}-{tasker.Unit}-結束");
-            }));
-
-            AddTasker(new Tasker("測試三", 3, (tasker, token) =>
-            {
-                LogInfo($"{DateTime.Now.ToString("HH:mm:ss")}-{tasker.Name}-{tasker.Unit}-開始");
-                int count = 5;
-                while (count-- > 0)
-                {
-                    Thread.Sleep(1000);
-                }
-                LogInfo($"{DateTime.Now.ToString("HH:mm:ss")}-{tasker.Name}-{tasker.Unit}-結束");
-            }));
-
-            AddTasker(new Tasker("測試四", 1, (tasker, token) =>
-            {
-                LogInfo($"{DateTime.Now.ToString("HH:mm:ss")}-{tasker.Name}-{tasker.Unit}-開始");
-                int count = 100;
-                while (count-- > 0)
-                {
-                    Thread.Sleep(1000);
-                }
-                LogInfo($"{DateTime.Now.ToString("HH:mm:ss")}-{tasker.Name}-{tasker.Unit}-結束");
-            }));
-
-            AddTasker(new Tasker("測試五", 1, (tasker, token) =>
-            {
-                LogInfo($"{DateTime.Now:HH:mm:ss}-{tasker.Name}-{tasker.Unit}-開始");
-                int count = 180;
-                while (count-- > 0)
-                {
-                    Thread.Sleep(1000);
-                }
-                LogInfo($"{DateTime.Now:HH:mm:ss}-{tasker.Name}-{tasker.Unit}-結束");
-            }));
-        }
-
-
         internal void AddMasterTasker()
         {
             AddTasker(new Tasker("主檔轉檔程序", 1, ImportMaster));
@@ -263,9 +212,7 @@ namespace CHPOUTSRCMES.TASK
 
                 List<XXCINV_SUBINVENTORY_V> subinventoryList = new List<XXCINV_SUBINVENTORY_V>();
 
-                string cnstr = System.Configuration.ConfigurationManager.ConnectionStrings["OracleContext"].ToString();
-
-                using (var conn = new OracleConnection(cnstr))
+                using (var conn = new OracleConnection(ErpConnStr))
                 {
                     using (MasterUOW masterUOW = new MasterUOW(conn))
                     {
@@ -304,9 +251,7 @@ namespace CHPOUTSRCMES.TASK
 
                 List<XXIFV050_ITEMS_FTY_V> itemList = new List<XXIFV050_ITEMS_FTY_V>();
 
-                string cnstr = System.Configuration.ConfigurationManager.ConnectionStrings["OracleContext"].ToString();
-
-                using (var conn = new OracleConnection(cnstr))
+                using (var conn = new OracleConnection(ErpConnStr))
                 {
                     using (MasterUOW masterUOW = new MasterUOW(conn))
                     {
@@ -345,9 +290,8 @@ namespace CHPOUTSRCMES.TASK
 
                 List<XXCINV_OSP_RELATED_ITEM_V> itemList = new List<XXCINV_OSP_RELATED_ITEM_V>();
 
-                string cnstr = System.Configuration.ConfigurationManager.ConnectionStrings["OracleContext"].ToString();
 
-                using (var conn = new OracleConnection(cnstr))
+                using (var conn = new OracleConnection(ErpConnStr))
                 {
                     using (MasterUOW masterUOW = new MasterUOW(conn))
                     {
@@ -386,9 +330,7 @@ namespace CHPOUTSRCMES.TASK
 
                 List<XXCPO_MACHINE_PAPER_TYPE_V> machinePaperTypeList = new List<XXCPO_MACHINE_PAPER_TYPE_V>();
 
-                string cnstr = System.Configuration.ConfigurationManager.ConnectionStrings["OracleContext"].ToString();
-
-                using (var conn = new OracleConnection(cnstr))
+                using (var conn = new OracleConnection(ErpConnStr))
                 {
                     using (MasterUOW masterUOW = new MasterUOW(conn))
                     {
@@ -427,9 +369,7 @@ namespace CHPOUTSRCMES.TASK
 
                 List<XXCOM_YSZMPCKQ_V> yszmpckqList = new List<XXCOM_YSZMPCKQ_V>();
 
-                string cnstr = System.Configuration.ConfigurationManager.ConnectionStrings["OracleContext"].ToString();
-
-                using (var conn = new OracleConnection(cnstr))
+                using (var conn = new OracleConnection(ErpConnStr))
                 {
                     using (MasterUOW masterUOW = new MasterUOW(conn))
                     {
@@ -468,8 +408,7 @@ namespace CHPOUTSRCMES.TASK
 
                 List<XXCINV_TRANSACTION_TYPE_V> transactionTypeList = new List<XXCINV_TRANSACTION_TYPE_V>();
 
-                string cnstr = System.Configuration.ConfigurationManager.ConnectionStrings["OracleContext"].ToString();
-                using (var conn = new OracleConnection(cnstr))
+                using (var conn = new OracleConnection(ErpConnStr))
                 {
                     using (MasterUOW masterUOW = new MasterUOW(conn))
                     {
@@ -496,26 +435,6 @@ namespace CHPOUTSRCMES.TASK
 
         }
 
-
-        /// <summary>
-        /// 
-        /// </summary>
-        internal void testConnection()
-        {
-
-            string cnstr = System.Configuration.ConfigurationManager.ConnectionStrings["OracleContext"].ToString();
-            using (var cn = new Oracle.ManagedDataAccess.Client.OracleConnection(cnstr))
-            {
-                SqlMapper.AddTypeMap(typeof(DateTime), System.Data.DbType.Date);
-                cn.Open();
-                var count1 = cn.Query<XXCINV_SUBINVENTORY_V>(@"SELECT * FROM XXCINV_SUBINVENTORY_V").Count();
-                var count2 = cn.Query<XXCINV_OSP_RELATED_ITEM_V>(@"SELECT * FROM XXCINV_OSP_RELATED_ITEM_V").Count();
-                var count3 = cn.Query<XXCOM_YSZMPCKQ_V>(@"SELECT * FROM XXCOM_YSZMPCKQ_V").Count();
-                var count4 = cn.Query<XXIFV050_ITEMS_FTY_V>(@"SELECT * FROM XXCPO_MACHINE_PAPER_TYPE_V").Count();
-                var count5 = cn.Query<XXIFV050_ITEMS_FTY_V>(@"SELECT * FROM XXIFV050_ITEMS_FTY_V").Count();
-                var quantity = cn.Query<decimal>(@"SELECT ROUND(TPMC_ADMIN.UOM_CONVERSION(1, 1, 'KG', 'RE'), 5) QUANTITY FROM dual").SingleOrDefault();
-            }
-        }
 
         /// <summary>
         /// 

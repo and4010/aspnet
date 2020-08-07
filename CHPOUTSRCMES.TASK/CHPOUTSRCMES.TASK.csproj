@@ -70,8 +70,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Models\Repository\GenericRepository.cs" />
+    <Compile Include="Models\Repository\Oracle\GenericRepository.cs" />
     <Compile Include="Models\Repository\Interface\IGenericRepository.cs" />
+    <Compile Include="Models\Repository\Oracle\ItemRepository.cs" />
     <Compile Include="Models\UnitOfWork\IUnitOfWork.cs" />
     <Compile Include="Models\UnitOfWork\MasterUOW .cs" />
     <Compile Include="Models\UnitOfWork\UnitOfWork.cs" />
@@ -111,6 +112,14 @@
     <Compile Include="Forms\UomConverterForm.Designer.cs">
       <DependentUpon>UomConverterForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Models\Entity\ITEMS_T.cs" />
+    <Compile Include="Models\Entity\LOCATOR_T.cs" />
+    <Compile Include="Models\Entity\MACHINE_PAPER_TYPE_T.cs" />
+    <Compile Include="Models\Entity\ORGANIZATION_T.cs" />
+    <Compile Include="Models\Entity\RELATED_T.cs" />
+    <Compile Include="Models\Entity\SUBINVENTORY_T.cs" />
+    <Compile Include="Models\Entity\TRANSACTION_TYPE_T.cs" />
+    <Compile Include="Models\Entity\YSZMPCKQ_T.cs" />
     <Compile Include="Tasks\Interfaces\ITasker.cs" />
     <Compile Include="Tasks\LimitedConcurrencyLevelTaskScheduler.cs" />
     <Compile Include="MainController.cs" />
@@ -159,6 +168,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="SqlModels\Entity\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -111,24 +111,24 @@ namespace CHPOUTSRCMES.Web.Util
                         try
                         {
 
-                            var excelPartNo = ExcelUtil.GetCellString(i, PartNo_cell.ColumnIndex, sheet).Trim();
+                            var excelPartNo = ExcelUtil.GetStringCellValue(i, PartNo_cell.ColumnIndex, sheet).Trim();
                             if (RollHeader[j].Item_No.Equals(excelPartNo))
                             {
-                                if(RollHeader[j].PrimanyQuantity == decimal.Parse(ExcelUtil.GetCellString(i, TheoreticalWeight_cell.ColumnIndex, sheet).Trim()))
+                                if(RollHeader[j].PrimanyQuantity == decimal.Parse(ExcelUtil.GetStringCellValue(i, TheoreticalWeight_cell.ColumnIndex, sheet).Trim()))
                                 {
                                     var model = new DetailModel.RollDetailModel();
                                     model.Id = i;
                                     model.Barcode = "";
-                                    model.Item_No = ExcelUtil.GetCellString(i, PartNo_cell.ColumnIndex, sheet).Trim();
-                                    model.PaperType = ExcelUtil.GetCellString(i, PaperType_cell.ColumnIndex, sheet).Trim();
-                                    model.BaseWeight = ExcelUtil.GetCellString(i, BaseWeight_cell.ColumnIndex, sheet).Trim();
-                                    model.Specification = ExcelUtil.GetCellString(i, Specification_cell.ColumnIndex, sheet).Trim();
-                                    model.TheoreticalWeight = ExcelUtil.GetCellString(i, TheoreticalWeight_cell.ColumnIndex, sheet).Trim();
-                                    model.TransactionQuantity = decimal.Parse(ExcelUtil.GetCellString(i, TheoreticalWeight_cell.ColumnIndex, sheet).Trim());
+                                    model.Item_No = ExcelUtil.GetStringCellValue(i, PartNo_cell.ColumnIndex, sheet).Trim();
+                                    model.PaperType = ExcelUtil.GetStringCellValue(i, PaperType_cell.ColumnIndex, sheet).Trim();
+                                    model.BaseWeight = ExcelUtil.GetStringCellValue(i, BaseWeight_cell.ColumnIndex, sheet).Trim();
+                                    model.Specification = ExcelUtil.GetStringCellValue(i, Specification_cell.ColumnIndex, sheet).Trim();
+                                    model.TheoreticalWeight = ExcelUtil.GetStringCellValue(i, TheoreticalWeight_cell.ColumnIndex, sheet).Trim();
+                                    model.TransactionQuantity = ExcelUtil.GetDecimalCellValue(i, TheoreticalWeight_cell.ColumnIndex, sheet);
                                     model.TransactionUom = RollHeader[j].TransactionUom;
-                                    model.PrimanyQuantity = decimal.Parse(ExcelUtil.GetCellString(i, TheoreticalWeight_cell.ColumnIndex, sheet).Trim());
-                                    model.PrimaryUom = ExcelUtil.GetCellString(i, PrimaryUom_cell.ColumnIndex, sheet).Trim();
-                                    model.LotNumber = ExcelUtil.GetCellString(i, LotNumber_cell.ColumnIndex, sheet).Trim();
+                                    model.PrimanyQuantity = ExcelUtil.GetDecimalCellValue(i, TheoreticalWeight_cell.ColumnIndex, sheet);
+                                    model.PrimaryUom = ExcelUtil.GetStringCellValue(i, PrimaryUom_cell.ColumnIndex, sheet).Trim();
+                                    model.LotNumber = ExcelUtil.GetStringCellValue(i, LotNumber_cell.ColumnIndex, sheet).Trim();
                                     model.Status = "待入庫";
                                     //model.Remark = ExcelUtil.GetCellString(i, Remark_cell.ColumnIndex, sheet).Trim();
                                     model.Subinventory = RollHeader[j].Subinventory;
@@ -296,17 +296,17 @@ namespace CHPOUTSRCMES.Web.Util
                     try
                     {
 
-                        var excelPartNo = ExcelUtil.GetCellString(i, ItemNo_cell.ColumnIndex, sheet).Trim();
+                        var excelPartNo = ExcelUtil.GetStringCellValue(i, ItemNo_cell.ColumnIndex, sheet).Trim();
                         var model = new StockTransferBarcodeDT();
                         model.ID = i;
                         //model.BARCODE = "B200619000" + (i).ToString();
-                        model.ITEM_NUMBER = ExcelUtil.GetCellString(i, ItemNo_cell.ColumnIndex, sheet).Trim();
-                        model.PAPERTYPE = ExcelUtil.GetCellString(i, PaperType_cell.ColumnIndex, sheet).Trim();
-                        model.Base_Weight = ExcelUtil.GetCellString(i, BaseWeight_cell.ColumnIndex, sheet).Trim();
-                        model.Specification = ExcelUtil.GetCellString(i, Specification_cell.ColumnIndex, sheet).Trim();
-                        model.PRIMARY_QUANTITY = Decimal.Parse(ExcelUtil.GetCellString(i, TheoreticalWeight_cell.ColumnIndex, sheet).Trim());
-                        model.PRIMARY_UOM = ExcelUtil.GetCellString(i, PrimaryUom_cell.ColumnIndex, sheet).Trim();
-                        model.LOT_NUMBER = ExcelUtil.GetCellString(i, LotNumber_cell.ColumnIndex, sheet).Trim();
+                        model.ITEM_NUMBER = ExcelUtil.GetStringCellValue(i, ItemNo_cell.ColumnIndex, sheet).Trim();
+                        model.PAPERTYPE = ExcelUtil.GetStringCellValue(i, PaperType_cell.ColumnIndex, sheet).Trim();
+                        model.Base_Weight = ExcelUtil.GetStringCellValue(i, BaseWeight_cell.ColumnIndex, sheet).Trim();
+                        model.Specification = ExcelUtil.GetStringCellValue(i, Specification_cell.ColumnIndex, sheet).Trim();
+                        model.PRIMARY_QUANTITY = ExcelUtil.GetDecimalCellValue(i, TheoreticalWeight_cell.ColumnIndex, sheet);
+                        model.PRIMARY_UOM = ExcelUtil.GetStringCellValue(i, PrimaryUom_cell.ColumnIndex, sheet).Trim();
+                        model.LOT_NUMBER = ExcelUtil.GetStringCellValue(i, LotNumber_cell.ColumnIndex, sheet).Trim();
                         //model.Status = "待入庫";
                         model.Subinventory = ddlInSubinventory;
                         model.Locator = ddlInLocator == "請選擇" ? "" : ddlInLocator;
@@ -432,17 +432,17 @@ namespace CHPOUTSRCMES.Web.Util
                     try
                     {
 
-                        var excelPartNo = ExcelUtil.GetCellString(i, ItemNo_cell.ColumnIndex, sheet).Trim();
+                        var excelPartNo = ExcelUtil.GetStringCellValue(i, ItemNo_cell.ColumnIndex, sheet).Trim();
                         var model = new StockTransferDT();
                         model.ID = i;
                         //model.BARCODE = "B200619000" + (i).ToString();
 
-                        model.ITEM_NUMBER = ExcelUtil.GetCellString(i, ItemNo_cell.ColumnIndex, sheet).Trim();
-                        model.PACKING_TYPE = ExcelUtil.GetCellString(i, PackingType_cell.ColumnIndex, sheet).Trim();
-                        model.REQUESTED_QUANTITY = Decimal.Parse(ExcelUtil.GetCellString(i, Qty_cell.ColumnIndex, sheet).Trim());
-                        model.REQUESTED_QUANTITY2 = Decimal.Parse(ExcelUtil.GetCellString(i, TotalReam_cell.ColumnIndex, sheet).Trim());
-                        model.ROLL_REAM_WT = Decimal.Parse(ExcelUtil.GetCellString(i, EveyReam_cell.ColumnIndex, sheet).Trim());
-                        model.ROLL_REAM_QTY = Decimal.Parse(ExcelUtil.GetCellString(i, ReamWeight_cell.ColumnIndex, sheet).Trim());
+                        model.ITEM_NUMBER = ExcelUtil.GetStringCellValue(i, ItemNo_cell.ColumnIndex, sheet).Trim();
+                        model.PACKING_TYPE = ExcelUtil.GetStringCellValue(i, PackingType_cell.ColumnIndex, sheet).Trim();
+                        model.REQUESTED_QUANTITY = ExcelUtil.GetDecimalCellValue(i, Qty_cell.ColumnIndex, sheet);
+                        model.REQUESTED_QUANTITY2 = ExcelUtil.GetDecimalCellValue(i, TotalReam_cell.ColumnIndex, sheet);
+                        model.ROLL_REAM_WT = ExcelUtil.GetDecimalCellValue(i, EveyReam_cell.ColumnIndex, sheet);
+                        model.ROLL_REAM_QTY = ExcelUtil.GetDecimalCellValue(i, ReamWeight_cell.ColumnIndex, sheet);
 
                         //model.Status = "待入庫";
                         model.IN_SUBINVENTORY_CODE = ddlInSubinventory == "請選擇" ? "" : ddlInSubinventory;

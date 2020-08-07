@@ -1,5 +1,5 @@
 ﻿using NPOI.SS.UserModel;
-
+using System;
 
 namespace CHPOUTSRCMES.Web.Util
 {
@@ -11,7 +11,6 @@ namespace CHPOUTSRCMES.Web.Util
             return FindCell(0, 0, contain, sheet);
         }
 
-
         public static ICell FindCell(int start_y, int start_x, string contain, ISheet sheet)
         {
             try
@@ -22,7 +21,7 @@ namespace CHPOUTSRCMES.Web.Util
                     IRow row = sheet.GetRow(y_pos);
                     for (int x_pos = start_x; x_pos < 100; x_pos++)
                     {
-                        if (row.GetCell(x_pos) != null && GetCellString(row.GetCell(x_pos)).Contains(contain))
+                        if (row.GetCell(x_pos) != null && GetStringCellValue(row.GetCell(x_pos)).Contains(contain))
                         {
                             return row.GetCell(x_pos);
                         }
@@ -35,27 +34,104 @@ namespace CHPOUTSRCMES.Web.Util
             return null;
         }
 
-
-        public static string GetCellString(int row_index, int col_index, ISheet sheet)
+        public static System.DateTime GetDateTimeCellValue(int row_index, int col_index, ISheet sheet, DateTime defaultValue = new DateTime())
         {
-            return GetCellString(sheet.GetRow(row_index).GetCell(col_index));
+            var cellValue = GetDateTimeOrNullCellValue(sheet.GetRow(row_index).GetCell(col_index));
+            return cellValue ?? defaultValue;
         }
 
-        public static string GetCellString(ICell cell)
+        public static System.DateTime? GetDateTimeOrNullCellValue(int row_index, int col_index, ISheet sheet)
         {
-            if(cell == null)
+            return GetDateTimeOrNullCellValue(sheet.GetRow(row_index).GetCell(col_index));
+        }
+
+        public static System.DateTime? GetDateTimeOrNullCellValue(ICell cell)
+        {
+            DateTime? datetime = null;
+            try
+            {
+                datetime = cell.DateCellValue;
+            }
+            catch
+            {
+
+            }
+            finally
+            {
+                
+            }
+            return datetime;
+        }
+
+        public static long GetLongCellValue(int row_index, int col_index, ISheet sheet, long value = 0)
+        {
+            var cellValue = GetLongOrNullCellValue(sheet.GetRow(row_index).GetCell(col_index));
+            return cellValue ?? value;
+        }
+
+        public static long? GetLongOrNullCellValue(int row_index, int col_index, ISheet sheet)
+        {
+            return GetLongOrNullCellValue(sheet.GetRow(row_index).GetCell(col_index));
+        }
+
+        public static long? GetLongOrNullCellValue(ICell cell)
+        {
+            long? value = null;
+            try
+            {
+                value = long.Parse(GetStringCellValue(cell));
+            }
+            catch
+            {
+
+            }
+            return value;
+        }
+
+        public static decimal GetDecimalCellValue(int row_index, int col_index, ISheet sheet, decimal value = 0m)
+        {
+            var cellValue = GetDecimalOrNullCellValue(sheet.GetRow(row_index).GetCell(col_index));
+            return cellValue ?? value;
+        }
+
+        public static decimal? GetDecimalOrNullCellValue(int row_index, int col_index, ISheet sheet)
+        {
+            return GetDecimalOrNullCellValue(sheet.GetRow(row_index).GetCell(col_index));
+        }
+
+        public static decimal? GetDecimalOrNullCellValue(ICell cell)
+        {
+            decimal? value = 0;
+            try
+            {
+                value = decimal.Parse(GetStringCellValue(cell));
+            }
+            finally
+            {
+
+            }
+            return value;
+        }
+
+        public static string GetStringCellValue(int row_index, int col_index, ISheet sheet)
+        {
+            return GetStringCellValue(sheet.GetRow(row_index).GetCell(col_index));
+        }
+
+        public static string GetStringCellValue(ICell cell)
+        {
+            if (cell == null)
             {
                 return "";
             }
-            return GetCellString(cell, cell.CellType);
+            return GetStringCellValue(cell, cell.CellType);
         }
-
         /// <summary>
         /// 依型別獲取單元格內容
         /// </summary>
         /// <param name="cell"></param>
         /// <returns></returns>
-        public static string GetCellString(ICell cell, CellType type)
+        public static string GetStringCellValue(ICell cell, CellType type)
         {
             string Cellvalue;
             if (cell == null)
@@ -75,8 +151,9 @@ namespace CHPOUTSRCMES.Web.Util
                     Cellvalue = cell.StringCellValue;
                     break;
                 case CellType.Formula: //FORMULA:  
-                    Cellvalue = GetCellString(cell, cell.CachedFormulaResultType);
+                    Cellvalue = GetStringCellValue(cell, cell.CachedFormulaResultType);
                     break;
+               
                 default:
                     Cellvalue = cell.ToString();
                     break;

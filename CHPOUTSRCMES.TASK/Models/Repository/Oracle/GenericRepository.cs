@@ -10,7 +10,7 @@ using CHPOUTSRCMES.TASK.Models.Repository.Interface;
 using Dapper;
 
 
-namespace CHPOUTSRCMES.TASK.Models.Repository
+namespace CHPOUTSRCMES.TASK.Models.Repository.Oracle
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
@@ -59,8 +59,9 @@ namespace CHPOUTSRCMES.TASK.Models.Repository
 
         public async Task<IEnumerable<T>> GetAllAsync()
         {
-            return await Connection.QueryAsync<T>($"SELECT * FROM {tableName}");
+            return await Connection.QueryAsync<T>($"{GenerateSelectQuery()} WHERE ROWNUM <= 1000");
         }
+
 
         public async Task DeleteRowAsync(long id)
         {
@@ -69,12 +70,11 @@ namespace CHPOUTSRCMES.TASK.Models.Repository
 
         public async Task<T> GetAsync(long id)
         {
-            var result = await Connection.QuerySingleOrDefaultAsync<T>($"SELECT * FROM {tableName} WHERE Id=:Id", new { Id = id });
+            var result = await Connection.QuerySingleOrDefaultAsync<T>($"{GenerateSelectQuery()} WHERE Id=:Id", new { Id = id });
             if (result == null)
                 throw new KeyNotFoundException($"{tableName} with id [{id}] could not be found.");
 
             return result;
-
         }
 
         public async Task<int> SaveRangeAsync(IEnumerable<T> list)
@@ -111,6 +111,24 @@ namespace CHPOUTSRCMES.TASK.Models.Repository
             await Connection.ExecuteAsync($"DELETE FROM [{tableName}]");
 
             await Connection.ExecuteAsync($"DELETE FROM SQLITE_SEQUENCE WHERE NAME='{tableName}'");
+        }
+
+        protected string GenerateSelectQuery()
+        {
+            var selectQuery = new StringBuilder("SELECT ");
+
+
+            var properties = GenerateListOfProperties(GetProperties());
+            properties.ForEach(prop =>
+            {
+                selectQuery.Append($"{prop},");
+            });
+
+            selectQuery
+                .Remove(selectQuery.Length - 1, 1)
+                .Append($" FROM {tableName}");
+
+            return selectQuery.ToString();
         }
 
         private string GenerateInsertQuery()

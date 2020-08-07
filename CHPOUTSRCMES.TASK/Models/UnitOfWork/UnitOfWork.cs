@@ -4,7 +4,7 @@ using CHPOUTSRCMES.TASK.Models.Repository;
 using CHPOUTSRCMES.TASK.Models.Repository.Interface;
 using CHPOUTSRCMES.TASK.Models.UnitOfWork;
 
-namespace BatchPrint.Model.UnitOfWork
+namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
 {
     public class UnitOfWork : IUnitOfWork
     {
