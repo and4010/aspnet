@@ -32,7 +32,7 @@ namespace CHPOUTSRCMES.Web.Controllers
                 // Apply search   
                 model = model.Where(p => (!string.IsNullOrEmpty(p.ITEM_NUMBER) && p.ITEM_NUMBER.ToLower().Contains(search.ToLower()))
                     || (!string.IsNullOrEmpty(p.ITEM_DESCRIPTION) && p.ITEM_DESCRIPTION.ToLower().Contains(search.ToLower()))
-                    || (!string.IsNullOrEmpty(p.RELATED_ITEMNUMBER) && p.RELATED_ITEMNUMBER.ToLower().Contains(search.ToLower()))
+                    || (!string.IsNullOrEmpty(p.RELATED_ITEM_NUMBER) && p.RELATED_ITEM_NUMBER.ToLower().Contains(search.ToLower()))
                     || (!string.IsNullOrEmpty(p.RELATED_ITEM_DESCRIPTION) && p.RELATED_ITEM_DESCRIPTION.ToLower().Contains(search.ToLower()))
                     || (!string.IsNullOrEmpty(p.CREATED_BY_NAME) && p.CREATED_BY_NAME.ToLower().Contains(search.ToLower()))
                     || (p.CREATION_DATE.HasValue && p.CREATION_DATE.Value.ToString("yyyy-MM-dd").ToLower().Contains(search.ToLower()))
