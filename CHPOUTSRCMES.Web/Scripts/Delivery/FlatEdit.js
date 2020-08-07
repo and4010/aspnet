@@ -98,8 +98,9 @@ $(document).ready(function () {
             var ORDER_SHIP_NUMBER = dt.rows(indexes).data().pluck('ORDER_SHIP_NUMBER')[0];
             $("#ORDER_SHIP_NUMBER").text(ORDER_SHIP_NUMBER);
             var TMP_ITEM_ID = dt.rows(indexes).data().pluck('TMP_ITEM_ID')[0];
+            var OSP_BATCH_ID = dt.rows(indexes).data().pluck('OSP_BATCH_ID')[0];
             var INVENTORY_ITEM_ID = dt.rows(indexes).data().pluck('INVENTORY_ITEM_ID')[0];
-            if (TMP_ITEM_ID) {
+            if (TMP_ITEM_ID && OSP_BATCH_ID) {
                 $("#INVENTORY_ITEM_ID").text(TMP_ITEM_ID);
             } else {
                 $("#INVENTORY_ITEM_ID").text(INVENTORY_ITEM_ID);

@@ -94,7 +94,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             if (!checkResult.Success) return new ResultModel(checkResult.Success, checkResult.Msg);
             var stock = checkResult.Data;
             var detailData = dlvDetailTRepositiory.GetAll().AsNoTracking().FirstOrDefault(x => x.DlvDetailId == dlvDetailId);
-            if (detailData.TmpItemId == null)
+            if (detailData.OspBatchId == null && detailData.TmpItemId == null)
             {
                 if (stock.ItemNumber != detailData.ItemNumber)
                 {
@@ -519,8 +519,8 @@ OR SUM(ISNULL(p.SECONDARY_QUANTITY, 0)) <> MIN(d.REQUESTED_SECONDARY_QUANTITY)";
                     RequestedQuantityUom = "KG",
                     RequestedQuantity2 = 50,
                     RequestedQuantityUom2 = "RE",
-                    OspBatchId = 1,
-                    OspBatchNo = "P9B0288",
+                    OspBatchId = null,
+                    OspBatchNo = "",
                     OspBatchType = "",
                     TmpItemId = null,
                     TmpItemNumber = "",
@@ -615,7 +615,7 @@ OR SUM(ISNULL(p.SECONDARY_QUANTITY, 0)) <> MIN(d.REQUESTED_SECONDARY_QUANTITY)";
 
                 #endregion
 
-                #region 第三筆測試資料 平版 無令打件
+                #region 第三筆測試資料 平版 無令打件 代紙
                 dlvHeaderTRepositiory.Create(new DLV_HEADER_T()
                 {
                     DlvHeaderId = 3,
