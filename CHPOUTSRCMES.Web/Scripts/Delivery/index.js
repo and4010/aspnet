@@ -391,13 +391,19 @@ $(document).ready(function () {
                 {
                     extend: 'excel',
                     text: '匯出Excel',
-                    className: 'btn-primary'
+                    className: 'btn-primary',
+                    init: function (api, node, config) {
+                        $(node).removeClass('btn-default')
+                    }
                 },
                 {
                     text: '列印備貨單',
                     className: 'btn-primary',
                     action: function () {
                         PrintPickList();
+                    },
+                    init: function (api, node, config) {
+                        $(node).removeClass('btn-default')
                     }
                 },
                 //{
@@ -418,6 +424,9 @@ $(document).ready(function () {
                 {
                     text: '編輯核准日',
                     className: 'btn-danger',
+                    init: function (api, node, config) {
+                        $(node).removeClass('btn-default')
+                    },
                     action: function (e, dt, node, config) {
                         var count = dt.rows({ selected: true }).count();
 

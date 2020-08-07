@@ -120,6 +120,12 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             public const string User = "使用者";
         }
 
+        public class PalletStatusCode
+        {
+            public const string All = "整板";
+            public const string Split = "拆板";
+        }
+
         public class CategoryCode : ICategory
         {
             public const string Delivery = "C0";
@@ -1271,16 +1277,16 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             //{
             //    throw new Exception("找不到RELATED_ITEM_ID欄位");
             //}
+            ItemNumber_cell = ExcelUtil.FindCell("ITEM", sheet);
+            if (ItemNumber_cell == null)
+            {
+                throw new Exception("找不到ITEM欄位");
+            }
 
             InventoryItemId_cell = ExcelUtil.FindCell("INVENTORY_ITEM_ID", sheet);
             if (InventoryItemId_cell == null)
             {
                 throw new Exception("找不到INVENTORY_ITEM_ID欄位");
-            }
-            ItemNumber_cell = ExcelUtil.FindCell("ITEM", sheet);
-            if (ItemNumber_cell == null)
-            {
-                throw new Exception("找不到ITEM欄位");
             }
 
             ItemDescription_cell = ExcelUtil.FindCell("ITEM_DESCRIPTION", sheet);
@@ -1288,16 +1294,17 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             {
                 throw new Exception("找不到ITEM_DESCRIPTION欄位");
             }
-            RelatedItemId_cell = ExcelUtil.FindCell("RELATED_ITEM_ID", sheet);
-            if (RelatedItemId_cell == null)
-            {
-                throw new Exception("找不到RELATED_ITEM_ID欄位");
-            }
             RelatedItemNumber_cell = ExcelUtil.FindCell("RELATED_ITEM", sheet);
             if (RelatedItemNumber_cell == null)
             {
                 throw new Exception("找不到RELATED_ITEM欄位");
             }
+            RelatedItemId_cell = ExcelUtil.FindCell("RELATED_ITEM_ID", sheet);
+            if (RelatedItemId_cell == null)
+            {
+                throw new Exception("找不到RELATED_ITEM_ID欄位");
+            }
+
             RelatedItemDescription_cell = ExcelUtil.FindCell("RELATED_ITEM_DESCRIPTION", sheet);
             if (RelatedItemDescription_cell == null)
             {
@@ -1986,6 +1993,45 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                     SecondaryTransactionQty = null,
                     SecondaryAvailableQty = null,
                     SecondaryUomCode = "",
+                    Note = "",
+                    CreatedBy = "1",
+                    CreationDate = DateTime.Now,
+                    LastUpdateBy = "1",
+                    LastUpdateDate = DateTime.Now,
+                }, true);
+
+                #endregion
+
+                #region 平版 無令打件 代紙料號
+                stockTRepositiory.Create(new STOCK_T()
+                {
+                    OrganizationId = 265,
+                    OrganizationCode = "FTY",
+                    SubinventoryCode = "TB2",
+                    LocatorId = null,
+                    LocatorSegments = "",
+                    Barcode = "A2007290005",
+                    InventoryItemId = 506313,
+                    ItemNumber = "4DM00P0270007991121",
+                    ItemDescription = "全塗灰銅卡",
+                    ReamWeight = "266.58",
+                    ItemCategory = "平版",
+                    PaperType = "DM00",
+                    BasicWeight = "02700",
+                    Specification = "07991121",
+                    PackingType = "無令打件",
+                    RollReamWt = 100,
+                    ReasonCode = "",
+                    ReasonDesc = "",
+                    OspBatchNo = "P2010088",
+                    LotNumber = "",
+                    StatusCode = "",
+                    PrimaryTransactionQty = 100,
+                    PrimaryAvailableQty = 100,
+                    PrimaryUomCode = "KG",
+                    SecondaryTransactionQty = 50,
+                    SecondaryAvailableQty = 50,
+                    SecondaryUomCode = "RE",
                     Note = "",
                     CreatedBy = "1",
                     CreationDate = DateTime.Now,

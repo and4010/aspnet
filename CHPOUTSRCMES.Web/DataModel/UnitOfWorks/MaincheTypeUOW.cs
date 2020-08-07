@@ -83,7 +83,7 @@ Select
 [CREATION_DATE] as Creation_date,
 [LAST_UPDATE_BY] as Last_updated_by,
 [LAST_UPDATE_DATE] as Last_update_date
-FROM [CHPOUTSRCMES].[dbo].[MACHINE_PAPER_TYPE_T]");
+FROM [MACHINE_PAPER_TYPE_T]");
                     if (Organization_code != "*")
                     {
                         cond.Add("ORGANIZATION_CODE = @ORGANIZATION_CODE");

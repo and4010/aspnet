@@ -1,7 +1,7 @@
 ﻿
 $(document).ready(function () {
-    
-   
+
+
     $("#ddlOrganization").combobox({
         select: function (event, ui) {
             updateDdlInventoryItem(this.value);
@@ -13,11 +13,11 @@ $(document).ready(function () {
         select: function (event, ui) {
             var ORGANIZATION_ID = $("#ddlOrganization").val();
             updateDdlRelatedItem(ORGANIZATION_ID, this.value);
-            
+
         }
     });
 
-    
+
     //$('#ddlInventoryItem').combobox({
     //    onSelect: function (item){
     //        alert(item);
@@ -29,7 +29,7 @@ $(document).ready(function () {
     //}
 
     $("#ddlRelatedItem").combobox();
-    
+
 
     var OspRelatedDataTablesBody = $('#OspRelatedDataTablesBody').DataTable({
         //"scrollX": true,
@@ -56,36 +56,36 @@ $(document).ready(function () {
             },
         },
         columns: [
-         { data: "ITEM_NUMBER", name: "組成成分料號", "autoWidth": true },
-         { data: "ITEM_DESCRIPTION", name: "組成成分料號描述", "autoWidth": true },
-         { data: "RELATED_ITEMNUMBER", name: "餘切料號", "autoWidth": true },
-         { data: "RELATED_ITEM_DESCRIPTION", name: "餘切料號描述", "autoWidth": true },
-        { data: "CREATED_BY_NAME", name: "建立人員", "autoWidth": true },
-         {
-             data: "CREATION_DATE", name: "建立日期", "autoWidth": true, "mRender": function (data, type, full) {
-                 if (data != null) {
-                     var dtStart = new Date(parseInt(data.substr(6)));
-                     var dtStartWrapper = moment(dtStart);
-                     return dtStartWrapper.format('YYYY-MM-DD');
-                 } else {
-                     return '';
-                 }
-             }
-         },
+            { data: "ITEM_NUMBER", name: "組成成分料號", "autoWidth": true },
+            { data: "ITEM_DESCRIPTION", name: "組成成分料號描述", "autoWidth": true },
+            { data: "RELATED_ITEM_NUMBER", name: "餘切料號", "autoWidth": true },
+            { data: "RELATED_ITEM_DESCRIPTION", name: "餘切料號描述", "autoWidth": true },
+            { data: "CREATED_BY_NAME", name: "建立人員", "autoWidth": true },
+            {
+                data: "CREATION_DATE", name: "建立日期", "autoWidth": true, "mRender": function (data, type, full) {
+                    if (data != null) {
+                        var dtStart = new Date(parseInt(data.substr(6)));
+                        var dtStartWrapper = moment(dtStart);
+                        return dtStartWrapper.format('YYYY-MM-DD');
+                    } else {
+                        return '';
+                    }
+                }
+            },
 
-         { data: "LAST_UPDATED_BY_NAME", name: "更新人員", "autoWidth": true },
+            { data: "LAST_UPDATED_BY", name: "更新人員", "autoWidth": true },
 
-        {
-            data: "LAST_UPDATE_DATE", name: "更新日期", "autoWidth": true, "mRender": function (data, type, full) {
-                if (data != null) {
-                    var dtStart = new Date(parseInt(data.substr(6)));
-                    var dtStartWrapper = moment(dtStart);
-                    return dtStartWrapper.format('YYYY-MM-DD');
-                } else {
-                    return '';
+            {
+                data: "LAST_UPDATE_DATE", name: "更新日期", "autoWidth": true, "mRender": function (data, type, full) {
+                    if (data != null) {
+                        var dtStart = new Date(parseInt(data.substr(6)));
+                        var dtStartWrapper = moment(dtStart);
+                        return dtStartWrapper.format('YYYY-MM-DD');
+                    } else {
+                        return '';
+                    }
                 }
             }
-        }
         ]
         //"order": [[1, 'asc']],
         //buttons: [],
@@ -96,7 +96,7 @@ $(document).ready(function () {
 
         OspRelatedDataTablesBody.ajax.reload();
         return false;
-        
+
         //$.ajax({
         //    url: "/OspRelated/Search",
         //    type: "post",
@@ -177,14 +177,14 @@ $(document).ready(function () {
             },
             success: function (data) {
                 ddl.html("");
-                
+
 
                 for (var i = 0; i < data.length; i++) {
                     ddl.append($('<option></option>').val(data[i].Value).html(data[i].Text));
                 }
-               
-                
-                
+
+
+
                 var optionCount = ddl[0].length;
                 if (optionCount == 2) {
                     //選單數量為2時，選擇第2個
@@ -202,6 +202,6 @@ $(document).ready(function () {
             }
 
         });
-      
+
     }
 });

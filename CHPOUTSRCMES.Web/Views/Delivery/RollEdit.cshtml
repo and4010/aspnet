@@ -13,275 +13,278 @@
     <script src="~/Scripts/Delivery/DetailViewHeader.js"></script>
 }
 
-<div id="DeliveryPartial">
-    @Html.Partial("_DeliveryPartial", @Model.DeliveryDetailViewHeader)
-</div>
-<div class="row row-std col-md-12 form-inline">
-    <div class="input-group col-md-3">
-        <span class="input-group-addon" style="width: 53px;">交運單號</span>
-        @Html.TextBoxFor(model => model.DELIVERY_NAME, new {@class = "form-control",id = "txtDeliveryName", placeholder="請輸入交運單號" ,autocomplete="off"})
+<div class="nav-tabs-custom" style="padding: 15px;">
+
+    <div id="DeliveryPartial">
+        @Html.Partial("_DeliveryPartial", @Model.DeliveryDetailViewHeader)
     </div>
-    <input type="button" id="btnCheckDeliveryName" value="比對" class="btn btn-danger" />
-</div>
-
-@*<div class="row row-std">
-    <div class="form-inline">
-        <div class="form-group col col-md-3 input-lg">
-            @Html.LabelFor(model => model.DELIVERY_NAME)
-            <span id="DELIVERY_NAME">@Html.DisplayFor(model => model.DELIVERY_NAME)</span>
+    <div class="row row-std col-md-12 form-inline">
+        <div class="input-group col-md-3">
+            <span class="input-group-addon" style="width: 53px;">交運單號</span>
+            @Html.TextBoxFor(model => model.DELIVERY_NAME, new { @class = "form-control", id = "txtDeliveryName", placeholder = "請輸入交運單號", autocomplete = "off" })
         </div>
-        <div class="form-group col col-md-3 input-lg">
-            @Html.LabelFor(model => model.TRIP_NAME)
-            <span id="TRIP_NAME">@Html.DisplayFor(model => model.TRIP_NAME)</span>
-        </div>
-        <div class="form-group col col-md-3 input-lg">
-            @Html.LabelFor(model => model.ORDER_NUMBER)
-            @Html.DisplayFor(model => model.ORDER_NUMBER)
-        </div>
-        <div class="form-group col col-md-3 input-lg">
-            @Html.LabelFor(model => model.TRIP_CAR)
-            @Html.DisplayFor(model => model.TRIP_CAR)
-        </div>
-    </div>
-    <div class="form-inline">
-        <div class="form-group col col-md-6 input-lg">
-            @Html.LabelFor(model => model.CUSTOMER_NAME)
-            @Html.DisplayFor(model => model.CUSTOMER_NAME)
-        </div>
-        <div class="form-group col col-md-6 input-lg">
-            @Html.LabelFor(model => model.CUSTOMER_LOCATION_CODE)
-            @Html.DisplayFor(model => model.CUSTOMER_LOCATION_CODE)
-        </div>
-    </div>
-    <div class="form-inline">
-        <div class="form-group col col-md-6 input-lg">
-            @Html.LabelFor(model => model.SHIP_CUSTOMER_NAME)
-            @Html.DisplayFor(model => model.SHIP_CUSTOMER_NAME)
-        </div>
-        <div class="form-group col col-md-6 input-lg">
-            @Html.LabelFor(model => model.SHIP_LOCATION_CODE)
-            @Html.DisplayFor(model => model.SHIP_LOCATION_CODE)
-        </div>
-    </div>
-    <div class="form-inline">
-        <div class="form-group col col-md-6 input-lg">
-            @Html.LabelFor(model => model.TRIP_ACTUAL_SHIP_DATE)
-            @Html.DisplayFor(model => model.TRIP_ACTUAL_SHIP_DATE)
-        </div>
-        <div class="form-group col col-md-6 input-lg">
-            @Html.LabelFor(model => model.REMARK)
-            @Html.DisplayFor(model => model.REMARK)
-        </div>
-    </div>
-</div>*@
-
-<div class="form-group col col-md-12 input-lg">
-    @Html.Label("紙捲需求")
-</div>
-
-<div class="row row-std">
-    <div class="dataTable_wrapper">
-        <div class="col-sm-12 col-md-12">
-            <table class="table table-striped table-bordered table-hover" id="PaperRollDataTablesBody">
-                <thead>
-                    <tr>
-                        <th rowspan="2" colspan="1"></th>
-                        <th rowspan="2" colspan="1">項次</th>
-                        <th rowspan="1" colspan="2">訂單</th>
-                        <th rowspan="1" colspan="6">商品</th>
-                        <th rowspan="1" colspan="3">主單位</th>
-                        <th rowspan="1" colspan="3">交易單位</th>
-                        @*<th rowspan="2" colspan="1">備註</th>*@
-                    </tr>
-                    <tr>
-
-
-                        <th>
-                            @Html.DisplayName("訂單")
-                        </th>
-                        <th>
-                            @Html.DisplayName("訂單行號")
-                        </th>
-                        <th>
-                            @Html.DisplayName("工單號碼")
-                        </th>
-                        <th>
-                            @Html.DisplayName("代紙料號")
-                        </th>
-                        <th>
-                            @Html.DisplayName("料號")
-                        </th>
-                        <th>
-                            @Html.DisplayName("紙別")
-                        </th>
-                        <th>
-                            @Html.DisplayName("基重")
-                        </th>
-                        <th>
-                            @Html.DisplayName("規格")
-                        </th>
-                        <th>
-                            @Html.DisplayName("需求數量")
-                        </th>
-                        <th>
-                            @Html.DisplayName("已揀數量")
-                        </th>
-                        <th>
-                            @Html.DisplayName("單位")
-                        </th>
-                        <th>
-                            @Html.DisplayName("需求數量")
-                        </th>
-                        <th>
-                            @Html.DisplayName("已揀數量")
-                        </th>
-                        <th>
-                            @Html.DisplayName("單位")
-                        </th>
-
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
-
-<div class="col col-md-12 input-lg">
-    @Html.Label("揀貨(刷條碼)")
-</div>
-
-@*<div class="row row-std">
-    <div class="form-inline ">
-        <div class="form-group col col-md-1 input-lg">
-            @Html.LabelFor(model => model.PaperRollEditDT_ID, new { @class = "input-lg" })
-            <span id="PaperRollEditDT_ID">@Html.DisplayFor(model => model.PaperRollEditDT_ID)</span>
-        </div>
-        <div class="form-group col col-md-2 input-lg">
-            @Html.LabelFor(model => model.ORDER_NUMBER, new { @class = "input-lg" })
-            <span id="ORDER_NUMBER">@Html.DisplayFor(model => model.ORDER_NUMBER)</span>
-        </div>
-        <div class="form-group col col-md-2 input-lg">
-            @Html.LabelFor(model => model.ORDER_SHIP_NUMBER, new { @class = "input-lg" })
-            <span id="ORDER_SHIP_NUMBER">@Html.DisplayFor(model => model.ORDER_SHIP_NUMBER)</span>
-        </div>
-        <div class="form-group col col-md-3 input-lg">
-            @Html.LabelFor(model => model.ITEM_DESCRIPTION, new { @class = "input-lg" })
-            <span id="ITEM_DESCRIPTION">@Html.DisplayFor(model => model.ITEM_DESCRIPTION)</span>
-        </div>
-
-    </div>
-</div>*@
-
-<div class="row row-std">
-
-    @*<div class="form-inline ">*@
-    <div class="col-md-12">
-        <div style="display: none">
-            <span id="DLV_DETAIL_ID"></span>
-        </div>
-        <div class="form-group col col-md-2 input-lg">
-            @Html.LabelFor(model => model.SUB_ID, new { @class = "input-lg" })
-            <span id="SUB_ID">@Html.DisplayFor(model => model.SUB_ID)</span>
-        </div>
-        <div class="form-group col col-md-3 input-lg">
-            @Html.LabelFor(model => model.ORDER_NUMBER, new { @class = "input-lg" })
-            <span id="ORDER_NUMBER">@Html.DisplayFor(model => model.ORDER_NUMBER)</span>
-        </div>
-        <div class="form-group col col-md-3 input-lg">
-            @Html.LabelFor(model => model.ORDER_SHIP_NUMBER, new { @class = "input-lg" })
-            <span id="ORDER_SHIP_NUMBER">@Html.DisplayFor(model => model.ORDER_SHIP_NUMBER)</span>
-        </div>
-        <div style="display: none">
-            <span id="INVENTORY_ITEM_ID"></span>
-        </div>
-        <div style="display: none">
-            <span id="PICK_STATUS"></span>
-        </div>
-        <div style="display: none">
-            <span id="SRC_REQUESTED_QUANTITY_UOM"></span>
-        </div>
-        <div class="form-group col col-md-4 input-lg">
-            @Html.LabelFor(model => model.ITEM_NUMBER, new { @class = "input-lg" })
-            <span id="ITEM_NUMBER">@Html.DisplayFor(model => model.ITEM_NUMBER)</span>
-        </div>
-
+        <input type="button" id="btnCheckDeliveryName" value="比對" class="btn btn-danger" />
     </div>
 
-    
+    @*<div class="row row-std">
+            <div class="form-inline">
+                <div class="form-group col col-md-3 input-lg">
+                    @Html.LabelFor(model => model.DELIVERY_NAME)
+                    <span id="DELIVERY_NAME">@Html.DisplayFor(model => model.DELIVERY_NAME)</span>
+                </div>
+                <div class="form-group col col-md-3 input-lg">
+                    @Html.LabelFor(model => model.TRIP_NAME)
+                    <span id="TRIP_NAME">@Html.DisplayFor(model => model.TRIP_NAME)</span>
+                </div>
+                <div class="form-group col col-md-3 input-lg">
+                    @Html.LabelFor(model => model.ORDER_NUMBER)
+                    @Html.DisplayFor(model => model.ORDER_NUMBER)
+                </div>
+                <div class="form-group col col-md-3 input-lg">
+                    @Html.LabelFor(model => model.TRIP_CAR)
+                    @Html.DisplayFor(model => model.TRIP_CAR)
+                </div>
+            </div>
+            <div class="form-inline">
+                <div class="form-group col col-md-6 input-lg">
+                    @Html.LabelFor(model => model.CUSTOMER_NAME)
+                    @Html.DisplayFor(model => model.CUSTOMER_NAME)
+                </div>
+                <div class="form-group col col-md-6 input-lg">
+                    @Html.LabelFor(model => model.CUSTOMER_LOCATION_CODE)
+                    @Html.DisplayFor(model => model.CUSTOMER_LOCATION_CODE)
+                </div>
+            </div>
+            <div class="form-inline">
+                <div class="form-group col col-md-6 input-lg">
+                    @Html.LabelFor(model => model.SHIP_CUSTOMER_NAME)
+                    @Html.DisplayFor(model => model.SHIP_CUSTOMER_NAME)
+                </div>
+                <div class="form-group col col-md-6 input-lg">
+                    @Html.LabelFor(model => model.SHIP_LOCATION_CODE)
+                    @Html.DisplayFor(model => model.SHIP_LOCATION_CODE)
+                </div>
+            </div>
+            <div class="form-inline">
+                <div class="form-group col col-md-6 input-lg">
+                    @Html.LabelFor(model => model.TRIP_ACTUAL_SHIP_DATE)
+                    @Html.DisplayFor(model => model.TRIP_ACTUAL_SHIP_DATE)
+                </div>
+                <div class="form-group col col-md-6 input-lg">
+                    @Html.LabelFor(model => model.REMARK)
+                    @Html.DisplayFor(model => model.REMARK)
+                </div>
+            </div>
+        </div>*@
 
-    <div class="col-md-12">
-     <form class="form-inline" id="form" onsubmit="return false">
-            <div class=" input-group col-md-3">
-                <span class="input-group-addon" style="width:53px;">條碼</span>
-                @Html.TextBoxFor(model => model.BARCODE, new { @class = "form-control", placeholder = "請輸入條碼", id = "txtBARCODE", aria_describedby = "txtBARCODE-addon", autocomplete="off" })
+    <div class="form-group col col-md-12 input-lg">
+        @Html.Label("紙捲需求")
+    </div>
+
+    <div class="row row-std">
+        <div class="dataTable_wrapper">
+            <div class="col-sm-12 col-md-12">
+                <table class="table table-striped table-bordered table-hover" id="PaperRollDataTablesBody">
+                    <thead>
+                        <tr role="row" class="bg-light-gray">
+                            <th rowspan="2" colspan="1"></th>
+                            <th rowspan="2" colspan="1">項次</th>
+                            <th rowspan="1" colspan="2">訂單</th>
+                            <th rowspan="1" colspan="6">商品</th>
+                            <th rowspan="1" colspan="3">主單位</th>
+                            <th rowspan="1" colspan="3">交易單位</th>
+                            @*<th rowspan="2" colspan="1">備註</th>*@
+                        </tr>
+                        <tr role="row" class="bg-light-gray">
+
+
+                            <th>
+                                @Html.DisplayName("訂單")
+                            </th>
+                            <th>
+                                @Html.DisplayName("訂單行號")
+                            </th>
+                            <th>
+                                @Html.DisplayName("工單號碼")
+                            </th>
+                            <th>
+                                @Html.DisplayName("代紙料號")
+                            </th>
+                            <th>
+                                @Html.DisplayName("料號")
+                            </th>
+                            <th>
+                                @Html.DisplayName("紙別")
+                            </th>
+                            <th>
+                                @Html.DisplayName("基重")
+                            </th>
+                            <th>
+                                @Html.DisplayName("規格")
+                            </th>
+                            <th>
+                                @Html.DisplayName("需求數量")
+                            </th>
+                            <th>
+                                @Html.DisplayName("已揀數量")
+                            </th>
+                            <th>
+                                @Html.DisplayName("單位")
+                            </th>
+                            <th>
+                                @Html.DisplayName("需求數量")
+                            </th>
+                            <th>
+                                @Html.DisplayName("已揀數量")
+                            </th>
+                            <th>
+                                @Html.DisplayName("單位")
+                            </th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="col col-md-12 input-lg">
+        @Html.Label("揀貨(刷條碼)")
+    </div>
+
+    @*<div class="row row-std">
+            <div class="form-inline ">
+                <div class="form-group col col-md-1 input-lg">
+                    @Html.LabelFor(model => model.PaperRollEditDT_ID, new { @class = "input-lg" })
+                    <span id="PaperRollEditDT_ID">@Html.DisplayFor(model => model.PaperRollEditDT_ID)</span>
+                </div>
+                <div class="form-group col col-md-2 input-lg">
+                    @Html.LabelFor(model => model.ORDER_NUMBER, new { @class = "input-lg" })
+                    <span id="ORDER_NUMBER">@Html.DisplayFor(model => model.ORDER_NUMBER)</span>
+                </div>
+                <div class="form-group col col-md-2 input-lg">
+                    @Html.LabelFor(model => model.ORDER_SHIP_NUMBER, new { @class = "input-lg" })
+                    <span id="ORDER_SHIP_NUMBER">@Html.DisplayFor(model => model.ORDER_SHIP_NUMBER)</span>
+                </div>
+                <div class="form-group col col-md-3 input-lg">
+                    @Html.LabelFor(model => model.ITEM_DESCRIPTION, new { @class = "input-lg" })
+                    <span id="ITEM_DESCRIPTION">@Html.DisplayFor(model => model.ITEM_DESCRIPTION)</span>
+                </div>
+
+            </div>
+        </div>*@
+
+    <div class="row row-std">
+
+        @*<div class="form-inline ">*@
+        <div class="col-md-12">
+            <div style="display: none">
+                <span id="DLV_DETAIL_ID"></span>
+            </div>
+            <div class="form-group col col-md-2 input-lg">
+                @Html.LabelFor(model => model.SUB_ID, new { @class = "input-lg" })
+                <span id="SUB_ID">@Html.DisplayFor(model => model.SUB_ID)</span>
+            </div>
+            <div class="form-group col col-md-3 input-lg">
+                @Html.LabelFor(model => model.ORDER_NUMBER, new { @class = "input-lg" })
+                <span id="ORDER_NUMBER">@Html.DisplayFor(model => model.ORDER_NUMBER)</span>
+            </div>
+            <div class="form-group col col-md-3 input-lg">
+                @Html.LabelFor(model => model.ORDER_SHIP_NUMBER, new { @class = "input-lg" })
+                <span id="ORDER_SHIP_NUMBER">@Html.DisplayFor(model => model.ORDER_SHIP_NUMBER)</span>
+            </div>
+            <div style="display: none">
+                <span id="INVENTORY_ITEM_ID"></span>
+            </div>
+            <div style="display: none">
+                <span id="PICK_STATUS"></span>
+            </div>
+            <div style="display: none">
+                <span id="SRC_REQUESTED_QUANTITY_UOM"></span>
+            </div>
+            <div class="form-group col col-md-4 input-lg">
+                @Html.LabelFor(model => model.ITEM_NUMBER, new { @class = "input-lg" })
+                <span id="ITEM_NUMBER">@Html.DisplayFor(model => model.ITEM_NUMBER)</span>
             </div>
 
+        </div>
 
-            <input type = "button" id="btnSaveBarcode" value="新增" class="btn btn-danger form-control"/>
 
-        </form>
-        
+
+        <div class="col-md-12">
+            <form class="form-inline" id="form" onsubmit="return false">
+                <div class=" input-group col-md-3">
+                    <span class="input-group-addon" style="width:53px;">條碼</span>
+                    @Html.TextBoxFor(model => model.BARCODE, new { @class = "form-control", placeholder = "請輸入條碼", id = "txtBARCODE", aria_describedby = "txtBARCODE-addon", autocomplete = "off" })
+                </div>
+
+
+                <input type="button" id="btnSaveBarcode" value="新增" class="btn btn-danger form-control" />
+
+            </form>
+
+        </div>
+
+
+        @* <div class="col-md-12">
+            <form class="form-inline">
+                 <div class="input-group col-md-3" style="width:53px;">
+                     <span class="input-group-addon">條碼</span>
+                     @Html.TextBoxFor(model => model.BARCODE, new { @class = "form-control", placeholder = "請輸入條碼", id = "txtBARCODE", aria_describedby = "txtBARCODE-addon" })
+                 </div>
+             </form>
+
+             <button id="btnSaveBarcode" class="btn btn-danger">新增</button>
+                 </div>*@
+
+        @*  <div class="form-group col col-md-4 input-lg">
+                @Html.LabelFor(model => model.BARCODE, new { @class = "input-lg" })
+                @Html.TextBoxFor(model => model.BARCODE, new { @class = "form-control input-sm", id = "txtBARCODE", aria_describedby = "txtBARCODE-addon" })
+            </div>*@
+
+
+        @*        <div class="btn-group col col-md-2 input-lg">
+                <button id="btnSaveBarcode" class="btn btn-danger externalBtn">新增</button>
+            </div>*@
+
+        @*</div>*@
     </div>
 
-
-   @* <div class="col-md-12">
-   <form class="form-inline">
-        <div class="input-group col-md-3" style="width:53px;">
-            <span class="input-group-addon">條碼</span>
-            @Html.TextBoxFor(model => model.BARCODE, new { @class = "form-control", placeholder = "請輸入條碼", id = "txtBARCODE", aria_describedby = "txtBARCODE-addon" })
-        </div>
-    </form>
-
-    <button id="btnSaveBarcode" class="btn btn-danger">新增</button>
-        </div>*@
-
-    @*  <div class="form-group col col-md-4 input-lg">
-            @Html.LabelFor(model => model.BARCODE, new { @class = "input-lg" })
-            @Html.TextBoxFor(model => model.BARCODE, new { @class = "form-control input-sm", id = "txtBARCODE", aria_describedby = "txtBARCODE-addon" })
-        </div>*@
-
-
-    @*        <div class="btn-group col col-md-2 input-lg">
-            <button id="btnSaveBarcode" class="btn btn-danger externalBtn">新增</button>
-        </div>*@
-
-    @*</div>*@
-</div>
-
-<br />
-<div class="row row-std">
-    <div class="dataTable_wrapper">
-        <div class="col-sm-12 col-md-12">
-            <table class="table table-striped table-bordered table-hover" id="PaperRollBarcodeDataTablesBody">
-                <thead>
-                    <tr>
-                        <th></th>
-                        <th>
-                            @Html.DisplayName("項次")
-                        </th>
-                        <th>
-                            @Html.DisplayName("料號")
-                        </th>
-                        <th>
-                            @Html.DisplayName("條碼號")
-                        </th>
-                        <th>
-                            @Html.DisplayName("數量")
-                        </th>
-                        <th>
-                            @Html.DisplayName("單位")
-                        </th>
-                        @*<th>
-                            @Html.DisplayName("備註")
-                        </th>*@
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
+    <br />
+    <div class="row row-std">
+        <div class="dataTable_wrapper">
+            <div class="col-sm-12 col-md-12">
+                <table class="table table-striped table-bordered table-hover" id="PaperRollBarcodeDataTablesBody">
+                    <thead>
+                        <tr role="row" class="bg-light-gray">
+                            <th></th>
+                            <th>
+                                @Html.DisplayName("項次")
+                            </th>
+                            <th>
+                                @Html.DisplayName("料號")
+                            </th>
+                            <th>
+                                @Html.DisplayName("條碼號")
+                            </th>
+                            <th>
+                                @Html.DisplayName("數量")
+                            </th>
+                            <th>
+                                @Html.DisplayName("單位")
+                            </th>
+                            @*<th>
+                                    @Html.DisplayName("備註")
+                                </th>*@
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
-</div>
 
+</div>

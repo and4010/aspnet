@@ -115,8 +115,9 @@ $(document).ready(function () {
             var ORDER_SHIP_NUMBER = dt.rows(indexes).data().pluck('ORDER_SHIP_NUMBER')[0];
             $("#ORDER_SHIP_NUMBER").text(ORDER_SHIP_NUMBER);
             var TMP_ITEM_ID = dt.rows(indexes).data().pluck('TMP_ITEM_ID')[0];
+            var OSP_BATCH_ID = dt.rows(indexes).data().pluck('OSP_BATCH_ID')[0];
             var INVENTORY_ITEM_ID = dt.rows(indexes).data().pluck('INVENTORY_ITEM_ID')[0];
-            if (TMP_ITEM_ID) {
+            if (TMP_ITEM_ID && OSP_BATCH_ID) {
                 $("#INVENTORY_ITEM_ID").text(TMP_ITEM_ID);
             } else {
                 $("#INVENTORY_ITEM_ID").text(INVENTORY_ITEM_ID);
@@ -326,8 +327,8 @@ $(document).ready(function () {
             { data: "PRIMARY_QUANTITY", name: "主要數量", autoWidth: true, className: "dt-body-right" },
             { data: "PRIMARY_UOM", name: "主要單位", autoWidth: true },
             //{ data: "REMARK", name: "備註", autoWidth: true, className: "dt-body-left" },
-            { data: "LAST_UPDATE_DATE", name: "更新日期", autoWidth: true, visible: false }
-
+            { data: "LAST_UPDATE_DATE", name: "更新日期", autoWidth: true, visible: false },
+            { data: "PICKED_ID", name: "PICKED_ID", autoWidth: true, visible: false }
         ],
 
         "order": [[6, 'desc']],
@@ -382,15 +383,22 @@ $(document).ready(function () {
                     name: 'remove',
                     className: 'btn-danger',
                     editor: editor,
+                    enabled: false,
+                    init: function (api, node, config) {
+                        $(node).removeClass('btn-default')
+                    }
                 },
                 {
                     text: '<span class="glyphicon glyphicon-print"></span>&nbsp列印標籤',
                     //className: 'btn-default btn-sm',
                     action: function (e) {
-                        PrintLable(PaperRollBarcodeDataTablesBody, "/Home/GetLabel", "3");
+                        PrintLable(PaperRollBarcodeDataTablesBody, "/Delivery/PrintLabel", "7");
                     },
                     className: "btn-primary",
-                    enabled: false
+                    enabled: false,
+                    init: function (api, node, config) {
+                        $(node).removeClass('btn-default')
+                    },
                 }
             ],
         }
@@ -442,8 +450,7 @@ $(document).ready(function () {
                 BARCODE: $('#txtBARCODE').val(),
                 DlvHeaderId: $("#DlvHeaderId").text(),
                 DLV_DETAIL_ID: $("#DLV_DETAIL_ID").text(),
-                DELIVERY_NAME: $("#DELIVERY_NAME").text(),
-                PICK_STATUS: $("#PICK_STATUS").text()
+                DELIVERY_NAME: $("#DELIVERY_NAME").text()
             },
             success: function (data) {
                 if (data.status) {

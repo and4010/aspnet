@@ -47,7 +47,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                      {
                          Text = x.Key,
                          Value = x.Key,
-                     });
+                     }).ToList();
                 SpecList.Add(new SelectListItem() { Text = "全部", Value = "*" });
                 SpecList.AddRange(tempList);
             }
@@ -73,7 +73,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                      {
                          Text = x.Key,
                          Value = x.Key,
-                     });
+                     }).ToList();
                 TypeList.Add(new SelectListItem() { Text = "全部", Value = "*" });
                 TypeList.AddRange(tempList);
             }
@@ -100,7 +100,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                      {
                          Text = x.Key,
                          Value = x.Key,
-                     });
+                     }).ToList();
                 TypeList.Add(new SelectListItem() { Text = "全部", Value = "*" });
                 TypeList.AddRange(tempList);
             }
@@ -137,7 +137,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                         {
                             Text = s.Key,
                             Value = s.Key,
-                        });
+                        }).ToList();
                     OrgList.Add(new SelectListItem() { Text = "全部", Value = "*" });
                     OrgList.AddRange(tempList);
                 }
@@ -196,7 +196,7 @@ t.[CREATED_BY] as Created_by,
 t.[CREATION_DATE] as Creation_Date,
 t.[LAST_UPDATE_BY] as Last_Updated_by,
 t.[LAST_UPDATE_DATE] as Last_Update_Date 
-FROM [CHPOUTSRCMES].[dbo].[ITEMS_T] t
+FROM [ITEMS_T] t
 left join ORG_ITEMS_T ot on ot.INVENTORY_ITEM_ID = t.INVENTORY_ITEM_ID");
                     if (Catalog_elem_val_050 != "*")
                     {

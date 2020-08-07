@@ -85,7 +85,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
         /// <param name="status">揀貨明細狀態</param>
         /// <param name="transactionUomCode">交易單位</param>
         /// <returns></returns>
-        public ResultModel AddPickDT(long dlvHeaderId, long dlvDetailId, string deliveryName, string barcode, decimal? qty, string addUser, string addUserName, string status)
+        public ResultModel AddPickDT(long dlvHeaderId, long dlvDetailId, string deliveryName, string barcode, decimal? qty, string addUser, string addUserName)
         {
             //qty = qty * -1;            
             //庫存檢查
@@ -94,10 +94,23 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             if (!checkResult.Success) return new ResultModel(checkResult.Success, checkResult.Msg);
             var stock = checkResult.Data;
             var detailData = dlvDetailTRepositiory.GetAll().AsNoTracking().FirstOrDefault(x => x.DlvDetailId == dlvDetailId);
-            if (stock.ItemNumber != detailData.ItemNumber)
+            if (detailData.OspBatchId == null && detailData.TmpItemId == null)
             {
-                return new ResultModel(false, "此條碼不符合已選擇的料號");
+                if (stock.ItemNumber != detailData.ItemNumber)
+                {
+                    return new ResultModel(false, "此條碼不符合已選擇的料號");
+                }
             }
+            else
+            {
+                //代紙
+                if (stock.ItemNumber != detailData.TmpItemNumber)
+                {
+                    return new ResultModel(false, "此條碼不符合已選擇的料號");
+                }
+            }
+         
+
             var pickData = dlvPickedTRepositiory.GetAll().AsNoTracking().Where(x => x.Barcode == barcode).ToList();
             if (pickData.Count > 0) return new ResultModel(false, "條碼重複輸入");
 
@@ -106,23 +119,26 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             {
                 try
                 {
-
+                    var status = detailData.OspBatchId == null ? "" : "TMP"; //OspBatchId不是NULL時 為代紙(TMP)
+                    string palletStatus;
                     //產生異動記錄
                     STK_TXN_T stkTxnT = CreateStockRecord(stock, null, "", "", null, CategoryCode.Delivery, ActionCode.Picked, deliveryName);
 
                     decimal? priQty = null;
                     decimal? secQty = null;
-                    if (qty != null)
+                    if (qty != null && qty < stock.SecondaryAvailableQty)
                     {
-                        //有令包數量時為拆板
+                        //有令包數量 且 小於庫存次單位數量 時為拆板
                         priQty = null;
                         secQty = qty * -1;
+                        palletStatus = PalletStatusCode.Split;
                     }
                     else
                     {
                         //非拆板時
                         priQty = stock.PrimaryAvailableQty * -1;
                         secQty = stock.SecondaryAvailableQty * -1;
+                        palletStatus = PalletStatusCode.All;
                     }
 
                     //更新庫存
@@ -163,7 +179,8 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                         LastUpdateBy = addUser,
                         LastUpdateUserName = addUserName,
                         LastUpdateDate = addDate,
-                        Status = status
+                        Status = status,
+                        PalletStatus = palletStatus
                     });
 
                     stockTRepositiory.SaveChanges();
@@ -188,7 +205,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                         data.LastUpdateDate = addDate;
                     }
                     dlvHeaderTRepositiory.SaveChanges();
-                   
+
 
                     txn.Commit();
                     return new ResultModel(true, "新增揀貨明細成功");
@@ -502,8 +519,8 @@ OR SUM(ISNULL(p.SECONDARY_QUANTITY, 0)) <> MIN(d.REQUESTED_SECONDARY_QUANTITY)";
                     RequestedQuantityUom = "KG",
                     RequestedQuantity2 = 50,
                     RequestedQuantityUom2 = "RE",
-                    OspBatchId = 1,
-                    OspBatchNo = "P9B0288",
+                    OspBatchId = null,
+                    OspBatchNo = "",
                     OspBatchType = "",
                     TmpItemId = null,
                     TmpItemNumber = "",
@@ -598,7 +615,7 @@ OR SUM(ISNULL(p.SECONDARY_QUANTITY, 0)) <> MIN(d.REQUESTED_SECONDARY_QUANTITY)";
 
                 #endregion
 
-                #region 第三筆測試資料 平版 無令打件
+                #region 第三筆測試資料 平版 無令打件 代紙
                 dlvHeaderTRepositiory.Create(new DLV_HEADER_T()
                 {
                     DlvHeaderId = 3,
@@ -666,9 +683,9 @@ OR SUM(ISNULL(p.SECONDARY_QUANTITY, 0)) <> MIN(d.REQUESTED_SECONDARY_QUANTITY)";
                     OspBatchId = 2,
                     OspBatchNo = "P2010087",
                     OspBatchType = "",
-                    TmpItemId = null,
-                    TmpItemNumber = "",
-                    TmpItemDescription = "",
+                    TmpItemId = 506313,
+                    TmpItemNumber = "4DM00P0270007991121",
+                    TmpItemDescription = "全塗灰銅卡",
                     CreatedBy = "1",
                     CreatedUserName = "華紙",
                     CreationDate = DateTime.Now,
@@ -1043,7 +1060,7 @@ from DLV_HEADER_T";
 
 
         public List<DLV_PICKED_T> GetDeliveryPickDataListFromPickedId(long dlvPickedId)
-        { 
+        {
             return dlvPickedTRepositiory.GetAll().AsNoTracking().Where(x => dlvPickedId == x.DlvPickedId).ToList();
         }
 
@@ -1223,6 +1240,7 @@ INSERT INTO [DLV_PICKED_HT](
       ,[DLV_HEADER_ID]
       ,[STOCK_ID]
       ,[STATUS]
+      ,[PALLET_STATUS]
       ,[LOCATOR_ID]
       ,[LOCATOR_CODE]
       ,[INVENTORY_ITEM_ID]
@@ -1250,6 +1268,7 @@ SELECT [DLV_PICKED_ID]
       ,[DLV_HEADER_ID]
       ,[STOCK_ID]
       ,[STATUS]
+      ,[PALLET_STATUS] 
       ,[LOCATOR_ID]
       ,[LOCATOR_CODE]
       ,[INVENTORY_ITEM_ID]
@@ -1534,7 +1553,7 @@ where DLV_HEADER_ID = @DLV_HEADER_ID";
         /// </summary>
         /// <param name="dlvHeaderId"></param>
         /// <returns></returns>
-        public List<FlatEditDT> GetFlatDetailDT(long dlvHeaderId,string DELIVERY_STATUS_NAME)
+        public List<FlatEditDT> GetFlatDetailDT(long dlvHeaderId, string DELIVERY_STATUS_NAME)
         {
             string cmd = "";
             if (DELIVERY_STATUS_NAME == deliveryStatusCode.GetDesc(DeliveryStatusCode.Shipped))
@@ -1603,7 +1622,7 @@ LEFT JOIN DLV_PICKED_T p ON p.DLV_HEADER_ID = d.DLV_HEADER_ID AND p.DLV_DETAIL_I
 where d.DLV_HEADER_ID = @DLV_HEADER_ID
 GROUP BY d.DLV_DETAIL_ID";
             }
-           
+
 
             //            string cmd = @"
             //select 
@@ -1685,8 +1704,90 @@ where DLV_HEADER_ID = @DLV_HEADER_ID"; ;
         #endregion
 
 
-         
+        public ResultDataModel<List<LabelModel>> GetLabels(List<long> PICKED_IDs, string userName)
+        {
+            try
+            {
+                List<LabelModel> labelModelList = new List<LabelModel>();
+                if (PICKED_IDs == null || PICKED_IDs.Count == 0) return new ResultDataModel<List<LabelModel>>(false, "找不到揀貨資料", null);
+                var pickDataList = dlvPickedTRepositiory.GetAll().AsNoTracking().Where(x => PICKED_IDs.Contains(x.DlvPickedId)).ToList();
+                if (pickDataList == null || pickDataList.Count == 0) return new ResultDataModel<List<LabelModel>>(false, "找不到揀貨資料", null);
+
+                foreach (DLV_PICKED_T data in pickDataList)
+                {
+                    StringBuilder cmd = new StringBuilder(@"
+SELECT p.BARCODE as Barocde
+,@userName as PrintBy
+,i.ITEM_DESC_TCH as BarocdeName
+,i.CATALOG_ELEM_VAL_020 as PapaerType
+,i.CATALOG_ELEM_VAL_040 as BasicWeight
+,i.CATALOG_ELEM_VAL_050 as Specification
+,s.OSP_BATCH_NO as OspBatchNo");
+
+                    if (data.PalletStatus == PalletStatusCode.Split)//判斷是否拆板
+                    {
+                        if (data.SecondaryQuantity != null) //判斷是否為平版
+                        {
+                            //拆板 平版
+                            cmd.Append(@"
+,i.SECONDARY_UOM_CODE as Unit
+,FORMAT(s.SECONDARY_AVAILABLE_QTY,'0.##########') as Qty
+FROM [DLV_PICKED_T] p
+INNER JOIN STOCK_T s ON p.BARCODE = s.BARCODE
+INNER JOIN ITEMS_T i ON p.INVENTORY_ITEM_ID = i.INVENTORY_ITEM_ID
+WHERE p.BARCODE = @Barcode
+");
+                        }
+                        else
+                        {
+                            //拆板 捲筒
+                            return new ResultDataModel<List<LabelModel>>(false, "捲筒不能拆板", null);
+                        }
+                    }
+                    else
+                    {
+                        if (data.SecondaryQuantity != null) //判斷是否為平版
+                        {
+                            //整板 平版
+                            cmd.Append(@"
+,i.SECONDARY_UOM_CODE as Unit
+,FORMAT(p.SECONDARY_QUANTITY,'0.##########') as Qty
+FROM [DLV_PICKED_T] p
+INNER JOIN STOCK_T s ON p.BARCODE = s.BARCODE
+INNER JOIN ITEMS_T i ON p.INVENTORY_ITEM_ID = i.INVENTORY_ITEM_ID
+WHERE p.BARCODE = @Barcode
+");
+                        }
+                        else
+                        {
+                            //整板 捲筒
+                            cmd.Append(@"
+,i.PRIMARY_UOM_CODE as Unit
+,FORMAT(p.PRIMARY_QUANTITY,'0.##########') as Qty
+FROM [DLV_PICKED_T] p
+INNER JOIN STOCK_T s ON p.BARCODE = s.BARCODE
+INNER JOIN ITEMS_T i ON p.INVENTORY_ITEM_ID = i.INVENTORY_ITEM_ID
+WHERE p.BARCODE = @Barcode
+");
+                        }
+                    }
+                    //new SqlParameter("@userName", userName);
+
+                    var labelModel = this.Context.Database.SqlQuery<LabelModel>(cmd.ToString(), new SqlParameter("@userName", userName), new SqlParameter("@Barcode", data.Barcode)).ToList();
+                    if (labelModel == null || labelModel.Count == 0) return new ResultDataModel<List<LabelModel>>(false, "找不到標籤資料", null);
+                    labelModelList.Add(labelModel[0]);
+                }
+                return new ResultDataModel<List<LabelModel>>(true, "取得標籤資料成功", labelModelList);
+
+            }
+            catch (Exception ex)
+            {
+                logger.Error(LogUtilities.BuildExceptionMessage(ex));
+                return new ResultDataModel<List<LabelModel>>(false, "取得標籤資料失敗:" + ex.Message, null);
+            }
+           
+
+        }
+
     }
-
-
 }

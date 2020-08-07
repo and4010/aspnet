@@ -98,8 +98,9 @@ $(document).ready(function () {
             var ORDER_SHIP_NUMBER = dt.rows(indexes).data().pluck('ORDER_SHIP_NUMBER')[0];
             $("#ORDER_SHIP_NUMBER").text(ORDER_SHIP_NUMBER);
             var TMP_ITEM_ID = dt.rows(indexes).data().pluck('TMP_ITEM_ID')[0];
+            var OSP_BATCH_ID = dt.rows(indexes).data().pluck('OSP_BATCH_ID')[0];
             var INVENTORY_ITEM_ID = dt.rows(indexes).data().pluck('INVENTORY_ITEM_ID')[0];
-            if (TMP_ITEM_ID) {
+            if (TMP_ITEM_ID && OSP_BATCH_ID) {
                 $("#INVENTORY_ITEM_ID").text(TMP_ITEM_ID);
             } else {
                 $("#INVENTORY_ITEM_ID").text(INVENTORY_ITEM_ID);
@@ -296,7 +297,8 @@ $(document).ready(function () {
          { data: "SECONDARY_QUANTITY", name: "次要數量", autoWidth: true, className: "dt-body-right" },
          { data: "SECONDARY_UOM", name: "次要單位", autoWidth: true },
          //{ data: "REMARK", name: "備註", autoWidth: true, className: "dt-body-left" },
-         { data: "LAST_UPDATE_DATE", name: "更新日期", autoWidth: true, visible: false }
+            { data: "LAST_UPDATE_DATE", name: "更新日期", autoWidth: true, visible: false },
+            { data: "PICKED_ID", name: "PICKED_ID", autoWidth: true, visible: false }
         ],
 
         order: [[10, 'desc']],
@@ -351,21 +353,91 @@ $(document).ready(function () {
                     name: 'remove',
                     className: 'btn-danger',
                     editor: editor,
+                    enabled: false,
+                    init: function (api, node, config) {
+                        $(node).removeClass('btn-default')
+                    }
+                    //action: function (e, dt, node, config) {
+                    //    var count = dt.rows({ selected: true }).count();
+
+                    //    if (count == 0) {
+                    //        return;
+                    //    }
+                    //    editor.submit();
+                    //    //editor.edit(TripDataTablesBody.rows({ selected: true }).indexes())
+                    //    //    .title('刪除')
+                    //    //    .buttons({
+                    //    //        text: '刪除',
+                    //    //        action: function () {
+                    //    //            this.submit();
+                    //    //        },
+                    //    //        className: 'btn-danger'
+                    //    //    });
+
+                    //}
+                    //action: function () {
+                    //    var selectedData = FlatBarcodeDataTablesBody.rows('.selected').data();
+                    //    if (selectedData.length == 0) {
+                    //        swal.fire("請選擇要刪除的條碼");
+                    //        return;
+                    //    }
+                    //    editor.edit(TripDataTablesBody.rows({ selected: true }).indexes())
+                    //        .title('刪除')
+                    //        .buttons({
+                    //            text: '刪除',
+                    //            action: function () {
+                    //                this.submit();
+                    //            },
+                    //            className: 'btn-danger'
+                    //        });
+                    //}
                 },
+                //{
+                //    text: '刪除',
+                //    className: 'btn-danger',
+                //    init: function (api, node, config) {
+                //        $(node).removeClass('btn-default')
+                //    },
+                //    action: function (e, dt, node, config) {
+                //        var count = dt.rows({ selected: true }).count();
+
+                //        if (count == 0) {
+                //            return;
+                //        }
+
+                //        editor.remove(FlatBarcodeDataTablesBody.rows({ selected: true }).indexes())
+                //            .title('刪除')
+                //            .buttons({
+                //                text: '確定',
+                //                action: function () {
+                //                    this.submit();
+                //                },
+                //                className: 'btn-danger'
+                //            });
+                //    }
+                //},
                 {
                     text: '<span class="glyphicon glyphicon-print"></span>&nbsp列印標籤',
                     //className: 'btn-default btn-sm',
                     action: function (e) {
-                        PrintLable(FlatBarcodeDataTablesBody, "/Home/GetLabel", "2");
+                        PrintLable(FlatBarcodeDataTablesBody, "/Delivery/PrintLabel", "11");
                     },
                     className: "btn-primary",
-                    enabled: false
+                    enabled: false,
+                    init: function (api, node, config) {
+                        $(node).removeClass('btn-default')
+                    }
                 }
             ],
         }
     });
 
+    //FlatBarcodeDataTablesBody.on('select deselect', function () {
+    //    var selectedRows = table.rows({ selected: true }).count();
 
+    //    FlatBarcodeDataTablesBody.button(2).enable(selectedRows === 1);
+    //    FlatBarcodeDataTablesBody.button(2).disable(selectedRows === 0);
+    //});
 
 
     $("#SECONDARY_QUANTITY").hide();
@@ -478,8 +550,7 @@ $(document).ready(function () {
                 'SECONDARY_QUANTITY': SECONDARY_QUANTITY,
                 DlvHeaderId: $("#DlvHeaderId").text(),
                 DLV_DETAIL_ID: $("#DLV_DETAIL_ID").text(),
-                DELIVERY_NAME: $("#DELIVERY_NAME").text(),
-                PICK_STATUS: $("#PICK_STATUS").text()
+                DELIVERY_NAME: $("#DELIVERY_NAME").text()
             },
             success: function (data) {
                 if (data.status) {

@@ -21,7 +21,7 @@ namespace CHPOUTSRCMES.Web.Util
                     IRow row = sheet.GetRow(y_pos);
                     for (int x_pos = start_x; x_pos < 100; x_pos++)
                     {
-                        if (row.GetCell(x_pos) != null && GetStringCellValue(row.GetCell(x_pos)).Contains(contain))
+                        if (row.GetCell(x_pos) != null && string.Compare(GetCellString(row.GetCell(x_pos)),contain) == 0)
                         {
                             return row.GetCell(x_pos);
                         }
