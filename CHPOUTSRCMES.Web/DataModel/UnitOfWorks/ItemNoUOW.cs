@@ -196,7 +196,7 @@ t.[CREATED_BY] as Created_by,
 t.[CREATION_DATE] as Creation_Date,
 t.[LAST_UPDATE_BY] as Last_Updated_by,
 t.[LAST_UPDATE_DATE] as Last_Update_Date 
-FROM [CHPOUTSRCMES].[dbo].[ITEMS_T] t
+FROM [ITEMS_T] t
 left join ORG_ITEMS_T ot on ot.INVENTORY_ITEM_ID = t.INVENTORY_ITEM_ID");
                     if (Catalog_elem_val_050 != "*")
                     {
