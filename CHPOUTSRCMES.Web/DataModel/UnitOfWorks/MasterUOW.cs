@@ -1277,10 +1277,10 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             //{
             //    throw new Exception("找不到RELATED_ITEM_ID欄位");
             //}
-            ItemNumber_cell = ExcelUtil.FindCell("ITEM", sheet);
+            ItemNumber_cell = ExcelUtil.FindCell("ITEM_NUMBER", sheet);
             if (ItemNumber_cell == null)
             {
-                throw new Exception("找不到ITEM欄位");
+                throw new Exception("找不到ITEM_NUMBER欄位");
             }
 
             InventoryItemId_cell = ExcelUtil.FindCell("INVENTORY_ITEM_ID", sheet);
@@ -1294,10 +1294,10 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             {
                 throw new Exception("找不到ITEM_DESCRIPTION欄位");
             }
-            RelatedItemNumber_cell = ExcelUtil.FindCell("RELATED_ITEM", sheet);
+            RelatedItemNumber_cell = ExcelUtil.FindCell("RELATED_ITEM_NUMBER", sheet);
             if (RelatedItemNumber_cell == null)
             {
-                throw new Exception("找不到RELATED_ITEM欄位");
+                throw new Exception("找不到RELATED_ITEM_NUMBER欄位");
             }
             RelatedItemId_cell = ExcelUtil.FindCell("RELATED_ITEM_ID", sheet);
             if (RelatedItemId_cell == null)
@@ -1481,13 +1481,13 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                     ySZMPCKQ_T.OrganizationCode = ExcelUtil.GetStringCellValue(j, OrganizationCode_cell.ColumnIndex, sheet).Trim();
                     ySZMPCKQ_T.OspSubinventory = ExcelUtil.GetStringCellValue(j, OspSubinventory_cell.ColumnIndex, sheet).Trim();
                     ySZMPCKQ_T.Pstyp = ExcelUtil.GetStringCellValue(j, Pstyp_cell.ColumnIndex, sheet).Trim();
-                    ySZMPCKQ_T.Bwetup = ExcelUtil.GetDecimalCellValue(j, Bwetup_cell.ColumnIndex, sheet);
-                    ySZMPCKQ_T.Bwetdn = ExcelUtil.GetDecimalCellValue(j, Bwetdn_cell.ColumnIndex, sheet);
-                    ySZMPCKQ_T.Rwtup = ExcelUtil.GetDecimalCellValue(j, Rwtup_cell.ColumnIndex, sheet);
-                    ySZMPCKQ_T.Rwtdn = ExcelUtil.GetDecimalCellValue(j, Rwtdn_cell.ColumnIndex, sheet);
-                    ySZMPCKQ_T.Pckq = ExcelUtil.GetLongCellValue(j, Pckq_cell.ColumnIndex, sheet);
-                    ySZMPCKQ_T.PaperQty = ExcelUtil.GetLongCellValue(j, PaperQty_cell.ColumnIndex, sheet);
-                    ySZMPCKQ_T.PiecesQty = ExcelUtil.GetLongCellValue(j, PiecesQty_cell.ColumnIndex, sheet);
+                    ySZMPCKQ_T.Bwetup = ExcelUtil.GetDecimalCellValue(j, Bwetup_cell.ColumnIndex, sheet, 0m);
+                    ySZMPCKQ_T.Bwetdn = ExcelUtil.GetDecimalCellValue(j, Bwetdn_cell.ColumnIndex, sheet, 0m);
+                    ySZMPCKQ_T.Rwtup = ExcelUtil.GetDecimalCellValue(j, Rwtup_cell.ColumnIndex, sheet, 0m);
+                    ySZMPCKQ_T.Rwtdn = ExcelUtil.GetDecimalCellValue(j, Rwtdn_cell.ColumnIndex, sheet, 0m);
+                    ySZMPCKQ_T.Pckq = ExcelUtil.GetLongCellValue(j, Pckq_cell.ColumnIndex, sheet, 0);
+                    ySZMPCKQ_T.PaperQty = ExcelUtil.GetLongCellValue(j, PaperQty_cell.ColumnIndex, sheet, 0);
+                    ySZMPCKQ_T.PiecesQty = ExcelUtil.GetLongCellValue(j, PiecesQty_cell.ColumnIndex, sheet, 0);
                     ySZMPCKQ_T.CreatedBy = ExcelUtil.GetLongCellValue(j, CreatedBy_cell.ColumnIndex, sheet);
                     ySZMPCKQ_T.CreationDate = ExcelUtil.GetDateTimeCellValue(j, CreationDate_cell.ColumnIndex, sheet);
                     ySZMPCKQ_T.LastUpdateBy = ExcelUtil.GetLongCellValue(j, LastUpdateBy_cell.ColumnIndex, sheet);
