@@ -483,6 +483,40 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
 
         }
 
+        /// <summary>
+        /// 取得平張標籤
+        /// </summary>
+        /// <param name="PICKED_IDs"></param>
+        /// <param name="userName"></param>
+        /// <param name="Status"></param>
+        /// <returns></returns>
+        public ActionResult PritFlatLabel(List<long> PICKED_IDs, string userName,string Status)
+        {
+            using (var context = new MesContext())
+            {
+              var label = new PurchaseUOW(context).GetFlatLabels(PICKED_IDs, userName, Status);
+              return new MasterUOW(context).PrintLable(label.Data);
+            }
+        }
+
+        /// <summary>
+        /// 取得紙捲標籤
+        /// </summary>
+        /// <param name="PICKED_IDs"></param>
+        /// <param name="userName"></param>
+        /// <param name="Status"></param>
+        /// <returns></returns>
+        public ActionResult PritPaperRollLabel(List<long> PICKED_IDs, string userName, string Status)
+        {
+            using (var context = new MesContext())
+            {
+                var label = new PurchaseUOW(context).GetPaperRollLabels(PICKED_IDs, userName, Status);
+                return new MasterUOW(context).PrintLable(label.Data);
+            }
+        }
+
+        
+
         internal class RollDetailModelDTOrder
         {
             public static IOrderedEnumerable<DetailModel.RollDetailModel> Order(List<Order> orders, IEnumerable<DetailModel.RollDetailModel> models)

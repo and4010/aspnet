@@ -139,13 +139,14 @@ $(document).ready(function () {
 
     //列印標籤紙捲
     $('#PaperRollLabel').on('click', function (e) {
-        PrintLable($('#PaperRolldataTablesBody').DataTable(), "/Home/GetLabel", "4");
-    })
+        PrintLableParameter($('#PaperRolldataTablesBody').DataTable(), "/Purchase/PrintPaperRollLabel", "1", $("#Status").val());
+    });
 
     //列印標籤平張
     $('#FlatLabel').on('click', function (e) {
-        PrintLable($('#FlatdataTablesBody').DataTable(), "/Home/GetLabel", "4");
-    })
+        PrintLableParameter($('#FlatdataTablesBody').DataTable(), "/Purchase/PrintFlatLabel", "1", $("#Status").val());
+      
+    });
 
 
 

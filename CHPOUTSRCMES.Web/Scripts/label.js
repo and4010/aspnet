@@ -34,6 +34,27 @@ function PrintLable(dataTables, url, keyIndex) {
     OpenWindowWithPost(url, '_blank', keys, values);
 }
 
+function PrintLableParameter(dataTables, url, keyIndex, Status) {
+    var data = dataTables.rows('.selected').data();
+    if (data.length == 0) {
+        return false;
+    }
+    var columns = dataTables.settings().init().columns;
+    var keys = [];
+    var values = [];
+    var key = columns[keyIndex].data;
+    for (i = 0; i < data.length; i++) {
+        keys.push(key);
+        keys.push("Status");
+        values.push(data[i][key]);
+        values.push(Status);
+    }
+
+    OpenWindowWithPost(url, '_blank', keys, values);
+}
+
+
+
 function PrintLable(dataTables, url, keyIndex, dataTables2, keyIndex2) {
     var keys = [];
     var values = [];

@@ -170,7 +170,13 @@ namespace CHPOUTSRCMES.Web.Controllers
             return PartialView();
         }
 
-
+        /// <summary>
+        /// 紙捲檢視畫面
+        /// </summary>
+        /// <param name="Id"></param>
+        /// <param name="CabinetNumber"></param>
+        /// <param name="CreateDate"></param>
+        /// <returns></returns>
         public ActionResult RollView(string Id, string CabinetNumber, string CreateDate)
         {
             PurchaseViewModel model = new PurchaseViewModel();
@@ -183,11 +189,24 @@ namespace CHPOUTSRCMES.Web.Controllers
             return View(model);
         }
 
+        /// <summary>
+        /// 取得紙捲檢視畫面參數
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="cabinetNumber"></param>
+        /// <param name="CreateDate"></param>
+        /// <returns></returns>
         public ActionResult RollViewParameter(string id = "", string cabinetNumber = "", string CreateDate = "")
         {
             return Json(new { id, cabinetNumber, CreateDate }, JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>
+        /// 平張檢視畫面
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="CabinetNumber"></param>
+        /// <returns></returns>
         public ActionResult FlatView(string id,string CabinetNumber)
         {
 
@@ -207,11 +226,24 @@ namespace CHPOUTSRCMES.Web.Controllers
             return View(model);
         }
 
+        /// <summary>
+        /// 取得平張檢視畫面參數
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="cabinetNumber"></param>
+        /// <returns></returns>
         public ActionResult FlatViewParameter(string id = "", string cabinetNumber = "")
         {
             return Json(new { id, cabinetNumber }, JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>
+        /// 紙捲編輯畫面
+        /// </summary>
+        /// <param name="Id"></param>
+        /// <param name="CabinetNumber"></param>
+        /// <param name="CreateDate"></param>
+        /// <returns></returns>
         public ActionResult RollEdit(string Id,string CabinetNumber,string CreateDate)
         {
 
@@ -225,12 +257,25 @@ namespace CHPOUTSRCMES.Web.Controllers
             return View(model);
         }
 
+        /// <summary>
+        /// 取得紙捲編輯畫面參數
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="cabinetNumber"></param>
+        /// <param name="CreateDate"></param>
+        /// <returns></returns>
         [HttpPost]
         public JsonResult RollEditParameter(string id = "", string cabinetNumber = "",string CreateDate ="")
         {
             return Json(new { id, cabinetNumber , CreateDate }, JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>
+        /// 平張編輯畫面
+        /// </summary>
+        /// <param name="Id"></param>
+        /// <param name="CabinetNumber"></param>
+        /// <returns></returns>
         public ActionResult FlatEdit(string Id,string CabinetNumber)
         {
             PurchaseViewModel model = new PurchaseViewModel();
@@ -247,6 +292,12 @@ namespace CHPOUTSRCMES.Web.Controllers
         
         }
 
+        /// <summary>
+        /// 取得平張編輯畫面參數
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="cabinetNumber"></param>
+        /// <returns></returns>
         public JsonResult FlatEditParameter(string id = "",string cabinetNumber = "")
         {
             return Json(new { id, cabinetNumber },JsonRequestBehavior.AllowGet);
@@ -399,7 +450,11 @@ namespace CHPOUTSRCMES.Web.Controllers
             return Json(JsonRequestBehavior.AllowGet);
         }
 
-        //頁籤數字
+        /// <summary>
+        /// 頁籤數字
+        /// </summary>
+        /// <param name="CabinetNumber"></param>
+        /// <returns></returns>
         [HttpPost]
         public JsonResult PaperNumber(string CabinetNumber)
         {
@@ -408,7 +463,11 @@ namespace CHPOUTSRCMES.Web.Controllers
             var PaperTotle = viewModel.GetPaperRollNumberTab(CabinetNumber);
             return Json(new { PaperTotle }, JsonRequestBehavior.AllowGet);
         }
-
+        /// <summary>
+        /// 頁籤數字
+        /// </summary>
+        /// <param name="CabinetNumber"></param>
+        /// <returns></returns>
         [HttpPost]
         public JsonResult FlatNumber(string CabinetNumber)
         {
@@ -452,7 +511,37 @@ namespace CHPOUTSRCMES.Web.Controllers
             return Json(new { draw = data.Draw, recordsFiltered = detail.Count, recordsTotal = detail.Count, data = detail, result }, JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>
+        /// 列印平張標籤
+        /// </summary>
+        /// <param name="Id"></param>
+        /// <param name="Status"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult PrintFlatLabel(List<long> Id,string Status)
+        {
+            //取得使用者帳號
+            PurchaseViewModel viewModel = new PurchaseViewModel();
+            var name = this.User.Identity.GetUserName();
+            return viewModel.PritFlatLabel(Id, name, Status);
+            //return new JsonResult { Data = new { status = false, result = "" } };
+        }
 
+        /// <summary>
+        /// 列印紙捲標籤
+        /// </summary>
+        /// <param name="Id"></param>
+        /// <param name="Status"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult PrintPaperRollLabel(List<long> Id, string Status)
+        {
+            //取得使用者帳號
+            PurchaseViewModel viewModel = new PurchaseViewModel();
+            var name = this.User.Identity.GetUserName();
+            return viewModel.PritPaperRollLabel(Id, name, Status);
+            //return new JsonResult { Data = new { status = false, result = "" } };
+        }
 
         [HttpPost]
         public JsonResult ExcelImportFlat(HttpPostedFileBase file, DataTableAjaxPostViewModel data, ref List<DetailModel.FlatDetailModel> detail, ref ResultModel result)

@@ -1725,6 +1725,169 @@ WHERE D.CTR_HEADER_ID = @CTR_HEADER_ID");
             }
         }
 
+
+        public ResultDataModel<List<LabelModel>> GetFlatLabels(List<long> PICKED_IDs, string userName,string Status)
+        {
+            try
+            {
+                if(PurchaseStatusCode.PurchaseHeaderAlready == Status)
+                {
+                    List<LabelModel> labelModelList = new List<LabelModel>();
+                    if (PICKED_IDs == null || PICKED_IDs.Count == 0) return new ResultDataModel<List<LabelModel>>(false, "找不到揀貨資料", null);
+                    var pickDataList = ctrPickedHtRepositiory.GetAll().AsNoTracking().Where(x => PICKED_IDs.Contains(x.CtrPickedId)).ToList();
+                    if (pickDataList == null || pickDataList.Count == 0) return new ResultDataModel<List<LabelModel>>(false, "找不到揀貨資料", null);
+
+                    foreach (CTR_PICKED_HT data in pickDataList)
+                    {
+                        StringBuilder cmd = new StringBuilder(
+    @"
+SELECT 
+CAST(PT.BARCODE AS nvarchar) AS Barocde,
+@userName as PrintBy,
+CAST(tt.ITEM_DESC_TCH AS nvarchar) AS BarocdeName, 
+CAST(PT.PAPER_TYPE AS nvarchar) AS PapaerType,
+CAST(PT.BASIC_WEIGHT AS nvarchar) AS BasicWeight,
+CAST(PT.SPECIFICATION AS nvarchar) AS Specification,
+CAST(FORMAT(PT.ROLL_REAM_WT,'0.##########') AS nvarchar) AS Qty,
+CAST(PT.SECONDARY_UOM AS nvarchar) AS Unit
+--CAST(CT.CONTAINER_NO AS nvarchar) AS OspBatchNo
+FROM [CTR_PICKED_HT] PT
+join CTR_HEADER_T CT ON CT.CTR_HEADER_ID = PT.CTR_HEADER_ID
+join ITEMS_T tt on tt.INVENTORY_ITEM_ID = PT.INVENTORY_ITEM_ID
+WHERE PT.ITEM_CATEGORY = N'平張'
+");
+
+                        var labelModel = this.Context.Database.SqlQuery<LabelModel>(cmd.ToString(), new SqlParameter("@userName", userName)).ToList();
+                        if (labelModel == null || labelModel.Count == 0) return new ResultDataModel<List<LabelModel>>(false, "找不到標籤資料", null);
+                        labelModelList.AddRange(labelModel);
+                    }
+                    return new ResultDataModel<List<LabelModel>>(true, "取得標籤資料成功", labelModelList);
+                }
+                else
+                {
+                    List<LabelModel> labelModelList = new List<LabelModel>();
+                    if (PICKED_IDs == null || PICKED_IDs.Count == 0) return new ResultDataModel<List<LabelModel>>(false, "找不到揀貨資料", null);
+                    var pickDataList = ctrPickedTRepositiory.GetAll().AsNoTracking().Where(x => PICKED_IDs.Contains(x.CtrPickedId)).ToList();
+                    if (pickDataList == null || pickDataList.Count == 0) return new ResultDataModel<List<LabelModel>>(false, "找不到揀貨資料", null);
+
+                    foreach (CTR_PICKED_T data in pickDataList)
+                    {
+                        StringBuilder cmd = new StringBuilder(
+@"
+SELECT 
+CAST(PT.BARCODE AS nvarchar) AS Barocde,
+@userName as PrintBy,
+CAST(tt.ITEM_DESC_TCH AS nvarchar) AS BarocdeName, 
+CAST(PT.PAPER_TYPE AS nvarchar) AS PapaerType,
+CAST(PT.BASIC_WEIGHT AS nvarchar) AS BasicWeight,
+CAST(PT.SPECIFICATION AS nvarchar) AS Specification,
+CAST(FORMAT(PT.ROLL_REAM_WT,'0.##########') AS nvarchar) AS Qty,
+CAST(PT.SECONDARY_UOM AS nvarchar) AS Unit
+--CAST(CT.CONTAINER_NO AS nvarchar) AS OspBatchNo
+FROM [CTR_PICKED_T] PT
+join CTR_HEADER_T CT ON CT.CTR_HEADER_ID = PT.CTR_HEADER_ID
+join ITEMS_T tt on tt.INVENTORY_ITEM_ID = PT.INVENTORY_ITEM_ID
+WHERE PT.ITEM_CATEGORY = N'平張'
+");
+
+                        var labelModel = this.Context.Database.SqlQuery<LabelModel>(cmd.ToString(), new SqlParameter("@userName", userName)).ToList();
+                        if (labelModel == null || labelModel.Count == 0) return new ResultDataModel<List<LabelModel>>(false, "找不到標籤資料", null);
+                        labelModelList.AddRange(labelModel);
+                    }
+                    return new ResultDataModel<List<LabelModel>>(true, "取得標籤資料成功", labelModelList);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                logger.Error(LogUtilities.BuildExceptionMessage(ex));
+                return new ResultDataModel<List<LabelModel>>(false, "取得標籤資料失敗:" + ex.Message, null);
+            }
+
+
+        }
+
+        public ResultDataModel<List<LabelModel>> GetPaperRollLabels(List<long> PICKED_IDs, string userName, string Status)
+        {
+            try
+            {
+                if (PurchaseStatusCode.PurchaseHeaderAlready == Status)
+                {
+                    List<LabelModel> labelModelList = new List<LabelModel>();
+                    if (PICKED_IDs == null || PICKED_IDs.Count == 0) return new ResultDataModel<List<LabelModel>>(false, "找不到揀貨資料", null);
+                    var pickDataList = ctrPickedHtRepositiory.GetAll().AsNoTracking().Where(x => PICKED_IDs.Contains(x.CtrPickedId)).ToList();
+                    if (pickDataList == null || pickDataList.Count == 0) return new ResultDataModel<List<LabelModel>>(false, "找不到揀貨資料", null);
+
+                    foreach (CTR_PICKED_HT data in pickDataList)
+                    {
+                        StringBuilder cmd = new StringBuilder(
+@"
+SELECT 
+CAST(PT.BARCODE AS nvarchar) AS Barocde,
+@userName as PrintBy,
+CAST(tt.ITEM_DESC_TCH AS nvarchar) AS BarocdeName, 
+CAST(PT.PAPER_TYPE AS nvarchar) AS PapaerType,
+CAST(PT.BASIC_WEIGHT AS nvarchar) AS BasicWeight,
+CAST(PT.SPECIFICATION AS nvarchar) AS Specification,
+CAST(FORMAT(PT.PRIMARY_QUANTITY,'0.##########') AS nvarchar) AS Qty,
+CAST(PT.PRIMARY_UOM AS nvarchar) AS Unit
+--CAST(CT.CONTAINER_NO AS nvarchar) AS OspBatchNo
+FROM [CTR_PICKED_HT] PT
+join CTR_HEADER_T CT ON CT.CTR_HEADER_ID = PT.CTR_HEADER_ID
+join ITEMS_T tt on tt.INVENTORY_ITEM_ID = PT.INVENTORY_ITEM_ID
+WHERE PT.ITEM_CATEGORY = N'捲筒'
+");
+
+                        var labelModel = this.Context.Database.SqlQuery<LabelModel>(cmd.ToString(), new SqlParameter("@userName", userName)).ToList();
+                        if (labelModel == null || labelModel.Count == 0) return new ResultDataModel<List<LabelModel>>(false, "找不到標籤資料", null);
+                        labelModelList.AddRange(labelModel);
+                    }
+                    return new ResultDataModel<List<LabelModel>>(true, "取得標籤資料成功", labelModelList);
+                }
+                else
+                {
+                    List<LabelModel> labelModelList = new List<LabelModel>();
+                    if (PICKED_IDs == null || PICKED_IDs.Count == 0) return new ResultDataModel<List<LabelModel>>(false, "找不到揀貨資料", null);
+                    var pickDataList = ctrPickedTRepositiory.GetAll().AsNoTracking().Where(x => PICKED_IDs.Contains(x.CtrPickedId)).ToList();
+                    if (pickDataList == null || pickDataList.Count == 0) return new ResultDataModel<List<LabelModel>>(false, "找不到揀貨資料", null);
+
+                    foreach (CTR_PICKED_T data in pickDataList)
+                    {
+                        StringBuilder cmd = new StringBuilder(
+@"
+SELECT 
+CAST(PT.BARCODE AS nvarchar) AS Barocde,
+@userName as PrintBy,
+CAST(tt.ITEM_DESC_TCH AS nvarchar) AS BarocdeName, 
+CAST(PT.PAPER_TYPE AS nvarchar) AS PapaerType,
+CAST(PT.BASIC_WEIGHT AS nvarchar) AS BasicWeight,
+CAST(PT.SPECIFICATION AS nvarchar) AS Specification,
+CAST(FORMAT(PT.PRIMARY_QUANTITY,'0.##########') AS nvarchar) AS Qty,
+CAST(PT.PRIMARY_UOM AS nvarchar) AS Unit
+--CAST(CT.CONTAINER_NO AS nvarchar) AS OspBatchNo
+FROM [CTR_PICKED_T] PT
+join CTR_HEADER_T CT ON CT.CTR_HEADER_ID = PT.CTR_HEADER_ID
+join ITEMS_T tt on tt.INVENTORY_ITEM_ID = PT.INVENTORY_ITEM_ID
+WHERE PT.ITEM_CATEGORY = N'捲筒'
+");
+
+                        var labelModel = this.Context.Database.SqlQuery<LabelModel>(cmd.ToString(), new SqlParameter("@userName", userName)).ToList();
+                        if (labelModel == null || labelModel.Count == 0) return new ResultDataModel<List<LabelModel>>(false, "找不到標籤資料", null);
+                        labelModelList.AddRange(labelModel);
+                    }
+                    return new ResultDataModel<List<LabelModel>>(true, "取得標籤資料成功", labelModelList);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                logger.Error(LogUtilities.BuildExceptionMessage(ex));
+                return new ResultDataModel<List<LabelModel>>(false, "取得標籤資料失敗:" + ex.Message, null);
+            }
+
+
+        }
+
         public class PurchaseStatusCode
         {
             /// <summary>
