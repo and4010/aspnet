@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CHPOUTSRCMES.TASK.DataModel.Views
+namespace CHPOUTSRCMES.TASK.Models.Views
 {
     /// <summary>
     /// 紙別機台(N)
@@ -46,7 +46,7 @@ namespace CHPOUTSRCMES.TASK.DataModel.Views
         /// <summary>
         /// 供應商名稱
         /// </summary>
-        public string SUPPLIER_NAME { set; get; }
+        public string VENDOR_NAME { set; get; }
         /// <summary>
         /// 建立人員ID
         /// </summary>

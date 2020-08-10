@@ -1,4 +1,4 @@
-﻿namespace CHPOUTSRCMES.TASK
+﻿namespace CHPOUTSRCMES.TASK.Forms
 {
     partial class MainForm
     {
@@ -31,6 +31,8 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.檔案ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.功能表ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.單位換算ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.主檔ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -53,9 +55,26 @@
             // 
             // 功能表ToolStripMenuItem
             // 
+            this.功能表ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.單位換算ToolStripMenuItem,
+            this.主檔ToolStripMenuItem});
             this.功能表ToolStripMenuItem.Name = "功能表ToolStripMenuItem";
             this.功能表ToolStripMenuItem.Size = new System.Drawing.Size(55, 20);
             this.功能表ToolStripMenuItem.Text = "功能表";
+            // 
+            // 單位換算ToolStripMenuItem
+            // 
+            this.單位換算ToolStripMenuItem.Name = "單位換算ToolStripMenuItem";
+            this.單位換算ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.單位換算ToolStripMenuItem.Text = "單位換算";
+            this.單位換算ToolStripMenuItem.Click += new System.EventHandler(this.單位換算ToolStripMenuItem_Click);
+            // 
+            // 主檔ToolStripMenuItem
+            // 
+            this.主檔ToolStripMenuItem.Name = "主檔ToolStripMenuItem";
+            this.主檔ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.主檔ToolStripMenuItem.Text = "主檔";
+            this.主檔ToolStripMenuItem.Click += new System.EventHandler(this.主檔ToolStripMenuItem_Click);
             // 
             // MainForm
             // 
@@ -66,6 +85,7 @@
             this.IsMdiContainer = true;
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "MainForm";
+            this.Text = "MES 轉檔程式";
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
@@ -77,6 +97,8 @@
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem 檔案ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 功能表ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 單位換算ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 主檔ToolStripMenuItem;
     }
 }
 

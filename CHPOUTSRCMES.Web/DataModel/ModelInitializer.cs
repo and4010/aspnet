@@ -1,28 +1,11 @@
-﻿using CHPOUTSRCMES.Web.DataModel;
-using CHPOUTSRCMES.Web.DataModel.Entiy;
-using CHPOUTSRCMES.Web.DataModel.Entiy.Delivery;
-using CHPOUTSRCMES.Web.DataModel.Entiy.Information;
-using CHPOUTSRCMES.Web.DataModel.Entiy.Interfaces;
-using CHPOUTSRCMES.Web.DataModel.Entiy.Purchase;
-using CHPOUTSRCMES.Web.DataModel.Entiy.Repositorys;
-using CHPOUTSRCMES.Web.Domain;
-using CHPOUTSRCMES.Web.Models.Purchase;
-using CHPOUTSRCMES.Web.Util;
-using Microsoft.Extensions.Logging;
+﻿using CHPOUTSRCMES.Web.DataModel.UnitOfWorks;
 using NLog;
 using NPOI.HSSF.UserModel;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using System;
-using System.Collections.Generic;
-using System.Data;
 using System.Data.Entity;
 using System.IO;
-using System.Linq;
-using System.Web;
-using CHPOUTSRCMES.Web.DataModel.UnitOfWorks;
-using Microsoft.AspNet.Identity.EntityFramework;
-using Microsoft.AspNet.Identity;
 
 namespace CHPOUTSRCMES.Web.DataModel
 {
@@ -73,7 +56,7 @@ namespace CHPOUTSRCMES.Web.DataModel
                                .BaseDirectory
                                .Replace("\\bin", string.Empty) + "Data\\Excel";
 
-            string initialFile = baseDir + "\\ERP0193164.xlsx";
+            string initialFile = baseDir + "\\ERP_20200807.xlsx";
 
             if (!string.IsNullOrEmpty(initialFile) && File.Exists(initialFile))
             {
