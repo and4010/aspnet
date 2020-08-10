@@ -13,6 +13,10 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy
         [StringLength(15)]
         public string DisplayName { set; get; }
         //public string Email { set; get; }
+        public long OrganizationId { set; get; }
+        public string OrganizationCode { set; get; }
+        public string SubinventoryCode { set; get; }
+        
 
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<AppUser> manager)
         {

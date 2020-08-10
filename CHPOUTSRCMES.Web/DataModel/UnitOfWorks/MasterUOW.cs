@@ -84,6 +84,11 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
         /// </summary>
         public readonly IRepository<STK_TXN_T> stkTxnTRepositiory;
 
+        /// <summary>
+        /// 使用者
+        /// </summary>
+        public readonly IRepository<AppUser> appUserRepositiory;
+
         public IUomConversion uomConversion;
 
         public CategoryCode categoryCode = new CategoryCode();
@@ -110,6 +115,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             this.stockTRepositiory = new GenericRepository<STOCK_T>(this);
             this.stockHtRepositiory = new GenericRepository<STOCK_HT>(this);
             this.stkTxnTRepositiory = new GenericRepository<STK_TXN_T>(this);
+            this.appUserRepositiory = new GenericRepository<AppUser>(this);
             this.uomConversion = new UomConversion();
         }
 
@@ -162,6 +168,65 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                 }
             }
         }
+
+        #region 使用者
+        /// <summary>
+        /// 取得使用者資料
+        /// </summary>
+        /// <param name="UserName">帳號</param>
+        /// <returns></returns>
+        public ResultDataModel<List<AppUser>> GetUserData(string UserName)
+        {
+            var userDataList = appUserRepositiory.GetAll().AsNoTracking().Where(x => x.UserName == UserName).ToList();
+            if (userDataList.Count == 0)
+            {
+                return new ResultDataModel<List<AppUser>>(false, "找不到使用者資料", null);
+            }
+            else
+            {
+                return new ResultDataModel<List<AppUser>>(true, "取得使用者資料成功", userDataList);
+            }
+        }
+
+        /// <summary>
+        /// 取得組織Id
+        /// </summary>
+        /// <param name="UserName">帳號</param>
+        /// <returns></returns>
+        public ResultDataModel<List<long>> GetOrganizationIdList(string UserName)
+        {
+            var data = appUserRepositiory.GetAll().AsNoTracking().Where(x => x.UserName == UserName).Select(x => x.OrganizationId).ToList();
+            if (data.Count == 0)
+            {
+                return new ResultDataModel<List<long>>(false, "找不到組織資料", null);
+            }
+            else
+            {
+                return new ResultDataModel<List<long>>(true, "取得組織Id成功", data);
+            }
+        }
+
+        //public class UserData
+        //{
+        //    /// <summary>
+        //    /// 顯示名稱
+        //    /// </summary>
+        //    public string DisplayName { set; get; }
+        //    /// <summary>
+        //    /// 庫存組織ID
+        //    /// </summary>
+        //    public long OrganizationId { set; get; }
+        //    /// <summary>
+        //    /// 庫存組織
+        //    /// </summary>
+        //    public string OrganizationCode { set; get; }
+        //    /// <summary>
+        //    /// 倉庫
+        //    /// </summary>
+        //    public string SubinventoryCode { set; get; }
+        //}
+
+        #endregion
 
         #region 庫存
         //public IDetail stockStatusCode = new StockStatusCode();
@@ -2232,6 +2297,19 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
         }
 
         /// <summary>
+        /// 取得倉庫下拉式選單內容
+        /// </summary>
+        /// <param name="ORGANIZATION_ID"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public List<SelectListItem> GetSubinventoryDropDownList(List<long> organizationIdList, DropDownListType type)
+        {
+            var subinventoryList = createDropDownList(type);
+            subinventoryList.AddRange(getSubinventoryList(organizationIdList));
+            return subinventoryList;
+        }
+
+        /// <summary>
         /// 取得儲位下拉式選單內容
         /// </summary>
         /// <param name="ORGANIZATION_ID"></param>
@@ -2353,6 +2431,24 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                 subinventoryList.AddRange(tempList);
             }
             return subinventoryList;
+        }
+
+        /// <summary>
+        /// 取得倉庫SelectListItem
+        /// </summary>
+        /// <param name="organizationIdList">組織Id</param>
+        /// <returns></returns>
+        private List<SelectListItem> getSubinventoryList(List<long> organizationIdList)
+        {
+            return subinventoryRepositiory
+                           .GetAll().AsNoTracking()
+                           .Where(x => organizationIdList.Contains(x.OrganizationId))
+                           .OrderBy(x => x.SubinventoryCode)
+                           .Select(x => new SelectListItem()
+                           {
+                               Text = x.SubinventoryCode,
+                               Value = x.SubinventoryCode
+                           }).ToList();
         }
 
         /// <summary>

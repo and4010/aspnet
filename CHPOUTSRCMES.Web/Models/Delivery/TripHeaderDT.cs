@@ -404,7 +404,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
             return query;
         }
 
-        public DeliverySearchViewModel GetDeliverySearchViewModel(DeliveryUOW uow, List<Claim> roles)
+        public DeliverySearchViewModel GetDeliverySearchViewModel(DeliveryUOW uow, List<Claim> roles, string userName)
         {
             DeliverySearchViewModel viewModel = new DeliverySearchViewModel();
             //viewModel.SelectedDeliveryStatus = "";
@@ -423,10 +423,19 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
             //viewModel.TripNameItems = tripList.Select(i => new SelectListItem() { Text = i.Text, Value = i.Value });
 
             viewModel.TripNameItems = uow.GetTripNameDropDownList(MasterUOW.DropDownListType.All);
-
             //viewModel.SelectedSubinventory = "*";
-            OrgSubinventoryData orgData = new OrgSubinventoryData();
-            viewModel.SubinventoryNameItems = orgData.GetSubinventoryList(uow, "265", MasterUOW.DropDownListType.All);
+            var result = uow.GetOrganizationIdList(userName);
+            
+            if (!result.Success)
+            {
+                viewModel.SubinventoryNameItems = new List<SelectListItem>{ new SelectListItem { Text = "", Value = "" }};
+            }
+            else
+            {
+                OrgSubinventoryData orgData = new OrgSubinventoryData();
+                viewModel.SubinventoryNameItems = orgData.GetSubinventoryList(uow, result.Data, MasterUOW.DropDownListType.All);
+
+            }
 
 
             ////viewModel.SelectedDeliveryStatus = "*";

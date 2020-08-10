@@ -45,7 +45,6 @@ namespace CHPOUTSRCMES.Web.Controllers
             var id = this.User.Identity.GetUserId();
             //取得使用者帳號
             var name = this.User.Identity.GetUserName();
-            
             //取得使用者角色
             var userIdentity = (ClaimsIdentity)User.Identity;
             var claims = userIdentity.Claims;
@@ -102,6 +101,9 @@ namespace CHPOUTSRCMES.Web.Controllers
                     {
                         Response.Cookies.Add(new HttpCookie("username") { Value = result.Data.UserName });
                         Response.Cookies.Add(new HttpCookie("displayname") { Value = result.Data.DisplayName });
+                        Response.Cookies.Add(new HttpCookie("organizationid") { Value = result.Data.OrganizationId.ToString() });
+                        Response.Cookies.Add(new HttpCookie("organizationcode") { Value = result.Data.OrganizationCode });
+                        Response.Cookies.Add(new HttpCookie("subinventorycode") { Value = result.Data.SubinventoryCode });
                     }
                     return RedirectToLocal(returnUrl);
                 }

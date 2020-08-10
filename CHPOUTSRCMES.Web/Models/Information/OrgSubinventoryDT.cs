@@ -1,4 +1,5 @@
 ﻿using CHPOUTSRCMES.Web.DataModel;
+using CHPOUTSRCMES.Web.DataModel.Entiy;
 using CHPOUTSRCMES.Web.DataModel.UnitOfWorks;
 using CHPOUTSRCMES.Web.ViewModels;
 using System;
@@ -137,6 +138,12 @@ namespace CHPOUTSRCMES.Web.Models.Information
             return subinventoryList;
         }
 
+        public IEnumerable<SelectListItem> GetSubinventoryList(MasterUOW uow, List<long> organizationIdList, MasterUOW.DropDownListType type)
+        {
+            var subinventoryList = uow.GetSubinventoryDropDownList(organizationIdList, type);
+            return subinventoryList;
+        }
+
         public string GetBarodePrefixCode(string SUBINVENTORY_CODE)
         {
             var query = from orgSubinventoryDT in testSource
@@ -206,7 +213,7 @@ namespace CHPOUTSRCMES.Web.Models.Information
                 subinventoryList.AddRange(query.ToList());
             }
 
-            
+
 
             //subinventoryList.Add(new ListItem("中間倉", "SFG"));
             //subinventoryList.Add(new ListItem("外購久堂倉", "TA1"));
@@ -454,14 +461,14 @@ namespace CHPOUTSRCMES.Web.Models.Information
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.LOCATOR_SEGMENTS) : models.OrderBy(x => x.LOCATOR_SEGMENTS);
                 case 6:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.LOCATOR_DESC) : models.OrderBy(x => x.LOCATOR_DESC);
-                //case 7:
-                //    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.CREATED_BY_NAME) : models.OrderBy(x => x.CREATED_BY_NAME);
-                //case 8:
-                //    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.CREATION_DATE) : models.OrderBy(x => x.CREATION_DATE);
-                //case 9:
-                //    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.LAST_UPDATED_BY_NAME) : models.OrderBy(x => x.LAST_UPDATED_BY_NAME);
-                //case 10:
-                //    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.LAST_UPDATE_DATE) : models.OrderBy(x => x.LAST_UPDATE_DATE);
+                    //case 7:
+                    //    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.CREATED_BY_NAME) : models.OrderBy(x => x.CREATED_BY_NAME);
+                    //case 8:
+                    //    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.CREATION_DATE) : models.OrderBy(x => x.CREATION_DATE);
+                    //case 9:
+                    //    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.LAST_UPDATED_BY_NAME) : models.OrderBy(x => x.LAST_UPDATED_BY_NAME);
+                    //case 10:
+                    //    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.LAST_UPDATE_DATE) : models.OrderBy(x => x.LAST_UPDATE_DATE);
 
             }
         }
@@ -485,14 +492,14 @@ namespace CHPOUTSRCMES.Web.Models.Information
                     return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.LOCATOR_SEGMENTS) : models.ThenBy(x => x.LOCATOR_SEGMENTS);
                 case 6:
                     return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.LOCATOR_DESC) : models.ThenBy(x => x.LOCATOR_DESC);
-                //case 7:
-                //    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.CREATED_BY_NAME) : models.ThenBy(x => x.CREATED_BY_NAME);
-                //case 8:
-                //    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.CREATION_DATE) : models.ThenBy(x => x.CREATION_DATE);
-                //case 9:
-                //    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.LAST_UPDATED_BY_NAME) : models.ThenBy(x => x.LAST_UPDATED_BY_NAME);
-                //case 10:
-                //    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.LAST_UPDATE_DATE) : models.ThenBy(x => x.LAST_UPDATE_DATE);
+                    //case 7:
+                    //    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.CREATED_BY_NAME) : models.ThenBy(x => x.CREATED_BY_NAME);
+                    //case 8:
+                    //    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.CREATION_DATE) : models.ThenBy(x => x.CREATION_DATE);
+                    //case 9:
+                    //    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.LAST_UPDATED_BY_NAME) : models.ThenBy(x => x.LAST_UPDATED_BY_NAME);
+                    //case 10:
+                    //    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.LAST_UPDATE_DATE) : models.ThenBy(x => x.LAST_UPDATE_DATE);
             }
         }
     }
