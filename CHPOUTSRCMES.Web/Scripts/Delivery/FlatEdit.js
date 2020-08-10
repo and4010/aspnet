@@ -439,6 +439,7 @@ $(document).ready(function () {
     //    FlatBarcodeDataTablesBody.button(2).disable(selectedRows === 0);
     //});
 
+    
 
     $("#SECONDARY_QUANTITY").hide();
     $("#txtSECONDARY_QUANTITY").val("");

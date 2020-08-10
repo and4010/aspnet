@@ -98,11 +98,11 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                     {
                         // Add code to initialize context tables
                         AppUser user = new AppUser();
-                        string rolename = ExcelUtil.GetCellString(row.GetCell(0)).Trim();
-                        string password = ExcelUtil.GetCellString(row.GetCell(2)).Trim();
-                        user.UserName = ExcelUtil.GetCellString(row.GetCell(1)).Trim();
-                        user.DisplayName = ExcelUtil.GetCellString(row.GetCell(3)).Trim();
-                        user.Email = ExcelUtil.GetCellString(row.GetCell(4)).Trim();
+                        string rolename = ExcelUtil.GetStringCellValue(row.GetCell(0)).Trim();
+                        string password = ExcelUtil.GetStringCellValue(row.GetCell(2)).Trim();
+                        user.UserName = ExcelUtil.GetStringCellValue(row.GetCell(1)).Trim();
+                        user.DisplayName = ExcelUtil.GetStringCellValue(row.GetCell(3)).Trim();
+                        user.Email = ExcelUtil.GetStringCellValue(row.GetCell(4)).Trim();
                         user.EmailConfirmed = false;
                         var result = userManager.Create(user, password);
                         if (result.Succeeded)

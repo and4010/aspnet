@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CHPOUTSRCMES.TASK.DataModel.Views
+namespace CHPOUTSRCMES.TASK.Models.Views
 {
     public class XXIFV050_ITEMS_FTY_V
     {

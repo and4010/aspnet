@@ -421,49 +421,49 @@ $(document).ready(function () {
                 //    }
                 //},
 
-                {
-                    text: '編輯核准日',
-                    className: 'btn-danger',
-                    init: function (api, node, config) {
-                        $(node).removeClass('btn-default')
-                    },
-                    action: function (e, dt, node, config) {
-                        var count = dt.rows({ selected: true }).count();
+                //{
+                //    text: '編輯核准日',
+                //    className: 'btn-danger',
+                //    init: function (api, node, config) {
+                //        $(node).removeClass('btn-default')
+                //    },
+                //    action: function (e, dt, node, config) {
+                //        var count = dt.rows({ selected: true }).count();
 
-                        if (count == 0) {
-                            return;
-                        }
-                        //var data = dt.rows({ selected: true }).data().pluck('Id')[0];
+                //        if (count == 0) {
+                //            return;
+                //        }
+                //        //var data = dt.rows({ selected: true }).data().pluck('Id')[0];
 
-                        //var Id = dt.rows(indexes).data().pluck('Id')[0];
+                //        //var Id = dt.rows(indexes).data().pluck('Id')[0];
 
-                        for (i = 0; i < count; i++) {
+                //        for (i = 0; i < count; i++) {
 
-                            if (dt.rows({ selected: true }).data().pluck('DELIVERY_STATUS')[i] == '已出貨') {
-                                swal.fire('已出貨，無法再修改核准日');
-                                return;
-                            }
-                            if (dt.rows({ selected: true }).data().pluck('DELIVERY_STATUS')[i] == '已取消') {
-                                swal.fire('已取消，無法再修改核准日');
-                                return;
-                            }
-                            //if (data[i].DELIVERY_STATUS == '已出貨') {
-                            //    swal.fire('已出貨，無法再修改核准日');
-                            //    return;
-                            //}
-                        }
+                //            if (dt.rows({ selected: true }).data().pluck('DELIVERY_STATUS')[i] == '已出貨') {
+                //                swal.fire('已出貨，無法再修改核准日');
+                //                return;
+                //            }
+                //            if (dt.rows({ selected: true }).data().pluck('DELIVERY_STATUS')[i] == '已取消') {
+                //                swal.fire('已取消，無法再修改核准日');
+                //                return;
+                //            }
+                //            //if (data[i].DELIVERY_STATUS == '已出貨') {
+                //            //    swal.fire('已出貨，無法再修改核准日');
+                //            //    return;
+                //            //}
+                //        }
 
-                        editor.edit(TripDataTablesBody.rows({ selected: true }).indexes())
-                            .title('編輯出貨核准日')
-                            .buttons({
-                                text: '確定',
-                                action: function () {
-                                    this.submit();
-                                },
-                                className: 'btn-danger'
-                            });
-                    }
-                }
+                //        editor.edit(TripDataTablesBody.rows({ selected: true }).indexes())
+                //            .title('編輯出貨核准日')
+                //            .buttons({
+                //                text: '確定',
+                //                action: function () {
+                //                    this.submit();
+                //                },
+                //                className: 'btn-danger'
+                //            });
+                //    }
+                //}
 
                 //{
                 //    text: '出貨確認',
@@ -644,6 +644,45 @@ $(document).ready(function () {
 
         //});
         //return false;
+    });
+
+    
+
+    $("#btnPrintPickList").click(function () {
+        PrintPickList();
+
+    });
+
+    $("#btnUpdateTransactionAuthorizeDates").click(function () {
+        var data = TripDataTablesBody.rows('.selected').data();
+        if (data.length == 0) {
+            return false;
+        }
+
+        for (var i = 0; i < data.length; i++) {
+            if (data[i].DELIVERY_STATUS == '已出貨') {
+                swal.fire('已出貨，無法再修改核准日');
+                return;
+            }
+            if (data[i].DELIVERY_STATUS == '已取消') {
+                swal.fire('已出貨，無法再修改核准日');
+                return;
+            }
+        }
+
+        editor.edit(TripDataTablesBody.rows({ selected: true }).indexes())
+            .title('編輯出貨核准日')
+            .buttons([
+                {
+                    text: '確定',
+                    className: 'btn-danger',
+                    action: function () {
+                        this.submit();
+                    }
+                }
+            ]);
+
+
     });
 
     $("#btnDeliveryConfirm").click(function () {
@@ -1070,8 +1109,8 @@ $(document).ready(function () {
             //TripDataTablesBody.buttons('.abc').nodes().addClass('hidden');
             //TripDataTablesBody.buttons('.abc').nodes().css("display", "none");
             //TripDataTablesBody.buttons().destroy();
-            
-            
+
+
         }
     }
 
