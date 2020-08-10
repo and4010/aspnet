@@ -386,13 +386,71 @@ $(document).ready(function () {
                     enabled: false,
                     init: function (api, node, config) {
                         $(node).removeClass('btn-default')
+                    },
+                    action: function (e, dt, node, config) {
+                        var rows = PaperRollBarcodeDataTablesBody.rows({ selected: true }).indexes();
+
+                        if (rows.length === 0) {
+                            return;
+                        }
+
+                        editor.remove(rows, {
+                            title: '刪除',
+                            message: rows.length === 1 ?
+                                '你確定要刪除這筆資料?' :
+                                '你確定要刪除這些資料?',
+                            buttons:
+                            {
+                                text: '刪除',
+                                className: 'btn-danger',
+                                action: function () {
+                                    this.submit();
+                                }
+                            }
+                           
+                        })
                     }
                 },
+                //{
+                //    extend: "remove",
+                //    text: '刪除',
+                //    name: 'remove',
+                //    className: 'btn-danger',
+                //    editor: editor,
+                //    enabled: false,
+                //    init: function (api, node, config) {
+                //        $(node).removeClass('btn-default')
+                //    }
+                //},
                 {
                     text: '<span class="glyphicon glyphicon-print"></span>&nbsp列印標籤',
                     //className: 'btn-default btn-sm',
                     action: function (e) {
-                        PrintLable(PaperRollBarcodeDataTablesBody, "/Delivery/PrintLabel", "7");
+                        var data = PaperRollBarcodeDataTablesBody.rows('.selected').data();
+                        if (data.length == 0) {
+                            return false;
+                        }
+                        var barcode = [];
+                        for (var i = 0; i < data.length; i++) {
+                            if (data[i].PALLET_STATUS == '拆板') {
+                                barcode.push(data[i].BARCODE);
+                            }
+                        }
+                        if (barcode.length > 0) {
+                            swal.fire({
+                                title: "注意",
+                                html: "以下為拆板後的條碼，請更換庫存棧板上的舊條碼。<br>" + barcode.join('<br>'),
+                                type: "warning",
+                                confirmButtonColor: "#DD6B55",
+                                confirmButtonText: "確定",
+                            }).then(function (result) {
+                                if (result.value) {
+                                    PrintLable(PaperRollBarcodeDataTablesBody, "/Delivery/PrintLabel", "11");
+                                }
+                            });
+                        } else {
+                            PrintLable(PaperRollBarcodeDataTablesBody, "/Delivery/PrintLabel", "11");
+                        }
                     },
                     className: "btn-primary",
                     enabled: false,

@@ -646,12 +646,15 @@ $(document).ready(function () {
         //return false;
     });
 
-    
+    //$(".buttons-excel").detach();
 
-    $("#btnPrintPickList").click(function () {
-        PrintPickList();
+  
 
-    });
+    //$("#btnPrintPickList").click(function () {
+    //    PrintPickList();
+
+    //});
+    TripDataTablesBody.buttons(2, null).containers().appendTo('#btnExportExcel');
 
     $("#btnUpdateTransactionAuthorizeDates").click(function () {
         var data = TripDataTablesBody.rows('.selected').data();

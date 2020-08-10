@@ -18,6 +18,9 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
 
         public long DLV_DETAIL_ID { get; set; } //DLV_DETAIL_ID
 
+        [Display(Name = "棧板狀態")]
+        public string PALLET_STATUS { get; set; }
+
         [Display(Name = "料號名稱")]
         public string ITEM_NUMBER { get; set; }
 

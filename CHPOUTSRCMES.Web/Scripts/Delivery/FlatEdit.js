@@ -47,8 +47,7 @@ $(document).ready(function () {
          { data: "SRC_REQUESTED_QUANTITY", name: "訂單原始數量", autoWidth: true, className: "dt-body-right" },
          { data: "SRC_PICKED_QUANTITY", name: "訂單已揀數量", autoWidth: true, className: "dt-body-right" },
          { data: "SRC_REQUESTED_QUANTITY_UOM", name: "訂單主單位", autoWidth: true },
-         //{ data: "REMARK", name: "備註", autoWidth: true },
-
+         //{ data: "REMARK", name: "備註", autoWidth: true },    
         ],
         //columnDefs: [
         //    {
@@ -298,7 +297,8 @@ $(document).ready(function () {
          { data: "SECONDARY_UOM", name: "次要單位", autoWidth: true },
          //{ data: "REMARK", name: "備註", autoWidth: true, className: "dt-body-left" },
             { data: "LAST_UPDATE_DATE", name: "更新日期", autoWidth: true, visible: false },
-            { data: "PICKED_ID", name: "PICKED_ID", autoWidth: true, visible: false }
+            { data: "PICKED_ID", name: "PICKED_ID", autoWidth: true, visible: false },
+            //{ data: "PALLET_STATUS", name: "棧板狀態", autoWidth: true, visible: false }
         ],
 
         order: [[10, 'desc']],
@@ -356,41 +356,29 @@ $(document).ready(function () {
                     enabled: false,
                     init: function (api, node, config) {
                         $(node).removeClass('btn-default')
+                    },
+                    action: function (e, dt, node, config) {
+                        var rows = FlatBarcodeDataTablesBody.rows({ selected: true }).indexes();
+
+                        if (rows.length === 0) {
+                            return;
+                        }
+
+                        editor.remove(rows, {
+                            title: '刪除',
+                            message: rows.length === 1 ?
+                                '你確定要刪除這筆資料?' :
+                                '你確定要刪除這些資料?',
+                            buttons:
+                            {
+                                text: '刪除',
+                                className: 'btn-danger',
+                                action: function () {
+                                    this.submit();
+                                }
+                            }
+                        })
                     }
-                    //action: function (e, dt, node, config) {
-                    //    var count = dt.rows({ selected: true }).count();
-
-                    //    if (count == 0) {
-                    //        return;
-                    //    }
-                    //    editor.submit();
-                    //    //editor.edit(TripDataTablesBody.rows({ selected: true }).indexes())
-                    //    //    .title('刪除')
-                    //    //    .buttons({
-                    //    //        text: '刪除',
-                    //    //        action: function () {
-                    //    //            this.submit();
-                    //    //        },
-                    //    //        className: 'btn-danger'
-                    //    //    });
-
-                    //}
-                    //action: function () {
-                    //    var selectedData = FlatBarcodeDataTablesBody.rows('.selected').data();
-                    //    if (selectedData.length == 0) {
-                    //        swal.fire("請選擇要刪除的條碼");
-                    //        return;
-                    //    }
-                    //    editor.edit(TripDataTablesBody.rows({ selected: true }).indexes())
-                    //        .title('刪除')
-                    //        .buttons({
-                    //            text: '刪除',
-                    //            action: function () {
-                    //                this.submit();
-                    //            },
-                    //            className: 'btn-danger'
-                    //        });
-                    //}
                 },
                 //{
                 //    text: '刪除',
@@ -420,7 +408,31 @@ $(document).ready(function () {
                     text: '<span class="glyphicon glyphicon-print"></span>&nbsp列印標籤',
                     //className: 'btn-default btn-sm',
                     action: function (e) {
-                        PrintLable(FlatBarcodeDataTablesBody, "/Delivery/PrintLabel", "11");
+                        var data = FlatBarcodeDataTablesBody.rows('.selected').data();
+                        if (data.length == 0) {
+                            return false;
+                        }
+                        var barcode = [];
+                        for (var i = 0; i < data.length; i++) {
+                            if (data[i].PALLET_STATUS == '拆板') {
+                                barcode.push(data[i].BARCODE);
+                            }
+                        }
+                        if (barcode.length > 0) {
+                            swal.fire({
+                                title: "注意",
+                                html: "以下為拆板後的條碼，請更換庫存棧板上的舊條碼。<br>" + barcode.join('<br>'),
+                                type: "warning",
+                                confirmButtonColor: "#DD6B55",
+                                confirmButtonText: "確定",
+                            }).then(function (result) {
+                                if (result.value) {
+                                    PrintLable(FlatBarcodeDataTablesBody, "/Delivery/PrintLabel", "11");
+                                }
+                            });
+                        } else {
+                            PrintLable(FlatBarcodeDataTablesBody, "/Delivery/PrintLabel", "11");
+                        }
                     },
                     className: "btn-primary",
                     enabled: false,
@@ -474,7 +486,9 @@ $(document).ready(function () {
               //$("#SECONDARY_QUANTITY").hide();
               $("#txtSECONDARY_QUANTITY").val("");
               //$('#PACKING_TYPE').text("");
-          });
+    });
+
+    
 
     $("#btnCheckDeliveryName").click(function () {
         
