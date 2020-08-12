@@ -28,29 +28,29 @@
 
     @*狀態*@
     <div class="form-inline col col-md-1 text-right">
-        @Html.LabelFor(model => model.Process_Status)
+        @Html.LabelFor(model => model.OspBatchStatusDesc)
     </div>
 
     <div class="form-inline col col-md-2 ">
-        @Html.DropDownListFor(model => model.Process_Status, Process_Status, new { @class = "form-control input-sm", id = "Process_Status" })
+        @Html.DropDownListFor(model => model.OspBatchStatusDesc, Process_Status, new { @class = "form-control input-sm", id = "OspBatchStatusDesc" })
     </div>
 
     @*工單號*@
     <div class="form-inline col col-md-1 text-right">
-        @Html.LabelFor(model => model.Process_Batch_no)
+        @Html.LabelFor(model => model.OspBatchNo)
     </div>
 
     <div class="form-inline col col-md-2">
-        @Html.DropDownListFor(model => model.Process_Batch_no, Process_Batch_no, new { @class = "form-control input-sm", id = "Process_Batch_no" })
+        @Html.DropDownListFor(model => model.OspBatchNo, Process_Batch_no, new { @class = "form-control input-sm", id = "OspBatchNo" })
     </div>
 
     @*機台*@
     <div class="form-inline col col-md-1 text-right">
-        @Html.LabelFor(model => model.Manchine_Num)
+        @Html.LabelFor(model => model.MachineNum)
     </div>
 
     <div class="form-inline col col-md-2 ">
-        @Html.DropDownListFor(model => model.Manchine_Num, Manchine_Num, new { @class = "form-control input-sm", id = "Manchine_Num" })
+        @Html.DropDownListFor(model => model.MachineNum, Manchine_Num, new { @class = "form-control input-sm", id = "MachineNum" })
     </div>
 
     @* 倉庫 *@
@@ -69,29 +69,29 @@
 
     @*需球日期*@
     <div class="form-group col col-md-1 text-right">
-        @Html.LabelFor(model => model.Demand_Date)
+        @Html.LabelFor(model => model.DueDate)
     </div>
 
     <div class="form-group col col-md-2">
-        @Html.TextBoxFor(model => model.Demand_Date, new { @class = "form-control input-sm form-inline", id = "Demand_Date", autocomplete = "off" })
+        @Html.TextBoxFor(model => model.DueDate, new { @class = "form-control input-sm form-inline", id = "DueDate", autocomplete = "off" })
     </div>
 
     @*裁切日期*@
     <div class="form-group col col-md-1 text-right">
-        @Html.LabelFor(model => model.Cutting_Date_From)
+        @Html.LabelFor(model => model.CuttingDateFrom)
     </div>
 
     <div class="form-group col col-md-2 ">
-        @Html.TextBoxFor(model => model.Cutting_Date_From, new { @class = "form-control input-sm", id = "Cutting_Date_From", autocomplete = "off" })
+        @Html.TextBoxFor(model => model.CuttingDateFrom, new { @class = "form-control input-sm", id = "CuttingDateFrom", autocomplete = "off" })
     </div>
 
     @*裁切日期*@
     <div class="form-group col col-md-1 text-right">
-        @Html.LabelFor(model => model.Cutting_Date_To)
+        @Html.LabelFor(model => model.CuttingDateTo)
     </div>
 
     <div class="form-group col col-md-2 ">
-        @Html.TextBoxFor(model => model.Cutting_Date_To, new { @class = "form-control input-sm", id = "Cutting_Date_To", autocomplete = "off" })
+        @Html.TextBoxFor(model => model.CuttingDateTo, new { @class = "form-control input-sm", id = "CuttingDateTo", autocomplete = "off" })
     </div>
 
 </div>

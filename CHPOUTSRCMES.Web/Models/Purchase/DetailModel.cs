@@ -11,6 +11,7 @@ namespace CHPOUTSRCMES.Web.Models.Purchase
 
         public class RollModel
         {
+            public long SubId { set; get; }
 
             public long Id { get; set; }
 
@@ -52,6 +53,8 @@ namespace CHPOUTSRCMES.Web.Models.Purchase
 
         public class RollDetailModel
         {
+            public long SubId { set; get; }
+
             public long Id { get; set; }
 
             [Display(Name = "倉別")]
@@ -112,6 +115,7 @@ namespace CHPOUTSRCMES.Web.Models.Purchase
 
         public class FlatModel
         {
+            public long SubId { set; get; }
 
             public long Id { get; set; }
 
@@ -158,6 +162,7 @@ namespace CHPOUTSRCMES.Web.Models.Purchase
 
         public class FlatDetailModel
         {
+            public long SubId { set; get; }
 
             public long Id { get; set; }
 

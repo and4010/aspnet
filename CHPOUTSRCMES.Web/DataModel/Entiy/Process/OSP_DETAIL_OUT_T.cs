@@ -5,143 +5,305 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
 
-namespace CHPOUTSRCMES.Web.DataModel.Entiy.Purchase
+namespace CHPOUTSRCMES.Web.DataModel.Entiy.Process
 {
-    public class CTR_ORG_T
+    public class OSP_DETAIL_OUT_T
     {
 
         /// <summary>
-        /// 入庫ID
+        /// 加工明細ID
         /// </summary>
         /// 
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
         [Required]
-        [Column("CTR_ORG_ID")]
-        public long CtrOrgId { set; get; }
-
-
-        /// <summary>
-        /// XXIFP217
-        /// </summary>
-        /// 
-        [StringLength(20)]
-        [Required]
-        [Column("PROCESS_CODE")]
-        public string ProcessCode { set; get; }
-
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Column("OSP_DETAIL_OUT_ID")]
+        public long OspDetailOutId { set; get; }
 
         /// <summary>
-        /// 
-        /// </summary>
-        /// 
-        [StringLength(20)]
-        [Required]
-        [Column("SERVER_CODE")]
-        public string ServerCode { set; get; }
-
-
-        /// <summary>
-        /// 20191112141600100000
-        /// </summary>
-        /// 
-        [StringLength(20)]
-        [Required]
-        [Column("BATCH_ID")]
-        public string BatchId { set; get; }
-
-
-        /// <summary>
-        /// 1
+        /// 加工檔頭ID
         /// </summary>
         /// 
         [Required]
-        [Column("BATCH_LINE_ID")]
-        public long BatchLineId { set; get; }
+        [Column("OSP_HEADER_ID")]
+        public long OspHeaderId { set; get; }
+
+        /// <summary>
+        /// 類別(I(-1)：組成成份、P(1)：產品)
+        /// </summary>
+        /// 
+        [StringLength(01)]
+        [Column("LINE_TYPE")]
+        [Required]
+        public string LineType { set; get; }
+
+        /// <summary>
+        /// 行號
+        /// </summary>
+        /// 
+        [Column("LINE_NO")]
+        [Required]
+        public long LineNo { set; get; }
 
 
         /// <summary>
-        /// 櫃表維護 Header ID
+        /// 料號ID
         /// </summary>
         /// 
         [Required]
-        [Column("HEADER_ID")]
-        public long HeaderId { set; get; }
+        [Column("INVENTORY_ITEM_ID")]
+        public long InventoryItemId { set; get; }
 
 
         /// <summary>
-        /// 作業單元ID(OU)
-        /// </summary>
-        /// 
-        [Required]
-        [Column("ORG_ID")]
-        public long OrgId { set; get; }
-
-
-        /// <summary>
-        /// 作業單元(OU)
-        /// </summary>
-        /// 
-        [StringLength(240)]
-        [Required]
-        [Column("ORG_NAME")]
-        public string OrgName { set; get; }
-
-
-        /// <summary>
-        /// 櫃表維護 Line ID
-        /// </summary>
-        /// 
-        [Required]
-        [Column("LINE_ID")]
-        public long LineId { set; get; }
-
-
-        /// <summary>
-        /// 櫃號
+        /// 料號
         /// </summary>
         /// 
         [StringLength(40)]
         [Required]
-        [Column("CONTAINER_NO")]
-        public string ContainerNo { set; get; }
+        [Column("INVENTORY_ITEM_NUMBER")]
+        public string InventoryItemNumber { set; get; }
+
 
         /// <summary>
-        /// 拖櫃日期時間
+        /// 基重
+        /// </summary>
+        /// 
+        [StringLength(30)]
+        [Column("BASIC_WEIGHT")]
+        public string BasicWeight { set; get; }
+
+        /// <summary>
+        /// 規格
+        /// </summary>
+        /// 
+        [StringLength(40)]
+        [Column("SPECIFICATION")]
+        public string Specification { set; get; }
+
+        /// <summary>
+        /// 絲向
+        /// </summary>
+        /// 
+        [StringLength(30)]
+        [Column("GRAIN_DIRECTION")]
+        public string GrainDirection { set; get; }
+
+        /// <summary>
+        ///令重(產品)
+        /// </summary>
+        /// 
+        [StringLength(30)]
+        [Column("ORDER_WEIGHT")]
+        public string OrderWeight { set; get; }
+
+        /// <summary>
+        ///令數(產品)
+        /// </summary>
+        /// 
+        [StringLength(30)]
+        [Column("REAM_WT")]
+        public string ReamWt { set; get; }
+
+        /// <summary>
+        /// 紙別
+        /// </summary>
+        /// 
+        [StringLength(4)]
+        [Column("PAPER_TYPE")]
+        public string PaperType { set; get; }
+
+        /// <summary>
+        /// 令包\無令打件
+        /// </summary>
+        /// 
+        [StringLength(30)]
+        [Column("PACKING_TYPE")]
+        public string PackingType { set; get; }
+
+
+        /// <summary>
+        /// 計畫數量
         /// </summary>
         /// 
         [Required]
-        [Column("MV_CONTAINER_DATE")]
-        public DateTime MvContainerDate { set; get; }
-
+        [Column("PLAN_QTY")]
+        public decimal PlanQty { set; get; }
 
         /// <summary>
-        /// 組織ID
+        /// 在製品計畫數量
         /// </summary>
         /// 
         [Required]
-        [Column("ORGANIZATION_ID")]
-        public long OrganizationId { set; get; }
+        [Column("WIP_PLAN_QTY")]
+        public decimal WipPLAN_QTY { set; get; }
 
 
         /// <summary>
-        /// 庫存組織
+        /// 單位
         /// </summary>
         /// 
-        [StringLength(3)]
+        [StringLength(30)]
         [Required]
-        [Column("ORGANIZATION_CODE")]
-        public string OrganizationCode { set; get; }
+        [Column("DTL_UOM")]
+        public string DtlUom { set; get; }
 
         /// <summary>
-        /// 倉庫
+        /// 訂單ID(產品)
         /// </summary>
         /// 
+        [Column("ORDER_HEADER_ID")]
+        public long OrderHeaderId { set; get; }
+
+
+        /// <summary>
+        ///訂單編號(產品)
+        /// </summary>
+        /// 
+        [Column("ORDER_NUMBER")]
+        public long OrderNumber { set; get; }
+
+        /// <summary>
+        ///訂單明細ID(產品)
+        /// </summary>
+        /// 
+        [Column("ORDER_LINE_ID")]
+        public long OrderLineId { set; get; }
+
+        /// <summary>
+        ///訂單明細行號(產品)
+        /// </summary>
+        /// 
+        [StringLength(10)]
+        [Column("ORDER_LINE_NUMBER")]
+        public string OrderLineNumber { set; get; }
+
+
+
+        /// <summary>
+        ///客戶ID(產品)
+        /// </summary>
+        /// 
+        [Column("CUSTOMER_ID")]
+        public long CustomerId { set; get; }
+
+        /// <summary>
+        ///客戶編號(產品)
+        /// </summary>
+        /// 
+        [StringLength(30)]
+        [Column("CUSTOMER_NUMBER")]
+        public string CustomerNumber { set; get; }
+
+        /// <summary>
+        ///客戶名稱(產品)
+        /// </summary>
+        /// 
+        [StringLength(240)]
+        [Column("CUSTOMER_NAME")]
+        public string CustomerName { set; get; }
+
+
+        /// <summary>
+        ///請購單號
+        /// </summary>
+        /// 
+        [Required]
+        [Column("PR_NUMBER")]
+        public long PrNumber { set; get; }
+
+        /// <summary>
+        ///請購明細行號
+        /// </summary>
+        /// 
+        [Required]
+        [Column("PR_LINE_NUMBER")]
+        public long PrLineNumber { set; get; }
+
+        /// <summary>
+        ///請購明細ID
+        /// </summary>
+        /// 
+        [Required]
+        [Column("REQUISITION_LINE_ID")]
+        public long RequisitionLineId { set; get; }
+
+        /// <summary>
+        ///採購單號
+        /// </summary>
+        /// 
+        [Required]
+        [Column("PO_NUMBER")]
+        public long PoNumber { set; get; }
+
+
+
+        /// <summary>
+        ///採購明細行號
+        /// </summary>
+        /// 
+        [Required]
+        [Column("PO_LINE_NUMBER")]
+        public long PoLineNumber { set; get; }
+
+        /// <summary>
+        ///採購明細ID
+        /// </summary>
+        /// 
+        [Required]
+        [Column("PO_LINE_ID")]
+        public long PoLineId { set; get; }
+
+
+        /// <summary>
+        ///採購單價
+        /// </summary>
+        /// 
+        [Required]
+        [Column("PO_UNIT_PRICE")]
+        public decimal PoUnitPrice { set; get; }
+
+        /// <summary>
+        ///採購單版次
+        /// </summary>
+        /// 
+        [Required]
+        [Column("PO_REVISION_NUM")]
+        public long PoRevisionNum { set; get; }
+
+        /// <summary>
+        ///採購單狀態
+        /// </summary>
+        /// 
+        [StringLength(25)]
+        [Column("PO_STATUS")]
+        public string PoStatus { set; get; }
+
+        /// <summary>
+        ///供應商編號
+        /// </summary>
+        /// 
+        [StringLength(30)]
+        [Column("PO_VENDOR_NUM")]
+        public string PoVendorNum { set; get; }
+
+        /// <summary>
+        ///委外工單備註
+        /// </summary>
+        /// 
+        [Required]
+        [StringLength(240)]
+        [Column("OSP_REMARK")]
+        public string OspRemark { set; get; }
+
+        /// <summary>
+        ///預留庫倉(組成成份)
+        /// </summary>
+        /// 
+        [Required]
         [StringLength(20)]
-        [Required]
         [Column("SUBINVENTORY")]
         public string Subinventory { set; get; }
-
 
         /// <summary>
         /// 儲位ID
@@ -160,107 +322,53 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Purchase
         public string LocatorCode { set; get; }
 
         /// <summary>
-        /// 櫃表維護 Detail ID
+        /// 預留單位(組成成份)
         /// </summary>
-        /// 
-        [Required]
-        [Column("DETAIL_ID")]
-        public long DetailId { set; get; }
+        [StringLength(03)]
+        [Column("RESERVATION_UOM_CODE")]
+        public string ReservationUomCode { set; get; }
 
         /// <summary>
-        /// 料號ID
+        /// 預留數量(組成成份)
         /// </summary>
-        /// 
-        [Required]
-        [Column("INVENTORY_ITEM_ID")]
-        public long InventoryItemId { set; get; }
+        [Column("RESERVATION_QUANTITY")]
+        public decimal ReservationQuantity { set; get; }
+
 
 
         /// <summary>
-        /// 料號
+        /// 建立人員(明細行)
         /// </summary>
         /// 
-        [StringLength(40)]
         [Required]
-        [Column("SHIP_ITEM_NUMBER")]
-        public string ShipItemNumber { set; get; }
+        [Column("LINE_CREATED_BY")]
+        public long LineCreatedBy { set; get; }
 
         /// <summary>
-        /// 紙別
+        /// 建立日期(明細行)
         /// </summary>
         /// 
-        [StringLength(30)]
+        [DataType(DataType.Date)]
         [Required]
-        [Column("PAPER_TYPE")]
-        public string PaperType { set; get; }
+        [Column("LINE_CREATION_DATE")]
+        public DateTime LineCreationDate { set; get; }
 
         /// <summary>
-        /// 基重
+        /// 更新人員(明細行)
         /// </summary>
         /// 
-        [StringLength(30)]
+        [Column("LINE_LAST_UPDATE_BY")]
         [Required]
-        [Column("BASIC_WEIGHT")]
-        public string BasicWeight { set; get; }
+        public long LineLastUpdateBy { set; get; }
 
         /// <summary>
-        /// 令重
+        /// 更新時間(明細行)
         /// </summary>
         /// 
-        [StringLength(30)]
+        [Column("LINE_LAST_UPDATE_DATE")]
+        [DataType(DataType.Date)]
         [Required]
-        [Column("REAM_WEIGHT")]
-        public string ReamWeight { set; get; }
-
-        /// <summary>
-        /// 捲數\棧板數
-        /// </summary>
-        /// 
-        [Required]
-        [Column("ROLL_REAM_QTY")]
-        public decimal RollReamQty { set; get; }
-
-        /// <summary>
-        /// 每件令數
-        /// </summary>
-        /// 
-        [Required]
-        [Column("ROLL_REAM_WT")]
-        public decimal RollReamWt { set; get; }
-
-        /// <summary>
-        /// 總捲數\令數
-        /// </summary>
-        /// 
-        [Required]
-        [Column("TTL_ROLL_REAM")]
-        public decimal TtlRollReam { set; get; }
-
-        /// <summary>
-        /// 規格
-        /// </summary>
-        /// 
-        [StringLength(30)]
-        [Required]
-        [Column("SPECIFICATION")]
-        public string Specification { set; get; }
-
-        /// <summary>
-        /// 令包\無令打件
-        /// </summary>
-        /// 
-        [StringLength(30)]
-        [Required]
-        [Column("PACKING_TYPE")]
-        public string PackingType { set; get; }
-
-        /// <summary>
-        /// 出貨數量(MT)
-        /// </summary>
-        /// 
-        [Required]
-        [Column("SHIP_MT_QTY")]
-        public decimal ShipMtQty { set; get; }
+        public DateTime LineLastUpdateDate { set; get; }
 
         /// <summary>
         /// 交易數量
@@ -310,26 +418,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Purchase
         [StringLength(3)]
         [Column("SECONDARY_UOM")]
         public string SecondaryUom { set; get; }
-
-
-        /// <summary>
-        /// 批號
-        /// </summary>
-        /// 
-        [StringLength(80)]
-        [Required(AllowEmptyStrings = true)]
-        [Column("LOT_NUMBER")]
-        public string LotNumber { set; get; }
-
-        /// <summary>
-        /// 理論重(批號數量)
-        /// </summary>
-        /// 
-        [StringLength(30)]
-        [Required(AllowEmptyStrings = true)]
-        [Column("THEORY_WEIGHT")]
-        public string TheoryWeight { set; get; }
-
 
         /// <summary>
         /// 預留欄位

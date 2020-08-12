@@ -2093,7 +2093,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                 {
                     if (ReasonEditor.ReasonModel.Reason_code.Length == 0 && ReasonEditor.ReasonModel.Reason_desc.Length == 0)
                     {
-                      return new ResultModel(false, "不得空白");
+                        return new ResultModel(false, "不得空白");
                     }
                     else
                     {
@@ -2104,7 +2104,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                             if (ID != null)
                             {
                                 ID.ReasonDesc = ReasonEditor.ReasonModel.Reason_desc;
-                                stkReasonTRepositiory.Update(ID,true);
+                                stkReasonTRepositiory.Update(ID, true);
                                 return new ResultModel(true, "");
                             }
                         }
@@ -2132,21 +2132,21 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                         if (ReasonEditor.Action == "remove")
                         {
                             var ID = stkReasonTRepositiory.Get(r => r.ReasonCode.ToString() == ReasonEditor.ReasonModel.Reason_code).SingleOrDefault();
-                            stkReasonTRepositiory.Delete(ID,true);
+                            stkReasonTRepositiory.Delete(ID, true);
                             return new ResultModel(true, "");
                         }
                         return new ResultModel(false, "");
                     }
                 }
-     
+
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 logger.Error(e.Message);
                 return new ResultModel(false, e.Message);
             }
         }
-        
+
         #endregion
 
         /// <summary>
@@ -2666,6 +2666,87 @@ on s.ORGANIZATION_ID = l.ORGANIZATION_ID and s.SUBINVENTORY_CODE = l.SUBINVENTOR
                                 FileAccess.Read
                                 );
             return new FileStreamResult(fileStream, "application/pdf");
+        }
+
+        /// <summary>
+        /// 取得機台
+        /// </summary>
+        /// <returns></returns>
+        public List<SelectListItem> GetManchine(string OrganizationId)
+        {
+            List<SelectListItem> ManchineNum = new List<SelectListItem>();
+            ManchineNum.Add(new SelectListItem()
+            {
+                Text = "全部",
+                Value = "*",
+                Selected = false,
+            });
+
+            if (OrganizationId != "*")
+            {
+                var id = Int32.Parse(OrganizationId);
+                var MachineCode = machinePaperTypeRepositiory.Get(x => x.ControlFlag != "D" && x.OrganizationId == id)
+                             .Select(x => new SelectListItem
+                             {
+                                 Text = x.MachineCode,
+                                 Value = x.MachineCode
+                             }).ToList();
+                ManchineNum.AddRange(MachineCode);
+            }
+            else
+            {
+                var MachineCode = machinePaperTypeRepositiory.Get(x => x.ControlFlag != "D")
+                           .Select(x => new SelectListItem
+                           {
+                               Text = x.MachineCode,
+                               Value = x.MachineCode
+                           }).ToList();
+                ManchineNum.AddRange(MachineCode);
+            }
+
+            return ManchineNum;
+        }
+
+        /// <summary>
+        /// 加工倉庫
+        /// </summary>
+        /// <param name="OrganizationId"></param>
+        /// <returns></returns>
+        public List<SelectListItem> GetSubinventory(string OrganizationId)
+        {
+            List<SelectListItem> Subinventory = new List<SelectListItem>();
+            Subinventory.Add(new SelectListItem()
+            {
+                Text = "全部",
+                Value = "*",
+                Selected = false,
+            });
+            if (OrganizationId != "*")
+            {
+                var id = Int32.Parse(OrganizationId);
+                var sub = subinventoryRepositiory.Get(x => x.ControlFlag != "D" && x.OspFlag == "Y" && x.OrganizationId == id)
+                     .Select(x => new SelectListItem
+                     {
+                         Text = x.SubinventoryCode,
+                         Value = x.SubinventoryCode
+
+                     }).ToList();
+                Subinventory.AddRange(sub);
+            }
+            else
+            {
+                var sub = subinventoryRepositiory.Get(x => x.ControlFlag != "D" && x.OspFlag == "Y")
+                     .Select(x => new SelectListItem
+                     {
+                         Text = x.SubinventoryCode,
+                         Value = x.SubinventoryCode
+
+                     }).ToList();
+                Subinventory.AddRange(sub);
+            }
+
+
+            return Subinventory;
         }
     }
 }
