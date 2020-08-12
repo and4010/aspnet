@@ -1,90 +1,50 @@
-﻿using CHPOUTSRCMES.DataAnnotation;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using CHPOUTSRCMES.DataAnnotation;
 
-namespace CHPOUTSRCMES.Web.DataModel.Entiy.Delivery
+namespace CHPOUTSRCMES.Web.DataModel.Entiy.Transfer
 {
-    [Table("DLV_PICKED_HT")]
-    public class DLV_PICKED_HT
+
+    [Table("TRF_OUTBOUND_PICKED_HT")]
+    public class TRF_OUTBOUND_PICKED_HT
     {
         /// <summary>
-        /// 出庫揀貨歷史ID
+        /// 庫存移轉歷史揀貨ID
         /// </summary>
         /// 
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
         [Required]
-        [Column("DLV_PICKED_HIS_ID")]
-        public long DlvPickedHisId { set; get; }
+        [Column("TRANSFER_PICKED_HIS_ID")]
+        public long TransferPickedHisId { set; get; }
 
         /// <summary>
-        /// 出庫揀貨ID
+        /// 庫存移轉揀貨ID
         /// </summary>
         /// 
         [Required]
-        [Column("DLV_PICKED_ID")]
-        public long DlvPickedId { set; get; }
+        [Column("TRANSFER_PICKED_ID")]
+        public long TransferPickedId { set; get; }
 
-        // <summary>
-        /// 出庫明細ID
+        /// <summary>
+        /// 庫存移轉明細ID
         /// </summary>
         /// 
         [Required]
-        [Column("DLV_DETAIL_ID")]
-        public long DlvDetailId { set; get; }
+        [Column("TRANSFER_DETAIL_ID")]
+        public long TransferDetailId { set; get; }
 
         /// <summary>
-        /// 出庫檔頭ID
+        /// 庫存移轉擋頭ID
         /// </summary>
         /// 
         [Required]
-        [Column("DLV_HEADER_ID")]
-        public long Dlv_Header_Id { set; get; }
-
-        /// <summary>
-        /// 庫存ID
-        /// </summary>
-        /// 
-        [Required]
-        [Column("STOCK_ID")]
-        public long Stock_Id { set; get; }
-
-        /// <summary>
-        /// 狀態
-        /// </summary>
-        /// 
-        [Required(AllowEmptyStrings = true)]
-        [StringLength(10)]
-        [Column("STATUS")]
-        public string Status { set; get; }
-
-        /// <summary>
-        /// 棧板狀態
-        /// </summary>
-        /// 
-        [Required]
-        [StringLength(10)]
-        [Column("PALLET_STATUS")]
-        public string PalletStatus { set; get; }
-
-        /// <summary>
-        /// 出貨儲位ID
-        /// </summary>
-        /// 
-        [Column("LOCATOR_ID")]
-        public long? LocatorId { set; get; }
-
-        /// <summary>
-        /// 出貨儲位
-        /// </summary>
-        /// 
-        [StringLength(30)]
-        [Column("LOCATOR_CODE")]
-        public string LocatorCode { set; get; }
+        [Column("TRANSFER_HEADER_ID")]
+        public long TransferHeaderId { set; get; }
 
         /// <summary>
         /// 料號ID
@@ -101,34 +61,16 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Delivery
         [StringLength(40)]
         [Required]
         [Column("ITEM_NUMBER")]
-        public string Item_Number { set; get; }
+        public string ItemNumber { set; get; }
 
         /// <summary>
-        /// 料號名稱
+        /// 庫存ID
         /// </summary>
         /// 
-        //[StringLength(240)]
-        //[Required]
-        //[Column("ITEM_DESCRIPTION")]
-        //public string Item_Description { set; get; }
-
-        /// <summary>
-        /// 包裝方式
-        /// </summary>
-        /// 
-        [StringLength(30)]
-        [Required(AllowEmptyStrings = true)]
-        [Column("PACKING_TYPE")]
-        public string PackingType { set; get; }
-
-        /// <summary>
-        /// 令重
-        /// </summary>
-        /// 
-        [StringLength(30)]
         [Required]
-        [Column("REAM_WEIGHT")]
-        public string ReamWeight { set; get; }
+        [Column("STOCK_ID")]
+        public long StockId { set; get; }
+
 
         /// <summary>
         /// 條碼號
@@ -138,24 +80,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Delivery
         [Required]
         [Column("BARCODE")]
         public string Barcode { set; get; }
-
-        /// <summary>
-        /// 交易數量
-        /// </summary>
-        /// 
-        [Required]
-        [Column("TRANSACTION_QUANTITY")]
-        [Precision(30, 10)]
-        public decimal TransactionQuantity { set; get; }
-
-        /// <summary>
-        /// 交易單位
-        /// </summary>
-        /// 
-        [Required]
-        [StringLength(3)]
-        [Column("TRANSACTION_UOM")]
-        public string TransactionUom { set; get; }
 
         /// <summary>
         /// 主要數量
@@ -206,6 +130,22 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Delivery
         [Column("LOT_QUANTITY")]
         [Precision(30, 10)]
         public decimal? LotQuantity { set; get; }
+
+        /// <summary>
+        /// 備註
+        /// </summary>
+        /// 
+        [StringLength(240)]
+        [Column("NOTE")]
+        public string Note { set; get; }
+
+        /// <summary>
+        /// 揀貨狀態
+        /// </summary>
+        /// 
+        [StringLength(10)]
+        [Column("STATUS")]
+        public string Status { set; get; }
 
         /// <summary>
         /// 建立人員

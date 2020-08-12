@@ -8,8 +8,8 @@ using System.Web;
 
 namespace CHPOUTSRCMES.Web.DataModel.Entiy.Transfer
 {
-    [Table("TRANSFER_DETAIL_T")]
-    public class TRANSFER_DETAIL_T
+    [Table("TRF_DETAIL_T")]
+    public class TRF_DETAIL_T
     {
         /// <summary>
         /// 庫存移轉明細ID

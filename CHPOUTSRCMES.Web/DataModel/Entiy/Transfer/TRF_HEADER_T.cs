@@ -7,8 +7,8 @@ using System.Web;
 
 namespace CHPOUTSRCMES.Web.DataModel.Entiy.Transfer
 {
-    [Table("TRANSFER_HEADER_T")]
-    public class TRANSFER_HEADER_T
+    [Table("TRF_HEADER_T")]
+    public class TRF_HEADER_T
     {
         /// <summary>
         /// 庫存移轉擋頭ID

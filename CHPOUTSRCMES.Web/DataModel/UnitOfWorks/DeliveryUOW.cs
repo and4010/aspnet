@@ -165,7 +165,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                         Item_Number = stock.ItemNumber,
                         PackingType = stock.PackingType,
                         LotQuantity = null,
-                        Lot_Number = stock.LotNumber,
+                        LotNumber = stock.LotNumber,
                         ReamWeight = stock.ReamWeight,
                         PrimaryQuantity = priQty != null ? (decimal)priQty * -1 : 0,
                         PrimaryUom = stock.PrimaryUomCode,
