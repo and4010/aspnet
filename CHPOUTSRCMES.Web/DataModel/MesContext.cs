@@ -14,7 +14,7 @@ using CHPOUTSRCMES.Web.DataModel.Entity.Delivery;
 using System.Web.Configuration;
 using System.Data;
 using CHPOUTSRCMES.Web.DataModel.Entity.Temp;
-using CHPOUTSRCMES.Web.DataModel.Entiy.Process;
+using CHPOUTSRCMES.Web.DataModel.Entity.Process;
 
 namespace CHPOUTSRCMES.Web.DataModel
 {

@@ -5,29 +5,29 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
 
-namespace CHPOUTSRCMES.Web.DataModel.Entiy.Process
+namespace CHPOUTSRCMES.Web.DataModel.Entity.Process
 {
-    public class OSP_PICKED_IN_T
+    public class OSP_PICKED_OUT_T
     {
 
         /// <summary>
-        /// 加工投入明細ID
+        /// 加工產出檢貨ID
         /// </summary>
         /// 
         [Key]
         [Required]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Column("OSP_PICKED_IN_ID")]
-        public long OspPickedInId { set; get; }
+        [Column("OSP_PICKED_OUT_ID")]
+        public long OspPickedOutId { set; get; }
 
 
         /// <summary>
-        /// 加工明細ID
+        /// 加工產出明細ID
         /// </summary>
         /// 
         [Required]
-        [Column("OSP_DETAIL_IN_ID")]
-        public long OspDetailInId { set; get; }
+        [Column("OSP_DETAIL_OUT_ID")]
+        public long OspDetailOutId { set; get; }
 
         /// <summary>
         /// 加工檔頭ID
@@ -41,9 +41,8 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Process
         /// 庫存ID
         /// </summary>
         /// 
-        [Required]
         [Column("STOCK_ID")]
-        public long StockId { set; get; }
+        public long? StockId { set; get; }
 
         /// <summary>
         /// 條碼
@@ -143,26 +142,24 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Process
         public string SecondaryUom { set; get; }
 
         /// <summary>
-        /// 殘捲註記
+        /// 入庫狀態
         /// </summary>
-        /// 
-        [Column("HAS_REMAINT")]
-        public string HasRemaint { set; get; }
+        [Column("STATUS")]
+        public string Status { set; get; }
 
         /// <summary>
-        /// 剩餘重量
+        /// 餘切(Y:有餘切)
         /// </summary>
-        /// 
-        [Column("REMAINING_QUANTITY")]
-        public decimal? RemainingQuantity { set; get; }
+        ///        
+        [StringLength(1)]
+        [Column("COTANGENT",TypeName = "char")]
+        public string Cotangent { set; get; }
 
         /// <summary>
-        /// 剩餘重量單位
+        /// 餘切ID
         /// </summary>
-        /// 
-        [StringLength(3)]
-        [Column("REMAINING_UOM")]
-        public string RemainingUom { set; get; }
+        [Column("COTANGENT_ID")]
+        public long CotangentId { set; get; }
 
         /// <summary>
         /// 建立人員
@@ -178,8 +175,8 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Process
         /// </summary>
         /// 
         [Required]
-        [Column("CREATED_USER_NAME")]
         [StringLength(128)]
+        [Column("CREATED_USER_NAME")]
         public string CreatedUserName { set; get; }
 
 
@@ -213,8 +210,9 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Process
         /// 更新人員名稱
         /// </summary>
         /// 
-        [Column("LAST_UPDATE_USER_NAME")]
         [StringLength(128)]
+        [Column("LAST_UPDATE_USER_NAME")]
         public string LastUpdateUserName { set; get; }
+
     }
 }

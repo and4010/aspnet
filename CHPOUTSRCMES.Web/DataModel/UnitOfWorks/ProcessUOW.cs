@@ -1,6 +1,6 @@
-﻿using CHPOUTSRCMES.Web.DataModel.Entiy.Interfaces;
-using CHPOUTSRCMES.Web.DataModel.Entiy.Process;
-using CHPOUTSRCMES.Web.DataModel.Entiy.Repositorys;
+﻿using CHPOUTSRCMES.Web.DataModel.Entity.Interfaces;
+using CHPOUTSRCMES.Web.DataModel.Entity.Process;
+using CHPOUTSRCMES.Web.DataModel.Entity.Repositorys;
 using CHPOUTSRCMES.Web.DataModel.UnitOfWorks;
 using CHPOUTSRCMES.Web.Util;
 using Microsoft.Graph;

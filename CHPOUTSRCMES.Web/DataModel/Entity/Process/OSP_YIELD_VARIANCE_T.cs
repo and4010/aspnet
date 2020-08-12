@@ -3,27 +3,21 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.Net;
 using System.Web;
 
-namespace CHPOUTSRCMES.Web.DataModel.Entiy.Process
+namespace CHPOUTSRCMES.Web.DataModel.Entity.Process
 {
-    public class OSP_YIELD_VARIANCE_HT
+    public class OSP_YIELD_VARIANCE_T
     {
+
         /// <summary>
-        /// 加工損耗揀貨歷史ID
+        /// 加工檔頭ID
         /// </summary>
         /// 
         [Key]
         [Required]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Column("OSP_YIELD_VARIANCE_HT_ID")]
-        public long OspYieldVarianceHtId { set; get; }
-
-        /// <summary>
-        ///  加工損耗揀貨ID
-        /// </summary>
-        /// 
-        [Required]
         [Column("OSP_YIELD_VARIANCE_ID")]
         public long OspYieldVarianceId { set; get; }
 

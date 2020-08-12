@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
 
-namespace CHPOUTSRCMES.Web.DataModel.Entiy.Transfer
+namespace CHPOUTSRCMES.Web.DataModel.Entity.Transfer
 {
     [Table("TRANSFER_DETAIL_T")]
     public class TRANSFER_DETAIL_T

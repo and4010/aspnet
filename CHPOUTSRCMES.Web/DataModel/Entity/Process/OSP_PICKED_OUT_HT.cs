@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
 
-namespace CHPOUTSRCMES.Web.DataModel.Entiy.Process
+namespace CHPOUTSRCMES.Web.DataModel.Entity.Process
 {
     public class OSP_PICKED_OUT_HT
     {

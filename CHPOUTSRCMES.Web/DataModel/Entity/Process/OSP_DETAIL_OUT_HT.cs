@@ -5,11 +5,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
 
-namespace CHPOUTSRCMES.Web.DataModel.Entiy.Process
+namespace CHPOUTSRCMES.Web.DataModel.Entity.Process
 {
-    public class OSP_DETAIL_IN_T
+    public class OSP_DETAIL_OUT_HT
     {
-
         /// <summary>
         /// 加工明細ID
         /// </summary>
@@ -17,8 +16,16 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Process
         [Key]
         [Required]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Column("OSP_DETAIL_IN_ID")]
-        public long OspDetailInId { set; get; }
+        [Column("OSP_DETAIL_OUT_HT_ID")]
+        public long OspDetailOutHtId { set; get; }
+
+        /// <summary>
+        /// 加工明細ID
+        /// </summary>
+        /// 
+        [Required]
+        [Column("OSP_DETAIL_OUT_ID")]
+        public long OspDetailOutId { set; get; }
 
         /// <summary>
         /// 加工檔頭ID
@@ -419,7 +426,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Process
         [Column("SECONDARY_UOM")]
         public string SecondaryUom { set; get; }
 
-
         /// <summary>
         /// 預留欄位
         /// </summary>
@@ -582,6 +588,5 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Process
         [DataType(DataType.Date)]
         [Required]
         public DateTime LastUpdateDate { set; get; }
-
     }
 }
