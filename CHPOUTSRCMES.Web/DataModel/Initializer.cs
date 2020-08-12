@@ -1,5 +1,5 @@
 ﻿using CHPOUTSRCMES.Web.DataModel;
-using CHPOUTSRCMES.Web.DataModel.Entiy;
+using CHPOUTSRCMES.Web.DataModel.Entity;
 using System;
 using System.Collections.Generic;
 using System.Linq;

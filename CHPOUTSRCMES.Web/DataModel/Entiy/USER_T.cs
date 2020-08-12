@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 
-namespace CHPOUTSRCMES.Web.DataModel.Entiy
+namespace CHPOUTSRCMES.Web.DataModel.Entity
 {
     [Table("USER_T")]
     public class AppUser : IdentityUser

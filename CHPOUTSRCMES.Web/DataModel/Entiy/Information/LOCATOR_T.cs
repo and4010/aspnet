@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
 
-namespace CHPOUTSRCMES.Web.DataModel.Entiy.Information
+namespace CHPOUTSRCMES.Web.DataModel.Entity.Information
 {
     [Table("LOCATOR_T")]
     public class LOCATOR_T

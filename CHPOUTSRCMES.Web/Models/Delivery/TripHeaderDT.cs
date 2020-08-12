@@ -9,7 +9,7 @@ using System.Web.Mvc;
 using System.Web.UI.WebControls;
 using CHPOUTSRCMES.Web.Models.Information;
 using CHPOUTSRCMES.Web.DataModel.UnitOfWorks;
-using CHPOUTSRCMES.Web.DataModel.Entiy.Delivery;
+using CHPOUTSRCMES.Web.DataModel.Entity.Delivery;
 using static CHPOUTSRCMES.Web.DataModel.UnitOfWorks.DeliveryUOW;
 using System.Security.Claims;
 using NLog;

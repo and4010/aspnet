@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace CHPOUTSRCMES.Web.DataModel.Entiy.Information
+namespace CHPOUTSRCMES.Web.DataModel.Entity.Information
 {
     public class USER_SUBINVENTORY_T
     {

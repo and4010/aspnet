@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
 
-namespace CHPOUTSRCMES.Web.DataModel.Entiy.Information
+namespace CHPOUTSRCMES.Web.DataModel.Entity.Information
 {
     [Table("BCD_SERIAL_T")]
     public class BCD_SERIAL_T

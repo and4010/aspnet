@@ -250,6 +250,15 @@
     <Compile Include="Controllers\TransferController.cs" />
     <Compile Include="Controllers\YszmpckqController.cs" />
     <Compile Include="DataAnnotation\Precision.cs" />
+    <Compile Include="DataModel\Entiy\Temp\ITEMS_TMP_T.cs" />
+    <Compile Include="DataModel\Entiy\Temp\LOCATOR_TMP_T.cs" />
+    <Compile Include="DataModel\Entiy\Temp\MACHINE_PAPER_TYPE_TMP_T.cs" />
+    <Compile Include="DataModel\Entiy\Temp\ORGANIZATION_TMP_T.cs" />
+    <Compile Include="DataModel\Entiy\Temp\ORG_ITEMS_TMP_T.cs" />
+    <Compile Include="DataModel\Entiy\Temp\RELATED_TMP_T.cs" />
+    <Compile Include="DataModel\Entiy\Temp\SUBINVENTORY_TMP_T.cs" />
+    <Compile Include="DataModel\Entiy\Temp\TRANSACTION_TYPE_TMP_T.cs" />
+    <Compile Include="DataModel\Entiy\Temp\YSZMPCKQ_TMP_T.cs" />
     <Compile Include="DataModel\UnitOfWorks\ItemNoUOW.cs" />
     <Compile Include="DataModel\UnitOfWorks\MaincheTypeUOW.cs" />
     <Compile Include="DataModel\UnitOfWorks\RelatedUOW.cs" />
@@ -1373,6 +1382,7 @@
     <Content Include="Content\Purchase\detail.css" />
     <Content Include="Content\timeline.css" />
     <Content Include="Content\Yszmpckq.css" />
+    <Content Include="Data\SQLScript\SP_OrganizationSync.sql" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -1788,12 +1798,12 @@
     <Content Include="NLog.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Data\Excel\ERP0193164.xlsx" />
     <Content Include="Data\Excel\MES_USERS.xlsx" />
     <Content Include="bower_components\adminlte\.DS_Store" />
     <Content Include="bower_components\adminlte\css\.DS_Store" />
     <Content Include="bower_components\adminlte\css\skins\.DS_Store" />
     <Content Include="bower_components\adminlte\js\.DS_Store" />
+    <Content Include="Data\Excel\ERP_20200807.xlsx" />
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>

@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
 
-namespace CHPOUTSRCMES.Web.DataModel.Entiy.Information
+namespace CHPOUTSRCMES.Web.DataModel.Entity.Information
 {
     public class ORG_ITEMS_T
     {
@@ -16,7 +16,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Information
         [Required]
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        [Column("INVENTORY_ITEM_ID")]
+        [Column("INVENTORY_ITEM_ID", Order = 1)]
         public long InventoryItemId { set; get; }
 
         /// <summary>
@@ -24,7 +24,9 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Information
         /// </summary>
         /// 
         [Required]
-        [Column("ORGANIZATION_ID")]
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [Column("ORGANIZATION_ID", Order = 2)]
         public long OrganizationId { set; get; }
     }
 }

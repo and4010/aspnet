@@ -1,6 +1,6 @@
-﻿using CHPOUTSRCMES.Web.DataModel.Entiy.Information;
-using CHPOUTSRCMES.Web.DataModel.Entiy.Interfaces;
-using CHPOUTSRCMES.Web.DataModel.Entiy.Repositorys;
+﻿using CHPOUTSRCMES.Web.DataModel.Entity.Information;
+using CHPOUTSRCMES.Web.DataModel.Entity.Interfaces;
+using CHPOUTSRCMES.Web.DataModel.Entity.Repositorys;
 using CHPOUTSRCMES.Web.Models.Information;
 using CHPOUTSRCMES.Web.Util;
 using NLog;

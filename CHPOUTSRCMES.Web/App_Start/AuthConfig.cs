@@ -1,6 +1,6 @@
 ﻿using System;
 using CHPOUTSRCMES.Web.DataModel;
-using CHPOUTSRCMES.Web.DataModel.Entiy;
+using CHPOUTSRCMES.Web.DataModel.Entity;
 using CHPOUTSRCMES.Web.DataModel.Managers;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;

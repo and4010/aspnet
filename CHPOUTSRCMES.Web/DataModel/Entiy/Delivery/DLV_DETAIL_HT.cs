@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
 
-namespace CHPOUTSRCMES.Web.DataModel.Entiy.Delivery
+namespace CHPOUTSRCMES.Web.DataModel.Entity.Delivery
 {
     [Table("DLV_DETAIL_HT")]
     public class DLV_DETAIL_HT

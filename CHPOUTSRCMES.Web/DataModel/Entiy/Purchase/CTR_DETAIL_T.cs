@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
 
-namespace CHPOUTSRCMES.Web.DataModel.Entiy.Purchase
+namespace CHPOUTSRCMES.Web.DataModel.Entity.Purchase
 {
     public class CTR_DETAIL_T
     {

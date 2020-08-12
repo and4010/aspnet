@@ -42,7 +42,7 @@ namespace CHPOUTSRCMES.TASK.Models.Views
         /// <summary>
         /// 儲位ID
         /// </summary>
-        public long LOCATOR_ID { set; get; }
+        public long? LOCATOR_ID { set; get; }
         /// <summary>
         /// 儲位節段
         /// </summary>
@@ -70,7 +70,7 @@ namespace CHPOUTSRCMES.TASK.Models.Views
         /// <summary>
         /// 儲位狀態ID
         /// </summary>
-        public long LOCATOR_STATUS { set; get; }
+        public long? LOCATOR_STATUS { set; get; }
         /// <summary>
         /// 儲位狀態
         /// </summary>
@@ -78,10 +78,10 @@ namespace CHPOUTSRCMES.TASK.Models.Views
         /// <summary>
         /// 儲位撿料順序
         /// </summary>
-        public long LOCATOR_PICKING_ORDER { set; get; }
+        public long? LOCATOR_PICKING_ORDER { set; get; }
         /// <summary>
         /// 儲位終止日期
         /// </summary>
-        public DateTime LOCATOR_DISABLE_DATE { set; get; }
+        public DateTime? LOCATOR_DISABLE_DATE { set; get; }
     }
 }

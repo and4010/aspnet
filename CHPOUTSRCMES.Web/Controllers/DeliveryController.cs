@@ -12,7 +12,7 @@ using System.Collections.Specialized;
 using CHPOUTSRCMES.Web.DataModel;
 using CHPOUTSRCMES.Web.DataModel.UnitOfWorks;
 using Microsoft.AspNet.Identity;
-using CHPOUTSRCMES.Web.DataModel.Entiy.Delivery;
+using CHPOUTSRCMES.Web.DataModel.Entity.Delivery;
 using System.Security.Claims;
 
 namespace CHPOUTSRCMES.Web.Controllers

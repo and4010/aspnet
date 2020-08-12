@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
 
-namespace CHPOUTSRCMES.Web.DataModel.Entiy
+namespace CHPOUTSRCMES.Web.DataModel.Entity
 {
     public class CTR_PICKED_HT
     {

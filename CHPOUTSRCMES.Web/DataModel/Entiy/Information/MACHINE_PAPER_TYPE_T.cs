@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
 
-namespace CHPOUTSRCMES.Web.DataModel.Entiy.Information
+namespace CHPOUTSRCMES.Web.DataModel.Entity.Information
 {
     [Table("MACHINE_PAPER_TYPE_T")]
     public class MACHINE_PAPER_TYPE_T

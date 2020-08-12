@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
 
-namespace CHPOUTSRCMES.Web.DataModel.Entiy.Information
+namespace CHPOUTSRCMES.Web.DataModel.Entity.Information
 {
     public class SUBINVENTORY_T
     {
@@ -17,7 +17,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Information
         [Required]
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        [Column("ORGANIZATION_ID",Order = 1)]
+        [Column("ORGANIZATION_ID", Order = 1)]
         public long OrganizationId { set; get; }
 
 

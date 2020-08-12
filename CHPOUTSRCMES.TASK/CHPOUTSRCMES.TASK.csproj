@@ -70,9 +70,23 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\Entity\Shadowed\ITEMS_SHADOWED_T.cs" />
+    <Compile Include="Models\Entity\Shadowed\LOCATOR_SHADOWED_T.cs" />
+    <Compile Include="Models\Entity\Shadowed\MACHINE_PAPER_TYPE_SHADOWED_T.cs" />
+    <Compile Include="Models\Entity\Shadowed\ORGANIZATION_SHADOWED_T.cs" />
+    <Compile Include="Models\Entity\Shadowed\ORG_ITEMS_SHADOWED_T.cs" />
+    <Compile Include="Models\Entity\Shadowed\RELATED_SHADOWED_T.cs" />
+    <Compile Include="Models\Entity\Shadowed\SUBINVENTORY_SHADOWED_T.cs" />
+    <Compile Include="Models\Entity\Shadowed\TRANSACTION_TYPE_SHADOWED_T.cs" />
+    <Compile Include="Models\Entity\Shadowed\YSZMPCKQ_SHADOWED_T.cs" />
+    <Compile Include="Models\IBulkCopier.cs" />
+    <Compile Include="Models\BulkCopier.cs" />
     <Compile Include="Models\Repository\Oracle\GenericRepository.cs" />
     <Compile Include="Models\Repository\Interface\IGenericRepository.cs" />
+    <Compile Include="Models\Repository\Oracle\SubinventoryRepository.cs" />
     <Compile Include="Models\Repository\Oracle\ItemRepository.cs" />
+    <Compile Include="Models\ResultDataModel.cs" />
+    <Compile Include="Models\ResultModel.cs" />
     <Compile Include="Models\UnitOfWork\IUnitOfWork.cs" />
     <Compile Include="Models\UnitOfWork\MasterUOW .cs" />
     <Compile Include="Models\UnitOfWork\UnitOfWork.cs" />
@@ -169,8 +183,6 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="SqlModels\Entity\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
