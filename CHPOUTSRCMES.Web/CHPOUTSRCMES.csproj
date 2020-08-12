@@ -1404,6 +1404,7 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Img\favicon.ico" />
+    <Content Include="Img\login_1.jpg" />
     <Content Include="Img\paper2.png" />
     <Content Include="pngtree.jpg" />
     <Content Include="Scripts\bootstrap.js" />
