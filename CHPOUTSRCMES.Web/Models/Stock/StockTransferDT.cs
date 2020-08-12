@@ -153,17 +153,19 @@ namespace CHPOUTSRCMES.Web.Models.Stock
             return viewModel;
         }
 
-        public OutBoundViewModel GetOutBoundViewModel(MasterUOW uow)
+        public OutBoundViewModel GetOutBoundViewModel(MasterUOW uow, string userId)
         {
             OutBoundViewModel viewModel = new OutBoundViewModel();
 
-            viewModel.OutSubinventoryItems = orgData.GetSubinventoryList(uow, "265", MasterUOW.DropDownListType.Choice);
+            viewModel.OutSubinventoryItems = orgData.GetSubinventoryListForUserId(uow, userId, MasterUOW.DropDownListType.Choice);
 
-            viewModel.OutLocatorItems = orgData.GetLocatorList(uow, "265", viewModel.SelectedOutSubinventory, MasterUOW.DropDownListType.Choice);
+            //viewModel.OutLocatorItems = orgData.GetLocatorList(uow, "265", viewModel.SelectedOutSubinventory, MasterUOW.DropDownListType.Choice);
+            viewModel.OutLocatorItems = new List<SelectListItem> { new SelectListItem { Text = "", Value = "" } };
 
             viewModel.InSubinventoryItems = orgData.GetSubinventoryList(uow, "*", MasterUOW.DropDownListType.Choice);
 
-            viewModel.InLocatorItems = orgData.GetLocatorList(uow, "*", viewModel.SelectedInSubinventory, MasterUOW.DropDownListType.Choice);
+            //viewModel.InLocatorItems = orgData.GetLocatorList(uow, "*", viewModel.SelectedInSubinventory, MasterUOW.DropDownListType.Choice);
+            viewModel.InLocatorItems = new List<SelectListItem> { new SelectListItem { Text = "", Value = "" } };
 
             viewModel.ShipmentNumberItems = GetShipmentNumberList(viewModel.SelectedOutSubinventory, viewModel.SelectedOutLocator, viewModel.SelectedInSubinventory, viewModel.SelectedInLocator);
 
@@ -196,17 +198,19 @@ namespace CHPOUTSRCMES.Web.Models.Stock
             return viewModel;
         }
 
-        public InBoundViewModel GetInBoundViewModel(MasterUOW uow)
+        public InBoundViewModel GetInBoundViewModel(MasterUOW uow, string userId)
         {
             InBoundViewModel viewModel = new InBoundViewModel();
 
             viewModel.OutSubinventoryItems = orgData.GetSubinventoryList(uow, "*", MasterUOW.DropDownListType.Choice);
 
-            viewModel.OutLocatorItems = orgData.GetLocatorList(uow, "*", viewModel.SelectedOutSubinventory, MasterUOW.DropDownListType.Choice);
+            //viewModel.OutLocatorItems = orgData.GetLocatorList(uow, "*", viewModel.SelectedOutSubinventory, MasterUOW.DropDownListType.Choice);
+            viewModel.OutLocatorItems =  new List<SelectListItem> { new SelectListItem { Text = "", Value = "" } };
 
-            viewModel.InSubinventoryItems = orgData.GetSubinventoryList(uow, "265", MasterUOW.DropDownListType.Choice);
+            viewModel.InSubinventoryItems = orgData.GetSubinventoryListForUserId(uow, userId, MasterUOW.DropDownListType.Choice);
 
-            viewModel.InLocatorItems = orgData.GetLocatorList(uow, "265", viewModel.SelectedInSubinventory, MasterUOW.DropDownListType.Choice);
+            //viewModel.InLocatorItems = orgData.GetLocatorList(uow, "265", viewModel.SelectedInSubinventory, MasterUOW.DropDownListType.Choice);
+            viewModel.InLocatorItems = new List<SelectListItem> { new SelectListItem { Text = "", Value = "" } };
 
             viewModel.ShipmentNumberItems = GetShipmentNumberList(viewModel.SelectedOutSubinventory, viewModel.SelectedOutLocator, viewModel.SelectedInSubinventory, viewModel.SelectedInLocator);
 
@@ -218,16 +222,17 @@ namespace CHPOUTSRCMES.Web.Models.Stock
         public TransferReasonViewModel GetTransferReasonViewModel(MasterUOW uow)
         {
             TransferReasonViewModel viewModel = new TransferReasonViewModel();
-            viewModel.ReasonItems = orgData.GetReasonList();
-            viewModel.LocatorItems = orgData.GetLocatorList(uow, "265", viewModel.Locator, MasterUOW.DropDownListType.Choice);
+            viewModel.ReasonItems = uow.GetReasonDropDownList(MasterUOW.DropDownListType.Choice);
+            viewModel.LocatorItems = new List<SelectListItem> { new SelectListItem { Text = "", Value = "" } };
             return viewModel;
         }
 
 
 
-        public IEnumerable<SelectListItem> GetLocatorList(MasterUOW uow, string SUBINVENTORY_CODE, MasterUOW.DropDownListType type)
+        public IEnumerable<SelectListItem> GetLocatorListForUserId(MasterUOW uow, string userId, string SUBINVENTORY_CODE, MasterUOW.DropDownListType type)
         {
-            return orgData.GetLocatorList(uow, "265", SUBINVENTORY_CODE, type);
+            //return orgData.GetLocatorList(uow, "265", SUBINVENTORY_CODE, type);
+            return orgData.GetLocatorListForUserId(uow, userId, SUBINVENTORY_CODE, type);
         }
 
         public ResultModel CheckTransactionType(string outSubinventory, string inSubinventory)

@@ -35,11 +35,11 @@ namespace CHPOUTSRCMES.Web.Models.Information
     {
 
 
-        private List<SelectListItem> getOrganizationList()
+        private List<SelectListItem> getOrganizationList(string userId)
         {
             using (var context = new MesContext())
             {
-                return new MasterUOW(context).GetOrganizationDropDownList(DropDownListType.All);
+                return new MasterUOW(context).GetOrganizationDropDownListForUserId(userId, DropDownListType.All);
             }
         }
 
@@ -74,14 +74,14 @@ namespace CHPOUTSRCMES.Web.Models.Information
             }
         }
 
-        public OspRelatedViewModel getViewModel()
+        public OspRelatedViewModel getViewModel(string userId)
         {
             OspRelatedViewModel viewModel = new OspRelatedViewModel();
             viewModel.SelectedOrganization = "*";
             viewModel.SelectedInventoryItemNumber = "*";
             viewModel.SelectedRelatedItemNumber = "*";
 
-            viewModel.OrganizationNameItems = getOrganizationList();
+            viewModel.OrganizationNameItems = getOrganizationList(userId);
             viewModel.InventoryItemNumberItems = GetInventoryItemList("*");
             viewModel.RelatedItemNumberItems = GetRelatedItemList("*", "*");
 

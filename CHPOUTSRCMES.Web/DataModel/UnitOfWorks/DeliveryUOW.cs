@@ -87,9 +87,9 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
         /// <returns></returns>
         public ResultModel AddPickDT(long dlvHeaderId, long dlvDetailId, string deliveryName, string barcode, decimal? qty, string addUser, string addUserName)
         {
-            //qty = qty * -1;            
+            var addDate = DateTime.Now;
             //庫存檢查
-            var checkResult = CheckStock(barcode, qty * -1);
+            var checkResult = DeliveryCheckStock(barcode, qty * -1, addDate);
             //var checkResult = CheckStock(barcode, qty, uom);
             if (!checkResult.Success) return new ResultModel(checkResult.Success, checkResult.Msg);
             var stock = checkResult.Data;
@@ -142,7 +142,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                     }
 
                     //更新庫存
-                    var addDate = DateTime.Now;
+                    
                     var updaeStockResult = UpdateStock(stock, stkTxnT, ref priQty, ref secQty, pickSatus, PickStatus.Picked, addUser, addDate, true);
                     if (!updaeStockResult.Success) return new ResultModel(updaeStockResult.Success, updaeStockResult.Msg);
 
@@ -459,7 +459,7 @@ OR SUM(ISNULL(p.SECONDARY_QUANTITY, 0)) <> MIN(d.REQUESTED_SECONDARY_QUANTITY)";
                     OrgName = "1",
                     OrganizationId = 265,
                     OrganizationCode = "FTY",
-                    SubinventoryCode = "TB2",
+                    SubinventoryCode = "TB3",
                     TripCar = "PN01",
                     TripId = 1,
                     TripName = "Y191226-1036357",
@@ -542,7 +542,7 @@ OR SUM(ISNULL(p.SECONDARY_QUANTITY, 0)) <> MIN(d.REQUESTED_SECONDARY_QUANTITY)";
                     OrgName = "1",
                     OrganizationId = 265,
                     OrganizationCode = "FTY",
-                    SubinventoryCode = "TB2",
+                    SubinventoryCode = "TB3",
                     TripCar = "PN01",
                     TripId = 1,
                     TripName = "Y191226-1036357",
@@ -623,7 +623,7 @@ OR SUM(ISNULL(p.SECONDARY_QUANTITY, 0)) <> MIN(d.REQUESTED_SECONDARY_QUANTITY)";
                     OrgName = "1",
                     OrganizationId = 265,
                     OrganizationCode = "FTY",
-                    SubinventoryCode = "TB2",
+                    SubinventoryCode = "TB3",
                     TripCar = "PTB2",
                     TripId = 2,
                     TripName = "Y200109-1052058",
@@ -1722,10 +1722,10 @@ where DLV_HEADER_ID = @DLV_HEADER_ID"; ;
                     StringBuilder cmd = new StringBuilder(@"
 SELECT p.BARCODE as Barocde
 ,@userName as PrintBy
-,i.ITEM_DESC_TCH as BarocdeName
-,i.CATALOG_ELEM_VAL_020 as PapaerType
-,i.CATALOG_ELEM_VAL_040 as BasicWeight
-,i.CATALOG_ELEM_VAL_050 as Specification
+,s.ITEM_DESCRIPTION as BarocdeName
+,s.PAPER_TYPE as PapaerType
+,s.BASIC_WEIGHT as BasicWeight
+,s.SPECIFICATION as Specification
 ,s.OSP_BATCH_NO as OspBatchNo");
 
                     if (data.PalletStatus == PalletStatusCode.Split)//判斷是否拆板
@@ -1734,11 +1734,10 @@ SELECT p.BARCODE as Barocde
                         {
                             //拆板 平版
                             cmd.Append(@"
-,i.SECONDARY_UOM_CODE as Unit
+,s.SECONDARY_UOM_CODE as Unit
 ,FORMAT(s.SECONDARY_AVAILABLE_QTY,'0.##########') as Qty
 FROM [DLV_PICKED_T] p
 INNER JOIN STOCK_T s ON p.BARCODE = s.BARCODE
-INNER JOIN ITEMS_T i ON p.INVENTORY_ITEM_ID = i.INVENTORY_ITEM_ID
 WHERE p.BARCODE = @Barcode
 ");
                         }
@@ -1754,11 +1753,10 @@ WHERE p.BARCODE = @Barcode
                         {
                             //整板 平版
                             cmd.Append(@"
-,i.SECONDARY_UOM_CODE as Unit
+,s.SECONDARY_UOM_CODE as Unit
 ,FORMAT(p.SECONDARY_QUANTITY,'0.##########') as Qty
 FROM [DLV_PICKED_T] p
 INNER JOIN STOCK_T s ON p.BARCODE = s.BARCODE
-INNER JOIN ITEMS_T i ON p.INVENTORY_ITEM_ID = i.INVENTORY_ITEM_ID
 WHERE p.BARCODE = @Barcode
 ");
                         }
@@ -1766,11 +1764,10 @@ WHERE p.BARCODE = @Barcode
                         {
                             //整板 捲筒
                             cmd.Append(@"
-,i.PRIMARY_UOM_CODE as Unit
+,s.PRIMARY_UOM_CODE as Unit
 ,FORMAT(p.PRIMARY_QUANTITY,'0.##########') as Qty
 FROM [DLV_PICKED_T] p
 INNER JOIN STOCK_T s ON p.BARCODE = s.BARCODE
-INNER JOIN ITEMS_T i ON p.INVENTORY_ITEM_ID = i.INVENTORY_ITEM_ID
 WHERE p.BARCODE = @Barcode
 ");
                         }

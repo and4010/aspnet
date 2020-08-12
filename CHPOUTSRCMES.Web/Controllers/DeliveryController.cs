@@ -31,6 +31,8 @@ namespace CHPOUTSRCMES.Web.Controllers
             {
                 using (DeliveryUOW uow = new DeliveryUOW(context))
                 {
+                    //取得使用者ID
+                    var id = this.User.Identity.GetUserId();
                     //取得使用者帳號
                     var name = this.User.Identity.GetUserName();
                     //取得使用者角色
@@ -38,7 +40,7 @@ namespace CHPOUTSRCMES.Web.Controllers
                     var claims = userIdentity.Claims;
                     var roleClaimType = userIdentity.RoleClaimType;
                     var roles = claims.Where(c => c.Type == ClaimTypes.Role).ToList();
-                    DeliverySearchViewModel viewModel = tripHeaderData.GetDeliverySearchViewModel(uow, roles, name);
+                    DeliverySearchViewModel viewModel = tripHeaderData.GetDeliverySearchViewModel(uow, roles, id);
                     return View(viewModel);
                 }
             }

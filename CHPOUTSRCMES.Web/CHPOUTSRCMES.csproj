@@ -250,6 +250,8 @@
     <Compile Include="Controllers\TransferController.cs" />
     <Compile Include="Controllers\YszmpckqController.cs" />
     <Compile Include="DataAnnotation\Precision.cs" />
+    <Compile Include="DataModel\Entiy\Transfer\TRANSFER_DETAIL_T.cs" />
+    <Compile Include="DataModel\Entiy\Transfer\TRANSFER_HEADER_T.cs" />
     <Compile Include="DataModel\UnitOfWorks\ItemNoUOW.cs" />
     <Compile Include="DataModel\UnitOfWorks\MaincheTypeUOW.cs" />
     <Compile Include="DataModel\UnitOfWorks\RelatedUOW.cs" />

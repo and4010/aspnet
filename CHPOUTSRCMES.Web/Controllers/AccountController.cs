@@ -101,9 +101,6 @@ namespace CHPOUTSRCMES.Web.Controllers
                     {
                         Response.Cookies.Add(new HttpCookie("username") { Value = result.Data.UserName });
                         Response.Cookies.Add(new HttpCookie("displayname") { Value = result.Data.DisplayName });
-                        Response.Cookies.Add(new HttpCookie("organizationid") { Value = result.Data.OrganizationId.ToString() });
-                        Response.Cookies.Add(new HttpCookie("organizationcode") { Value = result.Data.OrganizationCode });
-                        Response.Cookies.Add(new HttpCookie("subinventorycode") { Value = result.Data.SubinventoryCode });
                     }
                     return RedirectToLocal(returnUrl);
                 }

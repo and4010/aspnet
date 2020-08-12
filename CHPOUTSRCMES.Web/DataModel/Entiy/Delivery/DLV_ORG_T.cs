@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CHPOUTSRCMES.DataAnnotation;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -342,7 +343,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Delivery
         /// 出貨倉庫
         /// </summary>
         /// 
-        [StringLength(10)]
+        [StringLength(20)]
         [Required]
         [Column("SUBINVENTORY_CODE")]
         public string SubinventoryCode { set; get; }
@@ -368,6 +369,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Delivery
         /// 
         [Required]
         [Column("SRC_REQUESTED_QUANTITY")]
+        [Precision(30, 10)]
         public decimal SrcRequestedQuantity { set; get; }
 
         /// <summary>
@@ -385,6 +387,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Delivery
         /// 
         [Required]
         [Column("REQUESTED_QUANTITY")]
+        [Precision(30, 10)]
         public decimal RequestedQuantity { set; get; }
 
         /// <summary>
@@ -402,6 +405,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Delivery
         /// 
         [Required]
         [Column("REQUESTED_QUANTITY2")]
+        [Precision(30, 10)]
         public decimal RequestedQuantity2 { set; get; }
 
         /// <summary>

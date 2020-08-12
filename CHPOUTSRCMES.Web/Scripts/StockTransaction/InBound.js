@@ -8,9 +8,10 @@
         
         var SUBINVENTORY_CODE = $("#ddlOutSubinventory").val();
         $.ajax({
-            url: "/StockTransaction/GetLocatorList",
+            url: "/OrgSubinventory/GetLocatorList",
             type: "post",
             data: {
+                ORGANIZATION_ID: "*",
                 SUBINVENTORY_CODE: SUBINVENTORY_CODE
             },
             success: function (data) {
@@ -61,7 +62,7 @@
 
         var SUBINVENTORY_CODE = $("#ddlInSubinventory").val();
         $.ajax({
-            url: "/StockTransaction/GetLocatorList",
+            url: "/StockTransaction/GetLocatorListForUserId",
             type: "post",
             data: {
                 SUBINVENTORY_CODE: SUBINVENTORY_CODE

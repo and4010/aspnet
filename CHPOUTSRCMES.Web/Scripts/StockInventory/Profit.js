@@ -42,7 +42,7 @@ function ProfitTopInit() {
 
         var SUBINVENTORY_CODE = $("#ddlSubinventory").val();
         $.ajax({
-            url: "/StockTransaction/GetLocatorList",
+            url: "/StockTransaction/GetLocatorListForUserId",
             type: "post",
             data: {
                 SUBINVENTORY_CODE: SUBINVENTORY_CODE

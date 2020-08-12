@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 
 namespace CHPOUTSRCMES.Web.Models.Stock
 {
@@ -17,14 +18,14 @@ namespace CHPOUTSRCMES.Web.Models.Stock
         //    orgData = orgSubinventoryData;
         //}
 
-        public TopViewModel GetViewModel(MasterUOW uow, OrgSubinventoryData orgData)
+        public TopViewModel GetViewModel(MasterUOW uow, OrgSubinventoryData orgData, string userId)
         {
             TopViewModel viewModel = new TopViewModel();
 
-            viewModel.SubinventoryItems = orgData.GetSubinventoryList(uow, "265", MasterUOW.DropDownListType.Choice);
+            viewModel.SubinventoryItems = orgData.GetSubinventoryListForUserId(uow, userId, MasterUOW.DropDownListType.Choice);
 
-            viewModel.LocatorItems = orgData.GetLocatorList(uow, "265", viewModel.SelectedSubinventory, MasterUOW.DropDownListType.Choice);
-
+            //viewModel.LocatorItems = orgData.GetLocatorList(uow, "265", viewModel.SelectedSubinventory, MasterUOW.DropDownListType.Choice);
+            viewModel.LocatorItems = new List<SelectListItem> { new SelectListItem { Text = "", Value = "" } };
             return viewModel;
         }
     }

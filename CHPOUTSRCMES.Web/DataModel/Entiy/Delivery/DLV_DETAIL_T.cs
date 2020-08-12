@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CHPOUTSRCMES.DataAnnotation;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -163,6 +164,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Delivery
         /// 
         [Required]
         [Column("REQUESTED_TRANSACTION_QUANTITY")]
+        [Precision(30, 10)]
         public decimal SrcRequestedQuantity { set; get; }
 
         /// <summary>
@@ -180,6 +182,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Delivery
         /// 
         [Required]
         [Column("REQUESTED_PRIMARY_QUANTITY")]
+        [Precision(30, 10)]
         public decimal RequestedQuantity { set; get; }
 
         /// <summary>
@@ -196,6 +199,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Delivery
         /// </summary>
         /// 
         [Column("REQUESTED_SECONDARY_QUANTITY")]
+        [Precision(30, 10)]
         public decimal? RequestedQuantity2 { set; get; }
 
         /// <summary>

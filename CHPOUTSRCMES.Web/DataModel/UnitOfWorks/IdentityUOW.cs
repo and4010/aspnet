@@ -104,9 +104,6 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                         user.DisplayName = ExcelUtil.GetStringCellValue(row.GetCell(3)).Trim();
                         user.Email = ExcelUtil.GetStringCellValue(row.GetCell(4)).Trim();
                         user.EmailConfirmed = false;
-                        user.OrganizationId = ExcelUtil.GetLongCellValue(row.GetCell(5));
-                        user.OrganizationCode = ExcelUtil.GetStringCellValue(row.GetCell(6));
-                        user.SubinventoryCode = ExcelUtil.GetStringCellValue(row.GetCell(7));
                         var result = userManager.Create(user, password);
                         if (result.Succeeded)
                         {
