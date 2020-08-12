@@ -1,4 +1,6 @@
 ﻿using CHPOUTSRCMES.TASK.Forms;
+using CHPOUTSRCMES.TASK.Models.Entity;
+using CHPOUTSRCMES.TASK.Models.Entity.Shadowed;
 using CHPOUTSRCMES.TASK.Models.UnitOfWork;
 using CHPOUTSRCMES.TASK.Models.Views;
 using CHPOUTSRCMES.TASK.Tasks;
@@ -7,6 +9,7 @@ using NLog;
 using Oracle.ManagedDataAccess.Client;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -29,6 +32,16 @@ namespace CHPOUTSRCMES.TASK
             System.Configuration.ConfigurationManager.ConnectionStrings["OracleTestContext"].ToString()
 #else
             System.Configuration.ConfigurationManager.ConnectionStrings["ErpContext"].ToString()
+#endif
+            );
+
+        private String mesConnStr;
+
+        internal String MesConnStr => mesConnStr ?? (mesConnStr =
+#if DEBUG
+            System.Configuration.ConfigurationManager.ConnectionStrings["MesTestContext"].ToString()
+#else
+            System.Configuration.ConfigurationManager.ConnectionStrings["MesContext"].ToString()
 #endif
             );
         
@@ -224,6 +237,75 @@ namespace CHPOUTSRCMES.TASK
                             return;
                         }
                     }
+                }
+
+                var orgList = subinventoryList
+                    .GroupBy(x => x.ORGANIZATION_ID)
+                    .Select(x => new ORGANIZATION_SHADOWED_T() {
+                        ORGANIZATION_ID = x.FirstOrDefault().ORGANIZATION_ID,
+                        ORGANIZATION_NAME = x.FirstOrDefault().ORGANIZATION_NAME,
+                        ORGANIZATION_CODE = x.FirstOrDefault().ORGANIZATION_CODE, 
+                        CONTROL_FLAG = null
+                    })
+                    .ToList();
+
+                var subList = subinventoryList
+                    .GroupBy(x => new { x.ORGANIZATION_ID, x.SUBINVENTORY_CODE } )
+                    .Select(x => new SUBINVENTORY_SHADOWED_T()
+                    {
+                        ORGANIZATION_ID = x.FirstOrDefault().ORGANIZATION_ID,
+                        SUBINVENTORY_CODE = x.FirstOrDefault().SUBINVENTORY_CODE,
+                        SUBINVENTORY_NAME = x.FirstOrDefault().SUBINVENTORY_NAME,
+                        LOCATOR_TYPE = x.FirstOrDefault().LOCATOR_TYPE,
+                        OSP_FLAG = x.FirstOrDefault().OSP_FLAG, 
+                        CONTROL_FLAG = null
+                    })
+                    .ToList();
+
+                var locatorList = subinventoryList
+                    .Where(x=> x.LOCATOR_ID != null && x.LOCATOR_ID > 0)
+                    .GroupBy(x => new { x.ORGANIZATION_ID, x.SUBINVENTORY_CODE, x.LOCATOR_ID })
+                    .Select(x => new LOCATOR_SHADOWED_T()
+                    {
+                        ORGANIZATION_ID = x.FirstOrDefault().ORGANIZATION_ID,
+                        SUBINVENTORY_CODE = x.FirstOrDefault().SUBINVENTORY_CODE,
+                        LOCATOR_ID = x.FirstOrDefault().LOCATOR_ID ?? 0,
+                        LOCATOR_SEGMENTS = x.FirstOrDefault().LOCATOR_SEGMENTS,
+                        LOCATOR_DESC = x.FirstOrDefault().LOCATOR_DESC,
+                        SEGMENT1 = x.FirstOrDefault().SEGMENT1,
+                        SEGMENT2 = x.FirstOrDefault().SEGMENT2,
+                        SEGMENT3 = x.FirstOrDefault().SEGMENT3,
+                        SEGMENT4 = x.FirstOrDefault().SEGMENT4, 
+                        CONTROL_FLAG = null,
+                        LOCATOR_STATUS = x.FirstOrDefault().LOCATOR_STATUS,
+                        LOCATOR_STATUS_CODE = x.FirstOrDefault().LOCATOR_STATUS_CODE,
+                        LOCATOR_DISABLE_DATE = x.FirstOrDefault().LOCATOR_DISABLE_DATE, 
+                        LOCATOR_PICKING_ORDER = x.FirstOrDefault().LOCATOR_PICKING_ORDER
+                    })
+                    .ToList();
+
+
+                using (var sqlConn = new SqlConnection(MesConnStr))
+                {
+                    sqlConn.Open();
+                    using (var transaction = sqlConn.BeginTransaction())
+                    {
+                        try
+                        {
+                            BulkCopier copier = new BulkCopier();
+                            copier.BulkCopy(sqlConn, transaction, orgList, "ORGANIZATION_SHADOWED_T", true);
+                            copier.BulkCopy(sqlConn, transaction, subList, "SUBINVENTORY_SHADOWED_T", true);
+                            copier.BulkCopy(sqlConn, transaction, locatorList, "LOCATOR_SHADOWED_T", true);
+
+                            transaction.Commit();
+                        }
+                        catch(Exception ex)
+                        {
+                            transaction.Rollback();
+                            LogInfo($"[{tasker.Name}]-{tasker.Unit}-資料匯入失敗:{ex.Message}");
+                        }
+                    }
+                    sqlConn.Close();
                 }
             }
             catch (OperationCanceledException)

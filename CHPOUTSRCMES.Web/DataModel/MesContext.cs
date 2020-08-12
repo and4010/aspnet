@@ -1,7 +1,7 @@
 ﻿using CHPOUTSRCMES.DataAnnotation;
 using CHPOUTSRCMES.Web.DataModel;
-using CHPOUTSRCMES.Web.DataModel.Entiy;
-using CHPOUTSRCMES.Web.DataModel.Entiy.Purchase;
+using CHPOUTSRCMES.Web.DataModel.Entity;
+using CHPOUTSRCMES.Web.DataModel.Entity.Purchase;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -9,10 +9,12 @@ using System.Data.Entity.ModelConfiguration.Conventions;
 using System.Linq;
 using System.Web;
 using Microsoft.AspNet.Identity.EntityFramework;
-using CHPOUTSRCMES.Web.DataModel.Entiy.Information;
-using CHPOUTSRCMES.Web.DataModel.Entiy.Delivery;
+using CHPOUTSRCMES.Web.DataModel.Entity.Information;
+using CHPOUTSRCMES.Web.DataModel.Entity.Delivery;
 using System.Web.Configuration;
 using System.Data;
+using CHPOUTSRCMES.Web.DataModel.Entity.Temp;
+using CHPOUTSRCMES.Web.DataModel.Entity.Process;
 
 namespace CHPOUTSRCMES.Web.DataModel
 {
@@ -44,7 +46,8 @@ namespace CHPOUTSRCMES.Web.DataModel
             modelBuilder.Entity<IdentityUserLogin>().HasKey<string>(l => l.UserId).ToTable("USER_LOGIN_T");
             modelBuilder.Entity<IdentityRole>().HasKey<string>(r => r.Id).ToTable("ROLE_T");
             modelBuilder.Entity<IdentityUserRole>().HasKey(r => new { r.RoleId, r.UserId }).ToTable("USER_ROLE_T");
-            modelBuilder.Entity<IdentityUserClaim>().HasKey(r =>  r.Id).ToTable("USER_CLAIM_T");
+            modelBuilder.Entity<IdentityUserClaim>().HasKey(r => r.Id).ToTable("USER_CLAIM_T");
+            
         }
 
         public static MesContext Create()
@@ -91,6 +94,46 @@ namespace CHPOUTSRCMES.Web.DataModel
         /// </summary>
         public DbSet<TRANSACTION_TYPE_T> TransactionTypeTs { set; get; }
         #endregion 主檔 (來自ERP)
+
+        #region 主檔 Temp
+        /// <summary>
+        /// 組織(同步用)
+        /// </summary>
+        public DbSet<ORGANIZATION_TMP_T> OrganizationTmpT { set; get; }
+        /// <summary>
+        /// 倉庫(同步用)
+        /// </summary>
+        public DbSet<SUBINVENTORY_TMP_T> SubinventoryTmpT { set; get; }
+        /// <summary>
+        /// 儲位(同步用)
+        /// </summary>
+        public DbSet<LOCATOR_TMP_T> LocatorTmpT { set; get; }
+        /// <summary>
+        /// 料號(同步用)
+        /// </summary>
+        public DbSet<ITEMS_TMP_T> ItemTmpT { set; get; }
+        /// <summary>
+        /// 組織料號(同步用)
+        /// </summary>
+        public DbSet<ORG_ITEMS_TMP_T> OrgITemTmpT { set; get; }
+        /// <summary>
+        /// 紙別機台(同步用)
+        /// </summary>
+        public DbSet<MACHINE_PAPER_TYPE_TMP_T> MachinePaperTypeTmpT { set; get; }
+        /// <summary>
+        /// 庫存交易類別(同步用)
+        /// </summary>
+        public DbSet<TRANSACTION_TYPE_TMP_T> TransactionTypeTmpT { set; get; }
+        /// <summary>
+        /// 餘切規格(同步用)
+        /// </summary>
+        public DbSet<RELATED_TMP_T> RelatedTmpT { set; get; }
+        /// <summary>
+        /// 令重包數(同步用)
+        /// </summary>
+        public DbSet<YSZMPCKQ_TMP_T> YszmpckqTmpT { set; get; }
+
+        #endregion 主檔 SHADOWED
 
         /// <summary>
         /// 貨故原因
@@ -194,6 +237,80 @@ namespace CHPOUTSRCMES.Web.DataModel
 
         #endregion 出貨
 
+        #region 加工
 
+        /// <summary>
+        /// 加工主檔
+        /// </summary>
+        public DbSet<OSP_ORG_T> OspOrgTs { set; get; }
+
+        /// <summary>
+        /// 加工擋頭
+        /// </summary>
+        public DbSet<OSP_HEADER_T> OspHeaderTs { set; get; }
+
+        /// <summary>
+        /// 加工投入明細
+        /// </summary>
+        public DbSet<OSP_DETAIL_IN_T> OspDetailInTs { set; get; }
+
+        /// <summary>
+        /// 加工投入歷史明細
+        /// </summary>
+        public DbSet<OSP_DETAIL_IN_HT> OspDetailInHTs { set; get; }
+
+        /// <summary>
+        /// 加工投入檢貨
+        /// </summary>
+        public DbSet<OSP_PICKED_IN_T> OspPickedInTs { set; get; }
+
+        /// <summary>
+        /// 加工投入歷史檢貨
+        /// </summary>
+        public DbSet<OSP_PICKED_IN_HT> OspPickedInHTs { set; get; }
+
+        /// <summary>
+        /// 加工產出明細
+        /// </summary>
+        public DbSet<OSP_DETAIL_OUT_T> OspDetailOutTs { set; get; }
+
+
+        /// <summary>
+        /// 加工產出歷史明細
+        /// </summary>
+        public DbSet<OSP_DETAIL_OUT_HT> OspDetailOutHTs { set; get; }
+
+        /// <summary>
+        /// 加工投出檢貨
+        /// </summary>
+        public DbSet<OSP_PICKED_OUT_T> OspPickedOutTs { set; get; }
+
+        /// <summary>
+        /// 加工投出歷史檢貨
+        /// </summary>
+        public DbSet<OSP_PICKED_OUT_HT> OspPickedOutHTs { set; get; }
+
+        /// <summary>
+        /// 餘切
+        /// </summary>
+        public DbSet<OSP_COTANGENT_T> OspCotangentTs { set; get; }
+
+
+        /// <summary>
+        /// 餘切歷史
+        /// </summary>
+        public DbSet<OSP_COTANGENT_HT> OspCotangentHTs { set; get; }
+
+        /// <summary>
+        /// 損耗
+        /// </summary>
+        public DbSet<OSP_YIELD_VARIANCE_T> OspYieldVarinceTs { set; get; }
+
+        /// <summary>
+        /// 損耗歷史
+        /// </summary>
+        public DbSet<OSP_YIELD_VARIANCE_HT> OspYieldVarinceHTs { set; get; }
+
+        #endregion
     }
 }

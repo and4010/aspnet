@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using CHPOUTSRCMES.Web.DataModel.Entiy.Information;
-using CHPOUTSRCMES.Web.DataModel.Entiy.Interfaces;
-using CHPOUTSRCMES.Web.DataModel.Entiy.Repositorys;
+using CHPOUTSRCMES.Web.DataModel.Entity.Information;
+using CHPOUTSRCMES.Web.DataModel.Entity.Interfaces;
+using CHPOUTSRCMES.Web.DataModel.Entity.Repositorys;
 using CHPOUTSRCMES.Web.Util;
 using NLog;
 using NPOI.SS.UserModel;
@@ -13,7 +13,7 @@ using System.Web.Mvc;
 using CHPOUTSRCMES.Web.Models.Information;
 using CHPOUTSRCMES.Web.Models;
 using System.Data.SqlClient;
-using CHPOUTSRCMES.Web.DataModel.Entiy;
+using CHPOUTSRCMES.Web.DataModel.Entity;
 using CHPOUTSRCMES.Web.DataModel.Interfaces;
 using static CHPOUTSRCMES.Web.DataModel.UnitOfWorks.DeliveryUOW;
 using System.IO;
@@ -3266,6 +3266,87 @@ on s.ORGANIZATION_ID = l.ORGANIZATION_ID and s.SUBINVENTORY_CODE = l.SUBINVENTOR
                                 FileAccess.Read
                                 );
             return new FileStreamResult(fileStream, "application/pdf");
+        }
+
+        /// <summary>
+        /// 取得機台
+        /// </summary>
+        /// <returns></returns>
+        public List<SelectListItem> GetManchine(string OrganizationId)
+        {
+            List<SelectListItem> ManchineNum = new List<SelectListItem>();
+            ManchineNum.Add(new SelectListItem()
+            {
+                Text = "全部",
+                Value = "*",
+                Selected = false,
+            });
+
+            if (OrganizationId != "*")
+            {
+                var id = Int32.Parse(OrganizationId);
+                var MachineCode = machinePaperTypeRepositiory.Get(x => x.ControlFlag != "D" && x.OrganizationId == id)
+                             .Select(x => new SelectListItem
+                             {
+                                 Text = x.MachineCode,
+                                 Value = x.MachineCode
+                             }).ToList();
+                ManchineNum.AddRange(MachineCode);
+            }
+            else
+            {
+                var MachineCode = machinePaperTypeRepositiory.Get(x => x.ControlFlag != "D")
+                           .Select(x => new SelectListItem
+                           {
+                               Text = x.MachineCode,
+                               Value = x.MachineCode
+                           }).ToList();
+                ManchineNum.AddRange(MachineCode);
+            }
+
+            return ManchineNum;
+        }
+
+        /// <summary>
+        /// 加工倉庫
+        /// </summary>
+        /// <param name="OrganizationId"></param>
+        /// <returns></returns>
+        public List<SelectListItem> GetSubinventory(string OrganizationId)
+        {
+            List<SelectListItem> Subinventory = new List<SelectListItem>();
+            Subinventory.Add(new SelectListItem()
+            {
+                Text = "全部",
+                Value = "*",
+                Selected = false,
+            });
+            if (OrganizationId != "*")
+            {
+                var id = Int32.Parse(OrganizationId);
+                var sub = subinventoryRepositiory.Get(x => x.ControlFlag != "D" && x.OspFlag == "Y" && x.OrganizationId == id)
+                     .Select(x => new SelectListItem
+                     {
+                         Text = x.SubinventoryCode,
+                         Value = x.SubinventoryCode
+
+                     }).ToList();
+                Subinventory.AddRange(sub);
+            }
+            else
+            {
+                var sub = subinventoryRepositiory.Get(x => x.ControlFlag != "D" && x.OspFlag == "Y")
+                     .Select(x => new SelectListItem
+                     {
+                         Text = x.SubinventoryCode,
+                         Value = x.SubinventoryCode
+
+                     }).ToList();
+                Subinventory.AddRange(sub);
+            }
+
+
+            return Subinventory;
         }
     }
 }

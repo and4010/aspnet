@@ -7,7 +7,7 @@ using Hangfire;
 using Hangfire.SqlServer;
 using System.Diagnostics;
 using CHPOUTSRCMES.Web.DataModel;
-using CHPOUTSRCMES.Web.DataModel.Entiy;
+using CHPOUTSRCMES.Web.DataModel.Entity;
 using Microsoft.Owin.Security.Cookies;
 using Microsoft.AspNet.Identity;
 using CHPOUTSRCMES.Web.App_Start;

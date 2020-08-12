@@ -13,7 +13,7 @@
     <script src="~/Scripts/Process/Edit.js"></script>
 }
 
-@Html.HiddenFor(model => model.CHP_PROCESS_T.Process_Detail_Id, new { id = "Process_Detail_Id" })
+@Html.HiddenFor(model => model.CHP_PROCESS_T.OspDetailInId, new { id = "Process_Detail_Id" })
 
 <div class="row">
 
@@ -21,29 +21,29 @@
     <div class="row col-md-12">
         @*工單號*@
         <div class="form-group col col-md-1 text-right">
-            @Html.LabelFor(model => model.CHP_PROCESS_T.Process_Batch_no)
+            @Html.LabelFor(model => model.CHP_PROCESS_T.OspBatchNo)
         </div>
 
         <div class="form-group col col-md-2 ">
-            @Html.DisplayFor(model => model.CHP_PROCESS_T.Process_Batch_no)
+            @Html.DisplayFor(model => model.CHP_PROCESS_T.OspBatchNo)
         </div>
 
-        @* 料號 *@
+        @* 生產料號 *@
         <div class="form-group col-md-1 text-right">
-            @Html.LabelFor(model => model.CHP_PROCESS_T.Produce_Item)
+            @Html.LabelFor(model => model.CHP_PROCESS_T.SelectedInventoryItemNumber)
         </div>
 
         <div class="form-group col-md-2">
-            @Html.DisplayFor(model => model.CHP_PROCESS_T.Produce_Item)
+            @Html.DisplayFor(model => model.CHP_PROCESS_T.SelectedInventoryItemNumber)
         </div>
 
         @*需求日*@
         <div class="form-group col col-md-1 text-right">
-            @Html.LabelFor(model => model.CHP_PROCESS_T.Demand_Date)
+            @Html.LabelFor(model => model.CHP_PROCESS_T.DueDate)
         </div>
 
         <div class="form-group col col-md-2">
-            @Html.DisplayFor(model => model.CHP_PROCESS_T.Demand_Date)
+            @Html.DisplayFor(model => model.CHP_PROCESS_T.DueDate)
         </div>
 
     </div>
@@ -52,20 +52,20 @@
 
         @*裁切日*@
         <div class="form-group col col-md-1 text-right">
-            @Html.LabelFor(model => model.CHP_PROCESS_T.Cutting_Date_From)
+            @Html.LabelFor(model => model.CHP_PROCESS_T.CuttingDateFrom)
         </div>
 
         <div class="form-group col col-md-2">
-            @Html.DisplayFor(model => model.CHP_PROCESS_T.Cutting_Date_From)
+            @Html.DisplayFor(model => model.CHP_PROCESS_T.CuttingDateFrom)
         </div>
 
         @*裁切日*@
         <div class="form-group col col-md-1 text-right">
-            @Html.LabelFor(model => model.CHP_PROCESS_T.Cutting_Date_To)
+            @Html.LabelFor(model => model.CHP_PROCESS_T.CuttingDateTo)
         </div>
 
         <div class="form-group col col-md-2">
-            @Html.DisplayFor(model => model.CHP_PROCESS_T.Cutting_Date_To)
+            @Html.DisplayFor(model => model.CHP_PROCESS_T.CuttingDateTo)
         </div>
 
     </div>
@@ -76,29 +76,29 @@
 
         @*客戶名稱*@
         <div class="form-group col col-md-1 text-right">
-            @Html.LabelFor(model => model.CHP_PROCESS_T.Cosutomer_Num)
+            @Html.LabelFor(model => model.CHP_PROCESS_T.CustomerName)
         </div>
 
         <div class="form-group col col-md-2">
-            @Html.DisplayFor(model => model.CHP_PROCESS_T.Cosutomer_Num)
+            @Html.DisplayFor(model => model.CHP_PROCESS_T.CustomerName)
         </div>
 
         @* 訂單編號 *@
         <div class="form-group col col-md-1 text-right">
-            @Html.LabelFor(model => model.CHP_PROCESS_T.Order_Number)
+            @Html.LabelFor(model => model.CHP_PROCESS_T.OrderNumber)
         </div>
 
         <div class="form-group col col-md-2">
-            @Html.DisplayFor(model => model.CHP_PROCESS_T.Order_Number)
+            @Html.DisplayFor(model => model.CHP_PROCESS_T.OrderNumber)
         </div>
 
         @* 紙別 *@
         <div class="form-group col col-md-1 text-right">
-            @Html.LabelFor(model => model.CHP_PROCESS_T.Paper_Type)
+            @Html.LabelFor(model => model.CHP_PROCESS_T.PaperType)
         </div>
 
         <div class="form-group col col-md-1">
-            @Html.DisplayFor(model => model.CHP_PROCESS_T.Paper_Type)
+            @Html.DisplayFor(model => model.CHP_PROCESS_T.PaperType)
         </div>
     </div>
 
@@ -106,11 +106,11 @@
 
         @* 基重 *@
         <div class="form-group col-md-1 text-right">
-            @Html.LabelFor(model => model.CHP_PROCESS_T.Basic_Weight)
+            @Html.LabelFor(model => model.CHP_PROCESS_T.BasicWeight)
         </div>
 
         <div class="form-group col-md-2">
-            @Html.DisplayFor(model => model.CHP_PROCESS_T.Basic_Weight)
+            @Html.DisplayFor(model => model.CHP_PROCESS_T.BasicWeight)
         </div>
 
         @* 規格 *@
@@ -124,11 +124,11 @@
 
         @* 絲向 *@
         <div class="form-group col col-md-1 text-right">
-            @Html.LabelFor(model => model.CHP_PROCESS_T.Grain_Direction)
+            @Html.LabelFor(model => model.CHP_PROCESS_T.GrainDirection)
         </div>
 
         <div class="form-group col col-md-2">
-            @Html.DisplayFor(model => model.CHP_PROCESS_T.Grain_Direction)
+            @Html.DisplayFor(model => model.CHP_PROCESS_T.GrainDirection)
         </div>
 
 
@@ -139,29 +139,29 @@
 
         @* 重量 *@
         <div class="form-group col col-md-1 text-right">
-            @Html.LabelFor(model => model.CHP_PROCESS_T.Weight)
+            @Html.LabelFor(model => model.CHP_PROCESS_T.PrimaryQuantity)
         </div>
 
         <div class="form-group col col-md-2">
-            @Html.DisplayFor(model => model.CHP_PROCESS_T.Weight)
+            @Html.DisplayFor(model => model.CHP_PROCESS_T.PrimaryQuantity)
         </div>
 
         @* 令數 *@
         <div class="form-group col col-md-1 text-right">
-            @Html.LabelFor(model => model.CHP_PROCESS_T.Ream_Qty)
+            @Html.LabelFor(model => model.CHP_PROCESS_T.ReamWt)
         </div>
 
         <div class="form-group col col-md-2">
-            @Html.DisplayFor(model => model.CHP_PROCESS_T.Ream_Qty)
+            @Html.DisplayFor(model => model.CHP_PROCESS_T.ReamWt)
         </div>
 
         @* 包裝方式 *@
         <div class="form-group col col-md-1 text-right">
-            @Html.LabelFor(model => model.CHP_PROCESS_T.Packing_Type)
+            @Html.LabelFor(model => model.CHP_PROCESS_T.PackingType)
         </div>
 
         <div class="form-group col col-md-2">
-            @Html.DisplayFor(model => model.CHP_PROCESS_T.Packing_Type)
+            @Html.DisplayFor(model => model.CHP_PROCESS_T.PackingType)
         </div>
 
       
@@ -187,7 +187,7 @@
 
 
         <div class="col-md-12">
-            @Html.LabelFor(model => model.CHP_PROCESS_T.Produce_Remark)
+            @Html.LabelFor(model => model.CHP_PROCESS_T.Note)
         </div>
         <div class="form-group col-md-12">
             <textarea style="width:1000px;height:200px;" class="form-control col-md-4" rows="3" id="textarea"></textarea>

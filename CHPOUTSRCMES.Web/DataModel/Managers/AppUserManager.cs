@@ -1,4 +1,4 @@
-﻿using CHPOUTSRCMES.Web.DataModel.Entiy;
+﻿using CHPOUTSRCMES.Web.DataModel.Entity;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;

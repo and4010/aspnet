@@ -214,7 +214,7 @@ namespace CHPOUTSRCMES.Web.Controllers
 
             PurchaseViewModel model = new PurchaseViewModel();
 
-            ViewBag.LocatorItems = model.GetLocator();
+            //ViewBag.LocatorItems = model.GetLocator(Id);
             ViewBag.ReasonItems = model.GetReason();
 
             model.FlatDetailModel = model.GetFlatView(id);
@@ -250,7 +250,7 @@ namespace CHPOUTSRCMES.Web.Controllers
             PurchaseViewModel model = new PurchaseViewModel();
         
             model.RollDetailModel = model.GetPaperRollEdit(Id);
-            ViewBag.LocatorItems = model.GetLocator();
+            ViewBag.LocatorItems = model.GetLocator(Id);
             ViewBag.ReasonItems = model.GetReason();
             model.CabinetNumber = CabinetNumber;
             model.CreateDate = CreateDate;
@@ -279,7 +279,7 @@ namespace CHPOUTSRCMES.Web.Controllers
         public ActionResult FlatEdit(string Id,string CabinetNumber)
         {
             PurchaseViewModel model = new PurchaseViewModel();
-            ViewBag.LocatorItems = model.GetLocator();
+            ViewBag.LocatorItems = model.GetLocator(Id);
             ViewBag.ReasonItems = model.GetReason();
             model.FlatDetailModel = model.GetFlatEdit(Id);
 

@@ -1,7 +1,7 @@
 -- =============================================
--- Author:		<Author,,Name>
--- Create date: <Create Date,,>
--- Description:	<Description,,>
+-- Author:		Polo Lin
+-- Create date: 2020/07
+-- Description:	產生不重複的條碼清單
 -- =============================================
 CREATE PROCEDURE SP_GenerateBarcodes
 	-- Add the parameters for the stored procedure here

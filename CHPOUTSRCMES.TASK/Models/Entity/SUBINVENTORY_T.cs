@@ -1,4 +1,4 @@
-﻿namespace CHPOUTSRCMES.TASK.DataModel.Entiy.Information
+﻿namespace CHPOUTSRCMES.TASK.Models.Entity
 {
     public class SUBINVENTORY_T
     {

@@ -1,5 +1,5 @@
 ﻿using CHPOUTSRCMES.Web.DataModel;
-using CHPOUTSRCMES.Web.DataModel.Entiy.Interfaces;
+using CHPOUTSRCMES.Web.DataModel.Entity.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -10,7 +10,7 @@ using System.Web;
 using EntityFramework.Utilities;
 using CHPOUTSRCMES.Web.DataModel.UnitOfWorks.Interfaces;
 
-namespace CHPOUTSRCMES.Web.DataModel.Entiy.Repositorys
+namespace CHPOUTSRCMES.Web.DataModel.Entity.Repositorys
 {
     public class GenericRepository<TEntity> : IRepository<TEntity>
         where TEntity : class

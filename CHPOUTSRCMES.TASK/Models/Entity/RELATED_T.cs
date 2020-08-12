@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CHPOUTSRCMES.TASK.DataModel.Entiy.Information
+namespace CHPOUTSRCMES.TASK.Models.Entity
 {
 
     public class RELATED_T
@@ -70,12 +70,12 @@ namespace CHPOUTSRCMES.TASK.DataModel.Entiy.Information
         /// 更新人員
         /// </summary>
         /// 
-        public long LAST_UPDATE_BY { set; get; }
+        public long LAST_UPDATED_BY { set; get; }
 
         /// <summary>
         /// 更新時間
         /// </summary>
         /// 
-        public DateTime LAST_UPDATE_DATE { set; get; }
+        public DateTime LAST_UPDATED_DATE { set; get; }
     }
 }

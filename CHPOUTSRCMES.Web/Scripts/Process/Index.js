@@ -4,15 +4,17 @@ $(document).ready(function () {
     BtnEvent();
     search();
     //初始化日期
-    $('#Demand_Date').datepicker({
+    $('#DueDate').datepicker({
         dateFormat: 'yy-mm-dd',
         changeMonth: true,
-        changeYear: true });
-    $('#Cutting_Date_From').datepicker({
+        changeYear: true
+    });
+    $('#CuttingDateFrom').datepicker({
         dateFormat: 'yy-mm-dd',
         changeMonth: true,
-        changeYear: true });
-    $('#Cutting_Date_To').datepicker({
+        changeYear: true
+    });
+    $('#CuttingDateTo').datepicker({
         dateFormat: 'yy-mm-dd',
         changeMonth: true,
         changeYear: true
@@ -71,12 +73,13 @@ $(document).ready(function () {
 
 })
 
-function ProcessLoadTable(Process_Status, Process_Batch_no, Manchine_Num, Demand_Date, Cutting_Date_From, Cutting_Date_To, Subinventory) {
+function ProcessLoadTable(OspBatchStatusDesc, OspBatchNo, MachineNum, DueDate, CuttingDateFrom, CuttingDateTo, Subinventory) {
 
     ProcessDataTables = $('#ProcessDataTables').DataTable({
         "language": {
             "url": "/bower_components/datatables/language/zh-TW.json"
         },
+        scrollX : true,
         destroy: true,
         processing: true,
         serverSide: true,
@@ -90,9 +93,9 @@ function ProcessLoadTable(Process_Status, Process_Batch_no, Manchine_Num, Demand
             "type": "POST",
             "datatype": "json",
             "data": {
-                Process_Status: Process_Status, Process_Batch_no: Process_Batch_no,
-                Manchine_Num: Manchine_Num, Demand_Date: Demand_Date, Cutting_Date_From: Cutting_Date_From,
-                Cutting_Date_To: Cutting_Date_To, Subinventory: Subinventory
+                OspBatchStatusDesc: OspBatchStatusDesc, OspBatchNo: OspBatchNo,
+                MachineNum: MachineNum, DueDate: DueDate, CuttingDateFrom: CuttingDateFrom,
+                CuttingDateTo: CuttingDateTo, Subinventory: Subinventory
             }
         },
         select: {
@@ -111,7 +114,7 @@ function ProcessLoadTable(Process_Status, Process_Batch_no, Manchine_Num, Demand
                 targets: 0
             },
             {
-                data: "Demand_Date", "name": "需求日", "autoWidth": true, "mRender": function (data, type, full) {
+                data: "DueDate", "name": "需求日", "autoWidth": true, "mRender": function (data, type, full) {
                     if (data != null) {
                         var dtStart = new Date(parseInt(data.substr(6)));
                         var dtStartWrapper = moment(dtStart);
@@ -123,7 +126,7 @@ function ProcessLoadTable(Process_Status, Process_Batch_no, Manchine_Num, Demand
                 }, "className": "dt-body-center"
             },
             {
-                data: "Cutting_Date_From", "name": "裁切日(起)", "autoWidth": true, "mRender": function (data, type, full) {
+                data: "CuttingDateFrom", "name": "裁切日(起)", "autoWidth": true, "mRender": function (data, type, full) {
                     if (data != null) {
                         var dtStart = new Date(parseInt(data.substr(6)));
                         var dtStartWrapper = moment(dtStart);
@@ -134,7 +137,7 @@ function ProcessLoadTable(Process_Status, Process_Batch_no, Manchine_Num, Demand
                 }, "className": "dt-body-center"
             },
             {
-                data: "Cutting_Date_To", "name": "裁切日(迄)", "autoWidth": true, "mRender": function (data, type, full) {
+                data: "CuttingDateTo", "name": "裁切日(迄)", "autoWidth": true, "mRender": function (data, type, full) {
                     if (data != null) {
                         var dtStart = new Date(parseInt(data.substr(6)));
                         var dtStartWrapper = moment(dtStart);
@@ -144,20 +147,20 @@ function ProcessLoadTable(Process_Status, Process_Batch_no, Manchine_Num, Demand
                     }
                 }, "className": "dt-body-center"
             },
-            { data: "Process_Batch_no", "name": "工單號", "autoWidth": true, "className": "dt-body-center"},
-            { data: "Manchine_Num", "name": "機台", "autoWidth": true, "className": "dt-body-center"},
+            { data: "OspBatchNo", "name": "工單號", "autoWidth": true, "className": "dt-body-center"},
+            { data: "MachineNum", "name": "機台", "autoWidth": true, "className": "dt-body-center"},
             {
-                data: "Process_Status", "name": "狀態", "autoWidth": true, "render": function (data, type, row) {
+                data: "OspBatchStatusDesc", "name": "狀態", "autoWidth": true, "render": function (data, type, row) {
                     if (data == "已排單") {
-                        switch (row.Process_Batch_no.substr(0, 1)) {
+                        switch (row.OspBatchStatusDesc.substr(0, 1)) {
                             case "P":
-                                return '<a href=/Process/Schedule/' + row.Process_Detail_Id + '> ' + data + '</a>';
+                                return '<a href=/Process/Schedule/' + row.OspDetailInId + '> ' + data + '</a>';
                                 break;
                             case "F":
-                                return '<a href=/Process/Flat/' + row.Process_Detail_Id + '> ' + data + '</a>';
+                                return '<a href=/Process/Flat/' + row.OspDetailInId + '> ' + data + '</a>';
                                 break;
                             case "R":
-                                return '<a href=/Process/PaperRoll/' + row.Process_Detail_Id + '> ' + data + '</a>';
+                                return '<a href=/Process/PaperRoll/' + row.OspDetailInId + '> ' + data + '</a>';
                                 break;
                         }
                     } else {
@@ -165,15 +168,15 @@ function ProcessLoadTable(Process_Status, Process_Batch_no, Manchine_Num, Demand
                     }
 
                     if (data == "已排單") {
-                        switch (row.Process_Batch_no.substr(0, 1)) {
+                        switch (row.OspBatchStatusDesc.substr(0, 1)) {
                             case "P":
-                                return '<a href=/Process/Schedule/' + row.Process_Detail_Id + '> ' + data + '</a>';
+                                return '<a href=/Process/Schedule/' + row.OspDetailInId + '> ' + data + '</a>';
                                 break;
                             case "F":
-                                return '<a href=/Process/Flat/' + row.Process_Detail_Id + '> ' + data + '</a>';
+                                return '<a href=/Process/Flat/' + row.OspDetailInId + '> ' + data + '</a>';
                                 break;
                             case "R":
-                                return '<a href=/Process/PaperRoll/' + row.Process_Detail_Id + '> ' + data + '</a>';
+                                return '<a href=/Process/PaperRoll/' + row.OspDetailInId + '> ' + data + '</a>';
                                 break;
                         }
                     }
@@ -181,32 +184,32 @@ function ProcessLoadTable(Process_Status, Process_Batch_no, Manchine_Num, Demand
 
                 }, "className": "dt-body-center"
             },
-            { data: "Cosutomer_Num", "name": "客戶名稱", "autoWidth": true, "className": "dt-body-center"},
-            { data: "Paper_Type", "name": "紙別", "autoWidth": true, "className": "dt-body-center"},
-            { data: "Basic_Weight", "name": "基重", "autoWidth": true, "className": "dt-body-right"},
+            { data: "CustomerName", "name": "客戶名稱", "autoWidth": true, "className": "dt-body-center"},
+            { data: "PaperType", "name": "紙別", "autoWidth": true, "className": "dt-body-center"},
+            { data: "BasicWeight", "name": "基重", "autoWidth": true, "className": "dt-body-right"},
             { data: "Specification", "name": "規格", "autoWidth": true, "className": "dt-body-center"},
-            { data: "Ream_Weight", "name": "令重", "autoWidth": true, "className": "dt-body-right"},
-            { data: "Grain_Direction", "name": "絲向", "autoWidth": true, "className": "dt-body-center"},
-            { data: "Ream_Qty", "name": "令數", "autoWidth": true, "className": "dt-body-right" },
+            { data: "OrderWeight", "name": "令重", "autoWidth": true, "className": "dt-body-right"},
+            { data: "GrainDirection", "name": "絲向", "autoWidth": true, "className": "dt-body-center"},
+            { data: "ReamWt", "name": "令數", "autoWidth": true, "className": "dt-body-right" },
             { data: "TransactionUom", "name": "交易單位", "autoWidth": true, "className": "dt-body-center" },
-            { data: "Weight", "name": "重量", "autoWidth": true, "className": "dt-body-right" },
+            { data: "PrimaryQuantity", "name": "重量", "autoWidth": true, "className": "dt-body-right" },
             { data: "PrimaryUom", "name": "主要單位", "autoWidth": true, "className": "dt-body-center"},
-            { data: "Packing_Type", "name": "包裝方式", "autoWidth": true, "className": "dt-body-center"},
-            { data: "Outsourching_Remark", "name": "委外工單備註", "autoWidth": true, "className": "dt-body-center"},
-            { data: "Produce_Remark", "name": "生產備註", "autoWidth": true, "className": "dt-body-center"},
+            { data: "PackingType", "name": "包裝方式", "autoWidth": true, "className": "dt-body-center"},
+            { data: "OspRemark", "name": "委外工單備註", "autoWidth": true, "className": "dt-body-center"},
+            { data: "Note", "name": "生產備註", "autoWidth": true, "className": "dt-body-center"},
             { data: "SelectedInventoryItemNumber", "name": "組成成份料號", "autoWidth": true, "className": "dt-body-center"},
             { data: "Product_Item", "name": "產品料號", "autoWidth": true, "className": "dt-body-center"},
-            { data: "Order_Number", "name": "訂單編號", "autoWidth": true, "className": "dt-body-center"},
-            { data: "Detail_Line", "name": "明細行", "autoWidth": true, "className": "dt-body-center"},
+            { data: "OrderNumber", "name": "訂單編號", "autoWidth": true, "className": "dt-body-center"},
+            { data: "OrderLineNumber", "name": "明細行", "autoWidth": true, "className": "dt-body-center"},
             {
                 data: "", "autoWidth": true, "render": function (data, type, row) {
-                    if (row.Process_Status == "已完工") {
+                    if (row.OspBatchStatusDesc == "已完工") {
                         return '<button class="btn btn-primary btn-sm" id = "btnEdit">編輯</button>' + '<button class="btn btn-primary btn-sm" id = "btnRecord">完工紀錄</button>';
                     }
-                    if (row.Process_Status == "待核准") {
+                    if (row.OspBatchStatusDesc == "待核准") {
                         return '<button class="btn btn-primary btn-sm" id = "btnEdit">編輯</button>' + '<button class="btn btn-primary btn-sm" id = "btnRecord">完工紀錄</button>';
                     }
-                    if (row.Process_Status == "已排單") {
+                    if (row.OspBatchStatusDesc == "已排單") {
                         return '<button class="btn btn-primary btn-sm" id = "btnEdit">編輯</button>';
                     } else {
                         return '<button class="btn btn-primary btn-sm" id = "btnEdit">編輯</button>';
@@ -255,15 +258,15 @@ function BtnEvent() {
             swal.fire("請先選擇一項");
             return;
         }
-        var Process_Status = rowData.pluck('Process_Status')[0]
-        var Process_Detail_Id = rowData.pluck('Process_Detail_Id')[0]
-        if (Process_Status == "待排單") {
+        var OspBatchStatusDesc = rowData.pluck('OspBatchStatusDesc')[0]
+        var OspDetailInId = rowData.pluck('OspDetailInId')[0]
+        if (OspBatchStatusDesc == "待排單") {
             $.ajax({
                 url: '/Process/_ProcessIndex',
                 type: "POST",
                 success: function (result) {
                     $('body').append(result);
-                    Open($('#ProcessModal'), Process_Detail_Id);
+                    Open($('#ProcessModal'), OspDetailInId);
                 },
                 error: function () {
                     swal.fire("失敗");
@@ -284,10 +287,10 @@ function BtnEvent() {
             return;
         }
         var BtnCloss = $('#BtnCloss').text();
-        var Process_Status = rowData.pluck('Process_Status')[0]
-        var Process_Detail_Id = rowData.pluck('Process_Detail_Id')[0]
-        if (Process_Status == "已完工") {
-            changeStatus(Process_Detail_Id, BtnCloss);
+        var OspBatchStatusDesc = rowData.pluck('OspBatchStatusDesc')[0]
+        var OspDetailInId = rowData.pluck('OspDetailInId')[0]
+        if (OspBatchStatusDesc == "已完工") {
+            changeStatus(OspDetailInId, BtnCloss);
         } else {
             swal.fire("加工狀態不正確，重新選擇");
             return;
@@ -301,15 +304,15 @@ function BtnEvent() {
             swal.fire("請先選擇一項")
             return;
         }
-        var Process_Status = rowData.pluck('Process_Status')[0]
-        var Process_Detail_Id = rowData.pluck('Process_Detail_Id')[0]
-        if (Process_Status == "已排單") {
+        var OspBatchStatusDesc = rowData.pluck('OspBatchStatusDesc')[0]
+        var OspDetailInId = rowData.pluck('OspDetailInId')[0]
+        if (OspBatchStatusDesc == "已排單") {
             $.ajax({
                 url: '/Process/_ProcessIndex',
                 type: "POST",
                 success: function (result) {
                     $('body').append(result);
-                    Open($('#ProcessModal'), Process_Detail_Id);
+                    Open($('#ProcessModal'), OspDetailInId);
                 },
                 error: function () {
                     swal.fire("失敗");
@@ -326,15 +329,15 @@ function BtnEvent() {
 function search() {
     $('#btnSearch').click(function () {
         rowData = null;
-        var Process_Status = $("#Process_Status").val();
-        var Process_Batch_no = $("#Process_Batch_no").val();
-        var Manchine_Num = $("#Manchine_Num").val();
-        var Demand_Date = $("#Demand_Date").val();
-        var Cutting_Date_From = $("#Cutting_Date_From").val();
-        var Cutting_Date_To = $("#Cutting_Date_To").val();
+        var OspBatchStatusDesc = $("#OspBatchStatusDesc").val();
+        var OspBatchNo = $("#OspBatchNo").val();
+        var MachineNum = $("#MachineNum").val();
+        var DueDate = $("#DueDate").val();
+        var CuttingDateFrom = $("#CuttingDateFrom").val();
+        var CuttingDateTo = $("#CuttingDateTo").val();
         var Subinventory = $("#Subinventory").val();
 
-        ProcessLoadTable(Process_Status, Process_Batch_no, Manchine_Num, Demand_Date, Cutting_Date_From, Cutting_Date_To, Subinventory);
+        ProcessLoadTable(OspBatchStatusDesc, OspBatchNo, MachineNum, DueDate, CuttingDateFrom, CuttingDateTo, Subinventory);
         
         
     });
@@ -342,7 +345,7 @@ function search() {
 }
 
 //彈出dialog
-function Open(modal_dialog, Process_Detail_Id) {
+function Open(modal_dialog, OspDetailInId) {
     modal_dialog.modal({
         backdrop: "static",
         keyboard: true,
@@ -350,14 +353,16 @@ function Open(modal_dialog, Process_Detail_Id) {
     });
 
     //初始化
-    $('#dialog_Cutting_Date_From').datepicker({
+    $('#Dialog_CuttingDateFrom').datepicker({
         dateFormat: 'yy-mm-dd',
         changeMonth: true,
-        changeYear: true });
-    $('#dialog_Cutting_Date_To').datepicker({
+        changeYear: true
+    });
+    $('#Dialog_CuttingDateTo').datepicker({
         dateFormat: 'yy-mm-dd',
         changeMonth: true,
-        changeYear: true });
+        changeYear: true
+    });
 
     modal_dialog.on('hidden.bs.modal', function (e) {
         $("div").remove(modal_dialog.selector);
@@ -369,27 +374,27 @@ function Open(modal_dialog, Process_Detail_Id) {
 
     //確認按鍵
     modal_dialog.on('click', '#btnDailogProcess', function (e) {
-        var dialog_Cutting_Date_From = $('#dialog_Cutting_Date_From').val();
-        var dialog_Cutting_Date_To = $('#dialog_Cutting_Date_To').val();
-        var dialg_Manchine_Num = $('#dialg_Manchine_Num').val();
+        var Dialog_CuttingDateFrom = $('#Dialog_CuttingDateFrom').val();
+        var Dialog_CuttingDateTo = $('#Dialog_CuttingDateTo').val();
+        var Dialog_MachineNum = $('#Dialog_MachineNum').val();
         var BtnStatus = "已排單";
 
-        if (dialog_Cutting_Date_From.length == 0) {
+        if (Dialog_CuttingDateFrom.length == 0) {
             swal.fire("裁切日期(起)不得空白");
             return
         }
 
-        if (dialog_Cutting_Date_To.length == 0) {
+        if (Dialog_CuttingDateTo.length == 0) {
             swal.fire("裁切日期(迄)不得空白");
             return
         }
 
-        if (dialg_Manchine_Num.length == 0) {
+        if (Dialog_MachineNum.length == 0) {
             swal.fire("機台不得空白");
             return
         }
 
-        if (new Date(dialog_Cutting_Date_From) > new Date(dialog_Cutting_Date_To)) {
+        if (new Date(Dialog_CuttingDateFrom) > new Date(Dialog_CuttingDateTo)) {
             swal.fire("時間起不得超過迄");
             return
         }
@@ -399,8 +404,8 @@ function Open(modal_dialog, Process_Detail_Id) {
             type: "POST",
             dataType: 'json',
             data: {
-                Process_Detail_Id: Process_Detail_Id, dialog_Cutting_Date_From: dialog_Cutting_Date_From
-                , dialog_Cutting_Date_To: dialog_Cutting_Date_To, dialg_Manchine_Num: dialg_Manchine_Num, BtnStatus: BtnStatus
+                OspDetailInId: OspDetailInId, Dialog_CuttingDateFrom: Dialog_CuttingDateFrom
+                , Dialog_CuttingDateTo: Dialog_CuttingDateTo, Dialog_MachineNum: Dialog_MachineNum, BtnStatus: BtnStatus
             },
             success: function (result) {
                 $(modal_dialog.selector).modal('hide');
@@ -422,12 +427,12 @@ function Open(modal_dialog, Process_Detail_Id) {
 
 }
 
-function changeStatus(Process_Detail_Id, BtnStatus) {
+function changeStatus(OspDetailInId, BtnStatus) {
     $.ajax({
         url: '/Process/_BtnDailog',
         type: "POST",
         dataType: 'json',
-        data: { Process_Detail_Id: Process_Detail_Id, BtnStatus: BtnStatus },
+        data: { OspDetailInId: OspDetailInId, BtnStatus: BtnStatus },
         success: function (result) {
             firstLoad();
         },
@@ -440,13 +445,13 @@ function changeStatus(Process_Detail_Id, BtnStatus) {
 }
 
 function firstLoad() {
-    var Process_Status = $("#Process_Status").val();
-    var Process_Batch_no = $("#Process_Batch_no").val();
-    var Manchine_Num = $("#Manchine_Num").val();
-    var Demand_Date = $("#Demand_Date").val();
-    var Cutting_Date_From = $("#Cutting_Date_From").val();
-    var Cutting_Date_To = $("#Cutting_Date_To").val();
+    var OspBatchStatusDesc = $("#OspBatchStatusDesc").val();
+    var OspBatchNo = $("#OspBatchNo").val();
+    var MachineNum = $("#MachineNum").val();
+    var DueDate = $("#DueDate").val();
+    var CuttingDateFrom = $("#CuttingDateFrom").val();
+    var CuttingDateTo = $("#CuttingDateTo").val();
     var Subinventory = $("#Subinventory").val();
 
-    ProcessLoadTable(Process_Status, Process_Batch_no, Manchine_Num, Demand_Date, Cutting_Date_From, Cutting_Date_To, Subinventory);
+    ProcessLoadTable(OspBatchStatusDesc, OspBatchNo, MachineNum, DueDate, CuttingDateFrom, CuttingDateTo, Subinventory);
 }
