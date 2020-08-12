@@ -14,6 +14,7 @@ using CHPOUTSRCMES.Web.DataModel.Entity.Delivery;
 using System.Web.Configuration;
 using System.Data;
 using CHPOUTSRCMES.Web.DataModel.Entity.Temp;
+using CHPOUTSRCMES.Web.DataModel.Entiy.Process;
 
 namespace CHPOUTSRCMES.Web.DataModel
 {
@@ -236,5 +237,80 @@ namespace CHPOUTSRCMES.Web.DataModel
 
         #endregion 出貨
 
+        #region 加工
+
+        /// <summary>
+        /// 加工主檔
+        /// </summary>
+        public DbSet<OSP_ORG_T> OspOrgTs { set; get; }
+
+        /// <summary>
+        /// 加工擋頭
+        /// </summary>
+        public DbSet<OSP_HEADER_T> OspHeaderTs { set; get; }
+
+        /// <summary>
+        /// 加工投入明細
+        /// </summary>
+        public DbSet<OSP_DETAIL_IN_T> OspDetailInTs { set; get; }
+
+        /// <summary>
+        /// 加工投入歷史明細
+        /// </summary>
+        public DbSet<OSP_DETAIL_IN_HT> OspDetailInHTs { set; get; }
+
+        /// <summary>
+        /// 加工投入檢貨
+        /// </summary>
+        public DbSet<OSP_PICKED_IN_T> OspPickedInTs { set; get; }
+
+        /// <summary>
+        /// 加工投入歷史檢貨
+        /// </summary>
+        public DbSet<OSP_PICKED_IN_HT> OspPickedInHTs { set; get; }
+
+        /// <summary>
+        /// 加工產出明細
+        /// </summary>
+        public DbSet<OSP_DETAIL_OUT_T> OspDetailOutTs { set; get; }
+
+
+        /// <summary>
+        /// 加工產出歷史明細
+        /// </summary>
+        public DbSet<OSP_DETAIL_OUT_HT> OspDetailOutHTs { set; get; }
+
+        /// <summary>
+        /// 加工投出檢貨
+        /// </summary>
+        public DbSet<OSP_PICKED_OUT_T> OspPickedOutTs { set; get; }
+
+        /// <summary>
+        /// 加工投出歷史檢貨
+        /// </summary>
+        public DbSet<OSP_PICKED_OUT_HT> OspPickedOutHTs { set; get; }
+
+        /// <summary>
+        /// 餘切
+        /// </summary>
+        public DbSet<OSP_COTANGENT_T> OspCotangentTs { set; get; }
+
+
+        /// <summary>
+        /// 餘切歷史
+        /// </summary>
+        public DbSet<OSP_COTANGENT_HT> OspCotangentHTs { set; get; }
+
+        /// <summary>
+        /// 損耗
+        /// </summary>
+        public DbSet<OSP_YIELD_VARIANCE_T> OspYieldVarinceTs { set; get; }
+
+        /// <summary>
+        /// 損耗歷史
+        /// </summary>
+        public DbSet<OSP_YIELD_VARIANCE_HT> OspYieldVarinceHTs { set; get; }
+
+        #endregion
     }
 }

@@ -461,11 +461,11 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
         /// 編輯取得儲位
         /// </summary>
         /// <returns></returns>
-        public List<SelectListItem> GetLocator()
+        public List<SelectListItem> GetLocator(string PickId)
         {
             using (var context = new MesContext())
             {
-                return new MasterUOW(context).GetLocatorDropDownList("*", "*", MasterUOW.DropDownListType.Choice);
+                return new PurchaseUOW(context).GetLocator("*", PickId);
             }
 
         }
@@ -478,7 +478,7 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
         {
             using (var context = new MesContext())
             {
-                return new MasterUOW(context).GetSubinventoryDropDownList("*", MasterUOW.DropDownListType.Choice);
+                return new PurchaseUOW(context).GetSubinventory("*");
             }
 
         }

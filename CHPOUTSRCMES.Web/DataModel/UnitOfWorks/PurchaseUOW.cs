@@ -59,7 +59,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                 {
                     generateTestDataCtrOrgT();
                     generateTestDataCtrHeaderDetail();
-                    generateTestFlatDetail();
+                    generateFlatDetail();
                     txn.Commit();
                 }
                 catch (Exception ex)
@@ -94,15 +94,15 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                 ctrorg.LocatorId = 22016;
                 ctrorg.LocatorCode = "TB2";
                 ctrorg.DetailId = 1;
-                ctrorg.InventoryItemId = 503117;
-                ctrorg.ShipItemNumber = "4DM00E02700310K502K";
+                ctrorg.InventoryItemId = 503376;
+                ctrorg.ShipItemNumber = "4DM00A03000407K471K";
                 ctrorg.PaperType = "DM00";
-                ctrorg.BasicWeight = "02700";
+                ctrorg.BasicWeight = "03000";
                 ctrorg.ReamWeight = "299.11";
                 ctrorg.RollReamQty = 2;
                 ctrorg.RollReamWt = 3000;
                 ctrorg.TtlRollReam = 1;
-                ctrorg.Specification = "310K502K";
+                ctrorg.Specification = "407K471K";
                 ctrorg.PackingType = "令包";
                 ctrorg.ShipMtQty = 1;
                 ctrorg.TransactionQuantity = 3;
@@ -136,15 +136,15 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                 ctrorg.LocatorId = 22016;
                 ctrorg.LocatorCode = "TB2";
                 ctrorg.DetailId = 1;
-                ctrorg.InventoryItemId = 1990193;
-                ctrorg.ShipItemNumber = "4A001A006000315RL00";
-                ctrorg.PaperType = "A0001";
-                ctrorg.BasicWeight = "00600";
+                ctrorg.InventoryItemId = 503375;
+                ctrorg.ShipItemNumber = "4DM00A03000386K471K";
+                ctrorg.PaperType = "DM00";
+                ctrorg.BasicWeight = "03000";
                 ctrorg.ReamWeight = "02200";
                 ctrorg.RollReamQty = 1;
                 ctrorg.RollReamWt = 1;
                 ctrorg.TtlRollReam = 1;
-                ctrorg.Specification = "0315RL00";
+                ctrorg.Specification = "352K471K";
                 ctrorg.PackingType = "無";
                 ctrorg.ShipMtQty = 1;
                 ctrorg.TransactionQuantity = 0.616M;
@@ -178,15 +178,15 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                 ctrorg.LocatorId = 22016;
                 ctrorg.LocatorCode = "TB2";
                 ctrorg.DetailId = 1;
-                ctrorg.InventoryItemId = 2096018;
-                ctrorg.ShipItemNumber = "4A001A006000400RL00";
-                ctrorg.PaperType = "A0001";
-                ctrorg.BasicWeight = "00600";
+                ctrorg.InventoryItemId = 503374;
+                ctrorg.ShipItemNumber = "4DM00A03000352K471K";
+                ctrorg.PaperType = "DM00";
+                ctrorg.BasicWeight = "03000";
                 ctrorg.ReamWeight = "02200";
                 ctrorg.RollReamQty = 1;
                 ctrorg.RollReamWt = 1;
                 ctrorg.TtlRollReam = 1;
-                ctrorg.Specification = "0400RL00";
+                ctrorg.Specification = "386K471K";
                 ctrorg.PackingType = "無";
                 ctrorg.ShipMtQty = 1;
                 ctrorg.TransactionQuantity = 0.440M;
@@ -406,7 +406,7 @@ and d.ITEM_CATEGORY = N'捲筒'");
         /// <summary>
         /// 平張明細資料
         /// </summary>
-        public void generateTestFlatDetail()
+        public void generateFlatDetail()
         {
             var ctrDetail = ctrDetailTRepositiory.Get(s => s.ItemCategory == "平張").ToList();
 
@@ -586,6 +586,7 @@ and d.ITEM_CATEGORY = N'捲筒'");
                     StringBuilder query = new StringBuilder();
                     query.Append(
                     @"SELECT 
+ROW_NUMBER() OVER(ORDER BY d.CTR_DETAIL_ID ) AS SubId,
 Cast(d.CTR_HEADER_ID AS bigint) as Id,
 h.SUBINVENTORY AS Subinventory, 
 d.LOCATOR_CODE as Locator,
@@ -627,6 +628,7 @@ WHERE d.ITEM_CATEGORY = N'平張' and h.CONTAINER_NO  = @CONTAINER_NO");
                     StringBuilder query = new StringBuilder();
                     query.Append(
                     @"SELECT 
+ROW_NUMBER() OVER(ORDER BY d.CTR_DETAIL_ID ) AS SubId,
 Cast(d.CTR_HEADER_ID AS bigint) as Id,
 h.SUBINVENTORY AS Subinventory, 
 d.LOCATOR_CODE as Locator,
@@ -668,6 +670,7 @@ WHERE d.ITEM_CATEGORY = N'平張' and h.CONTAINER_NO  = @CONTAINER_NO");
                     StringBuilder query = new StringBuilder();
                     query.Append(
                     @"SELECT 
+ROW_NUMBER() OVER(ORDER BY d.CTR_DETAIL_ID ) AS SubId,
 Cast(d.CTR_HEADER_ID AS bigint) as Id,
 h.SUBINVENTORY AS Subinventory, 
 d.LOCATOR_CODE as Locator,
@@ -707,6 +710,7 @@ WHERE d.ITEM_CATEGORY = N'捲筒' and h.CONTAINER_NO  = @CONTAINER_NO");
                     StringBuilder query = new StringBuilder();
                     query.Append(
                     @"SELECT 
+ROW_NUMBER() OVER(ORDER BY d.CTR_DETAIL_ID ) AS SubId,
 Cast(d.CTR_HEADER_ID AS bigint) as Id,
 h.SUBINVENTORY AS Subinventory, 
 d.LOCATOR_CODE as Locator,
@@ -746,6 +750,7 @@ WHERE d.ITEM_CATEGORY = N'捲筒' and h.CONTAINER_NO  = @CONTAINER_NO");
                     StringBuilder query = new StringBuilder();
                     query.Append(
                     @"SELECT 
+ROW_NUMBER() OVER(ORDER BY p.CTR_DETAIL_ID ) AS SubId,
 p.CTR_PICKED_ID as Id,
 h.SUBINVENTORY as Subinventory, 
 p.LOCATOR_CODE as Locator,
@@ -791,6 +796,7 @@ WHERE p.ITEM_CATEGORY = N'捲筒' and h.CONTAINER_NO  = @CONTAINER_NO");
                     StringBuilder query = new StringBuilder();
                     query.Append(
                     @"SELECT 
+ROW_NUMBER() OVER(ORDER BY p.CTR_DETAIL_ID ) AS SubId,
 p.CTR_PICKED_ID as Id,
 h.SUBINVENTORY as Subinventory, 
 p.LOCATOR_CODE as Locator,
@@ -836,6 +842,7 @@ WHERE p.ITEM_CATEGORY = N'捲筒' and h.CONTAINER_NO  = @CONTAINER_NO");
                     StringBuilder query = new StringBuilder();
                     query.Append(
                     @"SELECT 
+ROW_NUMBER() OVER(ORDER BY p.CTR_DETAIL_ID ) AS SubId,
 p.CTR_PICKED_ID as Id,
 h.SUBINVENTORY as Subinventory, 
 p.LOCATOR_CODE as Locator,
@@ -876,6 +883,7 @@ WHERE p.ITEM_CATEGORY = N'平張' and h.CONTAINER_NO  = @CONTAINER_NO");
                     StringBuilder query = new StringBuilder();
                     query.Append(
                     @"SELECT 
+ROW_NUMBER() OVER(ORDER BY p.CTR_DETAIL_ID ) AS SubId,
 p.CTR_PICKED_ID as Id,
 h.SUBINVENTORY as Subinventory, 
 p.LOCATOR_CODE as Locator,
@@ -916,6 +924,7 @@ WHERE p.ITEM_CATEGORY = N'平張' and h.CONTAINER_NO  = @CONTAINER_NO");
                     StringBuilder query = new StringBuilder();
                     query.Append(
                     @"SELECT 
+ROW_NUMBER() OVER(ORDER BY p.CTR_DETAIL_ID ) AS SubId,
 p.CTR_PICKED_ID as Id,
 h.SUBINVENTORY as Subinventory, 
 p.LOCATOR_CODE as Locator,
@@ -962,6 +971,7 @@ WHERE p.ITEM_CATEGORY = N'捲筒' and p.CTR_PICKED_ID  = @CTR_PICKED_ID");
                     StringBuilder query = new StringBuilder();
                     query.Append(
                     @"SELECT 
+ROW_NUMBER() OVER(ORDER BY p.CTR_DETAIL_ID ) AS SubId,
 p.CTR_PICKED_ID as Id,
 h.SUBINVENTORY as Subinventory, 
 p.LOCATOR_CODE as Locator,
@@ -1222,6 +1232,7 @@ WHERE p.ITEM_CATEGORY = N'捲筒' and p.CTR_PICKED_ID  = @CTR_PICKED_ID");
                     StringBuilder query = new StringBuilder();
                     query.Append(
                     @"SELECT 
+ROW_NUMBER() OVER(ORDER BY p.CTR_DETAIL_ID ) AS SubId,
 p.CTR_PICKED_ID as Id,
 h.SUBINVENTORY as Subinventory, 
 p.LOCATOR_CODE as Locator,
@@ -1264,6 +1275,7 @@ WHERE p.ITEM_CATEGORY = N'平張' and p.CTR_PICKED_ID  = @CTR_PICKED_ID");
                     StringBuilder query = new StringBuilder();
                     query.Append(
                     @"SELECT 
+ROW_NUMBER() OVER(ORDER BY p.CTR_DETAIL_ID ) AS SubId,
 p.CTR_PICKED_ID as Id,
 h.SUBINVENTORY as Subinventory, 
 p.LOCATOR_CODE as Locator,
@@ -1725,20 +1737,27 @@ WHERE D.CTR_HEADER_ID = @CTR_HEADER_ID");
             }
         }
 
-
-        public ResultDataModel<List<LabelModel>> GetFlatLabels(List<long> PICKED_IDs, string userName,string Status)
+        /// <summary>
+        /// 列印平張標籤
+        /// </summary>
+        /// <param name="PICKED_IDs"></param>
+        /// <param name="userName"></param>
+        /// <param name="Status"></param>
+        /// <returns></returns>
+        public ResultDataModel<List<LabelModel>> GetFlatLabels(List<long> PICKED_IDs, string userName, string Status)
         {
             try
             {
-                if(PurchaseStatusCode.PurchaseHeaderAlready == Status)
+                if (PurchaseStatusCode.PurchaseHeaderAlready == Status)
                 {
                     List<LabelModel> labelModelList = new List<LabelModel>();
                     if (PICKED_IDs == null || PICKED_IDs.Count == 0) return new ResultDataModel<List<LabelModel>>(false, "找不到揀貨資料", null);
                     var pickDataList = ctrPickedHtRepositiory.GetAll().AsNoTracking().Where(x => PICKED_IDs.Contains(x.CtrPickedId)).ToList();
                     if (pickDataList == null || pickDataList.Count == 0) return new ResultDataModel<List<LabelModel>>(false, "找不到揀貨資料", null);
 
-                    foreach (CTR_PICKED_HT data in pickDataList)
+                    for (int i = 0; i < pickDataList.Count; i++)
                     {
+                        List<SqlParameter> sqlParameterList = new List<SqlParameter>();
                         StringBuilder cmd = new StringBuilder(
     @"
 SELECT 
@@ -1755,11 +1774,13 @@ FROM [CTR_PICKED_HT] PT
 join CTR_HEADER_T CT ON CT.CTR_HEADER_ID = PT.CTR_HEADER_ID
 join ITEMS_T tt on tt.INVENTORY_ITEM_ID = PT.INVENTORY_ITEM_ID
 WHERE PT.ITEM_CATEGORY = N'平張'
+AND pt.CTR_PICKED_ID = @CTR_PICKED_ID
 ");
-
-                        var labelModel = this.Context.Database.SqlQuery<LabelModel>(cmd.ToString(), new SqlParameter("@userName", userName)).ToList();
-                        if (labelModel == null || labelModel.Count == 0) return new ResultDataModel<List<LabelModel>>(false, "找不到標籤資料", null);
-                        labelModelList.AddRange(labelModel);
+                        sqlParameterList.Add(new SqlParameter("@userName", userName));
+                        sqlParameterList.Add(new SqlParameter("@CTR_PICKED_ID", pickDataList[0].CtrPickedId));
+                        var labelModel = this.Context.Database.SqlQuery<LabelModel>(cmd.ToString(), sqlParameterList.ToArray()).SingleOrDefault();
+                        if (labelModel == null) return new ResultDataModel<List<LabelModel>>(false, "找不到標籤資料", null);
+                        labelModelList.Add(labelModel);
                     }
                     return new ResultDataModel<List<LabelModel>>(true, "取得標籤資料成功", labelModelList);
                 }
@@ -1769,9 +1790,9 @@ WHERE PT.ITEM_CATEGORY = N'平張'
                     if (PICKED_IDs == null || PICKED_IDs.Count == 0) return new ResultDataModel<List<LabelModel>>(false, "找不到揀貨資料", null);
                     var pickDataList = ctrPickedTRepositiory.GetAll().AsNoTracking().Where(x => PICKED_IDs.Contains(x.CtrPickedId)).ToList();
                     if (pickDataList == null || pickDataList.Count == 0) return new ResultDataModel<List<LabelModel>>(false, "找不到揀貨資料", null);
-
-                    foreach (CTR_PICKED_T data in pickDataList)
+                    for (int i = 0; i < pickDataList.Count; i++)
                     {
+                        List<SqlParameter> sqlParameterList = new List<SqlParameter>();
                         StringBuilder cmd = new StringBuilder(
 @"
 SELECT 
@@ -1788,11 +1809,13 @@ FROM [CTR_PICKED_T] PT
 join CTR_HEADER_T CT ON CT.CTR_HEADER_ID = PT.CTR_HEADER_ID
 join ITEMS_T tt on tt.INVENTORY_ITEM_ID = PT.INVENTORY_ITEM_ID
 WHERE PT.ITEM_CATEGORY = N'平張'
+AND pt.CTR_PICKED_ID = @CTR_PICKED_ID
 ");
-
-                        var labelModel = this.Context.Database.SqlQuery<LabelModel>(cmd.ToString(), new SqlParameter("@userName", userName)).ToList();
-                        if (labelModel == null || labelModel.Count == 0) return new ResultDataModel<List<LabelModel>>(false, "找不到標籤資料", null);
-                        labelModelList.AddRange(labelModel);
+                        sqlParameterList.Add(new SqlParameter("@userName", userName));
+                        sqlParameterList.Add(new SqlParameter("@CTR_PICKED_ID", pickDataList[0].CtrPickedId));
+                        var labelModel = this.Context.Database.SqlQuery<LabelModel>(cmd.ToString(), sqlParameterList.ToArray()).SingleOrDefault();
+                        if (labelModel == null) return new ResultDataModel<List<LabelModel>>(false, "找不到標籤資料", null);
+                        labelModelList.Add(labelModel);
                     }
                     return new ResultDataModel<List<LabelModel>>(true, "取得標籤資料成功", labelModelList);
                 }
@@ -1807,6 +1830,13 @@ WHERE PT.ITEM_CATEGORY = N'平張'
 
         }
 
+        /// <summary>
+        /// 列印紙捲標籤
+        /// </summary>
+        /// <param name="PICKED_IDs"></param>
+        /// <param name="userName"></param>
+        /// <param name="Status"></param>
+        /// <returns></returns>
         public ResultDataModel<List<LabelModel>> GetPaperRollLabels(List<long> PICKED_IDs, string userName, string Status)
         {
             try
@@ -1817,9 +1847,9 @@ WHERE PT.ITEM_CATEGORY = N'平張'
                     if (PICKED_IDs == null || PICKED_IDs.Count == 0) return new ResultDataModel<List<LabelModel>>(false, "找不到揀貨資料", null);
                     var pickDataList = ctrPickedHtRepositiory.GetAll().AsNoTracking().Where(x => PICKED_IDs.Contains(x.CtrPickedId)).ToList();
                     if (pickDataList == null || pickDataList.Count == 0) return new ResultDataModel<List<LabelModel>>(false, "找不到揀貨資料", null);
-
-                    foreach (CTR_PICKED_HT data in pickDataList)
+                    for (int i = 0; i < pickDataList.Count; i++)
                     {
+                        List<SqlParameter> sqlParameterList = new List<SqlParameter>();
                         StringBuilder cmd = new StringBuilder(
 @"
 SELECT 
@@ -1836,11 +1866,13 @@ FROM [CTR_PICKED_HT] PT
 join CTR_HEADER_T CT ON CT.CTR_HEADER_ID = PT.CTR_HEADER_ID
 join ITEMS_T tt on tt.INVENTORY_ITEM_ID = PT.INVENTORY_ITEM_ID
 WHERE PT.ITEM_CATEGORY = N'捲筒'
+AND pt.CTR_PICKED_ID = @CTR_PICKED_ID
 ");
-
-                        var labelModel = this.Context.Database.SqlQuery<LabelModel>(cmd.ToString(), new SqlParameter("@userName", userName)).ToList();
-                        if (labelModel == null || labelModel.Count == 0) return new ResultDataModel<List<LabelModel>>(false, "找不到標籤資料", null);
-                        labelModelList.AddRange(labelModel);
+                        sqlParameterList.Add(new SqlParameter("@userName", userName));
+                        sqlParameterList.Add(new SqlParameter("@CTR_PICKED_ID", pickDataList[0].CtrPickedId));
+                        var labelModel = this.Context.Database.SqlQuery<LabelModel>(cmd.ToString(), sqlParameterList.ToArray()).SingleOrDefault(); ;
+                        if (labelModel == null) return new ResultDataModel<List<LabelModel>>(false, "找不到標籤資料", null);
+                        labelModelList.Add(labelModel);
                     }
                     return new ResultDataModel<List<LabelModel>>(true, "取得標籤資料成功", labelModelList);
                 }
@@ -1851,8 +1883,9 @@ WHERE PT.ITEM_CATEGORY = N'捲筒'
                     var pickDataList = ctrPickedTRepositiory.GetAll().AsNoTracking().Where(x => PICKED_IDs.Contains(x.CtrPickedId)).ToList();
                     if (pickDataList == null || pickDataList.Count == 0) return new ResultDataModel<List<LabelModel>>(false, "找不到揀貨資料", null);
 
-                    foreach (CTR_PICKED_T data in pickDataList)
+                    for (int i = 0; i < pickDataList.Count; i++)
                     {
+                        List<SqlParameter> sqlParameterList = new List<SqlParameter>();
                         StringBuilder cmd = new StringBuilder(
 @"
 SELECT 
@@ -1869,11 +1902,13 @@ FROM [CTR_PICKED_T] PT
 join CTR_HEADER_T CT ON CT.CTR_HEADER_ID = PT.CTR_HEADER_ID
 join ITEMS_T tt on tt.INVENTORY_ITEM_ID = PT.INVENTORY_ITEM_ID
 WHERE PT.ITEM_CATEGORY = N'捲筒'
+AND pt.CTR_PICKED_ID = @CTR_PICKED_ID
 ");
-
-                        var labelModel = this.Context.Database.SqlQuery<LabelModel>(cmd.ToString(), new SqlParameter("@userName", userName)).ToList();
-                        if (labelModel == null || labelModel.Count == 0) return new ResultDataModel<List<LabelModel>>(false, "找不到標籤資料", null);
-                        labelModelList.AddRange(labelModel);
+                        sqlParameterList.Add(new SqlParameter("@userName", userName));
+                        sqlParameterList.Add(new SqlParameter("@CTR_PICKED_ID", pickDataList[0].CtrPickedId));
+                        var labelModel = this.Context.Database.SqlQuery<LabelModel>(cmd.ToString(), sqlParameterList.ToArray()).SingleOrDefault();
+                        if (labelModel == null) return new ResultDataModel<List<LabelModel>>(false, "找不到標籤資料", null);
+                        labelModelList.Add(labelModel);
                     }
                     return new ResultDataModel<List<LabelModel>>(true, "取得標籤資料成功", labelModelList);
                 }
@@ -1886,6 +1921,122 @@ WHERE PT.ITEM_CATEGORY = N'捲筒'
             }
 
 
+        }
+
+        /// <summary>
+        /// 取得倉庫
+        /// </summary>
+        /// <param name="ORGANIZATION_ID"></param>
+        public List<SelectListItem> GetSubinventory(string ORGANIZATION_ID)
+        {
+            try
+            {
+                using (var mesContext = new MesContext())
+                {
+                    List<SelectListItem> sublist = new List<SelectListItem>();
+                    List<SqlParameter> sqlParameterList = new List<SqlParameter>();
+                    List<string> cond = new List<string>();
+                    StringBuilder query = new StringBuilder();
+                    query.Append(
+@"
+SELECT
+SUBINVENTORY_CODE as Text,
+SUBINVENTORY_CODE as Value
+FROM SUBINVENTORY_T
+WHERE OSP_FLAG != 'Y'
+AND CONTROL_FLAG != 'D'
+AND LOCATOR_TYPE != '1'
+");
+                    if (ORGANIZATION_ID != "*")
+                    {
+                        cond.Add("ORGANIZATION_ID = @ORGANIZATION_ID");
+                        sqlParameterList.Add(new SqlParameter("@ORGANIZATION_ID", ORGANIZATION_ID));
+                    }
+                    string commandText = string.Format(query + "{0}{1}", cond.Count > 0 ? " where " : "", string.Join(" and ", cond.ToArray()));
+                    if (sqlParameterList.Count > 0)
+                    {
+                        sublist.AddRange(mesContext.Database.SqlQuery<SelectListItem>(commandText, sqlParameterList.ToArray()).ToList());
+                    }
+                    else
+                    {
+                        sublist.AddRange(mesContext.Database.SqlQuery<SelectListItem>(commandText).ToList());
+                    }
+                
+                    return sublist;
+                }
+            }
+            catch (Exception e)
+            {
+                logger.Error(LogUtilities.BuildExceptionMessage(e));
+                return new List<SelectListItem>();
+            }
+        }
+
+        public List<SelectListItem> GetLocator(string ORGANIZATION_ID,string PickId)
+        {
+            try
+            {
+                using (var mesContext = new MesContext())
+                {
+                    StringBuilder quId = new StringBuilder();
+                    quId.Append(
+@"
+SELECT 
+h.SUBINVENTORY
+FROM [CTR_PICKED_T] pt
+join CTR_HEADER_T h on h.CTR_HEADER_ID = pt.CTR_HEADER_ID
+where pt.CTR_PICKED_ID = @CTR_PICKED_ID
+");
+                 var SUBINVENTORY_CODE = mesContext.Database.SqlQuery<string>(quId.ToString(), new SqlParameter("@CTR_PICKED_ID", PickId)).SingleOrDefault();
+
+
+                    List<SelectListItem> Locatorlist = new List<SelectListItem>();
+                    List<SqlParameter> sqlParameterList = new List<SqlParameter>();
+                    List<string> cond = new List<string>();
+                    StringBuilder query = new StringBuilder();
+                    query.Append(
+@"
+SELECT
+[LOCATOR_ID] as Value,
+[SEGMENT3] as Text
+FROM [LOCATOR_T] lt
+join SUBINVENTORY_T st on st.SUBINVENTORY_CODE = lt.SUBINVENTORY_CODE
+");
+                    cond.Add("lt.CONTROL_FLAG <> 'D'");
+                    cond.Add("st.LOCATOR_TYPE = '2'");
+                    cond.Add("lt.LOCATOR_DISABLE_DATE IS NOT NULL AND lt.LOCATOR_DISABLE_DATE >= GETDATE()");
+                    sqlParameterList.Add(new SqlParameter("@LOCATOR_DISABLE_DATE", DateTime.Now));
+                    if (ORGANIZATION_ID != "*")
+                    {
+                        cond.Add("lt.ORGANIZATION_ID = @ORGANIZATION_ID");
+                        sqlParameterList.Add(new SqlParameter("@ORGANIZATION_ID", ORGANIZATION_ID));
+                    }
+
+                    if (SUBINVENTORY_CODE != null)
+                    {
+                        cond.Add("lt.SUBINVENTORY_CODE = @SUBINVENTORY_CODE");
+                        sqlParameterList.Add(new SqlParameter("@SUBINVENTORY_CODE", SUBINVENTORY_CODE));
+                    }
+
+                    string commandText = string.Format(query + "{0}{1}", cond.Count > 0 ? " where " : "", string.Join(" and ", cond.ToArray()));
+                    Locatorlist.Add(new SelectListItem { Text = "全部", Value = "*" });
+                    if (sqlParameterList.Count > 0)
+                    {
+                        Locatorlist.AddRange(mesContext.Database.SqlQuery<SelectListItem>(commandText, sqlParameterList.ToArray()).ToList());
+                    }
+                    else
+                    {
+                        Locatorlist.AddRange(mesContext.Database.SqlQuery<SelectListItem>(commandText).ToList());
+                    }
+
+                    return Locatorlist;
+                }
+            }
+            catch (Exception e)
+            {
+                logger.Error(LogUtilities.BuildExceptionMessage(e));
+                return new List<SelectListItem>();
+            }
         }
 
         public class PurchaseStatusCode

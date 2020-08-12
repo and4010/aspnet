@@ -24,18 +24,18 @@
                 <div class="row">
                     <div class="col-md-5" style="margin-bottom:10px">
                         <div class="form-inline" style="margin-bottom:10px">
-                            @Html.LabelFor(model => model.Cutting_Date_From)
-                            @Html.TextBoxFor(model => model.Cutting_Date_From, new { @class = "form-control input-lg", id = "dialog_Cutting_Date_From" ,autocomplete="off"})
+                            @Html.LabelFor(model => model.CuttingDateFrom)
+                            @Html.TextBoxFor(model => model.CuttingDateFrom, new { @class = "form-control input-lg", id = "Dialog_CuttingDateFrom", autocomplete="off"})
                         </div>
 
                         <div class="form-inline" style="margin-bottom:10px">
-                            @Html.LabelFor(model => model.Cutting_Date_To)
-                            @Html.TextBoxFor(model => model.Cutting_Date_To, new { @class = "form-control input-lg", id = "dialog_Cutting_Date_To" ,autocomplete="off"})
+                            @Html.LabelFor(model => model.CuttingDateTo)
+                            @Html.TextBoxFor(model => model.CuttingDateTo, new { @class = "form-control input-lg", id = "Dialog_CuttingDateTo", autocomplete="off"})
                         </div>
 
                         <div class="form-inline" style="margin-bottom:10px">
-                            @Html.LabelFor(model => model.Manchine_Num)
-                            @Html.DropDownListFor(model => model.Manchine_Num, MachineItems, new { @class = "form-control input-lg", id = "dialg_Manchine_Num" })
+                            @Html.LabelFor(model => model.MachineNum)
+                            @Html.DropDownListFor(model => model.MachineNum, MachineItems, new { @class = "form-control input-lg", id = "Dialog_MachineNum" })
                         </div>
 
                     </div>

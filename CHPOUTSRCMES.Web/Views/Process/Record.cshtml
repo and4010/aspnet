@@ -14,7 +14,7 @@
 }
 
 
-@Html.HiddenFor(model => model.CHP_PROCESS_T.Process_Detail_Id, new { id = "Process_Detail_Id" })
+@Html.HiddenFor(model => model.CHP_PROCESS_T.OspDetailInId, new { id = "OspDetailInId" })
 
 
 <div class="row">
@@ -22,29 +22,29 @@
     <div class="row col-md-12">
         @*工單號*@
         <div class="form-group col col-md-1">
-            @Html.LabelFor(model => model.CHP_PROCESS_T.Process_Batch_no)
+            @Html.LabelFor(model => model.CHP_PROCESS_T.OspBatchStatusDesc)
         </div>
 
         <div class="form-group col col-md-2">
-            <span id="Process_Batch_no">@Html.DisplayFor(model => model.CHP_PROCESS_T.Process_Batch_no)</span>
+            <span id="Process_Batch_no">@Html.DisplayFor(model => model.CHP_PROCESS_T.OspBatchStatusDesc)</span>
         </div>
 
         @* 訂單編號 *@
         <div class="form-group col col-md-1">
-            @Html.LabelFor(model => model.CHP_PROCESS_T.Order_Number)
+            @Html.LabelFor(model => model.CHP_PROCESS_T.OrderNumber)
         </div>
 
         <div class="form-group col col-md-2">
-            @Html.DisplayFor(model => model.CHP_PROCESS_T.Order_Number)
+            @Html.DisplayFor(model => model.CHP_PROCESS_T.OrderNumber)
         </div>
 
         @*客戶名稱*@
         <div class="form-group col col-md-1">
-            @Html.LabelFor(model => model.CHP_PROCESS_T.Cosutomer_Num)
+            @Html.LabelFor(model => model.CHP_PROCESS_T.CustomerName)
         </div>
 
         <div class="form-group col col-md-2">
-            @Html.DisplayFor(model => model.CHP_PROCESS_T.Cosutomer_Num)
+            @Html.DisplayFor(model => model.CHP_PROCESS_T.CustomerName)
         </div>
     </div>
 
@@ -52,29 +52,29 @@
 
         @*需求日*@
         <div class="form-group col col-md-1">
-            @Html.LabelFor(model => model.CHP_PROCESS_T.Demand_Date)
+            @Html.LabelFor(model => model.CHP_PROCESS_T.DueDate)
         </div>
 
         <div class="form-group col col-md-2">
-            @Html.DisplayFor(model => model.CHP_PROCESS_T.Demand_Date)
+            @Html.DisplayFor(model => model.CHP_PROCESS_T.DueDate)
         </div>
 
         @*裁切日*@
         <div class="form-group col col-md-1">
-            @Html.LabelFor(model => model.CHP_PROCESS_T.Cutting_Date_From)
+            @Html.LabelFor(model => model.CHP_PROCESS_T.CuttingDateFrom)
         </div>
 
         <div class="form-group col col-md-2">
-            @Html.DisplayFor(model => model.CHP_PROCESS_T.Cutting_Date_From)
+            @Html.DisplayFor(model => model.CHP_PROCESS_T.CuttingDateFrom)
         </div>
 
         @*裁切日*@
         <div class="form-group col col-md-1">
-            @Html.LabelFor(model => model.CHP_PROCESS_T.Cutting_Date_To)
+            @Html.LabelFor(model => model.CHP_PROCESS_T.CuttingDateTo)
         </div>
 
         <div class="form-group col col-md-2">
-            @Html.DisplayFor(model => model.CHP_PROCESS_T.Cutting_Date_To)
+            @Html.DisplayFor(model => model.CHP_PROCESS_T.CuttingDateTo)
         </div>
 
     </div>
@@ -362,7 +362,7 @@
         </div>
 
         <div class="col-md-2">
-            @Html.HiddenFor(model => model.CHP_PROCESS_T.Weight, new { id = "CHP_PROCESS_T_Weight" })
+            @Html.HiddenFor(model => model.CHP_PROCESS_T.Loss, new { id = "CHP_PROCESS_T_Weight" })
             <button class="btn btn-primary" type="button" id="BtnCalculate">計算</button>
         </div>
 

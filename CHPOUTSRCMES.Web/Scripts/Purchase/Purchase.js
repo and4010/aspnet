@@ -671,7 +671,8 @@ function LoadPaperRollHeard() {
             "data": { CabinetNumber: CabinetNumber, Status: Status }
         },
         columns: [
-            { data: "Id", "name": "項次", "autoWidth": true, "className": "dt-body-center" },
+            { data: "Id", "name": "項次", "autoWidth": true, "className": "dt-body-center", visible: false },
+            { data: "SubId", "name": "項次", "autoWidth": true, "className": "dt-body-center" },
             { data: "Subinventory", "name": "倉庫", "autoWidth": true, "className": "dt-body-center" },
             { data: "Locator", "name": "儲位", "autoWidth": true, "className": "dt-body-center" },
             { data: "Item_No", "name": "料號", "autoWidth": true, "className": "dt-body-left" },
@@ -707,7 +708,8 @@ function LoadFlatHeader() {
             "data": { CabinetNumber: CabinetNumber, Status: Status},
         },
         columns: [
-            { data: "Id", "name": "項次", "autoWidth": true, "className": "dt-body-center" },
+            { data: "Id", "name": "項次", "autoWidth": true, "className": "dt-body-center", visible: false },
+            { data: "SubId", "name": "項次", "autoWidth": true, "className": "dt-body-center" },
             { data: "Subinventory", "name": "倉庫", "autoWidth": true, "className": "dt-body-center" },
             { data: "Locator", "name": "儲位", "autoWidth": true, "className": "dt-body-center" },
             { data: "Item_No", "name": "料號", "autoWidth": true, "className": "dt-body-left" },
@@ -733,13 +735,13 @@ function PaperRolldataTablesBody() {
         "language": {
             "url": "/bower_components/datatables/language/zh-TW.json"
         },
-        scrollX: true,
+        //scrollX: true,
         destroy: true,
         autoWidth: true,
         serverSide: true,
         processing: true,
         columnDefs: [{
-            orderable: false, targets: [0, 17], width: "50px",
+            orderable: false, targets: [0, 18], width: "50px",
         }],
         dom:
             "<'row'<'col-sm-2'l><'col-sm-7'B><'col-sm-3'f>>" +
@@ -767,7 +769,8 @@ function PaperRolldataTablesBody() {
                 orderable: false,
                 targets: 0
             },
-            { data: "Id", "name": "項次", "autoWidth": true, "className": "dt-body-center" },
+            { data: "Id", "name": "項次", "autoWidth": true, "className": "dt-body-center", visible: false },
+            { data: "SubId", "name": "項次", "autoWidth": true, "className": "dt-body-center" },
             { data: "Subinventory", "name": "倉庫", "autoWidth": true, "className": "dt-body-center" },
             { data: "Locator", "name": "儲位", "autoWidth": true, "className": "dt-body-center" },
             { data: "Barcode", "name": "條碼號", "autoWidth": true, "className": "dt-body-center" },
@@ -820,7 +823,7 @@ function FlatdataTablesBody() {
         serverSide: true,
         processing: true,
         columnDefs: [{
-            orderable: false, targets: [0, 12], width: "70px"
+            orderable: false, targets: [0, 13], width: "70px"
         }],
         dom:
             "<'row'<'col-sm-2'l><'col-sm-7'B><'col-sm-3'f>>" +
@@ -840,7 +843,8 @@ function FlatdataTablesBody() {
                 orderable: false,
                 targets: 0
             },
-            { data: "Id", "name": "項次", "autoWidth": true, "className": "dt-body-center" },
+            { data: "Id", "name": "項次", "autoWidth": true, "className": "dt-body-center", visible: false },
+            { data: "SubId", "name": "項次", "autoWidth": true, "className": "dt-body-center" },
             { data: "Subinventory", "name": "倉庫", "autoWidth": true, "className": "dt-body-center" },
             { data: "Locator", "name": "儲位", "autoWidth": true, "className": "dt-body-center" },
             { data: "Barcode", "name": "條碼號", "autoWidth": true, "className": "dt-body-center" },

@@ -16,10 +16,13 @@ namespace CHPOUTSRCMES.Web.Controllers
         // GET: /Process/
         public ActionResult Index()
         {
-            ViewBag.Process_Status = GetProcess_Status();
+            ProcessViewModel viewModel = new ProcessViewModel();
+
+
+            ViewBag.Process_Status = viewModel.GetBatchStatusDesc();
             ViewBag.Process_Batch_no = GetProcess_Batch_no();
-            ViewBag.Manchine_Num = GetManchine_Num();
-            ViewBag.Subinventory = GetSubinventory();
+            ViewBag.Manchine_Num = viewModel.GetManchine();
+            ViewBag.Subinventory = viewModel.GetSubinventory();
             return View();
         }
 
@@ -27,42 +30,42 @@ namespace CHPOUTSRCMES.Web.Controllers
         {
             ViewBag.RemnantItem = GetRemnantItem();
             ViewBag.CotangentItem = GetCotangentItem();
-            List<CHP_PROCESS_T> model = ProcessIndexViewModel.chp_process_t;
-            ProcessIndexViewModel procesIndexViewModel = new ProcessIndexViewModel();
-            var cpt = model.First(r => r.Process_Heard_Id.ToString() == id);
+            List<CHP_PROCESS_T> model = ProcessViewModel.chp_process_t;
+            ProcessViewModel procesIndexViewModel = new ProcessViewModel();
+            var cpt = model.First(r => r.OspHeaderId.ToString() == id);
             procesIndexViewModel.CHP_PROCESS_T = cpt;
-            procesIndexViewModel.Production = ProcessIndexViewModel.ListProductions.FirstOrDefault(r => r.Process_Detail_Id.ToString() == id);
+            //procesIndexViewModel.Production = ProcessViewModel.ListProductions.FirstOrDefault(r => r.Process_Detail_Id.ToString() == id);
 
             return View(procesIndexViewModel);
         }
 
         public ActionResult Edit(String id)
         {
-            List<CHP_PROCESS_T> model = ProcessIndexViewModel.chp_process_t;
-            ProcessIndexViewModel procesIndexViewModel = new ProcessIndexViewModel();
-            var cpt = model.First(r => r.Process_Heard_Id.ToString() == id);
-            procesIndexViewModel.CHP_PROCESS_T = cpt;
-            procesIndexViewModel.Production = ProcessIndexViewModel.ListProductions.FirstOrDefault(r => r.Production_Id.ToString() == id);
+            List<CHP_PROCESS_T> model = ProcessViewModel.chp_process_t;
+            ProcessViewModel procesViewModel = new ProcessViewModel();
+            var cpt = model.First(r => r.OspHeaderId.ToString() == id);
+            procesViewModel.CHP_PROCESS_T = cpt;
+            //procesViewModel.Production = ProcessViewModel.ListProductions.FirstOrDefault(r => r.Production_Id.ToString() == id);
 
-            return View(procesIndexViewModel);
+            return View(procesViewModel);
         }
 
         public JsonResult EditSave(string Process_Detail_Id,string remark)
         {
-            List<CHP_PROCESS_T> model = ProcessIndexViewModel.chp_process_t;
-            var cpt = model.First(r => r.Process_Heard_Id.ToString() == Process_Detail_Id);
-            cpt.Produce_Remark = remark;
+            List<CHP_PROCESS_T> model = ProcessViewModel.chp_process_t;
+            var cpt = model.First(r => r.OspHeaderId.ToString() == Process_Detail_Id);
+            cpt.Note = remark;
             var Boolean = true;
             return Json(new { Boolean },JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult Flat(String id)
         {
-            List<CHP_PROCESS_T> model = ProcessIndexViewModel.chp_process_t;
-            ProcessIndexViewModel procesIndexViewModel = new ProcessIndexViewModel();
-            var cpt = model.First(r => r.Process_Heard_Id.ToString() == id);
+            List<CHP_PROCESS_T> model = ProcessViewModel.chp_process_t;
+            ProcessViewModel procesIndexViewModel = new ProcessViewModel();
+            var cpt = model.First(r => r.OspHeaderId.ToString() == id);
             procesIndexViewModel.CHP_PROCESS_T = cpt;
-            procesIndexViewModel.Production = ProcessIndexViewModel.ListProductions.FirstOrDefault(r => r.Process_Detail_Id.ToString() == id);
+            //procesIndexViewModel.Production = ProcessViewModel.ListProductions.FirstOrDefault(r => r.Process_Detail_Id.ToString() == id);
 
             return View(procesIndexViewModel);
         }
@@ -71,11 +74,11 @@ namespace CHPOUTSRCMES.Web.Controllers
         {
             ViewBag.RemnantItem = GetRemnantItem();
             ViewBag.CotangentItem = GetCotangentItem();
-            List<CHP_PROCESS_T> model = ProcessIndexViewModel.chp_process_t;
-            ProcessIndexViewModel procesIndexViewModel = new ProcessIndexViewModel();
-            var cpt = model.First(r => r.Process_Heard_Id.ToString() == id);
+            List<CHP_PROCESS_T> model = ProcessViewModel.chp_process_t;
+            ProcessViewModel procesIndexViewModel = new ProcessViewModel();
+            var cpt = model.First(r => r.OspHeaderId.ToString() == id);
             procesIndexViewModel.CHP_PROCESS_T = cpt;
-            procesIndexViewModel.Production = ProcessIndexViewModel.ListProductions.FirstOrDefault(r => r.Process_Detail_Id.ToString() == id);
+            //procesIndexViewModel.Production = ProcessViewModel.ListProductions.FirstOrDefault(r => r.Process_Detail_Id.ToString() == id);
 
             return View(procesIndexViewModel);
         }
@@ -84,7 +87,8 @@ namespace CHPOUTSRCMES.Web.Controllers
         [HttpPost]
         public ActionResult _ProcessIndex()
         {
-            ViewBag.MachineItems = GetManchine();
+            ProcessViewModel viewModel = new ProcessViewModel();
+            ViewBag.MachineItems = viewModel.GetManchine();
             return PartialView();
         }
 
@@ -98,21 +102,21 @@ namespace CHPOUTSRCMES.Web.Controllers
         [HttpPost]
         public ActionResult ChagneIndexStatus(string Process_Batch_no,string Locator,string Status)
         {
-            List<CHP_PROCESS_T> model = ProcessIndexViewModel.chp_process_t;
-            var cpt = model.FirstOrDefault(r => r.Process_Batch_no == Process_Batch_no);
+            List<CHP_PROCESS_T> model = ProcessViewModel.chp_process_t;
+            var cpt = model.FirstOrDefault(r => r.OspBatchNo == Process_Batch_no);
             if (cpt != null)
             {
                 if(Status == "完工紀錄")
                 {
-                    cpt.Process_Status = "待核准";
+                    cpt.OspBatchStatusDesc = "待核准";
                 } else if (Status == "核准")
                 {
-                    cpt.Process_Status = "已完工";
+                    cpt.OspBatchStatusDesc = "已完工";
                 }
                 else
                 {
-                    cpt.Process_Status = "已完工";
-                    cpt.Locator = Locator;
+                    cpt.OspBatchStatusDesc = "已完工";
+                    cpt.LocatorCode = Locator;
                 }
             
             }
@@ -123,17 +127,17 @@ namespace CHPOUTSRCMES.Web.Controllers
         [HttpPost]
         public ActionResult _BtnDailog(DataTableAjaxPostViewModel data, string Process_Detail_Id, string dialog_Cutting_Date_From, string dialog_Cutting_Date_To,string dialg_Manchine_Num, string BtnStatus)
         {
-            List<CHP_PROCESS_T> model = ProcessIndexViewModel.chp_process_t;
-            var ID = model.First(r => r.Process_Detail_Id.ToString() == Process_Detail_Id);
+            List<CHP_PROCESS_T> model = ProcessViewModel.chp_process_t;
+            var ID = model.First(r => r.OspDetailInId.ToString() == Process_Detail_Id);
             if (ID != null)
             {
                 if(dialog_Cutting_Date_To != null)
                 {
-                    ID.Cutting_Date_To = Convert.ToDateTime(dialog_Cutting_Date_To);
-                    ID.Cutting_Date_From = Convert.ToDateTime(dialog_Cutting_Date_From);
-                    ID.Manchine_Num = dialg_Manchine_Num;
+                    ID.CuttingDateFrom = Convert.ToDateTime(dialog_Cutting_Date_To);
+                    ID.CuttingDateTo = Convert.ToDateTime(dialog_Cutting_Date_From);
+                    ID.MachineNum = dialg_Manchine_Num;
                 }
-                ID.Process_Status = BtnStatus;
+                ID.OspBatchStatusDesc = BtnStatus;
             }
 
 
@@ -145,15 +149,15 @@ namespace CHPOUTSRCMES.Web.Controllers
         public JsonResult TableResult(DataTableAjaxPostViewModel data, string Process_Status, string Process_Batch_no, string Manchine_Num,
             string Demand_Date, string Cutting_Date_From, string Cutting_Date_To, string Subinventory)
         {
-            if (ProcessIndexViewModel.chp_process_t.Count == 0)
+            if (ProcessViewModel.chp_process_t.Count == 0)
             {
-                ProcessIndexViewModel.GetTable();
+                ProcessViewModel.GetTable();
 
             }
-            ProcessIndexViewModel viewModel = new ProcessIndexViewModel();
+            ProcessViewModel viewModel = new ProcessViewModel();
             List<CHP_PROCESS_T> model = viewModel.Search(Process_Status, Process_Batch_no, Manchine_Num, Demand_Date, Cutting_Date_From, Cutting_Date_To, Subinventory);
-            model = ProcessIndexViewModel.Search(data, model);
-            model = ProcessIndexViewModel.Order(data.Order, model).ToList();
+            model = ProcessViewModel.Search(data, model);
+            model = ProcessViewModel.Order(data.Order, model).ToList();
             var model1 = model.Skip(data.Start).Take(data.Length).ToList();
 
 
@@ -164,7 +168,7 @@ namespace CHPOUTSRCMES.Web.Controllers
         public JsonResult CheckOrderNumber(string ProcessBatchNo)
         {
             var boolean = false;
-            var orde = ProcessIndexViewModel.chp_process_t.FirstOrDefault(r => r.Process_Batch_no == ProcessBatchNo);
+            var orde = ProcessViewModel.chp_process_t.FirstOrDefault(r => r.OspBatchNo == ProcessBatchNo);
             if(orde == null)
             {
                 boolean = false;
@@ -181,7 +185,7 @@ namespace CHPOUTSRCMES.Web.Controllers
         {
             List<Invest> model = new List<Invest>();
             var list =
-                    from invent in ProcessIndexViewModel.Invest_Stock
+                    from invent in ProcessViewModel.Invest_Stock
                     where invent.Process_Detail_Id == int.Parse(Process_Detail_Id)
                     select invent;
 
@@ -192,11 +196,11 @@ namespace CHPOUTSRCMES.Web.Controllers
         [HttpPost]
         public JsonResult Barcode(string Barcode, string Process_Detail_Id)
         {
-            ProcessIndexViewModel.GetInvest();
+            ProcessViewModel.GetInvest();
             var result = false;
-            ProcessIndexViewModel procesIndexViewModel = new ProcessIndexViewModel();
+            ProcessViewModel procesIndexViewModel = new ProcessViewModel();
 
-            List<Invest> model = ProcessIndexViewModel.invest;
+            List<Invest> model = ProcessViewModel.invest;
 
             var cpd = model.FirstOrDefault(r => r.Barcode == Barcode && r.Process_Detail_Id.ToString() == Process_Detail_Id);
             if (cpd == null)
@@ -214,8 +218,8 @@ namespace CHPOUTSRCMES.Web.Controllers
         [HttpPost]
         public JsonResult InvestTable(string Barcode, string Remnant, string Remaining_Weight, string Process_Detail_Id)
         {
-            List<Invest> chp_process_detail_t = ProcessIndexViewModel.invest;
-            List<Invest> model = ProcessIndexViewModel.Invest_Stock;
+            List<Invest> chp_process_detail_t = ProcessViewModel.invest;
+            List<Invest> model = ProcessViewModel.Invest_Stock;
             var check = 0;
 
 
@@ -243,7 +247,7 @@ namespace CHPOUTSRCMES.Web.Controllers
                               where CHP_PROCESS_DETAIL_T.Barcode == Barcode
                               select CHP_PROCESS_DETAIL_T;
 
-                    ProcessIndexViewModel.Invest_Stock.AddRange(list);
+                    ProcessViewModel.Invest_Stock.AddRange(list);
                     //1 有殘捲 0 無殘捲
                     if (Remnant != null)
                     {
@@ -266,7 +270,7 @@ namespace CHPOUTSRCMES.Web.Controllers
         {
             if(InvestDTList.Action == "edit")
             {
-                List<Invest> model = ProcessIndexViewModel.Invest_Stock;
+                List<Invest> model = ProcessViewModel.Invest_Stock;
                 var id = model.FirstOrDefault(r => r.Invest_Id == InvestDTList.InvestList[0].Invest_Id);
                 if (id != null)
                 {
@@ -278,10 +282,10 @@ namespace CHPOUTSRCMES.Web.Controllers
           
             if(InvestDTList.Action == "remove")
             {
-                var barcode = ProcessIndexViewModel.Invest_Stock.FirstOrDefault(r => r.Invest_Id == InvestDTList.InvestList[0].Invest_Id);
+                var barcode = ProcessViewModel.Invest_Stock.FirstOrDefault(r => r.Invest_Id == InvestDTList.InvestList[0].Invest_Id);
                 if (barcode != null)
                 {
-                    ProcessIndexViewModel.Invest_Stock.Remove(barcode);
+                    ProcessViewModel.Invest_Stock.Remove(barcode);
                 }
   
             }
@@ -292,10 +296,10 @@ namespace CHPOUTSRCMES.Web.Controllers
         public JsonResult InvestDelete(string Barcode, string Process_Detail_Id)
         {
             var boolean = true;
-            var barcode = ProcessIndexViewModel.Invest_Stock.FirstOrDefault(r => r.Barcode == Barcode && r.Process_Detail_Id == int.Parse(Process_Detail_Id));
+            var barcode = ProcessViewModel.Invest_Stock.FirstOrDefault(r => r.Barcode == Barcode && r.Process_Detail_Id == int.Parse(Process_Detail_Id));
             if (barcode != null)
             {
-                ProcessIndexViewModel.Invest_Stock.Remove(barcode);
+                ProcessViewModel.Invest_Stock.Remove(barcode);
             }
             else
             {
@@ -311,7 +315,7 @@ namespace CHPOUTSRCMES.Web.Controllers
         {
             List<Production> model = new List<Production>();
             var list =
-                   from Productions in ProcessIndexViewModel.ListProductions
+                   from Productions in ProcessViewModel.ListProductions
                    where Productions.Process_Detail_Id == int.Parse(Process_Detail_Id)
                    select Productions;
 
@@ -322,7 +326,7 @@ namespace CHPOUTSRCMES.Web.Controllers
         [HttpPost]
         public JsonResult ProductionDetail(string Production_Roll_Ream_Qty, string Production_Roll_Ream_Wt, string Product_Item, string Process_Detail_Id)
         {
-            List<Production> model = ProcessIndexViewModel.ListProductions;
+            List<Production> model = ProcessViewModel.ListProductions;
             var boolean = true;
             var msg = "";
             if (Production_Roll_Ream_Qty != null)
@@ -362,10 +366,10 @@ namespace CHPOUTSRCMES.Web.Controllers
         public JsonResult ProductionDelete(string Production_Id)
         {
             var boolean = true;
-            var ProductionId = ProcessIndexViewModel.ListProductions.FirstOrDefault(r => r.Production_Id.ToString() == Production_Id);
+            var ProductionId = ProcessViewModel.ListProductions.FirstOrDefault(r => r.Production_Id.ToString() == Production_Id);
             if (ProductionId != null)
             {
-                ProcessIndexViewModel.ListProductions.Remove(ProductionId);
+                ProcessViewModel.ListProductions.Remove(ProductionId);
             }
             else
             {
@@ -382,7 +386,7 @@ namespace CHPOUTSRCMES.Web.Controllers
             List<Production> model = new List<Production>();
             if (ProductionDTEditor.Action == "edit")
             {
-                List<Production> model1 = ProcessIndexViewModel.ListProductions;
+                List<Production> model1 = ProcessViewModel.ListProductions;
                 var id = model1.FirstOrDefault(r => r.Production_Id == ProductionDTEditor.ProductionList[0].Production_Id);
                 if (id != null)
                 {
@@ -394,10 +398,10 @@ namespace CHPOUTSRCMES.Web.Controllers
             }
             if(ProductionDTEditor.Action == "remove")
             {
-                var ProductionId = ProcessIndexViewModel.ListProductions.FirstOrDefault(r => r.Production_Id == ProductionDTEditor.ProductionList[0].Production_Id);
+                var ProductionId = ProcessViewModel.ListProductions.FirstOrDefault(r => r.Production_Id == ProductionDTEditor.ProductionList[0].Production_Id);
                 if (ProductionId != null)
                 {
-                    ProcessIndexViewModel.ListProductions.Remove(ProductionId);
+                    ProcessViewModel.ListProductions.Remove(ProductionId);
                 }
             }
           
@@ -408,7 +412,7 @@ namespace CHPOUTSRCMES.Web.Controllers
         public JsonResult ProductionChangeStatus(string Production_Barcode, string Process_Detail_Id)
         {
             var check = 0;
-            var ProductionId = ProcessIndexViewModel.ListProductions.FirstOrDefault(r => r.Barcode == Production_Barcode && r.Process_Detail_Id == int.Parse(Process_Detail_Id));
+            var ProductionId = ProcessViewModel.ListProductions.FirstOrDefault(r => r.Barcode == Production_Barcode && r.Process_Detail_Id == int.Parse(Process_Detail_Id));
             if (ProductionId != null)
             {
                 if (ProductionId.Status == "已入庫")
@@ -438,17 +442,17 @@ namespace CHPOUTSRCMES.Web.Controllers
             List<Cotangent> model = new List<Cotangent>();
             if (Production_Cotangent == "1")
             {
-                ProcessIndexViewModel.GetCotangents(Process_Detail_Id);
+                ProcessViewModel.GetCotangents(Process_Detail_Id);
             }
 
-            model = ProcessIndexViewModel.ListCotangent;
+            model = ProcessViewModel.ListCotangent;
             return Json(new { draw = data.Draw, recordsFiltered = model.Count, recordsTotal = model.Count, data = model }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
         public ActionResult CotangentEdit(DataTableAjaxPostViewModel data, CotangentDTEditor cotangentDTEditor)
         {
-            var model = ProcessIndexViewModel.ListCotangent;
+            var model = ProcessViewModel.ListCotangent;
             if (cotangentDTEditor.Action == "edit")
             {
                 var id = model.FirstOrDefault(r => r.Cotangent_Id == cotangentDTEditor.CotangentList[0].Cotangent_Id);
@@ -465,7 +469,7 @@ namespace CHPOUTSRCMES.Web.Controllers
                 var id = model.FirstOrDefault(r => r.Cotangent_Id == cotangentDTEditor.CotangentList[0].Cotangent_Id);
                 if(id != null)
                 {
-                    ProcessIndexViewModel.ListCotangent.Remove(id);
+                    ProcessViewModel.ListCotangent.Remove(id);
                 }
                
             }
@@ -478,10 +482,10 @@ namespace CHPOUTSRCMES.Web.Controllers
         public ActionResult CotangentDelete(string Cotangent_Id)
         {
             var boolean = true;
-            var CotangentId = ProcessIndexViewModel.ListCotangent.FirstOrDefault(r => r.Cotangent_Id.ToString() == Cotangent_Id);
+            var CotangentId = ProcessViewModel.ListCotangent.FirstOrDefault(r => r.Cotangent_Id.ToString() == Cotangent_Id);
             if (CotangentId != null)
             {
-                ProcessIndexViewModel.ListCotangent.Remove(CotangentId);
+                ProcessViewModel.ListCotangent.Remove(CotangentId);
             }
             else
             {
@@ -495,7 +499,7 @@ namespace CHPOUTSRCMES.Web.Controllers
         public JsonResult CotangentChangeStatus(string CotangentBarcode)
         {
             var check = 0;
-            var CotangentId = ProcessIndexViewModel.ListCotangent.FirstOrDefault(r => r.Barcode == CotangentBarcode);
+            var CotangentId = ProcessViewModel.ListCotangent.FirstOrDefault(r => r.Barcode == CotangentBarcode);
             if (CotangentId != null)
             {
                 if (CotangentId.Status == "已入庫")
@@ -523,14 +527,14 @@ namespace CHPOUTSRCMES.Web.Controllers
         public JsonResult RecordCotangentDataTables(DataTableAjaxPostViewModel data)
         {
             List<Cotangent> model = new List<Cotangent>();
-            model = ProcessIndexViewModel.ListCotangent;
+            model = ProcessViewModel.ListCotangent;
             return Json(new { draw = data.Draw, recordsFiltered = model.Count, recordsTotal = model.Count, data = model }, JsonRequestBehavior.AllowGet);
         }
 
 
         public JsonResult Loss(string TotalWeight, string Percentage, string Process_Detail_Id)
         {
-            List<Production> model = ProcessIndexViewModel.ListProductions;
+            List<Production> model = ProcessViewModel.ListProductions;
             for(int i = 0; i < model.Count; i++)
             {
                 if (model[i].Process_Detail_Id == int.Parse(Process_Detail_Id))
@@ -551,7 +555,7 @@ namespace CHPOUTSRCMES.Web.Controllers
         [HttpPost]
         public JsonResult PaperRollProductionDetail(string PaperRoll_Basic_Weight, string PaperRoll_Specification, string PaperRoll_Lot_Number, string Product_Item, string Process_Detail_Id)
         {
-            List<Production> model = ProcessIndexViewModel.ListProductions;
+            List<Production> model = ProcessViewModel.ListProductions;
             var boolean = true;
             if (PaperRoll_Lot_Number != null)
             {
@@ -573,49 +577,7 @@ namespace CHPOUTSRCMES.Web.Controllers
         }
 
 
-        private List<SelectListItem> GetProcess_Status()
-        {
-            List<SelectListItem> Process_Status = new List<SelectListItem>();
-
-
-            Process_Status.Add(new SelectListItem()
-            {
-                Text = "全部",
-                Value = "*",
-                Selected = false,
-            });
-            Process_Status.Add(new SelectListItem()
-            {
-                Text = "待排單",
-                Value = "待排單",
-                Selected = false,
-            });
-            Process_Status.Add(new SelectListItem()
-            {
-                Text = "已排單",
-                Value = "已排單",
-                Selected = false,
-            });
-            Process_Status.Add(new SelectListItem()
-            {
-                Text = "待核准",
-                Value = "待核准",
-                Selected = false,
-            });
-            Process_Status.Add(new SelectListItem()
-            {
-                Text = "已完工",
-                Value = "已完工",
-                Selected = false,
-            });
-            Process_Status.Add(new SelectListItem()
-            {
-                Text = "關帳",
-                Value = "關帳",
-                Selected = false,
-            });
-            return Process_Status;
-        }
+       
 
         private List<SelectListItem> GetProcess_Batch_no()
         {
@@ -647,29 +609,6 @@ namespace CHPOUTSRCMES.Web.Controllers
             return Process_Batch_no;
         }
 
-        private List<SelectListItem> GetManchine_Num()
-        {
-            List<SelectListItem> GetManchine_Num = new List<SelectListItem>();
-            GetManchine_Num.Add(new SelectListItem()
-            {
-                Text = "全部",
-                Value = "*",
-                Selected = false,
-            });
-            GetManchine_Num.Add(new SelectListItem()
-            {
-                Text = "01",
-                Value = "01",
-                Selected = false,
-            });
-            GetManchine_Num.Add(new SelectListItem()
-            {
-                Text = "02",
-                Value = "02",
-                Selected = false,
-            });
-            return GetManchine_Num;
-        }
 
         private List<SelectListItem> GetRemnantItem()
         {
@@ -689,29 +628,7 @@ namespace CHPOUTSRCMES.Web.Controllers
             return GetManchine_Num;
         }
 
-        private List<SelectListItem> GetSubinventory()
-        {
-            List<SelectListItem> GetSubinventory = new List<SelectListItem>();
-            GetSubinventory.Add(new SelectListItem()
-            {
-                Text = "全部",
-                Value = "*",
-                Selected = false,
-            });
-            GetSubinventory.Add(new SelectListItem()
-            {
-                Text = "TB2",
-                Value = "TB2",
-                Selected = false,
-            });
-            GetSubinventory.Add(new SelectListItem()
-            {
-                Text = "TB3",
-                Value = "TB3",
-                Selected = false,
-            });
-            return GetSubinventory;
-        }
+ 
 
         private List<SelectListItem> GetLocator()
         {
@@ -749,23 +666,7 @@ namespace CHPOUTSRCMES.Web.Controllers
             return GetCotangentItem;
         }
 
-        private List<SelectListItem> GetManchine()
-        {
-            List<SelectListItem> GetManchine_Num = new List<SelectListItem>();
-            GetManchine_Num.Add(new SelectListItem()
-            {
-                Text = "01",
-                Value = "01",
-                Selected = false,
-            });
-            GetManchine_Num.Add(new SelectListItem()
-            {
-                Text = "02",
-                Value = "02",
-                Selected = false,
-            });
-            return GetManchine_Num;
-        }
+     
 
         public class DetailDTEditor
         {
