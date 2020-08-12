@@ -1,5 +1,6 @@
 ﻿using CHPOUTSRCMES.Web.Models.Information;
 using CHPOUTSRCMES.Web.ViewModels;
+using Microsoft.AspNet.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +17,8 @@ namespace CHPOUTSRCMES.Web.Controllers
         // GET: /OspRelated/
         public ActionResult Index()
         {
-            OspRelatedViewModel viewModel = ospRelatedData.getViewModel();
+            var id = this.User.Identity.GetUserId();
+            OspRelatedViewModel viewModel = ospRelatedData.getViewModel(id);
             return View(viewModel);
         }
 

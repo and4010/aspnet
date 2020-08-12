@@ -12,6 +12,7 @@ using System.IO;
 using CHPOUTSRCMES.Web.Util;
 using CHPOUTSRCMES.Web.DataModel;
 using CHPOUTSRCMES.Web.DataModel.UnitOfWorks;
+using Microsoft.AspNet.Identity;
 
 namespace CHPOUTSRCMES.Web.Controllers
 {
@@ -61,7 +62,11 @@ namespace CHPOUTSRCMES.Web.Controllers
             {
                 using (MasterUOW uow = new MasterUOW(context))
                 {
-                    return PartialView("_TopPartial", top.GetViewModel(uow, stockTransferData.orgData));
+                    //取得使用者帳號
+                    //var name = this.User.Identity.GetUserName();
+                    //取得使用者ID
+                    var id = this.User.Identity.GetUserId();
+                    return PartialView("_TopPartial", top.GetViewModel(uow, stockTransferData.orgData, id));
                 }
             }
         }
@@ -72,14 +77,19 @@ namespace CHPOUTSRCMES.Web.Controllers
             {
                 using (MasterUOW uow = new MasterUOW(context))
                 {
-                    StockData.addDefault();
+                    //取得使用者ID
+                    var id = this.User.Identity.GetUserId();
+                    //取得使用者帳號
+                    //var name = this.User.Identity.GetUserName();
+                    //StockData.addDefault();
+
                     if (TransferType == "出庫")
                     {
-                        return PartialView("_OutBoundPartial", stockTransferData.GetOutBoundViewModel(uow));
+                        return PartialView("_OutBoundPartial", stockTransferData.GetOutBoundViewModel(uow, id));
                     }
                     else if (TransferType == "入庫")
                     {
-                        return PartialView("_InBoundPartial", stockTransferData.GetInBoundViewModel(uow));
+                        return PartialView("_InBoundPartial", stockTransferData.GetInBoundViewModel(uow, id));
                     }
                     else
                     {
@@ -89,14 +99,15 @@ namespace CHPOUTSRCMES.Web.Controllers
             }
         }
 
-        [HttpPost, ActionName("GetLocatorList")]
+        [HttpPost, ActionName("GetLocatorListForUserId")]
         public JsonResult GetLocatorList(string SUBINVENTORY_CODE)
         {
             using (var context = new MesContext())
             {
                 using (MasterUOW uow = new MasterUOW(context))
                 {
-                    List<SelectListItem> items = stockTransferData.GetLocatorList(uow, SUBINVENTORY_CODE, MasterUOW.DropDownListType.Choice).ToList();
+                    var id = this.User.Identity.GetUserId();
+                    List<SelectListItem> items = stockTransferData.GetLocatorListForUserId(uow, id,SUBINVENTORY_CODE, MasterUOW.DropDownListType.Choice).ToList();
                     return Json(items, JsonRequestBehavior.AllowGet);
                 }
             }

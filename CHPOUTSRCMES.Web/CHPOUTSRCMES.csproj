@@ -250,8 +250,8 @@
     <Compile Include="Controllers\TransferController.cs" />
     <Compile Include="Controllers\YszmpckqController.cs" />
     <Compile Include="DataAnnotation\Precision.cs" />
-    <Compile Include="DataModel\Entiy\Temp\ITEMS_TMP_T.cs" />
-    <Compile Include="DataModel\Entiy\Temp\LOCATOR_TMP_T.cs" />
+    <Compile Include="DataModel\Entiy\Transfer\TRANSFER_DETAIL_T.cs" />
+    <Compile Include="DataModel\Entiy\Transfer\TRANSFER_HEADER_T.cs" />
     <Compile Include="DataModel\Entiy\Temp\MACHINE_PAPER_TYPE_TMP_T.cs" />
     <Compile Include="DataModel\Entiy\Temp\ORGANIZATION_TMP_T.cs" />
     <Compile Include="DataModel\Entiy\Temp\ORG_ITEMS_TMP_T.cs" />

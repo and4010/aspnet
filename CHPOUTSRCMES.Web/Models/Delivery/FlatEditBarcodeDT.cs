@@ -19,6 +19,9 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
 
         public long DlvHeaderId { get; set; } //DLV_HEADER_ID
 
+        [Display(Name = "棧板狀態")]
+        public string PALLET_STATUS { get; set; }
+
         [Display(Name = "條碼號")]
         public string BARCODE { get; set; }
 

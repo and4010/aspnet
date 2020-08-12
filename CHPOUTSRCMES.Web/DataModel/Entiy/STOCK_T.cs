@@ -40,7 +40,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity
         /// 倉庫
         /// </summary>
         /// 
-        [StringLength(10)]
+        [StringLength(20)]
         [Required]
         [Column("SUBINVENTORY_CODE")]
         public string SubinventoryCode { set; get; }

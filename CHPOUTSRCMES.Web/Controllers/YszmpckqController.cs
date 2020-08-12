@@ -1,6 +1,7 @@
 ﻿using CHPOUTSRCMES.Web.Models;
 using CHPOUTSRCMES.Web.Models.Information;
 using CHPOUTSRCMES.Web.ViewModels;
+using Microsoft.AspNet.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,7 +20,8 @@ namespace CHPOUTSRCMES.Web.Controllers
         // GET: /Yszmpckq/
         public ActionResult Index()
         {
-            YszmpckqViewModel viewModel = yszmpckqDataData.getViewModel();
+            var id = this.User.Identity.GetUserId();
+            YszmpckqViewModel viewModel = yszmpckqDataData.getViewModel(id);
             return View(viewModel);
         }
 

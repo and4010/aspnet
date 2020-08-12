@@ -143,6 +143,8 @@ namespace CHPOUTSRCMES.Web.DataModel
         /// </summary>
         public DbSet<LOG_ENTRY_T> LogEntries { set; get; }
 
+        public DbSet<USER_SUBINVENTORY_T> USER_SUBINVENTORY_Ts { set; get; }
+
         #region 庫存
         public DbSet<STOCK_T> STOCK_Ts { set; get; }
 

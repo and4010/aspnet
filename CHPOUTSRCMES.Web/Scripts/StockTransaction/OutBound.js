@@ -157,7 +157,7 @@ function OutBoundInit() {
 
             var SUBINVENTORY_CODE = $("#ddlOutSubinventory").val();
             $.ajax({
-                url: "/StockTransaction/GetLocatorList",
+                url: "/StockTransaction/GetLocatorListForUserId",
                 type: "post",
                 data: {
                     SUBINVENTORY_CODE: SUBINVENTORY_CODE
@@ -210,10 +210,11 @@ function OutBoundInit() {
 
             var SUBINVENTORY_CODE = $("#ddlInSubinventory").val();
             $.ajax({
-                url: "/StockTransaction/GetLocatorList",
+                url: "/OrgSubinventory/GetLocatorList",
                 type: "post",
                 data: {
-                    SUBINVENTORY_CODE: SUBINVENTORY_CODE
+                    ORGANIZATION_ID: "*",
+                    SUBINVENTORY_CODE: SUBINVENTORY_CODE,
                 },
                 success: function (data) {
                     $('#ddlInLocator').empty();

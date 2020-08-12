@@ -70,11 +70,11 @@ namespace CHPOUTSRCMES.Web.Models.Information
         //private static List<YszmpckqDT> dtData = new List<YszmpckqDT>();
         private List<YszmpckqDT> testSource = new List<YszmpckqDT>();
 
-        public List<SelectListItem> GetOrganizationList()
+        public List<SelectListItem> GetOrganizationList(string userId)
         {
             using (var mes = new MesContext())
             {
-                return new MasterUOW(mes).GetOrganizationDropDownList(MasterUOW.DropDownListType.All);
+                return new MasterUOW(mes).GetOrganizationDropDownListForUserId(userId, MasterUOW.DropDownListType.All);
             }
         }
 
@@ -102,7 +102,7 @@ namespace CHPOUTSRCMES.Web.Models.Information
             }
         }
 
-        public YszmpckqViewModel getViewModel()
+        public YszmpckqViewModel getViewModel(string userId)
         {
             YszmpckqViewModel viewModel = new YszmpckqViewModel();
             //預設選單為全選
@@ -110,7 +110,7 @@ namespace CHPOUTSRCMES.Web.Models.Information
             viewModel.SelectedOrganization = "*";
             viewModel.SelectedPstyp = "*";
 
-            viewModel.OrganizationNameItems = GetOrganizationList();
+            viewModel.OrganizationNameItems = GetOrganizationList(userId);
             viewModel.OspSubinventoryNameItems = GetOspSubinventoryList("*");
             viewModel.PstypNameItems = GetPstypList("*", "*");
             return viewModel;

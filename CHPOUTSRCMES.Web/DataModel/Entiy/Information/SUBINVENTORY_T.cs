@@ -25,7 +25,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Information
         /// 倉庫
         /// </summary>
         /// 
-        [StringLength(10)]
+        [StringLength(20)]
         [Required]
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]

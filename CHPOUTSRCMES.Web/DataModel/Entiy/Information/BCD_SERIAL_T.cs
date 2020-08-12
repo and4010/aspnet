@@ -38,7 +38,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Information
         /// 
         [Required]
         [Key]
-        [StringLength(10)]
+        [StringLength(20)]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         [Column("SUBINVENTORY_CODE", Order = 3)]
         public string SubinventoryCode { set; get; }

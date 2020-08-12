@@ -1,4 +1,5 @@
 ﻿using CHPOUTSRCMES.Web.DataModel;
+using CHPOUTSRCMES.Web.DataModel.Entiy;
 using CHPOUTSRCMES.Web.DataModel.UnitOfWorks;
 using CHPOUTSRCMES.Web.ViewModels;
 using System;
@@ -131,11 +132,52 @@ namespace CHPOUTSRCMES.Web.Models.Information
             return organizationList.Select(i => new SelectListItem() { Text = i.Text, Value = i.Value }).ToList();
         }
 
+        //public IEnumerable<SelectListItem> GetUserSubinventoryList(MasterUOW uow, string userName, MasterUOW.DropDownListType type)
+        //{
+
+        //}
+        /// <summary>
+        /// 取得使用者倉庫下拉選單,
+        /// 條件:使用者Id 和 OSP_FLAG為Y 和 CONTROL_FLAG不為D,
+        /// 適用作業: 入庫、出貨、加工、庫存移轉-入庫 收貨倉、庫存移轉-出庫 發貨倉、基本資料-板令對照
+        /// </summary>
+        /// <param name="uow"></param>
+        /// <param name="userId">使用者Id</param>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public IEnumerable<SelectListItem> GetSubinventoryListForUserId(MasterUOW uow, string userId, MasterUOW.DropDownListType type)
+        {
+            var subinventoryList = uow.GetSubinventoryDropDownListForUserId(userId, type);
+            return subinventoryList;
+        }
+
+        /// <summary>
+        /// 取得倉庫下拉選單,
+        /// 條件: CONTROL_FLAG不為D,
+        /// 適用作業: 庫存移轉-入庫 發貨倉、庫存移轉-出庫 收貨倉、基本資料-組織倉庫
+        /// </summary>
+        /// <param name="uow"></param>
+        /// <param name="ORGANIZATION_ID">組織Id, *為全部組織</param>
+        /// <param name="type"></param>
+        /// <returns></returns>
         public IEnumerable<SelectListItem> GetSubinventoryList(MasterUOW uow, string ORGANIZATION_ID, MasterUOW.DropDownListType type)
         {
             var subinventoryList = uow.GetSubinventoryDropDownList(ORGANIZATION_ID, type);
             return subinventoryList;
         }
+
+        //public IEnumerable<SelectListItem> GetSubinventoryListForUserName(MasterUOW uow, string userName, MasterUOW.DropDownListType type)
+        //{
+        //    var result = uow.GetUserOrganizationIdList(userName);
+        //    if (!result.Success)
+        //    {
+        //        return new List<SelectListItem> { new SelectListItem { Text = "", Value = "" } };
+        //    }
+        //    else
+        //    {
+        //        return uow.GetSubinventoryDropDownList(result.Data, type);
+        //    }
+        //}
 
         public string GetBarodePrefixCode(string SUBINVENTORY_CODE)
         {
@@ -153,168 +195,142 @@ namespace CHPOUTSRCMES.Web.Models.Information
             }
         }
 
-        private List<ListItem> getSubinventoryList(string ORGANIZATION_ID, bool needAll)
-        {
-            long organizationId = 0;
-            try
-            {
-                if (ORGANIZATION_ID != "*")
-                {
-                    organizationId = Convert.ToInt64(ORGANIZATION_ID);
-                }
-            }
-            catch
-            {
-                ORGANIZATION_ID = "*";
-            }
-
-
-            List<ListItem> subinventoryList = new List<ListItem>();
-            if (needAll)
-            {
-                subinventoryList.Add(new ListItem("全部", "*"));
-            }
-            else
-            {
-                subinventoryList.Add(new ListItem("請選擇", "請選擇"));
-            }
-
-
-            if (ORGANIZATION_ID == "*")
-            {
-                var query = from orgSubinventoryDT in testSource
-                            group orgSubinventoryDT by new { orgSubinventoryDT.SUBINVENTORY_NAME, orgSubinventoryDT.SUBINVENTORY_CODE } into g
-                            select new ListItem
-                            {
-                                //Text =  g.Key.SUBINVENTORY_CODE.ToString() + " " + g.Key.SUBINVENTORY_NAME.ToString(),
-                                Text = g.Key.SUBINVENTORY_CODE.ToString(),
-                                Value = g.Key.SUBINVENTORY_CODE.ToString()
-                            };
-                subinventoryList.AddRange(query.ToList());
-            }
-            else
-            {
-                var query = from orgSubinventoryDT in testSource
-                            where organizationId == orgSubinventoryDT.ORGANIZATION_ID
-                            group orgSubinventoryDT by new { orgSubinventoryDT.SUBINVENTORY_NAME, orgSubinventoryDT.SUBINVENTORY_CODE } into g
-                            select new ListItem
-                            {
-                                //Text = g.Key.SUBINVENTORY_CODE.ToString() + " " + g.Key.SUBINVENTORY_NAME.ToString(),
-                                Text = g.Key.SUBINVENTORY_CODE.ToString(),
-                                Value = g.Key.SUBINVENTORY_CODE.ToString()
-                            };
-                subinventoryList.AddRange(query.ToList());
-            }
-
-            
-
-            //subinventoryList.Add(new ListItem("中間倉", "SFG"));
-            //subinventoryList.Add(new ListItem("外購久堂倉", "TA1"));
-            //subinventoryList.Add(new ListItem("總倉", "TB1"));
-            //subinventoryList.Add(new ListItem("總倉-南崁", "TB2"));
-            //subinventoryList.Add(new ListItem("新屋外銷", "SA"));
-            //subinventoryList.Add(new ListItem("成品倉(21#平板)", "A1FG"));
-
-            return subinventoryList;
-        }
-
+        /// <summary>
+        /// 取得儲位下拉選單,
+        /// 條件:ORGANIZATION_ID 和 SUBINVENTORY_CODE 和 LOCATOR_TYPE為2 和 CONTROL_FLAG 不為D 和 LOCATOR_DISABLE_DATE為NULL或大於系統時間,
+        /// 適用作業: 庫存移轉-入庫 發貨儲位、庫存移轉-出庫 收貨儲位、基本資料-組織倉庫
+        /// </summary>
+        /// <param name="uow"></param>
+        /// <param name="ORGANIZATION_ID">組織Id, *為全部組織</param>
+        /// <param name="type"></param>
+        /// <returns></returns>
         public List<SelectListItem> GetLocatorList(MasterUOW uow, string ORGANIZATION_ID, string SUBINVENTORY_CODE, MasterUOW.DropDownListType type)
         {
             return uow.GetLocatorDropDownList(ORGANIZATION_ID, SUBINVENTORY_CODE, type);
         }
 
-
-        public IEnumerable<SelectListItem> GetLocatorList(string ORGANIZATION_ID, string SUBINVENTORY_CODE, bool needAll)
+        /// <summary>
+        /// 取得使用者儲位下拉選單,
+        /// 條件: userId 和 SUBINVENTORY_CODE LOCATOR_TYPE為2 和 CONTROL_FLAG 不為D 和 LOCATOR_DISABLE_DATE為NULL或大於系統時間,
+        /// 適用作業: 儲位異動-盤點、儲位異動-報廢、儲位異動-雜項、庫存移轉-入庫 收貨倉、庫存移轉-出庫 發貨倉、庫存移轉-貨故
+        /// </summary>
+        /// <param name="uow"></param>
+        /// <param name="userId"></param>
+        /// <param name="SUBINVENTORY_CODE"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public List<SelectListItem> GetLocatorListForUserId(MasterUOW uow, string userId, string SUBINVENTORY_CODE, MasterUOW.DropDownListType type)
         {
-            return getLocatorList(ORGANIZATION_ID, SUBINVENTORY_CODE, needAll);
+            return uow.GetLocatorDropDownListForUserId(userId, SUBINVENTORY_CODE, type);
         }
+        //public List<SelectListItem> GetLocatorListForUserName(MasterUOW uow, string userName, string SUBINVENTORY_CODE, MasterUOW.DropDownListType type)
+        //{
+        //    var result = uow.GetUserOrganizationIdList(userName);
+        //    if (!result.Success)
+        //    {
+        //        return new List<SelectListItem> { new SelectListItem { Text = "", Value = "" } };
+        //    }
+        //    else
+        //    {
+        //        return uow.GetLocatorDropDownList(result.Data, SUBINVENTORY_CODE, type);
+        //    }
 
-        private IEnumerable<SelectListItem> getLocatorList(string ORGANIZATION_ID, string SUBINVENTORY_CODE, bool needAll)
-        {
-            long organizationId = 0;
+        //    //return uow.GetLocatorDropDownList(ORGANIZATION_ID, SUBINVENTORY_CODE, type);
+        //}
 
-            try
-            {
-                if (ORGANIZATION_ID != "*")
-                {
-                    organizationId = Convert.ToInt64(ORGANIZATION_ID);
-                }
-            }
-            catch
-            {
-                ORGANIZATION_ID = "*";
-            }
 
-            //if (string.IsNullOrEmpty(SUBINVENTORY_CODE))
-            //{
-            //    SUBINVENTORY_CODE = "*";
-            //}
 
-            List<ListItem> locatorList = new List<ListItem>();
-            if (needAll)
-            {
-                locatorList.Add(new ListItem("全部", "*"));
-            }
-            else
-            {
-                locatorList.Add(new ListItem("請選擇", "請選擇"));
-            }
+        //public IEnumerable<SelectListItem> GetLocatorList(string ORGANIZATION_ID, string SUBINVENTORY_CODE, bool needAll)
+        //{
+        //    return getLocatorList(ORGANIZATION_ID, SUBINVENTORY_CODE, needAll);
+        //}
 
-            //locatorList.Add(new ListItem("總公司.中間倉.TB2", "22016"));
-            //locatorList.Add(new ListItem("總公司.中間倉.TA1", "22017"));
-            //locatorList.Add(new ListItem("總公司.中間倉.TCA", "22018"));
+        //private IEnumerable<SelectListItem> getLocatorList(string ORGANIZATION_ID, string SUBINVENTORY_CODE, bool needAll)
+        //{
+        //    long organizationId = 0;
 
-            if (ORGANIZATION_ID == "*" && SUBINVENTORY_CODE == "*")
-            {
-                var query = from orgSubinventoryDT in testSource
-                            where !string.IsNullOrEmpty(orgSubinventoryDT.LOCATOR_SEGMENTS) && orgSubinventoryDT.LOCATOR_TYPE == 2
-                            group orgSubinventoryDT by new { orgSubinventoryDT.SEGMENT3, orgSubinventoryDT.LOCATOR_ID } into g
-                            select new ListItem
-                            {
-                                Text = g.Key.SEGMENT3,
-                                Value = g.Key.LOCATOR_ID.ToString()
-                            };
-                locatorList.AddRange(query.ToList());
-            }
-            else if (ORGANIZATION_ID != "*" && SUBINVENTORY_CODE == "*")
-            {
-                var query = from orgSubinventoryDT in testSource
-                            where organizationId == orgSubinventoryDT.ORGANIZATION_ID && !string.IsNullOrEmpty(orgSubinventoryDT.LOCATOR_SEGMENTS) && orgSubinventoryDT.LOCATOR_TYPE == 2
-                            group orgSubinventoryDT by new { orgSubinventoryDT.SEGMENT3, orgSubinventoryDT.LOCATOR_ID } into g
-                            select new ListItem
-                            {
-                                Text = g.Key.SEGMENT3,
-                                Value = g.Key.LOCATOR_ID.ToString()
-                            };
-                locatorList.AddRange(query.ToList());
-            }
-            else if (ORGANIZATION_ID == "*" && SUBINVENTORY_CODE != "*")
-            {
-                var query = from orgSubinventoryDT in testSource
-                            where SUBINVENTORY_CODE == orgSubinventoryDT.SUBINVENTORY_CODE && !string.IsNullOrEmpty(orgSubinventoryDT.LOCATOR_SEGMENTS) && orgSubinventoryDT.LOCATOR_TYPE == 2
-                            group orgSubinventoryDT by new { orgSubinventoryDT.SEGMENT3, orgSubinventoryDT.LOCATOR_ID } into g
-                            select new ListItem
-                            {
-                                Text = g.Key.SEGMENT3,
-                                Value = g.Key.LOCATOR_ID.ToString()
-                            };
-                locatorList.AddRange(query.ToList());
-            }
-            else
-            {
-                var query = from orgSubinventoryDT in testSource
-                            where organizationId == orgSubinventoryDT.ORGANIZATION_ID && SUBINVENTORY_CODE == orgSubinventoryDT.SUBINVENTORY_CODE && !string.IsNullOrEmpty(orgSubinventoryDT.LOCATOR_SEGMENTS) && orgSubinventoryDT.LOCATOR_TYPE == 2
-                            group orgSubinventoryDT by new { orgSubinventoryDT.SEGMENT3, orgSubinventoryDT.LOCATOR_ID } into g
-                            select new ListItem
-                            {
-                                Text = g.Key.SEGMENT3,
-                                Value = g.Key.LOCATOR_ID.ToString()
-                            };
-                locatorList.AddRange(query.ToList());
-            }
+        //    try
+        //    {
+        //        if (ORGANIZATION_ID != "*")
+        //        {
+        //            organizationId = Convert.ToInt64(ORGANIZATION_ID);
+        //        }
+        //    }
+        //    catch
+        //    {
+        //        ORGANIZATION_ID = "*";
+        //    }
 
-            return locatorList.Select(i => new SelectListItem() { Text = i.Text, Value = i.Value });
-        }
+        //    //if (string.IsNullOrEmpty(SUBINVENTORY_CODE))
+        //    //{
+        //    //    SUBINVENTORY_CODE = "*";
+        //    //}
+
+        //    List<ListItem> locatorList = new List<ListItem>();
+        //    if (needAll)
+        //    {
+        //        locatorList.Add(new ListItem("全部", "*"));
+        //    }
+        //    else
+        //    {
+        //        locatorList.Add(new ListItem("請選擇", "請選擇"));
+        //    }
+
+        //    //locatorList.Add(new ListItem("總公司.中間倉.TB2", "22016"));
+        //    //locatorList.Add(new ListItem("總公司.中間倉.TA1", "22017"));
+        //    //locatorList.Add(new ListItem("總公司.中間倉.TCA", "22018"));
+
+        //    if (ORGANIZATION_ID == "*" && SUBINVENTORY_CODE == "*")
+        //    {
+        //        var query = from orgSubinventoryDT in testSource
+        //                    where !string.IsNullOrEmpty(orgSubinventoryDT.LOCATOR_SEGMENTS) && orgSubinventoryDT.LOCATOR_TYPE == 2
+        //                    group orgSubinventoryDT by new { orgSubinventoryDT.SEGMENT3, orgSubinventoryDT.LOCATOR_ID } into g
+        //                    select new ListItem
+        //                    {
+        //                        Text = g.Key.SEGMENT3,
+        //                        Value = g.Key.LOCATOR_ID.ToString()
+        //                    };
+        //        locatorList.AddRange(query.ToList());
+        //    }
+        //    else if (ORGANIZATION_ID != "*" && SUBINVENTORY_CODE == "*")
+        //    {
+        //        var query = from orgSubinventoryDT in testSource
+        //                    where organizationId == orgSubinventoryDT.ORGANIZATION_ID && !string.IsNullOrEmpty(orgSubinventoryDT.LOCATOR_SEGMENTS) && orgSubinventoryDT.LOCATOR_TYPE == 2
+        //                    group orgSubinventoryDT by new { orgSubinventoryDT.SEGMENT3, orgSubinventoryDT.LOCATOR_ID } into g
+        //                    select new ListItem
+        //                    {
+        //                        Text = g.Key.SEGMENT3,
+        //                        Value = g.Key.LOCATOR_ID.ToString()
+        //                    };
+        //        locatorList.AddRange(query.ToList());
+        //    }
+        //    else if (ORGANIZATION_ID == "*" && SUBINVENTORY_CODE != "*")
+        //    {
+        //        var query = from orgSubinventoryDT in testSource
+        //                    where SUBINVENTORY_CODE == orgSubinventoryDT.SUBINVENTORY_CODE && !string.IsNullOrEmpty(orgSubinventoryDT.LOCATOR_SEGMENTS) && orgSubinventoryDT.LOCATOR_TYPE == 2
+        //                    group orgSubinventoryDT by new { orgSubinventoryDT.SEGMENT3, orgSubinventoryDT.LOCATOR_ID } into g
+        //                    select new ListItem
+        //                    {
+        //                        Text = g.Key.SEGMENT3,
+        //                        Value = g.Key.LOCATOR_ID.ToString()
+        //                    };
+        //        locatorList.AddRange(query.ToList());
+        //    }
+        //    else
+        //    {
+        //        var query = from orgSubinventoryDT in testSource
+        //                    where organizationId == orgSubinventoryDT.ORGANIZATION_ID && SUBINVENTORY_CODE == orgSubinventoryDT.SUBINVENTORY_CODE && !string.IsNullOrEmpty(orgSubinventoryDT.LOCATOR_SEGMENTS) && orgSubinventoryDT.LOCATOR_TYPE == 2
+        //                    group orgSubinventoryDT by new { orgSubinventoryDT.SEGMENT3, orgSubinventoryDT.LOCATOR_ID } into g
+        //                    select new ListItem
+        //                    {
+        //                        Text = g.Key.SEGMENT3,
+        //                        Value = g.Key.LOCATOR_ID.ToString()
+        //                    };
+        //        locatorList.AddRange(query.ToList());
+        //    }
+
+        //    return locatorList.Select(i => new SelectListItem() { Text = i.Text, Value = i.Value });
+        //}
 
         public List<OrgSubinventoryDT> search(string SUBINVENTORY_CODE, long LOCATOR_ID)
         {
@@ -391,7 +407,7 @@ namespace CHPOUTSRCMES.Web.Models.Information
             viewModel.SelectedSubinventory = "*";
             viewModel.OrganizationNameItems = uow.GetOrganizationDropDownList(MasterUOW.DropDownListType.All);
             //viewModel.SubinventoryNameItems = GetSubinventoryList("*", true);
-            viewModel.SubinventoryNameItems = uow.GetSubinventoryDropDownList("*", MasterUOW.DropDownListType.All);
+            viewModel.SubinventoryNameItems = GetSubinventoryList(uow ,"*", MasterUOW.DropDownListType.All);
             //viewModel.LocatorNameItems = getLocatorList("*", "*", true);
             viewModel.LocatorNameItems = uow.GetLocatorDropDownList("*", "*", MasterUOW.DropDownListType.All);
             return viewModel;
@@ -454,14 +470,14 @@ namespace CHPOUTSRCMES.Web.Models.Information
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.LOCATOR_SEGMENTS) : models.OrderBy(x => x.LOCATOR_SEGMENTS);
                 case 6:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.LOCATOR_DESC) : models.OrderBy(x => x.LOCATOR_DESC);
-                //case 7:
-                //    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.CREATED_BY_NAME) : models.OrderBy(x => x.CREATED_BY_NAME);
-                //case 8:
-                //    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.CREATION_DATE) : models.OrderBy(x => x.CREATION_DATE);
-                //case 9:
-                //    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.LAST_UPDATED_BY_NAME) : models.OrderBy(x => x.LAST_UPDATED_BY_NAME);
-                //case 10:
-                //    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.LAST_UPDATE_DATE) : models.OrderBy(x => x.LAST_UPDATE_DATE);
+                    //case 7:
+                    //    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.CREATED_BY_NAME) : models.OrderBy(x => x.CREATED_BY_NAME);
+                    //case 8:
+                    //    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.CREATION_DATE) : models.OrderBy(x => x.CREATION_DATE);
+                    //case 9:
+                    //    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.LAST_UPDATED_BY_NAME) : models.OrderBy(x => x.LAST_UPDATED_BY_NAME);
+                    //case 10:
+                    //    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.LAST_UPDATE_DATE) : models.OrderBy(x => x.LAST_UPDATE_DATE);
 
             }
         }
@@ -485,14 +501,14 @@ namespace CHPOUTSRCMES.Web.Models.Information
                     return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.LOCATOR_SEGMENTS) : models.ThenBy(x => x.LOCATOR_SEGMENTS);
                 case 6:
                     return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.LOCATOR_DESC) : models.ThenBy(x => x.LOCATOR_DESC);
-                //case 7:
-                //    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.CREATED_BY_NAME) : models.ThenBy(x => x.CREATED_BY_NAME);
-                //case 8:
-                //    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.CREATION_DATE) : models.ThenBy(x => x.CREATION_DATE);
-                //case 9:
-                //    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.LAST_UPDATED_BY_NAME) : models.ThenBy(x => x.LAST_UPDATED_BY_NAME);
-                //case 10:
-                //    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.LAST_UPDATE_DATE) : models.ThenBy(x => x.LAST_UPDATE_DATE);
+                    //case 7:
+                    //    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.CREATED_BY_NAME) : models.ThenBy(x => x.CREATED_BY_NAME);
+                    //case 8:
+                    //    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.CREATION_DATE) : models.ThenBy(x => x.CREATION_DATE);
+                    //case 9:
+                    //    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.LAST_UPDATED_BY_NAME) : models.ThenBy(x => x.LAST_UPDATED_BY_NAME);
+                    //case 10:
+                    //    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.LAST_UPDATE_DATE) : models.ThenBy(x => x.LAST_UPDATE_DATE);
             }
         }
     }

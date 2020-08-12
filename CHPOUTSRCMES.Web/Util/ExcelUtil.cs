@@ -59,6 +59,12 @@ namespace CHPOUTSRCMES.Web.Util
             return datetime;
         }
 
+        public static long GetLongCellValue(ICell cell)
+        {
+            var cellValue = GetLongOrNullCellValue(cell);
+            return cellValue ?? 0;
+        }
+
         public static long GetLongCellValue(int row_index, int col_index, ISheet sheet, long value = 0)
         {
             var cellValue = GetLongOrNullCellValue(sheet.GetRow(row_index).GetCell(col_index));

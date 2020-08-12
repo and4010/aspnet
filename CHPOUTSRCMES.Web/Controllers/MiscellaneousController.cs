@@ -5,6 +5,7 @@ using CHPOUTSRCMES.Web.Models.Information;
 using CHPOUTSRCMES.Web.Models.Stock;
 using CHPOUTSRCMES.Web.ViewModels;
 using CHPOUTSRCMES.Web.ViewModels.Miscellaneous;
+using Microsoft.AspNet.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,7 +35,11 @@ namespace CHPOUTSRCMES.Web.Controllers
             {
                 using (MasterUOW uow = new MasterUOW(context))
                 {
-                    return PartialView("_TopPartial", top.GetViewModel(uow, orgData));
+                    //取得使用者帳號
+                    //var name = this.User.Identity.GetUserName();
+                    //取得使用者ID
+                    var id = this.User.Identity.GetUserId();
+                    return PartialView("_TopPartial", top.GetViewModel(uow, orgData, id));
                 }
             }
         }

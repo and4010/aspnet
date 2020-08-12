@@ -25,7 +25,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Information
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         [Column("ORGANIZATION_ID", Order = 2)]
-        public long OrganizationID { set; get; }
+        public long OrganizationId { set; get; }
 
         /// <summary>
         /// 倉庫
@@ -34,9 +34,9 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Information
         [Required]
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        [StringLength(10)]
+        [StringLength(20)]
         [Column("SUBINVENTORY_CODE", Order = 3)]
-        public string SUBINVENTORY_CODE { set; get; }
+        public string SubinventoryCode { set; get; }
 
         /// <summary>
         /// 建立人員

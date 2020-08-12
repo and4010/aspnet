@@ -6,78 +6,28 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
 
-namespace CHPOUTSRCMES.Web.DataModel.Entity.Delivery
+namespace CHPOUTSRCMES.Web.DataModel.Entiy.Transfer
 {
-    [Table("DLV_PICKED_T")]
-    public class DLV_PICKED_T
+    [Table("TRANSFER_DETAIL_T")]
+    public class TRANSFER_DETAIL_T
     {
         /// <summary>
-        /// 出庫揀貨ID
+        /// 庫存移轉明細ID
         /// </summary>
         /// 
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
         [Required]
-        [Column("DLV_PICKED_ID")]
-        public long DlvPickedId { set; get; }
+        [Column("TRANSFER_DETAIL_ID")]
+        public long TransferDetailId { set; get; }
 
-        // <summary>
-        /// 出庫明細ID
+        /// <summary>
+        /// 庫存移轉擋頭ID
         /// </summary>
         /// 
         [Required]
-        [Column("DLV_DETAIL_ID")]
-        public long DlvDetailId { set; get; }
-
-        /// <summary>
-        /// 出庫檔頭ID
-        /// </summary>
-        /// 
-        [Required]
-        [Column("DLV_HEADER_ID")]
-        public long DlvHeaderId { set; get; }
-
-        /// <summary>
-        /// 庫存ID
-        /// </summary>
-        /// 
-        [Required]
-        [Column("STOCK_ID")]
-        public long Stock_Id { set; get; }
-
-        /// <summary>
-        /// 狀態
-        /// </summary>
-        /// 
-        [Required(AllowEmptyStrings = true)]
-        [StringLength(10)]
-        [Column("STATUS")]
-        public string Status { set; get; }
-
-        /// <summary>
-        /// 棧板狀態
-        /// </summary>
-        /// 
-        [Required]
-        [StringLength(10)]
-        [Column("PALLET_STATUS")]
-        public string PalletStatus { set; get; }
-        
-
-        /// <summary>
-        /// 出貨儲位ID
-        /// </summary>
-        /// 
-        [Column("LOCATOR_ID")]
-        public long? LocatorId { set; get; }
-
-        /// <summary>
-        /// 出貨儲位
-        /// </summary>
-        /// 
-        [StringLength(30)]
-        [Column("LOCATOR_CODE")]
-        public string LocatorCode { set; get; }
+        [Column("TRANSFER_HEADER_ID")]
+        public long TransferHeaderId { set; get; }
 
         /// <summary>
         /// 料號ID
@@ -94,52 +44,25 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Delivery
         [StringLength(40)]
         [Required]
         [Column("ITEM_NUMBER")]
-        public string Item_Number { set; get; }
+        public string ItemNumber { set; get; }
 
         /// <summary>
         /// 料號名稱
         /// </summary>
         /// 
-        //[StringLength(240)]
-        //[Required]
-        //[Column("ITEM_DESCRIPTION")]
-        //public string Item_Description { set; get; }
+        [StringLength(240)]
+        [Required]
+        [Column("ITEM_DESCRIPTION")]
+        public string ItemDescription { set; get; }
 
         /// <summary>
         /// 包裝方式
         /// </summary>
         /// 
         [StringLength(30)]
-        [Required(AllowEmptyStrings = true)]
+        [Required]
         [Column("PACKING_TYPE")]
         public string PackingType { set; get; }
-
-        /// <summary>
-        /// 令重
-        /// </summary>
-        /// 
-        [StringLength(30)]
-        [Required]
-        [Column("REAM_WEIGHT")]
-        public string ReamWeight { set; get; }
-
-        /// <summary>
-        /// 條碼號
-        /// </summary>
-        /// 
-        [StringLength(20)]
-        [Required]
-        [Column("BARCODE")]
-        public string Barcode { set; get; }
-
-        /// <summary>
-        /// 交易數量
-        /// </summary>
-        /// 
-        [Required]
-        [Column("TRANSACTION_QUANTITY")]
-        [Precision(30, 10)]
-        public decimal TransactionQuantity { set; get; }
 
         /// <summary>
         /// 交易單位
@@ -147,17 +70,17 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Delivery
         /// 
         [Required]
         [StringLength(3)]
-        [Column("TRANSACTION_UOM")]
-        public string TransactionUom { set; get; }
+        [Column("REQUESTED_TRANSACTION_UOM")]
+        public string RequestedTransactionUom { set; get; }
 
         /// <summary>
-        /// 主要數量
+        /// 交易需求數量
         /// </summary>
         /// 
         [Required]
-        [Column("PRIMARY_QUANTITY")]
+        [Column("REQUESTED_TRANSACTION_QUANTITY")]
         [Precision(30, 10)]
-        public decimal PrimaryQuantity { set; get; }
+        public decimal RequestedTransactionQuantity { set; get; }
 
         /// <summary>
         /// 主要單位
@@ -165,39 +88,60 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Delivery
         /// 
         [Required]
         [StringLength(3)]
-        [Column("PRIMARY_UOM")]
-        public string PrimaryUom { set; get; }
+        [Column("REQUESTED_PRIMARY_UOM")]
+        public string RequestedPrimaryUom { set; get; }
 
         /// <summary>
-        /// 次要數量
+        /// 主要需求數量
         /// </summary>
         /// 
-        [Column("SECONDARY_QUANTITY")]
+        [Required]
+        [Column("REQUESTED_PRIMARY_QUANTITY")]
         [Precision(30, 10)]
-        public decimal? SecondaryQuantity { set; get; }
+        public decimal RequestedPrimaryQuantity { set; get; }
 
         /// <summary>
         /// 次要單位
         /// </summary>
         /// 
         [StringLength(3)]
-        [Column("SECONDARY_UOM")]
-        public string SecondaryUom { set; get; }
+        [Column("REQUESTED_SECONDARY_UOM")]
+        public string RequestedSecondaryUom { set; get; }
 
         /// <summary>
-        /// 捲號
+        /// 預計出庫次要數量
         /// </summary>
         /// 
-        [StringLength(80)]
-        [Column("LOT_NUMBER")]
-        public string Lot_Number { set; get; }
+        [Column("REQUESTED_SECONDARY_QUANTITY")]
+        [Precision(30, 10)]
+        public decimal? RequestedSecondaryQuantity { set; get; }
 
         /// <summary>
-        /// 理論重(KG)
+        /// 捲數\棧板數
         /// </summary>
         /// 
-        [Column("LOT_QUANTITY")]
-        public long? LotQuantity { set; get; }
+        [Required]
+        [Column("ROLL_REAM_QTY")]
+        [Precision(30, 10)]
+        public decimal RollReamQty { set; get; }
+
+        /// <summary>
+        /// 修改權限
+        /// </summary>
+        /// 
+        [StringLength(10)]
+        [Required]
+        [Column("DATA_UPADTE_AUTHORITY")]
+        public string DataUpadteAuthority { set; get; }
+
+        /// <summary>
+        /// 寫入方式
+        /// </summary>
+        /// 
+        [StringLength(10)]
+        [Required]
+        [Column("DATA_WRITE_TYPE")]
+        public string DataWriteType { set; get; }
 
         /// <summary>
         /// 建立人員

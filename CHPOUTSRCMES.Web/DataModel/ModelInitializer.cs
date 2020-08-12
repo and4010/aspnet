@@ -23,6 +23,7 @@ namespace CHPOUTSRCMES.Web.DataModel
             new PurchaseUOW(context).generateTestData();
             new DeliveryUOW(context).generateTestData();
             new MasterUOW(context).generateStockTestData();
+            new MasterUOW(context).generateUserSubinventoryTestData();
             base.Seed(context);
 
         }

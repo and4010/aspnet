@@ -76,17 +76,17 @@
 
     <div class="row row-std">
         <div class="col-md-3 col-md-offset-3">
-
-            <button id="btnPrintPickList" class="btn btn-primary externalBtn">列印備貨單</button>
+            @*<button id="btnExportExcel" class="btn btn-primary externalBtn">匯出Excel</button>*@
+            @*<button id="btnPrintPickList" class="btn btn-primary externalBtn">列印備貨單</button>*@
             <button id="btnCancelConfirm" class="btn btn-danger externalBtn">取消申請</button>
             <button id="btnDeliveryConfirm" class="btn btn-danger externalBtn">出貨申請</button>
         </div>
         @if (Model.Advanced)
         {
-            <div class="col-md-3">
+            <div class="col-md-5">
                 <button id="btnUpdateTransactionAuthorizeDates" class="btn btn-danger externalBtn">編輯核准日</button>
-                <button id="btnTripChancel" class="btn btn-danger externalBtn">取消</button>
-                <button id="btnDeliveryReject" class="btn btn-danger externalBtn">駁回</button>
+                <button id="btnTripChancel" class="btn btn-danger externalBtn">航程號取消</button>
+                <button id="btnDeliveryReject" class="btn btn-danger externalBtn">出貨駁回</button>
                 <button id="btnDeliveryAuthorize" class="btn btn-danger externalBtn">出貨核准</button>
             </div>
         }

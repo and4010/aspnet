@@ -84,6 +84,16 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
         /// </summary>
         public readonly IRepository<STK_TXN_T> stkTxnTRepositiory;
 
+        /// <summary>
+        /// 使用者
+        /// </summary>
+        public readonly IRepository<AppUser> appUserRepositiory;
+
+        /// <summary>
+        /// 使用者
+        /// </summary>
+        public readonly IRepository<USER_SUBINVENTORY_T> userSubinventoryTRepositiory;
+
         public IUomConversion uomConversion;
 
         public CategoryCode categoryCode = new CategoryCode();
@@ -110,9 +120,14 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             this.stockTRepositiory = new GenericRepository<STOCK_T>(this);
             this.stockHtRepositiory = new GenericRepository<STOCK_HT>(this);
             this.stkTxnTRepositiory = new GenericRepository<STK_TXN_T>(this);
+            this.appUserRepositiory = new GenericRepository<AppUser>(this);
+            this.userSubinventoryTRepositiory = new GenericRepository<USER_SUBINVENTORY_T>(this);
             this.uomConversion = new UomConversion();
         }
 
+        /// <summary>
+        /// 使用者角色
+        /// </summary>
         public class UserRole
         {
             public const string Adm = "系統管理員";
@@ -120,11 +135,68 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             public const string User = "使用者";
         }
 
+        /// <summary>
+        /// 棧板狀態
+        /// </summary>
         public class PalletStatusCode
         {
             public const string All = "整板";
             public const string Split = "拆板";
         }
+
+        /// <summary>
+        /// 儲位控制
+        /// </summary>
+        public class LocatorType
+        {
+            /// <summary>
+            /// 使用儲位
+            /// </summary>
+            public const long Used = 2;
+            /// <summary>
+            /// 無儲位
+            /// </summary>
+            public const long NotUsed = 1;
+        }
+
+        /// <summary>
+        /// 加工廠註記
+        /// </summary>
+        public class OspFlag
+        {
+            public const string IsProcessingPlant = "Y";
+        }
+
+        /// <summary>
+        /// 控制欄位
+        /// </summary>
+        public class ControlFlag
+        {
+            public const string Deleted = "D";
+        }
+
+        /// <summary>
+        /// 儲位狀態
+        /// </summary>
+        public class LocatorStatusCode
+        {
+            /// <summary>
+            /// 可出貨
+            /// </summary>
+            public const string CanShip = "有效";
+            /// <summary>
+            /// 不可出貨
+            /// </summary>
+            public const string NotShip = "Active-no Ship";
+        }
+
+        ///// <summary>
+        ///// 儲位終止日期
+        ///// </summary>
+        //public class LocatorDisableDate
+        //{
+
+        //}
 
         public class CategoryCode : ICategory
         {
@@ -162,6 +234,85 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                 }
             }
         }
+
+        #region 使用者
+        /// <summary>
+        /// 取得使用者資料
+        /// </summary>
+        /// <param name="UserName">帳號</param>
+        /// <returns></returns>
+        public ResultDataModel<List<AppUser>> GetUserData(string UserName)
+        {
+            var userDataList = appUserRepositiory.GetAll().AsNoTracking().Where(x => x.UserName == UserName).ToList();
+            if (userDataList.Count == 0)
+            {
+                return new ResultDataModel<List<AppUser>>(false, "找不到使用者資料", null);
+            }
+            else
+            {
+                return new ResultDataModel<List<AppUser>>(true, "取得使用者資料成功", userDataList);
+            }
+        }
+
+        ///// <summary>
+        ///// 取得組織Id
+        ///// </summary>
+        ///// <param name="UserName">帳號</param>
+        ///// <returns></returns>
+        //public ResultDataModel<List<long>> GetUserOrganizationIdList(string UserName)
+        //{
+        //    var data = appUserRepositiory.GetAll().AsNoTracking().Where(x => x.UserName == UserName).Select(x => x.OrganizationId).ToList();
+        //    if (data.Count == 0)
+        //    {
+        //        return new ResultDataModel<List<long>>(false, "找不到使用者組織資料", null);
+        //    }
+        //    else
+        //    {
+        //        return new ResultDataModel<List<long>>(true, "取得使用者組織Id成功", data);
+        //    }
+        //}
+
+        ///// <summary>
+        ///// 取得使用者倉庫List
+        ///// </summary>
+        ///// <param name="UserName"></param>
+        ///// <returns></returns>
+        //public ResultDataModel<List<string>> GetUserSubinverotyCodeList(string UserName)
+        //{
+        //    var data = appUserRepositiory.GetAll().AsNoTracking().Where(
+        //        x => x.UserName == UserName
+        //    ).Select(x => x.SubinventoryCode).ToList();
+        //    if (data.Count == 0)
+        //    {
+        //        return new ResultDataModel<List<string>>(false, "找不到使用者倉庫資料", null);
+        //    }
+        //    else
+        //    {
+        //        return new ResultDataModel<List<string>>(true, "取得使用者倉庫成功", data);
+        //    }
+        //}
+
+        //public class UserData
+        //{
+        //    /// <summary>
+        //    /// 顯示名稱
+        //    /// </summary>
+        //    public string DisplayName { set; get; }
+        //    /// <summary>
+        //    /// 庫存組織ID
+        //    /// </summary>
+        //    public long OrganizationId { set; get; }
+        //    /// <summary>
+        //    /// 庫存組織
+        //    /// </summary>
+        //    public string OrganizationCode { set; get; }
+        //    /// <summary>
+        //    /// 倉庫
+        //    /// </summary>
+        //    public string SubinventoryCode { set; get; }
+        //}
+
+        #endregion
 
         #region 庫存
         //public IDetail stockStatusCode = new StockStatusCode();
@@ -228,12 +379,42 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
         }
 
         /// <summary>
-        /// 庫存檢查
+        /// 共用庫存的倉庫儲位檢查
+        /// </summary>
+        /// <param name="stock"></param>
+        /// <param name="now"></param>
+        /// <param name="subinventory"></param>
+        /// <param name="locator"></param>
+        /// <returns></returns>
+        public ResultModel CommonCheckStockLocation(STOCK_T stock, DateTime now, SUBINVENTORY_T subinventory, LOCATOR_T locator)
+        {
+            if (stock == null) return new ResultModel(false, "沒有庫存資料");
+            //庫存的倉庫檢查
+
+            if (subinventory == null) return new ResultModel(false, "沒有庫存所屬倉庫" + stock.SubinventoryCode + "資料");
+            if (subinventory.OspFlag != OspFlag.IsProcessingPlant) return new ResultModel(false, "庫存所屬倉庫" + subinventory.SubinventoryCode + "須為加工廠");
+            if (subinventory.ControlFlag == ControlFlag.Deleted) return new ResultModel(false, "庫存所屬倉庫" + subinventory.SubinventoryCode + "已刪除");
+            if (subinventory.LocatorType != LocatorType.Used)
+            {
+                return new ResultModel(true, "庫存所屬倉庫" + subinventory.SubinventoryCode + "檢查成功");
+            }
+            else
+            {
+                //庫存的儲位檢查
+                if (locator == null) return new ResultModel(false, "沒有庫存所屬儲位" + stock.LocatorSegments + "資料");
+                if (locator.ControlFlag == ControlFlag.Deleted) return new ResultModel(false, "庫存所屬儲位" + locator.LocatorSegments + "已刪除");
+                if (locator.LocatorDisableDate != null && locator.LocatorDisableDate <= now) return new ResultModel(false, "庫存所屬儲位" + locator.LocatorSegments + "不可使用");
+                return new ResultModel(true, "庫存所屬儲位" + locator.LocatorSegments + "檢查成功");
+            }
+        }
+
+        /// <summary>
+        /// 出貨庫存數量檢查
         /// </summary>
         /// <param name="barcode"></param>
         /// <param name="qty">令包數量(次單位)</param>
         /// <returns></returns>
-        public ResultDataModel<STOCK_T> CheckStock(string barcode, decimal? qty)
+        public ResultDataModel<STOCK_T> CheckStockQty(string barcode, decimal? qty)
         {
             var stock = stockTRepositiory.GetAll().FirstOrDefault(x => x.Barcode == barcode);
 
@@ -258,6 +439,49 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                 //非拆板，不須檢查庫存
                 return new ResultDataModel<STOCK_T>(true, "非拆板，不須檢查庫存", stock);
             }
+
+
+        }
+
+        /// <summary>
+        /// 出貨庫存檢查
+        /// </summary>
+        /// <param name="barcode"></param>
+        /// <param name="qty"></param>
+        /// <param name="now"></param>
+        /// <returns></returns>
+        public ResultDataModel<STOCK_T> DeliveryCheckStock(string barcode, decimal? qty, DateTime now)
+        {
+            var checkStockQtyResult = CheckStockQty(barcode, qty);
+
+            if (!checkStockQtyResult.Success) return checkStockQtyResult;
+
+
+            var stock = checkStockQtyResult.Data;
+            var subinventoryList = subinventoryRepositiory.GetAll().AsNoTracking().Where(x =>
+            x.OrganizationId == stock.OrganizationId &&
+            x.SubinventoryCode == stock.SubinventoryCode).ToList();
+
+
+            if (subinventoryList.Count == 0) return new ResultDataModel<STOCK_T>(false, "找不到庫存所屬倉庫" + stock.SubinventoryCode + "資料", stock);
+
+            List<LOCATOR_T> locatorList = null;
+
+            if (subinventoryList[0].LocatorType == LocatorType.Used)
+            {
+                locatorList = locatorTRepositiory.GetAll().AsNoTracking().Where(x =>
+                x.OrganizationId == stock.OrganizationId &&
+                x.SubinventoryCode == stock.SubinventoryCode &&
+                x.LocatorId == stock.LocatorId).ToList();
+            }
+
+            if (locatorList == null || locatorList.Count == 0) return new ResultDataModel<STOCK_T>(false, "找不到庫存所屬儲位" + stock.LocatorSegments + "資料", stock);
+
+            if (locatorList[0].LocatorStatusCode != "有效") return new ResultDataModel<STOCK_T>(false, "庫存所屬儲位" + locatorList[0].LocatorSegments + "狀態不是有效", stock);
+
+            var commonCheckStockLocationResult = CommonCheckStockLocation(stock, now, subinventoryList[0], locatorList[0]);
+
+            return new ResultDataModel<STOCK_T>(commonCheckStockLocationResult.Success, commonCheckStockLocationResult.Msg, stock);
 
         }
 
@@ -637,12 +861,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             };
         }
 
-        public ResultModel AddStockRecord(STK_TXN_T data)
-        {
-            stkTxnTRepositiory.Create(data);
 
-            return new ResultModel(true, "庫存更新成功");
-        }
 
         #endregion
 
@@ -1851,7 +2070,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                 {
                     OrganizationId = 265,
                     OrganizationCode = "FTY",
-                    SubinventoryCode = "TB2",
+                    SubinventoryCode = "TB3",
                     LocatorId = null,
                     LocatorSegments = "",
                     Barcode = "A2007290001",
@@ -1890,7 +2109,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                 {
                     OrganizationId = 265,
                     OrganizationCode = "FTY",
-                    SubinventoryCode = "TB2",
+                    SubinventoryCode = "TB3",
                     LocatorId = null,
                     LocatorSegments = "",
                     Barcode = "A2007290002",
@@ -1968,7 +2187,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                 {
                     OrganizationId = 265,
                     OrganizationCode = "FTY",
-                    SubinventoryCode = "TB2",
+                    SubinventoryCode = "TB3",
                     LocatorId = null,
                     LocatorSegments = "",
                     Barcode = "A2007290004",
@@ -2007,7 +2226,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                 {
                     OrganizationId = 265,
                     OrganizationCode = "FTY",
-                    SubinventoryCode = "TB2",
+                    SubinventoryCode = "TB3",
                     LocatorId = null,
                     LocatorSegments = "",
                     Barcode = "A2007290005",
@@ -2048,6 +2267,133 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
 
 
         }
+
+        public void generateUserSubinventoryTestData()
+        {
+            try
+            {
+                var userList = appUserRepositiory.GetAll().ToList();
+                foreach (AppUser data in userList)
+                {
+
+                    if (data.UserName == "adm")
+                    {
+                        userSubinventoryTRepositiory.Create(new USER_SUBINVENTORY_T
+                        {
+                            UserId = data.Id,
+                            SubinventoryCode = "SFG",
+                            OrganizationId = 265,
+                            CreatedBy = "1",
+                            CreationDate = DateTime.Now,
+                            LastUpdateBy = "",
+                            LastUpdateDate = null
+                        }, true);
+                    }
+                    else if (data.UserName == "user2")
+                    {
+                        userSubinventoryTRepositiory.Create(new USER_SUBINVENTORY_T
+                        {
+                            UserId = data.Id,
+                            SubinventoryCode = "TB1",
+                            OrganizationId = 265,
+                            CreatedBy = "1",
+                            CreationDate = DateTime.Now,
+                            LastUpdateBy = "",
+                            LastUpdateDate = null
+                        }, true);
+                    }
+                    else if (data.UserName == "chpuser1")
+                    {
+                        userSubinventoryTRepositiory.Create(new USER_SUBINVENTORY_T
+                        {
+                            UserId = data.Id,
+                            SubinventoryCode = "SFG",
+                            OrganizationId = 265,
+                            CreatedBy = "1",
+                            CreationDate = DateTime.Now,
+                            LastUpdateBy = "",
+                            LastUpdateDate = null
+                        }, true);
+                        userSubinventoryTRepositiory.Create(new USER_SUBINVENTORY_T
+                        {
+                            UserId = data.Id,
+                            SubinventoryCode = "TB3",
+                            OrganizationId = 265,
+                            CreatedBy = "1",
+                            CreationDate = DateTime.Now,
+                            LastUpdateBy = "",
+                            LastUpdateDate = null
+                        }, true);
+                        userSubinventoryTRepositiory.Create(new USER_SUBINVENTORY_T
+                        {
+                            UserId = data.Id,
+                            SubinventoryCode = "HM",
+                            OrganizationId = 287,
+                            CreatedBy = "1",
+                            CreationDate = DateTime.Now,
+                            LastUpdateBy = "",
+                            LastUpdateDate = null
+                        }, true);
+
+                    }
+                    else if (data.UserName == "user3")
+                    {
+                        userSubinventoryTRepositiory.Create(new USER_SUBINVENTORY_T
+                        {
+                            UserId = data.Id,
+                            SubinventoryCode = "HM",
+                            OrganizationId = 287,
+                            CreatedBy = "1",
+                            CreationDate = DateTime.Now,
+                            LastUpdateBy = "",
+                            LastUpdateDate = null
+                        }, true);
+                    }
+                    else if (data.UserName == "user1")
+                    {
+                        userSubinventoryTRepositiory.Create(new USER_SUBINVENTORY_T
+                        {
+                            UserId = data.Id,
+                            SubinventoryCode = "SFG",
+                            OrganizationId = 265,
+                            CreatedBy = "1",
+                            CreationDate = DateTime.Now,
+                            LastUpdateBy = "",
+                            LastUpdateDate = null
+                        }, true);
+                        userSubinventoryTRepositiory.Create(new USER_SUBINVENTORY_T
+                        {
+                            UserId = data.Id,
+                            SubinventoryCode = "TB3",
+                            OrganizationId = 265,
+                            CreatedBy = "1",
+                            CreationDate = DateTime.Now,
+                            LastUpdateBy = "",
+                            LastUpdateDate = null
+                        }, true);
+                        userSubinventoryTRepositiory.Create(new USER_SUBINVENTORY_T
+                        {
+                            UserId = data.Id,
+                            SubinventoryCode = "HM",
+                            OrganizationId = 287,
+                            CreatedBy = "1",
+                            CreationDate = DateTime.Now,
+                            LastUpdateBy = "",
+                            LastUpdateDate = null
+                        }, true);
+
+                    }
+                }
+
+
+
+            }
+            catch (Exception ex)
+            {
+                logger.Error(LogUtilities.BuildExceptionMessage(ex));
+            }
+        }
+
 
         #endregion 測試資料產生
 
@@ -2093,7 +2439,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                 {
                     if (ReasonEditor.ReasonModel.Reason_code.Length == 0 && ReasonEditor.ReasonModel.Reason_desc.Length == 0)
                     {
-                      return new ResultModel(false, "不得空白");
+                        return new ResultModel(false, "不得空白");
                     }
                     else
                     {
@@ -2104,7 +2450,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                             if (ID != null)
                             {
                                 ID.ReasonDesc = ReasonEditor.ReasonModel.Reason_desc;
-                                stkReasonTRepositiory.Update(ID,true);
+                                stkReasonTRepositiory.Update(ID, true);
                                 return new ResultModel(true, "");
                             }
                         }
@@ -2132,21 +2478,21 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                         if (ReasonEditor.Action == "remove")
                         {
                             var ID = stkReasonTRepositiory.Get(r => r.ReasonCode.ToString() == ReasonEditor.ReasonModel.Reason_code).SingleOrDefault();
-                            stkReasonTRepositiory.Delete(ID,true);
+                            stkReasonTRepositiory.Delete(ID, true);
                             return new ResultModel(true, "");
                         }
                         return new ResultModel(false, "");
                     }
                 }
-     
+
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 logger.Error(e.Message);
                 return new ResultModel(false, e.Message);
             }
         }
-        
+
         #endregion
 
         /// <summary>
@@ -2207,7 +2553,9 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
         }
 
         /// <summary>
-        /// 取得組織下拉式選單內容
+        /// 取得組織下拉選單,
+        /// 條件: CONTROL_FLAG不為D,
+        /// 適用作業: 組織倉庫
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
@@ -2219,7 +2567,38 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
         }
 
         /// <summary>
-        /// 取得倉庫下拉式選單內容
+        /// 取得使用者組織下拉選單,
+        /// 條件: 使用者Id 和 CONTROL_FLAG不為D,
+        /// 適用作業: 板令對照、餘切規格
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public List<SelectListItem> GetOrganizationDropDownListForUserId(string userId, DropDownListType type)
+        {
+            var organizationList = createDropDownList(type);
+            organizationList.AddRange(getOrganizationListForUserId(userId));
+            return organizationList;
+        }
+
+        /// <summary>
+        /// 取得使用者倉庫下拉選單,
+        /// 條件:使用者Id 和 OSP_FLAG為Y 和 CONTROL_FLAG不為D,
+        /// 適用作業: 入庫、出貨、加工、庫存移轉-入庫 收貨倉、庫存移轉-出庫 發貨倉、基本資料-板令對照
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public List<SelectListItem> GetSubinventoryDropDownListForUserId(string userId, DropDownListType type)
+        {
+            var subinventoryList = createDropDownList(type);
+            subinventoryList.AddRange(getSubinventoryListForUserId(userId));
+            return subinventoryList;
+        }
+
+        /// <summary>
+        /// 取得倉庫下拉選單,
+        /// 條件: 組織Id 和 CONTROL_FLAG不為D,
+        /// 適用作業: 庫存移轉-入庫 發貨倉、庫存移轉-出庫 收貨倉、基本資料-組織倉庫
         /// </summary>
         /// <param name="ORGANIZATION_ID"></param>
         /// <param name="type"></param>
@@ -2228,6 +2607,32 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
         {
             var subinventoryList = createDropDownList(type);
             subinventoryList.AddRange(getSubinventoryList(ORGANIZATION_ID));
+            return subinventoryList;
+        }
+
+        /// <summary>
+        /// 取得倉庫下拉式選單內容
+        /// </summary>
+        /// <param name="organizationIdList"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public List<SelectListItem> GetSubinventoryDropDownList(List<long> organizationIdList, DropDownListType type)
+        {
+            var subinventoryList = createDropDownList(type);
+            subinventoryList.AddRange(getSubinventoryList(organizationIdList));
+            return subinventoryList;
+        }
+
+        /// <summary>
+        /// 取得庫存移轉倉庫下拉式選單內容
+        /// </summary>
+        /// <param name="organizationIdList"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public List<SelectListItem> GetSubinventoryDropDownListForStockTransaction(List<long> organizationIdList, DropDownListType type)
+        {
+            var subinventoryList = createDropDownList(type);
+            subinventoryList.AddRange(getSubinventoryListForStockTransaction(organizationIdList));
             return subinventoryList;
         }
 
@@ -2242,6 +2647,20 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
         {
             var locatorList = createDropDownList(type);
             locatorList.AddRange(getLocatorList(ORGANIZATION_ID, SUBINVENTORY_CODE));
+            return locatorList;
+        }
+
+        /// <summary>
+        /// 取得使用者儲位下拉式選單內容
+        /// </summary>
+        /// <param name="ORGANIZATION_ID"></param>
+        /// <param name="SUBINVENTORY_CODE"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public List<SelectListItem> GetLocatorDropDownListForUserId(string userId, string SUBINVENTORY_CODE, DropDownListType type)
+        {
+            var locatorList = createDropDownList(type);
+            locatorList.AddRange(getLocatorListForUserId(userId, SUBINVENTORY_CODE));
             return locatorList;
         }
 
@@ -2288,6 +2707,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             {
                 var tempList = organizationRepositiory
                             .GetAll().AsNoTracking()
+                            .Where(x => x.ControlFlag != ControlFlag.Deleted)
                             .OrderBy(x => x.OrganizationCode)
                             .Select(x => new SelectListItem()
                             {
@@ -2300,10 +2720,35 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             {
                 logger.Error(LogUtilities.BuildExceptionMessage(ex));
             }
-
-
-            //organizationList.AddRange(tempList);
             return organizationList;
+        }
+
+        /// <summary>
+        /// 取得使用者的組織SelectListItem
+        /// </summary>
+        /// <returns></returns>
+        private List<SelectListItem> getOrganizationListForUserId(string userId)
+        {
+            return userSubinventoryTRepositiory.GetAll().AsNoTracking()
+                .Join(organizationRepositiory.GetAll().AsNoTracking(),
+                us => new { us.OrganizationId },
+                o => new { o.OrganizationId },
+                (us, o) => new
+                {
+                    UserId = us.UserId,
+                    OrganizationId = us.OrganizationId,
+                    OrganizationCode = o.OrganizationCode,
+                    ControlFlag = o.ControlFlag
+                })
+                .Where(x => x.UserId == userId &&
+                x.ControlFlag != ControlFlag.Deleted)
+                .GroupBy(x => new { x.OrganizationCode, x.OrganizationId })
+                .OrderBy(x => x.Key.OrganizationCode)
+                  .Select(x => new SelectListItem()
+                  {
+                      Text = x.Key.OrganizationCode,
+                      Value = x.Key.OrganizationId.ToString()
+                  }).ToList();
         }
 
         /// <summary>
@@ -2331,6 +2776,9 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             {
                 var tempList = subinventoryRepositiory
                            .GetAll().AsNoTracking()
+                           .Where(x =>
+                           x.ControlFlag != ControlFlag.Deleted
+                           )
                            .OrderBy(x => x.SubinventoryCode)
                            .Select(x => new SelectListItem()
                            {
@@ -2343,7 +2791,9 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             {
                 var tempList = subinventoryRepositiory
                            .GetAll().AsNoTracking()
-                           .Where(x => x.OrganizationId == organizationId)
+                           .Where(x => x.OrganizationId == organizationId &&
+                           x.ControlFlag != ControlFlag.Deleted
+                           )
                            .OrderBy(x => x.SubinventoryCode)
                            .Select(x => new SelectListItem()
                            {
@@ -2353,6 +2803,95 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                 subinventoryList.AddRange(tempList);
             }
             return subinventoryList;
+        }
+
+        /// <summary>
+        /// 取得倉庫SelectListItem
+        /// </summary>
+        /// <param name="organizationIdList">組織Id</param>
+        /// <returns></returns>
+        private List<SelectListItem> getSubinventoryList(List<long> organizationIdList)
+        {
+            return subinventoryRepositiory
+                           .GetAll().AsNoTracking()
+                           .Where(x => organizationIdList.Contains(x.OrganizationId) &&
+                           x.OspFlag == OspFlag.IsProcessingPlant &&
+                           x.ControlFlag != ControlFlag.Deleted
+                           )
+                           .OrderBy(x => x.SubinventoryCode)
+                           .Select(x => new SelectListItem()
+                           {
+                               Text = x.SubinventoryCode,
+                               Value = x.SubinventoryCode
+                           }).ToList();
+        }
+
+        /// <summary>
+        /// 取得使用者的倉庫SelectListItem
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        private List<SelectListItem> getSubinventoryListForUserId(string userId)
+        {
+            return userSubinventoryTRepositiory.GetAll().AsNoTracking()
+                .Join(subinventoryRepositiory.GetAll().AsNoTracking(),
+                us => new { us.OrganizationId, us.SubinventoryCode },
+                s => new { s.OrganizationId, s.SubinventoryCode },
+                (us, s) => new
+                {
+                    UserId = us.UserId,
+                    OrganizationId = us.OrganizationId,
+                    SubinventoryCode = us.SubinventoryCode,
+                    OspFlag = s.OspFlag,
+                    ControlFlag = s.ControlFlag,
+                })
+                .Where(x => x.UserId == userId &&
+                x.OspFlag == OspFlag.IsProcessingPlant &&
+                x.ControlFlag != ControlFlag.Deleted)
+               .OrderBy(x => x.SubinventoryCode)
+               .Select(x => new SelectListItem()
+               {
+                   Text = x.SubinventoryCode,
+                   Value = x.SubinventoryCode
+               }).ToList();
+        }
+
+        /// <summary>
+        /// 取得全部倉庫
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        private List<SelectListItem> getSubinventoryList()
+        {
+            return subinventoryRepositiory.GetAll().AsNoTracking()
+                .Where(x =>
+                x.ControlFlag != ControlFlag.Deleted)
+               .OrderBy(x => x.SubinventoryCode)
+               .Select(x => new SelectListItem()
+               {
+                   Text = x.SubinventoryCode,
+                   Value = x.SubinventoryCode
+               }).ToList();
+        }
+
+        /// <summary>
+        /// 取得庫存移轉倉庫SelectListItem
+        /// </summary>
+        /// <param name="organizationIdList">組織Id</param>
+        /// <returns></returns>
+        private List<SelectListItem> getSubinventoryListForStockTransaction(List<long> organizationIdList)
+        {
+            return subinventoryRepositiory
+                           .GetAll().AsNoTracking()
+                           .Where(x => organizationIdList.Contains(x.OrganizationId) &&
+                           x.ControlFlag != ControlFlag.Deleted
+                           )
+                           .OrderBy(x => x.SubinventoryCode)
+                           .Select(x => new SelectListItem()
+                           {
+                               Text = x.SubinventoryCode,
+                               Value = x.SubinventoryCode
+                           }).ToList();
         }
 
         /// <summary>
@@ -2391,9 +2930,14 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                               SubinventoryCode = l.SubinventoryCode,
                               Segment3 = l.Segment3,
                               LocatorType = s.LocatorType,
-                              LocatorId = l.LocatorId
+                              LocatorId = l.LocatorId,
+                              LocatorControlFlag = l.ControlFlag,
+                              LocatorDisableDate = l.LocatorDisableDate
                           })
-                          .Where(x => x.LocatorType == 2)
+                          .Where(x => x.LocatorType == LocatorType.Used &&
+                          x.LocatorControlFlag != ControlFlag.Deleted &&
+                          x.LocatorDisableDate == null || x.LocatorDisableDate > DateTime.Now
+                          )
                           .OrderBy(x => x.Segment3)
                           .Select(x => new SelectListItem()
                           {
@@ -2414,9 +2958,15 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                               SubinventoryCode = l.SubinventoryCode,
                               Segment3 = l.Segment3,
                               LocatorType = s.LocatorType,
-                              LocatorId = l.LocatorId
+                              LocatorId = l.LocatorId,
+                              LocatorControlFlag = l.ControlFlag,
+                              LocatorDisableDate = l.LocatorDisableDate
                           })
-                          .Where(x => x.LocatorType == 2 && x.OrganizationId == organizationId)
+                          .Where(x => x.LocatorType == LocatorType.Used &&
+                          x.OrganizationId == organizationId &&
+                           x.LocatorControlFlag != ControlFlag.Deleted &&
+                          x.LocatorDisableDate == null || x.LocatorDisableDate > DateTime.Now
+                          )
                           .OrderBy(x => x.Segment3)
                           .Select(x => new SelectListItem()
                           {
@@ -2437,9 +2987,15 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                               SubinventoryCode = l.SubinventoryCode,
                               Segment3 = l.Segment3,
                               LocatorType = s.LocatorType,
-                              LocatorId = l.LocatorId
+                              LocatorId = l.LocatorId,
+                              LocatorControlFlag = l.ControlFlag,
+                              LocatorDisableDate = l.LocatorDisableDate
                           })
-                          .Where(x => x.LocatorType == 2 && x.SubinventoryCode == SUBINVENTORY_CODE)
+                          .Where(x => x.LocatorType == LocatorType.Used &&
+                          x.SubinventoryCode == SUBINVENTORY_CODE &&
+                          x.LocatorControlFlag != ControlFlag.Deleted &&
+                          x.LocatorDisableDate == null || x.LocatorDisableDate > DateTime.Now
+                          )
                           .OrderBy(x => x.Segment3)
                           .Select(x => new SelectListItem()
                           {
@@ -2460,9 +3016,16 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                               SubinventoryCode = l.SubinventoryCode,
                               Segment3 = l.Segment3,
                               LocatorType = s.LocatorType,
-                              LocatorId = l.LocatorId
+                              LocatorId = l.LocatorId,
+                              LocatorControlFlag = l.ControlFlag,
+                              LocatorDisableDate = l.LocatorDisableDate
                           })
-                          .Where(x => x.LocatorType == 2 && x.OrganizationId == organizationId && x.SubinventoryCode == SUBINVENTORY_CODE)
+                          .Where(x => x.LocatorType == LocatorType.Used &&
+                          x.OrganizationId == organizationId &&
+                          x.SubinventoryCode == SUBINVENTORY_CODE &&
+                          x.LocatorControlFlag != ControlFlag.Deleted &&
+                          x.LocatorDisableDate == null || x.LocatorDisableDate > DateTime.Now
+                          )
                           .OrderBy(x => x.Segment3)
                           .Select(x => new SelectListItem()
                           {
@@ -2473,6 +3036,43 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             }
 
             return locatorList;
+        }
+
+        /// <summary>
+        /// 取得使用者儲位SelectListItem
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="SUBINVENTORY_CODE"></param>
+        /// <returns></returns>
+        private List<SelectListItem> getLocatorListForUserId(string userId, string SUBINVENTORY_CODE)
+        {
+            return userSubinventoryTRepositiory.GetAll().AsNoTracking()
+                .Join(locatorTRepositiory.GetAll().AsNoTracking(),
+
+                us => new { us.OrganizationId, us.SubinventoryCode },
+                l => new { l.OrganizationId, l.SubinventoryCode },
+                (us, l) => new
+                {
+                    UserId = us.UserId,
+                    OrganizationId = us.OrganizationId,
+                    SubinventoryCode = us.SubinventoryCode,
+                    Segment3 = l.Segment3,
+                    LocatorId = l.LocatorId,
+                    LocatorControlFlag = l.ControlFlag,
+                    LocatorDisableDate = l.LocatorDisableDate
+                })
+                .Where(x =>
+                x.UserId == userId &&
+                x.SubinventoryCode == SUBINVENTORY_CODE &&
+               x.LocatorControlFlag != ControlFlag.Deleted &&
+                x.LocatorDisableDate == null || x.LocatorDisableDate > DateTime.Now
+                )
+                 .OrderBy(x => x.Segment3)
+                          .Select(x => new SelectListItem()
+                          {
+                              Text = x.Segment3,
+                              Value = x.LocatorId.ToString()
+                          }).ToList();
         }
 
         /// <summary>
