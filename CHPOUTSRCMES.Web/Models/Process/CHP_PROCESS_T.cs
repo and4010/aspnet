@@ -15,10 +15,13 @@ namespace CHPOUTSRCMES.Web.Models.Process
         public long OspDetailInId { set; get; }
 
         [Display(Name = "加工狀態")] //OSP_BATCH_STATUS_DESC
-        public string OspBatchStatusDesc { set; get; }
+        public string Status { set; get; }
 
         [Display(Name = "工單號")] //OSP_BATCH_NO
-        public string OspBatchNo { set; get; }
+        public string BatchNo { set; get; }
+
+        [Display(Name = "工單類別")]
+        public string BatchType { set;get; }
 
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy/MM/dd}")]
         [Display(Name = "需求日期")] //DUE_DATE

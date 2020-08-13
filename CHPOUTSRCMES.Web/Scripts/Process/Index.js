@@ -73,7 +73,7 @@ $(document).ready(function () {
 
 })
 
-function ProcessLoadTable(OspBatchStatusDesc, OspBatchNo, MachineNum, DueDate, CuttingDateFrom, CuttingDateTo, Subinventory) {
+function ProcessLoadTable(Status, OspBatchNo, MachineNum, DueDate, CuttingDateFrom, CuttingDateTo, Subinventory) {
 
     ProcessDataTables = $('#ProcessDataTables').DataTable({
         "language": {
@@ -93,7 +93,7 @@ function ProcessLoadTable(OspBatchStatusDesc, OspBatchNo, MachineNum, DueDate, C
             "type": "POST",
             "datatype": "json",
             "data": {
-                OspBatchStatusDesc: OspBatchStatusDesc, OspBatchNo: OspBatchNo,
+                Status: Status, OspBatchNo: OspBatchNo,
                 MachineNum: MachineNum, DueDate: DueDate, CuttingDateFrom: CuttingDateFrom,
                 CuttingDateTo: CuttingDateTo, Subinventory: Subinventory
             }
@@ -147,16 +147,17 @@ function ProcessLoadTable(OspBatchStatusDesc, OspBatchNo, MachineNum, DueDate, C
                     }
                 }, "className": "dt-body-center"
             },
-            { data: "OspBatchNo", "name": "工單號", "autoWidth": true, "className": "dt-body-center"},
+            { data: "BatchNo", "name": "工單號", "autoWidth": true, "className": "dt-body-center" },
+            { data: "BatchType", "name": "工單號", "autoWidth": true, "className": "dt-body-center", visible: false },
             { data: "MachineNum", "name": "機台", "autoWidth": true, "className": "dt-body-center"},
             {
-                data: "OspBatchStatusDesc", "name": "狀態", "autoWidth": true, "render": function (data, type, row) {
+                data: "Status", "name": "狀態", "autoWidth": true, "render": function (data, type, row) {
                     if (data == "已排單") {
-                        switch (row.OspBatchStatusDesc.substr(0, 1)) {
-                            case "P":
+                        switch (row.Status.substr(0, 1)) {
+                            case "OSP":
                                 return '<a href=/Process/Schedule/' + row.OspDetailInId + '> ' + data + '</a>';
                                 break;
-                            case "F":
+                            case "TMP":
                                 return '<a href=/Process/Flat/' + row.OspDetailInId + '> ' + data + '</a>';
                                 break;
                             case "R":
@@ -168,11 +169,11 @@ function ProcessLoadTable(OspBatchStatusDesc, OspBatchNo, MachineNum, DueDate, C
                     }
 
                     if (data == "已排單") {
-                        switch (row.OspBatchStatusDesc.substr(0, 1)) {
-                            case "P":
+                        switch (row.Status.substr(0, 1)) {
+                            case "OSP":
                                 return '<a href=/Process/Schedule/' + row.OspDetailInId + '> ' + data + '</a>';
                                 break;
-                            case "F":
+                            case "TMP":
                                 return '<a href=/Process/Flat/' + row.OspDetailInId + '> ' + data + '</a>';
                                 break;
                             case "R":
@@ -203,13 +204,13 @@ function ProcessLoadTable(OspBatchStatusDesc, OspBatchNo, MachineNum, DueDate, C
             { data: "OrderLineNumber", "name": "明細行", "autoWidth": true, "className": "dt-body-center"},
             {
                 data: "", "autoWidth": true, "render": function (data, type, row) {
-                    if (row.OspBatchStatusDesc == "已完工") {
+                    if (row.Status == "已完工") {
                         return '<button class="btn btn-primary btn-sm" id = "btnEdit">編輯</button>' + '<button class="btn btn-primary btn-sm" id = "btnRecord">完工紀錄</button>';
                     }
-                    if (row.OspBatchStatusDesc == "待核准") {
+                    if (row.Status == "待核准") {
                         return '<button class="btn btn-primary btn-sm" id = "btnEdit">編輯</button>' + '<button class="btn btn-primary btn-sm" id = "btnRecord">完工紀錄</button>';
                     }
-                    if (row.OspBatchStatusDesc == "已排單") {
+                    if (row.Status == "已排單") {
                         return '<button class="btn btn-primary btn-sm" id = "btnEdit">編輯</button>';
                     } else {
                         return '<button class="btn btn-primary btn-sm" id = "btnEdit">編輯</button>';
@@ -231,26 +232,6 @@ function ProcessLoadTable(OspBatchStatusDesc, OspBatchNo, MachineNum, DueDate, C
 
 }
 
-//不會用到了
-//function ChooseBtn() {
-
-
-//    var list = document.getElementById("listStatus");
-//    for (i = 0; i <= list.childElementCount - 1; i++) {
-//        list.children[i].addEventListener("click", function () {
-//            $('#BtnStatus').text($(this).text());
-//        })
-//    }
-
-//    var list = document.getElementById("listPrint");
-//    for (i = 0; i <= list.childElementCount - 1; i++) {
-//        list.children[i].addEventListener("click", function () {
-//            $('#BtnPrint').text($(this).text());
-//        })
-//    }
-
-
-//}
 
 function BtnEvent() {
     $('#BtnStatus').click(function () {
@@ -258,9 +239,9 @@ function BtnEvent() {
             swal.fire("請先選擇一項");
             return;
         }
-        var OspBatchStatusDesc = rowData.pluck('OspBatchStatusDesc')[0]
+        var Status = rowData.pluck('Status')[0]
         var OspDetailInId = rowData.pluck('OspDetailInId')[0]
-        if (OspBatchStatusDesc == "待排單") {
+        if (Status == "待排單") {
             $.ajax({
                 url: '/Process/_ProcessIndex',
                 type: "POST",
@@ -287,9 +268,9 @@ function BtnEvent() {
             return;
         }
         var BtnCloss = $('#BtnCloss').text();
-        var OspBatchStatusDesc = rowData.pluck('OspBatchStatusDesc')[0]
+        var Status = rowData.pluck('Status')[0]
         var OspDetailInId = rowData.pluck('OspDetailInId')[0]
-        if (OspBatchStatusDesc == "已完工") {
+        if (Status == "已完工") {
             changeStatus(OspDetailInId, BtnCloss);
         } else {
             swal.fire("加工狀態不正確，重新選擇");
@@ -304,9 +285,9 @@ function BtnEvent() {
             swal.fire("請先選擇一項")
             return;
         }
-        var OspBatchStatusDesc = rowData.pluck('OspBatchStatusDesc')[0]
+        var Status = rowData.pluck('Status')[0]
         var OspDetailInId = rowData.pluck('OspDetailInId')[0]
-        if (OspBatchStatusDesc == "已排單") {
+        if (Status == "已排單") {
             $.ajax({
                 url: '/Process/_ProcessIndex',
                 type: "POST",
@@ -329,7 +310,7 @@ function BtnEvent() {
 function search() {
     $('#btnSearch').click(function () {
         rowData = null;
-        var OspBatchStatusDesc = $("#OspBatchStatusDesc").val();
+        var Status = $("#Status").val();
         var OspBatchNo = $("#OspBatchNo").val();
         var MachineNum = $("#MachineNum").val();
         var DueDate = $("#DueDate").val();
@@ -337,7 +318,7 @@ function search() {
         var CuttingDateTo = $("#CuttingDateTo").val();
         var Subinventory = $("#Subinventory").val();
 
-        ProcessLoadTable(OspBatchStatusDesc, OspBatchNo, MachineNum, DueDate, CuttingDateFrom, CuttingDateTo, Subinventory);
+        ProcessLoadTable(Status, OspBatchNo, MachineNum, DueDate, CuttingDateFrom, CuttingDateTo, Subinventory);
         
         
     });

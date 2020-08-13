@@ -309,6 +309,15 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Process
         public string DtlUom { set; get; }
 
         /// <summary>
+        /// 紙別
+        /// </summary>
+        /// 
+        [StringLength(4)]
+        [Column("PAPER_TYPE")]
+        public string PaperType { set; get; }
+
+
+        /// <summary>
         /// 訂單ID(產品)
         /// </summary>
         /// 

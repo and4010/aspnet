@@ -28,20 +28,20 @@
 
     @*狀態*@
     <div class="form-inline col col-md-1 text-right">
-        @Html.LabelFor(model => model.OspBatchStatusDesc)
+        @Html.LabelFor(model => model.Status)
     </div>
 
     <div class="form-inline col col-md-2 ">
-        @Html.DropDownListFor(model => model.OspBatchStatusDesc, Process_Status, new { @class = "form-control input-sm", id = "OspBatchStatusDesc" })
+        @Html.DropDownListFor(model => model.Status, Process_Status, new { @class = "form-control input-sm", id = "Status" })
     </div>
 
     @*工單號*@
     <div class="form-inline col col-md-1 text-right">
-        @Html.LabelFor(model => model.OspBatchNo)
+        @Html.LabelFor(model => model.BatchNo)
     </div>
 
     <div class="form-inline col col-md-2">
-        @Html.DropDownListFor(model => model.OspBatchNo, Process_Batch_no, new { @class = "form-control input-sm", id = "OspBatchNo" })
+        @Html.DropDownListFor(model => model.BatchNo, Process_Batch_no, new { @class = "form-control input-sm", id = "BatchNo" })
     </div>
 
     @*機台*@

@@ -20,7 +20,7 @@ namespace CHPOUTSRCMES.Web.Controllers
 
 
             ViewBag.Process_Status = viewModel.GetBatchStatusDesc();
-            ViewBag.Process_Batch_no = GetProcess_Batch_no();
+            ViewBag.Process_Batch_no = viewModel.GetBatchNo();
             ViewBag.Manchine_Num = viewModel.GetManchine();
             ViewBag.Subinventory = viewModel.GetSubinventory();
             return View();
@@ -95,7 +95,8 @@ namespace CHPOUTSRCMES.Web.Controllers
         [HttpPost]
         public ActionResult _Subinventory()
         {
-            ViewBag.LocatorItem = GetLocator();
+            ProcessViewModel viewModel = new ProcessViewModel();
+            //ViewBag.LocatorItem = viewModel.GetLocator();
             return PartialView();
         }
 
@@ -103,19 +104,19 @@ namespace CHPOUTSRCMES.Web.Controllers
         public ActionResult ChagneIndexStatus(string Process_Batch_no,string Locator,string Status)
         {
             List<CHP_PROCESS_T> model = ProcessViewModel.chp_process_t;
-            var cpt = model.FirstOrDefault(r => r.OspBatchNo == Process_Batch_no);
+            var cpt = model.FirstOrDefault(r => r.BatchNo == Process_Batch_no);
             if (cpt != null)
             {
                 if(Status == "完工紀錄")
                 {
-                    cpt.OspBatchStatusDesc = "待核准";
+                    cpt.Status = "待核准";
                 } else if (Status == "核准")
                 {
-                    cpt.OspBatchStatusDesc = "已完工";
+                    cpt.Status = "已完工";
                 }
                 else
                 {
-                    cpt.OspBatchStatusDesc = "已完工";
+                    cpt.Status = "已完工";
                     cpt.LocatorCode = Locator;
                 }
             
@@ -137,7 +138,7 @@ namespace CHPOUTSRCMES.Web.Controllers
                     ID.CuttingDateTo = Convert.ToDateTime(dialog_Cutting_Date_From);
                     ID.MachineNum = dialg_Manchine_Num;
                 }
-                ID.OspBatchStatusDesc = BtnStatus;
+                ID.Status = BtnStatus;
             }
 
 
@@ -149,11 +150,6 @@ namespace CHPOUTSRCMES.Web.Controllers
         public JsonResult TableResult(DataTableAjaxPostViewModel data, string Process_Status, string Process_Batch_no, string Manchine_Num,
             string Demand_Date, string Cutting_Date_From, string Cutting_Date_To, string Subinventory)
         {
-            if (ProcessViewModel.chp_process_t.Count == 0)
-            {
-                ProcessViewModel.GetTable();
-
-            }
             ProcessViewModel viewModel = new ProcessViewModel();
             List<CHP_PROCESS_T> model = viewModel.Search(Process_Status, Process_Batch_no, Manchine_Num, Demand_Date, Cutting_Date_From, Cutting_Date_To, Subinventory);
             model = ProcessViewModel.Search(data, model);
@@ -168,7 +164,7 @@ namespace CHPOUTSRCMES.Web.Controllers
         public JsonResult CheckOrderNumber(string ProcessBatchNo)
         {
             var boolean = false;
-            var orde = ProcessViewModel.chp_process_t.FirstOrDefault(r => r.OspBatchNo == ProcessBatchNo);
+            var orde = ProcessViewModel.chp_process_t.FirstOrDefault(r => r.BatchNo == ProcessBatchNo);
             if(orde == null)
             {
                 boolean = false;
@@ -579,35 +575,6 @@ namespace CHPOUTSRCMES.Web.Controllers
 
        
 
-        private List<SelectListItem> GetProcess_Batch_no()
-        {
-            List<SelectListItem> Process_Batch_no = new List<SelectListItem>();
-            Process_Batch_no.Add(new SelectListItem()
-            {
-                Text = "全部",
-                Value = "*",
-                Selected = false,
-            });
-            Process_Batch_no.Add(new SelectListItem()
-            {
-                Text = "P9B0288",
-                Value = "P9B0288",
-                Selected = false,
-            });
-            Process_Batch_no.Add(new SelectListItem()
-            {
-                Text = "F2010087",
-                Value = "F2010087",
-                Selected = false,
-            });
-            Process_Batch_no.Add(new SelectListItem()
-            {
-                Text = "R9B0287",
-                Value = "R9B0287",
-                Selected = false,
-            });
-            return Process_Batch_no;
-        }
 
 
         private List<SelectListItem> GetRemnantItem()
@@ -626,26 +593,6 @@ namespace CHPOUTSRCMES.Web.Controllers
                 Selected = false,
             });
             return GetManchine_Num;
-        }
-
- 
-
-        private List<SelectListItem> GetLocator()
-        {
-            List<SelectListItem> GetLocator = new List<SelectListItem>();
-            GetLocator.Add(new SelectListItem()
-            {
-                Text = "SFG",
-                Value = "SFG",
-                Selected = false,
-            });
-            GetLocator.Add(new SelectListItem()
-            {
-                Text = "TB3",
-                Value = "TB3",
-                Selected = false,
-            });
-            return GetLocator;
         }
 
         private List<SelectListItem> GetCotangentItem()
@@ -671,24 +618,18 @@ namespace CHPOUTSRCMES.Web.Controllers
         public class DetailDTEditor
         {
             public string Action { get; set; }
-            //public List<long> TripDetailDT_IDs { get; set; }
-            //public List<string> TRANSACTION_AUTHORIZE_DATEs { get; set; }
             public List<Invest> InvestList { get; set; }
         }
 
         public class ProductionDTEditor
         {
             public string Action { get; set; }
-            //public List<long> TripDetailDT_IDs { get; set; }
-            //public List<string> TRANSACTION_AUTHORIZE_DATEs { get; set; }
             public List<Production> ProductionList { get; set; }
         }
 
         public class CotangentDTEditor
         {
             public string Action { get; set; }
-            //public List<long> TripDetailDT_IDs { get; set; }
-            //public List<string> TRANSACTION_AUTHORIZE_DATEs { get; set; }
             public List<Cotangent> CotangentList { get; set; }
         }
 

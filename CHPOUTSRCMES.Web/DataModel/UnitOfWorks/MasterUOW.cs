@@ -3285,7 +3285,7 @@ on s.ORGANIZATION_ID = l.ORGANIZATION_ID and s.SUBINVENTORY_CODE = l.SUBINVENTOR
             if (OrganizationId != "*")
             {
                 var id = Int32.Parse(OrganizationId);
-                var MachineCode = machinePaperTypeRepositiory.Get(x => x.ControlFlag != "D" && x.OrganizationId == id)
+                var MachineCode = machinePaperTypeRepositiory.Get(x => x.ControlFlag != ControlFlag.Deleted && x.OrganizationId == id)
                              .Select(x => new SelectListItem
                              {
                                  Text = x.MachineCode,
@@ -3295,7 +3295,7 @@ on s.ORGANIZATION_ID = l.ORGANIZATION_ID and s.SUBINVENTORY_CODE = l.SUBINVENTOR
             }
             else
             {
-                var MachineCode = machinePaperTypeRepositiory.Get(x => x.ControlFlag != "D")
+                var MachineCode = machinePaperTypeRepositiory.Get(x => x.ControlFlag != ControlFlag.Deleted)
                            .Select(x => new SelectListItem
                            {
                                Text = x.MachineCode,
@@ -3324,7 +3324,7 @@ on s.ORGANIZATION_ID = l.ORGANIZATION_ID and s.SUBINVENTORY_CODE = l.SUBINVENTOR
             if (OrganizationId != "*")
             {
                 var id = Int32.Parse(OrganizationId);
-                var sub = subinventoryRepositiory.Get(x => x.ControlFlag != "D" && x.OspFlag == "Y" && x.OrganizationId == id)
+                var sub = subinventoryRepositiory.Get(x => x.ControlFlag != ControlFlag.Deleted && x.OspFlag == OspFlag.IsProcessingPlant && x.OrganizationId == id)
                      .Select(x => new SelectListItem
                      {
                          Text = x.SubinventoryCode,
@@ -3335,7 +3335,7 @@ on s.ORGANIZATION_ID = l.ORGANIZATION_ID and s.SUBINVENTORY_CODE = l.SUBINVENTOR
             }
             else
             {
-                var sub = subinventoryRepositiory.Get(x => x.ControlFlag != "D" && x.OspFlag == "Y")
+                var sub = subinventoryRepositiory.Get(x => x.ControlFlag != ControlFlag.Deleted && x.OspFlag == OspFlag.IsProcessingPlant)
                      .Select(x => new SelectListItem
                      {
                          Text = x.SubinventoryCode,

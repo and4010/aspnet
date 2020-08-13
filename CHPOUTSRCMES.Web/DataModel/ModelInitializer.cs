@@ -24,6 +24,7 @@ namespace CHPOUTSRCMES.Web.DataModel
             new DeliveryUOW(context).generateTestData();
             new MasterUOW(context).generateStockTestData();
             new MasterUOW(context).generateUserSubinventoryTestData();
+            new ProcessUOW(context).generateTestData();
             base.Seed(context);
 
         }

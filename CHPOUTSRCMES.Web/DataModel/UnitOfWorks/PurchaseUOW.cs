@@ -92,7 +92,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                 ctrorg.OrganizationCode = "FTY";
                 ctrorg.Subinventory = "SFG";
                 ctrorg.LocatorId = 22016;
-                ctrorg.LocatorCode = "TB2";
+                ctrorg.LocatorCode = "FTY.SFG.TB2.NA";
                 ctrorg.DetailId = 1;
                 ctrorg.InventoryItemId = 503376;
                 ctrorg.ShipItemNumber = "4DM00A03000407K471K";
@@ -134,7 +134,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                 ctrorg.OrganizationCode = "FTY";
                 ctrorg.Subinventory = "SFG";
                 ctrorg.LocatorId = 22016;
-                ctrorg.LocatorCode = "TB2";
+                ctrorg.LocatorCode = "FTY.SFG.TB2.NA";
                 ctrorg.DetailId = 1;
                 ctrorg.InventoryItemId = 503375;
                 ctrorg.ShipItemNumber = "4DM00A03000386K471K";
@@ -176,7 +176,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                 ctrorg.OrganizationCode = "FTY";
                 ctrorg.Subinventory = "SFG";
                 ctrorg.LocatorId = 22016;
-                ctrorg.LocatorCode = "TB2";
+                ctrorg.LocatorCode = "FTY.SFG.TB2.NA";
                 ctrorg.DetailId = 1;
                 ctrorg.InventoryItemId = 503374;
                 ctrorg.ShipItemNumber = "4DM00A03000352K471K";
@@ -224,20 +224,43 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             {
                 for (int i = 0; org.Count() > i; i++)
                 {
-                    ctrheaderT.HeaderId = org[i].HeaderId;
-                    ctrheaderT.OrgId = org[i].OrgId;
-                    ctrheaderT.OrgName = org[i].OrgName;
-                    ctrheaderT.LineId = org[i].LineId;
-                    ctrheaderT.ContainerNo = org[i].ContainerNo;
-                    ctrheaderT.MvContainerDate = org[i].MvContainerDate;
-                    ctrheaderT.OrganizationId = org[i].OrganizationId;
-                    ctrheaderT.OrganizationCode = org[i].OrganizationCode;
-                    ctrheaderT.Subinventory = org[i].Subinventory;
-                    ctrheaderT.Status = Int64.Parse(PurchaseStatusCode.PurchaseHeaderPending);
-                    ctrheaderT.CreatedBy = org[i].CreatedBy.ToString();
-                    ctrheaderT.CreatedUserName = org[i].CreatedBy.ToString();
-                    ctrheaderT.CreationDate = org[i].CreationDate;
-                    ctrHeaderTRepositiory.Create(ctrheaderT, true);
+                    var ctrHeaderTContainerNo = org[i].ContainerNo;
+                    var ContainerNo = ctrHeaderTRepositiory.GetAll()
+                        .Where(x => x.ContainerNo == ctrHeaderTContainerNo).SingleOrDefault();
+                    if (ContainerNo == null)
+                    {
+                        ctrheaderT.HeaderId = org[i].HeaderId;
+                        ctrheaderT.OrgId = org[i].OrgId;
+                        ctrheaderT.OrgName = org[i].OrgName;
+                        ctrheaderT.LineId = org[i].LineId;
+                        ctrheaderT.ContainerNo = org[i].ContainerNo;
+                        ctrheaderT.MvContainerDate = org[i].MvContainerDate;
+                        ctrheaderT.OrganizationId = org[i].OrganizationId;
+                        ctrheaderT.OrganizationCode = org[i].OrganizationCode;
+                        ctrheaderT.Subinventory = org[i].Subinventory;
+                        ctrheaderT.Status = Int64.Parse(PurchaseStatusCode.PurchaseHeaderPending);
+                        ctrheaderT.CreatedBy = org[i].CreatedBy.ToString();
+                        ctrheaderT.CreatedUserName = org[i].CreatedBy.ToString();
+                        ctrheaderT.CreationDate = org[i].CreationDate;
+                        ctrHeaderTRepositiory.Create(ctrheaderT, true);
+                    }else if(ContainerNo.ContainerNo != org[i].ContainerNo)
+                    {
+                        ctrheaderT.HeaderId = org[i].HeaderId;
+                        ctrheaderT.OrgId = org[i].OrgId;
+                        ctrheaderT.OrgName = org[i].OrgName;
+                        ctrheaderT.LineId = org[i].LineId;
+                        ctrheaderT.ContainerNo = org[i].ContainerNo;
+                        ctrheaderT.MvContainerDate = org[i].MvContainerDate;
+                        ctrheaderT.OrganizationId = org[i].OrganizationId;
+                        ctrheaderT.OrganizationCode = org[i].OrganizationCode;
+                        ctrheaderT.Subinventory = org[i].Subinventory;
+                        ctrheaderT.Status = Int64.Parse(PurchaseStatusCode.PurchaseHeaderPending);
+                        ctrheaderT.CreatedBy = org[i].CreatedBy.ToString();
+                        ctrheaderT.CreatedUserName = org[i].CreatedBy.ToString();
+                        ctrheaderT.CreationDate = org[i].CreationDate;
+                        ctrHeaderTRepositiory.Create(ctrheaderT, true);
+                    }
+                 
 
                     ctrdetailT.CtrHeaderId = ctrheaderT.CtrHeaderId;
                     ctrdetailT.ProcessCode = org[i].ProcessCode;
@@ -322,7 +345,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
 
                     for (int i = 0; i < ctrDetail.Count; i++)
                     {
-                        cTR_PICKED_T.CtrHeaderId = ctrDetail[i].d.HeaderId;
+                        cTR_PICKED_T.CtrHeaderId = ctrDetail[i].d.CtrHeaderId;
                         cTR_PICKED_T.CtrDetailId = ctrDetail[i].d.CtrDetailId;
                         cTR_PICKED_T.StockId = null;
                         cTR_PICKED_T.LocatorId = ctrDetail[i].d.LocatorId;
@@ -644,7 +667,7 @@ d.SECONDARY_UOM AS TtlRollReamUom,
 d.PRIMARY_QUANTITY AS DeliveryQty,
 d.PRIMARY_UOM AS DeliveryUom
 FROM dbo.CTR_DETAIL_T d
-LEFT JOIN dbo.CTR_HEADER_T h ON h.CTR_HEADER_ID = d.CTR_HEADER_ID
+JOIN dbo.CTR_HEADER_T h ON h.CTR_HEADER_ID = d.CTR_HEADER_ID
 WHERE d.ITEM_CATEGORY = N'平張' and h.CONTAINER_NO  = @CONTAINER_NO");
                     return mesContext.Database.SqlQuery<DetailModel.FlatModel>(query.ToString(), new SqlParameter("@CONTAINER_NO", CONTAINER_NO)).ToList();
                 }
@@ -684,7 +707,7 @@ d.TRANSACTION_UOM AS TransactionUom,
 d.PRIMARY_QUANTITY AS PrimanyQuantity,
 d.PRIMARY_UOM AS PrimaryUom
 FROM dbo.CTR_DETAIL_T d
-LEFT JOIN dbo.CTR_HEADER_T h ON h.CTR_HEADER_ID = d.CTR_HEADER_ID
+JOIN dbo.CTR_HEADER_T h ON h.CTR_HEADER_ID = d.CTR_HEADER_ID
 WHERE d.ITEM_CATEGORY = N'捲筒' and h.CONTAINER_NO  = @CONTAINER_NO");
                     return mesContext.Database.SqlQuery<DetailModel.RollModel>(query.ToString(), new SqlParameter("@CONTAINER_NO", CONTAINER_NO)).ToList();
                 }
@@ -724,7 +747,7 @@ d.TRANSACTION_UOM AS TransactionUom,
 d.PRIMARY_QUANTITY AS PrimanyQuantity,
 d.PRIMARY_UOM AS PrimaryUom
 FROM dbo.CTR_DETAIL_HT d
-LEFT JOIN dbo.CTR_HEADER_T h ON h.CTR_HEADER_ID = d.CTR_HEADER_ID
+JOIN dbo.CTR_HEADER_T h ON h.CTR_HEADER_ID = d.CTR_HEADER_ID
 WHERE d.ITEM_CATEGORY = N'捲筒' and h.CONTAINER_NO  = @CONTAINER_NO");
                     return mesContext.Database.SqlQuery<DetailModel.RollModel>(query.ToString(), new SqlParameter("@CONTAINER_NO", CONTAINER_NO)).ToList();
                 }
@@ -770,7 +793,6 @@ p.REASON_DESC as Reason,
 p.NOTE as Remark
 FROM dbo.CTR_PICKED_T p
 LEFT JOIN dbo.CTR_HEADER_T h ON h.CTR_HEADER_ID = p.CTR_HEADER_ID
-LEFT JOIN dbo.CTR_DETAIL_T d ON d.CTR_HEADER_ID = p.CTR_HEADER_ID
 WHERE p.ITEM_CATEGORY = N'捲筒' and h.CONTAINER_NO  = @CONTAINER_NO");
                     return mesContext.Database.SqlQuery<DetailModel.RollDetailModel>(query.ToString(), new SqlParameter("@CONTAINER_NO", CONTAINER_NO)).ToList();
                 }
@@ -816,7 +838,6 @@ p.REASON_DESC as Reason,
 p.NOTE as Remark
 FROM dbo.CTR_PICKED_HT p
 LEFT JOIN dbo.CTR_HEADER_T h ON h.CTR_HEADER_ID = p.CTR_HEADER_ID
-LEFT JOIN dbo.CTR_DETAIL_HT d ON d.CTR_HEADER_ID = p.CTR_HEADER_ID
 WHERE p.ITEM_CATEGORY = N'捲筒' and h.CONTAINER_NO  = @CONTAINER_NO");
                     return mesContext.Database.SqlQuery<DetailModel.RollDetailModel>(query.ToString(), new SqlParameter("@CONTAINER_NO", CONTAINER_NO)).ToList();
                 }
@@ -855,9 +876,8 @@ CAST(1 AS decimal) as Qty,
 p.STATUS as Status,
 p.REASON_DESC as Reason,
 p.NOTE as Remark
-FROM dbo.CTR_PICKED_T p
-LEFT JOIN dbo.CTR_HEADER_T h ON h.CTR_HEADER_ID = p.CTR_HEADER_ID
-LEFT JOIN dbo.CTR_DETAIL_T d ON d.CTR_HEADER_ID = p.CTR_HEADER_ID
+FROM CTR_PICKED_T p
+JOIN CTR_HEADER_T h ON h.CTR_HEADER_ID = p.CTR_HEADER_ID
 WHERE p.ITEM_CATEGORY = N'平張' and h.CONTAINER_NO  = @CONTAINER_NO");
                     return mesContext.Database.SqlQuery<DetailModel.FlatDetailModel>(query.ToString(), new SqlParameter("@CONTAINER_NO", CONTAINER_NO)).ToList();
                 }
@@ -898,7 +918,6 @@ p.REASON_DESC as Reason,
 p.NOTE as Remark
 FROM dbo.CTR_PICKED_HT p
 LEFT JOIN dbo.CTR_HEADER_T h ON h.CTR_HEADER_ID = p.CTR_HEADER_ID
-LEFT JOIN dbo.CTR_DETAIL_HT d ON d.CTR_HEADER_ID = p.CTR_HEADER_ID
 WHERE p.ITEM_CATEGORY = N'平張' and h.CONTAINER_NO  = @CONTAINER_NO");
                     return mesContext.Database.SqlQuery<DetailModel.FlatDetailModel>(query.ToString(), new SqlParameter("@CONTAINER_NO", CONTAINER_NO)).ToList();
                 }
@@ -933,12 +952,12 @@ p.SHIP_ITEM_NUMBER as Item_No,
 p.PAPER_TYPE as PaperType,
 p.BASIC_WEIGHT as BaseWeight,
 p.SPECIFICATION as Specification,
-d.THEORY_WEIGHT as TheoreticalWeight,
-d.TRANSACTION_QUANTITY as TransactionQuantity,
-d.TRANSACTION_UOM as TransactionUom,
-d.PRIMARY_QUANTITY as PrimanyQuantity,
-d.PRIMARY_UOM as PrimaryUom,
-d.LOT_NUMBER as LotNumber,
+p.THEORY_WEIGHT as TheoreticalWeight,
+p.TRANSACTION_QUANTITY as TransactionQuantity,
+p.TRANSACTION_UOM as TransactionUom,
+p.PRIMARY_QUANTITY as PrimanyQuantity,
+p.PRIMARY_UOM as PrimaryUom,
+p.LOT_NUMBER as LotNumber,
 p.STATUS as Status,
 p.REASON_DESC as Reason,
 p.NOTE as Remark,
@@ -946,7 +965,6 @@ p.LAST_UPDATE_DATE as CreationDate,
 p.LAST_UPDATE_USER_NAME as CreatedUserName 
 FROM dbo.CTR_PICKED_T p
 LEFT JOIN dbo.CTR_HEADER_T h ON h.CTR_HEADER_ID = p.CTR_HEADER_ID
-LEFT JOIN dbo.CTR_DETAIL_T d ON d.CTR_HEADER_ID = p.CTR_HEADER_ID
 WHERE p.ITEM_CATEGORY = N'捲筒' and p.CTR_PICKED_ID  = @CTR_PICKED_ID");
                     return mesContext.Database.SqlQuery<DetailModel.RollDetailModel>(query.ToString(), new SqlParameter("@CTR_PICKED_ID", id)).SingleOrDefault();
                 }
@@ -980,12 +998,12 @@ p.SHIP_ITEM_NUMBER as Item_No,
 p.PAPER_TYPE as PaperType,
 p.BASIC_WEIGHT as BaseWeight,
 p.SPECIFICATION as Specification,
-d.THEORY_WEIGHT as TheoreticalWeight,
-d.TRANSACTION_QUANTITY as TransactionQuantity,
-d.TRANSACTION_UOM as TransactionUom,
-d.PRIMARY_QUANTITY as PrimanyQuantity,
-d.PRIMARY_UOM as PrimaryUom,
-d.LOT_NUMBER as LotNumber,
+p.THEORY_WEIGHT as TheoreticalWeight,
+p.TRANSACTION_QUANTITY as TransactionQuantity,
+p.TRANSACTION_UOM as TransactionUom,
+p.PRIMARY_QUANTITY as PrimanyQuantity,
+p.PRIMARY_UOM as PrimaryUom,
+p.LOT_NUMBER as LotNumber,
 p.STATUS as Status,
 p.REASON_DESC as Reason,
 p.NOTE as Remark,
@@ -993,7 +1011,6 @@ p.LAST_UPDATE_DATE as CreationDate,
 p.LAST_UPDATE_USER_NAME as CreatedUserName 
 FROM dbo.CTR_PICKED_HT p
 LEFT JOIN dbo.CTR_HEADER_T h ON h.CTR_HEADER_ID = p.CTR_HEADER_ID
-LEFT JOIN dbo.CTR_DETAIL_HT d ON d.CTR_HEADER_ID = p.CTR_HEADER_ID
 WHERE p.ITEM_CATEGORY = N'捲筒' and p.CTR_PICKED_ID  = @CTR_PICKED_ID");
                     return mesContext.Database.SqlQuery<DetailModel.RollDetailModel>(query.ToString(), new SqlParameter("@CTR_PICKED_ID", id)).SingleOrDefault();
                 }
@@ -1035,15 +1052,15 @@ WHERE p.ITEM_CATEGORY = N'捲筒' and p.CTR_PICKED_ID  = @CTR_PICKED_ID");
                             ctrPickT.ReasonDesc = reason.ReasonDesc;
                             ctrPickT.ReasonCode = reason.ReasonCode;
                         }
-                        if (Locator != "請選擇")
+                        if (Locator != "*")
                         {
                             var LocatorId = Int32.Parse(Locator);
                             var Id = db.LocatorTs.Where(x => x.LocatorId == LocatorId).SingleOrDefault();
                             ctrPickT.LocatorId = Id.LocatorId;
-                            ctrPickT.LocatorCode = Id.Segment3;
+                            ctrPickT.LocatorCode = Id.LocatorSegments;
                             var ctrdetail = ctrDetailTRepositiory.Get(x => x.CtrDetailId == ctrPickT.CtrDetailId).SingleOrDefault();
                             ctrdetail.LocatorId = Id.LocatorId;
-                            ctrdetail.LocatorCode = Id.Segment3;
+                            ctrdetail.LocatorCode = Id.LocatorSegments;
                             ctrDetailTRepositiory.Update(ctrdetail, true);
                         }
                         ctrPickT.Note = Remark;
@@ -1097,15 +1114,15 @@ WHERE p.ITEM_CATEGORY = N'捲筒' and p.CTR_PICKED_ID  = @CTR_PICKED_ID");
                             ctrPickT.ReasonDesc = reason.ReasonDesc;
                             ctrPickT.ReasonCode = reason.ReasonCode;
                         }
-                        if (Locator != "請選擇")
+                        if (Locator != "*")
                         {
                             var LocatorId = Int32.Parse(Locator);
                             var Id = db.LocatorTs.Where(x => x.LocatorId == LocatorId).SingleOrDefault();
                             ctrPickT.LocatorId = Id.LocatorId;
-                            ctrPickT.LocatorCode = Id.Segment3;
+                            ctrPickT.LocatorCode = Id.LocatorSegments;
                             var ctrdetail = ctrDetailTRepositiory.Get(x => x.CtrDetailId == ctrPickT.CtrDetailId).SingleOrDefault();
                             ctrdetail.LocatorId = Id.LocatorId;
-                            ctrdetail.LocatorCode = Id.Segment3;
+                            ctrdetail.LocatorCode = Id.LocatorSegments;
                             ctrDetailTRepositiory.Update(ctrdetail, true);
                         }
                         ctrPickT.Note = Remark;
@@ -1247,9 +1264,9 @@ p.REASON_DESC as Reason,
 p.NOTE as Remark,
 p.LAST_UPDATE_DATE as CreationDate,
 p.LAST_UPDATE_USER_NAME as CreatedUserName 
-FROM dbo.CTR_PICKED_T p
-LEFT JOIN dbo.CTR_HEADER_T h ON h.CTR_HEADER_ID = p.CTR_HEADER_ID
-LEFT JOIN dbo.CTR_DETAIL_T d ON d.CTR_HEADER_ID = p.CTR_HEADER_ID
+FROM CTR_PICKED_T p
+JOIN CTR_HEADER_T h ON h.CTR_HEADER_ID = p.CTR_HEADER_ID
+JOIN CTR_DETAIL_T D ON D.CTR_DETAIL_ID = P.CTR_DETAIL_ID
 WHERE p.ITEM_CATEGORY = N'平張' and p.CTR_PICKED_ID  = @CTR_PICKED_ID");
                     return mesContext.Database.SqlQuery<DetailModel.FlatDetailModel>(query.ToString(), new SqlParameter("@CTR_PICKED_ID", id)).SingleOrDefault();
                 }
@@ -1290,9 +1307,9 @@ p.REASON_DESC as Reason,
 p.NOTE as Remark,
 p.LAST_UPDATE_DATE as CreationDate,
 p.LAST_UPDATE_USER_NAME as CreatedUserName 
-FROM dbo.CTR_PICKED_HT p
-LEFT JOIN dbo.CTR_HEADER_T h ON h.CTR_HEADER_ID = p.CTR_HEADER_ID
-LEFT JOIN dbo.CTR_DETAIL_HT d ON d.CTR_HEADER_ID = p.CTR_HEADER_ID
+FROM CTR_PICKED_HT p
+JOIN CTR_HEADER_T h ON h.CTR_HEADER_ID = p.CTR_HEADER_ID
+JOIN CTR_DETAIL_HT D ON D.CTR_DETAIL_ID = P.CTR_DETAIL_ID
 WHERE p.ITEM_CATEGORY = N'平張' and p.CTR_PICKED_ID  = @CTR_PICKED_ID");
                     return mesContext.Database.SqlQuery<DetailModel.FlatDetailModel>(query.ToString(), new SqlParameter("@CTR_PICKED_ID", id)).SingleOrDefault();
                 }
@@ -1321,12 +1338,11 @@ WHERE p.ITEM_CATEGORY = N'平張' and p.CTR_PICKED_ID  = @CTR_PICKED_ID");
 (SELECT 
 sum(d1.ROLL_REAM_QTY)- 
 count(p.CTR_PICKED_ID)
-FROM dbo.CTR_PICKED_T p
-LEFT JOIN dbo.CTR_HEADER_T h2 ON h2.CTR_HEADER_ID = p.CTR_HEADER_ID
-LEFT JOIN dbo.CTR_DETAIL_T d2 ON d2.CTR_HEADER_ID = p.CTR_HEADER_ID
+FROM CTR_PICKED_T p
+JOIN CTR_HEADER_T h2 ON h2.CTR_HEADER_ID = p.CTR_HEADER_ID
 WHERE p.ITEM_CATEGORY = N'平張' and h2.CONTAINER_NO  = @CONTAINER_NO and p.STATUS = N'已入庫')
-FROM dbo.CTR_DETAIL_T d1
-LEFT JOIN dbo.CTR_HEADER_T h1 ON h1.CTR_HEADER_ID = d1.CTR_HEADER_ID
+FROM CTR_DETAIL_T d1
+JOIN CTR_HEADER_T h1 ON h1.CTR_HEADER_ID = d1.CTR_HEADER_ID
 WHERE d1.ITEM_CATEGORY = N'平張' and h1.CONTAINER_NO  = @CONTAINER_NO");
                     return mesContext.Database.SqlQuery<decimal>(query.ToString(), new SqlParameter("@CONTAINER_NO", CONTAINER_NO)).SingleOrDefault();
                 }
@@ -1356,12 +1372,11 @@ WHERE d1.ITEM_CATEGORY = N'平張' and h1.CONTAINER_NO  = @CONTAINER_NO");
 (SELECT 
 sum(d1.ROLL_REAM_QTY)- 
 count(p.CTR_PICKED_ID)
-FROM dbo.CTR_PICKED_T p
-LEFT JOIN dbo.CTR_HEADER_T h2 ON h2.CTR_HEADER_ID = p.CTR_HEADER_ID
-LEFT JOIN dbo.CTR_DETAIL_T d2 ON d2.CTR_HEADER_ID = p.CTR_HEADER_ID
+FROM CTR_PICKED_T p
+JOIN CTR_HEADER_T h2 ON h2.CTR_HEADER_ID = p.CTR_HEADER_ID
 WHERE p.ITEM_CATEGORY = N'捲筒' and h2.CONTAINER_NO  = @CONTAINER_NO and p.STATUS = N'已入庫')
-FROM dbo.CTR_DETAIL_T d1
-LEFT JOIN dbo.CTR_HEADER_T h1 ON h1.CTR_HEADER_ID = d1.CTR_HEADER_ID
+FROM CTR_DETAIL_T d1
+JOIN CTR_HEADER_T h1 ON h1.CTR_HEADER_ID = d1.CTR_HEADER_ID
 WHERE d1.ITEM_CATEGORY = N'捲筒' and h1.CONTAINER_NO  = @CONTAINER_NO");
                     return mesContext.Database.SqlQuery<decimal>(query.ToString(), new SqlParameter("@CONTAINER_NO", CONTAINER_NO)).SingleOrDefault();
                 }
@@ -1769,7 +1784,7 @@ CAST(PT.BASIC_WEIGHT AS nvarchar) AS BasicWeight,
 CAST(PT.SPECIFICATION AS nvarchar) AS Specification,
 CAST(FORMAT(PT.ROLL_REAM_WT,'0.##########') AS nvarchar) AS Qty,
 CAST(PT.SECONDARY_UOM AS nvarchar) AS Unit
---CAST(CT.CONTAINER_NO AS nvarchar) AS OspBatchNo
+--CAST(CT.CONTAINER_NO AS nvarchar) AS BatchNo
 FROM [CTR_PICKED_HT] PT
 join CTR_HEADER_T CT ON CT.CTR_HEADER_ID = PT.CTR_HEADER_ID
 join ITEMS_T tt on tt.INVENTORY_ITEM_ID = PT.INVENTORY_ITEM_ID
@@ -1804,7 +1819,7 @@ CAST(PT.BASIC_WEIGHT AS nvarchar) AS BasicWeight,
 CAST(PT.SPECIFICATION AS nvarchar) AS Specification,
 CAST(FORMAT(PT.ROLL_REAM_WT,'0.##########') AS nvarchar) AS Qty,
 CAST(PT.SECONDARY_UOM AS nvarchar) AS Unit
---CAST(CT.CONTAINER_NO AS nvarchar) AS OspBatchNo
+--CAST(CT.CONTAINER_NO AS nvarchar) AS BatchNo
 FROM [CTR_PICKED_T] PT
 join CTR_HEADER_T CT ON CT.CTR_HEADER_ID = PT.CTR_HEADER_ID
 join ITEMS_T tt on tt.INVENTORY_ITEM_ID = PT.INVENTORY_ITEM_ID
@@ -1861,7 +1876,7 @@ CAST(PT.BASIC_WEIGHT AS nvarchar) AS BasicWeight,
 CAST(PT.SPECIFICATION AS nvarchar) AS Specification,
 CAST(FORMAT(PT.PRIMARY_QUANTITY,'0.##########') AS nvarchar) AS Qty,
 CAST(PT.PRIMARY_UOM AS nvarchar) AS Unit
---CAST(CT.CONTAINER_NO AS nvarchar) AS OspBatchNo
+--CAST(CT.CONTAINER_NO AS nvarchar) AS BatchNo
 FROM [CTR_PICKED_HT] PT
 join CTR_HEADER_T CT ON CT.CTR_HEADER_ID = PT.CTR_HEADER_ID
 join ITEMS_T tt on tt.INVENTORY_ITEM_ID = PT.INVENTORY_ITEM_ID
@@ -1897,7 +1912,7 @@ CAST(PT.BASIC_WEIGHT AS nvarchar) AS BasicWeight,
 CAST(PT.SPECIFICATION AS nvarchar) AS Specification,
 CAST(FORMAT(PT.PRIMARY_QUANTITY,'0.##########') AS nvarchar) AS Qty,
 CAST(PT.PRIMARY_UOM AS nvarchar) AS Unit
---CAST(CT.CONTAINER_NO AS nvarchar) AS OspBatchNo
+--CAST(CT.CONTAINER_NO AS nvarchar) AS BatchNo
 FROM [CTR_PICKED_T] PT
 join CTR_HEADER_T CT ON CT.CTR_HEADER_ID = PT.CTR_HEADER_ID
 join ITEMS_T tt on tt.INVENTORY_ITEM_ID = PT.INVENTORY_ITEM_ID
