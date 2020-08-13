@@ -33,7 +33,7 @@ BEGIN
 	BEGIN TRY
 		SET @success = @success + 1
 		--收集需要刪除的項目
-		INSERT INTO @deletelist (ORG_ID, ORG_NAME, OSP_FLAG) 
+		INSERT INTO @deletelist (ORG_ID, ORG_NAME) 
 		SELECT ORG_ID, ORG_NAME FROM (
 			SELECT ORG_ID, ORG_NAME FROM ORG_UNIT_T O
 			WHERE CONTROL_FLAG <> 'D'
