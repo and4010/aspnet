@@ -131,47 +131,33 @@ namespace CHPOUTSRCMES.Web.Models.Stock
         }
 
 
-        public static StockTransferViewModel GetViewModel()
+        public StockTransferViewModel GetViewModel(TransferUOW uow)
         {
             StockTransferViewModel viewModel = new StockTransferViewModel();
-            viewModel.SelectedTransferType = "請選擇";
-            List<ListItem> transferTypeList = new List<ListItem>();
-            transferTypeList.Add(new ListItem("請選擇", "請選擇"));
-            transferTypeList.Add(new ListItem("出庫", "出庫"));
-            transferTypeList.Add(new ListItem("入庫", "入庫"));
-            transferTypeList.Add(new ListItem("貨故", "貨故"));
-            viewModel.TransferTypeItems = transferTypeList.Select(i => new SelectListItem() { Text = i.Text, Value = i.Value });
-
-            //viewModel.SelectedOutSubinventory = "";
-
-
-            //viewModel.OutSubinventoryItems = orgData.GetSubinventoryList("265", false);
-
-
-            //viewModel.OutLocatorItems = orgData.GetLocatorList("265", viewModel.SelectedOutSubinventory, false);
-
+            //viewModel.SelectedTransferType = "請選擇";
+            viewModel.TransferTypeItems = uow.GetTransferTypeDropDownList();
             return viewModel;
         }
 
-        public OutBoundViewModel GetOutBoundViewModel(MasterUOW uow, string userId)
+        public OutBoundViewModel GetOutBoundViewModel(TransferUOW uow, string userId)
         {
             OutBoundViewModel viewModel = new OutBoundViewModel();
 
             viewModel.OutSubinventoryItems = orgData.GetSubinventoryListForUserId(uow, userId, MasterUOW.DropDownListType.Choice);
 
             //viewModel.OutLocatorItems = orgData.GetLocatorList(uow, "265", viewModel.SelectedOutSubinventory, MasterUOW.DropDownListType.Choice);
-            viewModel.OutLocatorItems = new List<SelectListItem> { new SelectListItem { Text = "", Value = "" } };
+            viewModel.OutLocatorItems = uow.createDropDownList(MasterUOW.DropDownListType.Choice);
 
             viewModel.InSubinventoryItems = orgData.GetSubinventoryList(uow, "*", MasterUOW.DropDownListType.Choice);
 
             //viewModel.InLocatorItems = orgData.GetLocatorList(uow, "*", viewModel.SelectedInSubinventory, MasterUOW.DropDownListType.Choice);
-            viewModel.InLocatorItems = new List<SelectListItem> { new SelectListItem { Text = "", Value = "" } };
+            viewModel.InLocatorItems = uow.createDropDownList(MasterUOW.DropDownListType.Choice);
 
-            viewModel.ShipmentNumberItems = GetShipmentNumberList(viewModel.SelectedOutSubinventory, viewModel.SelectedOutLocator, viewModel.SelectedInSubinventory, viewModel.SelectedInLocator);
+            viewModel.ShipmentNumberItems = uow.createDropDownList(MasterUOW.DropDownListType.Add);
 
-            viewModel.SubinventoryTransferNumberItems = GetSubinventoryTransferNumberList(viewModel.SelectedOutSubinventory, viewModel.SelectedOutLocator, viewModel.SelectedInSubinventory, viewModel.SelectedInLocator);
+            //viewModel.SubinventoryTransferNumberItems = GetSubinventoryTransferNumberList(viewModel.SelectedOutSubinventory, viewModel.SelectedOutLocator, viewModel.SelectedInSubinventory, viewModel.SelectedInLocator);
 
-            viewModel.ItemNumberItems = StockData.GetItemNumberList(viewModel.SelectedOutSubinventory, Convert.ToInt64(viewModel.SelectedOutLocator));
+            //viewModel.ItemNumberItems = StockData.GetItemNumberList(viewModel.SelectedOutSubinventory, Convert.ToInt64(viewModel.SelectedOutLocator));
 
             //ResultModel result = CheckTransactionType(viewModel.SelectedOutSubinventory, viewModel.SelectedInSubinventory);
             //if (result.Success == false)
@@ -198,28 +184,28 @@ namespace CHPOUTSRCMES.Web.Models.Stock
             return viewModel;
         }
 
-        public InBoundViewModel GetInBoundViewModel(MasterUOW uow, string userId)
+        public InBoundViewModel GetInBoundViewModel(TransferUOW uow, string userId)
         {
             InBoundViewModel viewModel = new InBoundViewModel();
 
             viewModel.OutSubinventoryItems = orgData.GetSubinventoryList(uow, "*", MasterUOW.DropDownListType.Choice);
 
             //viewModel.OutLocatorItems = orgData.GetLocatorList(uow, "*", viewModel.SelectedOutSubinventory, MasterUOW.DropDownListType.Choice);
-            viewModel.OutLocatorItems =  new List<SelectListItem> { new SelectListItem { Text = "", Value = "" } };
+            viewModel.OutLocatorItems = uow.createDropDownList(MasterUOW.DropDownListType.Choice);
 
             viewModel.InSubinventoryItems = orgData.GetSubinventoryListForUserId(uow, userId, MasterUOW.DropDownListType.Choice);
 
             //viewModel.InLocatorItems = orgData.GetLocatorList(uow, "265", viewModel.SelectedInSubinventory, MasterUOW.DropDownListType.Choice);
-            viewModel.InLocatorItems = new List<SelectListItem> { new SelectListItem { Text = "", Value = "" } };
+            viewModel.InLocatorItems = uow.createDropDownList(MasterUOW.DropDownListType.Choice);
 
-            viewModel.ShipmentNumberItems = GetShipmentNumberList(viewModel.SelectedOutSubinventory, viewModel.SelectedOutLocator, viewModel.SelectedInSubinventory, viewModel.SelectedInLocator);
+            viewModel.ShipmentNumberItems = uow.createDropDownList(MasterUOW.DropDownListType.Add);
 
 
 
             return viewModel;
         }
 
-        public TransferReasonViewModel GetTransferReasonViewModel(MasterUOW uow)
+        public TransferReasonViewModel GetTransferReasonViewModel(TransferUOW uow)
         {
             TransferReasonViewModel viewModel = new TransferReasonViewModel();
             viewModel.ReasonItems = uow.GetReasonDropDownList(MasterUOW.DropDownListType.Choice);
@@ -276,26 +262,56 @@ namespace CHPOUTSRCMES.Web.Models.Stock
             return query.ToList();
         }
 
-        public IEnumerable<SelectListItem> GetShipmentNumberList(string outSubInventory, string outLocator, string inSubInventory, string inLocator)
+        public class GetShipmentNumberListResult
         {
-            List<ListItem> list = new List<ListItem>();
+            public bool status { get; set; }
 
-            list.Add(new ListItem("新增編號", "新增編號"));
+            public string result { get; set; }
+            public List<SelectListItem> items { get; set; }
+            public string transferCatalog { get; set; }
 
-            var query = from stockTransferDT in model
-                        where outSubInventory == stockTransferDT.OUT_SUBINVENTORY_CODE &&
-                        outLocator == stockTransferDT.OUT_LOCATOR_ID &&
-                        inSubInventory == stockTransferDT.IN_SUBINVENTORY_CODE &&
-                        inLocator == stockTransferDT.IN_LOCATOR_ID
-                        group stockTransferDT by new { stockTransferDT.SHIPMENT_NUMBER } into g
-                        select new ListItem
-                        {
-                            Text = g.Key.SHIPMENT_NUMBER,
-                            Value = g.Key.SHIPMENT_NUMBER
-                        };
-            list.AddRange(query.ToList());
+            public string transferType { get; set; }
+            public string numberStatus { get; set; }
+            public string isMes { get; set; }
 
-            return list.Select(i => new SelectListItem() { Text = i.Text, Value = i.Value });
+        }
+
+        public GetShipmentNumberListResult GetShipmentNumberList(TransferUOW uow, string transferType, string outSubinventoryCode, string inSubinventoryCode)
+        {
+            var outSubinventory = uow.GetSubinventoryT(outSubinventoryCode);
+            if (outSubinventory == null || outSubinventory.Count == 0) return new GetShipmentNumberListResult { status = false, result = "找不到出貨倉庫資料" };
+            var inSubinventory = uow.GetSubinventoryT(inSubinventoryCode);
+            if (inSubinventory == null || inSubinventory.Count == 0) return new GetShipmentNumberListResult { status = false, result = "找不到出貨倉庫資料" };
+
+            string TRANSFER_CATALOG = "";
+            if (outSubinventory[0].OrganizationId == inSubinventory[0].OrganizationId)
+            {
+                TRANSFER_CATALOG = TransferUOW.TransferCatalog.InvTransfer;
+            }
+            else
+            {
+                TRANSFER_CATALOG = TransferUOW.TransferCatalog.OrgTransfer;
+            }
+
+            //string transferCatalog = uow.GetTransferCatalog(outSubinventoryCode, inSubinventoryCode);
+            //List<SelectListItem> items = uow.GetShipmentNumberDropDownList(TRANSFER_CATALOG, transferType, outSubinventoryCode, inSubinventoryCode);
+            //if (items == null || items.Count == 0) return new GetShipmentNumberListResult { status = false, msg = "找不到出貨倉庫資料" };
+
+            var headerList = uow.GetTrfHeaderList(TRANSFER_CATALOG, outSubinventory[0].OrganizationId, outSubinventoryCode, inSubinventory[0].OrganizationId, inSubinventoryCode);
+            if (headerList == null || headerList.Count == 0) return new GetShipmentNumberListResult { status = true, result = "找不到出貨編號", items = uow.createDropDownList(MasterUOW.DropDownListType.Add)};
+
+            List<SelectListItem> items = headerList.Select(i => new SelectListItem() { Text = i.ShipmentNumber, Value = i.ShipmentNumber }).ToList();
+
+            return new GetShipmentNumberListResult
+            {
+                status = true,
+                result = "取得出貨編號成功",
+                items = items,
+                isMes = headerList[0].IsMes,
+                numberStatus = headerList[0].NumberStatus,
+                transferType = headerList[0].TransferType,
+                transferCatalog = headerList[0].TransferCatalog
+            };
         }
 
         public List<AutoCompletedItem> AutoCompleteShipmentNumber(string TransactionType, string outSubInventory, string outLocator, string inSubInventory, string inLocator, string Prefix)

@@ -245,10 +245,13 @@ namespace CHPOUTSRCMES.Web.ViewModels.Process
 
         public List<CHP_PROCESS_T> Search(string Process_Status, string Process_Batch_no, string Manchine_Num, string Demand_Date, string Cutting_Date_From, string Cutting_Date_To, string Subinventory)
         {
-            using (var context = new MesContext())
-            {
-                return new ProcessUOW(context).GetTable();
-            }
+            // ???
+            //using (var context = new MesContext())
+            //{
+            //    return new ProcessUOW(context).GetTable();
+            //}
+
+            return new List<CHP_PROCESS_T>();
         }
 
 

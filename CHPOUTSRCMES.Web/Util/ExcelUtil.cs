@@ -90,6 +90,37 @@ namespace CHPOUTSRCMES.Web.Util
             return value;
         }
 
+        public static int GetInt32CellValue(ICell cell)
+        {
+            var cellValue = GetInt32OrNullCellValue(cell);
+            return cellValue ?? 0;
+        }
+
+        public static int GetInt32CellValue(int row_index, int col_index, ISheet sheet, int value = 0)
+        {
+            var cellValue = GetInt32OrNullCellValue(sheet.GetRow(row_index).GetCell(col_index));
+            return cellValue ?? value;
+        }
+
+        public static int? GetInt32OrNullCellValue(int row_index, int col_index, ISheet sheet)
+        {
+            return GetInt32OrNullCellValue(sheet.GetRow(row_index).GetCell(col_index));
+        }
+
+        public static int? GetInt32OrNullCellValue(ICell cell)
+        {
+            int? value = null;
+            try
+            {
+                value = int.Parse(GetStringCellValue(cell));
+            }
+            catch
+            {
+
+            }
+            return value;
+        }
+
         public static decimal GetDecimalCellValue(int row_index, int col_index, ISheet sheet, decimal value = 0m)
         {
             var cellValue = GetDecimalOrNullCellValue(sheet.GetRow(row_index).GetCell(col_index));

@@ -62,7 +62,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Transfer
         /// </summary>
         /// 
         [StringLength(30)]
-        [Required]
         [Column("SHIPMENT_NUMBER")]
         public string ShipmentNumber { set; get; }
 
@@ -122,7 +121,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Transfer
         /// 出貨儲位
         /// </summary>
         /// 
-        [StringLength(30)]
+        [StringLength(163)]
         [Column("LOCATOR_CODE")]
         public string LocatorCode { set; get; }
 

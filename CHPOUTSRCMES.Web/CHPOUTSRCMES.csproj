@@ -286,6 +286,7 @@
     <Compile Include="DataModel\UnitOfWorks\ItemNoUOW.cs" />
     <Compile Include="DataModel\UnitOfWorks\MaincheTypeUOW.cs" />
     <Compile Include="DataModel\UnitOfWorks\RelatedUOW.cs" />
+    <Compile Include="DataModel\UnitOfWorks\TransferUOW.cs" />
     <Compile Include="DataModel\UnitOfWorks\YszmpckqUOW.cs" />
     <Compile Include="DataModel\UomConversion.cs" />
     <Compile Include="DataModel\FakeUomConversion.cs" />
@@ -294,7 +295,7 @@
     <Compile Include="DataModel\Interfaces\IHeader.cs" />
     <Compile Include="DataModel\Interfaces\IStatus.cs" />
     <Compile Include="DataModel\Interfaces\IUomConversion.cs" />
-    <Compile Include="DataModel\Interfaces\IWork.cs" />
+    <Compile Include="DataModel\Interfaces\ICategory.cs" />
     <Compile Include="DataModel\Managers\AppUserManager.cs" />
     <Compile Include="DataModel\Entity\Delivery\DLV_DETAIL_HT.cs" />
     <Compile Include="DataModel\Entity\Delivery\DLV_DETAIL_T.cs" />
@@ -1406,9 +1407,10 @@
     <Content Include="Content\Purchase\detail.css" />
     <Content Include="Content\timeline.css" />
     <Content Include="Content\Yszmpckq.css" />
-    <Content Include="Data\SQLScript\101_SP_OrganizationSync.sql" />
-    <Content Include="Data\SQLScript\102_SP_OrgUnitSync.sql" />
+    <Content Include="Data\SQLScript\101_SP_OrgUnitSync.sql" />
+    <Content Include="Data\SQLScript\102_SP_OrganizationSync.sql" />
     <Content Include="Data\SQLScript\103_SP_SubinventorySync.sql" />
+    <Content Include="Data\SQLScript\104_SP_LocatorSync.sql" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />

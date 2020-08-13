@@ -209,6 +209,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             var noOfRow = sheet.LastRowNum;
             ICell subinventoryCell = null;
             ICell prefixCell = null;
+            ICell serialSizeCell = null;
 
             subinventoryCell = ExcelUtil.FindCell("倉庫", sheet);
             if (subinventoryCell == null)
@@ -219,6 +220,11 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             if (prefixCell == null)
             {
                 throw new Exception("找不到條碼前置碼欄位");
+            }
+            serialSizeCell = ExcelUtil.FindCell("流水號長度", sheet);
+            if (serialSizeCell == null)
+            {
+                throw new Exception("找不到流水號長度欄位");
             }
 
             for (int j = subinventoryCell.RowIndex + 1; j <= noOfRow; j++)
@@ -240,6 +246,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                         bcdMisc.OrganizationId = subinventory.OrganizationId;
                         bcdMisc.SubinventoryCode = subinventory.SubinventoryCode;
                         bcdMisc.PrefixCode = ExcelUtil.GetStringCellValue(j, prefixCell.ColumnIndex, sheet);
+                        bcdMisc.SerialSize = ExcelUtil.GetInt32CellValue(j, serialSizeCell.ColumnIndex, sheet, 4);
                         bcdMisc.CreatedBy = adm.Id;
                         bcdMisc.CreationDate = now;
                         bcdMisc.LastUpdateBy = adm.Id;
