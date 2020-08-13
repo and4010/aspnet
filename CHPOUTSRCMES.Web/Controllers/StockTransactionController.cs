@@ -27,8 +27,14 @@ namespace CHPOUTSRCMES.Web.Controllers
         // GET: /StockTransaction/
         public ActionResult Index()
         {
-            StockTransferViewModel viewModel = StockTransferData.GetViewModel();
-            return View(viewModel);
+            using (var context = new MesContext())
+            {
+                using (TransferUOW uow = new TransferUOW(context))
+                {
+                    StockTransferViewModel viewModel = stockTransferData.GetViewModel(uow);
+                    return View(viewModel);
+                }
+            }
         }
 
         public ActionResult _ImportBodyRoll()
@@ -75,7 +81,7 @@ namespace CHPOUTSRCMES.Web.Controllers
         {
             using (var context = new MesContext())
             {
-                using (MasterUOW uow = new MasterUOW(context))
+                using (TransferUOW uow = new TransferUOW(context))
                 {
                     //取得使用者ID
                     var id = this.User.Identity.GetUserId();
@@ -83,11 +89,11 @@ namespace CHPOUTSRCMES.Web.Controllers
                     //var name = this.User.Identity.GetUserName();
                     //StockData.addDefault();
 
-                    if (TransferType == "出庫")
+                    if (TransferType == TransferUOW.TransferType.Outbound)
                     {
                         return PartialView("_OutBoundPartial", stockTransferData.GetOutBoundViewModel(uow, id));
                     }
-                    else if (TransferType == "入庫")
+                    else if (TransferType == TransferUOW.TransferType.InBound)
                     {
                         return PartialView("_InBoundPartial", stockTransferData.GetInBoundViewModel(uow, id));
                     }
@@ -112,12 +118,20 @@ namespace CHPOUTSRCMES.Web.Controllers
                 }
             }
         }
-
+        
         [HttpPost, ActionName("GetShipmentNumberList")]
-        public JsonResult GetShipmentNumberList(string OutSubinventoryCode, string OutLocator, string InSubinventoryCode, string InLocator)
+        public JsonResult GetShipmentNumberList( string transferType, string outSubinventoryCode, string inSubinventoryCode)
         {
-            List<SelectListItem> items = stockTransferData.GetShipmentNumberList(OutSubinventoryCode, OutLocator, InSubinventoryCode, InLocator).ToList();
-            return Json(items, JsonRequestBehavior.AllowGet);
+            using (var context = new MesContext())
+            {
+                using (TransferUOW uow = new TransferUOW(context))
+                {
+                    
+                    return new JsonResult { Data = stockTransferData.GetShipmentNumberList(uow, transferType, outSubinventoryCode, inSubinventoryCode) };
+                    //return Json(items, JsonRequestBehavior.AllowGet);
+                    //return new JsonResult { Data = new { transferCatalog = transferCatalog, items = items } };
+                }
+            }
         }
 
         [HttpPost, ActionName("AutoCompleteShipmentNumber")]

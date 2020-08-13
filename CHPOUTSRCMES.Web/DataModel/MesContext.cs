@@ -15,6 +15,7 @@ using System.Web.Configuration;
 using System.Data;
 using CHPOUTSRCMES.Web.DataModel.Entity.Temp;
 using CHPOUTSRCMES.Web.DataModel.Entity.Process;
+using CHPOUTSRCMES.Web.DataModel.Entiy.Transfer;
 
 namespace CHPOUTSRCMES.Web.DataModel
 {
@@ -311,6 +312,22 @@ namespace CHPOUTSRCMES.Web.DataModel
         /// </summary>
         public DbSet<OSP_YIELD_VARIANCE_HT> OspYieldVarinceHTs { set; get; }
 
+        #endregion
+
+        #region 庫存移轉
+        public DbSet<TRF_HEADER_T> TRF_HEADER_Ts { set; get; }
+
+        public DbSet<TRF_DETAIL_T> TRF_DETAIL_Ts { set; get; }
+
+        public DbSet<TRF_DETAIL_HT> TRF_DETAIL_HTs { set; get; }
+
+        public DbSet<TRF_INBOUND_PICKED_T> TRF_INBOUND_PICKED_Ts { set; get; }
+
+        public DbSet<TRF_INBOUND_PICKED_HT> TRF_INBOUND_PICKED_HTs { set; get; }
+
+        public DbSet<TRF_OUTBOUND_PICKED_T> TRF_OUTBOUND_PICKED_Ts { set; get; }
+
+        public DbSet<TRF_OUTBOUND_PICKED_HT> TRF_OUTBOUND_PICKED_HTs { set; get; }
         #endregion
     }
 }

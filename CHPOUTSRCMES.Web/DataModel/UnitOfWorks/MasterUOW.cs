@@ -2546,6 +2546,9 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                 case DropDownListType.Choice:
                     organizationList.Add(new SelectListItem() { Text = "請選擇", Value = "請選擇" });
                     break;
+                case DropDownListType.Add:
+                    organizationList.Add(new SelectListItem() { Text = "新增編號", Value = "新增編號" });
+                    break;
                 default://無Header
                     break;
             }
@@ -3076,13 +3079,43 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
         }
 
         /// <summary>
+        /// 取得倉庫資料
+        /// </summary>
+        /// <param name="subinventoryCode"></param>
+        /// <returns></returns>
+        public List<SUBINVENTORY_T> GetSubinventoryT(string subinventoryCode)
+        {
+            return subinventoryRepositiory.GetAll().AsNoTracking().Where(x => x.SubinventoryCode == subinventoryCode).ToList();
+        }
+
+        public bool CompareOrganization(string outSubinventoryCode, string inSubinventoryCode)
+        {
+            string cmd = @"
+SELECT [ORGANIZATION_ID] FROM [SUBINVENTORY_T] WHERE SUBINVENTORY_CODE = @outSubinventoryCode
+EXCEPT 
+SELECT [ORGANIZATION_ID] FROM [SUBINVENTORY_T] WHERE SUBINVENTORY_CODE = @inSubinventoryCode          
+";
+            var list = this.Context.Database.SqlQuery<long>(cmd, new SqlParameter("@outSubinventoryCode", outSubinventoryCode), new SqlParameter("@inSubinventoryCode", inSubinventoryCode)).ToList();
+            if (list.Count == 0) //為0時表示兩個倉庫的組織相同
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+
+        /// <summary>
         /// 下拉選單OPTION種類
         /// </summary>
         public enum DropDownListType
         {
             NoHeader = 0, //沒有額外添加第一項
             All = 1, //添加第一項為全部
-            Choice = 2 //添加第一項為請選擇
+            Choice = 2, //添加第一項為請選擇
+            Add = 3 //添加第一項為新增編號
         }
 
         /// <summary>

@@ -20,10 +20,10 @@
                 $('#Content').html(data);
                 //SubinventoryInit();
 
-                if (TransferType == "出庫") {
+                if (TransferType == "O") {
                     //$('#Content').append('<link rel="stylesheet" href="~/bower_components/datatables/media/css/dataTables.bootstrap.min.css" type="text/css" />');
                     OutBoundInit();
-                } else if (TransferType == "入庫") {
+                } else if (TransferType == "I") {
                     InBoundInit();
                 } else {
                     TransferReasonInit();

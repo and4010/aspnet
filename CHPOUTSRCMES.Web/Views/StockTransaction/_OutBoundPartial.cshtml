@@ -74,7 +74,7 @@
     <div class="col-md-6">
 
         @*<span id="TransactionType" style="width: 53px;">*@
-        <label id="TransactionType" class="input-lg">編號</label>
+        <label id="TransactionType" class="input-lg">出貨編號</label>
         @* @Html.LabelFor(model => model.SelectedShipmentNumber, new { @class = "input-lg" })*@
         @*</span>*@
         @Html.DropDownListFor(model => model.SelectedShipmentNumber, Model.ShipmentNumberItems, new { @class = "form-control", id = "ddlShipmentNumber", autocomplete = "off" })

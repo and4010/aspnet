@@ -284,6 +284,7 @@
     <Compile Include="DataModel\UnitOfWorks\ItemNoUOW.cs" />
     <Compile Include="DataModel\UnitOfWorks\MaincheTypeUOW.cs" />
     <Compile Include="DataModel\UnitOfWorks\RelatedUOW.cs" />
+    <Compile Include="DataModel\UnitOfWorks\TransferUOW.cs" />
     <Compile Include="DataModel\UnitOfWorks\YszmpckqUOW.cs" />
     <Compile Include="DataModel\UomConversion.cs" />
     <Compile Include="DataModel\FakeUomConversion.cs" />
@@ -292,7 +293,7 @@
     <Compile Include="DataModel\Interfaces\IHeader.cs" />
     <Compile Include="DataModel\Interfaces\IStatus.cs" />
     <Compile Include="DataModel\Interfaces\IUomConversion.cs" />
-    <Compile Include="DataModel\Interfaces\IWork.cs" />
+    <Compile Include="DataModel\Interfaces\ICategory.cs" />
     <Compile Include="DataModel\Managers\AppUserManager.cs" />
     <Compile Include="DataModel\Entity\Delivery\DLV_DETAIL_HT.cs" />
     <Compile Include="DataModel\Entity\Delivery\DLV_DETAIL_T.cs" />

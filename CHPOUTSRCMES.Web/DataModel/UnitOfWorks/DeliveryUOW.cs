@@ -31,7 +31,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
         private readonly IRepository<DLV_PICKED_T> dlvPickedTRepositiory;
         private readonly IRepository<DLV_PICKED_HT> dlvPickedHtRepositiory;
 
-        //還有幾個TABLE未加入
+        
 
         /// <summary>
         /// 
