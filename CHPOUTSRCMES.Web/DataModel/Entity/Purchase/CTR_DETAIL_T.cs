@@ -104,7 +104,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Purchase
         /// 儲位
         /// </summary>
         /// 
-        [StringLength(30)]
+        [StringLength(163)]
         [Column("LOCATOR_CODE")]
         public string LocatorCode { set; get; }
 

@@ -1,4 +1,4 @@
-﻿@model CHPOUTSRCMES.Web.ViewModels.Process.ProcessIndexViewModel
+﻿@model CHPOUTSRCMES.Web.ViewModels.Process.ProcessViewModel
 @{
     ViewBag.EnableReturnButton = "true";
     ViewBag.Title = "加工-排程-完工紀錄";
@@ -22,11 +22,11 @@
     <div class="row col-md-12">
         @*工單號*@
         <div class="form-group col col-md-1">
-            @Html.LabelFor(model => model.CHP_PROCESS_T.OspBatchStatusDesc)
+            @Html.LabelFor(model => model.CHP_PROCESS_T.BatchNo)
         </div>
 
         <div class="form-group col col-md-2">
-            <span id="Process_Batch_no">@Html.DisplayFor(model => model.CHP_PROCESS_T.OspBatchStatusDesc)</span>
+            <span id="Process_Batch_no">@Html.DisplayFor(model => model.CHP_PROCESS_T.BatchNo)</span>
         </div>
 
         @* 訂單編號 *@

@@ -46,6 +46,18 @@ namespace CHPOUTSRCMES.Web.ViewModels.Process
         }
 
         /// <summary>
+        /// 取得公單號
+        /// </summary>
+        /// <returns></returns>
+        public List<SelectListItem> GetBatchNo()
+        {
+            using (var context = new MesContext())
+            {
+                return new ProcessUOW(context).GetBatchNo();
+            }
+        }
+
+        /// <summary>
         /// 取得倉庫
         /// </summary>
         /// <returns></returns>
@@ -75,9 +87,9 @@ namespace CHPOUTSRCMES.Web.ViewModels.Process
                 DueDate = Convert.ToDateTime("2020-05-31"),
                 CuttingDateFrom = null,
                 CuttingDateTo = null,
-                OspBatchNo = "P9B0288",
+                BatchNo = "P9B0288",
                 MachineNum = "01",
-                OspBatchStatusDesc = "待排單",
+                Status = "待排單",
                 CustomerName = "中華彩色印刷股份有限公司",
                 PaperType = "A003",
                 BasicWeight = "01000",
@@ -108,9 +120,9 @@ namespace CHPOUTSRCMES.Web.ViewModels.Process
                 DueDate = Convert.ToDateTime("2020-05-31"),
                 CuttingDateFrom = null,
                 CuttingDateTo = null,
-                OspBatchNo = "F2010087",
+                BatchNo = "F2010087",
                 MachineNum = "01",
-                OspBatchStatusDesc = "待排單",
+                Status = "待排單",
                 CustomerName = "保吉紙業有限公司",
                 PaperType = "AB03",
                 BasicWeight = "00699",
@@ -233,22 +245,10 @@ namespace CHPOUTSRCMES.Web.ViewModels.Process
 
         public List<CHP_PROCESS_T> Search(string Process_Status, string Process_Batch_no, string Manchine_Num, string Demand_Date, string Cutting_Date_From, string Cutting_Date_To, string Subinventory)
         {
-            //ResultModel result = new ResultModel(true, "搜尋成功");
-            try
+            using (var context = new MesContext())
             {
-
-                var query = chp_process_t.ToList();
-
-                //dtData = query;
-                return query;
+                return new ProcessUOW(context).GetTable();
             }
-            catch (Exception e)
-            {
-                //result.Msg = e.Message;
-                //result.Success = false;
-                return new List<CHP_PROCESS_T>();
-            }
-            //return result;
         }
 
 
@@ -279,9 +279,9 @@ namespace CHPOUTSRCMES.Web.ViewModels.Process
                 case 2:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.OspDetailInId) : models.OrderBy(x => x.OspDetailInId);
                 case 3:
-                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.OspBatchStatusDesc) : models.OrderBy(x => x.OspBatchStatusDesc);
+                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Status) : models.OrderBy(x => x.Status);
                 case 4:
-                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.OspBatchNo) : models.OrderBy(x => x.OspBatchNo);
+                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.BatchNo) : models.OrderBy(x => x.BatchNo);
                 case 5:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.DueDate) : models.OrderBy(x => x.DueDate);
                 case 6:
@@ -347,9 +347,9 @@ namespace CHPOUTSRCMES.Web.ViewModels.Process
                 case 2:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.OspDetailInId) : models.OrderBy(x => x.OspDetailInId);
                 case 3:
-                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.OspBatchStatusDesc) : models.OrderBy(x => x.OspBatchStatusDesc);
+                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Status) : models.OrderBy(x => x.Status);
                 case 4:
-                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.OspBatchNo) : models.OrderBy(x => x.OspBatchNo);
+                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.BatchNo) : models.OrderBy(x => x.BatchNo);
                 case 5:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.DueDate) : models.OrderBy(x => x.DueDate);
                 case 6:
@@ -415,8 +415,8 @@ namespace CHPOUTSRCMES.Web.ViewModels.Process
                 model = model.Where(p => (
                     !string.IsNullOrEmpty(p.OspHeaderId.ToString()) && p.OspHeaderId.ToString().Contains(search.ToLower()))
                     || (!string.IsNullOrEmpty(p.OspDetailInId.ToString()) && p.OspDetailInId.ToString().ToLower().Contains(search.ToLower()))
-                    || (!string.IsNullOrEmpty(p.OspBatchStatusDesc) && p.OspBatchStatusDesc.ToLower().Contains(search.ToLower()))
-                    || (!string.IsNullOrEmpty(p.OspBatchNo) && p.OspBatchNo.ToLower().Contains(search.ToLower()))
+                    || (!string.IsNullOrEmpty(p.Status) && p.Status.ToLower().Contains(search.ToLower()))
+                    || (!string.IsNullOrEmpty(p.BatchNo) && p.BatchNo.ToLower().Contains(search.ToLower()))
                     || (!string.IsNullOrEmpty(p.DueDate.ToString()) && p.DueDate.ToString().Contains(search.ToLower()))
                     || (!string.IsNullOrEmpty(p.CuttingDateFrom.ToString()) && p.CuttingDateFrom.ToString().Contains(search.ToLower()))
                     || (!string.IsNullOrEmpty(p.CuttingDateTo.ToString()) && p.CuttingDateTo.ToString().Contains(search.ToLower()))

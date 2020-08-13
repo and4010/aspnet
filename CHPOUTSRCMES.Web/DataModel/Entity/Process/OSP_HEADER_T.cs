@@ -144,8 +144,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Process
         /// </summary>
         /// 
         [Column("PE_LAST_UPDATE_BY")]
-        [Required]
-        public long PeLastUpdateBy { set; get; }
+        public long? PeLastUpdateBy { set; get; }
 
         /// <summary>
         /// 更新時間
@@ -153,8 +152,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Process
         /// 
         [Column("PE_LAST_UPDATE_DATE")]
         [DataType(DataType.Date)]
-        [Required]
-        public DateTime PeLastUpdateDate { set; get; }
+        public DateTime? PeLastUpdateDate { set; get; }
 
         /// <summary>
         /// 狀態
@@ -170,8 +168,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Process
         /// 
         [Column("CUTTING_DATE_FROM")]
         [DataType(DataType.Date)]
-        [Required]
-        public DateTime CuttingDateFrom { set; get; }
+        public DateTime? CuttingDateFrom { set; get; }
 
         /// <summary>
         /// 裁切日起(訖)
@@ -179,8 +176,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Process
         /// 
         [Column("CUTTING_DATE_TO")]
         [DataType(DataType.Date)]
-        [Required]
-        public DateTime CuttingDateTo { set; get; }
+        public DateTime? CuttingDateTo { set; get; }
 
 
         /// <summary>
@@ -188,7 +184,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Process
         /// </summary>
         /// 
         [StringLength(30)]
-        [Required]
         [Column("MACHINE_CODE")]
         public string MachineCode{ set; get; }
 
