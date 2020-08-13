@@ -1,4 +1,4 @@
-﻿using CHPOUTSRCMES.TASK.Models.Entity.Shadowed;
+﻿using CHPOUTSRCMES.TASK.Models.Entity.Temp;
 using NLog.Layouts;
 using System;
 using System.Collections.Generic;
@@ -10,7 +10,17 @@ namespace CHPOUTSRCMES.TASK.Models.Entity
     public class BulkCopier
     {
 
-        private ResultModel DeleteTable(SqlConnection connection, SqlTransaction transaction, string tableName)
+        private SqlConnection connection;
+
+        private SqlTransaction transaction;
+
+        public BulkCopier(SqlConnection conn, SqlTransaction trans)
+        {
+            this.connection = conn;
+            this.transaction = trans;
+        }
+
+        private ResultModel DeleteTable(string tableName)
         {
             var resultModel = new ResultModel();
 
@@ -36,29 +46,32 @@ namespace CHPOUTSRCMES.TASK.Models.Entity
         }
 
 
-        public ResultModel BulkCopy(SqlConnection connection, SqlTransaction transaction, List<ORGANIZATION_SHADOWED_T> list, string tableName, bool deleteTable = true)
+        public ResultModel BulkCopy(List<ORG_UNIT_TMP_T> list, string tableName, bool deleteTable = true)
         {
             var resultModel = new ResultModel();
+            int insertCount = 0;
+            int updateCount = 0;
+            int deleteCount = 0;
 
-            if(deleteTable)
+            //刪除資料表格
+            if (deleteTable)
             {
-                resultModel = DeleteTable(connection, transaction, tableName);
+                resultModel = DeleteTable(tableName);
 
                 if (!resultModel.Success) return resultModel;
             }
 
+            //複製到SQL SERV
             DataTable table = new DataTable(tableName);
-            table.Columns.Add("ORGANIZATION_ID", typeof(long));
-            table.Columns.Add("ORGANIZATION_CODE", typeof(string));
-            table.Columns.Add("ORGANIZATION_NAME", typeof(string));
+            table.Columns.Add("ORG_ID", typeof(long));
+            table.Columns.Add("ORG_NAME", typeof(string));
             table.Columns.Add("CONTROL_FLAG", typeof(string));
 
             foreach (var org in list)
             {
                 var row = table.NewRow();
-                row["ORGANIZATION_ID"] = org.ORGANIZATION_ID;
-                row["ORGANIZATION_CODE"] = org.ORGANIZATION_CODE;
-                row["ORGANIZATION_NAME"] = org.ORGANIZATION_NAME;
+                row["ORG_ID"] = org.ORG_ID;
+                row["ORG_NAME"] = org.ORG_NAME;
                 row["CONTROL_FLAG"] = org.CONTROL_FLAG;
                 table.Rows.Add(row);
             }
@@ -67,12 +80,10 @@ namespace CHPOUTSRCMES.TASK.Models.Entity
             {
                 try
                 {
-                    
                     bulkCopy.DestinationTableName = tableName;
                     bulkCopy.BatchSize = 5000;
-                    bulkCopy.ColumnMappings.Add("ORGANIZATION_ID", "ORGANIZATION_ID");
-                    bulkCopy.ColumnMappings.Add("ORGANIZATION_CODE", "ORGANIZATION_CODE");
-                    bulkCopy.ColumnMappings.Add("ORGANIZATION_NAME", "ORGANIZATION_NAME");
+                    bulkCopy.ColumnMappings.Add("ORG_ID", "ORG_ID");
+                    bulkCopy.ColumnMappings.Add("ORG_NAME", "ORG_NAME");
                     bulkCopy.ColumnMappings.Add("CONTROL_FLAG", "CONTROL_FLAG");
                     bulkCopy.WriteToServer(table);
                     resultModel.Success = true;
@@ -85,25 +96,146 @@ namespace CHPOUTSRCMES.TASK.Models.Entity
                     resultModel.Success = false;
                     resultModel.Msg = ex.Message;
                 }
-
             }
 
             if (!resultModel.Success)
                 return resultModel;
 
             //call sp
+            using (var cmd = connection.CreateCommand())
+            {
+                try
+                {
+                    cmd.Transaction = transaction;
+
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.CommandText = "SP_OrgUnitSync";
+                    var reader = cmd.ExecuteReader();
+
+                    if (reader.Read() && reader.HasRows)
+                    {
+                        resultModel.Code = reader.GetInt32(0);
+                        resultModel.Msg = reader.GetString(1);
+                        insertCount = reader.GetInt32(2);
+                        updateCount = reader.GetInt32(3);
+                        deleteCount = reader.GetInt32(4);
+                    }
+                    reader.Close();
+                }
+                catch (Exception ex)
+                {
+                    resultModel.Code = -3;
+                    resultModel.Msg = ex.Message;
+                }
+            }
 
             return resultModel;
         }
 
 
-        public ResultModel BulkCopy(SqlConnection connection, SqlTransaction transaction, List<SUBINVENTORY_SHADOWED_T> list, string tableName, bool deleteTable = true)
+        public ResultModel BulkCopy(List<ORGANIZATION_TMP_T> list, string tableName, bool deleteTable = true)
         {
             var resultModel = new ResultModel();
+            int insertCount = 0;
+            int updateCount = 0;
+            int deleteCount = 0;
+
+            //刪除資料表格
+            if (deleteTable)
+            {
+                resultModel = DeleteTable(tableName);
+
+                if (!resultModel.Success) return resultModel;
+            }
+
+            //複製到SQL SERV
+            DataTable table = new DataTable(tableName);
+            table.Columns.Add("ORGANIZATION_ID", typeof(long));
+            table.Columns.Add("ORGANIZATION_CODE", typeof(string));
+            table.Columns.Add("ORGANIZATION_NAME", typeof(string));
+            table.Columns.Add("ORG_ID", typeof(long));
+            table.Columns.Add("CONTROL_FLAG", typeof(string));
+
+            foreach (var org in list)
+            {
+                var row = table.NewRow();
+                row["ORGANIZATION_ID"] = org.ORGANIZATION_ID;
+                row["ORGANIZATION_CODE"] = org.ORGANIZATION_CODE;
+                row["ORGANIZATION_NAME"] = org.ORGANIZATION_NAME;
+                row["ORG_ID"] = org.ORG_ID;
+                row["CONTROL_FLAG"] = org.CONTROL_FLAG;
+                table.Rows.Add(row);
+            }
+
+            using (SqlBulkCopy bulkCopy = new SqlBulkCopy(connection, SqlBulkCopyOptions.KeepIdentity, transaction))
+            {
+                try
+                {
+                    bulkCopy.DestinationTableName = tableName;
+                    bulkCopy.BatchSize = 5000;
+                    bulkCopy.ColumnMappings.Add("ORGANIZATION_ID", "ORGANIZATION_ID");
+                    bulkCopy.ColumnMappings.Add("ORGANIZATION_CODE", "ORGANIZATION_CODE");
+                    bulkCopy.ColumnMappings.Add("ORGANIZATION_NAME", "ORGANIZATION_NAME");
+                    bulkCopy.ColumnMappings.Add("ORG_ID", "ORG_ID");
+                    bulkCopy.ColumnMappings.Add("CONTROL_FLAG", "CONTROL_FLAG");
+                    bulkCopy.WriteToServer(table);
+                    resultModel.Success = true;
+                    resultModel.Code = ResultModel.CODE_SUCCESS;
+                    resultModel.Msg = "";
+                }
+                catch (Exception ex)
+                {
+                    resultModel.Code = -2;
+                    resultModel.Success = false;
+                    resultModel.Msg = ex.Message;
+                }
+            }
+
+            if (!resultModel.Success)
+                return resultModel;
+
+            //call sp
+            using(var cmd = connection.CreateCommand())
+            {
+                try
+                {
+                    cmd.Transaction = transaction;
+
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.CommandText = "SP_OrganizaionSync";
+                    var reader = cmd.ExecuteReader();
+
+                    if (reader.Read() && reader.HasRows)
+                    {
+                        resultModel.Code = reader.GetInt32(0);
+                        resultModel.Msg = reader.GetString(1);
+                        insertCount = reader.GetInt32(2);
+                        updateCount = reader.GetInt32(3);
+                        deleteCount = reader.GetInt32(4);
+                    }
+                    reader.Close();
+                }
+                catch(Exception ex)
+                {
+                    resultModel.Code = -3;
+                    resultModel.Msg = ex.Message;
+                }
+            }
+
+            return resultModel;
+        }
+
+
+        public ResultModel BulkCopy(List<SUBINVENTORY_TMP_T> list, string tableName, bool deleteTable = true)
+        {
+            var resultModel = new ResultModel();
+            int insertCount = 0;
+            int updateCount = 0;
+            int deleteCount = 0;
 
             if (deleteTable)
             {
-                resultModel = DeleteTable(connection, transaction, tableName);
+                resultModel = DeleteTable(tableName);
 
                 if (!resultModel.Success) return resultModel;
             }
@@ -148,8 +280,9 @@ namespace CHPOUTSRCMES.TASK.Models.Entity
                 }
                 catch (Exception ex)
                 {
-
-
+                    resultModel.Code = -2;
+                    resultModel.Success = false;
+                    resultModel.Msg = ex.Message;
                 }
 
             }
@@ -158,18 +291,48 @@ namespace CHPOUTSRCMES.TASK.Models.Entity
                 return resultModel;
 
             //call sp
+            using (var cmd = connection.CreateCommand())
+            {
+                try
+                {
+                    cmd.Transaction = transaction;
+
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.CommandText = "SP_SubinventorySync";
+                    var reader = cmd.ExecuteReader();
+
+                    if (reader.Read() && reader.HasRows)
+                    {
+                        resultModel.Code = reader.GetInt32(0);
+                        resultModel.Msg = reader.GetString(1);
+                        insertCount = reader.GetInt32(2);
+                        updateCount = reader.GetInt32(3);
+                        deleteCount = reader.GetInt32(4);
+                    }
+                    reader.Close();
+                }
+                catch (Exception ex)
+                {
+                    resultModel.Code = -3;
+                    resultModel.Msg = ex.Message;
+                }
+            }
+
 
             return resultModel;
         }
 
 
-        public ResultModel BulkCopy(SqlConnection connection, SqlTransaction transaction, List<LOCATOR_SHADOWED_T> list, string tableName, bool deleteTable = true)
+        public ResultModel BulkCopy(List<LOCATOR_TMP_T> list, string tableName, bool deleteTable = true)
         {
             var resultModel = new ResultModel();
+            int insertCount = 0;
+            int updateCount = 0;
+            int deleteCount = 0;
 
             if (deleteTable)
             {
-                resultModel = DeleteTable(connection, transaction, tableName);
+                resultModel = DeleteTable(tableName);
 
                 if (!resultModel.Success) return resultModel;
             }
@@ -257,18 +420,44 @@ namespace CHPOUTSRCMES.TASK.Models.Entity
                 return resultModel;
 
             //call sp
+            using (var cmd = connection.CreateCommand())
+            {
+                try
+                {
+                    cmd.Transaction = transaction;
+
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.CommandText = "SP_LocatorSync";
+                    var reader = cmd.ExecuteReader();
+
+                    if (reader.Read() && reader.HasRows)
+                    {
+                        resultModel.Code = reader.GetInt32(0);
+                        resultModel.Msg = reader.GetString(1);
+                        insertCount = reader.GetInt32(2);
+                        updateCount = reader.GetInt32(3);
+                        deleteCount = reader.GetInt32(4);
+                    }
+                    reader.Close();
+                }
+                catch (Exception ex)
+                {
+                    resultModel.Code = -3;
+                    resultModel.Msg = ex.Message;
+                }
+            }
 
             return resultModel;
         }
 
 
-        public ResultModel BulkCopy(SqlConnection connection, SqlTransaction transaction, List<ITEMS_T> list, string tableName, bool deleteTable = true)
+        public ResultModel BulkCopy(List<ITEMS_TMP_T> list, string tableName, bool deleteTable = true)
         {
             var resultModel = new ResultModel();
 
             if (deleteTable)
             {
-                resultModel = DeleteTable(connection, transaction, tableName);
+                resultModel = DeleteTable(tableName);
 
                 if (!resultModel.Success) return resultModel;
             }
@@ -344,8 +533,8 @@ namespace CHPOUTSRCMES.TASK.Models.Entity
                 row["CONTROL_FLAG"] = item.CONTROL_FLAG;
                 row["CREATED_BY"] = item.CREATED_BY;
                 row["CREATION_DATE"] = item.CREATION_DATE;
-                row["LAST_UPDATED_BY"] = item.LAST_UPDATED_BY;
-                row["LAST_UPDATED_DATE"] = item.LAST_UPDATED_DATE;
+                row["LAST_UPDATED_BY"] = item.LAST_UPDATE_BY;
+                row["LAST_UPDATED_DATE"] = item.LAST_UPDATE_DATE;
 
                 table.Rows.Add(row);
             }
@@ -416,13 +605,13 @@ namespace CHPOUTSRCMES.TASK.Models.Entity
         }
 
 
-        public ResultModel BulkCopy(SqlConnection connection, SqlTransaction transaction, List<TRANSACTION_TYPE_T> list, string tableName, bool deleteTable = true)
+        public ResultModel BulkCopy(List<TRANSACTION_TYPE_TMP_T> list, string tableName, bool deleteTable = true)
         {
             var resultModel = new ResultModel();
 
             if (deleteTable)
             {
-                resultModel = DeleteTable(connection, transaction, tableName);
+                resultModel = DeleteTable(tableName);
 
                 if (!resultModel.Success) return resultModel;
             }
@@ -454,8 +643,8 @@ namespace CHPOUTSRCMES.TASK.Models.Entity
                 row["CONTROL_FLAG"] = txn.CONTROL_FLAG;
                 row["CREATED_BY"] = txn.CREATED_BY;
                 row["CREATION_DATE"] = txn.CREATION_DATE;
-                row["LAST_UPDATED_BY"] = txn.LAST_UPDATED_BY;
-                row["LAST_UPDATED_DATE"] = txn.LAST_UPDATED_DATE;
+                row["LAST_UPDATED_BY"] = txn.LAST_UPDATE_BY;
+                row["LAST_UPDATED_DATE"] = txn.LAST_UPDATE_DATE;
                 table.Rows.Add(row);
             }
 
@@ -503,13 +692,13 @@ namespace CHPOUTSRCMES.TASK.Models.Entity
         }
 
 
-        public ResultModel BulkCopy(SqlConnection connection, SqlTransaction transaction, List<MACHINE_PAPER_TYPE_T> list, string tableName, bool deleteTable = true)
+        public ResultModel BulkCopy(List<MACHINE_PAPER_TYPE_TMP_T> list, string tableName, bool deleteTable = true)
         {
             var resultModel = new ResultModel();
 
             if (deleteTable)
             {
-                resultModel = DeleteTable(connection, transaction, tableName);
+                resultModel = DeleteTable(tableName);
 
                 if (!resultModel.Success) return resultModel;
             }
@@ -545,8 +734,8 @@ namespace CHPOUTSRCMES.TASK.Models.Entity
                 row["CONTROL_FLAG"] = type.CONTROL_FLAG;
                 row["CREATED_BY"] = type.CREATED_BY;
                 row["CREATION_DATE"] = type.CREATION_DATE;
-                row["LAST_UPDATED_BY"] = type.LAST_UPDATED_BY;
-                row["LAST_UPDATED_DATE"] = type.LAST_UPDATED_DATE;
+                row["LAST_UPDATED_BY"] = type.LAST_UPDATE_BY;
+                row["LAST_UPDATED_DATE"] = type.LAST_UPDATE_DATE;
 
                 table.Rows.Add(row);
             }
@@ -597,13 +786,13 @@ namespace CHPOUTSRCMES.TASK.Models.Entity
         }
 
 
-        public ResultModel BulkCopy(SqlConnection connection, SqlTransaction transaction, List<RELATED_T> list, string tableName, bool deleteTable = true)
+        public ResultModel BulkCopy(List<RELATED_TMP_T> list, string tableName, bool deleteTable = true)
         {
             var resultModel = new ResultModel();
 
             if (deleteTable)
             {
-                resultModel = DeleteTable(connection, transaction, tableName);
+                resultModel = DeleteTable(tableName);
 
                 if (!resultModel.Success) return resultModel;
             }
@@ -633,8 +822,8 @@ namespace CHPOUTSRCMES.TASK.Models.Entity
                 row["CONTROL_FLAG"] = related.CONTROL_FLAG;
                 row["CREATED_BY"] = related.CREATED_BY;
                 row["CREATION_DATE"] = related.CREATION_DATE;
-                row["LAST_UPDATED_BY"] = related.LAST_UPDATED_BY;
-                row["LAST_UPDATED_DATE"] = related.LAST_UPDATED_DATE;
+                row["LAST_UPDATED_BY"] = related.LAST_UPDATE_BY;
+                row["LAST_UPDATED_DATE"] = related.LAST_UPDATE_DATE;
                 table.Rows.Add(row);
             }
 
@@ -684,13 +873,13 @@ namespace CHPOUTSRCMES.TASK.Models.Entity
         }
 
 
-        public ResultModel BulkCopy(SqlConnection connection, SqlTransaction transaction, List<YSZMPCKQ_T> list, string tableName, bool deleteTable = true)
+        public ResultModel BulkCopy(List<YSZMPCKQ_TMP_T> list, string tableName, bool deleteTable = true)
         {
             var resultModel = new ResultModel();
 
             if (deleteTable)
             {
-                resultModel = DeleteTable(connection, transaction, tableName);
+                resultModel = DeleteTable(tableName);
 
                 if (!resultModel.Success) return resultModel;
             }
@@ -730,8 +919,8 @@ namespace CHPOUTSRCMES.TASK.Models.Entity
                 row["CONTROL_FLAG"] = yszmpckq.CONTROL_FLAG;
                 row["CREATED_BY"] = yszmpckq.CREATED_BY;
                 row["CREATION_DATE"] = yszmpckq.CREATION_DATE;
-                row["LAST_UPDATED_BY"] = yszmpckq.LAST_UPDATED_BY;
-                row["LAST_UPDATED_DATE"] = yszmpckq.LAST_UPDATED_DATE;
+                row["LAST_UPDATED_BY"] = yszmpckq.LAST_UPDATE_BY;
+                row["LAST_UPDATED_DATE"] = yszmpckq.LAST_UPDATE_DATE;
                 table.Rows.Add(row);
             }
 

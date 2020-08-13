@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace CHPOUTSRCMES.TASK.Models.Entity.Shadowed
+namespace CHPOUTSRCMES.TASK.Models.Entity.Temp
 {
-    public class TRANSACTION_TYPE_SHADOWED_T
+    public class TRANSACTION_TYPE_TMP_T
     {
 
         /// <summary>

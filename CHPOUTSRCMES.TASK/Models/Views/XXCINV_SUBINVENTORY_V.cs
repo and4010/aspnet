@@ -12,6 +12,14 @@ namespace CHPOUTSRCMES.TASK.Models.Views
     public class XXCINV_SUBINVENTORY_V
     {
         /// <summary>
+        /// 作業單元ID
+        /// </summary>
+        public long ORG_ID { set; get; }
+        /// <summary>
+        /// 作業單元
+        /// </summary>
+        public string ORG_NAME { set; get; }
+        /// <summary>
         /// 庫存組織ID
         /// </summary>
         public long ORGANIZATION_ID { set; get; }

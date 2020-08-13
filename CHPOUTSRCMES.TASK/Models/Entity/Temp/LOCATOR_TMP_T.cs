@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace CHPOUTSRCMES.TASK.Models.Entity.Shadowed
+namespace CHPOUTSRCMES.TASK.Models.Entity.Temp
 {
-    public class LOCATOR_SHADOWED_T
+    public class LOCATOR_TMP_T
     {
         /// <summary>
         /// 庫存組織ID

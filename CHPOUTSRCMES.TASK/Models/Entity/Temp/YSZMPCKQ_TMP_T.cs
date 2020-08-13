@@ -1,63 +1,85 @@
 ﻿using System;
 
-namespace CHPOUTSRCMES.TASK.Models.Entity.Shadowed
+namespace CHPOUTSRCMES.TASK.Models.Entity.Temp
 {
-    public class MACHINE_PAPER_TYPE_SHADOWED_T
+    public class YSZMPCKQ_TMP_T
     {
         /// <summary>
-        /// 庫存組織ID
+        /// 庫存組織
         /// </summary>
         /// 
-        public long ORGANIZATION_ID { set; get; }
+        public long YSZMPCKQ_ID { set; get; }
+
+
 
         /// <summary>
         /// 庫存組織
         /// </summary>
         /// 
+        public long ORGANIZATION_ID { set; get; }
+
+
+        /// <summary>
+        /// 庫存組織CODE
+        /// </summary>
+        /// 
         public string ORGANIZATION_CODE { set; get; }
 
-        /// <summary>
-        /// 機台紙別代碼
-        /// </summary>
-        /// 
-        public string MACHINE_CODE { set; get; }
 
         /// <summary>
-        /// 機台紙別意義
+        /// 加工廠
         /// </summary>
         /// 
-        public string MACHINE_MEANING { set; get; }
-
-        /// <summary>
-        /// 機台紙別摘要
-        /// </summary>
-        /// 
-        public string DESCRIPTION { set; get; }
+        public string OSP_SUBINVENTORY { set; get; }
 
         /// <summary>
         /// 紙別
         /// </summary>
         /// 
-        public string PAPER_TYPE { set; get; }
+        public string PSTYP { set; get; }
+
 
         /// <summary>
-        /// 機台
+        /// 基重上限
         /// </summary>
         /// 
-        public string MACHINE_NUM { set; get; }
+        public decimal BWETUP { set; get; }
 
         /// <summary>
-        /// 供應商編號
+        /// 基重下限
         /// </summary>
         /// 
-        public string SUPPLIER_NUM { set; get; }
+        public decimal BWETDN { set; get; }
 
         /// <summary>
-        /// 供應商名稱
+        /// 令重上限
         /// </summary>
         /// 
-        public string SUPPLIER_NAME { set; get; }
+        public decimal RWTUP { set; get; }
 
+        /// <summary>
+        /// 令重下限
+        /// </summary>
+        /// 
+        public decimal RWTDN { set; get; }
+
+        /// <summary>
+        /// 包數
+        /// </summary>
+        /// 
+        public long PCKQ { set; get; }
+
+        /// <summary>
+        /// 每包張數
+        /// </summary>
+        /// 
+        public long PAPER_QTY { set; get; }
+
+        /// <summary>
+        /// 每件令數
+        /// </summary>
+        /// 
+        public long PIECES_QTY { set; get; }
 
         /// <summary>
         /// 控制欄位  D:刪除

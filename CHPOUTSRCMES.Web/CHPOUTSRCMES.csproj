@@ -250,6 +250,8 @@
     <Compile Include="Controllers\TransferController.cs" />
     <Compile Include="Controllers\YszmpckqController.cs" />
     <Compile Include="DataAnnotation\Precision.cs" />
+    <Compile Include="DataModel\Entity\Information\ORG_UNIT_T.cs" />
+    <Compile Include="DataModel\Entity\Temp\ORG_UNIT_T.cs" />
     <Compile Include="DataModel\Entity\Transfer\TRF_DETAIL_HT.cs" />
     <Compile Include="DataModel\Entity\Transfer\TRF_DETAIL_T.cs" />
     <Compile Include="DataModel\Entity\Transfer\TRF_HEADER_T.cs" />
@@ -1404,7 +1406,9 @@
     <Content Include="Content\Purchase\detail.css" />
     <Content Include="Content\timeline.css" />
     <Content Include="Content\Yszmpckq.css" />
-    <Content Include="Data\SQLScript\SP_OrganizationSync.sql" />
+    <Content Include="Data\SQLScript\101_SP_OrganizationSync.sql" />
+    <Content Include="Data\SQLScript\102_SP_OrgUnitSync.sql" />
+    <Content Include="Data\SQLScript\103_SP_SubinventorySync.sql" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -1821,7 +1825,6 @@
     <Content Include="NLog.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Data\Excel\MES_USERS.xlsx" />
     <Content Include="bower_components\adminlte\.DS_Store" />
     <Content Include="bower_components\adminlte\css\.DS_Store" />
     <Content Include="bower_components\adminlte\css\skins\.DS_Store" />
@@ -1888,7 +1891,7 @@
     <Content Include="Scripts\StockTransaction\TransferReason.js" />
     <Content Include="Scripts\Yszmpckq.js" />
     <Content Include="Scripts\_references.js" />
-    <Content Include="Data\SQLScript\SP_GenerateBarcode.sql" />
+    <Content Include="Data\SQLScript\001_SP_GenerateBarcode.sql" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>

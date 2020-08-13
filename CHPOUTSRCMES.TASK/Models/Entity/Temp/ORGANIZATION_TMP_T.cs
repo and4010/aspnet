@@ -1,13 +1,6 @@
-﻿using CHPOUTSRCMES.TASK.Models;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.Common;
-using System.Data.SqlClient;
-
-namespace CHPOUTSRCMES.TASK.Models.Entity
+﻿namespace CHPOUTSRCMES.TASK.Models.Entity.Temp
 {
-    public class ORGANIZATION_T
+    public class ORGANIZATION_TMP_T
     {
 
         /// <summary>
@@ -16,11 +9,13 @@ namespace CHPOUTSRCMES.TASK.Models.Entity
         /// 
         public long ORGANIZATION_ID { set; get; }
 
+
         /// <summary>
         /// 庫存組織CODE
         /// </summary>
         /// 
         public string ORGANIZATION_CODE { set; get; }
+
 
         /// <summary>
         /// 庫存組織名稱
@@ -28,13 +23,17 @@ namespace CHPOUTSRCMES.TASK.Models.Entity
         /// 
         public string ORGANIZATION_NAME { set; get; }
 
+
+        /// <summary>
+        /// 作業單元ID
+        /// </summary>
+        public long ORG_ID { set; get; }
+
+
         /// <summary>
         /// 控制欄位  D:刪除
         /// </summary>
         /// 
         public string CONTROL_FLAG { set; get; }
-
-        
-
     }
 }

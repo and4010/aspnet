@@ -1,47 +1,34 @@
-﻿using CHPOUTSRCMES.Web.DataModel.Entity.Information;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
+using System.Web;
 
 namespace CHPOUTSRCMES.Web.DataModel.Entity.Temp
 {
-    [Table("ORGANIZATION_TMP_T")]
-    public class ORGANIZATION_TMP_T
+    public class ORG_UNIT_TMP_T
     {
 
         /// <summary>
-        /// 庫存組織ID
+        /// 作業單元ID
         /// </summary>
         /// 
         [Required]
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        [Column("ORGANIZATION_ID")]
-        public long OrganizationId { set; get; }
+        [Column("ORG_ID")]
+        public long OrgId { set; get; }
 
 
         /// <summary>
-        /// 庫存組織CODE
-        /// </summary>
-        /// 
-        [StringLength(3)]
-        [Required]
-        [Column("ORGANIZATION_CODE")]
-        public string OrganizationCode { set; get; }
-
-
-        /// <summary>
-        /// 庫存組織名稱
+        /// 作業單元
         /// </summary>
         /// 
         [StringLength(240)]
         [Required]
-        [Column("ORGANIZATION_NAME")]
-        public string OrganizationName { set; get; }
-
-
-        [Required]
-        [Column("ORG_ID")]
-        public long OrgUnitId { set; get; }
+        [Column("ORG_NAME")]
+        public string OrgName { set; get; }
 
 
         /// <summary>
@@ -52,5 +39,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Temp
         [Required(AllowEmptyStrings = true)]
         [Column("CONTROL_FLAG", TypeName = "char")]
         public string ControlFlag { set; get; }
+
     }
 }

@@ -18,12 +18,11 @@ namespace CHPOUTSRCMES.Web.DataModel
         {
 
             executeSqlScript(context);
-            readUsersXls(context);
+            //readUsersXls(context);
             readFromXls(context);
             new PurchaseUOW(context).generateTestData();
             new DeliveryUOW(context).generateTestData();
             new MasterUOW(context).generateStockTestData();
-            new MasterUOW(context).generateUserSubinventoryTestData();
             base.Seed(context);
 
         }
@@ -75,7 +74,7 @@ namespace CHPOUTSRCMES.Web.DataModel
                         workbook = new XSSFWorkbook(fs);
                     }
 
-                    new MasterUOW(context).Import(workbook);
+                    new IdentityUOW(context).Import(workbook);
                 }
             }
         }

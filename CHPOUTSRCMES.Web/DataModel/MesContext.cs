@@ -56,6 +56,12 @@ namespace CHPOUTSRCMES.Web.DataModel
         }
 
         #region 主檔 (來自ERP)
+
+        /// <summary>
+        /// 組織
+        /// </summary>
+        public DbSet<ORG_UNIT_T> OrgUnitTs { set; get; }
+
         /// <summary>
         ///  料號
         /// </summary>
@@ -96,6 +102,11 @@ namespace CHPOUTSRCMES.Web.DataModel
         #endregion 主檔 (來自ERP)
 
         #region 主檔 Temp
+        /// <summary>
+        /// 組織(同步用)
+        /// </summary>
+        public DbSet<ORG_UNIT_TMP_T> OrgUnitTmpT { set; get; }
+
         /// <summary>
         /// 組織(同步用)
         /// </summary>

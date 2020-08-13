@@ -7,43 +7,28 @@ using System.Web;
 
 namespace CHPOUTSRCMES.Web.DataModel.Entity.Information
 {
-    public class ORGANIZATION_T
+    public class ORG_UNIT_T
     {
 
         /// <summary>
-        /// 庫存組織ID
+        /// 作業單元ID
         /// </summary>
         /// 
         [Required]
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        [Column("ORGANIZATION_ID")]
-        public long OrganizationId { set; get; }
+        [Column("ORG_ID")]
+        public long OrgId { set; get; }
 
 
         /// <summary>
-        /// 庫存組織CODE
-        /// </summary>
-        /// 
-        [StringLength(3)]
-        [Required]
-        [Column("ORGANIZATION_CODE")]
-        public string OrganizationCode { set; get; }
-
-
-        /// <summary>
-        /// 庫存組織名稱
+        /// 作業單元
         /// </summary>
         /// 
         [StringLength(240)]
         [Required]
-        [Column("ORGANIZATION_NAME")]
-        public string OrganizationName { set; get; }
-
-
-        [Required]
-        [Column("ORG_ID")]
-        public long OrgUnitId { set; get; }
+        [Column("ORG_NAME")]
+        public string OrgName { set; get; }
 
 
         /// <summary>

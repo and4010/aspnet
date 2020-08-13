@@ -1,6 +1,6 @@
-﻿namespace CHPOUTSRCMES.TASK.Models.Entity.Shadowed
+﻿namespace CHPOUTSRCMES.TASK.Models.Entity.Temp
 {
-    public class SUBINVENTORY_SHADOWED_T
+    public class SUBINVENTORY_TMP_T
     {
 
         /// <summary>

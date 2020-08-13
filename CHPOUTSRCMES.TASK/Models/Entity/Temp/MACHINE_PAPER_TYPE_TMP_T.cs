@@ -1,51 +1,62 @@
 ﻿using System;
 
-namespace CHPOUTSRCMES.TASK.Models.Entity
+namespace CHPOUTSRCMES.TASK.Models.Entity.Temp
 {
-
-    public class RELATED_T
+    public class MACHINE_PAPER_TYPE_TMP_T
     {
         /// <summary>
-        /// 餘切規格ID
+        /// 庫存組織ID
         /// </summary>
         /// 
-        public long RELATED_ID { set; get; }
+        public long ORGANIZATION_ID { set; get; }
 
         /// <summary>
-        /// 料號ID
+        /// 庫存組織
         /// </summary>
         /// 
-        public long INVENTORY_ITEM_ID { set; get; }
+        public string ORGANIZATION_CODE { set; get; }
 
         /// <summary>
-        /// 料號
+        /// 機台紙別代碼
         /// </summary>
         /// 
-        public string ITEM_NUMBER { set; get; }
+        public string MACHINE_CODE { set; get; }
 
         /// <summary>
-        /// 料號說明
+        /// 機台紙別意義
         /// </summary>
         /// 
-        public string ITEM_DESCRIPTION { set; get; }
+        public string MACHINE_MEANING { set; get; }
 
         /// <summary>
-        /// 餘切料號ID
+        /// 機台紙別摘要
         /// </summary>
         /// 
-        public long RELATED_ITEM_ID { set; get; }
+        public string DESCRIPTION { set; get; }
 
         /// <summary>
-        /// 餘切料號
+        /// 紙別
         /// </summary>
         /// 
-        public string RELATED_ITEM_NUMBER { set; get; }
+        public string PAPER_TYPE { set; get; }
 
         /// <summary>
-        /// 餘切料號說明
+        /// 機台
         /// </summary>
         /// 
-        public string RELATED_ITEM_DESCRIPTION { set; get; }
+        public string MACHINE_NUM { set; get; }
+
+        /// <summary>
+        /// 供應商編號
+        /// </summary>
+        /// 
+        public string SUPPLIER_NUM { set; get; }
+
+        /// <summary>
+        /// 供應商名稱
+        /// </summary>
+        /// 
+        public string SUPPLIER_NAME { set; get; }
 
 
         /// <summary>
@@ -70,12 +81,12 @@ namespace CHPOUTSRCMES.TASK.Models.Entity
         /// 更新人員
         /// </summary>
         /// 
-        public long LAST_UPDATED_BY { set; get; }
+        public long LAST_UPDATE_BY { set; get; }
 
         /// <summary>
         /// 更新時間
         /// </summary>
         /// 
-        public DateTime LAST_UPDATED_DATE { set; get; }
+        public DateTime LAST_UPDATE_DATE { set; get; }
     }
 }

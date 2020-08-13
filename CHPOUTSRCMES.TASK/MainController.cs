@@ -1,6 +1,6 @@
 ﻿using CHPOUTSRCMES.TASK.Forms;
 using CHPOUTSRCMES.TASK.Models.Entity;
-using CHPOUTSRCMES.TASK.Models.Entity.Shadowed;
+using CHPOUTSRCMES.TASK.Models.Entity.Temp;
 using CHPOUTSRCMES.TASK.Models.UnitOfWork;
 using CHPOUTSRCMES.TASK.Models.Views;
 using CHPOUTSRCMES.TASK.Tasks;
@@ -239,33 +239,46 @@ namespace CHPOUTSRCMES.TASK
                     }
                 }
 
-                var orgList = subinventoryList
-                    .GroupBy(x => x.ORGANIZATION_ID)
-                    .Select(x => new ORGANIZATION_SHADOWED_T() {
-                        ORGANIZATION_ID = x.FirstOrDefault().ORGANIZATION_ID,
-                        ORGANIZATION_NAME = x.FirstOrDefault().ORGANIZATION_NAME,
-                        ORGANIZATION_CODE = x.FirstOrDefault().ORGANIZATION_CODE, 
-                        CONTROL_FLAG = null
+                var orgUnitList = subinventoryList
+                    .GroupBy(x => x.ORG_ID)
+                    .Select(x => new ORG_UNIT_TMP_T()
+                    {
+                        ORG_ID = x.FirstOrDefault().ORG_ID,
+                        ORG_NAME = x.FirstOrDefault().ORG_NAME,
+                        CONTROL_FLAG = ""
                     })
                     .ToList();
 
+                //取得組織
+                var organizationList = subinventoryList
+                    .GroupBy(x => x.ORGANIZATION_ID)
+                    .Select(x => new ORGANIZATION_TMP_T() {
+                        ORG_ID = x.FirstOrDefault().ORG_ID,
+                        ORGANIZATION_ID = x.FirstOrDefault().ORGANIZATION_ID,
+                        ORGANIZATION_NAME = x.FirstOrDefault().ORGANIZATION_NAME,
+                        ORGANIZATION_CODE = x.FirstOrDefault().ORGANIZATION_CODE,
+                        CONTROL_FLAG = ""
+                    })
+                    .ToList();
+
+                //取得倉庫
                 var subList = subinventoryList
                     .GroupBy(x => new { x.ORGANIZATION_ID, x.SUBINVENTORY_CODE } )
-                    .Select(x => new SUBINVENTORY_SHADOWED_T()
+                    .Select(x => new SUBINVENTORY_TMP_T()
                     {
                         ORGANIZATION_ID = x.FirstOrDefault().ORGANIZATION_ID,
                         SUBINVENTORY_CODE = x.FirstOrDefault().SUBINVENTORY_CODE,
                         SUBINVENTORY_NAME = x.FirstOrDefault().SUBINVENTORY_NAME,
                         LOCATOR_TYPE = x.FirstOrDefault().LOCATOR_TYPE,
                         OSP_FLAG = x.FirstOrDefault().OSP_FLAG, 
-                        CONTROL_FLAG = null
+                        CONTROL_FLAG = ""
                     })
                     .ToList();
-
+                //取得儲位
                 var locatorList = subinventoryList
                     .Where(x=> x.LOCATOR_ID != null && x.LOCATOR_ID > 0)
                     .GroupBy(x => new { x.ORGANIZATION_ID, x.SUBINVENTORY_CODE, x.LOCATOR_ID })
-                    .Select(x => new LOCATOR_SHADOWED_T()
+                    .Select(x => new LOCATOR_TMP_T()
                     {
                         ORGANIZATION_ID = x.FirstOrDefault().ORGANIZATION_ID,
                         SUBINVENTORY_CODE = x.FirstOrDefault().SUBINVENTORY_CODE,
@@ -276,7 +289,7 @@ namespace CHPOUTSRCMES.TASK
                         SEGMENT2 = x.FirstOrDefault().SEGMENT2,
                         SEGMENT3 = x.FirstOrDefault().SEGMENT3,
                         SEGMENT4 = x.FirstOrDefault().SEGMENT4, 
-                        CONTROL_FLAG = null,
+                        CONTROL_FLAG = "",
                         LOCATOR_STATUS = x.FirstOrDefault().LOCATOR_STATUS,
                         LOCATOR_STATUS_CODE = x.FirstOrDefault().LOCATOR_STATUS_CODE,
                         LOCATOR_DISABLE_DATE = x.FirstOrDefault().LOCATOR_DISABLE_DATE, 
@@ -292,10 +305,12 @@ namespace CHPOUTSRCMES.TASK
                     {
                         try
                         {
-                            BulkCopier copier = new BulkCopier();
-                            copier.BulkCopy(sqlConn, transaction, orgList, "ORGANIZATION_SHADOWED_T", true);
-                            copier.BulkCopy(sqlConn, transaction, subList, "SUBINVENTORY_SHADOWED_T", true);
-                            copier.BulkCopy(sqlConn, transaction, locatorList, "LOCATOR_SHADOWED_T", true);
+                            BulkCopier copier = new BulkCopier(sqlConn, transaction);
+                            //作業單元、組織、倉庫及儲位 無時間可判定資料新刪修且資料量少，故 全部重抓比對
+                            copier.BulkCopy(orgUnitList,        "ORG_UNIT_TMP_T",       true);
+                            copier.BulkCopy(organizationList,   "ORGANIZATION_TMP_T",   true);
+                            copier.BulkCopy(subList,            "SUBINVENTORY_TMP_T",   true);
+                            copier.BulkCopy(locatorList,        "LOCATOR_TMP_T",        true);
 
                             transaction.Commit();
                         }

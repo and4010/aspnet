@@ -1,11 +1,10 @@
-﻿using System;
+﻿
+using System;
 
-namespace CHPOUTSRCMES.TASK.Models.Entity
+namespace CHPOUTSRCMES.TASK.Models.Entity.Temp
 {
-    public class ITEMS_T
+    public class ITEMS_TMP_T
     {
-
-
         /// <summary>
         /// 料號ID
         /// </summary>
@@ -17,17 +16,6 @@ namespace CHPOUTSRCMES.TASK.Models.Entity
         /// </summary>
         /// 
         public string ITEM_NUMBER { set; get; }
-
-        ///// <summary>
-        ///// 庫存組織CODE
-        ///// </summary>
-        ///// 
-        //[StringLength(3)]
-        //[Required]
-        //[Key]
-        //[DatabaseGenerated(DatabaseGeneratedOption.None)]
-        //[Column("ORGANIZATION_CODE")]
-        //public string OrganizationCode { set; get; }
 
         /// <summary>
         /// 存貨分類
@@ -201,8 +189,6 @@ namespace CHPOUTSRCMES.TASK.Models.Entity
         /// 
         public string CONTROL_FLAG { set; get; }
 
-
-
         /// <summary>
         /// 建立人員
         /// </summary>
@@ -219,12 +205,12 @@ namespace CHPOUTSRCMES.TASK.Models.Entity
         /// 更新人員
         /// </summary>
         /// 
-        public long LAST_UPDATED_BY { set; get; }
+        public long LAST_UPDATE_BY { set; get; }
 
         /// <summary>
         /// 更新時間
         /// </summary>
         /// 
-        public DateTime LAST_UPDATED_DATE { set; get; }
+        public DateTime LAST_UPDATE_DATE { set; get; }
     }
 }

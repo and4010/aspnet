@@ -1,6 +1,6 @@
 ﻿namespace CHPOUTSRCMES.Web.DataModel.Entity.Information
 {
-    public class ORG_ITEMS_SHADOWED_T
+    public class ORG_ITEMS_TMP_T
     {
         /// <summary>
         /// 料號ID

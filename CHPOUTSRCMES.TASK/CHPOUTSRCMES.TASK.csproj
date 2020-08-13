@@ -70,15 +70,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Models\Entity\Shadowed\ITEMS_SHADOWED_T.cs" />
-    <Compile Include="Models\Entity\Shadowed\LOCATOR_SHADOWED_T.cs" />
-    <Compile Include="Models\Entity\Shadowed\MACHINE_PAPER_TYPE_SHADOWED_T.cs" />
-    <Compile Include="Models\Entity\Shadowed\ORGANIZATION_SHADOWED_T.cs" />
-    <Compile Include="Models\Entity\Shadowed\ORG_ITEMS_SHADOWED_T.cs" />
-    <Compile Include="Models\Entity\Shadowed\RELATED_SHADOWED_T.cs" />
-    <Compile Include="Models\Entity\Shadowed\SUBINVENTORY_SHADOWED_T.cs" />
-    <Compile Include="Models\Entity\Shadowed\TRANSACTION_TYPE_SHADOWED_T.cs" />
-    <Compile Include="Models\Entity\Shadowed\YSZMPCKQ_SHADOWED_T.cs" />
+    <Compile Include="Models\Entity\Temp\ITEMS_TMP_T.cs" />
+    <Compile Include="Models\Entity\Temp\LOCATOR_TMP_T.cs" />
+    <Compile Include="Models\Entity\Temp\MACHINE_PAPER_TYPE_TMP_T.cs" />
+    <Compile Include="Models\Entity\Temp\ORGANIZATION_TMP_T.cs" />
+    <Compile Include="Models\Entity\Temp\ORG_UNIT_TMP_T.cs" />
+    <Compile Include="Models\Entity\Temp\ORG_ITEMS_TMP_T.cs" />
+    <Compile Include="Models\Entity\Temp\RELATED_TMP_T.cs" />
+    <Compile Include="Models\Entity\Temp\SUBINVENTORY_TMP_T.cs" />
+    <Compile Include="Models\Entity\Temp\TRANSACTION_TYPE_TMP_T.cs" />
+    <Compile Include="Models\Entity\Temp\YSZMPCKQ_TMP_T.cs" />
     <Compile Include="Models\IBulkCopier.cs" />
     <Compile Include="Models\BulkCopier.cs" />
     <Compile Include="Models\Repository\Oracle\GenericRepository.cs" />
@@ -126,14 +127,6 @@
     <Compile Include="Forms\UomConverterForm.Designer.cs">
       <DependentUpon>UomConverterForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Models\Entity\ITEMS_T.cs" />
-    <Compile Include="Models\Entity\LOCATOR_T.cs" />
-    <Compile Include="Models\Entity\MACHINE_PAPER_TYPE_T.cs" />
-    <Compile Include="Models\Entity\ORGANIZATION_T.cs" />
-    <Compile Include="Models\Entity\RELATED_T.cs" />
-    <Compile Include="Models\Entity\SUBINVENTORY_T.cs" />
-    <Compile Include="Models\Entity\TRANSACTION_TYPE_T.cs" />
-    <Compile Include="Models\Entity\YSZMPCKQ_T.cs" />
     <Compile Include="Tasks\Interfaces\ITasker.cs" />
     <Compile Include="Tasks\LimitedConcurrencyLevelTaskScheduler.cs" />
     <Compile Include="MainController.cs" />
