@@ -936,7 +936,7 @@ from DLV_HEADER_T";
                 cond.Add("DELIVERY_NAME = @DeliveryName");
                 sqlParameterList.Add(new SqlParameter("@DeliveryName", DeliveryName));
             }
-            if (SelectedSubinventory != "*")
+            if (SelectedSubinventory != "全部")
             {
                 cond.Add("SUBINVENTORY_CODE = @SelectedSubinventory");
                 sqlParameterList.Add(SqlParamHelper.R.SubinventoryCode("@SelectedSubinventory", SelectedSubinventory));

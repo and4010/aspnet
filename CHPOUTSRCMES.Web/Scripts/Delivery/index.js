@@ -289,7 +289,7 @@ $(document).ready(function () {
                 d.TripActualShipBeginDate = $("#txtTripActualShipBeginDate").val();
                 d.TripActualShipEndDate = $("#txtTripActualShipEndDate").val();
                 d.DeliveryName = $("#txtDeliveryName").val();
-                d.SelectedSubinventory = $("#ddlWarehouse").val();
+                d.SelectedSubinventory = $("#ddlWarehouse option:selected").text();
                 d.SelectedTrip = $("#ddlTrip").val();
                 d.TransactionDate = $("#txtTransactionDate").val();
                 d.SelectedDeliveryStatus = $("#ddlDeliveryStatus").val();

@@ -153,7 +153,7 @@ FROM [YSZMPCKQ_T]");
                         cond.Add("ORGANIZATION_ID = @ORGANIZATION_ID");
                         sqlParameterList.Add(new SqlParameter("@ORGANIZATION_ID", organizationId));
                     }
-                    if (OSP_SUBINVENTORY_ID != "*")
+                    if (OSP_SUBINVENTORY_ID != "全部")
                     {
                         cond.Add("OSP_SUBINVENTORY =@OSP_SUBINVENTORY");
                         sqlParameterList.Add(new SqlParameter("@OSP_SUBINVENTORY", OSP_SUBINVENTORY_ID));
@@ -245,7 +245,7 @@ left join ITEMS_T tt on tt.CATALOG_ELEM_VAL_020 = y.PSTYP");
                             cond.Add("y.ORGANIZATION_ID = @ORGANIZATION_ID");
                             sqlParameterList.Add(new SqlParameter("@ORGANIZATION_ID", orgId));
                         }
-                        if (OSP_SUBINVENTORY_ID != "*")
+                        if (OSP_SUBINVENTORY_ID != "全部")
                         {
                             cond.Add("OSP_SUBINVENTORY =@OSP_SUBINVENTORY");
                             sqlParameterList.Add(new SqlParameter("@OSP_SUBINVENTORY", OSP_SUBINVENTORY_ID));

@@ -20,7 +20,7 @@ $(document).ready(function () {
     $("#ddlOspSubinventory").combobox({
         select: function (event, ui) {
             var ORGANIZATION_ID = $("#ddlOrganization").val();
-            updateDdlPstyp(ORGANIZATION_ID, this.value);
+            updateDdlPstyp(ORGANIZATION_ID, $("#ddlOspSubinventory option:selected").text());
         }
     });
 
@@ -55,7 +55,7 @@ $(document).ready(function () {
             "datatype": "json",
             "data": function (d) {
                 d.ORGANIZATION_ID = $("#ddlOrganization").val();
-                d.OSP_SUBINVENTORY = $("#ddlOspSubinventory").val();
+                d.OSP_SUBINVENTORY = $("#ddlOspSubinventory option:selected").text();
                 d.PSTYP = $("#ddlPstyp").val();
             },
         },
@@ -146,7 +146,7 @@ $(document).ready(function () {
                 swal.fire('更新加工廠選單失敗');
             },
             complete: function () {
-                var OSP_SUBINVENTORY_ID = $("#ddlOspSubinventory").val();
+                var OSP_SUBINVENTORY_ID = $("#ddlOspSubinventory option:selected").text();
                 updateDdlPstyp(ORGANIZATION_ID, OSP_SUBINVENTORY_ID);
             }
 

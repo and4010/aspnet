@@ -10,7 +10,7 @@ $(document).ready(function () {
     $("#ddlSubinventory").combobox({
         select: function (event, ui) {
             var ORGANIZATION_ID = $("#ddlOrganization").val();
-            updateDdlLocator(ORGANIZATION_ID, this.value);
+            updateDdlLocator(ORGANIZATION_ID, $("#ddlSubinventory option:selected").text());
         }
     });
 
@@ -36,7 +36,7 @@ $(document).ready(function () {
             "datatype": "json",
             "data": function (d) {
                 d.ORGANIZATION_ID = $("#ddlOrganization").val();
-                d.SUBINVENTORY_CODE = $("#ddlSubinventory").val();
+                d.SUBINVENTORY_CODE = $("#ddlSubinventory option:selected").text();
                 d.LOCATOR_ID = $("#ddlLocator").val();
             },
         },
@@ -149,7 +149,7 @@ $(document).ready(function () {
                 swal.fire('更新倉庫選單失敗');
             },
             complete: function () {
-                var SUBINVENTORY_CODE = $("#ddlSubinventory").val();
+                var SUBINVENTORY_CODE = $("#ddlSubinventory option:selected").text();
                 updateDdlLocator(ORGANIZATION_ID, SUBINVENTORY_CODE);
             }
 

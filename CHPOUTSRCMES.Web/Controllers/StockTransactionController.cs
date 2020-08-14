@@ -113,40 +113,54 @@ namespace CHPOUTSRCMES.Web.Controllers
                 using (MasterUOW uow = new MasterUOW(context))
                 {
                     var id = this.User.Identity.GetUserId();
-                    List<SelectListItem> items = stockTransferData.GetLocatorListForUserId(uow, id,SUBINVENTORY_CODE, MasterUOW.DropDownListType.Choice).ToList();
+                    List<SelectListItem> items = stockTransferData.GetLocatorListForUserId(uow, id, SUBINVENTORY_CODE, MasterUOW.DropDownListType.Choice).ToList();
                     return Json(items, JsonRequestBehavior.AllowGet);
                 }
             }
         }
-        
-        [HttpPost, ActionName("GetShipmentNumberList")]
-        public JsonResult GetShipmentNumberList( string transferType, string outSubinventoryCode, string inSubinventoryCode)
+
+        [HttpPost, ActionName("GetInboundShipmentNumberList")]
+        public JsonResult GetInboundShipmentNumberList(long outOrganizationId, string outSubinventoryCode, long inOrganizationId, string inSubinventoryCode)
         {
             using (var context = new MesContext())
             {
                 using (TransferUOW uow = new TransferUOW(context))
                 {
-                    
-                    return new JsonResult { Data = stockTransferData.GetShipmentNumberList(uow, transferType, outSubinventoryCode, inSubinventoryCode) };
+
+                    return new JsonResult { Data = stockTransferData.GetInboundShipmentNumberList(uow, outOrganizationId, outSubinventoryCode, inOrganizationId, inSubinventoryCode) };
+
+                }
+            }
+        }
+
+        [HttpPost, ActionName("GetShipmentNumberList")]
+        public JsonResult GetShipmentNumberList(string transferType, long outOrganizationId, string outSubinventoryCode, long inOrganizationId, string inSubinventoryCode)
+        {
+            using (var context = new MesContext())
+            {
+                using (TransferUOW uow = new TransferUOW(context))
+                {
+
+                    return new JsonResult { Data = stockTransferData.GetInboundShipmentNumberList(uow, outOrganizationId, outSubinventoryCode, inOrganizationId, inSubinventoryCode) };
                     //return Json(items, JsonRequestBehavior.AllowGet);
                     //return new JsonResult { Data = new { transferCatalog = transferCatalog, items = items } };
                 }
             }
         }
 
-        [HttpPost, ActionName("AutoCompleteShipmentNumber")]
-        public JsonResult AutoCompleteShipmentNumber(string TransactionType, string OutSubinventoryCode, string OutLocator, string InSubinventoryCode, string InLocator, string Prefix)
-        {
-            List<AutoCompletedItem> items = stockTransferData.AutoCompleteShipmentNumber(TransactionType, OutSubinventoryCode, OutLocator, InSubinventoryCode, InLocator, Prefix);
-            return Json(items, JsonRequestBehavior.AllowGet);
-        }
+        //[HttpPost, ActionName("AutoCompleteShipmentNumber")]
+        //public JsonResult AutoCompleteShipmentNumber(string TransactionType, string OutSubinventoryCode, string OutLocator, string InSubinventoryCode, string InLocator, string Prefix)
+        //{
+        //    List<AutoCompletedItem> items = stockTransferData.AutoCompleteShipmentNumber(TransactionType, OutSubinventoryCode, OutLocator, InSubinventoryCode, InLocator, Prefix);
+        //    return Json(items, JsonRequestBehavior.AllowGet);
+        //}
 
-        [HttpPost, ActionName("InboundAutoCompleteShipmentNumber")]
-        public JsonResult InboundAutoCompleteShipmentNumber(string TransactionType, string OutSubinventoryCode, string OutLocator, string InSubinventoryCode, string InLocator, string Prefix)
-        {
-            List<AutoCompletedItem> items = stockTransferData.AutoCompleteShipmentNumber(TransactionType, OutSubinventoryCode, OutLocator, InSubinventoryCode, InLocator, Prefix, "MES未出庫"); //不顯示MES未出庫的資料
-            return Json(items, JsonRequestBehavior.AllowGet);
-        }
+        //[HttpPost, ActionName("InboundAutoCompleteShipmentNumber")]
+        //public JsonResult InboundAutoCompleteShipmentNumber(string TransactionType, string OutSubinventoryCode, string OutLocator, string InSubinventoryCode, string InLocator, string Prefix)
+        //{
+        //    List<AutoCompletedItem> items = stockTransferData.AutoCompleteShipmentNumber(TransactionType, OutSubinventoryCode, OutLocator, InSubinventoryCode, InLocator, Prefix, "MES未出庫"); //不顯示MES未出庫的資料
+        //    return Json(items, JsonRequestBehavior.AllowGet);
+        //}
 
         [HttpPost, ActionName("GetSubinventoryTransferNumberList")]
         public JsonResult GetSubinventoryTransferNumberList(string OutSubinventoryCode, string OutLocator, string InSubinventoryCode, string InLocator)
@@ -172,28 +186,41 @@ namespace CHPOUTSRCMES.Web.Controllers
         }
 
         [HttpPost]
-        public JsonResult InboundAutoCompleteItemNumber(string InSubinventoryCode, string Prefix)
+        public JsonResult AutoCompleteItemNumber(string Prefix)
         {
-            List<AutoCompletedItem> items = StockData.AutoCompleteItemNumber(InSubinventoryCode, Prefix);
-            return Json(items, JsonRequestBehavior.AllowGet);
+            using (var context = new MesContext())
+            {
+                using (TransferUOW uow = new TransferUOW(context))
+                {
+                     List<AutoCompletedItem> items = stockTransferData.GetAutoCompleteItemNumberList(uow, Prefix);
+                    return Json(items, JsonRequestBehavior.AllowGet);
+                }
+            }
         }
 
-        [HttpPost]
-        public JsonResult AutoCompleteItemNumber(string SubinventoryCode, string Locator, string Prefix)
-        {
-            long locatorId;
-            try
-            {
-                locatorId = Convert.ToInt64(Locator);
-            }
-            catch
-            {
-                locatorId = 0;
-            }
+        //[HttpPost]
+        //public JsonResult InboundAutoCompleteItemNumber(string InSubinventoryCode, string Prefix)
+        //{
+        //    List<AutoCompletedItem> items = StockData.AutoCompleteItemNumber(InSubinventoryCode, Prefix);
+        //    return Json(items, JsonRequestBehavior.AllowGet);
+        //}
 
-            List<AutoCompletedItem> items = StockData.AutoCompleteItemNumber(SubinventoryCode, locatorId, Prefix);
-            return Json(items, JsonRequestBehavior.AllowGet);
-        }
+        //[HttpPost]
+        //public JsonResult AutoCompleteItemNumber(string SubinventoryCode, string Locator, string Prefix)
+        //{
+        //    long locatorId;
+        //    try
+        //    {
+        //        locatorId = Convert.ToInt64(Locator);
+        //    }
+        //    catch
+        //    {
+        //        locatorId = 0;
+        //    }
+
+        //    List<AutoCompletedItem> items = StockData.AutoCompleteItemNumber(SubinventoryCode, locatorId, Prefix);
+        //    return Json(items, JsonRequestBehavior.AllowGet);
+        //}
 
         [HttpPost, ActionName("CheckTransactionType")]
         public JsonResult CheckTransactionType(string OutSubinventoryCode, string InSubinventoryCode)
@@ -210,20 +237,28 @@ namespace CHPOUTSRCMES.Web.Controllers
         }
 
         [HttpPost, ActionName("GetStockItemData")]
-        public JsonResult GetStockItemData(string SUBINVENTORY_CODE, string ITEM_NO)
+        public JsonResult GetStockItemData(string ITEM_NO)
         {
-            List<StockDT> list = StockData.GetStockItemData(SUBINVENTORY_CODE, ITEM_NO);
-            if (list.Count > 0 && list[0].ITEM_CATEGORY == "平版")
+            using (var context = new MesContext())
             {
-                return new JsonResult { Data = new { STATUS = true, PACKING_TYPE = list[0].PACKING_TYPE, ITEM_CATEGORY = list[0].ITEM_CATEGORY, UNIT = list[0].SECONDARY_UOM_CODE } };
-            }
-            else if (list.Count > 0 && list[0].ITEM_CATEGORY == "捲筒")
-            {
-                return new JsonResult { Data = new { STATUS = true, PACKING_TYPE = list[0].PACKING_TYPE, ITEM_CATEGORY = list[0].ITEM_CATEGORY, UNIT = list[0].PRIMARY_UOM_CODE } };
-            }
-            else
-            {
-                return new JsonResult { Data = new { STATUS = false, PACKING_TYPE = "", ITEM_CATEGORY = "", UNIT = "" } };
+                using (TransferUOW uow = new TransferUOW(context))
+                {
+
+                    return new JsonResult { Data = stockTransferData.GetItemNumberData(uow, ITEM_NO) };
+                    //List<StockDT> list = StockData.GetStockItemData(SUBINVENTORY_CODE, ITEM_NO);
+                    //if (list.Count > 0 && list[0].ITEM_CATEGORY == "平版")
+                    //{
+                    //    return new JsonResult { Data = new { STATUS = true, PACKING_TYPE = list[0].PACKING_TYPE, ITEM_CATEGORY = list[0].ITEM_CATEGORY, UNIT = list[0].SECONDARY_UOM_CODE } };
+                    //}
+                    //else if (list.Count > 0 && list[0].ITEM_CATEGORY == "捲筒")
+                    //{
+                    //    return new JsonResult { Data = new { STATUS = true, PACKING_TYPE = list[0].PACKING_TYPE, ITEM_CATEGORY = list[0].ITEM_CATEGORY, UNIT = list[0].PRIMARY_UOM_CODE } };
+                    //}
+                    //else
+                    //{
+                    //    return new JsonResult { Data = new { STATUS = false, PACKING_TYPE = "", ITEM_CATEGORY = "", UNIT = "" } };
+                    //}
+                }
             }
         }
 
@@ -346,6 +381,19 @@ namespace CHPOUTSRCMES.Web.Controllers
             ResultModel result = stockTransferData.CheckNumber(TransactionType, OUT_SUBINVENTORY_CODE, OUT_LOCATOR_ID, IN_SUBINVENTORY_CODE, IN_LOCATOR_ID, Number);
             return new JsonResult { Data = new { status = result.Success, result = result.Msg } };
         }
+
+        //[HttpPost, ActionName("CheckCreateDetail")]
+        //public JsonResult CheckCreateDetail(string shipmentNumber, string transferType, long outOrganizationId, string outSubinventoryCode, long outLocatorId, long inOrganizationId, string inSubinventoryCode, long inLocatorId)
+        //{
+        //    using (var context = new MesContext())
+        //    {
+        //        using (TransferUOW uow = new TransferUOW(context))
+        //        {
+        //            ResultModel result = stockTransferData.CheckNumber(TransactionType, OUT_SUBINVENTORY_CODE, OUT_LOCATOR_ID, IN_SUBINVENTORY_CODE, IN_LOCATOR_ID, Number);
+        //            return new JsonResult { Data = new { status = result.Success, result = result.Msg } };
+        //        }
+        //    }
+        //}
 
         [HttpPost, ActionName("SaveStockTransferDT")]
         public JsonResult SaveStockTransferDT(string TransactionType, string OUT_SUBINVENTORY_CODE, string OUT_LOCATOR_ID, string IN_SUBINVENTORY_CODE, string IN_LOCATOR_ID,

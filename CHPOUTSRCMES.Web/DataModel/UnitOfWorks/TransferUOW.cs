@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -8,6 +9,7 @@ using CHPOUTSRCMES.Web.DataModel.Entity.Interfaces;
 using CHPOUTSRCMES.Web.DataModel.Entity.Repositorys;
 using CHPOUTSRCMES.Web.DataModel.Entiy.Transfer;
 using CHPOUTSRCMES.Web.DataModel.Interfaces;
+using CHPOUTSRCMES.Web.Models;
 using CHPOUTSRCMES.Web.Util;
 using NLog;
 
@@ -183,6 +185,68 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                    x.TransferSubinventoryCode == inSubinventoryCode)
                     .OrderBy(x => x.ShipmentNumber).ToList();
 
+        }
+
+        /// <summary>
+        /// 取得入庫的出貨編號
+        /// </summary>
+        /// <param name="outOrganizationId"></param>
+        /// <param name="outSubinventoryCode"></param>
+        /// <param name="inOrganizationId"></param>
+        /// <param name="inSubinventoryCode"></param>
+        /// <returns></returns>
+        public List<SelectListItem> GetShipmentNumberforInbound(long outOrganizationId, string outSubinventoryCode, long inOrganizationId, string inSubinventoryCode)
+        {
+            
+                string cmd = @"
+           SELECT TRANSFER_HEADER_ID as Value,
+      SHIPMENT_NUMBER as Text,
+'false' as Disabled,
+null as 'Group',
+'false' as Selected
+
+FROM TRF_HEADER_T
+WHERE 
+TRANSFER_TYPE = 1
+AND SUBINVENTORY_CODE = @subCode AND ORGANIZATION_ID = @organId
+AND TRANSFER_SUBINVENTORY_CODE = @trfSubCode AND TRANSFER_ORGANIZATION_ID = @trfOrganId
+
+UNION 
+
+
+SELECT
+s.TRANSFER_HEADER_ID as Value,
+s.SHIPMENT_NUMBER as Text,
+'false' as Disabled,
+null as 'Group',
+'false' as Selected
+FROM TRF_HEADER_T s
+LEFT JOIN TRF_HEADER_T t ON s.SHIPMENT_NUMBER = t.SHIPMENT_NUMBER AND t.TRANSFER_TYPE = 1  
+WHERE 
+s.TRANSFER_TYPE = 0
+AND s.SUBINVENTORY_CODE = @subCode AND s.ORGANIZATION_ID = @organId
+AND s.TRANSFER_SUBINVENTORY_CODE = @trfSubCode AND s.TRANSFER_ORGANIZATION_ID = @trfOrganId
+
+AND s.NUMBER_STATUS = 1
+AND t.SHIPMENT_NUMBER IS NULL";
+
+                return  this.Context.Database.SqlQuery<SelectListItem>(cmd,
+                    new SqlParameter("@subCode", outSubinventoryCode),
+                    new SqlParameter("@organId", outOrganizationId),
+                    new SqlParameter("@trfSubCode", inSubinventoryCode),
+                    new SqlParameter("@trfOrganId", inOrganizationId)).ToList();
+
+
+             
+
+        }
+
+        
+        public List<TRF_HEADER_T> GetTrfHeaderList(string shipmentNumber, string transferType)
+        {
+            return trfHeaderTRepositiory.GetAll().AsNoTracking().Where(x =>
+            x.ShipmentNumber == shipmentNumber &&
+            x.TransferType == transferType).ToList();
         }
     }
 

@@ -10,6 +10,7 @@ using CHPOUTSRCMES.Web.ViewModels;
 using CHPOUTSRCMES.Web.Jsons.Requests;
 using CHPOUTSRCMES.Web.Models.Information;
 using CHPOUTSRCMES.Web.DataModel.UnitOfWorks;
+using CHPOUTSRCMES.Web.DataModel.Entity.Information;
 
 namespace CHPOUTSRCMES.Web.Models.Stock
 {
@@ -221,6 +222,24 @@ namespace CHPOUTSRCMES.Web.Models.Stock
             return orgData.GetLocatorListForUserId(uow, userId, SUBINVENTORY_CODE, type);
         }
 
+        /// <summary>
+        /// 取得自動完成料號List
+        /// </summary>
+        /// <param name="Prefix"></param>
+        /// <returns></returns>
+        public List<AutoCompletedItem> GetAutoCompleteItemNumberList(TransferUOW uow, string Prefix)
+        {
+            return uow.GetAutoCompleteItemNumberList(Prefix);
+        }
+
+        public ResultDataModel<ITEMS_T> GetItemNumberData(TransferUOW uow, string itemNumber)
+        {
+           var item = uow.GetItemNumberData(itemNumber);
+            if (item == null) new ResultDataModel<ITEMS_T>(false, "找不到料號資料", null);
+            return new ResultDataModel<ITEMS_T>(true, "取得料號資料成功", item);
+
+        }
+
         public ResultModel CheckTransactionType(string outSubinventory, string inSubinventory)
         {
             if (outSubinventory == null || outSubinventory == "請選擇") return new ResultModel(false, "");
@@ -276,6 +295,20 @@ namespace CHPOUTSRCMES.Web.Models.Stock
 
         }
 
+        public GetShipmentNumberListResult GetInboundShipmentNumberList(TransferUOW uow, long outOrganizationId, string outSubinventoryCode,  long inOrganizationId, string inSubinventoryCode)
+        {
+            var headerList = uow.GetShipmentNumberforInbound(outOrganizationId, outSubinventoryCode, inOrganizationId, inSubinventoryCode);
+            if (headerList == null || headerList.Count == 0) return new GetShipmentNumberListResult { status = true, result = "找不到出貨編號", items = uow.createDropDownList(MasterUOW.DropDownListType.Add) };
+            //List<SelectListItem> items = headerList.Select(i => new SelectListItem() { Text = i.ShipmentNumber, Value = i.ShipmentNumber }).ToList();
+
+            return new GetShipmentNumberListResult
+            {
+                status = true,
+                result = "取得出貨編號成功",
+                items = headerList
+            };
+        }
+
         public GetShipmentNumberListResult GetShipmentNumberList(TransferUOW uow, string transferType, string outSubinventoryCode, string inSubinventoryCode)
         {
             var outSubinventory = uow.GetSubinventoryT(outSubinventoryCode);
@@ -314,99 +347,99 @@ namespace CHPOUTSRCMES.Web.Models.Stock
             };
         }
 
-        public List<AutoCompletedItem> AutoCompleteShipmentNumber(string TransactionType, string outSubInventory, string outLocator, string inSubInventory, string inLocator, string Prefix)
-        {
-            if (TransactionType == "出貨編號")
-            {
-                var query = from stockTransferDT in model
-                            where outSubInventory == stockTransferDT.OUT_SUBINVENTORY_CODE &&
-                            outLocator == stockTransferDT.OUT_LOCATOR_ID &&
-                            inSubInventory == stockTransferDT.IN_SUBINVENTORY_CODE &&
-                            inLocator == stockTransferDT.IN_LOCATOR_ID &&
-                            "非MES入庫手動新增" != stockTransferDT.NUMBER_STATUS &&
-                            "非MES入庫檔案匯入" != stockTransferDT.NUMBER_STATUS &&
-                            "非MES已入庫" != stockTransferDT.NUMBER_STATUS &&
-                            stockTransferDT.SHIPMENT_NUMBER.Contains(Prefix)
-                            group stockTransferDT by new { stockTransferDT.SHIPMENT_NUMBER } into g
-                            select new AutoCompletedItem
-                            {
-                                Description = g.Key.SHIPMENT_NUMBER,
-                                Value = g.Key.SHIPMENT_NUMBER
-                            };
+        //public List<AutoCompletedItem> AutoCompleteShipmentNumber(string TransactionType, string outSubInventory, string outLocator, string inSubInventory, string inLocator, string Prefix)
+        //{
+        //    if (TransactionType == "出貨編號")
+        //    {
+        //        var query = from stockTransferDT in model
+        //                    where outSubInventory == stockTransferDT.OUT_SUBINVENTORY_CODE &&
+        //                    outLocator == stockTransferDT.OUT_LOCATOR_ID &&
+        //                    inSubInventory == stockTransferDT.IN_SUBINVENTORY_CODE &&
+        //                    inLocator == stockTransferDT.IN_LOCATOR_ID &&
+        //                    "非MES入庫手動新增" != stockTransferDT.NUMBER_STATUS &&
+        //                    "非MES入庫檔案匯入" != stockTransferDT.NUMBER_STATUS &&
+        //                    "非MES已入庫" != stockTransferDT.NUMBER_STATUS &&
+        //                    stockTransferDT.SHIPMENT_NUMBER.Contains(Prefix)
+        //                    group stockTransferDT by new { stockTransferDT.SHIPMENT_NUMBER } into g
+        //                    select new AutoCompletedItem
+        //                    {
+        //                        Description = g.Key.SHIPMENT_NUMBER,
+        //                        Value = g.Key.SHIPMENT_NUMBER
+        //                    };
 
-                return query.ToList();
-            }
-            else if (TransactionType == "移轉編號")
-            {
-                var query = from stockTransferDT in model
-                            where outSubInventory == stockTransferDT.OUT_SUBINVENTORY_CODE &&
-                            outLocator == stockTransferDT.OUT_LOCATOR_ID &&
-                            inSubInventory == stockTransferDT.IN_SUBINVENTORY_CODE &&
-                            inLocator == stockTransferDT.IN_LOCATOR_ID &&
-                            "非MES入庫手動新增" != stockTransferDT.NUMBER_STATUS &&
-                            "非MES入庫檔案匯入" != stockTransferDT.NUMBER_STATUS &&
-                            "非MES已入庫" != stockTransferDT.NUMBER_STATUS &&
-                            stockTransferDT.SUBINVENTORY_TRANSFER_NUMBER.Contains(Prefix)
-                            group stockTransferDT by new { stockTransferDT.SUBINVENTORY_TRANSFER_NUMBER } into g
-                            select new AutoCompletedItem
-                            {
-                                Description = g.Key.SUBINVENTORY_TRANSFER_NUMBER,
-                                Value = g.Key.SUBINVENTORY_TRANSFER_NUMBER
-                            };
+        //        return query.ToList();
+        //    }
+        //    else if (TransactionType == "移轉編號")
+        //    {
+        //        var query = from stockTransferDT in model
+        //                    where outSubInventory == stockTransferDT.OUT_SUBINVENTORY_CODE &&
+        //                    outLocator == stockTransferDT.OUT_LOCATOR_ID &&
+        //                    inSubInventory == stockTransferDT.IN_SUBINVENTORY_CODE &&
+        //                    inLocator == stockTransferDT.IN_LOCATOR_ID &&
+        //                    "非MES入庫手動新增" != stockTransferDT.NUMBER_STATUS &&
+        //                    "非MES入庫檔案匯入" != stockTransferDT.NUMBER_STATUS &&
+        //                    "非MES已入庫" != stockTransferDT.NUMBER_STATUS &&
+        //                    stockTransferDT.SUBINVENTORY_TRANSFER_NUMBER.Contains(Prefix)
+        //                    group stockTransferDT by new { stockTransferDT.SUBINVENTORY_TRANSFER_NUMBER } into g
+        //                    select new AutoCompletedItem
+        //                    {
+        //                        Description = g.Key.SUBINVENTORY_TRANSFER_NUMBER,
+        //                        Value = g.Key.SUBINVENTORY_TRANSFER_NUMBER
+        //                    };
 
-                return query.ToList();
-            }
-            else
-            {
-                return new List<AutoCompletedItem>();
-            }
+        //        return query.ToList();
+        //    }
+        //    else
+        //    {
+        //        return new List<AutoCompletedItem>();
+        //    }
 
-        }
+        //}
 
-        public List<AutoCompletedItem> AutoCompleteShipmentNumber(string TransactionType, string outSubInventory, string outLocator, string inSubInventory, string inLocator, string Prefix, string NumberStatus)
-        {
-            if (TransactionType == "出貨編號")
-            {
-                var query = from stockTransferDT in model
-                            where outSubInventory == stockTransferDT.OUT_SUBINVENTORY_CODE &&
-                            outLocator == stockTransferDT.OUT_LOCATOR_ID &&
-                            inSubInventory == stockTransferDT.IN_SUBINVENTORY_CODE &&
-                            inLocator == stockTransferDT.IN_LOCATOR_ID &&
-                            NumberStatus != stockTransferDT.NUMBER_STATUS &&
-                            stockTransferDT.SHIPMENT_NUMBER.Contains(Prefix)
-                            group stockTransferDT by new { stockTransferDT.SHIPMENT_NUMBER } into g
-                            select new AutoCompletedItem
-                            {
-                                Description = g.Key.SHIPMENT_NUMBER,
-                                Value = g.Key.SHIPMENT_NUMBER
-                            };
+        //public List<AutoCompletedItem> AutoCompleteShipmentNumber(string TransactionType, string outSubInventory, string outLocator, string inSubInventory, string inLocator, string Prefix, string NumberStatus)
+        //{
+        //    if (TransactionType == "出貨編號")
+        //    {
+        //        var query = from stockTransferDT in model
+        //                    where outSubInventory == stockTransferDT.OUT_SUBINVENTORY_CODE &&
+        //                    outLocator == stockTransferDT.OUT_LOCATOR_ID &&
+        //                    inSubInventory == stockTransferDT.IN_SUBINVENTORY_CODE &&
+        //                    inLocator == stockTransferDT.IN_LOCATOR_ID &&
+        //                    NumberStatus != stockTransferDT.NUMBER_STATUS &&
+        //                    stockTransferDT.SHIPMENT_NUMBER.Contains(Prefix)
+        //                    group stockTransferDT by new { stockTransferDT.SHIPMENT_NUMBER } into g
+        //                    select new AutoCompletedItem
+        //                    {
+        //                        Description = g.Key.SHIPMENT_NUMBER,
+        //                        Value = g.Key.SHIPMENT_NUMBER
+        //                    };
 
-                return query.ToList();
-            }
-            else if (TransactionType == "移轉編號")
-            {
-                var query = from stockTransferDT in model
-                            where outSubInventory == stockTransferDT.OUT_SUBINVENTORY_CODE &&
-                            outLocator == stockTransferDT.OUT_LOCATOR_ID &&
-                            inSubInventory == stockTransferDT.IN_SUBINVENTORY_CODE &&
-                            inLocator == stockTransferDT.IN_LOCATOR_ID &&
-                            NumberStatus != stockTransferDT.NUMBER_STATUS &&
-                            stockTransferDT.SUBINVENTORY_TRANSFER_NUMBER.Contains(Prefix)
-                            group stockTransferDT by new { stockTransferDT.SUBINVENTORY_TRANSFER_NUMBER } into g
-                            select new AutoCompletedItem
-                            {
-                                Description = g.Key.SUBINVENTORY_TRANSFER_NUMBER,
-                                Value = g.Key.SUBINVENTORY_TRANSFER_NUMBER
-                            };
+        //        return query.ToList();
+        //    }
+        //    else if (TransactionType == "移轉編號")
+        //    {
+        //        var query = from stockTransferDT in model
+        //                    where outSubInventory == stockTransferDT.OUT_SUBINVENTORY_CODE &&
+        //                    outLocator == stockTransferDT.OUT_LOCATOR_ID &&
+        //                    inSubInventory == stockTransferDT.IN_SUBINVENTORY_CODE &&
+        //                    inLocator == stockTransferDT.IN_LOCATOR_ID &&
+        //                    NumberStatus != stockTransferDT.NUMBER_STATUS &&
+        //                    stockTransferDT.SUBINVENTORY_TRANSFER_NUMBER.Contains(Prefix)
+        //                    group stockTransferDT by new { stockTransferDT.SUBINVENTORY_TRANSFER_NUMBER } into g
+        //                    select new AutoCompletedItem
+        //                    {
+        //                        Description = g.Key.SUBINVENTORY_TRANSFER_NUMBER,
+        //                        Value = g.Key.SUBINVENTORY_TRANSFER_NUMBER
+        //                    };
 
-                return query.ToList();
-            }
-            else
-            {
-                return new List<AutoCompletedItem>();
-            }
+        //        return query.ToList();
+        //    }
+        //    else
+        //    {
+        //        return new List<AutoCompletedItem>();
+        //    }
 
-        }
+        //}
 
 
 
@@ -431,6 +464,12 @@ namespace CHPOUTSRCMES.Web.Models.Stock
 
             return list.Select(i => new SelectListItem() { Text = i.Text, Value = i.Value });
         }
+
+        //public ResultModel CheckCreateDetail(TransferUOW uow, string shipmentNumber, string transferType, long outOrganizationId, string outSubinventoryCode, long outLocatorId, long inOrganizationId, string inSubinventoryCode, long inLocatorId )
+        //{
+        //    var trfHeaderList = uow.GetTrfHeaderList(shipmentNumber, transferType)
+
+        //}
 
         public ResultModel CheckNumber(string TransactionType, string OUT_SUBINVENTORY_CODE, string OUT_LOCATOR_ID, string IN_SUBINVENTORY_CODE, string IN_LOCATOR_ID,
             string Number)
