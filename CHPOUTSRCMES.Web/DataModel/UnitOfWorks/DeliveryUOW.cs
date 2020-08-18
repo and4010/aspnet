@@ -194,7 +194,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                         throw new Exception(pickedResult.Msg);
                     }
                     var updateDatas = GetDeliveryHeaderDataListFromHeaderId(dlvHeaderId);
-                    if (updateDatas.Count == 0) throw new Exception("找不到交運單資料");
+                    if (updateDatas == null || updateDatas.Count == 0) throw new Exception("找不到交運單資料");
                     foreach (DLV_HEADER_T data in updateDatas)
                     {
                         data.DeliveryStatusCode = pickedResult.Msg;

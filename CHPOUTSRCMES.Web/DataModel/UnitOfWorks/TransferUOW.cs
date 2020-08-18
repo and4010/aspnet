@@ -10,6 +10,7 @@ using CHPOUTSRCMES.Web.DataModel.Entity.Repositorys;
 using CHPOUTSRCMES.Web.DataModel.Entiy.Transfer;
 using CHPOUTSRCMES.Web.DataModel.Interfaces;
 using CHPOUTSRCMES.Web.Models;
+using CHPOUTSRCMES.Web.Models.Stock;
 using CHPOUTSRCMES.Web.Util;
 using NLog;
 
@@ -90,6 +91,60 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             public const string InvTransfer = "INV";
         }
 
+
+
+        public class IsMes
+        {
+            /// <summary>
+            /// 對方非MES
+            /// </summary>
+            public const string No = "0";
+            /// <summary>
+            /// 對方是MES
+            /// </summary>
+            public const string Yes = "1";
+        }
+
+        public class DataUpadteAuthority
+        {
+            /// <summary>
+            /// 拒絕
+            /// </summary>
+            public const string Denied = "0";
+            /// <summary>
+            /// 允許
+            /// </summary>
+            public const string Permit = "1";
+        }
+
+        public class DataWriteType
+        {
+            /// <summary>
+            /// 手動輸入
+            /// </summary>
+            public const string KeyIn = "0";
+            /// <summary>
+            /// Excel匯入
+            /// </summary>
+            public const string ExcelImport = "1";
+        }
+
+
+        /// <summary>
+        /// 出貨編號狀態
+        /// </summary>
+        public class NumberStatus
+        {
+            /// <summary>
+            /// 未存檔
+            /// </summary>
+            public const string NotSaved = "0";
+            /// <summary>
+            /// 已存檔
+            /// </summary>
+            public const string Saved = "1";
+        }
+
         public string GetTransferCatalog(string outSubinventoryCode, string inSubinventoryCode)
         {
             if (CompareOrganization(outSubinventoryCode, inSubinventoryCode))
@@ -101,6 +156,20 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                 return TransferCatalog.OrgTransfer;
             }
         }
+
+        public string GetTransferCatalog(long outOrganizationId, long inOrganizationId)
+        {
+            if (outOrganizationId == inOrganizationId)
+            {
+                return TransferCatalog.InvTransfer;
+            }
+            else
+            {
+                return TransferCatalog.OrgTransfer;
+            }
+        }
+
+        
 
         #region 庫存移轉下拉選單
 
@@ -139,7 +208,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
 
         #region 出貨編號下拉選單
 
-        public List<SelectListItem> GetShipmentNumberDropDownList(string transferCatalog, string transferType, string outSubinventoryCode, string inSubinventoryCode)
+        public List<SelectListItem> GetOutBoundShipmentNumberDropDownList(string transferCatalog, string transferType, string outSubinventoryCode, string inSubinventoryCode)
         {
             var transferTypeList = createDropDownList(DropDownListType.Add);
             transferTypeList.AddRange(getShipmentNumberList(transferCatalog, transferType, outSubinventoryCode, inSubinventoryCode));
@@ -187,6 +256,13 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
 
         }
 
+        public List<SelectListItem> GetInBoundShipmentNumberDropDownList(long outOrganizationId, string outSubinventoryCode, long inOrganizationId, string inSubinventoryCode)
+        {
+            var transferTypeList = createDropDownList(DropDownListType.Add);
+            transferTypeList.AddRange(GetShipmentNumberforInbound(outOrganizationId, outSubinventoryCode, inOrganizationId, inSubinventoryCode));
+            return transferTypeList;
+        }
+
         /// <summary>
         /// 取得入庫的出貨編號
         /// </summary>
@@ -198,16 +274,13 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
         public List<SelectListItem> GetShipmentNumberforInbound(long outOrganizationId, string outSubinventoryCode, long inOrganizationId, string inSubinventoryCode)
         {
             
-                string cmd = @"
-           SELECT TRANSFER_HEADER_ID as Value,
-      SHIPMENT_NUMBER as Text,
-'false' as Disabled,
-null as 'Group',
-'false' as Selected
+            string cmd = @"
+           SELECT CONVERT(varchar(10), TRANSFER_HEADER_ID) as Value,
+      SHIPMENT_NUMBER as Text
 
 FROM TRF_HEADER_T
 WHERE 
-TRANSFER_TYPE = 1
+TRANSFER_TYPE = 'I'
 AND SUBINVENTORY_CODE = @subCode AND ORGANIZATION_ID = @organId
 AND TRANSFER_SUBINVENTORY_CODE = @trfSubCode AND TRANSFER_ORGANIZATION_ID = @trfOrganId
 
@@ -215,39 +288,377 @@ UNION
 
 
 SELECT
-s.TRANSFER_HEADER_ID as Value,
-s.SHIPMENT_NUMBER as Text,
-'false' as Disabled,
-null as 'Group',
-'false' as Selected
+CONVERT(varchar(10), s.TRANSFER_HEADER_ID) as Value,
+s.SHIPMENT_NUMBER as Text
 FROM TRF_HEADER_T s
-LEFT JOIN TRF_HEADER_T t ON s.SHIPMENT_NUMBER = t.SHIPMENT_NUMBER AND t.TRANSFER_TYPE = 1  
+LEFT JOIN TRF_HEADER_T t ON s.SHIPMENT_NUMBER = t.SHIPMENT_NUMBER AND t.TRANSFER_TYPE = 'I'  
 WHERE 
-s.TRANSFER_TYPE = 0
+s.TRANSFER_TYPE = 'O'
 AND s.SUBINVENTORY_CODE = @subCode AND s.ORGANIZATION_ID = @organId
 AND s.TRANSFER_SUBINVENTORY_CODE = @trfSubCode AND s.TRANSFER_ORGANIZATION_ID = @trfOrganId
 
-AND s.NUMBER_STATUS = 1
+AND s.NUMBER_STATUS = '1'
 AND t.SHIPMENT_NUMBER IS NULL";
 
-                return  this.Context.Database.SqlQuery<SelectListItem>(cmd,
-                    new SqlParameter("@subCode", outSubinventoryCode),
-                    new SqlParameter("@organId", outOrganizationId),
-                    new SqlParameter("@trfSubCode", inSubinventoryCode),
-                    new SqlParameter("@trfOrganId", inOrganizationId)).ToList();
+            return this.Context.Database.SqlQuery<SelectListItem>(cmd,
+                new SqlParameter("@subCode", outSubinventoryCode),
+                new SqlParameter("@organId", outOrganizationId),
+                new SqlParameter("@trfSubCode", inSubinventoryCode),
+                new SqlParameter("@trfOrganId", inOrganizationId)).ToList();
 
 
-             
+
 
         }
 
-        
-        public List<TRF_HEADER_T> GetTrfHeaderList(string shipmentNumber, string transferType)
+
+        public List<TRF_DETAIL_T> GetTrfDetailList(long transferHeaderId, string itemNumber)
         {
-            return trfHeaderTRepositiory.GetAll().AsNoTracking().Where(x =>
-            x.ShipmentNumber == shipmentNumber &&
-            x.TransferType == transferType).ToList();
+            return trfDetailTRepositiory.GetAll().AsNoTracking().Where(x =>
+            x.TransferHeaderId == transferHeaderId &&
+            x.ItemNumber == itemNumber).ToList();
         }
+
+        public TRF_DETAIL_T GetTrfDetail(long transferHeaderId, long inventoryItemId)
+        {
+            return trfDetailTRepositiory.GetAll().AsNoTracking().FirstOrDefault(x =>
+            x.TransferHeaderId == transferHeaderId &&
+            x.InventoryItemId == inventoryItemId);
+        }
+
+        //public List<TRF_HEADER_T> GetTrfHeaderList(string shipmentNumber, string transferType)
+        //{
+        //    return trfHeaderTRepositiory.GetAll().AsNoTracking().Where(x =>
+        //    x.ShipmentNumber == shipmentNumber &&
+        //    x.TransferType == transferType).ToList();
+        //}
+
+        public TRF_HEADER_T GetTrfHeader(string shipmentNumber, string transferType)
+        {
+            return trfHeaderTRepositiory.GetAll().AsNoTracking().FirstOrDefault(x =>
+            x.ShipmentNumber == shipmentNumber &&
+            x.TransferType == transferType);
+        }
+
+        public TRF_HEADER_T GetTrfHeader(long transferHeaderId)
+        {
+            return trfHeaderTRepositiory.GetAll().AsNoTracking().FirstOrDefault(x =>
+            x.TransferHeaderId == transferHeaderId);
+        }
+
+        public List<StockTransferBarcodeDT> GetTrfInboundPickedTList(long transferHeaderId, string numberStatus)
+        {
+            string cmd = "";
+            if (numberStatus == NumberStatus.NotSaved)
+            {
+                cmd = @"
+SELECT [TRANSFER_PICKED_ID] as ID
+	  ,ROW_NUMBER() OVER(ORDER BY p.[TRANSFER_DETAIL_ID]) as SUB_ID
+      ,p.[TRANSFER_DETAIL_ID] as TransferDetailId
+      ,p.[TRANSFER_HEADER_ID] as TransferHeaderId
+      ,p.[ITEM_NUMBER]
+      ,[STOCK_ID] as StockId
+      ,[BARCODE]
+      ,[PRIMARY_QUANTITY]
+      ,[PRIMARY_UOM]
+      ,ISNULL([SECONDARY_QUANTITY],0)
+      ,[SECONDARY_UOM]
+      ,[LOT_NUMBER]
+      ,[NOTE] as REMARK
+      ,[STATUS] as Status
+	  ,d.PACKING_TYPE as PACKING_TYPE
+  FROM [TRF_INBOUND_PICKED_T] p
+  inner join TRF_DETAIL_T d on p.TRANSFER_DETAIL_ID = d.TRANSFER_DETAIL_ID
+  WHERE p.TRANSFER_HEADER_ID = @transferHeaderId";
+            }
+            else
+            {
+                cmd = @"
+SELECT [TRANSFER_PICKED_ID] as ID
+	  ,ROW_NUMBER() OVER(ORDER BY p.[TRANSFER_DETAIL_ID]) as SUB_ID
+      ,p.[TRANSFER_DETAIL_ID] as TransferDetailId
+      ,p.[TRANSFER_HEADER_ID] as TransferHeaderId
+      ,p.[ITEM_NUMBER]
+      ,[STOCK_ID] as StockId
+      ,[BARCODE]
+      ,[PRIMARY_QUANTITY]
+      ,[PRIMARY_UOM]
+      ,[SECONDARY_QUANTITY]
+      ,[SECONDARY_UOM]
+      ,[LOT_NUMBER]
+      ,[NOTE] as REMARK
+      ,[STATUS] as Status
+	  ,d.PACKING_TYPE as PACKING_TYPE
+  FROM [TRF_INBOUND_PICKED_HT] p
+  inner join TRF_DETAIL_T d on p.TRANSFER_DETAIL_ID = d.TRANSFER_DETAIL_ID
+  WHERE p.TRANSFER_HEADER_ID = @transferHeaderId";
+            }
+            return this.Context.Database.SqlQuery<StockTransferBarcodeDT>(cmd, new SqlParameter("@transferHeaderId", transferHeaderId)).ToList();
+        }
+
+        /// <summary>
+        /// 取出貨編號 待修正為從資料庫取
+        /// </summary>
+        /// <param name="outSubinventoryCode"></param>
+        /// <param name="inSubinventoryCode"></param>
+        /// <returns></returns>
+        public string GetShipmentNumber(string outSubinventoryCode, string inSubinventoryCode)
+        {
+            Random rnd = new Random();
+            List<int> randomList = Enumerable.Range(1, 999)
+                .OrderBy(x => rnd.Next()).Take(100).ToList();
+            return "(" + outSubinventoryCode + "-" + inSubinventoryCode + ")" + DateTime.Now.ToString("yyyyMMdd") + "-" + String.Format("{0:000}", randomList[0].ToString());
+        }
+
+
+        public ResultModel CreateDetail(string shipmentNumber, string transferType, string itemNumber, long outOrganizationId,
+            string outSubinventoryCode, long? outLocatorId, long inOrganizationId, string inSubinventoryCode, long? inLocatorId, string dataUpadteAuthority, string dataWriteType,
+            decimal requestedQty, decimal rollReamWt, string lotNumber, string createUser, string createUserName)
+        {
+            using (var txn = this.Context.Database.BeginTransaction())
+            {
+                try
+                {
+                    var now = DateTime.Now;
+
+                    var item = GetItemNumber(itemNumber);
+                    if (item == null) throw new Exception("找不到料號資料");
+                    long transactionTypeId;
+                    var transferCatalog = GetTransferCatalog(outOrganizationId, inOrganizationId);
+                    if (transferCatalog == TransferCatalog.OrgTransfer)
+                    {
+                        transactionTypeId = TransferUOW.TransactionTypeId.IntransitShipment;
+                        //檢查料號所屬組織
+                        var itemNumberOrganizationIdList = GetItemNumberOrganizationId(item.InventoryItemId);
+                        if (itemNumberOrganizationIdList == null || itemNumberOrganizationIdList.Count == 0) throw new Exception("找不到料號所屬組織");
+
+                        if (transferType == TransferUOW.TransferType.InBound)
+                        {
+                            if (itemNumberOrganizationIdList.Where(x => x == inOrganizationId).ToList().Count == 0) throw new Exception("入庫組織沒有此料號");
+                        }
+                        else
+                        {
+                            if (itemNumberOrganizationIdList.Where(x => x == outOrganizationId).ToList().Count == 0) throw new Exception("出庫組織沒有此料號");
+                        }
+                        
+                    }
+                    else
+                    {
+                        transactionTypeId = TransferUOW.TransactionTypeId.Chp30;
+                    }
+                  
+                    var outOrganization = GetOrganization(outOrganizationId);
+                    if (outOrganization == null) throw new Exception("找不到出庫組織資料");
+
+                    string locatorCode = "";
+                    if (outLocatorId != null)
+                    {
+                        var outLocator = GetLocator(outOrganizationId, outSubinventoryCode);
+                        if (outLocator == null) throw new Exception("找不到出庫儲位資料");
+                        locatorCode = outLocator.LocatorSegments;
+                    }
+                    
+                    var inOrganization = GetOrganization(inOrganizationId);
+                    if (inOrganization == null) throw new Exception("找不到出庫組織資料");
+
+                    string transferLocatorCode = "";
+                    if (inLocatorId != null)
+                    {
+                        var inLocator = GetLocator(inOrganizationId, inSubinventoryCode);
+                        if (inLocator == null) throw new Exception("找不到出庫儲位資料");
+                        transferLocatorCode = inLocator.LocatorSegments;
+                    }
+                  
+                    var transactionType = GetTransactionType(transactionTypeId);
+                    if (transactionType == null) throw new Exception("找不到庫存交易類別資料");
+
+                    if (shipmentNumber == DropDownListTypeValue.Add)
+                    {
+                        shipmentNumber = GetShipmentNumber(outSubinventoryCode, inSubinventoryCode);
+                        trfHeaderTRepositiory.Create(new TRF_HEADER_T
+                        {
+                            OrgId = outOrganization.OrganizationId, //待修正為ORG_ID
+                            OrganizationId = outOrganizationId,
+                            OrganizationCode = outOrganization.OrganizationCode,
+                            ShipmentNumber = shipmentNumber,
+                            TransferCatalog = transferCatalog,
+                            TransferType = transferType,
+                            NumberStatus = NumberStatus.NotSaved,
+                            IsMes = IsMes.No,
+                            SubinventoryCode = outSubinventoryCode,
+                            LocatorId = outLocatorId,
+                            LocatorCode = locatorCode,
+                            TransactionDate = now,
+                            TransactionTypeId = transactionTypeId,
+                            TransactionTypeName = transactionType.TransactionTypeName,
+                            TransferOrgId = inOrganization.OrganizationId, //待修正為ORG_ID
+                            TransferOrganizationId = inOrganizationId,
+                            TransferOrganizationCode = inOrganization.OrganizationCode,
+                            TransferSubinventoryCode = inSubinventoryCode,
+                            TransferLocatorId = inLocatorId,
+                            TransferLocatorCode = transferLocatorCode,
+                            CreatedBy = createUser,
+                            CreatedUserName = createUserName,
+                            CreationDate = now,
+                            LastUpdateBy = createUser,
+                            LastUpdateUserName = createUserName,
+                            LastUpdateDate = now
+                        }, true);
+                    }
+
+                    var trfHeader = GetTrfHeader(shipmentNumber, transferType);
+                    if (trfHeader == null) throw new Exception("找不到出貨編號資料");
+                    if (trfHeader.OrganizationId != outOrganizationId) throw new Exception("出庫組織比對錯誤，請檢查出庫倉庫是否選擇正確");
+                    if (trfHeader.SubinventoryCode != outSubinventoryCode) throw new Exception("出庫倉庫比對錯誤，請檢查出庫倉庫是否選擇正確");
+                    if (trfHeader.LocatorId != outLocatorId) throw new Exception("出庫儲位比對錯誤，請檢查出庫儲位是否選擇正確");
+                    if (trfHeader.TransferOrganizationId != inOrganizationId) throw new Exception("入庫組織比對錯誤，請檢查入庫倉庫是否選擇正確");
+                    if (trfHeader.TransferSubinventoryCode != inSubinventoryCode) throw new Exception("入庫倉庫比對錯誤，請檢查入庫倉庫是否選擇正確");
+                    if (trfHeader.TransferLocatorId != inLocatorId) throw new Exception("入庫儲位比對錯誤，請檢查入庫儲位是否選擇正確");
+
+                    var trfDeatil = GetTrfDetail(trfHeader.TransferHeaderId, item.InventoryItemId);
+                    if (trfDeatil != null) throw new Exception("料號重複輸入");
+
+                    decimal rollReamQty = Math.Ceiling(requestedQty / rollReamWt); //無條件進位 算出棧板數或捲數
+
+                    decimal priQty = 0;
+                    decimal? secQty = null;
+
+                    if (item.CatalogElemVal070 == ItemCategory.Roll)
+                    {
+                        priQty = requestedQty;
+                    }
+                    else if (item.CatalogElemVal070 == ItemCategory.Flat)
+                    {
+                        var uomConversionResult = uomConversion.Convert(item.InventoryItemId, requestedQty, item.SecondaryUomCode, item.PrimaryUomCode); //副單位需求量 轉 主單位需求量
+                        if (uomConversionResult.Success)
+                        {
+                            priQty = uomConversionResult.Data;
+                            secQty = requestedQty;
+                        }
+                        else
+                        {
+                            throw new Exception(uomConversionResult.Msg); //單位換算失敗 回傳錯誤
+                        }
+                    }
+                    else
+                    {
+                        throw new Exception("無法識別貨品類別");
+                    }
+
+
+                    trfDetailTRepositiory.Create(new TRF_DETAIL_T
+                    {
+                        TransferHeaderId = trfHeader.TransferHeaderId,
+                        InventoryItemId = item.InventoryItemId,
+                        ItemNumber = itemNumber,
+                        ItemDescription = item.ItemDescTch,
+                        PackingType = item.CatalogElemVal110,
+                        RequestedTransactionUom = "123", //待確認刪除
+                        RequestedTransactionQuantity = 123, //待確認刪除
+                        RequestedPrimaryUom = item.PrimaryUomCode,
+                        RequestedPrimaryQuantity = priQty,
+                        RequestedSecondaryUom = item.SecondaryUomCode,
+                        RequestedSecondaryQuantity = secQty,
+                        RollReamQty = rollReamQty,
+                        DataUpadteAuthority = dataUpadteAuthority,
+                        DataWriteType = dataWriteType,
+                        CreatedBy = createUser,
+                        CreatedUserName = createUserName,
+                        CreationDate = now,
+                        LastUpdateBy = createUser,
+                        LastUpdateUserName = createUserName,
+                        LastUpdateDate = now
+                    }, true);
+
+                    trfDeatil = GetTrfDetail(trfHeader.TransferHeaderId, item.InventoryItemId);
+                    if (trfDeatil == null) throw new Exception("找不到此料號明細資料");
+
+                    var generateBarcodesResult = GenerateBarcodes(inOrganizationId, inSubinventoryCode, "A", (int)rollReamQty, createUser); //待把prefix改成倉庫的barcode prefix
+                    if (!generateBarcodesResult.Success) throw new Exception(generateBarcodesResult.Msg);
+
+                    var priRemainder = priQty;
+                    var secRemainder = secQty;
+
+                    if (transferType == TransferType.InBound)
+                    {
+                        //新增入庫揀貨明細
+                        for (int i = 0; i < rollReamQty; i++)
+                        {
+                            trfInboundPickedTRepositiory.Create(new TRF_INBOUND_PICKED_T
+                            {
+                                TransferDetailId = trfDeatil.TransferDetailId,
+                                TransferHeaderId = trfHeader.TransferHeaderId,
+                                InventoryItemId = item.InventoryItemId,
+                                ItemNumber = itemNumber,
+                                StockId = 0, //待問
+                                Barcode = generateBarcodesResult.Data[i],
+                                PrimaryUom = item.PrimaryUomCode,
+                                PrimaryQuantity = i + 1 == rollReamQty ? priRemainder : rollReamWt,
+                                SecondaryUom = item.SecondaryUomCode,
+                                SecondaryQuantity = i + 1 == rollReamQty ? secRemainder : rollReamWt,
+                                LotNumber = lotNumber,
+                                LotQuantity = null,
+                                Note = "",
+                                Status = InboundStatus.WaitPrint,
+                                CreatedBy = createUser,
+                                CreatedUserName = createUserName,
+                                CreationDate = now,
+                                LastUpdateBy = createUser,
+                                LastUpdateUserName = createUserName,
+                                LastUpdateDate = now
+
+                            });
+                            priRemainder = priQty - rollReamWt;
+                            secRemainder = secQty - rollReamWt;
+                        }
+                    }
+                    else
+                    {
+                        //新增出貨揀貨明細
+                        for (int i = 0; i < rollReamQty; i++)
+                        {
+                            trfOutboundPickedTRepositiory.Create(new TRF_OUTBOUND_PICKED_T
+                            {
+                                TransferDetailId = trfDeatil.TransferDetailId,
+                                TransferHeaderId = trfHeader.TransferHeaderId,
+                                InventoryItemId = item.InventoryItemId,
+                                ItemNumber = itemNumber,
+                                StockId = 0, //待問
+                                Barcode = generateBarcodesResult.Data[i],
+                                PrimaryUom = item.PrimaryUomCode,
+                                PrimaryQuantity = i + 1 == rollReamQty ? priRemainder : rollReamWt,
+                                SecondaryUom = item.SecondaryUomCode,
+                                SecondaryQuantity = i + 1 == rollReamQty ? secRemainder : rollReamWt,
+                                LotNumber = lotNumber,
+                                LotQuantity = null,
+                                Note = "",
+                                Status = InboundStatus.WaitPrint,
+                                CreatedBy = createUser,
+                                CreatedUserName = createUserName,
+                                CreationDate = now,
+                                LastUpdateBy = createUser,
+                                LastUpdateUserName = createUserName,
+                                LastUpdateDate = now
+                            });
+                            priRemainder = priQty - rollReamWt;
+                            secRemainder = secQty - rollReamWt;
+                        }
+                    }
+
+                    trfInboundPickedTRepositiory.SaveChanges();
+                    txn.Commit();
+                    return new ResultModel(true, "新增明細成功");
+                }
+                catch (Exception ex)
+                {
+                    logger.Error(LogUtilities.BuildExceptionMessage(ex));
+                    txn.Rollback();
+                    return new ResultModel(false, "新增明細失敗:" + ex.Message);
+                }
+            }
+        }
+
+
     }
 
 }

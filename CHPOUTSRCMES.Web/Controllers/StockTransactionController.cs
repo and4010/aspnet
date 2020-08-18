@@ -192,7 +192,7 @@ namespace CHPOUTSRCMES.Web.Controllers
             {
                 using (TransferUOW uow = new TransferUOW(context))
                 {
-                     List<AutoCompletedItem> items = stockTransferData.GetAutoCompleteItemNumberList(uow, Prefix);
+                    List<AutoCompletedItem> items = stockTransferData.GetAutoCompleteItemNumberList(uow, Prefix);
                     return Json(items, JsonRequestBehavior.AllowGet);
                 }
             }
@@ -366,6 +366,20 @@ namespace CHPOUTSRCMES.Web.Controllers
             return Json(new { draw = data.Draw, recordsFiltered = filteredCount, recordsTotal = totalCount, data = model }, JsonRequestBehavior.AllowGet);
         }
 
+        [HttpPost, ActionName("GetShipmentNumberData")]
+        public JsonResult GetShipmentNumberData(long transferHeaderId)
+        {
+            using (var context = new MesContext())
+            {
+                using (TransferUOW uow = new TransferUOW(context))
+                {
+
+                    return new JsonResult { Data = stockTransferData.GetShipmentNumberData(uow, transferHeaderId) };
+                }
+
+            }
+        }
+
         [HttpPost, ActionName("GetNumberStatus")]
         public JsonResult GetNumberStatus(string TransactionType, string OUT_SUBINVENTORY_CODE, string OUT_LOCATOR_ID, string IN_SUBINVENTORY_CODE, string IN_LOCATOR_ID, string Number)
         {
@@ -416,89 +430,108 @@ namespace CHPOUTSRCMES.Web.Controllers
         [HttpPost, ActionName("GetStockTransferBarcodeDT")]
         public JsonResult GetStockTransferBarcodeDT(DataTableAjaxPostViewModel data, string TransactionType, string OUT_SUBINVENTORY_CODE, string OUT_LOCATOR_ID, string IN_SUBINVENTORY_CODE, string IN_LOCATOR_ID, string Number, string NumberStatus)
         {
-            List<StockTransferBarcodeDT> model;
-            if (TransactionType == "出貨編號" && !string.IsNullOrEmpty(Number) && NumberStatus != "非MES入庫手動新增" && NumberStatus != "非MES入庫檔案匯入" && NumberStatus != "非MES已入庫")
+            using (var context = new MesContext())
             {
-                model = stockTransferBarcodeData.GetModelFromShipmentNumber(OUT_SUBINVENTORY_CODE, OUT_LOCATOR_ID, IN_SUBINVENTORY_CODE, IN_LOCATOR_ID, Number);
-            }
-            else if (TransactionType == "移轉編號" && !string.IsNullOrEmpty(Number) && NumberStatus != "非MES入庫手動新增" && NumberStatus != "非MES入庫檔案匯入" && NumberStatus != "非MES已入庫")
-            {
-                model = stockTransferBarcodeData.GetModelFromSubinventoryTransferNumber(OUT_SUBINVENTORY_CODE, OUT_LOCATOR_ID, IN_SUBINVENTORY_CODE, IN_LOCATOR_ID, Number);
-            }
-            else
-            {
-                model = new List<StockTransferBarcodeDT>();
+                using (TransferUOW uow = new TransferUOW(context))
+                {
+                    List<StockTransferBarcodeDT> model;
+                    if (TransactionType == "出貨編號" && !string.IsNullOrEmpty(Number) && NumberStatus != "非MES入庫手動新增" && NumberStatus != "非MES入庫檔案匯入" && NumberStatus != "非MES已入庫")
+                    {
+                        model = stockTransferBarcodeData.GetModelFromShipmentNumber(OUT_SUBINVENTORY_CODE, OUT_LOCATOR_ID, IN_SUBINVENTORY_CODE, IN_LOCATOR_ID, Number);
+                    }
+                    else if (TransactionType == "移轉編號" && !string.IsNullOrEmpty(Number) && NumberStatus != "非MES入庫手動新增" && NumberStatus != "非MES入庫檔案匯入" && NumberStatus != "非MES已入庫")
+                    {
+                        model = stockTransferBarcodeData.GetModelFromSubinventoryTransferNumber(OUT_SUBINVENTORY_CODE, OUT_LOCATOR_ID, IN_SUBINVENTORY_CODE, IN_LOCATOR_ID, Number);
+                    }
+                    else
+                    {
+                        model = new List<StockTransferBarcodeDT>();
+                    }
+
+
+
+                    var totalCount = model.Count;
+                    string search = data.Search.Value;
+
+                    if (!string.IsNullOrEmpty(search) && !string.IsNullOrWhiteSpace(search))
+                    {
+                        // Apply search   
+                        model = model.Where(p => (p.TransferDetailId.ToString().ToLower().Contains(search.ToLower()))
+                            || (!string.IsNullOrEmpty(p.BARCODE) && p.BARCODE.ToLower().Contains(search.ToLower()))
+                            || (!string.IsNullOrEmpty(p.ITEM_NUMBER) && p.ITEM_NUMBER.ToLower().Contains(search.ToLower()))
+                            //|| (!string.IsNullOrEmpty(p.LOT_NUMBER) && p.LOT_NUMBER.ToLower().Contains(search.ToLower()))
+                            || (!string.IsNullOrEmpty(p.PACKING_TYPE) && p.PACKING_TYPE.ToLower().Contains(search.ToLower()))
+                             || (p.PRIMARY_QUANTITY.ToString().ToLower().Contains(search.ToLower()))
+                             || (!string.IsNullOrEmpty(p.PRIMARY_UOM) && p.PRIMARY_UOM.ToLower().Contains(search.ToLower()))
+                             || (p.SECONDARY_QUANTITY.ToString().ToLower().Contains(search.ToLower()))
+                             || (!string.IsNullOrEmpty(p.SECONDARY_UOM) && p.SECONDARY_UOM.ToLower().Contains(search.ToLower()))
+                           || (!string.IsNullOrEmpty(p.REMARK) && p.SECONDARY_UOM.ToLower().Contains(search.ToLower()))
+                            ).ToList();
+                    }
+
+                    var filteredCount = model.Count;
+                    model = StockTransferBarcodeDTOrder.Order(data.Order, model).ToList();
+                    model = model.Skip(data.Start).Take(data.Length).ToList();
+
+                    return Json(new { draw = data.Draw, recordsFiltered = filteredCount, recordsTotal = totalCount, data = model }, JsonRequestBehavior.AllowGet);
+
+                }
             }
 
-            var totalCount = model.Count;
-            string search = data.Search.Value;
 
-            if (!string.IsNullOrEmpty(search) && !string.IsNullOrWhiteSpace(search))
-            {
-                // Apply search   
-                model = model.Where(p => (p.StockTransferDT_ID.ToString().ToLower().Contains(search.ToLower()))
-                    || (!string.IsNullOrEmpty(p.BARCODE) && p.BARCODE.ToLower().Contains(search.ToLower()))
-                    || (!string.IsNullOrEmpty(p.ITEM_NUMBER) && p.ITEM_NUMBER.ToLower().Contains(search.ToLower()))
-                    //|| (!string.IsNullOrEmpty(p.LOT_NUMBER) && p.LOT_NUMBER.ToLower().Contains(search.ToLower()))
-                    || (!string.IsNullOrEmpty(p.PACKING_TYPE) && p.PACKING_TYPE.ToLower().Contains(search.ToLower()))
-                     || (p.PRIMARY_QUANTITY.ToString().ToLower().Contains(search.ToLower()))
-                     || (!string.IsNullOrEmpty(p.PRIMARY_UOM) && p.PRIMARY_UOM.ToLower().Contains(search.ToLower()))
-                     || (p.SECONDARY_QUANTITY.ToString().ToLower().Contains(search.ToLower()))
-                     || (!string.IsNullOrEmpty(p.SECONDARY_UOM) && p.SECONDARY_UOM.ToLower().Contains(search.ToLower()))
-                   || (!string.IsNullOrEmpty(p.REMARK) && p.SECONDARY_UOM.ToLower().Contains(search.ToLower()))
-                    ).ToList();
-            }
-
-            var filteredCount = model.Count;
-            model = StockTransferBarcodeDTOrder.Order(data.Order, model).ToList();
-            model = model.Skip(data.Start).Take(data.Length).ToList();
-
-            return Json(new { draw = data.Draw, recordsFiltered = filteredCount, recordsTotal = totalCount, data = model }, JsonRequestBehavior.AllowGet);
         }
 
 
         [HttpPost, ActionName("GetInboundStockTransferBarcodeDT")]
-        public JsonResult GetInboundStockTransferBarcodeDT(DataTableAjaxPostViewModel data, string TransactionType, string OUT_SUBINVENTORY_CODE, string OUT_LOCATOR_ID, string IN_SUBINVENTORY_CODE, string IN_LOCATOR_ID, string Number, string NumberStatus)
+        public JsonResult GetInboundStockTransferBarcodeDT(DataTableAjaxPostViewModel data, long transferHeaderId, string numberStatus)
         {
-            List<StockTransferBarcodeDT> model;
-            if (TransactionType == "出貨編號" && !string.IsNullOrEmpty(Number) && NumberStatus != "MES未出庫")
+            using (var context = new MesContext())
             {
-                model = stockTransferBarcodeData.GetModelFromShipmentNumber(OUT_SUBINVENTORY_CODE, OUT_LOCATOR_ID, IN_SUBINVENTORY_CODE, IN_LOCATOR_ID, Number); //不顯示MES未出庫的資料
-            }
-            else if (TransactionType == "移轉編號" && !string.IsNullOrEmpty(Number) && NumberStatus != "MES未出庫")
-            {
-                model = stockTransferBarcodeData.GetModelFromSubinventoryTransferNumber(OUT_SUBINVENTORY_CODE, OUT_LOCATOR_ID, IN_SUBINVENTORY_CODE, IN_LOCATOR_ID, Number); //不顯示MES未出庫的資料
-            }
-            else
-            {
-                model = new List<StockTransferBarcodeDT>();
+                using (TransferUOW uow = new TransferUOW(context))
+                {
+                    //List<StockTransferBarcodeDT> model;
+                    //if (TransactionType == "出貨編號" && !string.IsNullOrEmpty(Number) && NumberStatus != "MES未出庫")
+                    //{
+                    //    model = stockTransferBarcodeData.GetModelFromShipmentNumber(OUT_SUBINVENTORY_CODE, OUT_LOCATOR_ID, IN_SUBINVENTORY_CODE, IN_LOCATOR_ID, Number); //不顯示MES未出庫的資料
+                    //}
+                    //else if (TransactionType == "移轉編號" && !string.IsNullOrEmpty(Number) && NumberStatus != "MES未出庫")
+                    //{
+                    //    model = stockTransferBarcodeData.GetModelFromSubinventoryTransferNumber(OUT_SUBINVENTORY_CODE, OUT_LOCATOR_ID, IN_SUBINVENTORY_CODE, IN_LOCATOR_ID, Number); //不顯示MES未出庫的資料
+                    //}
+                    //else
+                    //{
+                    //    model = new List<StockTransferBarcodeDT>();
+                    //}
+                    List<StockTransferBarcodeDT> model = stockTransferData.GetInboundPickedData(uow, transferHeaderId, numberStatus);
+
+                    var totalCount = model.Count;
+                    string search = data.Search.Value;
+
+                    if (!string.IsNullOrEmpty(search) && !string.IsNullOrWhiteSpace(search))
+                    {
+                        // Apply search   
+                        model = model.Where(p => (p.TransferDetailId.ToString().ToLower().Contains(search.ToLower()))
+                            || (!string.IsNullOrEmpty(p.BARCODE) && p.BARCODE.ToLower().Contains(search.ToLower()))
+                            || (!string.IsNullOrEmpty(p.Status) && p.Status.ToLower().Contains(search.ToLower()))
+                            || (!string.IsNullOrEmpty(p.ITEM_NUMBER) && p.ITEM_NUMBER.ToLower().Contains(search.ToLower()))
+                            || (!string.IsNullOrEmpty(p.LOT_NUMBER) && p.LOT_NUMBER.ToLower().Contains(search.ToLower()))
+                            || (!string.IsNullOrEmpty(p.PACKING_TYPE) && p.PACKING_TYPE.ToLower().Contains(search.ToLower()))
+                             || (p.PRIMARY_QUANTITY.ToString().ToLower().Contains(search.ToLower()))
+                             || (!string.IsNullOrEmpty(p.PRIMARY_UOM) && p.PRIMARY_UOM.ToLower().Contains(search.ToLower()))
+                             || (p.SECONDARY_QUANTITY.ToString().ToLower().Contains(search.ToLower()))
+                             || (!string.IsNullOrEmpty(p.SECONDARY_UOM) && p.SECONDARY_UOM.ToLower().Contains(search.ToLower()))
+                           || (!string.IsNullOrEmpty(p.REMARK) && p.REMARK.ToLower().Contains(search.ToLower()))
+                            ).ToList();
+                    }
+
+                    var filteredCount = model.Count;
+                    model = InboundStockTransferBarcodeDTOrder.Order(data.Order, model).ToList();
+                    model = model.Skip(data.Start).Take(data.Length).ToList();
+
+                    return Json(new { draw = data.Draw, recordsFiltered = filteredCount, recordsTotal = totalCount, data = model }, JsonRequestBehavior.AllowGet);
+                }
             }
 
-            var totalCount = model.Count;
-            string search = data.Search.Value;
-
-            if (!string.IsNullOrEmpty(search) && !string.IsNullOrWhiteSpace(search))
-            {
-                // Apply search   
-                model = model.Where(p => (p.StockTransferDT_ID.ToString().ToLower().Contains(search.ToLower()))
-                    || (!string.IsNullOrEmpty(p.BARCODE) && p.BARCODE.ToLower().Contains(search.ToLower()))
-                    || (!string.IsNullOrEmpty(p.Status) && p.Status.ToLower().Contains(search.ToLower()))
-                    || (!string.IsNullOrEmpty(p.ITEM_NUMBER) && p.ITEM_NUMBER.ToLower().Contains(search.ToLower()))
-                    || (!string.IsNullOrEmpty(p.LOT_NUMBER) && p.LOT_NUMBER.ToLower().Contains(search.ToLower()))
-                    || (!string.IsNullOrEmpty(p.PACKING_TYPE) && p.PACKING_TYPE.ToLower().Contains(search.ToLower()))
-                     || (p.PRIMARY_QUANTITY.ToString().ToLower().Contains(search.ToLower()))
-                     || (!string.IsNullOrEmpty(p.PRIMARY_UOM) && p.PRIMARY_UOM.ToLower().Contains(search.ToLower()))
-                     || (p.SECONDARY_QUANTITY.ToString().ToLower().Contains(search.ToLower()))
-                     || (!string.IsNullOrEmpty(p.SECONDARY_UOM) && p.SECONDARY_UOM.ToLower().Contains(search.ToLower()))
-                   || (!string.IsNullOrEmpty(p.REMARK) && p.SECONDARY_UOM.ToLower().Contains(search.ToLower()))
-                    ).ToList();
-            }
-
-            var filteredCount = model.Count;
-            model = InboundStockTransferBarcodeDTOrder.Order(data.Order, model).ToList();
-            model = model.Skip(data.Start).Take(data.Length).ToList();
-
-            return Json(new { draw = data.Draw, recordsFiltered = filteredCount, recordsTotal = totalCount, data = model }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost, ActionName("SaveStockTransferBarcodeDT")]
@@ -506,6 +539,28 @@ namespace CHPOUTSRCMES.Web.Controllers
         {
             ResultModel result = stockTransferBarcodeData.SaveStockTransferBarcodeDT(TransactionType, Number, StockTransferDT_ID, BARCODE, InputReamQty);
             return new JsonResult { Data = new { status = result.Success, result = result.Msg } };
+        }
+
+        [HttpPost, ActionName("TransferCreateDetail")]
+        public JsonResult TransferCreateDetail(string shipmentNumber, string transferType, string itemNumber, long outOrganizationId,
+            string outSubinventoryCode, long? outLocatorId, long inOrganizationId, string inSubinventoryCode, long? inLocatorId,
+            decimal requestedQty, decimal rollReamWt, string lotNumber)
+        {
+            using (var context = new MesContext())
+            {
+                using (TransferUOW uow = new TransferUOW(context))
+                {
+                    //取得使用者ID
+                    var id = this.User.Identity.GetUserId();
+                    //取得使用者帳號
+                    var name = this.User.Identity.GetUserName();
+
+                    ResultModel result = stockTransferData.TransferCreateDetail(uow, shipmentNumber, transferType, itemNumber, outOrganizationId,
+             outSubinventoryCode, outLocatorId, inOrganizationId, inSubinventoryCode, inLocatorId, requestedQty, rollReamWt, lotNumber, id, name);
+                    return new JsonResult { Data = new { status = result.Success, result = result.Msg, shipmentNumber = shipmentNumber } };
+
+                }
+            }
         }
 
         [HttpPost, ActionName("CreateInboundBarcode")]

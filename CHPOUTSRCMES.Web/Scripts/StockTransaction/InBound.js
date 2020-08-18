@@ -3,6 +3,8 @@
     var editor;
     var selectedNumber;
     var mergeBacrodeEditor;
+    var selectedNumberStatus = "0";
+    var selectedTransferHeaderId = 0;
 
     function getOutOrganizationId() {
         return $("#ddlOutSubinventory").val();
@@ -17,10 +19,25 @@
     function getInSubinventoryCode() {
         return $("#ddlInSubinventory option:selected").text();
     }
-    
-    
+
+    function getOutLocatorId() {
+        if ($('#ddlOutLocatorArea').is(":visible")) {
+            return $("#ddlOutLocator").val();
+        } else {
+            return null;
+        }
+    }
+
+    function getInLocatorId() {
+        if ($('#ddlInLocatorArea').is(":visible")) {
+            return $("#ddlInLocator").val();
+        } else {
+            return null;
+        }
+    }
+
     $('#ddlOutSubinventory').change(function () {
-        
+
         var SUBINVENTORY_CODE = getOutSubinventoryCode();
         $.ajax({
             url: "/OrgSubinventory/GetLocatorList",
@@ -127,7 +144,14 @@
 
     $("#ddlShipmentNumber").combobox({
         select: function (event, ui) {
-            GetNumberStatus();
+            if ($('#ddlShipmentNumber').val() == "新增編號") {
+                $("#scrollbox").collapse('show');
+                $('#AutoCompleteItemNumber').focus();
+            } else {
+                GetShipmentNumberData();
+            }
+            //GetNumberStatus();
+
             //GetStockItemData(this.value);
         }
     });
@@ -353,6 +377,49 @@
     //    }
     //});
 
+    function GetShipmentNumberData() {
+
+        $.ajax({
+            url: "/StockTransaction/GetShipmentNumberData",
+            type: "post",
+            data: {
+                transferHeaderId: $('#ddlShipmentNumber').val()
+
+            },
+            success: function (data) {
+                if (data.Success) {
+                    selectedTransferHeaderId = data.Data.TransferHeaderId;
+                    selectedNumberStatus = data.Data.NumberStatus;
+
+                    InputOpen();
+                    $('#txtBARCODE').val("");
+                    InBoundBarcodeDataTablesBody.ajax.reload();
+
+                    if (data.Data.NumberStatus == "1") {
+                        //出貨編號已存檔
+                        InputClose();
+                    } else {
+
+                    }
+
+                } else {
+
+                    swal.fire(data.Msg);
+                }
+
+
+            },
+            error: function () {
+                swal.fire('取得出貨編號資料失敗');
+            },
+            complete: function (data) {
+
+
+            }
+
+        });
+    }
+
     function GetNumberStatus() {
         $.ajax({
             url: "/StockTransaction/GetNumberStatus",
@@ -360,7 +427,7 @@
             dataType: "json",
             data: {
                 TransactionType: GetTransactionType(),
-                OUT_SUBINVENTORY_CODE: getOutSubinventoryCode() ,
+                OUT_SUBINVENTORY_CODE: getOutSubinventoryCode(),
                 OUT_LOCATOR_ID: $("#ddlOutLocator").val(),
                 IN_SUBINVENTORY_CODE: getInSubinventoryCode(),
                 IN_LOCATOR_ID: $("#ddlInLocator").val(),
@@ -643,19 +710,22 @@
             "type": "POST",
             "datatype": "json",
             "data": function (d) {
-                d.TransactionType = GetTransactionType();
-                d.OUT_SUBINVENTORY_CODE = getOutSubinventoryCode() ;
-                d.OUT_LOCATOR_ID = $("#ddlOutLocator").val();
-                d.IN_SUBINVENTORY_CODE = getInSubinventoryCode();
-                d.IN_LOCATOR_ID = $("#ddlInLocator").val();
-                d.Number = $('#ddlShipmentNumber').val();
-                //d.Number = $('#AutoCompleteShipmentNumber').val();
-                d.NumberStatus = $("#NumberStatus").text();
+                d.transferHeaderId = selectedTransferHeaderId;
+                d.numberStatus = selectedNumberStatus;
+                //d.TransactionType = GetTransactionType();
+                //d.OUT_SUBINVENTORY_CODE = getOutSubinventoryCode() ;
+                //d.OUT_LOCATOR_ID = $("#ddlOutLocator").val();
+                //d.IN_SUBINVENTORY_CODE = getInSubinventoryCode();
+                //d.IN_LOCATOR_ID = $("#ddlInLocator").val();
+                //d.Number = $('#ddlShipmentNumber').val();
+                ////d.Number = $('#AutoCompleteShipmentNumber').val();
+                //d.NumberStatus = $("#NumberStatus").text();
             }
         },
         columns: [
             { data: null, defaultContent: '', className: 'select-checkbox', orderable: false, width: "40px" },
-            { data: "StockTransferDT_ID", name: "項次", autoWidth: true },
+            { data: "SUB_ID", name: "項次", autoWidth: true },
+            //{ data: "TransferDetailId", name: "項次", autoWidth: true },
             { data: "BARCODE", name: "條碼", autoWidth: true },
             { data: "Status", name: "入庫狀態", autoWidth: true },
             { data: "ITEM_NUMBER", name: "料號", autoWidth: true, className: "dt-body-left" },
@@ -677,10 +747,10 @@
             },
             { data: "SECONDARY_UOM", name: "次要單位", autoWidth: true },
             { data: "REMARK", name: "備註", autoWidth: true, className: "dt-body-left" },
-            { data: "LAST_UPDATE_DATE", name: "更新日期", autoWidth: true, visible: false }
+            //{ data: "LAST_UPDATE_DATE", name: "更新日期", autoWidth: true, visible: false }
         ],
 
-        order: [[2, 'desc']],
+        order: [[1, 'desc']],
         select: {
             style: 'multi',
             //blurable: true,
@@ -810,7 +880,7 @@
                             return;
                         }
                         var list = [];
-                        for (i = 0 ; i < selectedData.length; i++) {
+                        for (i = 0; i < selectedData.length; i++) {
                             list.push(selectedData[i].ID);
                             if (selectedData[i].PACKING_TYPE != "令包") {
                                 swal.fire("包裝方式為令包才可以併板");
@@ -1068,7 +1138,8 @@
                         if (data.status) {
 
                             swal.fire(data.result);
-                            GetNumberStatus();
+                            GetShipmentNumberData();
+                            //GetNumberStatus();
                         } else {
                             swal.fire(data.result);
                         }
@@ -1134,7 +1205,7 @@
         }
 
         if ($('#ddlOutLocatorArea').is(":visible") && $('#ddlInLocatorArea').is(":visible")) {
-            if ($('#ddlOutLocatorArea').val() == $('#ddlInLocatorArea').val()) {
+            if (getOutLocatorId() == getInLocatorId()) {
                 swal.fire('同倉庫儲位要不同');
                 event.preventDefault();
                 return;
@@ -1186,41 +1257,100 @@
                 return;
             }
         }
+        var shipmentNumber = $('#ddlShipmentNumber').val();
+        if (shipmentNumber == "新增編號") {
+            swal.fire({
+                title: "新增編號",
+                text: "確定新增編號嗎?",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "確定",
+                cancelButtonText: "取消"
+            }).then(function (result) {
+                if (result.value) {
+                    TransferCreateDetail();
+
+                }
+            });
+        }
 
 
+
+
+
+
+        //$.ajax({
+        //    url: "/StockTransaction/CheckNumber",
+        //    type: "post",
+        //    data: {
+        //        TransactionType: GetTransactionType(),
+        //        OUT_SUBINVENTORY_CODE: getOutSubinventoryCode(),
+        //        OUT_LOCATOR_ID: $('#ddlOutLocator').val(),
+        //        IN_SUBINVENTORY_CODE: getInSubinventoryCode(),
+        //        IN_LOCATOR_ID: $('#ddlInLocator').val(),
+        //        Number: $('#ddlShipmentNumber').val()
+        //        //Number: $('#AutoCompleteShipmentNumber').val()
+        //    },
+        //    success: function (data) {
+        //        if (data.status) {
+        //            if (data.result == "是否新增編號?") {
+        //                swal.fire({
+        //                    title: "新增編號",
+        //                    text: "確定新增編號嗎?",
+        //                    type: "warning",
+        //                    showCancelButton: true,
+        //                    confirmButtonColor: "#DD6B55",
+        //                    confirmButtonText: "確定",
+        //                    cancelButtonText: "取消"
+        //                }).then(function (result) {
+        //                    if (result.value) {
+        //                        CreateInboundBarcode();
+
+        //                    }
+        //                });
+        //            } else {
+        //                CreateInboundBarcode();
+
+        //            }
+
+
+        //        } else {
+        //            swal.fire(data.result);
+        //        }
+
+        //    },
+        //    error: function () {
+        //        swal.fire('新增入庫單明細失敗');
+        //    },
+        //    complete: function (data) {
+
+        //    }
+
+        //});
+    }
+
+    function TransferCreateDetail() {
         $.ajax({
-            url: "/StockTransaction/CheckNumber",
+            url: "/StockTransaction/TransferCreateDetail",
             type: "post",
             data: {
-                TransactionType: GetTransactionType(),
-                OUT_SUBINVENTORY_CODE: getOutSubinventoryCode(),
-                OUT_LOCATOR_ID: $('#ddlOutLocator').val(),
-                IN_SUBINVENTORY_CODE: getInSubinventoryCode(),
-                IN_LOCATOR_ID: $('#ddlInLocator').val(),
-                Number: $('#ddlShipmentNumber').val()
-                //Number: $('#AutoCompleteShipmentNumber').val()
+                shipmentNumber: $('#ddlShipmentNumber').val(),
+                transferType: $("#ddlTransferType").val(),
+                itemNumber: $('#AutoCompleteItemNumber').val(),
+                outOrganizationId: getOutOrganizationId(),
+                outSubinventoryCode: getOutSubinventoryCode(),
+                outLocatorId: getOutLocatorId(),
+                inOrganizationId: getInOrganizationId(),
+                inSubinventoryCode: getInSubinventoryCode(),
+                inLocatorId: getInLocatorId(),
+                requestedQty: $('#txtInputTransactionQty').val(),
+                rollReamWt: GetRollReamWT(),
+                lotNumber: GetLotNumber()
             },
             success: function (data) {
                 if (data.status) {
-                    if (data.result == "是否新增編號?") {
-                        swal.fire({
-                            title: "新增編號",
-                            text: "確定新增編號嗎?",
-                            type: "warning",
-                            showCancelButton: true,
-                            confirmButtonColor: "#DD6B55",
-                            confirmButtonText: "確定",
-                            cancelButtonText: "取消"
-                        }).then(function (result) {
-                            if (result.value) {
-                                CreateInboundBarcode();
-
-                            }
-                        });
-                    } else {
-                        CreateInboundBarcode();
-
-                    }
+                    GetShipmentNumberList(data.shipmentNumber, data.shipmentNumber);
 
 
                 } else {
@@ -1247,7 +1377,7 @@
             type: "post",
             data: {
                 TransactionType: TransactionType,
-                OUT_SUBINVENTORY_CODE: getOutSubinventoryCode() ,
+                OUT_SUBINVENTORY_CODE: getOutSubinventoryCode(),
                 OUT_LOCATOR_ID: $("#ddlOutLocator").val(),
                 IN_SUBINVENTORY_CODE: getInSubinventoryCode(),
                 IN_LOCATOR_ID: $("#ddlInLocator").val(),
@@ -1260,15 +1390,16 @@
             },
             success: function (data) {
                 if (data.status) {
-                    if (TransactionType == "出貨編號") {
-                        GetShipmentNumberList(data.number, data.number);
-                    }
-                    else if (TransactionType == "移轉編號") {
-                        GetSubinventoryTransferNumberList(data.number, data.number);
-                    }
-                    else {
+                    GetShipmentNumberList(data.shipmentNumber, data.shipmentNumber);
+                    //if (TransactionType == "出貨編號") {
+                    //    GetShipmentNumberList(data.shipmentNumber, data.shipmentNumber);
+                    //}
+                    //else if (TransactionType == "移轉編號") {
+                    //    GetSubinventoryTransferNumberList(data.shipmentNumber, data.shipmentNumber);
+                    //}
+                    //else {
 
-                    }
+                    //}
                     //InBoundBarcodeDataTablesBody.ajax.reload();
                     ////$('#NumberStatus').html(data.result);
                     //InBoundBarcodeDataTablesBody.buttons().disable();
@@ -1305,7 +1436,7 @@
 
 
         var list = [];
-        for (i = 0 ; i < selectedData.length; i++) {
+        for (i = 0; i < selectedData.length; i++) {
             list.push(selectedData[i].ID);
         }
 
@@ -1809,7 +1940,7 @@
         });
     }
 
-   
+
     function GetShipmentNumberList(selectValue, selectText) {
 
         var InSubinventoryCode = getInSubinventoryCode();
@@ -1839,8 +1970,8 @@
                     }
                     $("#ddlShipmentNumber").combobox('autocomplete', selectValue, selectText);
 
-                    
-                } else{
+
+                } else {
                     swal.fire(data.result);
                 }
 

@@ -131,6 +131,43 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             this.uomConversion = new UomConversion();
         }
 
+
+        /// <summary>
+        /// 異動型態ID
+        /// </summary>
+        public class TransactionTypeId
+        {
+            /// <summary>
+            /// Intransit Shipment 組織間移轉
+            /// </summary>
+            public const long IntransitShipment = 21;
+            /// <summary>
+            /// CHP-16庫存調整(出) 盤虧
+            /// </summary>
+            public const long Chp16Out = 355;
+            /// <summary>
+            /// CHP-16庫存調整(入) 盤盈
+            /// </summary>
+            public const long Chp16In = 356;
+            /// <summary>
+            /// CHP-26存貨報廢(出) 存貨報廢
+            /// </summary>
+            public const long Chp26Out = 370;
+            /// <summary>
+            /// CHP-30倉儲移轉 倉庫移轉
+            /// </summary>
+            public const long Chp30 = 375;
+            /// <summary>
+            /// CHP-37出貨數尾差調整(出) 雜發
+            /// </summary>
+            public const long Chp37Out = 440;
+            /// <summary>
+            /// CHP-37出貨數尾差調整(入) 雜收
+            /// </summary>
+            public const long Chp37In = 441;
+
+        }
+
         /// <summary>
         /// 使用者角色
         /// </summary>
@@ -179,6 +216,37 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
         public class ControlFlag
         {
             public const string Deleted = "D";
+        }
+
+        /// <summary>
+        /// 入庫揀貨狀態
+        /// </summary>
+        public class InboundStatus
+        {
+            /// <summary>
+            /// 待列印
+            /// </summary>
+            public const string WaitPrint = "0";
+            /// <summary>
+            /// 待入庫
+            /// </summary>
+            public const string WaitInbound = "1";
+            /// <summary>
+            /// 已入庫
+            /// </summary>
+            public const string AlreadyInbound = "2";
+        }
+
+        public class ItemCategory
+        {
+            /// <summary>
+            /// 捲筒
+            /// </summary>
+            public const string Roll = "捲筒";
+            /// <summary>
+            /// 平版
+            /// </summary>
+            public const string Flat = "平版";
         }
 
         /// <summary>
@@ -240,6 +308,15 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                 }
             }
         }
+
+        #region 庫存交易類別
+
+        public TRANSACTION_TYPE_T GetTransactionType(long transactionTypeId)
+        {
+            return transactionTypeRepositiory.GetAll().AsNoTracking().FirstOrDefault(x => x.TransactionActionId == transactionTypeId && x.ControlFlag != ControlFlag.Deleted);
+        }
+
+        #endregion
 
         #region 使用者
         /// <summary>
@@ -1332,6 +1409,27 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
 
         #endregion
 
+        #region 組織
+        /// <summary>
+        /// 取得組織資料
+        /// </summary>
+        /// <param name="organizationId"></param>
+        /// <returns></returns>
+        public ORGANIZATION_T GetOrganization(long organizationId)
+        {
+            return organizationRepositiory.GetAll().AsNoTracking().FirstOrDefault(x => x.OrganizationId == organizationId && x.ControlFlag != ControlFlag.Deleted);
+        }
+
+        #endregion
+
+        #region 儲位
+        public LOCATOR_T GetLocator(long organizationId, string subinventoryCode)
+        {
+            return locatorTRepositiory.GetAll().AsNoTracking().FirstOrDefault(x => x.OrganizationId == organizationId && x.SubinventoryCode == subinventoryCode && x.ControlFlag != ControlFlag.Deleted);
+        }
+
+        #endregion
+
         /// <summary>
         /// 產生條碼清單 (請用交易TRANSACTION)
         /// </summary>
@@ -1865,6 +1963,14 @@ SELECT [ORGANIZATION_ID] FROM [SUBINVENTORY_T] WHERE SUBINVENTORY_CODE = @inSubi
         }
 
 
+        public class DropDownListTypeValue
+        {
+            public const string  NoHeader = "";
+            public const string  All = "*";
+            public const string  Choice = "請選擇";
+            public const string  Add = "新增編號";
+        }
+
         /// <summary>
         /// 下拉選單OPTION種類
         /// </summary>
@@ -2084,11 +2190,51 @@ on s.ORGANIZATION_ID = l.ORGANIZATION_ID and s.SUBINVENTORY_CODE = l.SUBINVENTOR
         /// </summary>
         /// <param name="itemNumber"></param>
         /// <returns></returns>
-        public ITEMS_T GetItemNumberData(string itemNumber)
+        public ITEMS_T GetItemNumber(string itemNumber)
         {
             return itemsTRepositiory.GetAll().AsNoTracking().FirstOrDefault(x =>
            x.ItemNumber == itemNumber &&
            x.ControlFlag != ControlFlag.Deleted);
+        }
+
+        /// <summary>
+        /// 取得料號組織
+        /// </summary>
+        /// <param name="itemNumber"></param>
+        /// <returns></returns>
+        public List<long> GetItemNumberOrganizationId(string itemNumber)
+        {
+            return itemsTRepositiory.GetAll().AsNoTracking().
+                Join(orgItemRepositityory.GetAll().AsNoTracking(),
+                i => new { i.InventoryItemId },
+                o => new { o.InventoryItemId },
+                (i, o) => new
+                {
+                    ItemNumber = i.ItemNumber,
+                    OrganizationId = o.OrganizationId
+                }
+                ).Where(x => x.ItemNumber == itemNumber).
+                Select(x => x.OrganizationId).ToList();
+        }
+
+        /// <summary>
+        /// 取得料號組織
+        /// </summary>
+        /// <param name="itemNumber"></param>
+        /// <returns></returns>
+        public List<long> GetItemNumberOrganizationId(long inventoryItemId)
+        {
+            return itemsTRepositiory.GetAll().AsNoTracking().
+                Join(orgItemRepositityory.GetAll().AsNoTracking(),
+                i => new { i.InventoryItemId },
+                o => new { o.InventoryItemId },
+                (i, o) => new
+                {
+                    InventoryItemId = i.InventoryItemId,
+                    OrganizationId = o.OrganizationId
+                }
+                ).Where(x => x.InventoryItemId == inventoryItemId).
+                Select(x => x.OrganizationId).ToList();
         }
 
         #endregion
