@@ -599,18 +599,19 @@ function CreateBarcode(SUBINVENTORY_CODE, SEGMENT3, ITEM_NO, LOCATOR_ID) {
         url: "/StockTransaction/GetStockItemData",
         type: "post",
         data: {
-            SUBINVENTORY_CODE: SUBINVENTORY_CODE,
+            //SUBINVENTORY_CODE: SUBINVENTORY_CODE,
             ITEM_NO: ITEM_NO
         },
         success: function (data) {
-            if (data.STATUS) {
-                ITEM_CATEGORY = data.ITEM_CATEGORY;
+            if (data.Success) {
+                ITEM_CATEGORY = data.Data.CatalogElemVal070;
             } else {
+                swal.fire(data.Msg);
                 ITEM_CATEGORY = "";
             }
         },
         error: function () {
-            swal.fire('取得料號分類失敗');
+            swal.fire('取得料號資料失敗');
         },
         complete: function (data) {
             if (ITEM_CATEGORY == "") {

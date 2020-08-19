@@ -68,7 +68,8 @@ namespace CHPOUTSRCMES.Web.Controllers
                     if (!string.IsNullOrEmpty(search) && !string.IsNullOrWhiteSpace(search))
                     {
                         // Apply search   
-                        model = model.Where(p => (!string.IsNullOrEmpty(p.FREIGHT_TERMS_NAME) && p.FREIGHT_TERMS_NAME.ToLower().Contains(search.ToLower()))
+                        model = model.Where(p =>  p.SUB_ID.ToString().ToLower().Contains(search.ToLower())
+                            || (!string.IsNullOrEmpty(p.FREIGHT_TERMS_NAME) && p.FREIGHT_TERMS_NAME.ToLower().Contains(search.ToLower()))
                             || (!string.IsNullOrEmpty(p.DELIVERY_NAME) && p.DELIVERY_NAME.ToLower().Contains(search.ToLower()))
                             || (!string.IsNullOrEmpty(p.CUSTOMER_NAME) && p.CUSTOMER_NAME.ToLower().Contains(search.ToLower()))
                             || (!string.IsNullOrEmpty(p.CUSTOMER_LOCATION_CODE) && p.CUSTOMER_LOCATION_CODE.ToLower().Contains(search.ToLower()))
@@ -215,7 +216,8 @@ namespace CHPOUTSRCMES.Web.Controllers
                     if (!string.IsNullOrEmpty(search) && !string.IsNullOrWhiteSpace(search))
                     {
                         // Apply search   
-                        model = model.Where(p => (!string.IsNullOrEmpty(p.ORDER_NUMBER.ToString()) && p.ORDER_NUMBER.ToString().ToLower().Contains(search.ToLower()))
+                        model = model.Where(p => p.SUB_ID.ToString().ToLower().Contains(search.ToLower())
+                            || (!string.IsNullOrEmpty(p.ORDER_NUMBER.ToString()) && p.ORDER_NUMBER.ToString().ToLower().Contains(search.ToLower()))
                             || (!string.IsNullOrEmpty(p.ORDER_SHIP_NUMBER) && p.ORDER_SHIP_NUMBER.ToLower().Contains(search.ToLower()))
                             || (!string.IsNullOrEmpty(p.ITEM_NUMBER) && p.ITEM_NUMBER.ToLower().Contains(search.ToLower()))
                             || (!string.IsNullOrEmpty(p.PAPER_TYPE) && p.PAPER_TYPE.ToLower().Contains(search.ToLower()))
@@ -252,7 +254,8 @@ namespace CHPOUTSRCMES.Web.Controllers
                     if (!string.IsNullOrEmpty(search) && !string.IsNullOrWhiteSpace(search))
                     {
                         // Apply search   
-                        model = model.Where(p => (!string.IsNullOrEmpty(p.ITEM_NUMBER) && p.ITEM_NUMBER.ToLower().Contains(search.ToLower()))
+                        model = model.Where(p => p.SUB_ID.ToString().ToLower().Contains(search.ToLower())
+                            ||  (!string.IsNullOrEmpty(p.ITEM_NUMBER) && p.ITEM_NUMBER.ToLower().Contains(search.ToLower()))
                             || (!string.IsNullOrEmpty(p.BARCODE) && p.BARCODE.ToLower().Contains(search.ToLower()))
                             || p.PRIMARY_QUANTITY.ToString().ToLower().Contains(search.ToLower())
                             || p.PRIMARY_UOM.ToString().ToLower().Contains(search.ToLower())
@@ -427,7 +430,8 @@ namespace CHPOUTSRCMES.Web.Controllers
                     if (!string.IsNullOrEmpty(search) && !string.IsNullOrWhiteSpace(search))
                     {
                         // Apply search   
-                        model = model.Where(p => (!string.IsNullOrEmpty(p.ORDER_NUMBER.ToString()) && p.ORDER_NUMBER.ToString().ToLower().Contains(search.ToLower()))
+                        model = model.Where(p => p.SUB_ID.ToString().ToLower().Contains(search.ToLower())
+                            ||  (!string.IsNullOrEmpty(p.ORDER_NUMBER.ToString()) && p.ORDER_NUMBER.ToString().ToLower().Contains(search.ToLower()))
                             || (!string.IsNullOrEmpty(p.ORDER_SHIP_NUMBER) && p.ORDER_SHIP_NUMBER.ToLower().Contains(search.ToLower()))
                             || (!string.IsNullOrEmpty(p.OSP_BATCH_NO) && p.OSP_BATCH_NO.ToLower().Contains(search.ToLower()))
                             || (!string.IsNullOrEmpty(p.ITEM_NUMBER) && p.ITEM_NUMBER.ToLower().Contains(search.ToLower()))
@@ -465,7 +469,8 @@ namespace CHPOUTSRCMES.Web.Controllers
                     if (!string.IsNullOrEmpty(search) && !string.IsNullOrWhiteSpace(search))
                     {
                         // Apply search   
-                        model = model.Where(p => (!string.IsNullOrEmpty(p.BARCODE) && p.BARCODE.ToLower().Contains(search.ToLower()))
+                        model = model.Where(p => p.SUB_ID.ToString().ToLower().Contains(search.ToLower())
+                            ||  (!string.IsNullOrEmpty(p.BARCODE) && p.BARCODE.ToLower().Contains(search.ToLower()))
                             || (!string.IsNullOrEmpty(p.ITEM_NUMBER) && p.ITEM_NUMBER.ToLower().Contains(search.ToLower()))
                             || (!string.IsNullOrEmpty(p.REAM_WEIGHT) && p.REAM_WEIGHT.ToLower().Contains(search.ToLower()))
                             || (!string.IsNullOrEmpty(p.PACKING_TYPE) && p.PACKING_TYPE.ToLower().Contains(search.ToLower()))

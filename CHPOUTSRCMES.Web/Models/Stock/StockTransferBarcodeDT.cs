@@ -14,7 +14,11 @@ namespace CHPOUTSRCMES.Web.Models.Stock
     {
         public long ID { get; set; }
 
-        public long StockTransferDT_ID { get; set; }
+        public long SUB_ID { get; set; }
+
+        public long TransferHeaderId { get; set; }
+
+        public long TransferDetailId { get; set; }
 
         [Display(Name = "出貨編號")]
         public string SHIPMENT_NUMBER { get; set; }
@@ -27,6 +31,8 @@ namespace CHPOUTSRCMES.Web.Models.Stock
 
         [Display(Name = "條碼")]
         public string BARCODE { get; set; }
+
+        public long StockId { get; set; }
 
         [Display(Name = "工單號碼")]
         public string OSP_BATCH_NO { get; set; }
@@ -115,11 +121,13 @@ namespace CHPOUTSRCMES.Web.Models.Stock
             model = new List<StockTransferBarcodeDT>();
         }
 
+       
+
         public List<StockTransferBarcodeDT> GetModelFromShipmentNumber(string OUT_SUBINVENTORY_CODE, string OUT_LOCATOR_ID, string IN_SUBINVENTORY_CODE, string IN_LOCATOR_ID, string shipmentNumber)
         {
             var query = from stockTransferBarcodeDT in model
                         join stockTransferDT in StockTransferData.model
-                        on stockTransferBarcodeDT.StockTransferDT_ID equals stockTransferDT.ID
+                        on stockTransferBarcodeDT.TransferDetailId equals stockTransferDT.ID
                         where OUT_SUBINVENTORY_CODE == stockTransferDT.OUT_SUBINVENTORY_CODE &&
                             OUT_LOCATOR_ID == stockTransferDT.OUT_LOCATOR_ID &&
                             IN_SUBINVENTORY_CODE == stockTransferDT.IN_SUBINVENTORY_CODE &&
@@ -134,7 +142,7 @@ namespace CHPOUTSRCMES.Web.Models.Stock
         {
             var query = from stockTransferBarcodeDT in model
                         join stockTransferDT in StockTransferData.model
-                        on stockTransferBarcodeDT.StockTransferDT_ID equals stockTransferDT.ID
+                        on stockTransferBarcodeDT.TransferDetailId equals stockTransferDT.ID
                         where OUT_SUBINVENTORY_CODE == stockTransferDT.OUT_SUBINVENTORY_CODE &&
                             OUT_LOCATOR_ID == stockTransferDT.OUT_LOCATOR_ID &&
                             IN_SUBINVENTORY_CODE == stockTransferDT.IN_SUBINVENTORY_CODE &&
@@ -273,7 +281,7 @@ namespace CHPOUTSRCMES.Web.Models.Stock
             var highestId = model.Any() ? model.Select(x => x.ID).Max() : 0;
             StockTransferBarcodeDT stockTransferBarcodeDT = new StockTransferBarcodeDT();
             stockTransferBarcodeDT.ID = highestId + 1;
-            stockTransferBarcodeDT.StockTransferDT_ID = StockTransferDT_ID;
+            stockTransferBarcodeDT.TransferDetailId = StockTransferDT_ID;
             stockTransferBarcodeDT.Subinventory = stockTransferDTList[0].OUT_SUBINVENTORY_CODE;
             if (TransactionType == "出貨編號")
             {
@@ -363,7 +371,7 @@ namespace CHPOUTSRCMES.Web.Models.Stock
                 //}
                 StockTransferBarcodeDT stockTransferBarcodeDT = new StockTransferBarcodeDT();
                 stockTransferBarcodeDT.ID = highestId + 1;
-                stockTransferBarcodeDT.StockTransferDT_ID = StockTransferDT_ID;
+                stockTransferBarcodeDT.TransferDetailId = StockTransferDT_ID;
                 stockTransferBarcodeDT.Subinventory = IN_SUBINVENTORY_CODE;
                 if (TransactionType == "出貨編號")
                 {
@@ -495,7 +503,7 @@ namespace CHPOUTSRCMES.Web.Models.Stock
 
             foreach (StockTransferDT data in StockTransferData.model)
             {
-                if (data.ID == barcodeList[0].StockTransferDT_ID)
+                if (data.ID == barcodeList[0].TransferDetailId)
                 {
                     data.INBOUND_PICKED_QUANTITY = data.INBOUND_PICKED_QUANTITY + barcodeList[0].PRIMARY_QUANTITY;
                     data.INBOUND_PICKED_QUANTITY2 = data.INBOUND_PICKED_QUANTITY2 + barcodeList[0].SECONDARY_QUANTITY;
@@ -521,12 +529,12 @@ namespace CHPOUTSRCMES.Web.Models.Stock
 
             foreach (StockTransferBarcodeDT barcode in removeList)
             {
-                stockTransferData.UpdateStockTransferDT(barcode.StockTransferDT_ID, -barcode.PRIMARY_QUANTITY, -barcode.SECONDARY_QUANTITY, false, isInbound, barcode.Status);
+                stockTransferData.UpdateStockTransferDT(barcode.TransferDetailId, -barcode.PRIMARY_QUANTITY, -barcode.SECONDARY_QUANTITY, false, isInbound, barcode.Status);
                 result = model.Remove(barcode);
 
                 if (model.Count == 0)
                 {
-                    stockTransferData.DeleteItemNumber(barcode.StockTransferDT_ID, isInbound);
+                    stockTransferData.DeleteItemNumber(barcode.TransferDetailId, isInbound);
                 }
             }
 
@@ -742,16 +750,16 @@ namespace CHPOUTSRCMES.Web.Models.Stock
             stockTransferBarcodeDT.SECONDARY_UOM = mergeBarocdeDataList[0].SECONDARY_UOM_CODE;
             stockTransferBarcodeDT.SHIPMENT_NUMBER = waitMergeBarcodeDataList[0].SHIPMENT_NUMBER;
             stockTransferBarcodeDT.Status = "待列印";
-            stockTransferBarcodeDT.StockTransferDT_ID = waitMergeBarcodeDataList[0].StockTransferDT_ID;
+            stockTransferBarcodeDT.TransferDetailId = waitMergeBarcodeDataList[0].TransferDetailId;
             stockTransferBarcodeDT.SUBINVENTORY_TRANSFER_NUMBER = waitMergeBarcodeDataList[0].SUBINVENTORY_TRANSFER_NUMBER;
             model.Add(stockTransferBarcodeDT);
-            stockTransferData.MergeBarcode(waitMergeBarcodeDataList[0].StockTransferDT_ID, waitMergePrimaryTotalQty, waitMergeSecondaryTotalQty, 1);
+            stockTransferData.MergeBarcode(waitMergeBarcodeDataList[0].TransferDetailId, waitMergePrimaryTotalQty, waitMergeSecondaryTotalQty, 1);
 
             //刪除舊條碼
             foreach (StockTransferBarcodeDT data in waitMergeBarcodeDataList)
             {
                 model.Remove(data);
-                stockTransferData.MergeBarcode(data.StockTransferDT_ID, -data.PRIMARY_QUANTITY, -data.SECONDARY_QUANTITY, -1);
+                stockTransferData.MergeBarcode(data.TransferDetailId, -data.PRIMARY_QUANTITY, -data.SECONDARY_QUANTITY, -1);
             }
             return new ResultModel(true, "併板成功");
         }
@@ -809,7 +817,7 @@ namespace CHPOUTSRCMES.Web.Models.Stock
                 {
                     barcode.PRIMARY_QUANTITY = barcode.PRIMARY_QUANTITY + oldBarcodeList[0].PRIMARY_QUANTITY;
                     barcode.SECONDARY_QUANTITY = barcode.SECONDARY_QUANTITY + oldBarcodeList[0].SECONDARY_QUANTITY;
-                    stockTransferData.MergeBarcode(oldBarcodeList[0].StockTransferDT_ID, oldBarcodeList[0].PRIMARY_QUANTITY, oldBarcodeList[0].SECONDARY_QUANTITY, 0);
+                    stockTransferData.MergeBarcode(oldBarcodeList[0].TransferDetailId, oldBarcodeList[0].PRIMARY_QUANTITY, oldBarcodeList[0].SECONDARY_QUANTITY, 0);
                 }
                 else
                 {
@@ -835,17 +843,17 @@ namespace CHPOUTSRCMES.Web.Models.Stock
                     stockTransferBarcodeDT.SECONDARY_UOM = storckList[0].SECONDARY_UOM_CODE;
                     stockTransferBarcodeDT.SHIPMENT_NUMBER = oldBarcodeList[0].SHIPMENT_NUMBER;
                     stockTransferBarcodeDT.Status = oldBarcodeList[0].Status;
-                    stockTransferBarcodeDT.StockTransferDT_ID = oldBarcodeList[0].StockTransferDT_ID;
+                    stockTransferBarcodeDT.TransferDetailId = oldBarcodeList[0].TransferDetailId;
                     stockTransferBarcodeDT.SUBINVENTORY_TRANSFER_NUMBER = oldBarcodeList[0].SUBINVENTORY_TRANSFER_NUMBER;
                     model.Add(stockTransferBarcodeDT);
-                    stockTransferData.MergeBarcode(oldBarcodeList[0].StockTransferDT_ID, storckList[0].PRIMARY_AVAILABLE_QTY + oldBarcodeList[0].PRIMARY_QUANTITY, storckList[0].SECONDARY_AVAILABLE_QTY + oldBarcodeList[0].SECONDARY_QUANTITY, 1);
+                    stockTransferData.MergeBarcode(oldBarcodeList[0].TransferDetailId, storckList[0].PRIMARY_AVAILABLE_QTY + oldBarcodeList[0].PRIMARY_QUANTITY, storckList[0].SECONDARY_AVAILABLE_QTY + oldBarcodeList[0].SECONDARY_QUANTITY, 1);
                 }
 
                 //stockTransferData.MergeBarcode(oldBarcodeList[0].StockTransferDT_ID, oldBarcodeList[0].PRIMARY_QUANTITY, oldBarcodeList[0].SECONDARY_QUANTITY, addNewBarcode);
 
                 //刪除舊條碼
                 model.Remove(oldBarcodeList[0]);
-                stockTransferData.MergeBarcode(oldBarcodeList[0].StockTransferDT_ID, -oldBarcodeList[0].PRIMARY_QUANTITY, -oldBarcodeList[0].SECONDARY_QUANTITY, -1);
+                stockTransferData.MergeBarcode(oldBarcodeList[0].TransferDetailId, -oldBarcodeList[0].PRIMARY_QUANTITY, -oldBarcodeList[0].SECONDARY_QUANTITY, -1);
             }
             return new ResultModel(true, "併板成功");
         }
@@ -933,7 +941,7 @@ namespace CHPOUTSRCMES.Web.Models.Stock
             {
                 default:
                 case 1:
-                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.StockTransferDT_ID) : models.OrderBy(x => x.StockTransferDT_ID);
+                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.SUB_ID) : models.OrderBy(x => x.SUB_ID);
                 case 2:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.BARCODE) : models.OrderBy(x => x.BARCODE);
                 case 3:
@@ -961,7 +969,7 @@ namespace CHPOUTSRCMES.Web.Models.Stock
             {
                 default:
                 case 1:
-                    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.StockTransferDT_ID) : models.ThenBy(x => x.StockTransferDT_ID);
+                    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.SUB_ID) : models.ThenBy(x => x.SUB_ID);
                 case 2:
                     return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.BARCODE) : models.ThenBy(x => x.BARCODE);
                 case 3:
@@ -1007,7 +1015,7 @@ namespace CHPOUTSRCMES.Web.Models.Stock
             {
                 default:
                 case 1:
-                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.StockTransferDT_ID) : models.OrderBy(x => x.StockTransferDT_ID);
+                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.SUB_ID) : models.OrderBy(x => x.SUB_ID);
                 case 2:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.BARCODE) : models.OrderBy(x => x.BARCODE);
                 case 3:
@@ -1039,7 +1047,7 @@ namespace CHPOUTSRCMES.Web.Models.Stock
             {
                 default:
                 case 1:
-                    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.StockTransferDT_ID) : models.ThenBy(x => x.StockTransferDT_ID);
+                    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.SUB_ID) : models.ThenBy(x => x.SUB_ID);
                 case 2:
                     return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.BARCODE) : models.ThenBy(x => x.BARCODE);
                 case 3:

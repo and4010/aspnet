@@ -274,7 +274,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
             {
                 default:
                 case 1:
-                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.DLV_DETAIL_ID) : models.OrderBy(x => x.DLV_DETAIL_ID);
+                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.SUB_ID) : models.OrderBy(x => x.SUB_ID);
                 case 2:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.ITEM_NUMBER) : models.OrderBy(x => x.ITEM_NUMBER);
                 case 3:
@@ -297,7 +297,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
             {
                 default:
                 case 1:
-                    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.DLV_DETAIL_ID) : models.ThenBy(x => x.DLV_DETAIL_ID);
+                    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.SUB_ID) : models.ThenBy(x => x.SUB_ID);
                 case 2:
                     return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.ITEM_NUMBER) : models.ThenBy(x => x.ITEM_NUMBER);
                 case 3:

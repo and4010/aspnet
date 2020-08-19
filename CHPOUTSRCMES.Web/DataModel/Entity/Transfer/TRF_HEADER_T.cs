@@ -30,14 +30,14 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Transfer
         public long OrgId { set; get; }
 
 
-        /// <summary>
-        /// 作業單元(OU)
-        /// </summary>
-        /// 
-        [StringLength(240)]
-        [Required(AllowEmptyStrings = true)]
-        [Column("ORG_NAME")]
-        public string OrgName { set; get; }
+        ///// <summary>
+        ///// 作業單元(OU)
+        ///// </summary>
+        ///// 
+        //[StringLength(240)]
+        //[Required(AllowEmptyStrings = true)]
+        //[Column("ORG_NAME")]
+        //public string OrgName { set; get; }
 
         /// <summary>
         /// 庫存組織ID
@@ -162,9 +162,9 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Transfer
         /// 目標作業單元(OU)
         /// </summary>
         /// 
-        [StringLength(240)]
-        [Column("TRANSFER_ORG_NAME")]
-        public string TransferOrgName { set; get; }
+        //[StringLength(240)]
+        //[Column("TRANSFER_ORG_NAME")]
+        //public string TransferOrgName { set; get; }
 
         /// <summary>
         /// 目標庫存組織ID
