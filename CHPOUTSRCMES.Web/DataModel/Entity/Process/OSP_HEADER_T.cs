@@ -128,7 +128,8 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Process
         /// 
         [Required]
         [Column("PE_CREATED_BY")]
-        public long PeCreatedBy { set; get; }
+        [StringLength(128)]
+        public string PeCreatedBy { set; get; }
 
         /// <summary>
         /// 建立時間
@@ -144,7 +145,8 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Process
         /// </summary>
         /// 
         [Column("PE_LAST_UPDATE_BY")]
-        public long? PeLastUpdateBy { set; get; }
+        [StringLength(128)]
+        public string PeLastUpdateBy { set; get; }
 
         /// <summary>
         /// 更新時間
@@ -159,7 +161,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Process
         /// </summary>
         [Column("STATUS")]
         [Required]
-        public string Stauts { set; get; }
+        public string Status { set; get; }
 
 
         /// <summary>

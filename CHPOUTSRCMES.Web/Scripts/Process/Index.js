@@ -48,11 +48,11 @@ $(document).ready(function () {
     ProcessDataTables.on('click', '#btnEdit', function (e) {
 
         var data = ProcessDataTables.row($(this).parents('tr')).data();
-        var Process_Detail_Id = data.Process_Detail_Id;
+        var OspDetailInId = data.OspDetailInId;
         if (data == null) {
             return false;
         }
-        window.location.href = '/Process/Edit/' + Process_Detail_Id;
+        window.location.href = '/Process/Edit/' + OspDetailInId;
     })
 
 
@@ -73,7 +73,7 @@ $(document).ready(function () {
 
 })
 
-function ProcessLoadTable(Status, OspBatchNo, MachineNum, DueDate, CuttingDateFrom, CuttingDateTo, Subinventory) {
+function ProcessLoadTable(Status, BatchNo, MachineNum, DueDate, CuttingDateFrom, CuttingDateTo, Subinventory) {
 
     ProcessDataTables = $('#ProcessDataTables').DataTable({
         "language": {
@@ -93,7 +93,7 @@ function ProcessLoadTable(Status, OspBatchNo, MachineNum, DueDate, CuttingDateFr
             "type": "POST",
             "datatype": "json",
             "data": {
-                Status: Status, OspBatchNo: OspBatchNo,
+                Status: Status, BatchNo: BatchNo,
                 MachineNum: MachineNum, DueDate: DueDate, CuttingDateFrom: CuttingDateFrom,
                 CuttingDateTo: CuttingDateTo, Subinventory: Subinventory
             }
@@ -148,12 +148,11 @@ function ProcessLoadTable(Status, OspBatchNo, MachineNum, DueDate, CuttingDateFr
                 }, "className": "dt-body-center"
             },
             { data: "BatchNo", "name": "工單號", "autoWidth": true, "className": "dt-body-center" },
-            { data: "BatchType", "name": "工單號", "autoWidth": true, "className": "dt-body-center", visible: false },
             { data: "MachineNum", "name": "機台", "autoWidth": true, "className": "dt-body-center"},
             {
                 data: "Status", "name": "狀態", "autoWidth": true, "render": function (data, type, row) {
                     if (data == "已排單") {
-                        switch (row.Status.substr(0, 1)) {
+                        switch (row.BatchType) {
                             case "OSP":
                                 return '<a href=/Process/Schedule/' + row.OspDetailInId + '> ' + data + '</a>';
                                 break;
@@ -169,7 +168,7 @@ function ProcessLoadTable(Status, OspBatchNo, MachineNum, DueDate, CuttingDateFr
                     }
 
                     if (data == "已排單") {
-                        switch (row.Status.substr(0, 1)) {
+                        switch (row.BatchType) {
                             case "OSP":
                                 return '<a href=/Process/Schedule/' + row.OspDetailInId + '> ' + data + '</a>';
                                 break;
@@ -240,14 +239,14 @@ function BtnEvent() {
             return;
         }
         var Status = rowData.pluck('Status')[0]
-        var OspDetailInId = rowData.pluck('OspDetailInId')[0]
+        var OspHeaderId = rowData.pluck('OspHeaderId')[0]
         if (Status == "待排單") {
             $.ajax({
                 url: '/Process/_ProcessIndex',
                 type: "POST",
                 success: function (result) {
                     $('body').append(result);
-                    Open($('#ProcessModal'), OspDetailInId);
+                    Open($('#ProcessModal'), OspHeaderId);
                 },
                 error: function () {
                     swal.fire("失敗");
@@ -286,14 +285,14 @@ function BtnEvent() {
             return;
         }
         var Status = rowData.pluck('Status')[0]
-        var OspDetailInId = rowData.pluck('OspDetailInId')[0]
+        var OspHeaderId = rowData.pluck('OspHeaderId')[0]
         if (Status == "已排單") {
             $.ajax({
                 url: '/Process/_ProcessIndex',
                 type: "POST",
                 success: function (result) {
                     $('body').append(result);
-                    Open($('#ProcessModal'), OspDetailInId);
+                    Open($('#ProcessModal'), OspHeaderId);
                 },
                 error: function () {
                     swal.fire("失敗");
@@ -311,14 +310,14 @@ function search() {
     $('#btnSearch').click(function () {
         rowData = null;
         var Status = $("#Status").val();
-        var OspBatchNo = $("#OspBatchNo").val();
+        var BatchNo = $("#BatchNo").val();
         var MachineNum = $("#MachineNum").val();
         var DueDate = $("#DueDate").val();
         var CuttingDateFrom = $("#CuttingDateFrom").val();
         var CuttingDateTo = $("#CuttingDateTo").val();
         var Subinventory = $("#Subinventory").val();
 
-        ProcessLoadTable(Status, OspBatchNo, MachineNum, DueDate, CuttingDateFrom, CuttingDateTo, Subinventory);
+        ProcessLoadTable(Status, BatchNo, MachineNum, DueDate, CuttingDateFrom, CuttingDateTo, Subinventory);
         
         
     });
@@ -326,7 +325,7 @@ function search() {
 }
 
 //彈出dialog
-function Open(modal_dialog, OspDetailInId) {
+function Open(modal_dialog, OspHeaderId) {
     modal_dialog.modal({
         backdrop: "static",
         keyboard: true,
@@ -381,11 +380,11 @@ function Open(modal_dialog, OspDetailInId) {
         }
 
         $.ajax({
-            url: '/Process/_BtnDailog',
+            url: '/Process/_BtnDailogChangStatusCutDate',
             type: "POST",
             dataType: 'json',
             data: {
-                OspDetailInId: OspDetailInId, Dialog_CuttingDateFrom: Dialog_CuttingDateFrom
+                OspHeaderId: OspHeaderId, Dialog_CuttingDateFrom: Dialog_CuttingDateFrom
                 , Dialog_CuttingDateTo: Dialog_CuttingDateTo, Dialog_MachineNum: Dialog_MachineNum, BtnStatus: BtnStatus
             },
             success: function (result) {
@@ -426,13 +425,13 @@ function changeStatus(OspDetailInId, BtnStatus) {
 }
 
 function firstLoad() {
-    var OspBatchStatusDesc = $("#OspBatchStatusDesc").val();
-    var OspBatchNo = $("#OspBatchNo").val();
+    var Status = $("#Status").val();
+    var BatchNo = $("#BatchNo").val();
     var MachineNum = $("#MachineNum").val();
     var DueDate = $("#DueDate").val();
     var CuttingDateFrom = $("#CuttingDateFrom").val();
     var CuttingDateTo = $("#CuttingDateTo").val();
     var Subinventory = $("#Subinventory").val();
 
-    ProcessLoadTable(OspBatchStatusDesc, OspBatchNo, MachineNum, DueDate, CuttingDateFrom, CuttingDateTo, Subinventory);
+    ProcessLoadTable(Status, BatchNo, MachineNum, DueDate, CuttingDateFrom, CuttingDateTo, Subinventory);
 }

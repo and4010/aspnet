@@ -1,6 +1,8 @@
-﻿using CHPOUTSRCMES.Web.Models.Process;
+﻿using CHPOUTSRCMES.Web.DataModel.UnitOfWorks;
+using CHPOUTSRCMES.Web.Models.Process;
 using CHPOUTSRCMES.Web.ViewModels;
 using CHPOUTSRCMES.Web.ViewModels.Process;
+using Microsoft.AspNet.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,8 +19,6 @@ namespace CHPOUTSRCMES.Web.Controllers
         public ActionResult Index()
         {
             ProcessViewModel viewModel = new ProcessViewModel();
-
-
             ViewBag.Process_Status = viewModel.GetBatchStatusDesc();
             ViewBag.Process_Batch_no = viewModel.GetBatchNo();
             ViewBag.Manchine_Num = viewModel.GetManchine();
@@ -26,61 +26,46 @@ namespace CHPOUTSRCMES.Web.Controllers
             return View();
         }
 
-        public ActionResult Schedule(String id)
+        public ActionResult Schedule(long id)
         {
-            ViewBag.RemnantItem = GetRemnantItem();
-            ViewBag.CotangentItem = GetCotangentItem();
-            List<CHP_PROCESS_T> model = ProcessViewModel.chp_process_t;
-            ProcessViewModel procesIndexViewModel = new ProcessViewModel();
-            var cpt = model.First(r => r.OspHeaderId.ToString() == id);
-            procesIndexViewModel.CHP_PROCESS_T = cpt;
-            //procesIndexViewModel.Production = ProcessViewModel.ListProductions.FirstOrDefault(r => r.Process_Detail_Id.ToString() == id);
-
-            return View(procesIndexViewModel);
-        }
-
-        public ActionResult Edit(String id)
-        {
-            List<CHP_PROCESS_T> model = ProcessViewModel.chp_process_t;
             ProcessViewModel procesViewModel = new ProcessViewModel();
-            var cpt = model.First(r => r.OspHeaderId.ToString() == id);
-            procesViewModel.CHP_PROCESS_T = cpt;
-            //procesViewModel.Production = ProcessViewModel.ListProductions.FirstOrDefault(r => r.Production_Id.ToString() == id);
-
+            ViewBag.RemnantItem = procesViewModel.GetRemnantItem();
+            ViewBag.CotangentItem = procesViewModel.GetCotangentItem();
+            procesViewModel.CHP_PROCESS_T = procesViewModel.GetViewModel(id);
+            procesViewModel.YieldVariance = procesViewModel.GetRate(id);
             return View(procesViewModel);
         }
 
-        public JsonResult EditSave(string Process_Detail_Id,string remark)
+        public ActionResult Edit(long id)
         {
-            List<CHP_PROCESS_T> model = ProcessViewModel.chp_process_t;
-            var cpt = model.First(r => r.OspHeaderId.ToString() == Process_Detail_Id);
-            cpt.Note = remark;
-            var Boolean = true;
-            return Json(new { Boolean },JsonRequestBehavior.AllowGet);
+            ProcessViewModel procesViewModel = new ProcessViewModel();
+            procesViewModel.CHP_PROCESS_T = procesViewModel.GetViewModel(id);
+            procesViewModel.YieldVariance = procesViewModel.GetRate(id);
+            return View(procesViewModel);
         }
 
-        public ActionResult Flat(String id)
+        public JsonResult EditSave(long OspHeaderId, string Note)
         {
-            List<CHP_PROCESS_T> model = ProcessViewModel.chp_process_t;
-            ProcessViewModel procesIndexViewModel = new ProcessViewModel();
-            var cpt = model.First(r => r.OspHeaderId.ToString() == id);
-            procesIndexViewModel.CHP_PROCESS_T = cpt;
-            //procesIndexViewModel.Production = ProcessViewModel.ListProductions.FirstOrDefault(r => r.Process_Detail_Id.ToString() == id);
-
-            return View(procesIndexViewModel);
+            ProcessViewModel procesViewModel = new ProcessViewModel();
+            var resultModel = procesViewModel.SetEditNote(OspHeaderId, Note);
+            return Json(new { resultModel },JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult PaperRoll(String id)
+        public ActionResult Flat(long id)
         {
-            ViewBag.RemnantItem = GetRemnantItem();
-            ViewBag.CotangentItem = GetCotangentItem();
-            List<CHP_PROCESS_T> model = ProcessViewModel.chp_process_t;
-            ProcessViewModel procesIndexViewModel = new ProcessViewModel();
-            var cpt = model.First(r => r.OspHeaderId.ToString() == id);
-            procesIndexViewModel.CHP_PROCESS_T = cpt;
-            //procesIndexViewModel.Production = ProcessViewModel.ListProductions.FirstOrDefault(r => r.Process_Detail_Id.ToString() == id);
+            ProcessViewModel procesViewModel = new ProcessViewModel();
+            procesViewModel.CHP_PROCESS_T = procesViewModel.GetViewModel(id);
+            procesViewModel.YieldVariance = procesViewModel.GetRate(id);
+            return View(procesViewModel);
+        }
 
-            return View(procesIndexViewModel);
+        public ActionResult PaperRoll(long id)
+        {
+
+            ProcessViewModel procesViewModel = new ProcessViewModel();
+            procesViewModel.CHP_PROCESS_T = procesViewModel.GetViewModel(id);
+            procesViewModel.YieldVariance = procesViewModel.GetRate(id);
+            return View(procesViewModel);
         }
 
 
@@ -93,67 +78,44 @@ namespace CHPOUTSRCMES.Web.Controllers
         }
 
         [HttpPost]
-        public ActionResult _Subinventory()
+        public ActionResult _Locator(long OspDetailOutId)
         {
             ProcessViewModel viewModel = new ProcessViewModel();
-            //ViewBag.LocatorItem = viewModel.GetLocator();
+            ViewBag.LocatorItem = viewModel.GetLocator(OspDetailOutId);
             return PartialView();
         }
 
         [HttpPost]
-        public ActionResult ChagneIndexStatus(string Process_Batch_no,string Locator,string Status)
-        {
-            List<CHP_PROCESS_T> model = ProcessViewModel.chp_process_t;
-            var cpt = model.FirstOrDefault(r => r.BatchNo == Process_Batch_no);
-            if (cpt != null)
-            {
-                if(Status == "完工紀錄")
-                {
-                    cpt.Status = "待核准";
-                } else if (Status == "核准")
-                {
-                    cpt.Status = "已完工";
-                }
-                else
-                {
-                    cpt.Status = "已完工";
-                    cpt.LocatorCode = Locator;
-                }
-            
-            }
-            return Json(JsonRequestBehavior.AllowGet);
-        }
-
-
-        [HttpPost]
-        public ActionResult _BtnDailog(DataTableAjaxPostViewModel data, string Process_Detail_Id, string dialog_Cutting_Date_From, string dialog_Cutting_Date_To,string dialg_Manchine_Num, string BtnStatus)
-        {
-            List<CHP_PROCESS_T> model = ProcessViewModel.chp_process_t;
-            var ID = model.First(r => r.OspDetailInId.ToString() == Process_Detail_Id);
-            if (ID != null)
-            {
-                if(dialog_Cutting_Date_To != null)
-                {
-                    ID.CuttingDateFrom = Convert.ToDateTime(dialog_Cutting_Date_To);
-                    ID.CuttingDateTo = Convert.ToDateTime(dialog_Cutting_Date_From);
-                    ID.MachineNum = dialg_Manchine_Num;
-                }
-                ID.Status = BtnStatus;
-            }
-
-
-            return Json(new { draw = data.Draw, recordsFiltered = model.Count, recordsTotal = model.Count, data = model }, JsonRequestBehavior.AllowGet);
-        }
-
-
-        [HttpPost]
-        public JsonResult TableResult(DataTableAjaxPostViewModel data, string Process_Status, string Process_Batch_no, string Manchine_Num,
-            string Demand_Date, string Cutting_Date_From, string Cutting_Date_To, string Subinventory)
+        public ActionResult SaveHeaderStatus(long OspDetailOutId, long Locator)
         {
             ProcessViewModel viewModel = new ProcessViewModel();
-            List<CHP_PROCESS_T> model = viewModel.Search(Process_Status, Process_Batch_no, Manchine_Num, Demand_Date, Cutting_Date_From, Cutting_Date_To, Subinventory);
-            model = ProcessViewModel.Search(data, model);
-            model = ProcessViewModel.Order(data.Order, model).ToList();
+            //取得使用者ID
+            var Userid = this.User.Identity.GetUserId();
+            //取得使用者帳號
+            var name = this.User.Identity.GetUserName();
+            var resultModel = viewModel.SaveHeaderStatus(OspDetailOutId, Locator, Userid, name);
+            
+            return Json(new { resultModel }, JsonRequestBehavior.AllowGet);
+        }
+
+
+        [HttpPost]
+        public ActionResult _BtnDailogChangStatusCutDate(long OspHeaderId, DateTime Dialog_CuttingDateFrom, DateTime Dialog_CuttingDateTo, string Dialog_MachineNum, string BtnStatus)
+        {
+            ProcessViewModel procesViewModel = new ProcessViewModel();
+            var resultModel = procesViewModel.SetStatusAndCutDate(OspHeaderId, Dialog_CuttingDateFrom, Dialog_CuttingDateTo, Dialog_MachineNum, BtnStatus);
+            return Json(new { resultModel }, JsonRequestBehavior.AllowGet);
+        }
+
+
+        [HttpPost]
+        public JsonResult TableResult(DataTableAjaxPostViewModel data, string Status, string BatchNo, 
+            string MachineNum, string DueDate, string CuttingDateFrom, string CuttingDateTo, string Subinventory)
+        {
+            ProcessViewModel viewModel = new ProcessViewModel();
+            List<CHP_PROCESS_T> model = viewModel.Search(Status, BatchNo, MachineNum, DueDate, CuttingDateFrom, CuttingDateTo, Subinventory);
+            model = ProcessViewModel.ChpProcessModelDTOrder.Search(data, model);
+            model = ProcessViewModel.ChpProcessModelDTOrder.Order(data.Order, model).ToList();
             var model1 = model.Skip(data.Start).Take(data.Length).ToList();
 
 
@@ -161,361 +123,150 @@ namespace CHPOUTSRCMES.Web.Controllers
         }
 
         [HttpPost]
-        public JsonResult CheckOrderNumber(string ProcessBatchNo)
+        public JsonResult CheckBatchNo(string BatchNo,long OspHeaderId)
         {
-            var boolean = false;
-            var orde = ProcessViewModel.chp_process_t.FirstOrDefault(r => r.BatchNo == ProcessBatchNo);
-            if(orde == null)
-            {
-                boolean = false;
-            }
-            else
-            {
-                boolean = true;
-            }
-            return Json(new { boolean }, JsonRequestBehavior.AllowGet);
+            ProcessViewModel viewModel = new ProcessViewModel();
+            var resultModel  = viewModel.CheckBatchNo(BatchNo, OspHeaderId);
+
+            return Json(new { resultModel }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
-        public JsonResult InvestLoadTable(DataTableAjaxPostViewModel data, string Process_Detail_Id)
+        public JsonResult InvestLoadTable(DataTableAjaxPostViewModel data, long OspDetailInId)
         {
-            List<Invest> model = new List<Invest>();
-            var list =
-                    from invent in ProcessViewModel.Invest_Stock
-                    where invent.Process_Detail_Id == int.Parse(Process_Detail_Id)
-                    select invent;
-
-            model.AddRange(list);
-            return Json(new { draw = data.Draw, recordsFiltered = model.Count, recordsTotal = model.Count, data = model }, JsonRequestBehavior.AllowGet);
+            ProcessViewModel viewModel = new ProcessViewModel();
+            List<Invest> model = viewModel.GetPicketIn(OspDetailInId);
+            model = ProcessViewModel.InvestModelDTOrder.Search(data, model);
+            model = ProcessViewModel.InvestModelDTOrder.Order(data.Order, model).ToList();
+            var model1 = model.Skip(data.Start).Take(data.Length).ToList();
+            return Json(new { draw = data.Draw, recordsFiltered = model.Count, recordsTotal = model.Count, data = model1 }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
-        public JsonResult Barcode(string Barcode, string Process_Detail_Id)
+        public JsonResult CheckStockBarcode(string Barcode, string OspDetailInId)
         {
-            ProcessViewModel.GetInvest();
-            var result = false;
-            ProcessViewModel procesIndexViewModel = new ProcessViewModel();
 
-            List<Invest> model = ProcessViewModel.invest;
-
-            var cpd = model.FirstOrDefault(r => r.Barcode == Barcode && r.Process_Detail_Id.ToString() == Process_Detail_Id);
-            if (cpd == null)
-            {
-                result = false;
-            }
-            else
-            {
-                result = true;
-            }
-
-            return Json(new { result, cpd }, JsonRequestBehavior.AllowGet);
+            ProcessViewModel procesViewModel = new ProcessViewModel();
+            var resultDataModel = procesViewModel.CheckStockBarcode(Barcode, OspDetailInId);
+            return Json(new { resultDataModel }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
-        public JsonResult InvestTable(string Barcode, string Remnant, string Remaining_Weight, string Process_Detail_Id)
+        public JsonResult SaveInvestBarcode(string Barcode, string Remnant, string Remaining_Weight, long OspDetailInId)
         {
-            List<Invest> chp_process_detail_t = ProcessViewModel.invest;
-            List<Invest> model = ProcessViewModel.Invest_Stock;
-            var check = 0;
+            //取得使用者ID
+            var Userid = this.User.Identity.GetUserId();
+            //取得使用者帳號
+            var name = this.User.Identity.GetUserName();
+            ProcessViewModel procesViewModel = new ProcessViewModel();
+            var resultModel = procesViewModel.SavePickIn(Barcode, Remnant, Remaining_Weight, OspDetailInId, Userid, name);
 
-
-            var checkbarode = chp_process_detail_t.FirstOrDefault(r => r.Barcode == Barcode && r.Process_Detail_Id.ToString() == Process_Detail_Id);
-
-
-            if (checkbarode == null)
-            {
-                //資料不存在
-                check = 2;
-            }
-
-
-            if (Barcode != null && Barcode != "")
-            {
-                var bd = model.FirstOrDefault(r => r.Barcode == Barcode && r.Process_Detail_Id.ToString() == Process_Detail_Id);
-                if (bd != null)
-                {
-                    check = 1;
-                }
-                else
-                {
-                    var list =
-                              from CHP_PROCESS_DETAIL_T in chp_process_detail_t
-                              where CHP_PROCESS_DETAIL_T.Barcode == Barcode
-                              select CHP_PROCESS_DETAIL_T;
-
-                    ProcessViewModel.Invest_Stock.AddRange(list);
-                    //1 有殘捲 0 無殘捲
-                    if (Remnant != null)
-                    {
-                        checkbarode.Remnant = Remnant == "1" ? "有" : "無";
-                        checkbarode.Remaining_Weight = Remaining_Weight;
-                    }
-
-                }
-            }
-
-
-
-
-
-            return Json(new { check }, JsonRequestBehavior.AllowGet);
+    
+            return Json(new { resultModel }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
-        public JsonResult InvestEdit(DetailDTEditor InvestDTList)
+        public JsonResult InvestEdit(ProcessUOW.DetailDTEditor InvestDTList)
         {
-            if(InvestDTList.Action == "edit")
-            {
-                List<Invest> model = ProcessViewModel.Invest_Stock;
-                var id = model.FirstOrDefault(r => r.Invest_Id == InvestDTList.InvestList[0].Invest_Id);
-                if (id != null)
-                {
-                    id.Remaining_Weight = InvestDTList.InvestList[0].Remaining_Weight;
-                    id.Remnant = InvestDTList.InvestList[0].Remnant;
-                }
-        
-            }
+            ProcessViewModel procesViewModel = new ProcessViewModel();
+            var resultModel = procesViewModel.SetEditor(InvestDTList);
           
-            if(InvestDTList.Action == "remove")
-            {
-                var barcode = ProcessViewModel.Invest_Stock.FirstOrDefault(r => r.Invest_Id == InvestDTList.InvestList[0].Invest_Id);
-                if (barcode != null)
-                {
-                    ProcessViewModel.Invest_Stock.Remove(barcode);
-                }
-  
-            }
-            return Json(new { }, JsonRequestBehavior.AllowGet);
+            return Json(new { resultModel }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
-        public JsonResult InvestDelete(string Barcode, string Process_Detail_Id)
+        public JsonResult ProductionLoadDataTables(DataTableAjaxPostViewModel data, long OspDetailOutId)
         {
-            var boolean = true;
-            var barcode = ProcessViewModel.Invest_Stock.FirstOrDefault(r => r.Barcode == Barcode && r.Process_Detail_Id == int.Parse(Process_Detail_Id));
-            if (barcode != null)
-            {
-                ProcessViewModel.Invest_Stock.Remove(barcode);
-            }
-            else
-            {
-                boolean = false;
-            }
-
-            return Json(new { boolean }, JsonRequestBehavior.AllowGet);
+            ProcessViewModel viewModel = new ProcessViewModel();
+            List<Production> model = viewModel.GetPicketOut(OspDetailOutId);
+            model = ProcessViewModel.ProductionModelDTOrder.Search(data, model);
+            model = ProcessViewModel.ProductionModelDTOrder.Order(data.Order, model).ToList();
+            var model1 = model.Skip(data.Start).Take(data.Length).ToList();
+            return Json(new { draw = data.Draw, recordsFiltered = model.Count, recordsTotal = model.Count, data = model1 }, JsonRequestBehavior.AllowGet);
         }
 
-
+        /// <summary>
+        /// 儲存產出條碼
+        /// </summary>
+        /// <param name="Production_Roll_Ream_Qty"></param>
+        /// <param name="Production_Roll_Ream_Wt"></param>
+        /// <param name="Cotangent"></param>
+        /// <param name="OspDetailOutId"></param>
+        /// <returns></returns>
         [HttpPost]
-        public JsonResult ProductionLoadDataTables(DataTableAjaxPostViewModel data, string Process_Detail_Id)
+        public JsonResult CreateProduction(string Production_Roll_Ream_Qty, string Production_Roll_Ream_Wt, string Cotangent, long OspDetailOutId)
         {
-            List<Production> model = new List<Production>();
-            var list =
-                   from Productions in ProcessViewModel.ListProductions
-                   where Productions.Process_Detail_Id == int.Parse(Process_Detail_Id)
-                   select Productions;
-
-            model.AddRange(list);
-            return Json(new { draw = data.Draw, recordsFiltered = model.Count, recordsTotal = model.Count, data = model }, JsonRequestBehavior.AllowGet);
-        }
-
-        [HttpPost]
-        public JsonResult ProductionDetail(string Production_Roll_Ream_Qty, string Production_Roll_Ream_Wt, string Product_Item, string Process_Detail_Id)
-        {
-            List<Production> model = ProcessViewModel.ListProductions;
-            var boolean = true;
-            var msg = "";
-            if (Production_Roll_Ream_Qty != null)
-            {
-                var count = Convert.ToInt32(Production_Roll_Ream_Qty);
-                var weight = Convert.ToInt32(Production_Roll_Ream_Wt) / count;
-                if (model.Count != 0)
-                {
-                    var d = model.FirstOrDefault(r => r.Barcode != "");
-                }
-                for (int i = 0; i < count; i++)
-                {
-                    model.Add(new Production
-                    {
-                        Process_Detail_Id = int.Parse(Process_Detail_Id),
-                        Production_Id = model.Count == 0 ? (i + 1) : (model.Count + 1),
-                        Barcode = "P201006000" + (model.Count == 0 ? (i + 1).ToString() : (model.Count + 1).ToString()),
-                        Roll_Ream_Wt = Production_Roll_Ream_Wt,
-                        Weight = weight.ToString(),
-                        Status = "待入庫",
-                        Item_No = Product_Item,
-                        Roll_Ream_Qty = Production_Roll_Ream_Qty
-                    });
-                }
-            }
-            else
-            {
-                msg = "令數不得空白";
-                boolean = false;
-            }
-
-
-            return Json(new { boolean , msg }, JsonRequestBehavior.AllowGet);
+            //取得使用者ID
+            var Userid = this.User.Identity.GetUserId();
+            //取得使用者帳號
+            var UserName = this.User.Identity.GetUserName();
+            ProcessViewModel procesViewModel = new ProcessViewModel();
+            var resultModel = procesViewModel.CreateProduction(Userid, UserName,Production_Roll_Ream_Qty, Production_Roll_Ream_Wt, Cotangent, OspDetailOutId);
+            
+            return Json(new { resultModel }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
-        public JsonResult ProductionDelete(string Production_Id)
+        public JsonResult ProductionEdit(ProcessUOW.ProductionDTEditor ProductionDTEditor)
         {
-            var boolean = true;
-            var ProductionId = ProcessViewModel.ListProductions.FirstOrDefault(r => r.Production_Id.ToString() == Production_Id);
-            if (ProductionId != null)
-            {
-                ProcessViewModel.ListProductions.Remove(ProductionId);
-            }
-            else
-            {
-                boolean = false;
-            }
-
-            return Json(new { boolean }, JsonRequestBehavior.AllowGet);
+            ProcessViewModel viewModel = new ProcessViewModel();
+            //取得使用者ID
+            var id = this.User.Identity.GetUserId();
+            //取得使用者帳號
+            var name = this.User.Identity.GetUserName();
+            var resultModel =  viewModel.SetProductionEditor(ProductionDTEditor, id, name);
+            return Json(new { resultModel }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
-        public JsonResult ProductionEdit(DataTableAjaxPostViewModel data,ProductionDTEditor ProductionDTEditor)
+        public JsonResult ProductionChangeStatus(string Production_Barcode, long OspDetailOutId)
         {
-        
-            List<Production> model = new List<Production>();
-            if (ProductionDTEditor.Action == "edit")
-            {
-                List<Production> model1 = ProcessViewModel.ListProductions;
-                var id = model1.FirstOrDefault(r => r.Production_Id == ProductionDTEditor.ProductionList[0].Production_Id);
-                if (id != null)
-                {
-                    id.Roll_Ream_Wt = ProductionDTEditor.ProductionList[0].Roll_Ream_Wt;
-                    id.Weight = ProductionDTEditor.ProductionList[0].Weight;
-                }
-             
-                model.Add(id);
-            }
-            if(ProductionDTEditor.Action == "remove")
-            {
-                var ProductionId = ProcessViewModel.ListProductions.FirstOrDefault(r => r.Production_Id == ProductionDTEditor.ProductionList[0].Production_Id);
-                if (ProductionId != null)
-                {
-                    ProcessViewModel.ListProductions.Remove(ProductionId);
-                }
-            }
-          
-            return Json(new { draw = data.Draw, recordsFiltered = model.Count, recordsTotal = model.Count, data = model }, JsonRequestBehavior.AllowGet);
-        }
-
-        [HttpPost]
-        public JsonResult ProductionChangeStatus(string Production_Barcode, string Process_Detail_Id)
-        {
-            var check = 0;
-            var ProductionId = ProcessViewModel.ListProductions.FirstOrDefault(r => r.Barcode == Production_Barcode && r.Process_Detail_Id == int.Parse(Process_Detail_Id));
-            if (ProductionId != null)
-            {
-                if (ProductionId.Status == "已入庫")
-                {
-                    check = 1;
-                }
-                else
-                {
-                    ProductionId.Status = "已入庫";
-                    check = 2;
-                }
-
-            }
-            else
-            {
-                //無條碼
-                check = 3;
-            }
-
-            return Json(new { check }, JsonRequestBehavior.AllowGet);
+            ProcessViewModel viewModel = new ProcessViewModel();
+            //取得使用者ID
+            var id = this.User.Identity.GetUserId();
+            //取得使用者帳號
+            var name = this.User.Identity.GetUserName();
+            var resultModel = viewModel.ProductionChangeStatus(Production_Barcode, OspDetailOutId, id, name);
+            return Json(new { resultModel }, JsonRequestBehavior.AllowGet);
         }
 
 
         [HttpPost]
-        public JsonResult CotangentDataTables(DataTableAjaxPostViewModel data, string Production_Cotangent,string Process_Detail_Id)
+        public JsonResult CotangentDataTables(DataTableAjaxPostViewModel data, long OspDetailOutId)
         {
-            List<Cotangent> model = new List<Cotangent>();
-            if (Production_Cotangent == "1")
-            {
-                ProcessViewModel.GetCotangents(Process_Detail_Id);
-            }
-
-            model = ProcessViewModel.ListCotangent;
-            return Json(new { draw = data.Draw, recordsFiltered = model.Count, recordsTotal = model.Count, data = model }, JsonRequestBehavior.AllowGet);
+            ProcessViewModel viewModel = new ProcessViewModel();
+            List<Cotangent> model = viewModel.GetCotangents(OspDetailOutId);
+            model = ProcessViewModel.CotangentModelDTOrder.Search(data, model);
+            model = ProcessViewModel.CotangentModelDTOrder.Order(data.Order, model).ToList();
+            var model1 = model.Skip(data.Start).Take(data.Length).ToList();
+            return Json(new { draw = data.Draw, recordsFiltered = model.Count, recordsTotal = model.Count, data = model1 }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
-        public ActionResult CotangentEdit(DataTableAjaxPostViewModel data, CotangentDTEditor cotangentDTEditor)
+        public ActionResult CotangentEdit(ProcessUOW.CotangentDTEditor cotangentDTEditor)
         {
-            var model = ProcessViewModel.ListCotangent;
-            if (cotangentDTEditor.Action == "edit")
-            {
-                var id = model.FirstOrDefault(r => r.Cotangent_Id == cotangentDTEditor.CotangentList[0].Cotangent_Id);
-                if(id != null)
-                {
-                    id.Cotangent_Ttl_Roll_Ream = cotangentDTEditor.CotangentList[0].Cotangent_Ttl_Roll_Ream;
-                    id.Kg = (int.Parse(cotangentDTEditor.CotangentList[0].Cotangent_Ttl_Roll_Ream) * 2).ToString();
-                }
-               
-            }
-           if(cotangentDTEditor.Action == "remove")
-            {
-                
-                var id = model.FirstOrDefault(r => r.Cotangent_Id == cotangentDTEditor.CotangentList[0].Cotangent_Id);
-                if(id != null)
-                {
-                    ProcessViewModel.ListCotangent.Remove(id);
-                }
-               
-            }
-         
-            return Json(new { draw = data.Draw, recordsFiltered = model.Count, recordsTotal = model.Count, data = model }, JsonRequestBehavior.AllowGet);
+            ProcessViewModel viewModel = new ProcessViewModel();
+            //取得使用者ID
+            var id = this.User.Identity.GetUserId();
+            //取得使用者帳號
+            var name = this.User.Identity.GetUserName();
+            var resultModel = viewModel.SetCotangentEditor(cotangentDTEditor, id, name);
+            return Json(new { resultModel }, JsonRequestBehavior.AllowGet);
         }
 
 
-        [HttpPost]
-        public ActionResult CotangentDelete(string Cotangent_Id)
-        {
-            var boolean = true;
-            var CotangentId = ProcessViewModel.ListCotangent.FirstOrDefault(r => r.Cotangent_Id.ToString() == Cotangent_Id);
-            if (CotangentId != null)
-            {
-                ProcessViewModel.ListCotangent.Remove(CotangentId);
-            }
-            else
-            {
-                boolean = false;
-            }
-
-            return Json(new { boolean }, JsonRequestBehavior.AllowGet);
-        }
 
         [HttpPost]
-        public JsonResult CotangentChangeStatus(string CotangentBarcode)
+        public JsonResult CotangentChangeStatus(string CotangentBarcode,long OspDetailOutId)
         {
-            var check = 0;
-            var CotangentId = ProcessViewModel.ListCotangent.FirstOrDefault(r => r.Barcode == CotangentBarcode);
-            if (CotangentId != null)
-            {
-                if (CotangentId.Status == "已入庫")
-                {
-                    check = 1;
-                }
-                else
-                {
-                    CotangentId.Status = "已入庫";
-                    check = 2;
-                }
-
-            }
-            else
-            {
-                //無條碼
-                check = 3;
-            }
-
-            return Json(new { check }, JsonRequestBehavior.AllowGet);
+            ProcessViewModel viewModel = new ProcessViewModel();
+            //取得使用者ID
+            var id = this.User.Identity.GetUserId();
+            //取得使用者帳號
+            var name = this.User.Identity.GetUserName();
+            var resultModel = viewModel.CotangentChangeStatus(CotangentBarcode, OspDetailOutId, id, name);
+           
+            return Json(new { resultModel }, JsonRequestBehavior.AllowGet);
         }
 
 
@@ -523,115 +274,63 @@ namespace CHPOUTSRCMES.Web.Controllers
         public JsonResult RecordCotangentDataTables(DataTableAjaxPostViewModel data)
         {
             List<Cotangent> model = new List<Cotangent>();
-            model = ProcessViewModel.ListCotangent;
+            //model = ProcessViewModel.ListCotangent;
             return Json(new { draw = data.Draw, recordsFiltered = model.Count, recordsTotal = model.Count, data = model }, JsonRequestBehavior.AllowGet);
         }
 
 
-        public JsonResult Loss(string TotalWeight, string Percentage, string Process_Detail_Id)
+        public JsonResult Loss(long OspDetailInId ,long OspDetailOutId)
         {
-            List<Production> model = ProcessViewModel.ListProductions;
-            for(int i = 0; i < model.Count; i++)
-            {
-                if (model[i].Process_Detail_Id == int.Parse(Process_Detail_Id))
-                {
-                    model[i].Loss = "重量(KG)" + TotalWeight + "得率" + Percentage + "%";
-                }
-            }
-
-            //var id = model.FirstOrDefault(r => r.Process_Detail_Id == int.Parse(Process_Detail_Id));
-            //if (id != null)
-            //{
-            //    id.Loss = "重量(KG)" + TotalWeight + "得率" + Percentage + "%";
-            //}
-            return Json(new { }, JsonRequestBehavior.AllowGet);
+            ProcessViewModel viewModel = new ProcessViewModel();
+            //取得使用者ID
+            var id = this.User.Identity.GetUserId();
+            //取得使用者帳號
+            var name = this.User.Identity.GetUserName();
+            var resultDataModel = viewModel.Loss(OspDetailInId, OspDetailOutId, id, name);
+            return Json(new { resultDataModel }, JsonRequestBehavior.AllowGet);
         }
 
 
         [HttpPost]
         public JsonResult PaperRollProductionDetail(string PaperRoll_Basic_Weight, string PaperRoll_Specification, string PaperRoll_Lot_Number, string Product_Item, string Process_Detail_Id)
         {
-            List<Production> model = ProcessViewModel.ListProductions;
-            var boolean = true;
-            if (PaperRoll_Lot_Number != null)
-            {
-                model.Add(new Production
-                {
-                    Process_Detail_Id = int.Parse(Process_Detail_Id),
-                    Production_Id = model.Count == 0 ? (1) : (model.Count + 1),
-                    Barcode = "W201006000" + (model.Count == 0 ? (1).ToString() : (model.Count + 1).ToString()),
-                    Weight = PaperRoll_Basic_Weight.ToString(),
-                    Status = "待入庫",
-                    Item_No = Product_Item,
-                    Lot_Number = PaperRoll_Lot_Number
-                });
+            //List<Production> model = ProcessViewModel.ListProductions;
+            //var boolean = true;
+            //if (PaperRoll_Lot_Number != null)
+            //{
+            //    model.Add(new Production
+            //    {
+            //        //Process_Detail_Id = int.Parse(Process_Detail_Id),
+            //        //Production_Id = model.Count == 0 ? (1) : (model.Count + 1),
+            //        //Barcode = "W201006000" + (model.Count == 0 ? (1).ToString() : (model.Count + 1).ToString()),
+            //        //Weight = PaperRoll_Basic_Weight.ToString(),
+            //        //Status = "待入庫",
+            //        //Item_No = Product_Item,
+            //        //Lot_Number = PaperRoll_Lot_Number
+            //    });
 
-            }
+            //}
 
 
-            return Json(new { boolean }, JsonRequestBehavior.AllowGet);
+            return Json(new {  }, JsonRequestBehavior.AllowGet);
         }
 
-
-       
-
-
-
-        private List<SelectListItem> GetRemnantItem()
+        [HttpPost]
+        public ActionResult GetPickInLabels(List<long> OspPickedInId)
         {
-            List<SelectListItem> GetManchine_Num = new List<SelectListItem>();
-            GetManchine_Num.Add(new SelectListItem()
-            {
-                Text = "無",
-                Value = "0",
-                Selected = false,
-            });
-            GetManchine_Num.Add(new SelectListItem()
-            {
-                Text = "有",
-                Value = "1",
-                Selected = false,
-            });
-            return GetManchine_Num;
+            //取得使用者帳號
+            ProcessViewModel procesViewModel = new ProcessViewModel();
+            var name = this.User.Identity.GetUserName();
+            return procesViewModel.GetPickInLabels(OspPickedInId, name);
         }
 
-        private List<SelectListItem> GetCotangentItem()
-        {
-            List<SelectListItem> GetCotangentItem = new List<SelectListItem>();
-            GetCotangentItem.Add(new SelectListItem()
-            {
-                Text = "無",
-                Value = "0",
-                Selected = false,
-            });
-            GetCotangentItem.Add(new SelectListItem()
-            {
-                Text = "有",
-                Value = "1",
-                Selected = false,
-            });
-            return GetCotangentItem;
-        }
 
-     
 
-        public class DetailDTEditor
-        {
-            public string Action { get; set; }
-            public List<Invest> InvestList { get; set; }
-        }
 
-        public class ProductionDTEditor
-        {
-            public string Action { get; set; }
-            public List<Production> ProductionList { get; set; }
-        }
 
-        public class CotangentDTEditor
-        {
-            public string Action { get; set; }
-            public List<Cotangent> CotangentList { get; set; }
-        }
+
+
+
 
     }
 }

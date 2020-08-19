@@ -8,16 +8,19 @@ namespace CHPOUTSRCMES.Web.Models.Process
 {
     public class CHP_PROCESS_T
     {
-        [Display(Name = "加工表頭ID")] //OSP_BATCH_ID
+        [Display(Name = "加工表頭ID")] 
         public long OspHeaderId { set; get; }
 
-        [Display(Name = "加工明細ID")] //OSP_BATCH_ID
+        [Display(Name = "加工明細ID")] 
         public long OspDetailInId { set; get; }
 
-        [Display(Name = "加工狀態")] //OSP_BATCH_STATUS_DESC
+        [Display(Name = "加工產出明細ID")]
+        public long OspDetailOutId { set; get; }
+
+        [Display(Name = "加工狀態")] //STATUS
         public string Status { set; get; }
 
-        [Display(Name = "工單號")] //OSP_BATCH_NO
+        [Display(Name = "工單號")] //BATCH_NO
         public string BatchNo { set; get; }
 
         [Display(Name = "工單類別")]
@@ -42,7 +45,7 @@ namespace CHPOUTSRCMES.Web.Models.Process
         public string CustomerName { set; get; }
 
         [Display(Name = "訂單編號")] //ORDER_NUMBER
-        public string OrderNumber { set; get; }
+        public long OrderNumber { set; get; }
 
         [Display(Name = "明細行")] //ORDER_LINE_NUMBER
         public string OrderLineNumber { set; get; }
@@ -63,7 +66,7 @@ namespace CHPOUTSRCMES.Web.Models.Process
         public string ReamWt { set; get; }
 
         [Display(Name = "主要重量")] //PRIMARY_QUANTITY
-        public string PrimaryQuantity { set; get; }
+        public decimal PrimaryQuantity { set; get; }
 
         [Display(Name = "主要單位")] //PRIMARY_UOM
         public string PrimaryUom { set; get; }
@@ -96,18 +99,18 @@ namespace CHPOUTSRCMES.Web.Models.Process
         public string LocatorCode { get; set; }
 
         [Display(Name = "損耗量")]
-        public string Loss { set; get; }
+        public decimal? Loss { set; get; }
 
-        [Display(Name = "建立人員ID")] //WIP_CREATED_BY
+        [Display(Name = "建立人員ID")] //CREATED_BY
         public string Createdby { set; get; }
 
-        [Display(Name = "建立日期")] //WIP_CREATION_DATE
+        [Display(Name = "建立日期")] //CREATION_DATE
         public DateTime Creationdate { set; get; }
 
-        [Display(Name = "最後更新人員ID")] //WIP_LAST_UPDATED_BY
+        [Display(Name = "最後更新人員ID")] //LAST_UPDATED_BY
         public string LastUpdatedBy { set; get; }
 
-        [Display(Name = "最後更新日期")] //WIP_LAST_UPDATE_DATE
+        [Display(Name = "最後更新日期")] //LAST_UPDATE_DATE
         public DateTime? LastUpdateDate { set; get; }
 
 

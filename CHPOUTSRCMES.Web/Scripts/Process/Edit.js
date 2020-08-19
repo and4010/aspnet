@@ -1,15 +1,18 @@
-﻿$(document).ready(function () {
+﻿
+$(document).ready(function () {
     $('#BtnSave').click(function () {
-        var remark = $('#textarea').val()
-        var Process_Detail_Id = $('#Process_Detail_Id').val()
+        var Note = $('#textarea').val()
+        var OspHeaderId = $('#OspHeaderId').val()
         $.ajax({
             url: "/Process/EditSave",
             type: "POST",
-            data: { remark: remark, Process_Detail_Id: Process_Detail_Id},
+            data: { Note: Note, OspHeaderId: OspHeaderId},
             dataType: "JSON",
-            success: function (Boolean) {
-                if (Boolean) {
+            success: function (data) {
+                if (data.resultModel.Success) {
                     location.href = '/Process/Index'
+                } else {
+                    swal.fire(data.resultModel.Msg);
                 }
 
             }

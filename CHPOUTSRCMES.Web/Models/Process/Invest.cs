@@ -9,41 +9,50 @@ namespace CHPOUTSRCMES.Web.Models.Process
     public class Invest
     {
 
-        [Display(Name = "ID")] 
-        public int Invest_Id { set; get; }
+        [Display(Name = "OspPickedInId")] 
+        public long OspPickedInId { set; get; }
 
-        [Display(Name = "加工明細ID")] //OSP_BATCH_ID
-        public int Process_Detail_Id { set; get; }
+        [Display(Name = "加工明細ID")]
+        public long OspDetailInId { set; get; }
+
+        [Display(Name = "加工檔頭ID")]
+        public long OspHeaderId { set; get; }
+
+        [Display(Name = "庫存ID")]
+        public long StockId { set; get; }
 
         [Display(Name = "條碼編號")]
         public string Barcode { set; get; }
 
         [Display(Name = "殘捲")]
-        public string Remnant { set; get; }
+        public string HasRemaint { set; get; }
 
         [Display(Name = "原重量")]
-        public string Original_Weight { set; get; }
+        public decimal PrimaryQuantity { set; get; }
 
         [Display(Name = "餘重(KG)")]
-        public string Remaining_Weight { set; get; }
+        public decimal? RemainingQuantity { set; get; }
 
         [Display(Name = "基重")]
-        public string Basic_Weight { set; get; }
+        public string BasicWeight { set; get; }
 
-        [Display(Name = "寬幅")]
+        [Display(Name = "規格")]
         public string Specification { set; get; }
 
         [Display(Name = "捲號")]
-        public string Lot_Number { set; get; }
+        public string LotNumber { set; get; }
 
         [Display(Name = "紙別")]
-        public string Paper_Type { get; set; }
+        public string PaperType { get; set; }
+
+        [Display(Name = "料號ID")]
+        public long InventoryItemId { set; get; }
 
         [Display(Name = "料號")]
-        public string Item_No { set; get; }
+        public string InventoryItemNumber { set; get; }
 
-        [Display(Name = "令數")] //REAM_WT
-        public string Ream_Qty { set; get; }
+        [Display(Name = "令數")]
+        public decimal? SecondaryQuantity { set; get; }
 
 
 

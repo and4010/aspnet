@@ -562,16 +562,16 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Process
         /// 
         [Required]
         [Column("CREATED_BY")]
-        public long CreatedBy { set; get; }
+        [StringLength(128)]
+        public string CreatedBy { set; get; }
 
         /// <summary>
         /// 建立時間
         /// </summary>
         /// 
         [DataType(DataType.Date)]
-        [Required]
         [Column("CREATION_DATE")]
-        public DateTime CreationDate { set; get; }
+        public DateTime? CreationDate { set; get; }
 
         /// <summary>
         /// 更新人員
@@ -579,7 +579,8 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Process
         /// 
         [Column("LAST_UPDATE_BY")]
         [Required]
-        public long LastUpdateBy { set; get; }
+        [StringLength(128)]
+        public string LastUpdateBy { set; get; }
 
         /// <summary>
         /// 更新時間
