@@ -7,7 +7,6 @@
     var selectedTransferHeaderId = 0;
 
     function getShipmentNumber() {
-        var s = $('#ddlShipmentNumber option:selected').text();
         return $('#ddlShipmentNumber option:selected').text();
     }
 
@@ -136,24 +135,26 @@
 
 
     $('#ddlOutLocator').change(function () {
+        //GetShipmentNumberList("新增編號", "新增編號");
+
         //checkTransactionType();
-        GetShipmentNumberList("新增編號", "新增編號");
-        $('#AutoCompleteItemNumber').val("");
-        $('#PACKING_TYPE_LABEL').hide();
-        $('#PACKING_TYPE').html("");
-        $('#PACKING_TYPE').hide();
-        $('#UNIT').html("");
+        //$('#AutoCompleteItemNumber').val("");
+        //$('#PACKING_TYPE_LABEL').hide();
+        //$('#PACKING_TYPE').html("");
+        //$('#PACKING_TYPE').hide();
+        //$('#UNIT').html("");
         //GetItemNumberList();
     })
 
     $('#ddlInLocator').change(function () {
+        //GetShipmentNumberList("新增編號", "新增編號");
+
         //checkTransactionType();
-        GetShipmentNumberList("新增編號", "新增編號");
     })
 
     $("#ddlShipmentNumber").combobox({
         select: function (event, ui) {
-            GetShipmentNumberData();
+            SelectShipmentNumber();
             //if (getShipmentNumber() == "新增編號") {
             //    $("#scrollbox").collapse('show');
             //    $('#AutoCompleteItemNumber').focus();
@@ -387,7 +388,7 @@
     //    }
     //});
 
-    function GetShipmentNumberData() {
+    function SelectShipmentNumber() {
         if (getShipmentNumber() == "新增編號") {
             $("#scrollbox").collapse('show');
             $('#AutoCompleteItemNumber').focus();
@@ -405,6 +406,15 @@
                     selectedTransferHeaderId = data.Data.TransferHeaderId;
                     selectedNumberStatus = data.Data.NumberStatus;
 
+                    if ($('#ddlOutLocatorArea').is(":visible")) {
+                        $("#ddlOutLocator").val(data.Data.LocatorId);
+                    }
+
+                    if ($('#ddlInLocatorArea').is(":visible")) {
+                        $("#ddlInLocator").val(data.Data.TransferLocatorId);
+                    }
+
+                    $('#CountyDDL').val('someValue');
                     InputOpen();
                     $('#txtBARCODE').val("");
                     InBoundBarcodeDataTablesBody.ajax.reload();
@@ -1168,7 +1178,7 @@
                         if (data.status) {
 
                             swal.fire(data.result);
-                            GetShipmentNumberData();
+                            SelectShipmentNumber();
                             //GetNumberStatus();
                         } else {
                             swal.fire(data.result);
@@ -2002,7 +2012,7 @@
                     }
                     $("#ddlShipmentNumber").combobox('autocomplete', selectValue, selectText);
                     //$('#ddlShipmentNumber option[text="' + selectText + '", value="' + selectValue + '"]').attr('selected', 'selected');
-                    GetShipmentNumberData();
+                    SelectShipmentNumber();
                 } else {
                     swal.fire(data.result);
                 }

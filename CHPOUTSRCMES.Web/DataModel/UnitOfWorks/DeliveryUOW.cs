@@ -1142,6 +1142,16 @@ from DLV_HEADER_T";
                         data.LastUpdateDate = now;
                         dlvHeaderTRepositiory.Update(data);
 
+                        //更新庫存鎖定量
+                        var pick = dlvPickedTRepositiory.GetAll().AsNoTracking().FirstOrDefault(x => x.DlvHeaderId == data.DlvHeaderId);
+                        if (pick == null) throw new Exception("找不到揀貨資料");
+                        var stock = stockTRepositiory.GetAll().FirstOrDefault(x => x.StockId == pick.Stock_Id);
+                        if (stock == null) throw new Exception("找不到庫存資料");
+                        STK_TXN_T stkTxnT = CreateStockRecord(stock, null, "", "", null, CategoryCode.Delivery, ActionCode.Shipped, data.DeliveryName);
+                        var updateStockLockQtyResult = UpdateStockLockQty(stock, stkTxnT, pick.PrimaryQuantity, pick.SecondaryQuantity, pickSatus, PickStatus.Shipped, userId, now);
+                        if (!updateStockLockQtyResult.Success) throw new Exception(updateStockLockQtyResult.Msg);
+
+
                         //複製出貨明細資料到出貨歷史明細
                         string cmd = @"
 INSERT INTO [DLV_DETAIL_HT]
@@ -1307,6 +1317,9 @@ SELECT [DLV_PICKED_ID]
                     }
 
                     dlvHeaderTRepositiory.SaveChanges();
+                    stockTRepositiory.SaveChanges();
+                    stkTxnTRepositiory.SaveChanges();
+                    
 
                     txn.Commit();
                     return new ResultModel(true, "出貨核准成功");

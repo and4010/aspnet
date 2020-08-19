@@ -295,8 +295,17 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
 
         public class ActionCode : IAction
         {
+            /// <summary>
+            /// 刪除
+            /// </summary>
             public const string Deleted = "A0";
+            /// <summary>
+            /// 已揀
+            /// </summary>
             public const string Picked = "A1";
+            /// <summary>
+            /// 已出貨
+            /// </summary>
             public const string Shipped = "A2";
 
             public string GetDesc(string category)
@@ -730,8 +739,45 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
 
         //    return UpdateStock(stock, qty, uom, detail, statusCode, lockQty);
         //}
+        /// <summary>
+        /// 更新庫存鎖定量及狀態
+        /// </summary>
+        /// <param name="stockId"></param>
+        /// <param name="stkTxnT"></param>
+        /// <param name="addPriLockQty"></param>
+        /// <param name="addSecLockQty"></param>
+        /// <param name="detail"></param>
+        /// <param name="statusCode"></param>
+        /// <param name="lastUpdatedBy"></param>
+        /// <param name="addDate"></param>
+        /// <returns></returns>
+        public ResultDataModel<STOCK_T> UpdateStockLockQty(STOCK_T stock, STK_TXN_T stkTxnT, decimal addPriLockQty, decimal? addSecLockQty, IDetail detail, string statusCode, string lastUpdatedBy, DateTime addDate)
+        {
+            try
+            {
+                stock.PrimaryLockedQty += addPriLockQty;
+                stock.SecondaryLockedQty += addSecLockQty;
 
+                stock.StatusCode = stock.PrimaryAvailableQty == 0 ? detail.ToStockStatus(statusCode) : StockStatusCode.InStock;
 
+                stock.LastUpdateBy = lastUpdatedBy;
+                stock.LastUpdateDate = addDate;
+                stkTxnT.CreatedBy = stock.CreatedBy;
+                stkTxnT.CreationDate = stock.CreationDate;
+                stkTxnT.LastUpdateBy = null;
+                stkTxnT.LastUpdateDate = null;
+                stkTxnT.StatusCode = stock.StatusCode;
+
+                stockTRepositiory.Update(stock);
+                stkTxnTRepositiory.Create(stkTxnT);
+                return new ResultDataModel<STOCK_T>(true, "庫存鎖定量更新成功", stock);
+            }catch(Exception ex)
+            {
+                logger.Error(LogUtilities.BuildExceptionMessage(ex));
+                return new ResultDataModel<STOCK_T>(false, "庫存鎖定量更新失敗:" + ex.Message, null);
+            }
+            
+        }
 
         /// <summary>
         /// 更新庫存量及狀態
@@ -971,8 +1017,8 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                     OrganizationId = 265,
                     OrganizationCode = "FTY",
                     SubinventoryCode = "TB3",
-                    LocatorId = null,
-                    LocatorSegments = "",
+                    LocatorId = 23866,
+                    LocatorSegments = "FTY.TB3.SFG.NA",
                     Barcode = "A2007290001",
                     InventoryItemId = 504029,
                     ItemNumber = "4DM00A03500214K512K",
@@ -1010,8 +1056,8 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                     OrganizationId = 265,
                     OrganizationCode = "FTY",
                     SubinventoryCode = "TB3",
-                    LocatorId = null,
-                    LocatorSegments = "",
+                    LocatorId = 23866,
+                    LocatorSegments = "FTY.TB3.SFG.NA",
                     Barcode = "A2007290002",
                     InventoryItemId = 505675,
                     ItemNumber = "4DM00P0270008271130",
@@ -1049,8 +1095,8 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                     OrganizationId = 265,
                     OrganizationCode = "FTY",
                     SubinventoryCode = "SFG",
-                    LocatorId = null,
-                    LocatorSegments = "",
+                    LocatorId = 22016,
+                    LocatorSegments = "FTY.SFG.TB2.NA",
                     Barcode = "A2007290003",
                     InventoryItemId = 558705,
                     ItemNumber = "4AH00A00900362KRL00",
@@ -1088,8 +1134,8 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                     OrganizationId = 265,
                     OrganizationCode = "FTY",
                     SubinventoryCode = "TB3",
-                    LocatorId = null,
-                    LocatorSegments = "",
+                    LocatorId = 23866,
+                    LocatorSegments = "FTY.TB3.SFG.NA",
                     Barcode = "A2007290004",
                     InventoryItemId = 559299,
                     ItemNumber = "4AK0XA008001320RL00",
@@ -1127,8 +1173,8 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                     OrganizationId = 265,
                     OrganizationCode = "FTY",
                     SubinventoryCode = "TB3",
-                    LocatorId = null,
-                    LocatorSegments = "",
+                    LocatorId = 23866,
+                    LocatorSegments = "FTY.TB3.SFG.NA",
                     Barcode = "A2007290005",
                     InventoryItemId = 506313,
                     ItemNumber = "4DM00P0270007991121",
@@ -1436,6 +1482,9 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
 
         #endregion
 
+
+        #region 條碼
+
         /// <summary>
         /// 產生條碼清單 (請用交易TRANSACTION)
         /// </summary>
@@ -1445,7 +1494,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
         /// <param name="requestQty">數量</param>
         /// <param name="userId">使用者ID</param>
         /// <returns>ResultDataModel 條碼清單</returns>
-        public ResultDataModel<List<string>> GenerateBarcodes(long organiztionId, string subinventoryCode, string prefix, int requestQty, string userId)
+        public ResultDataModel<List<string>> GenerateBarcodes(long organiztionId, string subinventoryCode, int requestQty, string userId, string prefix = "")
         {
             ResultDataModel<List<string>> result = null;
             try
@@ -1470,6 +1519,9 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             }
             return result;
         }
+
+
+        #endregion
 
         /// <summary>
         /// 產生下拉選單內容
