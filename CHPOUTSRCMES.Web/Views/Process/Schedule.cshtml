@@ -28,6 +28,8 @@ else
 
 @Html.HiddenFor(model => model.CHP_PROCESS_T.Status, new { id = "Status" })
 @Html.HiddenFor(model => model.CHP_PROCESS_T.OspDetailInId, new { id = "OspDetailInId" })
+@Html.HiddenFor(model => model.CHP_PROCESS_T.OspDetailOutId, new { id = "OspDetailOutId" })
+@Html.HiddenFor(model => model.CHP_PROCESS_T.OspHeaderId, new { id = "OspHeaderId" })
 
 <div class="row">
 
@@ -110,10 +112,10 @@ else
         <form class="bs-example bs-example-form col-md-3" id="form" onsubmit="return false">
             <div class="input-group form-row">
                 <span class="input-group-addon">請輸入工單號</span>
-                <input type="text" class="form-control" placeholder="請輸入工單號" id="ProcessBatchNo" autocomplete="off">
+                <input type="text" class="form-control" placeholder="請輸入工單號" id="InputBatchNo" autocomplete="off">
             </div>
         </form>
-        <button class="btn btn-danger" type="button" id="BtnProcess_Batch_no">比對</button>
+        <button class="btn btn-danger" type="button" id="BtnCheckBatchNo">比對</button>
         <button class="btn btn-danger" type="button" id="BtnEdit">修改</button>
         <button class="btn btn-danger" type="button" id="BtnApprove">核准</button>
     </div>
@@ -148,11 +150,11 @@ else
 
         @* 殘捲 *@
         <div class="form-inline col col-md-1 text-right">
-            @Html.LabelFor(model => model.Invest.Remnant)
+            @Html.LabelFor(model => model.Invest.HasRemaint)
         </div>
 
         <div class="form-inline col col-md-1">
-            @Html.DropDownListFor(model => model.Invest.Remnant, RemnantItem, new { @class = "form-control input-sm", id = "Invest_Remnant" })
+            @Html.DropDownListFor(model => model.Invest.HasRemaint, RemnantItem, new { @class = "form-control input-sm", id = "Invest_Remnant" })
         </div>
 
         @* 原重量 *@
@@ -166,11 +168,11 @@ else
 
         @* 餘量 *@
         <div class="form-inline col col-md-1 text-right">
-            @Html.LabelFor(model => model.Invest.Remaining_Weight)
+            @Html.LabelFor(model => model.Invest.RemainingQuantity)
         </div>
 
         <div class="form-inline col col-md-1">
-            @Html.TextBoxFor(model => model.Invest.Remaining_Weight, new { @class = "form-control form-control input-sm", id = "Invest_Remaining_Weight" ,autocomplete="off" })
+            @Html.TextBoxFor(model => model.Invest.RemainingQuantity, new { @class = "form-control form-control input-sm", id = "Invest_Remaining_Weight", autocomplete = "off" })
         </div>
 
 
@@ -224,6 +226,7 @@ else
                 <table class="table table-striped table-bordered table-hover" id="InvestDataTables">
                     <thead>
                         <tr>
+                            <th></th>
                             <th></th>
                             <th>
                                 @Html.DisplayName("條碼號")
@@ -279,10 +282,10 @@ else
         <form class="bs-example bs-example-form col-md-3" id="form" onsubmit="return false">
             <div class="input-group form-row">
                 <span class="input-group-addon">請輸入工單號</span>
-                <input type="text" class="form-control" placeholder="請輸入工單號" id="ProcessProductionBatchNo" autocomplete="off">
+                <input type="text" class="form-control" placeholder="請輸入工單號" id="OutBatchNo" autocomplete="off">
             </div>
         </form>
-        <button class="btn btn-danger" type="button" id="BtnProcess_Production_Batch_no">比對</button>
+        <button class="btn btn-danger" type="button" id="BtnCheckProductionBatchNo">比對</button>
     </div>
 
 
@@ -332,7 +335,7 @@ else
         </div>
 
         <div class="form-inline col col-md-1">
-            @Html.DropDownListFor(model => model.Production.Cotangent, CotangentItem, new { @class = "form-control form-control input-sm", id = "Production_Cotangent" })
+            @Html.DropDownListFor(model => model.Production.Cotangent, CotangentItem, new { @class = "form-control form-control input-sm", id = "Cotangent" })
         </div>
 
         <div class="form-group col col-md-1 ">
@@ -491,12 +494,16 @@ else
         </div>
     </div>
     <div class="row col-md-12">
-        <div class="form-inline col col-md-3">
-            @Html.LabelFor(model => model.Production.Loss)
-            <label id="Production_Loss">@Html.DisplayFor(model => model.Production.Loss)</label>
+        <div class="form-inline col col-md-1">
+            @Html.LabelFor(model => model.YieldVariance.LossWeight)
+            <label id="Production_Loss">@Html.DisplayFor(model => model.YieldVariance.LossWeight)</label>
+        </div>
+        <div class="form-inline col col-md-1">
+            @Html.LabelFor(model => model.YieldVariance.Rate)
+            <label id="Rate">@Html.DisplayFor(model => model.YieldVariance.Rate)</label>
         </div>
         <div class="col-md-2">
-            @Html.HiddenFor(model => model.CHP_PROCESS_T.Loss, new { id = "CHP_PROCESS_T_Weight" })
+            @Html.HiddenFor(model => model.CHP_PROCESS_T.Loss, new { id = "Loss" })
             <button class="btn btn-primary" type="button" id="BtnCalculate">計算</button>
         </div>
 

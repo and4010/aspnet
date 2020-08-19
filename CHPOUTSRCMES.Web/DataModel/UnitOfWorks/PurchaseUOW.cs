@@ -113,9 +113,9 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                 ctrorg.SecondaryUom = "RE";
                 ctrorg.LotNumber = "";
                 ctrorg.TheoryWeight = "";
-                ctrorg.CreatedBy = 1;
+                ctrorg.CreatedBy = "1";
                 ctrorg.CreationDate = DateTime.Now;
-                ctrorg.LastUpdateBy = 1;
+                ctrorg.LastUpdateBy = "1";
                 ctrorg.LastUpdateDate = DateTime.Now;
                 ctrOrgTRepositiory.Create(ctrorg, true);
 
@@ -155,9 +155,9 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                 ctrorg.SecondaryUom = "";
                 ctrorg.LotNumber = "1400110000776875";
                 ctrorg.TheoryWeight = "616";
-                ctrorg.CreatedBy = 1;
+                ctrorg.CreatedBy = "1";
                 ctrorg.CreationDate = DateTime.Now;
-                ctrorg.LastUpdateBy = 1;
+                ctrorg.LastUpdateBy = "1";
                 ctrorg.LastUpdateDate = DateTime.Now;
                 ctrOrgTRepositiory.Create(ctrorg, true);
 
@@ -197,9 +197,9 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                 ctrorg.SecondaryUom = "";
                 ctrorg.LotNumber = "1400120000776904";
                 ctrorg.TheoryWeight = "440";
-                ctrorg.CreatedBy = 1;
+                ctrorg.CreatedBy = "1";
                 ctrorg.CreationDate = DateTime.Now;
-                ctrorg.LastUpdateBy = 1;
+                ctrorg.LastUpdateBy = "1";
                 ctrorg.LastUpdateDate = DateTime.Now;
                 ctrOrgTRepositiory.Create(ctrorg, true);
             }
@@ -350,7 +350,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                         cTR_PICKED_T.StockId = null;
                         cTR_PICKED_T.LocatorId = ctrDetail[i].d.LocatorId;
                         cTR_PICKED_T.LocatorCode = ctrDetail[i].d.LocatorCode;
-                        cTR_PICKED_T.Barcode = GenerateBarcodes(ctrDetail[i].e.OrganizationId, ctrDetail[i].e.Subinventory, "W", PaperRollModel.Count, "伊麗星").Data[i];
+                        cTR_PICKED_T.Barcode = GenerateBarcodes(ctrDetail[i].e.OrganizationId, ctrDetail[i].e.Subinventory, "W", PaperRollModel.Count, userName).Data[i];
                         cTR_PICKED_T.InventoryItemId = ctrDetail[i].d.InventoryItemId;
                         cTR_PICKED_T.ShipItemNumber = PaperRollModel[i].Item_No;
                         cTR_PICKED_T.PaperType = PaperRollModel[i].PaperType;
@@ -447,7 +447,7 @@ and d.ITEM_CATEGORY = N'捲筒'");
                         cTR_PICKED_T.StockId = null;
                         cTR_PICKED_T.LocatorId = ctrDetail[i].LocatorId;
                         cTR_PICKED_T.LocatorCode = ctrDetail[i].LocatorCode;
-                        cTR_PICKED_T.Barcode = GenerateBarcodes(ctrheader.OrganizationId, ctrheader.Subinventory, "P", ctrDetail.Count, decimal.ToInt32(ctrDetail[i].RollReamQty).ToString()).Data[i];
+                        cTR_PICKED_T.Barcode = GenerateBarcodes(ctrheader.OrganizationId, ctrheader.Subinventory, "P", ctrDetail.Count, "1").Data[i];
                         cTR_PICKED_T.InventoryItemId = ctrDetail[i].InventoryItemId;
                         cTR_PICKED_T.ShipItemNumber = ctrDetail[i].ShipItemNumber;
                         cTR_PICKED_T.PaperType = ctrDetail[i].PaperType;

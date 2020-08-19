@@ -465,8 +465,9 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Purchase
         /// </summary>
         /// 
         [Required]
+        [StringLength(128)]
         [Column("CREATED_BY")]
-        public long CreatedBy { set; get; }
+        public string CreatedBy { set; get; }
 
         /// <summary>
         /// 建立時間
@@ -483,7 +484,8 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Purchase
         /// 
         [Column("LAST_UPDATE_BY")]
         [Required]
-        public long LastUpdateBy { set; get; }
+        [StringLength(128)]
+        public string LastUpdateBy { set; get; }
 
         /// <summary>
         /// 更新時間

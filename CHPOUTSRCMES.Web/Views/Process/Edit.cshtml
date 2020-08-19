@@ -1,4 +1,4 @@
-﻿@model CHPOUTSRCMES.Web.ViewModels.Process.ProcessIndexViewModel
+﻿@model CHPOUTSRCMES.Web.ViewModels.Process.ProcessViewModel
 @{
     ViewBag.EnableReturnButton = "true";
     ViewBag.Title = "加工-編輯";
@@ -13,7 +13,7 @@
     <script src="~/Scripts/Process/Edit.js"></script>
 }
 
-@Html.HiddenFor(model => model.CHP_PROCESS_T.OspDetailInId, new { id = "Process_Detail_Id" })
+@Html.HiddenFor(model => model.CHP_PROCESS_T.OspHeaderId, new { id = "OspHeaderId" })
 
 <div class="row">
 
@@ -172,11 +172,11 @@
     <div class="row col-md-12">
         @* 損失 *@
         <div class="form-group col col-md-1 text-right">
-            @Html.LabelFor(model => model.Production.Loss)
+            @Html.LabelFor(model => model.YieldVariance.LossWeight)
         </div>
 
         <div class="form-group col col-md-2">
-            @Html.DisplayFor(model => model.Production.Loss)
+            @Html.DisplayFor(model => model.YieldVariance.LossWeight)
         </div>
     </div>
 
@@ -190,7 +190,7 @@
             @Html.LabelFor(model => model.CHP_PROCESS_T.Note)
         </div>
         <div class="form-group col-md-12">
-            <textarea style="width:1000px;height:200px;" class="form-control col-md-4" rows="3" id="textarea"></textarea>
+            <textarea style="width:1000px;height:200px;" class="form-control col-md-4" rows="3" id="textarea">@Html.DisplayFor(model =>model.CHP_PROCESS_T.Note)</textarea>
         </div>
 
     </div>

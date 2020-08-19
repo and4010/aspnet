@@ -34,6 +34,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>preview</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -42,6 +43,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>preview</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Dapper, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -365,6 +367,7 @@
     <Compile Include="Models\Delivery\DeliveryDetailViewHeader.cs" />
     <Compile Include="Models\Error.cs" />
     <Compile Include="Models\Information\AccountModel.cs" />
+    <Compile Include="Models\Process\YieldVariance.cs" />
     <Compile Include="Models\Purchase\FullCalendarEventModel.cs" />
     <Compile Include="Models\Information\OrgSubinventoryDT.cs" />
     <Compile Include="Models\Information\OspRelatedDT.cs" />
@@ -1959,7 +1962,7 @@
     <Content Include="Views\Process\Flat.cshtml" />
     <Content Include="Views\Process\PaperRoll.cshtml" />
     <Content Include="Views\Process\Record.cshtml" />
-    <Content Include="Views\Process\_Subinventory.cshtml" />
+    <Content Include="Views\Process\_Locator.cshtml" />
     <Content Include="Views\Process\Edit.cshtml" />
     <Content Include="Views\StockTransaction\Index.cshtml" />
     <Content Include="Views\StockTransaction\_OutBoundPartial.cshtml" />

@@ -94,7 +94,6 @@ namespace CHPOUTSRCMES.Web.Controllers
             PaperRollEditBarcodeData.resetData();
             PaperRollEditData.resetData();
             TripHeaderData.resetData();
-            ProcessViewModel.ResetData();
             AccountViewModel.RestData();
             StockTransferBarcodeData.resetData();
             StockTransferData.resetData();
