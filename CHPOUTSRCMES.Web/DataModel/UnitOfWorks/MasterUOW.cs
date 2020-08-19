@@ -183,8 +183,14 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
         /// </summary>
         public class PalletStatusCode
         {
-            public const string All = "整板";
-            public const string Split = "拆板";
+            /// <summary>
+            /// 整板
+            /// </summary>
+            public const string All = "0";
+            /// <summary>
+            /// 拆板
+            /// </summary>
+            public const string Split = "1";
         }
 
         /// <summary>

@@ -487,7 +487,7 @@ namespace CHPOUTSRCMES.Web.Models.Stock
         /// <param name="createUser"></param>
         /// <param name="createUserName"></param>
         /// <returns></returns>
-        public ResultModel TransferCreateDetail(TransferUOW uow, string shipmentNumber, string transferType, string itemNumber, long outOrganizationId,
+        public ResultDataModel<TRF_HEADER_T> TransferCreateDetail(TransferUOW uow, string shipmentNumber, string transferType, string itemNumber, long outOrganizationId,
             string outSubinventoryCode, long? outLocatorId, long inOrganizationId, string inSubinventoryCode, long? inLocatorId,
             decimal requestedQty, decimal rollReamWt, string lotNumber, string createUser, string createUserName)
         {

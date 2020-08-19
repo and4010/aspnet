@@ -941,7 +941,7 @@ namespace CHPOUTSRCMES.Web.Models.Stock
             {
                 default:
                 case 1:
-                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.TransferDetailId) : models.OrderBy(x => x.TransferDetailId);
+                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.SUB_ID) : models.OrderBy(x => x.SUB_ID);
                 case 2:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.BARCODE) : models.OrderBy(x => x.BARCODE);
                 case 3:
@@ -969,7 +969,7 @@ namespace CHPOUTSRCMES.Web.Models.Stock
             {
                 default:
                 case 1:
-                    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.TransferDetailId) : models.ThenBy(x => x.TransferDetailId);
+                    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.SUB_ID) : models.ThenBy(x => x.SUB_ID);
                 case 2:
                     return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.BARCODE) : models.ThenBy(x => x.BARCODE);
                 case 3:
@@ -1015,7 +1015,7 @@ namespace CHPOUTSRCMES.Web.Models.Stock
             {
                 default:
                 case 1:
-                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.TransferDetailId) : models.OrderBy(x => x.TransferDetailId);
+                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.SUB_ID) : models.OrderBy(x => x.SUB_ID);
                 case 2:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.BARCODE) : models.OrderBy(x => x.BARCODE);
                 case 3:
@@ -1047,7 +1047,7 @@ namespace CHPOUTSRCMES.Web.Models.Stock
             {
                 default:
                 case 1:
-                    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.TransferDetailId) : models.ThenBy(x => x.TransferDetailId);
+                    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.SUB_ID) : models.ThenBy(x => x.SUB_ID);
                 case 2:
                     return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.BARCODE) : models.ThenBy(x => x.BARCODE);
                 case 3:

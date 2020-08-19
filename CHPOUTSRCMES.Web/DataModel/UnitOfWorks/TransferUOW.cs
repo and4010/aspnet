@@ -411,7 +411,7 @@ SELECT [TRANSFER_PICKED_ID] as ID
         }
 
 
-        public ResultModel CreateDetail(string shipmentNumber, string transferType, string itemNumber, long outOrganizationId,
+        public ResultDataModel<TRF_HEADER_T> CreateDetail(string shipmentNumber, string transferType, string itemNumber, long outOrganizationId,
             string outSubinventoryCode, long? outLocatorId, long inOrganizationId, string inSubinventoryCode, long? inLocatorId, string dataUpadteAuthority, string dataWriteType,
             decimal requestedQty, decimal rollReamWt, string lotNumber, string createUser, string createUserName)
         {
@@ -647,13 +647,13 @@ SELECT [TRANSFER_PICKED_ID] as ID
 
                     trfInboundPickedTRepositiory.SaveChanges();
                     txn.Commit();
-                    return new ResultModel(true, "新增明細成功");
+                    return new ResultDataModel<TRF_HEADER_T>(true, "新增明細成功", trfHeader);
                 }
                 catch (Exception ex)
                 {
                     logger.Error(LogUtilities.BuildExceptionMessage(ex));
                     txn.Rollback();
-                    return new ResultModel(false, "新增明細失敗:" + ex.Message);
+                    return new ResultDataModel<TRF_HEADER_T>(false, "新增明細失敗:" + ex.Message, null);
                 }
             }
         }

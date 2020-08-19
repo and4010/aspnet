@@ -414,7 +414,7 @@ $(document).ready(function () {
                         }
                         var barcode = [];
                         for (var i = 0; i < data.length; i++) {
-                            if (data[i].PALLET_STATUS == '拆板') {
+                            if (data[i].PALLET_STATUS == '1') { //是否為拆板
                                 barcode.push(data[i].BARCODE);
                             }
                         }

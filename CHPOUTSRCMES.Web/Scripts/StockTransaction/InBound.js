@@ -6,6 +6,15 @@
     var selectedNumberStatus = "0";
     var selectedTransferHeaderId = 0;
 
+    function getShipmentNumber() {
+        var s = $('#ddlShipmentNumber option:selected').text();
+        return $('#ddlShipmentNumber option:selected').text();
+    }
+
+    function getTransferHeaderId() {
+        return $('#ddlShipmentNumber').val();
+    }
+
     function getOutOrganizationId() {
         return $("#ddlOutSubinventory").val();
     }
@@ -144,12 +153,13 @@
 
     $("#ddlShipmentNumber").combobox({
         select: function (event, ui) {
-            if ($('#ddlShipmentNumber').val() == "新增編號") {
-                $("#scrollbox").collapse('show');
-                $('#AutoCompleteItemNumber').focus();
-            } else {
-                GetShipmentNumberData();
-            }
+            GetShipmentNumberData();
+            //if (getShipmentNumber() == "新增編號") {
+            //    $("#scrollbox").collapse('show');
+            //    $('#AutoCompleteItemNumber').focus();
+            //} else {
+            //    GetShipmentNumberData();
+            //}
             //GetNumberStatus();
 
             //GetStockItemData(this.value);
@@ -378,13 +388,17 @@
     //});
 
     function GetShipmentNumberData() {
+        if (getShipmentNumber() == "新增編號") {
+            $("#scrollbox").collapse('show');
+            $('#AutoCompleteItemNumber').focus();
+            return;
+        }
 
         $.ajax({
             url: "/StockTransaction/GetShipmentNumberData",
             type: "post",
             data: {
-                transferHeaderId: $('#ddlShipmentNumber').val()
-
+                transferHeaderId: getTransferHeaderId()
             },
             success: function (data) {
                 if (data.Success) {
@@ -727,7 +741,23 @@
             { data: "SUB_ID", name: "項次", autoWidth: true },
             //{ data: "TransferDetailId", name: "項次", autoWidth: true },
             { data: "BARCODE", name: "條碼", autoWidth: true },
-            { data: "Status", name: "入庫狀態", autoWidth: true },
+            {
+                data: "Status", name: "入庫狀態", autoWidth: true ,"mRender": function (data, type, full) {
+                    if (data != null) {
+                        if (data == '0') {
+                            return '待列印';
+                        } else if (data == '1') {
+                            return '待入庫';
+                        } else if (data == '2') {
+                            return '已入庫';
+                        } else {
+                            return '';
+                        }
+                    } else {
+                        return '';
+                    }
+                }
+            },
             { data: "ITEM_NUMBER", name: "料號", autoWidth: true, className: "dt-body-left" },
             { data: "LOT_NUMBER", name: "捲號", autoWidth: true, className: "dt-body-left" },
             { data: "PACKING_TYPE", name: "包裝方式", autoWidth: true },
@@ -1273,6 +1303,8 @@
 
                 }
             });
+        } else {
+            TransferCreateDetail();
         }
 
 
@@ -1335,7 +1367,7 @@
             url: "/StockTransaction/TransferCreateDetail",
             type: "post",
             data: {
-                shipmentNumber: $('#ddlShipmentNumber').val(),
+                shipmentNumber: getShipmentNumber(),
                 transferType: $("#ddlTransferType").val(),
                 itemNumber: $('#AutoCompleteItemNumber').val(),
                 outOrganizationId: getOutOrganizationId(),
@@ -1350,7 +1382,7 @@
             },
             success: function (data) {
                 if (data.status) {
-                    GetShipmentNumberList(data.shipmentNumber, data.shipmentNumber);
+                    GetShipmentNumberList(data.transferHeaderId, data.shipmentNumber);
 
 
                 } else {
@@ -1969,16 +2001,16 @@
                         $('#ddlShipmentNumber').append($('<option></option>').val(data.items[i].Value).html(data.items[i].Text));
                     }
                     $("#ddlShipmentNumber").combobox('autocomplete', selectValue, selectText);
-
-
+                    //$('#ddlShipmentNumber option[text="' + selectText + '", value="' + selectValue + '"]').attr('selected', 'selected');
+                    GetShipmentNumberData();
                 } else {
                     swal.fire(data.result);
                 }
 
-                $('#ddlShipmentNumber').empty();
-                for (var i = 0; i < data.items.length; i++) {
-                    $('#ddlShipmentNumber').append($('<option></option>').val(data.items[i].Value).html(data.items[i].Text));
-                }
+                //$('#ddlShipmentNumber').empty();
+                //for (var i = 0; i < data.items.length; i++) {
+                //    $('#ddlShipmentNumber').append($('<option></option>').val(data.items[i].Value).html(data.items[i].Text));
+                //}
 
 
                 //var transferCatalog = data.transferCatalog;

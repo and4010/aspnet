@@ -13,6 +13,7 @@ using CHPOUTSRCMES.Web.Util;
 using CHPOUTSRCMES.Web.DataModel;
 using CHPOUTSRCMES.Web.DataModel.UnitOfWorks;
 using Microsoft.AspNet.Identity;
+using CHPOUTSRCMES.Web.DataModel.Entiy.Transfer;
 
 namespace CHPOUTSRCMES.Web.Controllers
 {
@@ -456,7 +457,7 @@ namespace CHPOUTSRCMES.Web.Controllers
                     if (!string.IsNullOrEmpty(search) && !string.IsNullOrWhiteSpace(search))
                     {
                         // Apply search   
-                        model = model.Where(p => (p.TransferDetailId.ToString().ToLower().Contains(search.ToLower()))
+                        model = model.Where(p => (p.SUB_ID.ToString().ToLower().Contains(search.ToLower()))
                             || (!string.IsNullOrEmpty(p.BARCODE) && p.BARCODE.ToLower().Contains(search.ToLower()))
                             || (!string.IsNullOrEmpty(p.ITEM_NUMBER) && p.ITEM_NUMBER.ToLower().Contains(search.ToLower()))
                             //|| (!string.IsNullOrEmpty(p.LOT_NUMBER) && p.LOT_NUMBER.ToLower().Contains(search.ToLower()))
@@ -510,7 +511,7 @@ namespace CHPOUTSRCMES.Web.Controllers
                     if (!string.IsNullOrEmpty(search) && !string.IsNullOrWhiteSpace(search))
                     {
                         // Apply search   
-                        model = model.Where(p => (p.TransferDetailId.ToString().ToLower().Contains(search.ToLower()))
+                        model = model.Where(p => (p.SUB_ID.ToString().ToLower().Contains(search.ToLower()))
                             || (!string.IsNullOrEmpty(p.BARCODE) && p.BARCODE.ToLower().Contains(search.ToLower()))
                             || (!string.IsNullOrEmpty(p.Status) && p.Status.ToLower().Contains(search.ToLower()))
                             || (!string.IsNullOrEmpty(p.ITEM_NUMBER) && p.ITEM_NUMBER.ToLower().Contains(search.ToLower()))
@@ -555,9 +556,17 @@ namespace CHPOUTSRCMES.Web.Controllers
                     //取得使用者帳號
                     var name = this.User.Identity.GetUserName();
 
-                    ResultModel result = stockTransferData.TransferCreateDetail(uow, shipmentNumber, transferType, itemNumber, outOrganizationId,
+                    ResultDataModel<TRF_HEADER_T> result = stockTransferData.TransferCreateDetail(uow, shipmentNumber, transferType, itemNumber, outOrganizationId,
              outSubinventoryCode, outLocatorId, inOrganizationId, inSubinventoryCode, inLocatorId, requestedQty, rollReamWt, lotNumber, id, name);
-                    return new JsonResult { Data = new { status = result.Success, result = result.Msg, shipmentNumber = shipmentNumber } };
+                    if (result.Success)
+                    {
+                        return new JsonResult { Data = new { status = result.Success, result = result.Msg, shipmentNumber = result.Data.ShipmentNumber, transferHeaderId = result.Data.TransferHeaderId } };
+                    }
+                    else
+                    {
+                        return new JsonResult { Data = new { status = result.Success, result = result.Msg } };
+                    }
+                    
 
                 }
             }
