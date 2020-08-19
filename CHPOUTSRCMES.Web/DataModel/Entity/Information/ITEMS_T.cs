@@ -47,7 +47,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Information
         /// </summary>
         /// 
         [StringLength(4000)]
-        [Required]
         [Column("CATEGORY_CODE_INV")]
         public string CategoryCodeInv { set; get; }
 
@@ -56,7 +55,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Information
         /// </summary>
         /// 
         [StringLength(13)]
-        [Required]
         [Column("CATEGORY_NAME_INV")]
         public string CategoryNameInv { set; get; }
 
@@ -65,7 +63,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Information
         /// </summary>
         /// 
         [StringLength(4000)]
-        [Required(AllowEmptyStrings = true)]
         [Column("CATEGORY_CODE_COST")]
         public string CategoryCodeCost { set; get; }
 
@@ -74,7 +71,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Information
         /// </summary>
         /// 
         [StringLength(8)]
-        [Required]
         [Column("CATEGORY_NAME_COST")]
         public string CategoryNameCost { set; get; }
 
@@ -83,7 +79,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Information
         /// </summary>
         /// 
         [StringLength(4000)]
-        [Required(AllowEmptyStrings = true)]
         [Column("CATEGORY_CODE_CONTROL")]
         public string CategoryCodeControl { set; get; }
 
@@ -92,7 +87,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Information
         /// </summary>
         /// 
         [StringLength(16)]
-        [Required]
         [Column("CATEGORY_NAME_CONTROL")]
         public string CategoryNameControl { set; get; }
 
@@ -140,7 +134,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Information
         /// </summary>
         /// 
         [StringLength(3)]
-        [Required(AllowEmptyStrings = true)]
         [Column("SECONDARY_UOM_CODE")]
         public string SecondaryUomCode { set; get; }
 
@@ -168,7 +161,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Information
         /// </summary>
         /// 
         [StringLength(4000)]
-        [Required(AllowEmptyStrings = true)]
         [Column("CATALOG_ELEM_VAL_010")]
         public string CatalogElemVal010 { set; get; }
 
@@ -177,7 +169,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Information
         /// </summary>
         /// 
         [StringLength(4000)]
-        [Required(AllowEmptyStrings = true)]
         [Column("CATALOG_ELEM_VAL_020")]
         public string CatalogElemVal020 { set; get; }
 
@@ -186,7 +177,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Information
         /// </summary>
         /// 
         [StringLength(4000)]
-        [Required(AllowEmptyStrings = true)]
         [Column("CATALOG_ELEM_VAL_030")]
         public string CatalogElemVal030 { set; get; }
 
@@ -195,7 +185,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Information
         /// </summary>
         /// 
         [StringLength(4000)]
-        [Required(AllowEmptyStrings = true)]
         [Column("CATALOG_ELEM_VAL_040")]
         public string CatalogElemVal040 { set; get; }
 
@@ -204,7 +193,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Information
         /// </summary>
         /// 
         [StringLength(4000)]
-        [Required(AllowEmptyStrings = true)]
         [Column("CATALOG_ELEM_VAL_050")]
         public string CatalogElemVal050 { set; get; }
 
@@ -213,7 +201,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Information
         /// </summary>
         /// 
         [StringLength(4000)]
-        [Required(AllowEmptyStrings = true)]
         [Column("CATALOG_ELEM_VAL_060")]
         public string CatalogElemVal060 { set; get; }
 
@@ -222,7 +209,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Information
         /// </summary>
         /// 
         [StringLength(4000)]
-        [Required(AllowEmptyStrings = true)]
         [Column("CATALOG_ELEM_VAL_070")]
         public string CatalogElemVal070 { set; get; }
 
@@ -231,7 +217,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Information
         /// </summary>
         /// 
         [StringLength(4000)]
-        [Required(AllowEmptyStrings = true)]
         [Column("CATALOG_ELEM_VAL_080")]
         public string CatalogElemVal080 { set; get; }
 
@@ -240,7 +225,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Information
         /// </summary>
         /// 
         [StringLength(4000)]
-        [Required(AllowEmptyStrings = true)]
         [Column("CATALOG_ELEM_VAL_090")]
         public string CatalogElemVal090 { set; get; }
 
@@ -249,7 +233,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Information
         /// </summary>
         /// 
         [StringLength(4000)]
-        [Required(AllowEmptyStrings = true)]
         [Column("CATALOG_ELEM_VAL_100")]
         public string CatalogElemVal100 { set; get; }
 
@@ -258,7 +241,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Information
         /// </summary>
         /// 
         [StringLength(4000)]
-        [Required(AllowEmptyStrings = true)]
         [Column("CATALOG_ELEM_VAL_110")]
         public string CatalogElemVal110 { set; get; }
 
@@ -275,7 +257,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Information
         /// </summary>
         /// 
         [StringLength(4000)]
-        [Required(AllowEmptyStrings = true)]
         [Column("CATALOG_ELEM_VAL_130")]
         public string CatalogElemVal130 { set; get; }
 
@@ -284,7 +265,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Information
         /// </summary>
         /// 
         [StringLength(4000)]
-        [Required(AllowEmptyStrings = true)]
         [Column("CATALOG_ELEM_VAL_140")]
         public string CatalogElemVal140 { set; get; }
 
@@ -293,7 +273,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Information
         /// </summary>
         /// 
         [Required(AllowEmptyStrings = true)]
-        [Column("CONTROL_FLAG",TypeName = "char")]
+        [Column("CONTROL_FLAG", TypeName = "char")]
         [StringLength(1)]
         public string ControlFlag { set; get; }
 

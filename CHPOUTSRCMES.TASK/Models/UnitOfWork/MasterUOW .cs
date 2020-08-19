@@ -62,6 +62,7 @@ namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
 
         public MasterUOW(IDbConnection conn, bool beginTransaction = false) : base(conn, beginTransaction)
         {
+            SqlMapper.AddTypeMap(typeof(DateTime), System.Data.DbType.Date);
         }
 
         public async Task<IEnumerable<XXCINV_SUBINVENTORY_V>> GetSubinventoryListAsync()
@@ -76,10 +77,36 @@ namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
             return list;
         }
 
+        public async Task<IEnumerable<XXIFV050_ITEMS_FTY_V>> GetItemRangeAsync(long offset, long count)
+        {
+            var list = await ItemRepository.GetRangeAsync(offset, count);
+            return list;
+        }
+
         public async Task<IEnumerable<XXIFV050_ITEMS_FTY_V>> GetItemListAsync()
         {
-            var list = await ItemRepository.GetRangeAsync(10, 10);
+            var list = await ItemRepository.GetAllAsync();
             return list;
+        }
+
+        public async Task<long> GetItemCountAsync()
+        {
+            return await ItemRepository.CountAsync();
+        }
+
+        public async Task<DateTime> GetItemLastUpdateDateAsync()
+        {
+            return await ItemRepository.GetLastUpdateDateAsync();
+        }
+
+        public async Task<IEnumerable<XXIFV050_ITEMS_FTY_V>> GetAllItemByLastUpdateDate(DateTime date)
+        {
+            return await ItemRepository.GetAllByLastUpdateDate(date);
+        }
+
+        public async Task<long> ItemCountByLastUpdateDateAsync(DateTime date)
+        {
+            return await ItemRepository.CountByLastUpdateDateAsync(date);
         }
 
         public async Task<IEnumerable<XXCOM_YSZMPCKQ_V>> GetYszmpckqListAsync()

@@ -46,7 +46,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Information
         /// </summary>
         /// 
         [StringLength(10)]
-        [Required(AllowEmptyStrings = true)]
         [Column("OSP_SUBINVENTORY")]
         public string OspSubinventory { set; get; }
 

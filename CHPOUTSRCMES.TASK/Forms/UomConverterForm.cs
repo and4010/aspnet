@@ -70,7 +70,7 @@ namespace CHPOUTSRCMES.TASK.Forms
                     {
                         using (MasterUOW masterUOW = new MasterUOW(cn))
                         {
-                            SqlMapper.AddTypeMap(typeof(DateTime), System.Data.DbType.Date);
+                            //SqlMapper.AddTypeMap(typeof(DateTime), System.Data.DbType.Date);
 
                             //料號檢查
                             

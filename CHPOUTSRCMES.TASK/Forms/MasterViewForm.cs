@@ -83,7 +83,7 @@ namespace CHPOUTSRCMES.TASK.Forms
                 {
                     using (MasterUOW uow = new MasterUOW(conn, false))
                     {
-                        SqlMapper.AddTypeMap(typeof(DateTime), System.Data.DbType.Date);
+                        //SqlMapper.AddTypeMap(typeof(DateTime), System.Data.DbType.Date);
                         getSubinventoryList(uow);
                         getTransactionTypeList(uow);
                         getMachinePaperTypeList(uow);

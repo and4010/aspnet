@@ -8,6 +8,8 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Temp
     [Table("ITEMS_TMP_T")]
     public class ITEMS_TMP_T
     {
+
+
         /// <summary>
         /// 料號ID
         /// </summary>
@@ -27,12 +29,22 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Temp
         [Column("ITEM_NUMBER")]
         public string ItemNumber { set; get; }
 
+        ///// <summary>
+        ///// 庫存組織CODE
+        ///// </summary>
+        ///// 
+        //[StringLength(3)]
+        //[Required]
+        //[Key]
+        //[DatabaseGenerated(DatabaseGeneratedOption.None)]
+        //[Column("ORGANIZATION_CODE")]
+        //public string OrganizationCode { set; get; }
+
         /// <summary>
         /// 存貨分類
         /// </summary>
         /// 
         [StringLength(4000)]
-        [Required]
         [Column("CATEGORY_CODE_INV")]
         public string CategoryCodeInv { set; get; }
 
@@ -41,7 +53,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Temp
         /// </summary>
         /// 
         [StringLength(13)]
-        [Required]
         [Column("CATEGORY_NAME_INV")]
         public string CategoryNameInv { set; get; }
 
@@ -50,7 +61,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Temp
         /// </summary>
         /// 
         [StringLength(4000)]
-        [Required(AllowEmptyStrings = true)]
         [Column("CATEGORY_CODE_COST")]
         public string CategoryCodeCost { set; get; }
 
@@ -59,7 +69,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Temp
         /// </summary>
         /// 
         [StringLength(8)]
-        [Required]
         [Column("CATEGORY_NAME_COST")]
         public string CategoryNameCost { set; get; }
 
@@ -68,7 +77,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Temp
         /// </summary>
         /// 
         [StringLength(4000)]
-        [Required(AllowEmptyStrings = true)]
         [Column("CATEGORY_CODE_CONTROL")]
         public string CategoryCodeControl { set; get; }
 
@@ -77,7 +85,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Temp
         /// </summary>
         /// 
         [StringLength(16)]
-        [Required]
         [Column("CATEGORY_NAME_CONTROL")]
         public string CategoryNameControl { set; get; }
 
@@ -125,7 +132,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Temp
         /// </summary>
         /// 
         [StringLength(3)]
-        [Required(AllowEmptyStrings = true)]
         [Column("SECONDARY_UOM_CODE")]
         public string SecondaryUomCode { set; get; }
 
@@ -153,7 +159,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Temp
         /// </summary>
         /// 
         [StringLength(4000)]
-        [Required(AllowEmptyStrings = true)]
         [Column("CATALOG_ELEM_VAL_010")]
         public string CatalogElemVal010 { set; get; }
 
@@ -162,7 +167,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Temp
         /// </summary>
         /// 
         [StringLength(4000)]
-        [Required(AllowEmptyStrings = true)]
         [Column("CATALOG_ELEM_VAL_020")]
         public string CatalogElemVal020 { set; get; }
 
@@ -171,7 +175,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Temp
         /// </summary>
         /// 
         [StringLength(4000)]
-        [Required(AllowEmptyStrings = true)]
         [Column("CATALOG_ELEM_VAL_030")]
         public string CatalogElemVal030 { set; get; }
 
@@ -180,7 +183,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Temp
         /// </summary>
         /// 
         [StringLength(4000)]
-        [Required(AllowEmptyStrings = true)]
         [Column("CATALOG_ELEM_VAL_040")]
         public string CatalogElemVal040 { set; get; }
 
@@ -189,7 +191,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Temp
         /// </summary>
         /// 
         [StringLength(4000)]
-        [Required(AllowEmptyStrings = true)]
         [Column("CATALOG_ELEM_VAL_050")]
         public string CatalogElemVal050 { set; get; }
 
@@ -198,7 +199,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Temp
         /// </summary>
         /// 
         [StringLength(4000)]
-        [Required(AllowEmptyStrings = true)]
         [Column("CATALOG_ELEM_VAL_060")]
         public string CatalogElemVal060 { set; get; }
 
@@ -207,7 +207,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Temp
         /// </summary>
         /// 
         [StringLength(4000)]
-        [Required(AllowEmptyStrings = true)]
         [Column("CATALOG_ELEM_VAL_070")]
         public string CatalogElemVal070 { set; get; }
 
@@ -216,7 +215,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Temp
         /// </summary>
         /// 
         [StringLength(4000)]
-        [Required(AllowEmptyStrings = true)]
         [Column("CATALOG_ELEM_VAL_080")]
         public string CatalogElemVal080 { set; get; }
 
@@ -225,7 +223,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Temp
         /// </summary>
         /// 
         [StringLength(4000)]
-        [Required(AllowEmptyStrings = true)]
         [Column("CATALOG_ELEM_VAL_090")]
         public string CatalogElemVal090 { set; get; }
 
@@ -234,7 +231,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Temp
         /// </summary>
         /// 
         [StringLength(4000)]
-        [Required(AllowEmptyStrings = true)]
         [Column("CATALOG_ELEM_VAL_100")]
         public string CatalogElemVal100 { set; get; }
 
@@ -243,7 +239,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Temp
         /// </summary>
         /// 
         [StringLength(4000)]
-        [Required(AllowEmptyStrings = true)]
         [Column("CATALOG_ELEM_VAL_110")]
         public string CatalogElemVal110 { set; get; }
 
@@ -260,7 +255,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Temp
         /// </summary>
         /// 
         [StringLength(4000)]
-        [Required(AllowEmptyStrings = true)]
         [Column("CATALOG_ELEM_VAL_130")]
         public string CatalogElemVal130 { set; get; }
 
@@ -269,7 +263,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Temp
         /// </summary>
         /// 
         [StringLength(4000)]
-        [Required(AllowEmptyStrings = true)]
         [Column("CATALOG_ELEM_VAL_140")]
         public string CatalogElemVal140 { set; get; }
 

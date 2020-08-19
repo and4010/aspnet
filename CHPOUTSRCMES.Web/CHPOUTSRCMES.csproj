@@ -1411,6 +1411,11 @@
     <Content Include="Data\SQLScript\102_SP_OrganizationSync.sql" />
     <Content Include="Data\SQLScript\103_SP_SubinventorySync.sql" />
     <Content Include="Data\SQLScript\104_SP_LocatorSync.sql" />
+    <Content Include="Data\SQLScript\105_SP_TransactionTypeSync.sql" />
+    <Content Include="Data\SQLScript\106_SP_MachinePaperTypeSync.sql" />
+    <Content Include="Data\SQLScript\107_SP_YszmpckqSync.sql" />
+    <Content Include="Data\SQLScript\108_SP_RelatedSync.sql" />
+    <Content Include="Data\SQLScript\109_SP_ItemSync.sql" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />

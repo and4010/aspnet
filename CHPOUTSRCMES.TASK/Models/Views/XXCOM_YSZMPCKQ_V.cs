@@ -46,15 +46,15 @@ namespace CHPOUTSRCMES.TASK.Models.Views
         /// <summary>
         /// 包數
         /// </summary>
-        public decimal? PCKQ { set; get; }
+        public long? PCKQ { set; get; }
         /// <summary>
         /// 每包張數
         /// </summary>
-        public decimal? PAPER_QTY { set; get; }
+        public long? PAPER_QTY { set; get; }
         /// <summary>
         /// 每件令數
         /// </summary>
-        public decimal? PIECES_QTY { set; get; }
+        public long? PIECES_QTY { set; get; }
         /// <summary>
         /// 建立人員ID
         /// </summary>
