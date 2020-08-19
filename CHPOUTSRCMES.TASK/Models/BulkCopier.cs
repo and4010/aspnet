@@ -1067,7 +1067,7 @@ WHEN NOT MATCHED THEN
                 }
             }
             stopWatch.Stop();
-            logger.Info($"BulkCopy:ITEMS_TMP_T Merge TimeSpent:{stopWatch.ElapsedMilliseconds}ms {resultModel}");
+            logger.Info($"Merge:ITEMS_TMP_T TimeSpent:{stopWatch.ElapsedMilliseconds}ms {resultModel}");
 
             return resultModel.Success && executeSp ? ExecuteSyncSp(spName) : resultModel;
         }
