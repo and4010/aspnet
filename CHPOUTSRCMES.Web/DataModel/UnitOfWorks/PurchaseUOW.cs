@@ -350,7 +350,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                         cTR_PICKED_T.StockId = null;
                         cTR_PICKED_T.LocatorId = ctrDetail[i].d.LocatorId;
                         cTR_PICKED_T.LocatorCode = ctrDetail[i].d.LocatorCode;
-                        cTR_PICKED_T.Barcode = GenerateBarcodes(ctrDetail[i].e.OrganizationId, ctrDetail[i].e.Subinventory, "W", PaperRollModel.Count, userName).Data[i];
+                        cTR_PICKED_T.Barcode = GenerateBarcodes(ctrDetail[i].e.OrganizationId, ctrDetail[i].e.Subinventory, "", PaperRollModel.Count, userName).Data[i];
                         cTR_PICKED_T.InventoryItemId = ctrDetail[i].d.InventoryItemId;
                         cTR_PICKED_T.ShipItemNumber = PaperRollModel[i].Item_No;
                         cTR_PICKED_T.PaperType = PaperRollModel[i].PaperType;
@@ -447,7 +447,7 @@ and d.ITEM_CATEGORY = N'捲筒'");
                         cTR_PICKED_T.StockId = null;
                         cTR_PICKED_T.LocatorId = ctrDetail[i].LocatorId;
                         cTR_PICKED_T.LocatorCode = ctrDetail[i].LocatorCode;
-                        cTR_PICKED_T.Barcode = GenerateBarcodes(ctrheader.OrganizationId, ctrheader.Subinventory, "P", ctrDetail.Count, "1").Data[i];
+                        cTR_PICKED_T.Barcode = GenerateBarcodes(ctrheader.OrganizationId, ctrheader.Subinventory, "", ctrDetail.Count, "1").Data[i];
                         cTR_PICKED_T.InventoryItemId = ctrDetail[i].InventoryItemId;
                         cTR_PICKED_T.ShipItemNumber = ctrDetail[i].ShipItemNumber;
                         cTR_PICKED_T.PaperType = ctrDetail[i].PaperType;
@@ -1687,9 +1687,9 @@ H.ORGANIZATION_ID,H.ORGANIZATION_CODE,H.SUBINVENTORY,P.LOCATOR_ID,P.LOCATOR_CODE
 P.INVENTORY_ITEM_ID,P.SHIP_ITEM_NUMBER,'',P.ITEM_CATEGORY,P.PAPER_TYPE,
 P.BASIC_WEIGHT,P.REAM_WEIGHT,P.ROLL_REAM_WT,P.SPECIFICATION,P.PACKING_TYPE,
 '',P.LOT_NUMBER,P.BARCODE,P.PRIMARY_UOM,P.PRIMARY_QUANTITY,
-0,0,P.SECONDARY_UOM,P.SECONDARY_QUANTITY,0,
+P.PRIMARY_QUANTITY,0,P.SECONDARY_UOM,P.SECONDARY_QUANTITY,P.SECONDARY_QUANTITY,
 0,P.REASON_CODE,P.REASON_DESC,P.NOTE,P.STATUS,
-P.CREATED_BY,GETDATE(),P.LAST_UPDATE_BY,GETDATE()
+P.CREATED_BY,GETDATE(),null
 FROM CTR_PICKED_T P
 left join CTR_HEADER_T H on H.CTR_HEADER_ID = P.CTR_HEADER_ID
 left join CTR_DETAIL_T D on D.CTR_DETAIL_ID = P.CTR_DETAIL_ID
@@ -1736,12 +1736,12 @@ SELECT T.[STOCK_ID],T.[ORGANIZATION_ID] ,T.[ORGANIZATION_CODE],[SUBINVENTORY_COD
            ,T.[INVENTORY_ITEM_ID],[ITEM_NUMBER],[ITEM_DESCRIPTION] ,T.[ITEM_CATEGORY] ,T.[LOT_NUMBER]
            ,T.[BARCODE],PRIMARY_UOM_CODE ,PRIMARY_TRANSACTION_QTY,null,null
            ,SECONDARY_UOM_CODE ,SECONDARY_TRANSACTION_QTY,null,null,N'入庫'
-           ,'',N'入庫',T.[NOTE],[STATUS_CODE],T.[CREATED_BY]
+           ,H.CONTAINER_NO,N'入庫',T.[NOTE],[STATUS_CODE],T.[CREATED_BY]
            ,GETDATE(),T.[LAST_UPDATE_BY],GETDATE()
 FROM STOCK_T T
-JOIN CTR_PICKED_T P ON P.BARCODE = T.BARCODE
-JOIN CTR_DETAIL_T D on D.CTR_DETAIL_ID = P.CTR_DETAIL_ID
+JOIN CTR_PICKED_T P ON P.STOCK_ID = T.STOCK_ID
 JOIN CTR_HEADER_T H on H.CTR_HEADER_ID = P.CTR_HEADER_ID
+JOIN CTR_DETAIL_T D on D.CTR_HEADER_ID = H.CTR_HEADER_ID
 WHERE D.CTR_HEADER_ID = @CTR_HEADER_ID");
                     mesContext.Database.ExecuteSqlCommand(query.ToString(), new SqlParameter("@CTR_HEADER_ID", CTR_HEADER_ID));
                 }

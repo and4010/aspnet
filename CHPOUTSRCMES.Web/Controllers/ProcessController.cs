@@ -86,18 +86,31 @@ namespace CHPOUTSRCMES.Web.Controllers
         }
 
         [HttpPost]
-        public ActionResult SaveHeaderStatus(long OspDetailOutId, long Locator)
+        public ActionResult ChangeHeaderStauts(long OspDetailOutId, long Locator)
         {
             ProcessViewModel viewModel = new ProcessViewModel();
             //取得使用者ID
             var Userid = this.User.Identity.GetUserId();
             //取得使用者帳號
             var name = this.User.Identity.GetUserName();
-            var resultModel = viewModel.SaveHeaderStatus(OspDetailOutId, Locator, Userid, name);
+            var resultModel = viewModel.ChangeHeaderStauts(OspDetailOutId, Locator, Userid, name);
             
             return Json(new { resultModel }, JsonRequestBehavior.AllowGet);
         }
 
+        [Authorize(Roles = "系統管理員, 華紙使用者")]
+        [HttpPost]
+        public ActionResult ApproveHeaderStauts(long OspDetailOutId)
+        {
+            ProcessViewModel viewModel = new ProcessViewModel();
+            //取得使用者ID
+            var Userid = this.User.Identity.GetUserId();
+            //取得使用者帳號
+            var name = this.User.Identity.GetUserName();
+            var resultModel = viewModel.ChangeHeaderStauts(OspDetailOutId, 0, Userid, name);
+
+            return Json(new { resultModel }, JsonRequestBehavior.AllowGet);
+        }
 
         [HttpPost]
         public ActionResult _BtnDailogChangStatusCutDate(long OspHeaderId, DateTime Dialog_CuttingDateFrom, DateTime Dialog_CuttingDateTo, string Dialog_MachineNum, string BtnStatus)

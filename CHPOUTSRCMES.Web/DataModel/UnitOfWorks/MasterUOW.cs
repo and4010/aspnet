@@ -281,11 +281,17 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
         public class CategoryCode : ICategory
         {
             public const string Delivery = "C0";
+            public const string Process = "C1";
+            public const string Purchase = "C2";
             public string GetDesc(string category)
             {
                 switch (category)
                 {
                     case Delivery:
+                        return "進貨";
+                    case Process:
+                        return "加工";
+                    case Purchase:
                         return "進貨";
                     default:
                         return "";
@@ -298,6 +304,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             public const string Deleted = "A0";
             public const string Picked = "A1";
             public const string Shipped = "A2";
+            public const string Purchse = "A3";
 
             public string GetDesc(string category)
             {
@@ -309,6 +316,8 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                         return "已揀";
                     case Shipped:
                         return "已出貨";
+                    case Purchse:
+                        return "進貨";
                     default:
                         return "";
                 }
