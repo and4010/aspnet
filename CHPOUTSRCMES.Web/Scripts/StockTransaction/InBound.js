@@ -590,7 +590,7 @@
             "url": "/bower_components/datatables/language/zh-TW.json"
         },
         ajax: {
-            url: '/StockTransaction/UpdateRemark',
+            url: '/StockTransaction/InboundEditor',
             "type": "POST",
             "dataType": "json",
             contentType: 'application/json',
@@ -616,6 +616,15 @@
 
                 return JSON.stringify(data);
             },
+            success: function (data) {
+                if (data.status) {
+
+                    InBoundBarcodeDataTablesBody.ajax.reload();
+                }
+                else {
+                    swal.fire(data.result);
+                }
+            }
         },
         table: "#InBoundBarcodeDataTablesBody",
         idSrc: 'ID',
@@ -632,6 +641,15 @@
                 title: "編輯備註",
                 submit: "確定",
                 'className': 'btn-danger'
+            },
+            remove: {
+                button: "刪除",
+                title: "確定要刪除??",
+                submit: "確定",
+                confirm: {
+                    "_": "你確定要刪除這筆資料?",
+                    "1": "你確定要刪除這些資料?"
+                }
             },
 
             multi: {
@@ -817,31 +835,37 @@
                 'selectAll',
                 'selectNone',
                 {
-                    text: '刪除',
+                    extend: "remove",
                     className: 'btn-danger',
-                    action: function () {
-                        var selectedData = InBoundBarcodeDataTablesBody.rows('.selected').data();
-                        if (selectedData.length == 0) {
-                            swal.fire("請選擇要刪除的條碼");
-                            return;
-                        }
-
-                        swal.fire({
-                            title: "條碼資料刪除",
-                            text: "確定刪除嗎?",
-                            type: "warning",
-                            showCancelButton: true,
-                            confirmButtonColor: "#DD6B55",
-                            confirmButtonText: "確定",
-                            cancelButtonText: "取消"
-                        }).then(function (result) {
-                            if (result.value) {
-                                DeleteBarcode(selectedData);
-                            }
-                        });
-
-                    }
+                    editor: editor
                 },
+                
+                //{
+                //    text: '刪除',
+                //    className: 'btn-danger',
+                //    action: function () {
+                //        var selectedData = InBoundBarcodeDataTablesBody.rows('.selected').data();
+                //        if (selectedData.length == 0) {
+                //            swal.fire("請選擇要刪除的條碼");
+                //            return;
+                //        }
+
+                //        swal.fire({
+                //            title: "條碼資料刪除",
+                //            text: "確定刪除嗎?",
+                //            type: "warning",
+                //            showCancelButton: true,
+                //            confirmButtonColor: "#DD6B55",
+                //            confirmButtonText: "確定",
+                //            cancelButtonText: "取消"
+                //        }).then(function (result) {
+                //            if (result.value) {
+                //                DeleteBarcode(selectedData);
+                //            }
+                //        });
+
+                //    }
+                //},
                 {
                     text: '<span class="glyphicon glyphicon-print"></span>&nbsp列印標籤',
                     //className: 'btn-default btn-sm',
