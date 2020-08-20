@@ -1,0 +1,56 @@
+﻿/****** SSMS 中 SelectTopNRows 命令的指令碼  ******/
+-- =============================================
+-- Author:		Eric
+-- Create date: 2020/08/20
+-- Description:	加工揀貨異動紀錄
+-- =============================================
+CREATE PROCEDURE [dbo].[SP_ProcessSaveStkTxn]
+-- Add the parameters for the stored procedure here
+@StockId BIGINT,
+@PRY_AFT_QTY decimal(30,10),
+@PRY_CHG_QTY decimal(30,10),
+@SEC_AFT_QTY decimal(30,10),
+@SEC_CHG_QTY decimal(30,10),
+@CATEGORY VARCHAR(30),
+@ACTION VARCHAR(50),
+@DOC VARCHAR(50),
+@CREATED_BY varchar(128),
+@code INT OUTPUT,
+@message VARCHAR(500) OUTPUT,
+@user VARCHAR(128)
+AS
+BEGIN
+BEGIN TRY
+
+DECLARE 
+@step INT = 1
+
+INSERT INTO [dbo].[STK_TXN_T]
+        ([STOCK_ID],[ORGANIZATION_ID] ,[ORGANIZATION_CODE],[SUBINVENTORY_CODE]
+        ,[LOCATOR_ID],[DST_ORGANIZATION_ID]  ,[DST_ORGANIZATION_CODE],[DST_SUBINVENTORY_CODE] ,[DST_LOCATOR_ID]
+        ,[INVENTORY_ITEM_ID],[ITEM_NUMBER],[ITEM_DESCRIPTION] ,[ITEM_CATEGORY] ,[LOT_NUMBER]
+        ,[BARCODE],[PRY_UOM_CODE] ,[PRY_BEF_QTY],[PRY_AFT_QTY],[PRY_CHG_QTY]
+        ,[SEC_UOM_CODE] ,[SEC_BEF_QTY],[SEC_CHG_QTY],[SEC_AFT_QTY],[CATEGORY]
+        ,[DOC],[ACTION],[NOTE],[STATUS_CODE],[CREATED_BY]
+        ,[CREATION_DATE],[LAST_UPDATE_BY],[LAST_UPDATE_DATE])
+SELECT T.[STOCK_ID],T.[ORGANIZATION_ID] ,T.[ORGANIZATION_CODE],[SUBINVENTORY_CODE]
+        ,T.[LOCATOR_ID],''  ,'','' ,''
+        ,T.[INVENTORY_ITEM_ID],[ITEM_NUMBER],[ITEM_DESCRIPTION] ,T.[ITEM_CATEGORY] ,T.[LOT_NUMBER]
+        ,T.[BARCODE],PRIMARY_UOM_CODE ,PRIMARY_TRANSACTION_QTY,@PRY_AFT_QTY,@PRY_CHG_QTY
+        ,SECONDARY_UOM_CODE ,SECONDARY_TRANSACTION_QTY,@SEC_CHG_QTY,@SEC_AFT_QTY,@CATEGORY
+        ,@DOC,@ACTION,T.[NOTE],[STATUS_CODE],@CREATED_BY
+        ,GETDATE(),NULL,NULL
+FROM STOCK_T T
+where T.STOCK_ID = @StockId
+IF (@@ROWCOUNT <= 0 OR @@ERROR <> 0)
+BEGIN
+	RAISERROR('異動紀錄錯誤!!', 16, @step)
+END
+
+END TRY
+BEGIN CATCH
+SET @code = -1 * @step
+SET @message = CAST(@step AS VARCHAR(2)) + ':' + ERROR_MESSAGE()
+END CATCH
+	
+END

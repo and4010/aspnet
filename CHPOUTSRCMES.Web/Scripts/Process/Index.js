@@ -27,23 +27,24 @@ $(document).ready(function () {
     ProcessDataTables.on('click', '#btnRecord', function (e) {
 
         var data = ProcessDataTables.row($(this).parents('tr')).data();
-        var Process_Detail_Id = data.Process_Detail_Id;
+        var BatchType = data.BatchType;
         if (data == null) {
             return false;
         }
-        if (Process_Detail_Id == 1) {
-            window.location.href = '/Process/Schedule/' + Process_Detail_Id;
+        if (BatchType == "OSP") {
+            window.location.href = '/Process/Schedule/' + data.OspDetailInId;
         }
-        if (Process_Detail_Id == 2) {
-            window.location.href = '/Process/Flat/' + Process_Detail_Id;
-        }
-
-        if (Process_Detail_Id == 3) {
-            window.location.href = '/Process/PaperRoll/' + Process_Detail_Id;
+        if (BatchType == "TMP") {
+            window.location.href = '/Process/Flat/' + data.OspDetailInId;
         }
 
-       
-    })
+        if (BatchType == 3) {
+            window.location.href = '/Process/PaperRoll/' + data.OspDetailInId;
+        }
+
+
+
+    });
 
     ProcessDataTables.on('click', '#btnEdit', function (e) {
 
@@ -53,7 +54,7 @@ $(document).ready(function () {
             return false;
         }
         window.location.href = '/Process/Edit/' + OspDetailInId;
-    })
+    });
 
 
     //重新整理表格寬度

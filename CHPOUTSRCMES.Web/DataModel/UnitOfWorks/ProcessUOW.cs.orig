@@ -1093,7 +1093,11 @@ AND ST.BARCODE = @BARCODE");
                         ospCotanget.OspDetailOutId = OspDetailOutId;
                         ospCotanget.OspHeaderId = detailout.OspHeaderId;
                         ospCotanget.StockId = null;
+<<<<<<< HEAD
                         ospCotanget.Barcode = GenerateBarcodes(header.OrganizationId, detailout.Subinventory, 1, UserName).Data[0];
+=======
+                        ospCotanget.Barcode = GenerateBarcodes(header.OrganizationId, detailout.Subinventory, "", 1, UserName).Data[0];
+>>>>>>> origin/Eric
                         ospCotanget.InventoryItemId = Relateitem.InventoryItemId;
                         ospCotanget.InventoryItemNumber = Relateitem.ItemNumber;
                         ospCotanget.BasicWeight = Relateitem.CatalogElemVal040;
@@ -1116,7 +1120,11 @@ AND ST.BARCODE = @BARCODE");
                         ospPickOut.OspDetailOutId = OspDetailOutId;
                         ospPickOut.OspHeaderId = detailout.OspHeaderId;
                         ospPickOut.StockId = null;
+<<<<<<< HEAD
                         ospPickOut.Barcode = GenerateBarcodes(header.OrganizationId, detailout.Subinventory, int.Parse(Production_Roll_Ream_Qty), UserName).Data[i];
+=======
+                        ospPickOut.Barcode = GenerateBarcodes(header.OrganizationId, detailout.Subinventory, "", int.Parse(Production_Roll_Ream_Qty), UserName).Data[i];
+>>>>>>> origin/Eric
                         ospPickOut.InventoryItemId = detailout.InventoryItemId;
                         ospPickOut.InventoryItemNumber = detailout.InventoryItemNumber;
                         ospPickOut.BasicWeight = detailout.BasicWeight;
