@@ -755,8 +755,8 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
         {
             try
             {
-                stock.PrimaryLockedQty += addPriLockQty;
-                stock.SecondaryLockedQty += addSecLockQty;
+                stock.PrimaryLockedQty = stock.PrimaryLockedQty.HasValue ? stock.PrimaryLockedQty + addPriLockQty : 0 + addPriLockQty;
+                stock.SecondaryLockedQty = stock.SecondaryLockedQty.HasValue ? stock.SecondaryLockedQty + addSecLockQty : 0 + addSecLockQty;
 
                 stock.StatusCode = stock.PrimaryAvailableQty == 0 ? detail.ToStockStatus(statusCode) : StockStatusCode.InStock;
 
@@ -840,7 +840,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
 
             stock.PrimaryAvailableQty = pryAfterValue;
             //是揀貨時 計算鎖單量
-            if (lockQty) stock.PrimaryLockedQty += -1 * priQty.Value;
+            if (lockQty) stock.PrimaryLockedQty = stock.PrimaryLockedQty.HasValue ? stock.PrimaryLockedQty + (-1 * priQty.Value) : 0 + (-1 * priQty.Value); //如果是原鎖定量是null要改為0，否則相加後仍為null
 
             //記錄異動表
             stkTxnT.PryChgQty = priQty;
@@ -855,7 +855,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
 
                 stock.SecondaryAvailableQty = secAfterValue;
                 //是揀貨時 計算鎖單量
-                if (lockQty) stock.SecondaryLockedQty += -1 * secQty.Value;
+                if (lockQty) stock.SecondaryLockedQty = stock.SecondaryLockedQty.HasValue ? stock.SecondaryLockedQty + (-1 * secQty.Value) : 0 + (-1 * secQty.Value);
 
                 stkTxnT.SecChgQty = secQty;
                 stkTxnT.SecBefQty = secBeforeValue;
@@ -866,7 +866,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             stock.LastUpdateBy = lastUpdatedBy;
             stock.LastUpdateDate = addDate;
             //記錄庫存狀態
-            stock.StatusCode = stock.PrimaryAvailableQty == 0 ? detail.ToStockStatus(statusCode) : StockStatusCode.InStock;
+            stock.StatusCode = stock.PrimaryAvailableQty == 0 ? detail.ToStockStatus(statusCode) : StockStatusCode.InStock; //數量為0時為指定的庫存狀態，非0時為在庫
             stkTxnT.CreatedBy = stock.CreatedBy;
             stkTxnT.CreationDate = stock.CreationDate;
             stkTxnT.LastUpdateBy = null;
@@ -1094,9 +1094,9 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                 {
                     OrganizationId = 265,
                     OrganizationCode = "FTY",
-                    SubinventoryCode = "SFG",
-                    LocatorId = 22016,
-                    LocatorSegments = "FTY.SFG.TB2.NA",
+                    SubinventoryCode = "TB3",
+                    LocatorId = 23866,
+                    LocatorSegments = "FTY.TB3.SFG.NA",
                     Barcode = "A2007290003",
                     InventoryItemId = 558705,
                     ItemNumber = "4AH00A00900362KRL00",

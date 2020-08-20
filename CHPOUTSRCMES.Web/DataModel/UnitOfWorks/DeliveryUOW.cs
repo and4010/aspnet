@@ -703,7 +703,7 @@ OR SUM(ISNULL(p.SECONDARY_QUANTITY, 0)) <> MIN(d.REQUESTED_SECONDARY_QUANTITY)";
                     OrgName = "1",
                     OrganizationId = 265,
                     OrganizationCode = "FTY",
-                    SubinventoryCode = "SFG",
+                    SubinventoryCode = "TB3",
                     TripCar = "PTB3",
                     TripId = 3,
                     TripName = "Y200109-1052060",
@@ -1148,7 +1148,7 @@ from DLV_HEADER_T";
                         var stock = stockTRepositiory.GetAll().FirstOrDefault(x => x.StockId == pick.Stock_Id);
                         if (stock == null) throw new Exception("找不到庫存資料");
                         STK_TXN_T stkTxnT = CreateStockRecord(stock, null, "", "", null, CategoryCode.Delivery, ActionCode.Shipped, data.DeliveryName);
-                        var updateStockLockQtyResult = UpdateStockLockQty(stock, stkTxnT, pick.PrimaryQuantity, pick.SecondaryQuantity, pickSatus, PickStatus.Shipped, userId, now);
+                        var updateStockLockQtyResult = UpdateStockLockQty(stock, stkTxnT, -1 * pick.PrimaryQuantity, -1 * pick.SecondaryQuantity, pickSatus, PickStatus.Shipped, userId, now);
                         if (!updateStockLockQtyResult.Success) throw new Exception(updateStockLockQtyResult.Msg);
 
 
