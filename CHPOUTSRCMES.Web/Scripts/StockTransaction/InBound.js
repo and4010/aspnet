@@ -7,7 +7,6 @@
     var selectedTransferHeaderId = 0;
 
     function getShipmentNumber() {
-        var s = $('#ddlShipmentNumber option:selected').text();
         return $('#ddlShipmentNumber option:selected').text();
     }
 
@@ -136,24 +135,26 @@
 
 
     $('#ddlOutLocator').change(function () {
+        //GetShipmentNumberList("新增編號", "新增編號");
+
         //checkTransactionType();
-        GetShipmentNumberList("新增編號", "新增編號");
-        $('#AutoCompleteItemNumber').val("");
-        $('#PACKING_TYPE_LABEL').hide();
-        $('#PACKING_TYPE').html("");
-        $('#PACKING_TYPE').hide();
-        $('#UNIT').html("");
+        //$('#AutoCompleteItemNumber').val("");
+        //$('#PACKING_TYPE_LABEL').hide();
+        //$('#PACKING_TYPE').html("");
+        //$('#PACKING_TYPE').hide();
+        //$('#UNIT').html("");
         //GetItemNumberList();
     })
 
     $('#ddlInLocator').change(function () {
+        //GetShipmentNumberList("新增編號", "新增編號");
+
         //checkTransactionType();
-        GetShipmentNumberList("新增編號", "新增編號");
     })
 
     $("#ddlShipmentNumber").combobox({
         select: function (event, ui) {
-            GetShipmentNumberData();
+            SelectShipmentNumber();
             //if (getShipmentNumber() == "新增編號") {
             //    $("#scrollbox").collapse('show');
             //    $('#AutoCompleteItemNumber').focus();
@@ -387,7 +388,7 @@
     //    }
     //});
 
-    function GetShipmentNumberData() {
+    function SelectShipmentNumber() {
         if (getShipmentNumber() == "新增編號") {
             $("#scrollbox").collapse('show');
             $('#AutoCompleteItemNumber').focus();
@@ -405,6 +406,15 @@
                     selectedTransferHeaderId = data.Data.TransferHeaderId;
                     selectedNumberStatus = data.Data.NumberStatus;
 
+                    if ($('#ddlOutLocatorArea').is(":visible")) {
+                        $("#ddlOutLocator").val(data.Data.LocatorId);
+                    }
+
+                    if ($('#ddlInLocatorArea').is(":visible")) {
+                        $("#ddlInLocator").val(data.Data.TransferLocatorId);
+                    }
+
+                    $('#CountyDDL').val('someValue');
                     InputOpen();
                     $('#txtBARCODE').val("");
                     InBoundBarcodeDataTablesBody.ajax.reload();
@@ -570,9 +580,24 @@
         },
         select: function (event, ui) {
             if (ui.item) {
+                //$('#txtInputTransactionQty').focus();
                 GetStockItemData(ui.item.value);
             }
         }
+    });
+
+    //$("#AutoCompleteItemNumber").bind("input propertychange", function () {
+    //$('#AutoCompleteItemNumber').bind('paste', function (e) {
+    //    setTimeout(function () {
+    //        //$("#AutoCompleteItemNumber").autocomplete("search", $("#AutoCompleteItemNumber").val());
+    //        //$("#AutoCompleteItemNumber").data('ui-autocomplete')._trigger('select', 'autocompleteselect', { item: { value: $(this).val() } });
+    //        $('#AutoCompleteItemNumber').autocomplete("search", $('#AutoCompleteItemNumber').val());
+    //    }, 0);
+    //});
+
+    //離開料號欄位自動搜尋
+    $('#AutoCompleteItemNumber').blur(function () {
+        GetStockItemData($('#AutoCompleteItemNumber').val());
     });
 
     editor = new $.fn.dataTable.Editor({
@@ -580,7 +605,7 @@
             "url": "/bower_components/datatables/language/zh-TW.json"
         },
         ajax: {
-            url: '/StockTransaction/UpdateRemark',
+            url: '/StockTransaction/InboundEditor',
             "type": "POST",
             "dataType": "json",
             contentType: 'application/json',
@@ -606,6 +631,15 @@
 
                 return JSON.stringify(data);
             },
+            success: function (data) {
+                if (data.status) {
+
+                    InBoundBarcodeDataTablesBody.ajax.reload();
+                }
+                else {
+                    swal.fire(data.result);
+                }
+            }
         },
         table: "#InBoundBarcodeDataTablesBody",
         idSrc: 'ID',
@@ -622,6 +656,15 @@
                 title: "編輯備註",
                 submit: "確定",
                 'className': 'btn-danger'
+            },
+            remove: {
+                button: "刪除",
+                title: "確定要刪除??",
+                submit: "確定",
+                confirm: {
+                    "_": "你確定要刪除這筆資料?",
+                    "1": "你確定要刪除這些資料?"
+                }
             },
 
             multi: {
@@ -777,6 +820,7 @@
             },
             { data: "SECONDARY_UOM", name: "次要單位", autoWidth: true },
             { data: "REMARK", name: "備註", autoWidth: true, className: "dt-body-left" },
+            { data: "ID", name: "ID", autoWidth: true, visible: false },
             //{ data: "LAST_UPDATE_DATE", name: "更新日期", autoWidth: true, visible: false }
         ],
 
@@ -807,40 +851,84 @@
                 'selectAll',
                 'selectNone',
                 {
-                    text: '刪除',
+                    extend: "remove",
                     className: 'btn-danger',
-                    action: function () {
-                        var selectedData = InBoundBarcodeDataTablesBody.rows('.selected').data();
-                        if (selectedData.length == 0) {
-                            swal.fire("請選擇要刪除的條碼");
-                            return;
-                        }
-
-                        swal.fire({
-                            title: "條碼資料刪除",
-                            text: "確定刪除嗎?",
-                            type: "warning",
-                            showCancelButton: true,
-                            confirmButtonColor: "#DD6B55",
-                            confirmButtonText: "確定",
-                            cancelButtonText: "取消"
-                        }).then(function (result) {
-                            if (result.value) {
-                                DeleteBarcode(selectedData);
-                            }
-                        });
-
-                    }
+                    editor: editor
                 },
+                
+                //{
+                //    text: '刪除',
+                //    className: 'btn-danger',
+                //    action: function () {
+                //        var selectedData = InBoundBarcodeDataTablesBody.rows('.selected').data();
+                //        if (selectedData.length == 0) {
+                //            swal.fire("請選擇要刪除的條碼");
+                //            return;
+                //        }
+
+                //        swal.fire({
+                //            title: "條碼資料刪除",
+                //            text: "確定刪除嗎?",
+                //            type: "warning",
+                //            showCancelButton: true,
+                //            confirmButtonColor: "#DD6B55",
+                //            confirmButtonText: "確定",
+                //            cancelButtonText: "取消"
+                //        }).then(function (result) {
+                //            if (result.value) {
+                //                DeleteBarcode(selectedData);
+                //            }
+                //        });
+
+                //    }
+                //},
                 {
                     text: '<span class="glyphicon glyphicon-print"></span>&nbsp列印標籤',
                     //className: 'btn-default btn-sm',
                     action: function (e) {
-                        PrintLable(InBoundBarcodeDataTablesBody, "/Home/GetLabel2", "2");
-                        InBoundBarcodeDataTablesBody.ajax.reload();
+                        var data = InBoundBarcodeDataTablesBody.rows('.selected').data();
+                        if (data.length == 0) {
+                            return false;
+                        }
+                        var barcode = [];
+                        var transferPickedIdList = [];
+                        for (var i = 0; i < data.length; i++) {
+                            transferPickedIdList.push(data[i].ID);
+                            if (data[i].PALLET_STATUS == '2') { //是否為併板
+                                barcode.push(data[i].BARCODE);
+                            }
+                        }
+                        if (barcode.length > 0) {
+                            swal.fire({
+                                title: "注意",
+                                html: "以下為併板後的條碼，請更換庫存棧板上的舊條碼。<br>" + barcode.join('<br>'),
+                                type: "warning",
+                                confirmButtonColor: "#DD6B55",
+                                confirmButtonText: "確定",
+                            }).then(function (result) {
+                                if (result.value) {
+                                    printInboundLabel(transferPickedIdList)
+                                }
+                            });
+                        } else {
+                            printInboundLabel(transferPickedIdList)
+                        }
                     },
-                    className: "btn-primary"
+                    className: "btn-primary",
+                    enabled: false,
+                    init: function (api, node, config) {
+                        $(node).removeClass('btn-default')
+                    }
                 },
+                //{
+                //    text: '<span class="glyphicon glyphicon-print"></span>&nbsp列印標籤',
+                //    //className: 'btn-default btn-sm',
+                //    action: function (e) {
+                //        PrintLable(InBoundBarcodeDataTablesBody, "/Home/GetLabel2", "2");
+                //        InBoundBarcodeDataTablesBody.ajax.reload();
+                //    },
+                //    className: "btn-primary"
+                //},
                 {
                     text: '編輯備註',
                     className: 'btn-danger',
@@ -964,6 +1052,34 @@
     //    }
     //});
 
+    function printInboundLabel(transferPickedIdList) {
+
+        $.ajax({
+            url: "/StockTransaction/WaitPrintToWaitInbound",
+            type: "post",
+            data: {
+                transferPickedIdList: transferPickedIdList
+            },
+            success: function (data) {
+                if (data.status) {
+                    InBoundBarcodeDataTablesBody.ajax.reload();
+                    PrintLable(InBoundBarcodeDataTablesBody, "/StockTransaction/PrintInboundLabel", "12");
+                } else {
+                    swal.fire(data.result);
+                }
+
+            },
+            error: function () {
+                swal.fire('列印標籤失敗');
+            },
+            complete: function (data) {
+
+
+            }
+
+        });
+    }
+
 
     function checkTransactionType() {
 
@@ -1011,7 +1127,7 @@
 
             }
 
-        })
+        });
 
 
 
@@ -1099,14 +1215,20 @@
 
     function BarcodeInbound() {
 
+        var barcode = $('#txtBARCODE').val();
+        if (!barcode) {
+            swal.fire('請輸入條碼');
+            event.preventDefault();
+            return;
+        }
+
         $.ajax({
             url: "/StockTransaction/BarcodeInbound",
             type: "post",
             data: {
-                TransactionType: GetTransactionType(),
-                Number: $('#ddlShipmentNumber').val(),
-                //Number: $('#AutoCompleteShipmentNumber').val(),
-                BARCODE: $('#txtBARCODE').val()
+                
+                transferHeaderId: getTransferHeaderId(),
+                barcode: $('#txtBARCODE').val()
             },
             success: function (data) {
                 if (data.status) {
@@ -1168,7 +1290,7 @@
                         if (data.status) {
 
                             swal.fire(data.result);
-                            GetShipmentNumberData();
+                            SelectShipmentNumber();
                             //GetNumberStatus();
                         } else {
                             swal.fire(data.result);
@@ -2002,7 +2124,7 @@
                     }
                     $("#ddlShipmentNumber").combobox('autocomplete', selectValue, selectText);
                     //$('#ddlShipmentNumber option[text="' + selectText + '", value="' + selectValue + '"]').attr('selected', 'selected');
-                    GetShipmentNumberData();
+                    SelectShipmentNumber();
                 } else {
                     swal.fire(data.result);
                 }

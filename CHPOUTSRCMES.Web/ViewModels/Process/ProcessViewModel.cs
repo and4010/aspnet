@@ -98,11 +98,11 @@ namespace CHPOUTSRCMES.Web.ViewModels.Process
         /// </summary>
         /// <param name="InvestDTList"></param>
         /// <returns></returns>
-        public ResultModel SetEditor(ProcessUOW.DetailDTEditor InvestDTList)
+        public ResultModel SetEditor(ProcessUOW.DetailDTEditor InvestDTList, string UserId, string UserName)
         {
             using (var context = new MesContext())
             {
-                return new ProcessUOW(context).SetEditor(InvestDTList);
+                return new ProcessUOW(context).SetEditor(InvestDTList, UserId, UserName);
             }
         }
 
@@ -289,10 +289,10 @@ namespace CHPOUTSRCMES.Web.ViewModels.Process
             return new ProcessUOW(context).GetRate(OspDetailInId);
         }
 
-        public ResultModel SaveHeaderStatus(long OspDetailOutId, long Locator, string UserId, string UserName)
+        public ResultModel ChangeHeaderStauts(long OspDetailOutId, long Locator, string UserId, string UserName)
         {
             using var context = new MesContext();
-            return new ProcessUOW(context).SaveHeaderStatus(OspDetailOutId, Locator, UserId, UserName);
+            return new ProcessUOW(context).ChangeHeaderStauts(OspDetailOutId, Locator, UserId, UserName);
         }
 
         /// <summary>

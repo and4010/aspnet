@@ -996,12 +996,17 @@ function Open(modal_dialog) {
         var Locator = $('#dialg_Locator').val();
         var OspDetailOutId = $("#OspDetailOutId").val();
         $.ajax({
-            url: '/Process/SaveHeaderStatus/',
+            url: '/Process/ChangeHeaderStauts/',
             dataType: 'json',
             type: 'post',
             data: { OspDetailOutId: OspDetailOutId, Locator: Locator },
-            success: function (e) {
-                window.location.href = '/Process/Index';
+            success: function (data) {
+                if (data.resultModel.Success) {
+                    window.location.href = '/Process/Index';
+                } else {
+                    swal.fire(data.resultModel.Msg)
+                }
+            
             }
         });
 
@@ -1016,34 +1021,7 @@ function Open(modal_dialog) {
 }
 
 
-//完工紀錄使用
-function BtnRecordEdit() {
-    $('#BtnEdit').click(function () {
 
-        CheckBatchNo();
-
-    });
-
-    $('#BtnApprove').click(function () {
-        var Process_Batch_no = $('#Process_Batch_no').text()
-        var Status = "核准";
-        $.ajax({
-            url: '/Process/ChagneIndexStatus/',
-            dataType: 'json',
-            type: 'post',
-            data: { Process_Batch_no: Process_Batch_no, Status: Status },
-            success: function (e) {
-                window.location.href = '/Process/Index';
-            }
-        });
-
-
-    });
-
-
-
-
-}
 
 function DsiplayHide() {
     $('#BtnCheckBatchNo').hide()
@@ -1051,6 +1029,10 @@ function DsiplayHide() {
     $('#BtnEdit').show()
     $('#BtnApprove').show()
     $('#BtnCheckProductionBatchNo').hide()
+    $('#ProductForm').hide();
+    InvestDataTables.column(10).visible(false);
+    ProductionTables.column(8).visible(false);
+    CotangentDataTable.column(8).visible(false);
 }
 
 function DsiplayShow() {
@@ -1064,7 +1046,9 @@ function DisplayInvestEnable(boolean) {
     $('#Invest_Barcode').attr('disabled', boolean);
     $('#Invest_Remnant').attr('disabled', boolean);
     $('#BtnProcessSave').attr('disabled', boolean);
-  
+    InvestDataTables.column(10).visible(true);
+    ProductionTables.column(8).visible(true);
+    CotangentDataTable.column(8).visible(true);
 
 
 }
@@ -1107,6 +1091,53 @@ function displaytext(rowData) {
 
 }
 
+//完工紀錄使用
+function BtnRecordEdit() {
+    $('#BtnEdit').click(function () {
+
+        var BatchNo = $('#InputBatchNo').val();
+        var OspHeaderId = $('#OspHeaderId').val();
+        $.ajax({
+            url: '/Process/CheckBatchNo',
+            datatype: 'json',
+            type: "POST",
+            data: { BatchNo: BatchNo, OspHeaderId: OspHeaderId },
+            success: function (data) {
+                if (data.resultModel.Success) {
+                    ChangeStaus();
+                } else {
+                    swal.fire(data.resultModel.Msg);
+                }
+            },
+            error: function () {
+
+            }
+        });
+
+    });
+
+    $('#BtnApprove').click(function () {
+        var OspDetailOutId = $("#OspDetailOutId").val();
+        $.ajax({
+            url: '/Process/ApproveHeaderStauts/',
+            type: 'POST',
+            datatype: 'json',
+            data: { OspDetailOutId: OspDetailOutId },
+            success: function (data) {
+                if (data.resultModel.Success) {
+                    window.location.href = '/Process/Index';
+                } else {
+                    swal.fire(data.resultModel.Msg)
+                }
+            }
+        });
+
+    });
+
+
+
+}
+
 function clear() {
     $('#Invest_Barcode').text("");
     $('#Invest_Remnant').val(0);
@@ -1118,16 +1149,16 @@ function clear() {
 }
 
 //完工紀錄使用
-function changeStaus() {
-    var InputBatchNo = $('#InputBatchNo').val();
-    var Status = "完工紀錄";
+function ChangeStaus() {
+    var OspDetailOutId = $("#OspDetailOutId").val();
     $.ajax({
-        url: '/Process/ChagneIndexStatus/',
+        url: '/Process/ChangeHeaderStauts/',
         dataType: 'json',
         type: 'post',
-        data: { InputBatchNo: InputBatchNo, Status: Status },
+        data: { OspDetailOutId: OspDetailOutId, Locator:0 },
         success: function (e) {
-            //window.location.href = '/Process/Index';
+            DisplayInvestEnable(false);
+            DisplayProductionEnable(false);
         }
     });
 }

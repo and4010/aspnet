@@ -381,6 +381,23 @@ namespace CHPOUTSRCMES.Web.Controllers
             }
         }
 
+        [HttpPost]
+        public ActionResult InboundEditor(InboundEditor inboundEditor)
+        {
+            using (var context = new MesContext())
+            {
+                using (TransferUOW uow = new TransferUOW(context))
+                {
+                    //取得使用者ID
+                    var id = this.User.Identity.GetUserId();
+                    //取得使用者帳號
+                    var name = this.User.Identity.GetUserName();
+                    var result = stockTransferData.InboundEditor(uow, inboundEditor, id, name);
+                    return new JsonResult { Data = new { status = result.Success, result = result.Msg } };
+                }
+            }
+        }
+
         [HttpPost, ActionName("GetNumberStatus")]
         public JsonResult GetNumberStatus(string TransactionType, string OUT_SUBINVENTORY_CODE, string OUT_LOCATOR_ID, string IN_SUBINVENTORY_CODE, string IN_LOCATOR_ID, string Number)
         {
@@ -598,10 +615,20 @@ namespace CHPOUTSRCMES.Web.Controllers
         }
 
         [HttpPost, ActionName("BarcodeInbound")]
-        public JsonResult BarcodeInbound(string TransactionType, string Number, string BARCODE)
+        public JsonResult BarcodeInbound(long transferHeaderId, string barcode)
         {
-            ResultModel result = stockTransferBarcodeData.BarcodeInbound(TransactionType, Number, BARCODE);
-            return new JsonResult { Data = new { status = result.Success, result = result.Msg } };
+            using (var context = new MesContext())
+            {
+                using (TransferUOW uow = new TransferUOW(context))
+                {
+                    //取得使用者ID
+                    var id = this.User.Identity.GetUserId();
+                    //取得使用者帳號
+                    var name = this.User.Identity.GetUserName();
+                    ResultModel result = stockTransferData.ChangeToAlreadyInBound(uow, transferHeaderId, barcode, id, name);
+                    return new JsonResult { Data = new { status = result.Success, result = result.Msg } };
+                }
+            }
         }
 
         [HttpPost, ActionName("DeleteBarcode")]
@@ -751,5 +778,38 @@ namespace CHPOUTSRCMES.Web.Controllers
             }
             return Json(new { draw = data.Draw, recordsFiltered = detail.Count, recordsTotal = detail.Count, data = detail, result }, JsonRequestBehavior.AllowGet);
         }
+
+
+        #region 標籤
+        [HttpPost]
+        public ActionResult PrintInboundLabel(List<long> ID)
+        {
+            using (var context = new MesContext())
+            {
+                using (TransferUOW uow = new TransferUOW(context))
+                {
+                    //取得使用者帳號
+                    var name = this.User.Identity.GetUserName();
+                    return stockTransferData.PrintInboundLabel(uow, ID, name);
+                }
+            }
+        }
+
+        public JsonResult WaitPrintToWaitInbound(List<long> transferPickedIdList)
+        {
+            using (var context = new MesContext())
+            {
+                using (TransferUOW uow = new TransferUOW(context))
+                {
+                    //取得使用者ID
+                    var id = this.User.Identity.GetUserId();
+                    //取得使用者帳號
+                    var name = this.User.Identity.GetUserName();
+                    ResultModel result = stockTransferData.WaitPrintToWaitInbound(uow, transferPickedIdList, id, name);
+                    return new JsonResult { Data = new { status = result.Success, result = result.Msg } };
+                }
+            }
+        }
+        #endregion
     }
 }

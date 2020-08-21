@@ -703,7 +703,7 @@ OR SUM(ISNULL(p.SECONDARY_QUANTITY, 0)) <> MIN(d.REQUESTED_SECONDARY_QUANTITY)";
                     OrgName = "1",
                     OrganizationId = 265,
                     OrganizationCode = "FTY",
-                    SubinventoryCode = "SFG",
+                    SubinventoryCode = "TB3",
                     TripCar = "PTB3",
                     TripId = 3,
                     TripName = "Y200109-1052060",
@@ -1142,6 +1142,16 @@ from DLV_HEADER_T";
                         data.LastUpdateDate = now;
                         dlvHeaderTRepositiory.Update(data);
 
+                        //更新庫存鎖定量
+                        var pick = dlvPickedTRepositiory.GetAll().AsNoTracking().FirstOrDefault(x => x.DlvHeaderId == data.DlvHeaderId);
+                        if (pick == null) throw new Exception("找不到揀貨資料");
+                        var stock = stockTRepositiory.GetAll().FirstOrDefault(x => x.StockId == pick.Stock_Id);
+                        if (stock == null) throw new Exception("找不到庫存資料");
+                        STK_TXN_T stkTxnT = CreateStockRecord(stock, null, "", "", null, CategoryCode.Delivery, ActionCode.Shipped, data.DeliveryName);
+                        var updateStockLockQtyResult = UpdateStockLockQty(stock, stkTxnT, -1 * pick.PrimaryQuantity, -1 * pick.SecondaryQuantity, pickSatus, PickStatus.Shipped, userId, now);
+                        if (!updateStockLockQtyResult.Success) throw new Exception(updateStockLockQtyResult.Msg);
+
+
                         //複製出貨明細資料到出貨歷史明細
                         string cmd = @"
 INSERT INTO [DLV_DETAIL_HT]
@@ -1307,6 +1317,9 @@ SELECT [DLV_PICKED_ID]
                     }
 
                     dlvHeaderTRepositiory.SaveChanges();
+                    stockTRepositiory.SaveChanges();
+                    stkTxnTRepositiory.SaveChanges();
+                    
 
                     txn.Commit();
                     return new ResultModel(true, "出貨核准成功");
@@ -1728,11 +1741,11 @@ SELECT p.BARCODE as Barocde
 ,s.SPECIFICATION as Specification
 ,s.OSP_BATCH_NO as BatchNo");
 
-                    if (data.PalletStatus == PalletStatusCode.Split)//判斷是否拆板
+                    if (data.PalletStatus == PalletStatusCode.Split) //判斷是否拆板
                     {
                         if (data.SecondaryQuantity != null) //判斷是否為平版
                         {
-                            //拆板 平版
+                            //拆板 平版 數量為庫存數量(拆板後的剩餘數量)
                             cmd.Append(@"
 ,s.SECONDARY_UOM_CODE as Unit
 ,FORMAT(s.SECONDARY_AVAILABLE_QTY,'0.##########') as Qty
@@ -1747,11 +1760,11 @@ WHERE p.BARCODE = @Barcode
                             return new ResultDataModel<List<LabelModel>>(false, "捲筒不能拆板", null);
                         }
                     }
-                    else
+                    else if (data.PalletStatus == PalletStatusCode.All) //判斷是否整版
                     {
                         if (data.SecondaryQuantity != null) //判斷是否為平版
                         {
-                            //整板 平版
+                            //整板 平版 數量為揀貨的數量
                             cmd.Append(@"
 ,s.SECONDARY_UOM_CODE as Unit
 ,FORMAT(p.SECONDARY_QUANTITY,'0.##########') as Qty
@@ -1771,6 +1784,11 @@ INNER JOIN STOCK_T s ON p.BARCODE = s.BARCODE
 WHERE p.BARCODE = @Barcode
 ");
                         }
+                    }
+                    else
+                    {
+                        //棧板狀態為併板 在出貨不會遇到
+                        throw new Exception("出貨棧板狀態不可為併板");
                     }
                     //new SqlParameter("@userName", userName);
 

@@ -1103,6 +1103,8 @@ namespace CHPOUTSRCMES.Web.Models.Stock
 
         }
 
+     
+
         public List<StockTransferBarcodeDT> GetInboundPickedData(TransferUOW uow, long transferHeaderId, string numberStatus)
         {
             return uow.GetTrfInboundPickedTList(transferHeaderId, numberStatus);
@@ -1429,6 +1431,41 @@ namespace CHPOUTSRCMES.Web.Models.Stock
         //{
 
         //}
+
+        public ResultModel InboundEditor(TransferUOW uow, InboundEditor inboundEditor, string userId, string userName)
+        {
+            if (inboundEditor.Action == "remove")
+            {
+                var transferPickedIdList = inboundEditor.StockTransferBarcodeDTList.Select(x => x.ID).ToList();
+                return uow.DelInboundPickData(transferPickedIdList, userId, userName);
+            }
+            else if (inboundEditor.Action == "edit")
+            {
+                var transferPickedIdList = inboundEditor.StockTransferBarcodeDTList.Select(x => x.ID).ToList();
+                string note = inboundEditor.StockTransferBarcodeDTList[0].REMARK;
+                return uow.UpdateInboundPickNote(transferPickedIdList, note, userId, userName);
+            }
+            else
+            {
+                return new ResultModel(false, "無法識別作業項目");
+            }
+        }
+
+        public ResultModel ChangeToAlreadyInBound (TransferUOW uow, long transferHeaderId, string barcode, string userId, string userName)
+        {
+            return uow.ChangeToAlreadyInBound(transferHeaderId, barcode, userId, userName);
+        }
+
+        public ActionResult PrintInboundLabel(TransferUOW uow, List<long> transferPickedIdList, string userName)
+        {
+            var resultData = uow.GetInboundLabels(transferPickedIdList, userName);
+            return uow.PrintLable(resultData.Data);
+        }
+
+        public ResultModel WaitPrintToWaitInbound(TransferUOW uow, List<long> transferPickedIdList,string userId, string userName)
+        {
+            return uow.WaitPrintToWaitInbound(transferPickedIdList, userId, userName);
+        }
     }
 
 
@@ -1509,4 +1546,9 @@ namespace CHPOUTSRCMES.Web.Models.Stock
         }
     }
 
+    public class InboundEditor
+    {
+        public string Action { get; set; }
+        public List<StockTransferBarcodeDT> StockTransferBarcodeDTList { get; set; }
+    }
 }

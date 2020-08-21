@@ -191,6 +191,10 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             /// 拆板
             /// </summary>
             public const string Split = "1";
+            /// <summary>
+            /// 併板
+            /// </summary>
+            public const string Merge = "2";
         }
 
         /// <summary>
@@ -281,11 +285,17 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
         public class CategoryCode : ICategory
         {
             public const string Delivery = "C0";
+            public const string Process = "C1";
+            public const string Purchase = "C2";
             public string GetDesc(string category)
             {
                 switch (category)
                 {
                     case Delivery:
+                        return "進貨";
+                    case Process:
+                        return "加工";
+                    case Purchase:
                         return "進貨";
                     default:
                         return "";
@@ -295,9 +305,19 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
 
         public class ActionCode : IAction
         {
+            /// <summary>
+            /// 刪除
+            /// </summary>
             public const string Deleted = "A0";
+            /// <summary>
+            /// 已揀
+            /// </summary>
             public const string Picked = "A1";
+            /// <summary>
+            /// 已出貨
+            /// </summary>
             public const string Shipped = "A2";
+            public const string Purchse = "A3";
 
             public string GetDesc(string category)
             {
@@ -309,6 +329,8 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                         return "已揀";
                     case Shipped:
                         return "已出貨";
+                    case Purchse:
+                        return "進貨";
                     default:
                         return "";
                 }
@@ -730,8 +752,45 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
 
         //    return UpdateStock(stock, qty, uom, detail, statusCode, lockQty);
         //}
+        /// <summary>
+        /// 更新庫存鎖定量及狀態
+        /// </summary>
+        /// <param name="stockId"></param>
+        /// <param name="stkTxnT"></param>
+        /// <param name="addPriLockQty"></param>
+        /// <param name="addSecLockQty"></param>
+        /// <param name="detail"></param>
+        /// <param name="statusCode"></param>
+        /// <param name="lastUpdatedBy"></param>
+        /// <param name="addDate"></param>
+        /// <returns></returns>
+        public ResultDataModel<STOCK_T> UpdateStockLockQty(STOCK_T stock, STK_TXN_T stkTxnT, decimal addPriLockQty, decimal? addSecLockQty, IDetail detail, string statusCode, string lastUpdatedBy, DateTime addDate)
+        {
+            try
+            {
+                stock.PrimaryLockedQty = stock.PrimaryLockedQty.HasValue ? stock.PrimaryLockedQty + addPriLockQty : 0 + addPriLockQty;
+                stock.SecondaryLockedQty = stock.SecondaryLockedQty.HasValue ? stock.SecondaryLockedQty + addSecLockQty : 0 + addSecLockQty;
 
+                stock.StatusCode = stock.PrimaryAvailableQty == 0 ? detail.ToStockStatus(statusCode) : StockStatusCode.InStock;
 
+                stock.LastUpdateBy = lastUpdatedBy;
+                stock.LastUpdateDate = addDate;
+                stkTxnT.CreatedBy = stock.CreatedBy;
+                stkTxnT.CreationDate = stock.CreationDate;
+                stkTxnT.LastUpdateBy = null;
+                stkTxnT.LastUpdateDate = null;
+                stkTxnT.StatusCode = stock.StatusCode;
+
+                stockTRepositiory.Update(stock);
+                stkTxnTRepositiory.Create(stkTxnT);
+                return new ResultDataModel<STOCK_T>(true, "庫存鎖定量更新成功", stock);
+            }catch(Exception ex)
+            {
+                logger.Error(LogUtilities.BuildExceptionMessage(ex));
+                return new ResultDataModel<STOCK_T>(false, "庫存鎖定量更新失敗:" + ex.Message, null);
+            }
+            
+        }
 
         /// <summary>
         /// 更新庫存量及狀態
@@ -794,7 +853,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
 
             stock.PrimaryAvailableQty = pryAfterValue;
             //是揀貨時 計算鎖單量
-            if (lockQty) stock.PrimaryLockedQty += -1 * priQty.Value;
+            if (lockQty) stock.PrimaryLockedQty = stock.PrimaryLockedQty.HasValue ? stock.PrimaryLockedQty + (-1 * priQty.Value) : 0 + (-1 * priQty.Value); //如果是原鎖定量是null要改為0，否則相加後仍為null
 
             //記錄異動表
             stkTxnT.PryChgQty = priQty;
@@ -809,7 +868,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
 
                 stock.SecondaryAvailableQty = secAfterValue;
                 //是揀貨時 計算鎖單量
-                if (lockQty) stock.SecondaryLockedQty += -1 * secQty.Value;
+                if (lockQty) stock.SecondaryLockedQty = stock.SecondaryLockedQty.HasValue ? stock.SecondaryLockedQty + (-1 * secQty.Value) : 0 + (-1 * secQty.Value);
 
                 stkTxnT.SecChgQty = secQty;
                 stkTxnT.SecBefQty = secBeforeValue;
@@ -820,7 +879,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             stock.LastUpdateBy = lastUpdatedBy;
             stock.LastUpdateDate = addDate;
             //記錄庫存狀態
-            stock.StatusCode = stock.PrimaryAvailableQty == 0 ? detail.ToStockStatus(statusCode) : StockStatusCode.InStock;
+            stock.StatusCode = stock.PrimaryAvailableQty == 0 ? detail.ToStockStatus(statusCode) : StockStatusCode.InStock; //數量為0時為指定的庫存狀態，非0時為在庫
             stkTxnT.CreatedBy = stock.CreatedBy;
             stkTxnT.CreationDate = stock.CreationDate;
             stkTxnT.LastUpdateBy = null;
@@ -971,8 +1030,8 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                     OrganizationId = 265,
                     OrganizationCode = "FTY",
                     SubinventoryCode = "TB3",
-                    LocatorId = null,
-                    LocatorSegments = "",
+                    LocatorId = 23866,
+                    LocatorSegments = "FTY.TB3.SFG.NA",
                     Barcode = "A2007290001",
                     InventoryItemId = 504029,
                     ItemNumber = "4DM00A03500214K512K",
@@ -1010,8 +1069,8 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                     OrganizationId = 265,
                     OrganizationCode = "FTY",
                     SubinventoryCode = "TB3",
-                    LocatorId = null,
-                    LocatorSegments = "",
+                    LocatorId = 23866,
+                    LocatorSegments = "FTY.TB3.SFG.NA",
                     Barcode = "A2007290002",
                     InventoryItemId = 505675,
                     ItemNumber = "4DM00P0270008271130",
@@ -1048,9 +1107,9 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                 {
                     OrganizationId = 265,
                     OrganizationCode = "FTY",
-                    SubinventoryCode = "SFG",
-                    LocatorId = null,
-                    LocatorSegments = "",
+                    SubinventoryCode = "TB3",
+                    LocatorId = 23866,
+                    LocatorSegments = "FTY.TB3.SFG.NA",
                     Barcode = "A2007290003",
                     InventoryItemId = 558705,
                     ItemNumber = "4AH00A00900362KRL00",
@@ -1088,8 +1147,8 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                     OrganizationId = 265,
                     OrganizationCode = "FTY",
                     SubinventoryCode = "TB3",
-                    LocatorId = null,
-                    LocatorSegments = "",
+                    LocatorId = 23866,
+                    LocatorSegments = "FTY.TB3.SFG.NA",
                     Barcode = "A2007290004",
                     InventoryItemId = 559299,
                     ItemNumber = "4AK0XA008001320RL00",
@@ -1127,8 +1186,8 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                     OrganizationId = 265,
                     OrganizationCode = "FTY",
                     SubinventoryCode = "TB3",
-                    LocatorId = null,
-                    LocatorSegments = "",
+                    LocatorId = 23866,
+                    LocatorSegments = "FTY.TB3.SFG.NA",
                     Barcode = "A2007290005",
                     InventoryItemId = 506313,
                     ItemNumber = "4DM00P0270007991121",
@@ -1436,6 +1495,9 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
 
         #endregion
 
+
+        #region 條碼
+
         /// <summary>
         /// 產生條碼清單 (請用交易TRANSACTION)
         /// </summary>
@@ -1445,7 +1507,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
         /// <param name="requestQty">數量</param>
         /// <param name="userId">使用者ID</param>
         /// <returns>ResultDataModel 條碼清單</returns>
-        public ResultDataModel<List<string>> GenerateBarcodes(long organiztionId, string subinventoryCode, string prefix, int requestQty, string userId)
+        public ResultDataModel<List<string>> GenerateBarcodes(long organiztionId, string subinventoryCode, int requestQty, string userId, string prefix = "")
         {
             ResultDataModel<List<string>> result = null;
             try
@@ -1470,6 +1532,9 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             }
             return result;
         }
+
+
+        #endregion
 
         /// <summary>
         /// 產生下拉選單內容

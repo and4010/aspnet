@@ -139,6 +139,15 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Transfer
         public string Status { set; get; }
 
         /// <summary>
+        /// 棧板狀態
+        /// </summary>
+        /// 
+        [Required]
+        [StringLength(10)]
+        [Column("PALLET_STATUS")]
+        public string PalletStatus { set; get; }
+
+        /// <summary>
         /// 建立人員
         /// </summary>
         /// 
