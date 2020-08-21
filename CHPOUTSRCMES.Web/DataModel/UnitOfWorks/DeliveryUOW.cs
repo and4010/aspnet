@@ -1741,11 +1741,11 @@ SELECT p.BARCODE as Barocde
 ,s.SPECIFICATION as Specification
 ,s.OSP_BATCH_NO as BatchNo");
 
-                    if (data.PalletStatus == PalletStatusCode.Split)//判斷是否拆板
+                    if (data.PalletStatus == PalletStatusCode.Split) //判斷是否拆板
                     {
                         if (data.SecondaryQuantity != null) //判斷是否為平版
                         {
-                            //拆板 平版
+                            //拆板 平版 數量為庫存數量(拆板後的剩餘數量)
                             cmd.Append(@"
 ,s.SECONDARY_UOM_CODE as Unit
 ,FORMAT(s.SECONDARY_AVAILABLE_QTY,'0.##########') as Qty
@@ -1760,11 +1760,11 @@ WHERE p.BARCODE = @Barcode
                             return new ResultDataModel<List<LabelModel>>(false, "捲筒不能拆板", null);
                         }
                     }
-                    else
+                    else if (data.PalletStatus == PalletStatusCode.All) //判斷是否整版
                     {
                         if (data.SecondaryQuantity != null) //判斷是否為平版
                         {
-                            //整板 平版
+                            //整板 平版 數量為揀貨的數量
                             cmd.Append(@"
 ,s.SECONDARY_UOM_CODE as Unit
 ,FORMAT(p.SECONDARY_QUANTITY,'0.##########') as Qty
@@ -1784,6 +1784,11 @@ INNER JOIN STOCK_T s ON p.BARCODE = s.BARCODE
 WHERE p.BARCODE = @Barcode
 ");
                         }
+                    }
+                    else
+                    {
+                        //棧板狀態為併板 在出貨不會遇到
+                        throw new Exception("出貨棧板狀態不可為併板");
                     }
                     //new SqlParameter("@userName", userName);
 

@@ -580,9 +580,24 @@
         },
         select: function (event, ui) {
             if (ui.item) {
+                //$('#txtInputTransactionQty').focus();
                 GetStockItemData(ui.item.value);
             }
         }
+    });
+
+    //$("#AutoCompleteItemNumber").bind("input propertychange", function () {
+    //$('#AutoCompleteItemNumber').bind('paste', function (e) {
+    //    setTimeout(function () {
+    //        //$("#AutoCompleteItemNumber").autocomplete("search", $("#AutoCompleteItemNumber").val());
+    //        //$("#AutoCompleteItemNumber").data('ui-autocomplete')._trigger('select', 'autocompleteselect', { item: { value: $(this).val() } });
+    //        $('#AutoCompleteItemNumber').autocomplete("search", $('#AutoCompleteItemNumber').val());
+    //    }, 0);
+    //});
+
+    //離開料號欄位自動搜尋
+    $('#AutoCompleteItemNumber').blur(function () {
+        GetStockItemData($('#AutoCompleteItemNumber').val());
     });
 
     editor = new $.fn.dataTable.Editor({
@@ -805,6 +820,7 @@
             },
             { data: "SECONDARY_UOM", name: "次要單位", autoWidth: true },
             { data: "REMARK", name: "備註", autoWidth: true, className: "dt-body-left" },
+            { data: "ID", name: "ID", autoWidth: true, visible: false },
             //{ data: "LAST_UPDATE_DATE", name: "更新日期", autoWidth: true, visible: false }
         ],
 
@@ -870,11 +886,49 @@
                     text: '<span class="glyphicon glyphicon-print"></span>&nbsp列印標籤',
                     //className: 'btn-default btn-sm',
                     action: function (e) {
-                        PrintLable(InBoundBarcodeDataTablesBody, "/Home/GetLabel2", "2");
-                        InBoundBarcodeDataTablesBody.ajax.reload();
+                        var data = InBoundBarcodeDataTablesBody.rows('.selected').data();
+                        if (data.length == 0) {
+                            return false;
+                        }
+                        var barcode = [];
+                        var transferPickedIdList = [];
+                        for (var i = 0; i < data.length; i++) {
+                            transferPickedIdList.push(data[i].ID);
+                            if (data[i].PALLET_STATUS == '2') { //是否為併板
+                                barcode.push(data[i].BARCODE);
+                            }
+                        }
+                        if (barcode.length > 0) {
+                            swal.fire({
+                                title: "注意",
+                                html: "以下為併板後的條碼，請更換庫存棧板上的舊條碼。<br>" + barcode.join('<br>'),
+                                type: "warning",
+                                confirmButtonColor: "#DD6B55",
+                                confirmButtonText: "確定",
+                            }).then(function (result) {
+                                if (result.value) {
+                                    printInboundLabel(transferPickedIdList)
+                                }
+                            });
+                        } else {
+                            printInboundLabel(transferPickedIdList)
+                        }
                     },
-                    className: "btn-primary"
+                    className: "btn-primary",
+                    enabled: false,
+                    init: function (api, node, config) {
+                        $(node).removeClass('btn-default')
+                    }
                 },
+                //{
+                //    text: '<span class="glyphicon glyphicon-print"></span>&nbsp列印標籤',
+                //    //className: 'btn-default btn-sm',
+                //    action: function (e) {
+                //        PrintLable(InBoundBarcodeDataTablesBody, "/Home/GetLabel2", "2");
+                //        InBoundBarcodeDataTablesBody.ajax.reload();
+                //    },
+                //    className: "btn-primary"
+                //},
                 {
                     text: '編輯備註',
                     className: 'btn-danger',
@@ -998,6 +1052,34 @@
     //    }
     //});
 
+    function printInboundLabel(transferPickedIdList) {
+
+        $.ajax({
+            url: "/StockTransaction/WaitPrintToWaitInbound",
+            type: "post",
+            data: {
+                transferPickedIdList: transferPickedIdList
+            },
+            success: function (data) {
+                if (data.status) {
+                    InBoundBarcodeDataTablesBody.ajax.reload();
+                    PrintLable(InBoundBarcodeDataTablesBody, "/StockTransaction/PrintInboundLabel", "12");
+                } else {
+                    swal.fire(data.result);
+                }
+
+            },
+            error: function () {
+                swal.fire('列印標籤失敗');
+            },
+            complete: function (data) {
+
+
+            }
+
+        });
+    }
+
 
     function checkTransactionType() {
 
@@ -1045,7 +1127,7 @@
 
             }
 
-        })
+        });
 
 
 
@@ -1133,14 +1215,20 @@
 
     function BarcodeInbound() {
 
+        var barcode = $('#txtBARCODE').val();
+        if (!barcode) {
+            swal.fire('請輸入條碼');
+            event.preventDefault();
+            return;
+        }
+
         $.ajax({
             url: "/StockTransaction/BarcodeInbound",
             type: "post",
             data: {
-                TransactionType: GetTransactionType(),
-                Number: $('#ddlShipmentNumber').val(),
-                //Number: $('#AutoCompleteShipmentNumber').val(),
-                BARCODE: $('#txtBARCODE').val()
+                
+                transferHeaderId: getTransferHeaderId(),
+                barcode: $('#txtBARCODE').val()
             },
             success: function (data) {
                 if (data.status) {

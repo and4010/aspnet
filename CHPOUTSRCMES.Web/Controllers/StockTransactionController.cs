@@ -778,5 +778,38 @@ namespace CHPOUTSRCMES.Web.Controllers
             }
             return Json(new { draw = data.Draw, recordsFiltered = detail.Count, recordsTotal = detail.Count, data = detail, result }, JsonRequestBehavior.AllowGet);
         }
+
+
+        #region 標籤
+        [HttpPost]
+        public ActionResult PrintInboundLabel(List<long> ID)
+        {
+            using (var context = new MesContext())
+            {
+                using (TransferUOW uow = new TransferUOW(context))
+                {
+                    //取得使用者帳號
+                    var name = this.User.Identity.GetUserName();
+                    return stockTransferData.PrintInboundLabel(uow, ID, name);
+                }
+            }
+        }
+
+        public JsonResult WaitPrintToWaitInbound(List<long> transferPickedIdList)
+        {
+            using (var context = new MesContext())
+            {
+                using (TransferUOW uow = new TransferUOW(context))
+                {
+                    //取得使用者ID
+                    var id = this.User.Identity.GetUserId();
+                    //取得使用者帳號
+                    var name = this.User.Identity.GetUserName();
+                    ResultModel result = stockTransferData.WaitPrintToWaitInbound(uow, transferPickedIdList, id, name);
+                    return new JsonResult { Data = new { status = result.Success, result = result.Msg } };
+                }
+            }
+        }
+        #endregion
     }
 }

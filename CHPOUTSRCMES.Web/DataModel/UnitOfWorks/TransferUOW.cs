@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Text;
 using System.Web;
 using System.Web.Mvc;
 using CHPOUTSRCMES.Web.DataModel.Entity.Interfaces;
@@ -538,8 +539,8 @@ SELECT [TRANSFER_PICKED_ID] as ID
                     if (trfHeader.TransferSubinventoryCode != inSubinventoryCode) throw new Exception("入庫倉庫比對錯誤，請選擇此入庫倉庫" + inSubinventoryCode);
                     if (trfHeader.TransferLocatorId != inLocatorId) throw new Exception("入庫儲位比對錯誤，請選擇此入庫儲位" + inLocatorSegment3);
 
-                    var trfDeatil = GetTrfDetail(trfHeader.TransferHeaderId, item.InventoryItemId);
-                    if (trfDeatil != null) throw new Exception("料號重複輸入");
+                    //var trfDeatil = GetTrfDetail(trfHeader.TransferHeaderId, item.InventoryItemId);
+                    //if (trfDeatil != null) throw new Exception("料號重複輸入");
 
                     decimal rollReamQty = Math.Ceiling(requestedQty / rollReamWt); //無條件進位 算出棧板數或捲數
 
@@ -593,7 +594,7 @@ SELECT [TRANSFER_PICKED_ID] as ID
                         LastUpdateDate = now
                     }, true);
 
-                    trfDeatil = GetTrfDetail(trfHeader.TransferHeaderId, item.InventoryItemId);
+                    var trfDeatil = GetTrfDetail(trfHeader.TransferHeaderId, item.InventoryItemId);
                     if (trfDeatil == null) throw new Exception("找不到此料號明細資料");
 
                     //產生條碼清單
@@ -692,6 +693,7 @@ SELECT [TRANSFER_PICKED_ID] as ID
                                 LotQuantity = null,
                                 Note = "",
                                 Status = InboundStatus.WaitPrint,
+                                PalletStatus = PalletStatusCode.All,
                                 CreatedBy = createUser,
                                 CreatedUserName = createUserName,
                                 CreationDate = now,
@@ -762,6 +764,7 @@ SELECT [TRANSFER_PICKED_ID] as ID
                                 LotQuantity = null,
                                 Note = "",
                                 Status = InboundStatus.WaitPrint,
+                                PalletStatus = PalletStatusCode.All,
                                 CreatedBy = createUser,
                                 CreatedUserName = createUserName,
                                 CreationDate = now,
@@ -785,6 +788,38 @@ SELECT [TRANSFER_PICKED_ID] as ID
                 }
             }
         }
+       
+
+        public ResultModel WaitPrintToWaitInbound(List<long> transferPickedIdList, string userId, string userName)
+        {
+            var pickList = trfInboundPickedTRepositiory.GetAll().Where(x => transferPickedIdList.Contains(x.TransferPickedId)).ToList();
+            if (pickList == null || pickList.Count == 0) return new ResultModel(false, "找不到揀貨資料");
+
+            using (var txn = this.Context.Database.BeginTransaction())
+            {
+                try
+                {
+                    DateTime now = DateTime.Now;
+                    foreach (TRF_INBOUND_PICKED_T pick in pickList)
+                    {
+                        if (pick.Status == InboundStatus.WaitPrint)
+                        {
+                            //入庫狀態為待列印才改待入庫
+                            UpdateInboundPickStatus(pick, InboundStatus.WaitInbound, userId, userName, now);
+                        }
+                    }
+                    trfInboundPickedTRepositiory.SaveChanges();
+                    txn.Commit();
+                    return new ResultModel(true, "待列印轉待入庫成功");
+                }
+                catch (Exception ex)
+                {
+                    logger.Error(LogUtilities.BuildExceptionMessage(ex));
+                    txn.Rollback();
+                    return new ResultModel(false, "待列印轉待入庫失敗:" + ex.Message);
+                }
+            }
+        }
 
         public ResultModel ChangeToAlreadyInBound(long transferHeaderId, string barcode, string userId, string userName)
         {
@@ -792,32 +827,42 @@ SELECT [TRANSFER_PICKED_ID] as ID
             if (pick == null) return new ResultModel(false, "找不到揀貨資料");
             if (pick.Status == InboundStatus.WaitPrint) return new ResultModel(false, "請先列印條碼");
             if (pick.Status == InboundStatus.AlreadyInbound) return new ResultModel(false, "已經入庫");
-            return UpdateInboundPickStatus(pick, InboundStatus.AlreadyInbound, userId, userName);
-        }
 
-
-        public ResultModel UpdateInboundPickStatus(TRF_INBOUND_PICKED_T pick, string inboundStatus, string userId, string userName)
-        {
-            if (pick == null) return new ResultModel(false, "找不到揀貨資料");
             using (var txn = this.Context.Database.BeginTransaction())
             {
                 try
                 {
-                    pick.Status = inboundStatus;
-                    pick.LastUpdateBy = userId;
-                    pick.LastUpdateUserName = userName;
-                    pick.LastUpdateDate = DateTime.Now; 
-                    trfInboundPickedTRepositiory.Update(pick, true);
+                    UpdateInboundPickStatus(pick, InboundStatus.AlreadyInbound, userId, userName, DateTime.Now);
+                    trfInboundPickedTRepositiory.SaveChanges();
                     txn.Commit();
-                    return new ResultModel(true, "轉已入庫成功");
+                    return new ResultModel(true, "待列印轉待入庫成功");
                 }
                 catch (Exception ex)
                 {
                     logger.Error(LogUtilities.BuildExceptionMessage(ex));
                     txn.Rollback();
-                    return new ResultModel(false, "轉已入庫失敗:" + ex.Message);
+                    return new ResultModel(false, "待列印轉待入庫失敗:" + ex.Message);
                 }
             }
+
+        }
+
+        /// <summary>
+        /// 更新入庫狀態
+        /// </summary>
+        /// <param name="pick"></param>
+        /// <param name="inboundStatus"></param>
+        /// <param name="userId"></param>
+        /// <param name="userName"></param>
+        /// <param name="now"></param>
+        public void UpdateInboundPickStatus(TRF_INBOUND_PICKED_T pick, string inboundStatus, string userId, string userName, DateTime now)
+        {
+            if (pick == null) throw new Exception("找不到揀貨資料");
+            pick.Status = inboundStatus;
+            pick.LastUpdateBy = userId;
+            pick.LastUpdateUserName = userName;
+            pick.LastUpdateDate = now;
+            trfInboundPickedTRepositiory.Update(pick);
         }
 
         public ResultModel UpdateInboundPickNote(List<long> transferPickedIdList, string note, string userId, string userName)
@@ -903,6 +948,184 @@ SELECT [TRANSFER_PICKED_ID] as ID
 
             }
         }
+
+        #region 標籤
+        public ResultDataModel<List<LabelModel>> GetInboundLabels(List<long> transferPickedIdList, string userName)
+        {
+            try
+            {
+                List<LabelModel> labelModelList = new List<LabelModel>();
+                if (transferPickedIdList == null || transferPickedIdList.Count == 0) return new ResultDataModel<List<LabelModel>>(false, "找不到揀貨資料", null);
+                var pickDataList = trfInboundPickedTRepositiory.GetAll().AsNoTracking().Where(x => transferPickedIdList.Contains(x.TransferPickedId)).ToList();
+                if (pickDataList == null || pickDataList.Count == 0) return new ResultDataModel<List<LabelModel>>(false, "找不到揀貨資料", null);
+
+                var header = GetTrfHeader(pickDataList[0].TransferHeaderId);
+                if (header == null) return new ResultDataModel<List<LabelModel>>(false, "找不到出貨編號資料", null);
+                
+                if (header.IsMes == IsMes.Yes)
+                {
+                    //對方為MES時料號資料從庫存取
+                    foreach (TRF_INBOUND_PICKED_T data in pickDataList)
+                    {
+                        StringBuilder cmd = new StringBuilder(@"
+SELECT p.BARCODE as Barocde
+,@userName as PrintBy
+,s.ITEM_DESCRIPTION as BarocdeName
+,s.PAPER_TYPE as PapaerType
+,s.BASIC_WEIGHT as BasicWeight
+,s.SPECIFICATION as Specification
+,s.OSP_BATCH_NO as BatchNo");
+
+                        if (data.PalletStatus == PalletStatusCode.Split) //判斷是否拆板
+                        {
+                            //棧板狀態為拆板 在入庫不會遇到
+                            throw new Exception("入庫棧板狀態不可為拆板");
+                        }
+                        else if (data.PalletStatus == PalletStatusCode.All) //判斷是否整版
+                        {
+                            if (data.SecondaryQuantity != null) //判斷是否為平版
+                            {
+                                //整板 平版(令包) 數量為揀貨的數量
+                                cmd.Append(@"
+,s.SECONDARY_UOM_CODE as Unit
+,FORMAT(p.SECONDARY_QUANTITY,'0.##########') as Qty
+FROM [TRF_INBOUND_PICKED_T] p
+INNER JOIN STOCK_T s ON p.BARCODE = s.BARCODE
+WHERE p.BARCODE = @Barcode
+");
+                            }
+                            else
+                            {
+                                //整板 捲筒
+                                cmd.Append(@"
+,s.PRIMARY_UOM_CODE as Unit
+,FORMAT(p.PRIMARY_QUANTITY,'0.##########') as Qty
+FROM [TRF_INBOUND_PICKED_T] p
+INNER JOIN STOCK_T s ON p.BARCODE = s.BARCODE
+WHERE p.BARCODE = @Barcode
+");
+                            }
+                        }
+                        else
+                        {
+                            //併板
+                            if (data.SecondaryQuantity != null) //判斷是否為平版
+                            {
+                                //併板 平版(令包) 數量為庫存數量(被併板條碼原庫存) + 檢貨數量(待併板條碼數量總和)
+                                cmd.Append(@"
+,s.SECONDARY_UOM_CODE as Unit
+,FORMAT(s.SECONDARY_AVAILABLE_QTY,'0.##########') + FORMAT(p.SECONDARY_QUANTITY,'0.##########') as Qty
+FROM [TRF_INBOUND_PICKED_T] p
+INNER JOIN STOCK_T s ON p.BARCODE = s.BARCODE
+WHERE p.BARCODE = @Barcode
+");
+                            }
+                            else
+                            {
+                                //併板 捲筒
+                                return new ResultDataModel<List<LabelModel>>(false, "捲筒不能併板", null);
+                            }
+                        }
+
+
+                        var labelModel = this.Context.Database.SqlQuery<LabelModel>(cmd.ToString(), new SqlParameter("@userName", userName), new SqlParameter("@Barcode", data.Barcode)).ToList();
+                        if (labelModel == null || labelModel.Count == 0) return new ResultDataModel<List<LabelModel>>(false, "找不到標籤資料", null);
+                        labelModelList.Add(labelModel[0]);
+                    }
+                    return new ResultDataModel<List<LabelModel>>(true, "取得標籤資料成功", labelModelList);
+                }
+                else
+                {
+                    //對方非MES時料號資料從主檔取 併板則從庫存取
+                    foreach (TRF_INBOUND_PICKED_T data in pickDataList)
+                    {
+                        StringBuilder cmd = new StringBuilder(@"
+SELECT p.BARCODE as Barocde
+,@userName as PrintBy
+,i.ITEM_DESC_TCH as BarocdeName
+,i.CATALOG_ELEM_VAL_020 as PapaerType
+,i.CATALOG_ELEM_VAL_040 as BasicWeight
+,i.CATALOG_ELEM_VAL_050 as Specification
+,'' as BatchNo");
+
+                        if (data.PalletStatus == PalletStatusCode.Split) //判斷是否拆板
+                        {
+                            //棧板狀態為拆板 在入庫不會遇到
+                            throw new Exception("入庫棧板狀態不可為拆板");
+                        }
+                        else if (data.PalletStatus == PalletStatusCode.All) //判斷是否整版
+                        {
+                            if (data.SecondaryQuantity != null) //判斷是否為平版
+                            {
+                                //整板 平版(令包) 數量為揀貨的數量
+                                cmd.Append(@"
+,i.SECONDARY_UOM_CODE as Unit
+,FORMAT(p.SECONDARY_QUANTITY,'0.##########') as Qty
+FROM [TRF_INBOUND_PICKED_T] p
+INNER JOIN ITEMS_T i ON p.INVENTORY_ITEM_ID = i.INVENTORY_ITEM_ID
+WHERE p.BARCODE = @Barcode
+");
+                            }
+                            else
+                            {
+                                //整板 捲筒
+                                cmd.Append(@"
+,i.PRIMARY_UOM_CODE as Unit
+,FORMAT(p.PRIMARY_QUANTITY,'0.##########') as Qty
+FROM [TRF_INBOUND_PICKED_T] p
+INNER JOIN ITEMS_T i ON p.INVENTORY_ITEM_ID = i.INVENTORY_ITEM_ID
+WHERE p.BARCODE = @Barcode
+");
+                            }
+                        }
+                        else
+                        {
+                            //併板
+                            if (data.SecondaryQuantity != null) //判斷是否為平版
+                            {
+                                //併板 平版(令包) 數量為庫存數量(被併板條碼原庫存) + 檢貨數量(待併板條碼數量總和)
+                                cmd.Clear();
+                                cmd.Append(@"
+SELECT p.BARCODE as Barocde
+,@userName as PrintBy
+,s.ITEM_DESCRIPTION as BarocdeName
+,s.PAPER_TYPE as PapaerType
+,s.BASIC_WEIGHT as BasicWeight
+,s.SPECIFICATION as Specification
+,s.OSP_BATCH_NO as BatchNo
+,s.SECONDARY_UOM_CODE as Unit
+,FORMAT(s.SECONDARY_AVAILABLE_QTY,'0.##########') + FORMAT(p.SECONDARY_QUANTITY,'0.##########') as Qty
+FROM [TRF_INBOUND_PICKED_T] p
+INNER JOIN STOCK_T s ON p.BARCODE = s.BARCODE
+WHERE p.BARCODE = @Barcode
+");
+                            }
+                            else
+                            {
+                                //併板 捲筒
+                                return new ResultDataModel<List<LabelModel>>(false, "捲筒不能併板", null);
+                            }
+                        }
+
+
+                        var labelModel = this.Context.Database.SqlQuery<LabelModel>(cmd.ToString(), new SqlParameter("@userName", userName), new SqlParameter("@Barcode", data.Barcode)).ToList();
+                        if (labelModel == null || labelModel.Count == 0) return new ResultDataModel<List<LabelModel>>(false, "找不到標籤資料", null);
+                        labelModelList.Add(labelModel[0]);
+                    }
+                    return new ResultDataModel<List<LabelModel>>(true, "取得標籤資料成功", labelModelList);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                logger.Error(LogUtilities.BuildExceptionMessage(ex));
+                return new ResultDataModel<List<LabelModel>>(false, "取得標籤資料失敗:" + ex.Message, null);
+            }
+
+
+        }
+
+        #endregion
     }
 
 }

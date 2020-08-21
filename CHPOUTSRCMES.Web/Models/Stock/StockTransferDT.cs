@@ -1455,6 +1455,17 @@ namespace CHPOUTSRCMES.Web.Models.Stock
         {
             return uow.ChangeToAlreadyInBound(transferHeaderId, barcode, userId, userName);
         }
+
+        public ActionResult PrintInboundLabel(TransferUOW uow, List<long> transferPickedIdList, string userName)
+        {
+            var resultData = uow.GetInboundLabels(transferPickedIdList, userName);
+            return uow.PrintLable(resultData.Data);
+        }
+
+        public ResultModel WaitPrintToWaitInbound(TransferUOW uow, List<long> transferPickedIdList,string userId, string userName)
+        {
+            return uow.WaitPrintToWaitInbound(transferPickedIdList, userId, userName);
+        }
     }
 
 

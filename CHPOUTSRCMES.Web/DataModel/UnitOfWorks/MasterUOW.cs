@@ -191,6 +191,10 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             /// 拆板
             /// </summary>
             public const string Split = "1";
+            /// <summary>
+            /// 併板
+            /// </summary>
+            public const string Merge = "2";
         }
 
         /// <summary>
