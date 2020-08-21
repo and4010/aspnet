@@ -19,6 +19,10 @@ $(document).ready(function () {
         DsiplayHide();
         DisplayInvestEnable(true);
         DisplayProductionEnable(true);
+        ///隱藏按鈕
+        InvestDataTables.column(10).visible(false);
+        ProductionTables.column(8).visible(false);
+        CotangentDataTable.column(8).visible(false);
     } else {
         DisplayInvestEnable(true);
         DisplayProductionEnable(true);
@@ -514,7 +518,7 @@ function LoadInvestDataTable() {
 
     });
 
-    var OspDetailInId = $("#OspDetailInId").val()
+    var OspHeaderId = $("#OspHeaderId").val()
     InvestDataTables = $('#InvestDataTables').DataTable({
         "language": {
             "url": "/bower_components/datatables/language/zh-TW.json"
@@ -532,7 +536,7 @@ function LoadInvestDataTable() {
             "url": "/Process/InvestLoadTable",
             "type": "POST",
             "datatype": "json",
-            "data": { OspDetailInId: OspDetailInId }
+            "data": { OspHeaderId: OspHeaderId }
         },
         select: {
             style: 'multi',
@@ -666,7 +670,7 @@ function LoadProductionDataTable() {
     editorProduct.field('OspPickedOutId').hide();
 
 
-    var OspDetailOutId = $("#OspDetailOutId").val()
+    var OspHeaderId = $("#OspHeaderId").val()
     ProductionTables = $('#ProductionDataTables').DataTable({
         "language": {
             "url": "/bower_components/datatables/language/zh-TW.json"
@@ -684,7 +688,7 @@ function LoadProductionDataTable() {
             "url": "/Process/ProductionLoadDataTables",
             "type": "POST",
             "datatype": "json",
-            "data": { OspDetailOutId: OspDetailOutId },
+            "data": { OspHeaderId: OspHeaderId },
         },
         select: {
             style: 'multi',
@@ -868,7 +872,7 @@ function CotangentDataTables() {
 
     EditorCotangent.field('OspCotangentId').hide();
 
-    var OspDetailOutId = $("#OspDetailOutId").val()
+    var OspHeaderId = $("#OspHeaderId").val()
     CotangentDataTable = $('#CotangentDataTables').DataTable({
         "language": {
             "url": "/bower_components/datatables/language/zh-TW.json"
@@ -886,7 +890,7 @@ function CotangentDataTables() {
             "url": "/Process/CotangentDataTables",
             "type": "POST",
             "datatype": "json",
-            "data": { OspDetailOutId: OspDetailOutId },
+            "data": { OspHeaderId: OspHeaderId },
         },
         select: {
             style: 'multi',
@@ -994,12 +998,12 @@ function Open(modal_dialog) {
     //確認按鍵
     modal_dialog.on('click', '#btnSaveSubinventory', function (e) {
         var Locator = $('#dialg_Locator').val();
-        var OspDetailOutId = $("#OspDetailOutId").val();
+        var OspHeaderId = $("#OspHeaderId").val();
         $.ajax({
             url: '/Process/ChangeHeaderStauts/',
             dataType: 'json',
             type: 'post',
-            data: { OspDetailOutId: OspDetailOutId, Locator: Locator },
+            data: { OspHeaderId: OspHeaderId, Locator: Locator },
             success: function (data) {
                 if (data.resultModel.Success) {
                     window.location.href = '/Process/Index';
@@ -1030,9 +1034,6 @@ function DsiplayHide() {
     $('#BtnApprove').show()
     $('#BtnCheckProductionBatchNo').hide()
     $('#ProductForm').hide();
-    InvestDataTables.column(10).visible(false);
-    ProductionTables.column(8).visible(false);
-    CotangentDataTable.column(8).visible(false);
 }
 
 function DsiplayShow() {
@@ -1046,10 +1047,7 @@ function DisplayInvestEnable(boolean) {
     $('#Invest_Barcode').attr('disabled', boolean);
     $('#Invest_Remnant').attr('disabled', boolean);
     $('#BtnProcessSave').attr('disabled', boolean);
-    InvestDataTables.column(10).visible(true);
-    ProductionTables.column(8).visible(true);
-    CotangentDataTable.column(8).visible(true);
-
+    $('#BtnRePrint').attr('disabled', boolean);
 
 }
 
@@ -1065,6 +1063,8 @@ function DisplayProductionEnable(boolean) {
     $('#BtnCotangentSave').attr('disabled', boolean);
     $('#Cotangent_Barcode').attr('disabled', boolean);
     $('#BtnCalculate').attr('disabled', boolean);
+    $('#BtnLabel').attr('disabled', boolean);
+    $('#BtnPurchase').attr('disabled', boolean);
 }
 
 
@@ -1098,7 +1098,7 @@ function BtnRecordEdit() {
         var BatchNo = $('#InputBatchNo').val();
         var OspHeaderId = $('#OspHeaderId').val();
         $.ajax({
-            url: '/Process/CheckBatchNo',
+            url: '/Process/FinisheEdit',
             datatype: 'json',
             type: "POST",
             data: { BatchNo: BatchNo, OspHeaderId: OspHeaderId },
@@ -1117,12 +1117,12 @@ function BtnRecordEdit() {
     });
 
     $('#BtnApprove').click(function () {
-        var OspDetailOutId = $("#OspDetailOutId").val();
+        var OspHeaderId = $("#OspHeaderId").val();
         $.ajax({
             url: '/Process/ApproveHeaderStauts/',
             type: 'POST',
             datatype: 'json',
-            data: { OspDetailOutId: OspDetailOutId },
+            data: { OspHeaderId: OspHeaderId },
             success: function (data) {
                 if (data.resultModel.Success) {
                     window.location.href = '/Process/Index';
@@ -1150,15 +1150,21 @@ function clear() {
 
 //完工紀錄使用
 function ChangeStaus() {
-    var OspDetailOutId = $("#OspDetailOutId").val();
+    var OspHeaderId = $("#OspHeaderId").val();
+    var Locator = 0;
     $.ajax({
         url: '/Process/ChangeHeaderStauts/',
         dataType: 'json',
         type: 'post',
-        data: { OspDetailOutId: OspDetailOutId, Locator:0 },
-        success: function (e) {
-            DisplayInvestEnable(false);
-            DisplayProductionEnable(false);
+        data: { OspHeaderId: OspHeaderId, Locator: Locator },
+        success: function (data) {
+            if (data.resultModel.Success) {
+                DisplayInvestEnable(false);
+                DisplayProductionEnable(false);
+            } else {
+                swal.fire(data.resultModel.Msg)
+            }
+         
         }
     });
 }

@@ -243,7 +243,8 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                         ctrheaderT.CreatedUserName = org[i].CreatedBy.ToString();
                         ctrheaderT.CreationDate = org[i].CreationDate;
                         ctrHeaderTRepositiory.Create(ctrheaderT, true);
-                    }else if(ContainerNo.ContainerNo != org[i].ContainerNo)
+                    }
+                    else if (ContainerNo.ContainerNo != org[i].ContainerNo)
                     {
                         ctrheaderT.HeaderId = org[i].HeaderId;
                         ctrheaderT.OrgId = org[i].OrgId;
@@ -260,7 +261,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                         ctrheaderT.CreationDate = org[i].CreationDate;
                         ctrHeaderTRepositiory.Create(ctrheaderT, true);
                     }
-                 
+
 
                     ctrdetailT.CtrHeaderId = ctrheaderT.CtrHeaderId;
                     ctrdetailT.ProcessCode = org[i].ProcessCode;
@@ -1035,43 +1036,39 @@ WHERE p.ITEM_CATEGORY = N'捲筒' and p.CTR_PICKED_ID  = @CTR_PICKED_ID");
             {
                 try
                 {
-                    using (var db = new MesContext())
+                    if (File != null || File.Count != 0)
                     {
-                        if (File != null || File.Count != 0)
+                        foreach (string i in File)
                         {
-                            foreach (string i in File)
-                            {
-                                HttpPostedFileBase hpf = File[i] as HttpPostedFileBase;
-                                SaveCtrFileInfoT(VaryQualityLevel(hpf), hpf, id, LastUpdateBy);
-                            }
+                            HttpPostedFileBase hpf = File[i] as HttpPostedFileBase;
+                            SaveCtrFileInfoT(VaryQualityLevel(hpf), hpf, id, LastUpdateBy);
                         }
-                        var ctrPickT = ctrPickedTRepositiory.Get(x => x.CtrPickedId == id).SingleOrDefault();
-                        if (Reason != "請選擇")
-                        {
-                            var reason = db.StockReasonTs.Where(x => x.ReasonCode == Reason).SingleOrDefault();
-                            ctrPickT.ReasonDesc = reason.ReasonDesc;
-                            ctrPickT.ReasonCode = reason.ReasonCode;
-                        }
-                        if (Locator != "*")
-                        {
-                            var LocatorId = Int32.Parse(Locator);
-                            var Id = db.LocatorTs.Where(x => x.LocatorId == LocatorId).SingleOrDefault();
-                            ctrPickT.LocatorId = Id.LocatorId;
-                            ctrPickT.LocatorCode = Id.LocatorSegments;
-                            var ctrdetail = ctrDetailTRepositiory.Get(x => x.CtrDetailId == ctrPickT.CtrDetailId).SingleOrDefault();
-                            ctrdetail.LocatorId = Id.LocatorId;
-                            ctrdetail.LocatorCode = Id.LocatorSegments;
-                            ctrDetailTRepositiory.Update(ctrdetail, true);
-                        }
-                        ctrPickT.Note = Remark;
-                        ctrPickT.LastUpdateBy = LastUpdateBy;
-                        ctrPickT.LastUpdateUserName = LastUpdateUserName;
-                        ctrPickT.LastUpdateDate = DateTime.Now;
-                        ctrPickedTRepositiory.Update(ctrPickT, true);
-                        mes.Commit();
-                        return new ResultModel(true, "");
                     }
-
+                    var ctrPickT = ctrPickedTRepositiory.Get(x => x.CtrPickedId == id).SingleOrDefault();
+                    if (Reason != "請選擇")
+                    {
+                        var reason = stkReasonTRepositiory.Get(x => x.ReasonCode == Reason).SingleOrDefault();
+                        ctrPickT.ReasonDesc = reason.ReasonDesc;
+                        ctrPickT.ReasonCode = reason.ReasonCode;
+                    }
+                    if (Locator != "*")
+                    {
+                        var LocatorId = Int32.Parse(Locator);
+                        var Id = locatorTRepositiory.Get(x => x.LocatorId == LocatorId).SingleOrDefault();
+                        ctrPickT.LocatorId = Id.LocatorId;
+                        ctrPickT.LocatorCode = Id.LocatorSegments;
+                        var ctrdetail = ctrDetailTRepositiory.Get(x => x.CtrDetailId == ctrPickT.CtrDetailId).SingleOrDefault();
+                        ctrdetail.LocatorId = Id.LocatorId;
+                        ctrdetail.LocatorCode = Id.LocatorSegments;
+                        ctrDetailTRepositiory.Update(ctrdetail, true);
+                    }
+                    ctrPickT.Note = Remark;
+                    ctrPickT.LastUpdateBy = LastUpdateBy;
+                    ctrPickT.LastUpdateUserName = LastUpdateUserName;
+                    ctrPickT.LastUpdateDate = DateTime.Now;
+                    ctrPickedTRepositiory.Update(ctrPickT, true);
+                    mes.Commit();
+                    return new ResultModel(true, "");
                 }
 
                 catch (Exception e)
@@ -1096,43 +1093,39 @@ WHERE p.ITEM_CATEGORY = N'捲筒' and p.CTR_PICKED_ID  = @CTR_PICKED_ID");
             {
                 try
                 {
-                    using (var db = new MesContext())
+                    if (File != null || File.Count != 0)
                     {
-
-                        if (File != null || File.Count != 0)
+                        foreach (string i in File)
                         {
-                            foreach (string i in File)
-                            {
-                                HttpPostedFileBase hpf = File[i] as HttpPostedFileBase;
-                                SaveCtrFileInfoT(VaryQualityLevel(hpf), hpf, id, LastUpdateBy);
-                            }
+                            HttpPostedFileBase hpf = File[i] as HttpPostedFileBase;
+                            SaveCtrFileInfoT(VaryQualityLevel(hpf), hpf, id, LastUpdateBy);
                         }
-                        var ctrPickT = ctrPickedTRepositiory.Get(x => x.CtrPickedId == id).SingleOrDefault();
-                        if (Reason != "請選擇")
-                        {
-                            var reason = db.StockReasonTs.Where(x => x.ReasonCode == Reason).SingleOrDefault();
-                            ctrPickT.ReasonDesc = reason.ReasonDesc;
-                            ctrPickT.ReasonCode = reason.ReasonCode;
-                        }
-                        if (Locator != "*")
-                        {
-                            var LocatorId = Int32.Parse(Locator);
-                            var Id = db.LocatorTs.Where(x => x.LocatorId == LocatorId).SingleOrDefault();
-                            ctrPickT.LocatorId = Id.LocatorId;
-                            ctrPickT.LocatorCode = Id.LocatorSegments;
-                            var ctrdetail = ctrDetailTRepositiory.Get(x => x.CtrDetailId == ctrPickT.CtrDetailId).SingleOrDefault();
-                            ctrdetail.LocatorId = Id.LocatorId;
-                            ctrdetail.LocatorCode = Id.LocatorSegments;
-                            ctrDetailTRepositiory.Update(ctrdetail, true);
-                        }
-                        ctrPickT.Note = Remark;
-                        ctrPickT.LastUpdateBy = LastUpdateBy;
-                        ctrPickT.LastUpdateUserName = LastUpdateUserName;
-                        ctrPickT.LastUpdateDate = DateTime.Now;
-                        ctrPickedTRepositiory.Update(ctrPickT, true);
-                        mes.Commit();
-                        return new ResultModel(true, "");
                     }
+                    var ctrPickT = ctrPickedTRepositiory.Get(x => x.CtrPickedId == id).SingleOrDefault();
+                    if (Reason != "請選擇")
+                    {
+                        var reason = stockTRepositiory.Get(x => x.ReasonCode == Reason).SingleOrDefault();
+                        ctrPickT.ReasonDesc = reason.ReasonDesc;
+                        ctrPickT.ReasonCode = reason.ReasonCode;
+                    }
+                    if (Locator != "*")
+                    {
+                        var LocatorId = Int32.Parse(Locator);
+                        var Id = locatorTRepositiory.Get(x => x.LocatorId == LocatorId).SingleOrDefault();
+                        ctrPickT.LocatorId = Id.LocatorId;
+                        ctrPickT.LocatorCode = Id.LocatorSegments;
+                        var ctrdetail = ctrDetailTRepositiory.Get(x => x.CtrDetailId == ctrPickT.CtrDetailId).SingleOrDefault();
+                        ctrdetail.LocatorId = Id.LocatorId;
+                        ctrdetail.LocatorCode = Id.LocatorSegments;
+                        ctrDetailTRepositiory.Update(ctrdetail, true);
+                    }
+                    ctrPickT.Note = Remark;
+                    ctrPickT.LastUpdateBy = LastUpdateBy;
+                    ctrPickT.LastUpdateUserName = LastUpdateUserName;
+                    ctrPickT.LastUpdateDate = DateTime.Now;
+                    ctrPickedTRepositiory.Update(ctrPickT, true);
+                    mes.Commit();
+                    return new ResultModel(true, "");
                 }
                 catch (Exception e)
                 {
@@ -1417,30 +1410,20 @@ WHERE d1.ITEM_CATEGORY = N'捲筒' and h1.CONTAINER_NO  = @CONTAINER_NO");
         /// <param name="file"></param>
         public void SaveCtrFileInfoT(byte[] filebyte, HttpPostedFileBase file, long id, string CreatedBy)
         {
-            try
-            {
-                if (filebyte != null)
-                {
-                    CTR_FILES_T cTR_FILES_T = new CTR_FILES_T();
-                    cTR_FILES_T.FileInstance = filebyte;
-                    ctrFilesTRepositiory.Create(cTR_FILES_T, true);
+            CTR_FILES_T cTR_FILES_T = new CTR_FILES_T();
+            cTR_FILES_T.FileInstance = filebyte;
+            ctrFilesTRepositiory.Create(cTR_FILES_T, true);
 
-                    CTR_FILEINFO_T cTR_FILEINFO_T = new CTR_FILEINFO_T();
-                    cTR_FILEINFO_T.CtrPickedId = id;
-                    cTR_FILEINFO_T.CtrFileId = cTR_FILES_T.CtrFileId;
-                    cTR_FILEINFO_T.FileType = file.ContentType;
-                    cTR_FILEINFO_T.FileName = file.FileName;
-                    cTR_FILEINFO_T.Size = filebyte.Length;
-                    cTR_FILEINFO_T.Seq = 1;
-                    cTR_FILEINFO_T.CreatedBy = CreatedBy;
-                    cTR_FILEINFO_T.CreationDate = DateTime.Now;
-                    ctrFileInfoTRepositiory.Create(cTR_FILEINFO_T);
-                }
-            }
-            catch (Exception e)
-            {
-                logger.Error(e.Message);
-            }
+            CTR_FILEINFO_T cTR_FILEINFO_T = new CTR_FILEINFO_T();
+            cTR_FILEINFO_T.CtrPickedId = id;
+            cTR_FILEINFO_T.CtrFileId = cTR_FILES_T.CtrFileId;
+            cTR_FILEINFO_T.FileType = file.ContentType;
+            cTR_FILEINFO_T.FileName = file.FileName;
+            cTR_FILEINFO_T.Size = filebyte.Length;
+            cTR_FILEINFO_T.Seq = 1;
+            cTR_FILEINFO_T.CreatedBy = CreatedBy;
+            cTR_FILEINFO_T.CreationDate = DateTime.Now;
+            ctrFileInfoTRepositiory.Create(cTR_FILEINFO_T);
 
         }
 
@@ -1470,38 +1453,22 @@ WHERE d1.ITEM_CATEGORY = N'捲筒' and h1.CONTAINER_NO  = @CONTAINER_NO");
         /// <returns></returns>
         public byte[] VaryQualityLevel(HttpPostedFileBase file)
         {
-            try
+            using (var thumb = Image.FromStream(file.InputStream))
             {
-                //string tempPath = Path.Combine(HttpContext.Current.Server.MapPath("~/App_Data/" + Guid.NewGuid().ToString() + "/"));
-                //if (!Directory.Exists(tempPath))
-                //{
-                //    Directory.CreateDirectory(tempPath);
-                //}
-                using (var thumb = Image.FromStream(file.InputStream))
+                var jpgInfo = GetEncoder(ImageFormat.Jpeg); /* Returns array of image encoder objects built into GDI+ */
+                using (var samllfile = new MemoryStream())
                 {
-                    var jpgInfo = GetEncoder(ImageFormat.Jpeg); /* Returns array of image encoder objects built into GDI+ */
-                    //using (var encParams = new EncoderParameters(1))
-                    //{
-                    using (var samllfile = new MemoryStream())
-                    {
-                        //    // Create an EncoderParameters object.  
-                        //    // An EncoderParameters object has an array of EncoderParameter  
-                        //    // objects. In this case, there is only one  
-                        //    // EncoderParameter object in the array.  
-                        EncoderParameters myEncoderParameters = new EncoderParameters(1);
-                        System.Drawing.Imaging.Encoder myEncoder = System.Drawing.Imaging.Encoder.Quality;
-                        myEncoderParameters.Param[0] = new EncoderParameter(myEncoder, 30L);
-                        thumb.Save(samllfile, jpgInfo, myEncoderParameters);
-                        return samllfile.ToArray();
-                    }
-                    //};
-                };
-            }
-            catch (Exception e)
-            {
-                logger.Error(e.Message);
-                return null;
-            }
+                    //    // Create an EncoderParameters object.  
+                    //    // An EncoderParameters object has an array of EncoderParameter  
+                    //    // objects. In this case, there is only one  
+                    //    // EncoderParameter object in the array.  
+                    EncoderParameters myEncoderParameters = new EncoderParameters(1);
+                    System.Drawing.Imaging.Encoder myEncoder = System.Drawing.Imaging.Encoder.Quality;
+                    myEncoderParameters.Param[0] = new EncoderParameter(myEncoder, 30L);
+                    thumb.Save(samllfile, jpgInfo, myEncoderParameters);
+                    return samllfile.ToArray();
+                }
+            };
 
         }
 
@@ -1556,13 +1523,9 @@ WHERE d1.ITEM_CATEGORY = N'捲筒' and h1.CONTAINER_NO  = @CONTAINER_NO");
         public void PickToPickHT(long CTR_HEADER_ID)
         {
 
-            try
-            {
-                using (var mesContext = new MesContext())
-                {
-                    StringBuilder query = new StringBuilder();
-                    query.Append(
-                    @"INSERT INTO [CTR_PICKED_HT]
+            StringBuilder query = new StringBuilder();
+            query.Append(
+            @"INSERT INTO [CTR_PICKED_HT]
            ([CTR_PICKED_ID],[CTR_HEADER_ID],[CTR_DETAIL_ID],[STOCK_ID],[LOCATOR_ID]
            ,[LOCATOR_CODE],[BARCODE],[INVENTORY_ITEM_ID],[SHIP_ITEM_NUMBER],[PAPER_TYPE]
 		   ,[BASIC_WEIGHT],[REAM_WEIGHT],[ROLL_REAM_WT],[SPECIFICATION],[PACKING_TYPE]
@@ -1579,15 +1542,7 @@ SELECT [CTR_PICKED_ID],[CTR_HEADER_ID],[CTR_DETAIL_ID],[STOCK_ID],[LOCATOR_ID]
            ,[CREATED_USER_NAME],[CREATION_DATE],[LAST_UPDATE_BY],[LAST_UPDATE_DATE],[LAST_UPDATE_USER_NAME]
 FROM CTR_PICKED_T p
 where p.CTR_HEADER_ID = @CTR_HEADER_ID");
-                    mesContext.Database.ExecuteSqlCommand(query.ToString(), new SqlParameter("@CTR_HEADER_ID", CTR_HEADER_ID));
-                }
-
-            }
-            catch (Exception e)
-            {
-                logger.Error(e.Message);
-            }
-
+            Context.Database.ExecuteSqlCommand(query.ToString(), new SqlParameter("@CTR_HEADER_ID", CTR_HEADER_ID));
         }
 
         /// <summary>
@@ -1596,22 +1551,11 @@ where p.CTR_HEADER_ID = @CTR_HEADER_ID");
         /// <param name="CTR_HEADER_ID"></param>
         public void PickTDelete(long CTR_HEADER_ID)
         {
-            try
-            {
-                using (var mesContext = new MesContext())
-                {
-                    StringBuilder query = new StringBuilder();
-                    query.Append(
-                    @"delete CTR_PICKED_T 
+            StringBuilder query = new StringBuilder();
+            query.Append(
+            @"delete CTR_PICKED_T 
 where CTR_HEADER_ID = @CTR_HEADER_ID");
-                    mesContext.Database.ExecuteSqlCommand(query.ToString(), new SqlParameter("@CTR_HEADER_ID", CTR_HEADER_ID));
-                }
-
-            }
-            catch (Exception e)
-            {
-                logger.Error(e.Message);
-            }
+            Context.Database.ExecuteSqlCommand(query.ToString(), new SqlParameter("@CTR_HEADER_ID", CTR_HEADER_ID));
         }
 
         /// <summary>
@@ -1668,13 +1612,9 @@ delete CTR_DETAIL_T where CTR_HEADER_ID = @CTR_HEADER_ID");
         /// <param name="CTR_HEADER_ID"></param>
         public void ConvertStock(long CTR_HEADER_ID)
         {
-            try
-            {
-                using (var mesContext = new MesContext())
-                {
-                    StringBuilder query = new StringBuilder();
-                    query.Append(
-                    @"INSERT INTO [STOCK_T]
+            StringBuilder query = new StringBuilder();
+            query.Append(
+            @"INSERT INTO [STOCK_T]
 ([ORGANIZATION_ID],[ORGANIZATION_CODE] ,[SUBINVENTORY_CODE] ,[LOCATOR_ID],[LOCATOR_SEGMENTS]
 ,[INVENTORY_ITEM_ID] ,[ITEM_NUMBER] ,[ITEM_DESCRIPTION] ,[ITEM_CATEGORY] ,[PAPER_TYPE]
 ,[BASIC_WEIGHT],[REAM_WEIGHT],[ROLL_REAM_WT],[SPECIFICATION] ,[PACKING_TYPE]
@@ -1701,13 +1641,7 @@ JOIN STOCK_T S ON P.BARCODE = S.BARCODE
 JOIN CTR_DETAIL_T D on D.CTR_DETAIL_ID = P.CTR_DETAIL_ID
 JOIN CTR_HEADER_T H on H.CTR_HEADER_ID = P.CTR_HEADER_ID
 WHERE P.CTR_HEADER_ID = @CTR_HEADER_ID");
-                    mesContext.Database.ExecuteSqlCommand(query.ToString(), new SqlParameter("@CTR_HEADER_ID", CTR_HEADER_ID));
-                }
-            }
-            catch (Exception e)
-            {
-                logger.Error(e.Message);
-            }
+            Context.Database.ExecuteSqlCommand(query.ToString(), new SqlParameter("@CTR_HEADER_ID", CTR_HEADER_ID));
         }
 
 
@@ -1717,13 +1651,9 @@ WHERE P.CTR_HEADER_ID = @CTR_HEADER_ID");
         /// <param name="CTR_HEADER_ID"></param>
         public void StockRecord(long CTR_HEADER_ID)
         {
-            try
-            {
-                using (var mesContext = new MesContext())
-                {
-                    StringBuilder query = new StringBuilder();
-                    query.Append(
-                    @"INSERT INTO [dbo].[STK_TXN_T]
+            StringBuilder query = new StringBuilder();
+            query.Append(
+            @"INSERT INTO [dbo].[STK_TXN_T]
            ([STOCK_ID],[ORGANIZATION_ID] ,[ORGANIZATION_CODE],[SUBINVENTORY_CODE]
            ,[LOCATOR_ID],[DST_ORGANIZATION_ID]  ,[DST_ORGANIZATION_CODE],[DST_SUBINVENTORY_CODE] ,[DST_LOCATOR_ID]
            ,[INVENTORY_ITEM_ID],[ITEM_NUMBER],[ITEM_DESCRIPTION] ,[ITEM_CATEGORY] ,[LOT_NUMBER]
@@ -1743,13 +1673,7 @@ JOIN CTR_PICKED_T P ON P.STOCK_ID = T.STOCK_ID
 JOIN CTR_HEADER_T H on H.CTR_HEADER_ID = P.CTR_HEADER_ID
 JOIN CTR_DETAIL_T D on D.CTR_HEADER_ID = H.CTR_HEADER_ID
 WHERE D.CTR_HEADER_ID = @CTR_HEADER_ID");
-                    mesContext.Database.ExecuteSqlCommand(query.ToString(), new SqlParameter("@CTR_HEADER_ID", CTR_HEADER_ID));
-                }
-            }
-            catch (Exception e)
-            {
-                logger.Error(e.Message);
-            }
+            Context.Database.ExecuteSqlCommand(query.ToString(), new SqlParameter("@CTR_HEADER_ID", CTR_HEADER_ID));
         }
 
         /// <summary>
@@ -1976,7 +1900,7 @@ AND LOCATOR_TYPE != '1'
                     {
                         sublist.AddRange(mesContext.Database.SqlQuery<SelectListItem>(commandText).ToList());
                     }
-                
+
                     return sublist;
                 }
             }
@@ -1987,7 +1911,7 @@ AND LOCATOR_TYPE != '1'
             }
         }
 
-        public List<SelectListItem> GetLocator(string ORGANIZATION_ID,string PickId)
+        public List<SelectListItem> GetLocator(string ORGANIZATION_ID, string PickId)
         {
             try
             {
@@ -2002,7 +1926,7 @@ FROM [CTR_PICKED_T] pt
 join CTR_HEADER_T h on h.CTR_HEADER_ID = pt.CTR_HEADER_ID
 where pt.CTR_PICKED_ID = @CTR_PICKED_ID
 ");
-                 var SUBINVENTORY_CODE = mesContext.Database.SqlQuery<string>(quId.ToString(), new SqlParameter("@CTR_PICKED_ID", PickId)).SingleOrDefault();
+                    var SUBINVENTORY_CODE = mesContext.Database.SqlQuery<string>(quId.ToString(), new SqlParameter("@CTR_PICKED_ID", PickId)).SingleOrDefault();
 
 
                     List<SelectListItem> Locatorlist = new List<SelectListItem>();

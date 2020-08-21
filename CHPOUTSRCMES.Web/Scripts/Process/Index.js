@@ -32,14 +32,14 @@ $(document).ready(function () {
             return false;
         }
         if (BatchType == "OSP") {
-            window.location.href = '/Process/Schedule/' + data.OspDetailInId;
+            window.location.href = '/Process/Schedule/' + data.OspHeaderId;
         }
         if (BatchType == "TMP") {
-            window.location.href = '/Process/Flat/' + data.OspDetailInId;
+            window.location.href = '/Process/Flat/' + data.OspHeaderId;
         }
 
         if (BatchType == 3) {
-            window.location.href = '/Process/PaperRoll/' + data.OspDetailInId;
+            window.location.href = '/Process/PaperRoll/' + data.OspHeaderId;
         }
 
 
@@ -49,11 +49,10 @@ $(document).ready(function () {
     ProcessDataTables.on('click', '#btnEdit', function (e) {
 
         var data = ProcessDataTables.row($(this).parents('tr')).data();
-        var OspDetailInId = data.OspDetailInId;
         if (data == null) {
             return false;
         }
-        window.location.href = '/Process/Edit/' + OspDetailInId;
+        window.location.href = '/Process/Edit/' + data.OspHeaderId;
     });
 
 

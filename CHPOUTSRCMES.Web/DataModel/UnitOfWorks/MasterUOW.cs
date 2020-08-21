@@ -2386,5 +2386,52 @@ on s.ORGANIZATION_ID = l.ORGANIZATION_ID and s.SUBINVENTORY_CODE = l.SUBINVENTOR
 
             return Subinventory;
         }
+
+        public class PickStatus : IDetail
+        {
+            /// <summary>
+            /// 已刪除
+            /// </summary>
+            public const string Deleted = "DS0";
+            /// <summary>
+            /// 已揀
+            /// </summary>
+            public const string Picked = "DS1";
+            /// <summary>
+            /// 已出貨
+            /// </summary>
+            public const string Shipped = "DS2";
+
+
+            public string GetDesc(string statusCode)
+            {
+                switch (statusCode)
+                {
+                    case Deleted:
+                        return "已刪除";
+                    case Picked:
+                        return "已揀";
+                    case Shipped:
+                        return "已出貨";
+                    default:
+                        return "";
+                }
+            }
+
+            public string ToStockStatus(string statusCode)
+            {
+                switch (statusCode)
+                {
+                    case Deleted:
+                        return StockStatusCode.InStock;
+                    case Picked:
+                        return StockStatusCode.DeliveryPicked;
+                    case Shipped:
+                        return StockStatusCode.Shipped;
+                    default:
+                        return "";
+                }
+            }
+        }
     }
 }

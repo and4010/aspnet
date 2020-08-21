@@ -83,13 +83,13 @@ namespace CHPOUTSRCMES.Web.ViewModels.Process
         /// <summary>
         /// 投入條碼
         /// </summary>
-        /// <param name="OspDetailInId"></param>
+        /// <param name="OspHeaderId"></param>
         /// <returns></returns>
-        public List<Invest> GetPicketIn(long OspDetailInId)
+        public List<Invest> GetPicketIn(long OspHeaderId)
         {
             using (var context = new MesContext())
             {
-                return new ProcessUOW(context).GetPicketIn(OspDetailInId);
+                return new ProcessUOW(context).GetPicketIn(OspHeaderId);
             }
         }
 
@@ -187,26 +187,26 @@ namespace CHPOUTSRCMES.Web.ViewModels.Process
         /// <summary>
         /// 取得產出檢貨pick
         /// </summary>
-        /// <param name="OspDetailOutId"></param>
+        /// <param name="OspHeaderId"></param>
         /// <returns></returns>
-        public List<Production> GetPicketOut(long OspDetailOutId)
+        public List<Production> GetPicketOut(long OspHeaderId)
         {
             using (var context = new MesContext())
             {
-                return new ProcessUOW(context).GetPicketOut(OspDetailOutId);
+                return new ProcessUOW(context).GetPicketOut(OspHeaderId);
             }
         }
 
         /// <summary>
         /// 取得餘切TABLE
         /// </summary>
-        /// <param name="OspDetailOutId"></param>
+        /// <param name="OspHeaderId"></param>
         /// <returns></returns>
-        public List<Cotangent> GetCotangents(long OspDetailOutId)
+        public List<Cotangent> GetCotangents(long OspHeaderId)
         {
             using (var context = new MesContext())
             {
-                return new ProcessUOW(context).GetCotangents(OspDetailOutId);
+                return new ProcessUOW(context).GetCotangents(OspHeaderId);
             }
         }
 
@@ -283,16 +283,35 @@ namespace CHPOUTSRCMES.Web.ViewModels.Process
         /// </summary>
         /// <param name="OspHeaderId"></param>
         /// <returns></returns>
-        public YieldVariance GetRate(long OspDetailInId)
+        public YieldVariance GetRate(long OspHeaderId)
         {
             using var context = new MesContext();
-            return new ProcessUOW(context).GetRate(OspDetailInId);
+            return new ProcessUOW(context).GetRate(OspHeaderId);
         }
 
-        public ResultModel ChangeHeaderStauts(long OspDetailOutId, long Locator, string UserId, string UserName)
+        /// <summary>
+        /// 存檔入庫&&工單號狀態更改
+        /// </summary>
+        /// <param name="OspDetailOutId"></param>
+        /// <param name="Locator"></param>
+        /// <param name="UserId"></param>
+        /// <param name="UserName"></param>
+        /// <returns></returns>
+        public ResultModel ChangeHeaderStauts(long OspHeaderId, long Locator, string UserId, string UserName)
         {
             using var context = new MesContext();
-            return new ProcessUOW(context).ChangeHeaderStauts(OspDetailOutId, Locator, UserId, UserName);
+            return new ProcessUOW(context).ChangeHeaderStauts(OspHeaderId, Locator, UserId, UserName);
+        }
+        /// <summary>
+        /// 完工紀錄編輯
+        /// </summary>
+        /// <param name="BatchNo"></param>
+        /// <param name="OspHeaderId"></param>
+        /// <returns></returns>
+        public ResultModel FinisheEdit(string BatchNo, long OspHeaderId)
+        {
+            using var context = new MesContext();
+            return new ProcessUOW(context).FinisheEdit(BatchNo, OspHeaderId);
         }
 
         /// <summary>
