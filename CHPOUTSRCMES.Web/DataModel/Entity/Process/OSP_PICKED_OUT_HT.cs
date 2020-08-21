@@ -163,11 +163,12 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Process
         [Column("COTANGENT", TypeName = "char")]
         public string Cotangent { set; get; }
 
+
         /// <summary>
         /// 餘切ID
         /// </summary>
-        [Column("COTANGENT_ID")]
-        public long CotangentId { set; get; }
+        [Column("OSP_COTANGENT_ID")]
+        public long? OspCotangentId { set; get; }
 
         /// <summary>
         /// 建立人員

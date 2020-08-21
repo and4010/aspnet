@@ -86,28 +86,28 @@ namespace CHPOUTSRCMES.Web.Controllers
         }
 
         [HttpPost]
-        public ActionResult ChangeHeaderStauts(long OspDetailOutId, long Locator)
+        public ActionResult ChangeHeaderStauts(long OspHeaderId, long Locator)
         {
             ProcessViewModel viewModel = new ProcessViewModel();
             //取得使用者ID
             var Userid = this.User.Identity.GetUserId();
             //取得使用者帳號
             var name = this.User.Identity.GetUserName();
-            var resultModel = viewModel.ChangeHeaderStauts(OspDetailOutId, Locator, Userid, name);
+            var resultModel = viewModel.ChangeHeaderStauts(OspHeaderId, Locator, Userid, name);
             
             return Json(new { resultModel }, JsonRequestBehavior.AllowGet);
         }
 
         [Authorize(Roles = "系統管理員, 華紙使用者")]
         [HttpPost]
-        public ActionResult ApproveHeaderStauts(long OspDetailOutId)
+        public ActionResult ApproveHeaderStauts(long OspHeaderId)
         {
             ProcessViewModel viewModel = new ProcessViewModel();
             //取得使用者ID
             var Userid = this.User.Identity.GetUserId();
             //取得使用者帳號
             var name = this.User.Identity.GetUserName();
-            var resultModel = viewModel.ChangeHeaderStauts(OspDetailOutId, 0, Userid, name);
+            var resultModel = viewModel.ChangeHeaderStauts(OspHeaderId, 0, Userid, name);
 
             return Json(new { resultModel }, JsonRequestBehavior.AllowGet);
         }
@@ -145,10 +145,10 @@ namespace CHPOUTSRCMES.Web.Controllers
         }
 
         [HttpPost]
-        public JsonResult InvestLoadTable(DataTableAjaxPostViewModel data, long OspDetailInId)
+        public JsonResult InvestLoadTable(DataTableAjaxPostViewModel data, long OspHeaderId)
         {
             ProcessViewModel viewModel = new ProcessViewModel();
-            List<Invest> model = viewModel.GetPicketIn(OspDetailInId);
+            List<Invest> model = viewModel.GetPicketIn(OspHeaderId);
             model = ProcessViewModel.InvestModelDTOrder.Search(data, model);
             model = ProcessViewModel.InvestModelDTOrder.Order(data.Order, model).ToList();
             var model1 = model.Skip(data.Start).Take(data.Length).ToList();
@@ -192,10 +192,10 @@ namespace CHPOUTSRCMES.Web.Controllers
         }
 
         [HttpPost]
-        public JsonResult ProductionLoadDataTables(DataTableAjaxPostViewModel data, long OspDetailOutId)
+        public JsonResult ProductionLoadDataTables(DataTableAjaxPostViewModel data, long OspHeaderId)
         {
             ProcessViewModel viewModel = new ProcessViewModel();
-            List<Production> model = viewModel.GetPicketOut(OspDetailOutId);
+            List<Production> model = viewModel.GetPicketOut(OspHeaderId);
             model = ProcessViewModel.ProductionModelDTOrder.Search(data, model);
             model = ProcessViewModel.ProductionModelDTOrder.Order(data.Order, model).ToList();
             var model1 = model.Skip(data.Start).Take(data.Length).ToList();
@@ -249,10 +249,10 @@ namespace CHPOUTSRCMES.Web.Controllers
 
 
         [HttpPost]
-        public JsonResult CotangentDataTables(DataTableAjaxPostViewModel data, long OspDetailOutId)
+        public JsonResult CotangentDataTables(DataTableAjaxPostViewModel data, long OspHeaderId)
         {
             ProcessViewModel viewModel = new ProcessViewModel();
-            List<Cotangent> model = viewModel.GetCotangents(OspDetailOutId);
+            List<Cotangent> model = viewModel.GetCotangents(OspHeaderId);
             model = ProcessViewModel.CotangentModelDTOrder.Search(data, model);
             model = ProcessViewModel.CotangentModelDTOrder.Order(data.Order, model).ToList();
             var model1 = model.Skip(data.Start).Take(data.Length).ToList();
@@ -307,6 +307,20 @@ namespace CHPOUTSRCMES.Web.Controllers
             return Json(new { resultDataModel }, JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>
+        /// 完工紀錄編輯
+        /// </summary>
+        /// <param name="BatchNo"></param>
+        /// <param name="OspHeaderId"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public JsonResult FinisheEdit(string BatchNo, long OspHeaderId)
+        {
+            ProcessViewModel viewModel = new ProcessViewModel();
+            var resultModel = viewModel.FinisheEdit(BatchNo, OspHeaderId);
+
+            return Json(new { resultModel }, JsonRequestBehavior.AllowGet);
+        }
 
         [HttpPost]
         public JsonResult PaperRollProductionDetail(string PaperRoll_Basic_Weight, string PaperRoll_Specification, string PaperRoll_Lot_Number, string Product_Item, string Process_Detail_Id)
