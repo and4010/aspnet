@@ -138,7 +138,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Purchase
         /// </summary>
         /// 
         [StringLength(20)]
-        [Required]
         [Column("SUBINVENTORY")]
         public string Subinventory { set; get; }
 
@@ -208,7 +207,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Purchase
         /// </summary>
         /// 
         [StringLength(30)]
-        [Required]
         [Column("REAM_WEIGHT")]
         public string ReamWeight { set; get; }
 
@@ -250,7 +248,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Purchase
         /// </summary>
         /// 
         [StringLength(30)]
-        [Required]
         [Column("PACKING_TYPE")]
         public string PackingType { set; get; }
 
@@ -258,9 +255,8 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Purchase
         /// 出貨數量(MT)
         /// </summary>
         /// 
-        [Required]
         [Column("SHIP_MT_QTY")]
-        public decimal ShipMtQty { set; get; }
+        public decimal? ShipMtQty { set; get; }
 
         /// <summary>
         /// 交易數量
@@ -310,26 +306,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Purchase
         [StringLength(3)]
         [Column("SECONDARY_UOM")]
         public string SecondaryUom { set; get; }
-
-
-        /// <summary>
-        /// 批號
-        /// </summary>
-        /// 
-        [StringLength(80)]
-        [Required(AllowEmptyStrings = true)]
-        [Column("LOT_NUMBER")]
-        public string LotNumber { set; get; }
-
-        /// <summary>
-        /// 理論重(批號數量)
-        /// </summary>
-        /// 
-        [StringLength(30)]
-        [Required(AllowEmptyStrings = true)]
-        [Column("THEORY_WEIGHT")]
-        public string TheoryWeight { set; get; }
-
 
         /// <summary>
         /// 預留欄位

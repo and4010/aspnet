@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CHPOUTSRCMES.TASK.Models.Views
 {
-    public class XXIFV050_ITEMS_FTY_V
+    public class XXCINV_MES_ITEMS_FTY_V
     {
         public string ORGANIZATION_CODE { set; get; }
         public string CATEGORY_CODE_INV { set; get; }

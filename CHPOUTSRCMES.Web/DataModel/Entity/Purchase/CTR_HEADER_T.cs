@@ -100,7 +100,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Purchase
         /// </summary>
         /// 
         [StringLength(20)]
-        [Required]
         [Column("SUBINVENTORY")]
         public string Subinventory { set; get; }
 

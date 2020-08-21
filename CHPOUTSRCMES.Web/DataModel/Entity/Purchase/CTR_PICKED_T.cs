@@ -109,7 +109,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Purchase
         /// </summary>
         /// 
         [StringLength(30)]
-        [Required]
         [Column("REAM_WEIGHT")]
         public string ReamWeight { set; get; }
 
@@ -135,7 +134,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Purchase
         /// </summary>
         /// 
         [StringLength(30)]
-        [Required]
         [Column("PACKING_TYPE")]
         public string PackingType { set; get; }
 
@@ -143,9 +141,8 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Purchase
         /// 出貨數量(MT)
         /// </summary>
         /// 
-        [Required]
         [Column("SHIP_MT_QTY")]
-        public decimal ShipMtQty { set; get; }
+        public decimal? ShipMtQty { set; get; }
 
         /// <summary>
         /// 交易數量

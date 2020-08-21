@@ -151,7 +151,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Information
         /// </summary>
         /// 
         [StringLength(30)]
-        [Required]
         [Column("ITEM_TYPE")]
         public string ItemType { set; get; }
 

@@ -70,7 +70,7 @@ namespace CHPOUTSRCMES.TASK.Models.Entity
                 try
                 {
                     cmd.Transaction = transaction;
-
+                    cmd.CommandTimeout = 600;
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.CommandText = spName;
                     var reader = cmd.ExecuteReader();

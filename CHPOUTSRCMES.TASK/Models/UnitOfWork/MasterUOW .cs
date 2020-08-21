@@ -45,7 +45,7 @@ namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
 
         private ItemRepository itemRepository = null;
         public ItemRepository ItemRepository => itemRepository ?? 
-            (itemRepository = new ItemRepository(Context, $"{SchemaName}XXIFV050_ITEMS_FTY_V"));
+            (itemRepository = new ItemRepository(Context, $"{SchemaName}XXCINV_MES_ITEMS_FTY_V"));
 
         private IGenericRepository<XXCOM_YSZMPCKQ_V> yszmpckqRepository = null;
         public IGenericRepository<XXCOM_YSZMPCKQ_V> YszmpckqRepository => yszmpckqRepository ?? 
@@ -77,13 +77,13 @@ namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
             return list;
         }
 
-        public async Task<IEnumerable<XXIFV050_ITEMS_FTY_V>> GetItemRangeAsync(long offset, long count)
+        public async Task<IEnumerable<XXCINV_MES_ITEMS_FTY_V>> GetItemRangeAsync(long offset, long count)
         {
             var list = await ItemRepository.GetRangeAsync(offset, count);
             return list;
         }
 
-        public async Task<IEnumerable<XXIFV050_ITEMS_FTY_V>> GetItemListAsync()
+        public async Task<IEnumerable<XXCINV_MES_ITEMS_FTY_V>> GetItemListAsync()
         {
             var list = await ItemRepository.GetAllAsync();
             return list;
@@ -99,7 +99,7 @@ namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
             return await ItemRepository.GetLastUpdateDateAsync();
         }
 
-        public async Task<IEnumerable<XXIFV050_ITEMS_FTY_V>> GetAllItemByLastUpdateDate(DateTime date)
+        public async Task<IEnumerable<XXCINV_MES_ITEMS_FTY_V>> GetAllItemByLastUpdateDate(DateTime date)
         {
             return await ItemRepository.GetAllByLastUpdateDate(date);
         }
@@ -152,7 +152,7 @@ $"SELECT ROUND({SchemaNameOfUomConversion}UOM_CONVERSION(:ITEM_ID, :FROM_QTY, :F
             return null;
         }
 
-        public XXIFV050_ITEMS_FTY_V GetItemAsync(string itemNo)
+        public XXCINV_MES_ITEMS_FTY_V GetItemAsync(string itemNo)
         {
             try
             {
@@ -191,10 +191,10 @@ $@"SELECT INVENTORY_ITEM_ID
 ,CREATED_BY
 ,CREATION_DATE
 ,LAST_UPDATED_BY
-,LAST_UPDATE_DATE FROM {SchemaName}XXIFV050_ITEMS_FTY_V WHERE ITEM_NUMBER = :ITEM_NO";
+,LAST_UPDATE_DATE FROM {SchemaName}XXCINV_MES_ITEMS_FTY_V WHERE ITEM_NUMBER = :ITEM_NO";
 
 
-                 return Context.Query<XXIFV050_ITEMS_FTY_V>(cmd, itemQueryParams).SingleOrDefault();
+                 return Context.Query<XXCINV_MES_ITEMS_FTY_V>(cmd, itemQueryParams).SingleOrDefault();
 
             }
             catch (Exception ex)

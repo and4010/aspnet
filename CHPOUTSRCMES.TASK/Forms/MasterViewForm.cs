@@ -28,7 +28,7 @@ namespace CHPOUTSRCMES.TASK.Forms
         List<XXCINV_TRANSACTION_TYPE_V> transactionTypeList { set; get; }
         List<XXCPO_MACHINE_PAPER_TYPE_V> machinePaperTypeList { set; get; }
         List<XXCOM_YSZMPCKQ_V> yszmpckqList { set; get; }
-        List<XXIFV050_ITEMS_FTY_V> itemList { set; get; }
+        List<XXCINV_MES_ITEMS_FTY_V> itemList { set; get; }
         List<XXCINV_OSP_RELATED_ITEM_V> ospRelatedItemList { set; get; }
 
 

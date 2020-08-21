@@ -111,8 +111,6 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                 ctrorg.PrimaryUom = "KG";
                 ctrorg.SecondaryQuantity = 3000;
                 ctrorg.SecondaryUom = "RE";
-                ctrorg.LotNumber = "";
-                ctrorg.TheoryWeight = "";
                 ctrorg.CreatedBy = "1";
                 ctrorg.CreationDate = DateTime.Now;
                 ctrorg.LastUpdateBy = "1";
@@ -153,8 +151,6 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                 ctrorg.PrimaryUom = "KG";
                 ctrorg.SecondaryQuantity = 0;
                 ctrorg.SecondaryUom = "";
-                ctrorg.LotNumber = "1400110000776875";
-                ctrorg.TheoryWeight = "616";
                 ctrorg.CreatedBy = "1";
                 ctrorg.CreationDate = DateTime.Now;
                 ctrorg.LastUpdateBy = "1";
@@ -195,8 +191,6 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                 ctrorg.PrimaryUom = "KG";
                 ctrorg.SecondaryQuantity = 0;
                 ctrorg.SecondaryUom = "";
-                ctrorg.LotNumber = "1400120000776904";
-                ctrorg.TheoryWeight = "440";
                 ctrorg.CreatedBy = "1";
                 ctrorg.CreationDate = DateTime.Now;
                 ctrorg.LastUpdateBy = "1";
@@ -289,9 +283,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                     ctrdetailT.PrimaryUom = org[i].PrimaryUom;
                     ctrdetailT.SecondaryQuantity = org[i].SecondaryQuantity;
                     ctrdetailT.SecondaryUom = org[i].SecondaryUom;
-                    ctrdetailT.LotNumber = org[i].LotNumber;
-                    ctrdetailT.TheoryWeight = org[i].TheoryWeight;
-                    if (org[i].LotNumber == "")
+                    if (org[i].SecondaryQuantity > 0)
                     {
                         ctrdetailT.ItemCategory = "平張";
                     }
@@ -359,7 +351,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                         cTR_PICKED_T.RollReamWt = ctrDetail[i].d.RollReamWt;
                         cTR_PICKED_T.Specification = PaperRollModel[i].Specification;
                         cTR_PICKED_T.PackingType = ctrDetail[i].d.PackingType;
-                        cTR_PICKED_T.ShipMtQty = ctrDetail[i].d.ShipMtQty;
+                        cTR_PICKED_T.ShipMtQty = ctrDetail[i].d.ShipMtQty ?? 0;
                         cTR_PICKED_T.TransactionQuantity = ctrDetail[i].d.TransactionQuantity;
                         cTR_PICKED_T.TransactionUom = ctrDetail[i].d.TransactionUom;
                         cTR_PICKED_T.PrimaryQuantity = PaperRollModel[i].PrimanyQuantity;
@@ -367,7 +359,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                         cTR_PICKED_T.SecondaryQuantity = ctrDetail[i].d.SecondaryQuantity;
                         cTR_PICKED_T.SecondaryUom = ctrDetail[i].d.SecondaryUom;
                         cTR_PICKED_T.LotNumber = PaperRollModel[i].LotNumber;
-                        cTR_PICKED_T.TheoryWeight = ctrDetail[i].d.TheoryWeight;
+                        cTR_PICKED_T.TheoryWeight = PaperRollModel[i].TheoreticalWeight;
                         cTR_PICKED_T.ItemCategory = ctrDetail[i].d.ItemCategory;
                         cTR_PICKED_T.Status = "待入庫";
                         cTR_PICKED_T.ReasonCode = "";
@@ -463,8 +455,8 @@ and d.ITEM_CATEGORY = N'捲筒'");
                         cTR_PICKED_T.PrimaryUom = ctrDetail[i].PrimaryUom;
                         cTR_PICKED_T.SecondaryQuantity = ctrDetail[i].SecondaryQuantity;
                         cTR_PICKED_T.SecondaryUom = ctrDetail[i].SecondaryUom;
-                        cTR_PICKED_T.LotNumber = ctrDetail[i].LotNumber;
-                        cTR_PICKED_T.TheoryWeight = ctrDetail[i].TheoryWeight;
+                        cTR_PICKED_T.LotNumber = "";
+                        cTR_PICKED_T.TheoryWeight = "";
                         cTR_PICKED_T.ItemCategory = ctrDetail[i].ItemCategory;
                         cTR_PICKED_T.Status = "待入庫";
                         cTR_PICKED_T.ReasonCode = "";
