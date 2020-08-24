@@ -580,8 +580,9 @@
         },
         select: function (event, ui) {
             if (ui.item) {
-                //$('#txtInputTransactionQty').focus();
-                GetStockItemData(ui.item.value);
+                $('#AutoCompleteItemNumber').val(ui.item.value);
+                $('#txtInputTransactionQty').focus();
+                //GetStockItemData(ui.item.value);
             }
         }
     });
@@ -1197,7 +1198,7 @@
                     $('#UNIT').html("");
                     $('#ROLL_INPUT_AREA').hide();
                     $('#REAM_INPUT_AREA').hide();
-                    swal.fire(data.Msg);
+                    //swal.fire(data.Msg);
                 }
 
 
@@ -1283,8 +1284,7 @@
                     url: "/StockTransaction/InBoundSaveTransfer",
                     type: "post",
                     data: {
-                        TransactionType: TransactionType,
-                        Number: Number
+                        transferHeaderId: getTransferHeaderId()
                     },
                     success: function (data) {
                         if (data.status) {

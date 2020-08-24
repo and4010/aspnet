@@ -113,7 +113,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Delivery
         [StringLength(10)]
         [Required]
         [Column("ITEM_CATEGORY")]
-        public string Item_Category { set; get; }
+        public string ItemCategory { set; get; }
 
         /// <summary>
         /// 紙別

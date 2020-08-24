@@ -236,7 +236,7 @@ namespace CHPOUTSRCMES.Web.Models.Stock
         public ResultDataModel<ITEMS_T> GetItemNumberData(TransferUOW uow, string itemNumber)
         {
             var item = uow.GetItemNumber(itemNumber);
-            if (item == null) new ResultDataModel<ITEMS_T>(false, "找不到料號資料", null);
+            if (item == null) return new ResultDataModel<ITEMS_T>(false, "找不到料號資料", null);
             return new ResultDataModel<ITEMS_T>(true, "取得料號資料成功", item);
 
         }
@@ -1275,6 +1275,11 @@ namespace CHPOUTSRCMES.Web.Models.Stock
             }
 
             return new ResultModel(true, "出庫存檔成功");
+        }
+
+        public ResultModel InBoundSaveTransfer(TransferUOW uow, long transferHeaderId, string userId, string userName)
+        {
+           return uow.InBoundSaveTransfer(transferHeaderId, userId, userName);
         }
 
         //儲位異動入庫存檔

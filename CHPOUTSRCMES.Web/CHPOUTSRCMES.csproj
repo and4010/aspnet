@@ -394,7 +394,6 @@
     <Compile Include="Models\Stock\StockObsoleteDT.cs" />
     <Compile Include="Models\Stock\StockTransferBarcodeDT.cs" />
     <Compile Include="Models\Stock\StockTransferDT.cs" />
-    <Compile Include="Models\Stock\STOCK_T.cs" />
     <Compile Include="Models\Stock\Top.cs" />
     <Compile Include="Models\Information\YszmpckqDT.cs" />
     <Compile Include="Models\ResultDataModel.cs" />

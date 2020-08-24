@@ -653,10 +653,20 @@ namespace CHPOUTSRCMES.Web.Controllers
         }
 
         [HttpPost, ActionName("InBoundSaveTransfer")]
-        public JsonResult InBoundSaveTransfer(string TransactionType, string Number)
+        public JsonResult InBoundSaveTransfer(long transferHeaderId)
         {
-            ResultModel result = stockTransferData.InBoundSaveTransfer(TransactionType, Number);
-            return new JsonResult { Data = new { status = result.Success, result = result.Msg } };
+            using (var context = new MesContext())
+            {
+                using (TransferUOW uow = new TransferUOW(context))
+                {
+                    //取得使用者ID
+                    var id = this.User.Identity.GetUserId();
+                    //取得使用者帳號
+                    var name = this.User.Identity.GetUserName();
+                    ResultModel result = stockTransferData.InBoundSaveTransfer(uow, transferHeaderId, id, name);
+                    return new JsonResult { Data = new { status = result.Success, result = result.Msg } };
+                }
+            }
         }
 
 

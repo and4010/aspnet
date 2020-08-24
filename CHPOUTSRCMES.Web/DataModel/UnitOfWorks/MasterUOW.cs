@@ -287,16 +287,22 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             public const string Delivery = "C0";
             public const string Process = "C1";
             public const string Purchase = "C2";
+            public const string TransferInbound = "C3";
+            public const string TransferOutbound = "C4";
             public string GetDesc(string category)
             {
                 switch (category)
                 {
                     case Delivery:
-                        return "進貨";
+                        return "出貨";
                     case Process:
                         return "加工";
                     case Purchase:
                         return "進貨";
+                    case TransferInbound:
+                        return "庫存移轉-入庫";
+                    case TransferOutbound:
+                        return "庫存移轉-出庫";
                     default:
                         return "";
                 }
@@ -319,6 +325,9 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             public const string Shipped = "A2";
             public const string Purchse = "A3";
 
+            public const string InBoundSaveTransfer = "A4";
+            public const string OutBoundSaveTransfer = "A5";
+
             public string GetDesc(string category)
             {
                 switch (category)
@@ -331,6 +340,10 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                         return "已出貨";
                     case Purchse:
                         return "進貨";
+                    case InBoundSaveTransfer:
+                        return "庫存移轉-入庫存檔";
+                    case OutBoundSaveTransfer:
+                        return "庫存移轉-出庫存檔";
                     default:
                         return "";
                 }
@@ -1009,13 +1022,53 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             };
         }
 
-
+        public STK_TXN_T CreateStockRecord(STOCK_T stock, long? dstOrganizationId, string dstOrganizationCode, 
+            string dstSubinventoryCode, long? dstLocatorId, string categoryCode, string actionCode, string doc,
+            decimal? pryBefQty, decimal? pryChgQty, decimal? pryAftQty, decimal? secBefQty, decimal? secChgQty, decimal? secAftQty,
+            string statusCode, string userId, DateTime createDate)
+        {
+            return new STK_TXN_T
+            {
+                StockId = stock.StockId,
+                OrganizationId = stock.OrganizationId,
+                OrganizationCode = stock.OrganizationCode,
+                SubinventoryCode = stock.SubinventoryCode,
+                LocatorId = stock.LocatorId,
+                Barcode = stock.Barcode,
+                InventoryItemId = stock.InventoryItemId,
+                ItemNumber = stock.ItemNumber,
+                ItemDescription = stock.ItemDescription,
+                ItemCategory = stock.ItemCategory,
+                DstOrganizationId = dstOrganizationId,
+                DstOrganizationCode = dstOrganizationCode,
+                DstSubinventoryCode = dstSubinventoryCode,
+                DstLocatorId = dstLocatorId,
+                Category = this.categoryCode.GetDesc(categoryCode),
+                Action = this.actionCode.GetDesc(actionCode),
+                Note = stock.Note,
+                Doc = doc,
+                LotNumber = stock.LotNumber,
+                PryUomCode = stock.PrimaryUomCode,
+                PryBefQty = pryBefQty,
+                PryChgQty = pryChgQty,
+                PryAftQty = pryAftQty,
+                SecBefQty = secBefQty,
+                SecChgQty = secChgQty,
+                SecAftQty = secAftQty,
+                SecUomCode = stock.SecondaryUomCode,
+                StatusCode = statusCode,
+                CreatedBy = userId,
+                CreationDate = createDate,
+                LastUpdateBy = null,
+                LastUpdateDate = null
+            };
+        }
 
         #endregion
 
 
         #region 測試資料產生
-        
+
         /// <summary>
         /// 產生庫存測試資料
         /// </summary>
@@ -2263,9 +2316,27 @@ on s.ORGANIZATION_ID = l.ORGANIZATION_ID and s.SUBINVENTORY_CODE = l.SUBINVENTOR
         /// <returns></returns>
         public ITEMS_T GetItemNumber(string itemNumber)
         {
-            return itemsTRepositiory.GetAll().AsNoTracking().FirstOrDefault(x =>
-           x.ItemNumber == itemNumber &&
-           x.ControlFlag != ControlFlag.Deleted);
+            return itemsTRepositiory.GetAll().AsNoTracking().Join(
+                orgItemRepositityory.GetAll().AsNoTracking(),
+                i => i.InventoryItemId,
+                oi => oi.InventoryItemId,
+                (i, oi) => i)
+                .FirstOrDefault(x => x.ItemNumber == itemNumber);
+        }
+
+        /// <summary>
+        /// 取得料號資料
+        /// </summary>
+        /// <param name="itemNumber"></param>
+        /// <returns></returns>
+        public ITEMS_T GetItemNumber(long InventoryItemId)
+        {
+            return itemsTRepositiory.GetAll().AsNoTracking().Join(
+                orgItemRepositityory.GetAll().AsNoTracking(),
+                i => i.InventoryItemId,
+                oi => oi.InventoryItemId,
+                (i, oi) => i)
+                .FirstOrDefault(x => x.InventoryItemId == InventoryItemId);
         }
 
         /// <summary>
