@@ -20,9 +20,9 @@ $(document).ready(function () {
         DisplayInvestEnable(true);
         DisplayProductionEnable(true);
         ///隱藏按鈕
-        InvestDataTables.column(10).visible(false);
-        ProductionTables.column(8).visible(false);
-        CotangentDataTable.column(8).visible(false);
+        InvestDataTables.column(11).visible(false);
+        ProductionTables.column(9).visible(false);
+        CotangentDataTable.column(9).visible(false);
     } else {
         DisplayInvestEnable(true);
         DisplayProductionEnable(true);

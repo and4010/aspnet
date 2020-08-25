@@ -304,14 +304,15 @@ function onBtnClick() {
 
     //列印標籤紙捲
     $('#BtnRePrint').click(function () {
-        var Status = "平板"
+        var Status = "平版"
         PrintLableParameter(FlatInvestTable, "/Process/RePrintLabel", "2", Status);
     });
 
 
+
     //列印標籤紙捲
     $('#BtnLabel').click(function () {
-        PrintLable(FlatProductionDataTables, "/Process/GetLabel", "1");
+        PrintLable(FlatProductionDataTables, "/Process/GeProductLabels", "1");
     });
 
 
@@ -724,8 +725,9 @@ function DisplayProductionFlatEnable(boolean) {
     $('#BtnFlat_Product_detail').attr('disabled', boolean);
     $('#Flat_Production_Barcode').attr('disabled', boolean);
     $('#BtnFlatBarcodeSave').attr('disabled', boolean);
-    $('#BtnFlatCalculate').attr('disabled', boolean);
-
+    $('#BtnCalculate').attr('disabled', boolean);
+    $('#BtnPurchase').attr('disabled', boolean);
+    $('#BtnLabel').attr('disabled', boolean);
 
 }
 

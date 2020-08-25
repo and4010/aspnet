@@ -1390,85 +1390,88 @@ AND ST.BARCODE = @BARCODE");
         /// <returns></returns>
         public ResultModel InsertPickOut(string UserId, string UserName, string Production_Roll_Ream_Qty, string Production_Roll_Ream_Wt, string Cotangent, long OspDetailOutId)
         {
-            using (var db = new MesContext())
+
+            var detailout = OspDetailOutTRepositiory.Get(x => x.OspDetailOutId == OspDetailOutId).SingleOrDefault();
+            var header = OspHeaderTRepositiory.Get(x => x.OspHeaderId == detailout.OspHeaderId).SingleOrDefault();
+            if (detailout == null)
             {
-                var detailout = OspDetailOutTRepositiory.Get(x => x.OspDetailOutId == OspDetailOutId).SingleOrDefault();
-                var header = OspHeaderTRepositiory.Get(x => x.OspHeaderId == detailout.OspHeaderId).SingleOrDefault();
-                if (detailout == null)
-                {
-                    return new ResultModel(false, "ID錯誤");
-                }
-                OSP_PICKED_OUT_T ospPickOut = new OSP_PICKED_OUT_T();
-                OSP_COTANGENT_T ospCotanget = new OSP_COTANGENT_T();
-
-                if (Cotangent == "1")
-                {
-                    var relate = db.OspDetailOutTs.
-                        Join(db.RelatedTs,
-                        s => s.InventoryItemId,
-                        c => c.InventoryItemId,
-                        (s, c) => new
-                        {
-                            a = s,
-                            b = c
-
-                        }).Where(
-                        x => x.a.OspDetailOutId == OspDetailOutId &&
-                        x.b.InventoryItemId == x.a.InventoryItemId &&
-                        x.b.ControlFlag != "D").SingleOrDefault();
-
-                    //尋找餘切
-                    var Relateitem = db.ItemsTs.Where(x => x.InventoryItemId == relate.b.RelatedItemId).SingleOrDefault();
-
-
-                    ospCotanget.OspDetailOutId = OspDetailOutId;
-                    ospCotanget.OspHeaderId = detailout.OspHeaderId;
-                    ospCotanget.StockId = null;
-                    ospCotanget.Barcode = GenerateBarcodes(header.OrganizationId, detailout.Subinventory, 1, UserName).Data[0];
-                    ospCotanget.InventoryItemId = Relateitem.InventoryItemId;
-                    ospCotanget.InventoryItemNumber = Relateitem.ItemNumber;
-                    ospCotanget.BasicWeight = Relateitem.CatalogElemVal040;
-                    ospCotanget.Specification = Relateitem.CatalogElemVal050;
-                    ospCotanget.PaperType = Relateitem.CatalogElemVal020;
-                    ospCotanget.LotNumber = "";
-                    ospCotanget.PrimaryQuantity = 0M;
-                    ospCotanget.PrimaryUom = Relateitem.PrimaryUomCode;
-                    ospCotanget.SecondaryQuantity = 0M;
-                    ospCotanget.SecondaryUom = Relateitem.SecondaryUomCode;
-                    ospCotanget.Status = "待入庫";
-                    ospCotanget.CreatedBy = UserId;
-                    ospCotanget.CreatedUserName = UserName;
-                    ospCotanget.CreationDate = DateTime.Now;
-                    OspCotangenTRepository.Create(ospCotanget, true);
-
-                }
-                for (int i = 0; i < int.Parse(Production_Roll_Ream_Qty); i++)
-                {
-                    ospPickOut.OspDetailOutId = OspDetailOutId;
-                    ospPickOut.OspHeaderId = detailout.OspHeaderId;
-                    ospPickOut.StockId = null;
-                    ospPickOut.Barcode = GenerateBarcodes(header.OrganizationId, detailout.Subinventory, int.Parse(Production_Roll_Ream_Qty), UserName).Data[i];
-                    ospPickOut.InventoryItemId = detailout.InventoryItemId;
-                    ospPickOut.InventoryItemNumber = detailout.InventoryItemNumber;
-                    ospPickOut.BasicWeight = detailout.BasicWeight;
-                    ospPickOut.Specification = detailout.Specification;
-                    ospPickOut.PaperType = detailout.PaperType;
-                    ospPickOut.LotNumber = "";
-                    ospPickOut.PrimaryQuantity = uomConversion.Convert(detailout.InventoryItemId, decimal.Parse(Production_Roll_Ream_Wt), "RE", "KG").Data;
-                    ospPickOut.PrimaryUom = "KG";
-                    ospPickOut.SecondaryQuantity = decimal.Parse(Production_Roll_Ream_Wt);
-                    ospPickOut.SecondaryUom = "RE";
-                    ospPickOut.Status = "待入庫";
-                    ospPickOut.Cotangent = Cotangent == "1" ? "Y" : "N";
-                    ospPickOut.OspCotangentId = ospCotanget.OspCotangentId;
-                    ospPickOut.CreatedBy = UserId;
-                    ospPickOut.CreatedUserName = UserName;
-                    ospPickOut.CreationDate = DateTime.Now;
-                    OspPickedOutTRepositiory.Create(ospPickOut, true);
-                }
-
-                return new ResultModel(true, "");
+                return new ResultModel(false, "ID錯誤");
             }
+            OSP_PICKED_OUT_T ospPickOut = new OSP_PICKED_OUT_T();
+            OSP_COTANGENT_T ospCotanget = new OSP_COTANGENT_T();
+
+            if (Cotangent == "1")
+            {
+                var relate = OspDetailOutTRepositiory.Get().
+                    Join(relatedTRepositiory.GetAll(),
+                    s => s.InventoryItemId,
+                    c => c.InventoryItemId,
+                    (s, c) => new
+                    {
+                        a = s,
+                        b = c
+
+                    }).Where(
+                    x => x.a.OspDetailOutId == OspDetailOutId &&
+                    x.b.InventoryItemId == x.a.InventoryItemId &&
+                    x.b.ControlFlag != "D").SingleOrDefault();
+
+                if(relate == null)
+                {
+                    return new ResultModel(false, "無餘切資料");
+                }
+                //尋找餘切
+                var Relateitem = itemsTRepositiory.Get(x => x.InventoryItemId == relate.b.RelatedItemId).SingleOrDefault();
+
+
+                ospCotanget.OspDetailOutId = OspDetailOutId;
+                ospCotanget.OspHeaderId = detailout.OspHeaderId;
+                ospCotanget.StockId = null;
+                ospCotanget.Barcode = GenerateBarcodes(header.OrganizationId, detailout.Subinventory, 1, UserName).Data[0];
+                ospCotanget.InventoryItemId = Relateitem.InventoryItemId;
+                ospCotanget.InventoryItemNumber = Relateitem.ItemNumber;
+                ospCotanget.BasicWeight = Relateitem.CatalogElemVal040;
+                ospCotanget.Specification = Relateitem.CatalogElemVal050;
+                ospCotanget.PaperType = Relateitem.CatalogElemVal020;
+                ospCotanget.LotNumber = "";
+                ospCotanget.PrimaryQuantity = 0M;
+                ospCotanget.PrimaryUom = Relateitem.PrimaryUomCode;
+                ospCotanget.SecondaryQuantity = 0M;
+                ospCotanget.SecondaryUom = Relateitem.SecondaryUomCode;
+                ospCotanget.Status = "待入庫";
+                ospCotanget.CreatedBy = UserId;
+                ospCotanget.CreatedUserName = UserName;
+                ospCotanget.CreationDate = DateTime.Now;
+                OspCotangenTRepository.Create(ospCotanget, true);
+
+            }
+            for (int i = 0; i < int.Parse(Production_Roll_Ream_Qty); i++)
+            {
+                ospPickOut.OspDetailOutId = OspDetailOutId;
+                ospPickOut.OspHeaderId = detailout.OspHeaderId;
+                ospPickOut.StockId = null;
+                ospPickOut.Barcode = GenerateBarcodes(header.OrganizationId, detailout.Subinventory, int.Parse(Production_Roll_Ream_Qty), UserName).Data[i];
+                ospPickOut.InventoryItemId = detailout.InventoryItemId;
+                ospPickOut.InventoryItemNumber = detailout.InventoryItemNumber;
+                ospPickOut.BasicWeight = detailout.BasicWeight;
+                ospPickOut.Specification = detailout.Specification;
+                ospPickOut.PaperType = detailout.PaperType;
+                ospPickOut.LotNumber = "";
+                ospPickOut.PrimaryQuantity = uomConversion.Convert(detailout.InventoryItemId, decimal.Parse(Production_Roll_Ream_Wt), "RE", "KG").Data;
+                ospPickOut.PrimaryUom = "KG";
+                ospPickOut.SecondaryQuantity = decimal.Parse(Production_Roll_Ream_Wt);
+                ospPickOut.SecondaryUom = "RE";
+                ospPickOut.Status = "待入庫";
+                ospPickOut.Cotangent = Cotangent == "1" ? "Y" : "N";
+                ospPickOut.OspCotangentId = ospCotanget.OspCotangentId;
+                ospPickOut.CreatedBy = UserId;
+                ospPickOut.CreatedUserName = UserName;
+                ospPickOut.CreationDate = DateTime.Now;
+                OspPickedOutTRepositiory.Create(ospPickOut, true);
+            }
+
+            return new ResultModel(true, "");
+
 
         }
 
@@ -1531,7 +1534,7 @@ AND ST.BARCODE = @BARCODE");
                     ospPickOut.CreationDate = DateTime.Now;
                     OspPickedOutTRepositiory.Create(ospPickOut, true);
                     txn.Commit();
-                    return new ResultModel(true,"");
+                    return new ResultModel(true, "");
                 }
                 catch (Exception e)
                 {
@@ -2674,9 +2677,7 @@ WHERE CHT.OSP_HEADER_ID = @OSP_HEADER_ID");
             {
                 List<LabelModel> labelModelList = new List<LabelModel>();
                 if (stockIds == null || stockIds.Count == 0) return new ResultDataModel<List<LabelModel>>(false, "找不到揀貨資料", null);
-                var stockDataList = stockTRepositiory.GetAll().AsNoTracking().Where(x => stockIds.Contains(x.StockId)).ToList();
-                if (stockDataList == null || stockDataList.Count == 0) return new ResultDataModel<List<LabelModel>>(false, "找不到揀貨資料", null);
-                for (int i = 0; i < stockDataList.Count; i++)
+                for (int i = 0; i < stockIds.Count; i++)
                 {
                     StringBuilder cmd = new StringBuilder();
                     List<SqlParameter> sqlParameterList = new List<SqlParameter>();
@@ -2722,7 +2723,7 @@ AND ST.STOCK_ID = @STOCK_ID
                     }
 
                     sqlParameterList.Add(new SqlParameter("@userName", userName));
-                    sqlParameterList.Add(new SqlParameter("@STOCK_ID", stockDataList[i].StockId));
+                    sqlParameterList.Add(new SqlParameter("@STOCK_ID", stockIds[i]));
                     var labelModel = this.Context.Database.SqlQuery<LabelModel>(cmd.ToString(), sqlParameterList.ToArray()).SingleOrDefault(); ;
                     if (labelModel == null) return new ResultDataModel<List<LabelModel>>(false, "找不到標籤資料", null);
                     labelModelList.Add(labelModel);
@@ -2752,9 +2753,7 @@ AND ST.STOCK_ID = @STOCK_ID
 
                 List<LabelModel> labelModelList = new List<LabelModel>();
                 if (OspPickedOutId == null || OspPickedOutId.Count == 0) return new ResultDataModel<List<LabelModel>>(false, "找不到揀貨資料", null);
-                var pickDataList = OspPickedOutTRepositiory.GetAll().AsNoTracking().Where(x => OspPickedOutId.Contains(x.OspPickedOutId)).ToList();
-                if (pickDataList == null || pickDataList.Count == 0) return new ResultDataModel<List<LabelModel>>(false, "找不到揀貨資料", null);
-                for (int i = 0; i < pickDataList.Count; i++)
+                for (int i = 0; i < OspPickedOutId.Count; i++)
                 {
                     List<SqlParameter> sqlParameterList = new List<SqlParameter>();
                     StringBuilder cmd = new StringBuilder(
@@ -2775,7 +2774,7 @@ join ITEMS_T tt on tt.INVENTORY_ITEM_ID = OPO.INVENTORY_ITEM_ID
 AND OPO.OSP_PICKED_OUT_ID = @OSP_PICKED_OUT_ID
 ");
                     sqlParameterList.Add(new SqlParameter("@userName", userName));
-                    sqlParameterList.Add(new SqlParameter("@OSP_PICKED_OUT_ID", pickDataList[i].OspPickedOutId));
+                    sqlParameterList.Add(new SqlParameter("@OSP_PICKED_OUT_ID", OspPickedOutId[i]));
                     var labelModel = this.Context.Database.SqlQuery<LabelModel>(cmd.ToString(), sqlParameterList.ToArray()).SingleOrDefault();
                     if (labelModel == null) return new ResultDataModel<List<LabelModel>>(false, "找不到標籤資料", null);
                     labelModelList.Add(labelModel);
@@ -2806,9 +2805,7 @@ AND OPO.OSP_PICKED_OUT_ID = @OSP_PICKED_OUT_ID
 
                 List<LabelModel> labelModelList = new List<LabelModel>();
                 if (OspCotangentId == null || OspCotangentId.Count == 0) return new ResultDataModel<List<LabelModel>>(false, "找不到揀貨資料", null);
-                var pickDataList = OspCotangenTRepository.GetAll().AsNoTracking().Where(x => OspCotangentId.Contains(x.OspCotangentId)).ToList();
-                if (pickDataList == null || pickDataList.Count == 0) return new ResultDataModel<List<LabelModel>>(false, "找不到揀貨資料", null);
-                for (int i = 0; i < pickDataList.Count; i++)
+                for (int i = 0; i < OspCotangentId.Count; i++)
                 {
                     List<SqlParameter> sqlParameterList = new List<SqlParameter>();
                     StringBuilder cmd = new StringBuilder(
@@ -2829,7 +2826,7 @@ join ITEMS_T tt on tt.INVENTORY_ITEM_ID = OCT.INVENTORY_ITEM_ID
 AND OCT.OSP_COTANGENT_ID = @OSP_COTANGENT_ID
 ");
                     sqlParameterList.Add(new SqlParameter("@userName", userName));
-                    sqlParameterList.Add(new SqlParameter("@OSP_COTANGENT_ID", pickDataList[i].OspCotangentId));
+                    sqlParameterList.Add(new SqlParameter("@OSP_COTANGENT_ID", OspCotangentId[i]));
                     var labelModel = this.Context.Database.SqlQuery<LabelModel>(cmd.ToString(), sqlParameterList.ToArray()).SingleOrDefault();
                     if (labelModel == null) return new ResultDataModel<List<LabelModel>>(false, "找不到標籤資料", null);
                     labelModelList.Add(labelModel);
@@ -2860,9 +2857,7 @@ AND OCT.OSP_COTANGENT_ID = @OSP_COTANGENT_ID
 
                 List<LabelModel> labelModelList = new List<LabelModel>();
                 if (OspPickedOutId == null || OspPickedOutId.Count == 0) return new ResultDataModel<List<LabelModel>>(false, "找不到揀貨資料", null);
-                var pickDataList = OspPickedOutTRepositiory.GetAll().AsNoTracking().Where(x => OspPickedOutId.Contains(x.OspPickedOutId)).ToList();
-                if (pickDataList == null || pickDataList.Count == 0) return new ResultDataModel<List<LabelModel>>(false, "找不到揀貨資料", null);
-                for (int i = 0; i < pickDataList.Count; i++)
+                for (int i = 0; i < OspPickedOutId.Count; i++)
                 {
                     List<SqlParameter> sqlParameterList = new List<SqlParameter>();
                     StringBuilder cmd = new StringBuilder(
@@ -2883,7 +2878,7 @@ join ITEMS_T tt on tt.INVENTORY_ITEM_ID = OPO.INVENTORY_ITEM_ID
 AND OPO.OSP_PICKED_OUT_ID = @OSP_PICKED_OUT_ID
 ");
                     sqlParameterList.Add(new SqlParameter("@userName", userName));
-                    sqlParameterList.Add(new SqlParameter("@OSP_PICKED_OUT_ID", pickDataList[i].OspPickedOutId));
+                    sqlParameterList.Add(new SqlParameter("@OSP_PICKED_OUT_ID", OspPickedOutId[i]));
                     var labelModel = this.Context.Database.SqlQuery<LabelModel>(cmd.ToString(), sqlParameterList.ToArray()).SingleOrDefault();
                     if (labelModel == null) return new ResultDataModel<List<LabelModel>>(false, "找不到標籤資料", null);
                     labelModelList.Add(labelModel);

@@ -783,7 +783,6 @@ function DisplayInvestPaperRollEnable(boolean) {
     $('#Btn_PaperRoll_ProcessSave').attr('disabled', boolean);
 
     
-
 }
 
 function DisplayProductionPaperRollEnable(boolean) {
@@ -794,7 +793,9 @@ function DisplayProductionPaperRollEnable(boolean) {
     $('#PaperRoll_Production_Barcode').attr('disabled', boolean);
     $('#BtnPaperRollBarcodeSave').attr('disabled', boolean);
     $('#BtnCalculate').attr('disabled', boolean);
-
+    $('#BtnLabel').attr('disabled', boolean);
+    $('#BtnPurchase').attr('disabled', boolean);
+    
 }
 
 

@@ -589,48 +589,6 @@ and d.ITEM_CATEGORY = N'捲筒'");
         }
 
         /// <summary>
-        /// 取得平張header歷史資料
-        /// </summary>
-        /// <param name="CONTAINER_NO"></param>
-        /// <returns></returns>
-        public List<DetailModel.FlatModel> GetFlatHeaderHtList(string CONTAINER_NO)
-        {
-            try
-            {
-                using (var mesContext = new MesContext())
-                {
-                    StringBuilder query = new StringBuilder();
-                    query.Append(
-                    @"SELECT 
-ROW_NUMBER() OVER(ORDER BY d.CTR_DETAIL_ID ) AS SubId,
-Cast(d.CTR_HEADER_ID AS bigint) as Id,
-h.SUBINVENTORY AS Subinventory, 
-d.LOCATOR_CODE as Locator,
-d.SHIP_ITEM_NUMBER AS Item_No,
-d.REAM_WEIGHT AS ReamWeight,
-d.ROLL_REAM_QTY AS RollReamQty,
-d.PACKING_TYPE AS PackingType,
-d.ROLL_REAM_WT AS Pieces_Qty,
-d.TRANSACTION_QUANTITY AS TransactionQuantity,
-d.TRANSACTION_UOM AS TransactionUom,
-d.SECONDARY_QUANTITY AS TtlRollReam,
-d.SECONDARY_UOM AS TtlRollReamUom,
-d.PRIMARY_QUANTITY AS DeliveryQty,
-d.PRIMARY_UOM AS DeliveryUom
-FROM dbo.CTR_DETAIL_HT d
-LEFT JOIN dbo.CTR_HEADER_T h ON h.CTR_HEADER_ID = d.CTR_HEADER_ID
-WHERE d.ITEM_CATEGORY = N'平張' and h.CONTAINER_NO  = @CONTAINER_NO");
-                    return mesContext.Database.SqlQuery<DetailModel.FlatModel>(query.ToString(), new SqlParameter("@CONTAINER_NO", CONTAINER_NO)).ToList();
-                }
-            }
-            catch (Exception e)
-            {
-                logger.Error(e.Message.ToString());
-                return new List<DetailModel.FlatModel>();
-            }
-        }
-
-        /// <summary>
         /// 取得平張header資料
         /// </summary>
         /// <param name="CONTAINER_NO"></param>
@@ -659,10 +617,12 @@ d.SECONDARY_QUANTITY AS TtlRollReam,
 d.SECONDARY_UOM AS TtlRollReamUom,
 d.PRIMARY_QUANTITY AS DeliveryQty,
 d.PRIMARY_UOM AS DeliveryUom
-FROM dbo.CTR_DETAIL_T d
-JOIN dbo.CTR_HEADER_T h ON h.CTR_HEADER_ID = d.CTR_HEADER_ID
+FROM CTR_DETAIL_T d
+JOIN CTR_HEADER_T h ON h.CTR_HEADER_ID = d.CTR_HEADER_ID
 WHERE d.ITEM_CATEGORY = N'平張' and h.CONTAINER_NO  = @CONTAINER_NO");
-                    return mesContext.Database.SqlQuery<DetailModel.FlatModel>(query.ToString(), new SqlParameter("@CONTAINER_NO", CONTAINER_NO)).ToList();
+                    string commandText = string.Format(query.ToString());
+                    commandText = string.Concat(commandText, " UNION ", commandText.Replace("CTR_DETAIL_T", "CTR_DETAIL_HT"));
+                    return mesContext.Database.SqlQuery<DetailModel.FlatModel>(commandText, new SqlParameter("@CONTAINER_NO", CONTAINER_NO)).ToList();
                 }
             }
             catch (Exception e)
@@ -699,50 +659,12 @@ d.TRANSACTION_QUANTITY AS TransactionQuantity,
 d.TRANSACTION_UOM AS TransactionUom,
 d.PRIMARY_QUANTITY AS PrimanyQuantity,
 d.PRIMARY_UOM AS PrimaryUom
-FROM dbo.CTR_DETAIL_T d
-JOIN dbo.CTR_HEADER_T h ON h.CTR_HEADER_ID = d.CTR_HEADER_ID
+FROM CTR_DETAIL_T d
+JOIN CTR_HEADER_T h ON h.CTR_HEADER_ID = d.CTR_HEADER_ID
 WHERE d.ITEM_CATEGORY = N'捲筒' and h.CONTAINER_NO  = @CONTAINER_NO");
-                    return mesContext.Database.SqlQuery<DetailModel.RollModel>(query.ToString(), new SqlParameter("@CONTAINER_NO", CONTAINER_NO)).ToList();
-                }
-            }
-            catch (Exception e)
-            {
-                logger.Error(e.Message.ToString());
-                return new List<DetailModel.RollModel>();
-            }
-        }
-
-        /// <summary>
-        /// 取得紙捲header歷史資料
-        /// </summary>
-        /// <param name="CONTAINER_NO"></param>
-        /// <returns></returns>
-        public List<DetailModel.RollModel> GetPaperRollHeaderHtList(string CONTAINER_NO)
-        {
-            try
-            {
-                using (var mesContext = new MesContext())
-                {
-                    StringBuilder query = new StringBuilder();
-                    query.Append(
-                    @"SELECT 
-ROW_NUMBER() OVER(ORDER BY d.CTR_DETAIL_ID ) AS SubId,
-Cast(d.CTR_HEADER_ID AS bigint) as Id,
-h.SUBINVENTORY AS Subinventory, 
-d.LOCATOR_CODE as Locator,
-d.SHIP_ITEM_NUMBER AS Item_No,
-d.PAPER_TYPE AS PaperType,
-d.BASIC_WEIGHT AS BaseWeight,
-d.SPECIFICATION AS Specification,
-d.ROLL_REAM_QTY AS RollReamQty,
-d.TRANSACTION_QUANTITY AS TransactionQuantity,
-d.TRANSACTION_UOM AS TransactionUom,
-d.PRIMARY_QUANTITY AS PrimanyQuantity,
-d.PRIMARY_UOM AS PrimaryUom
-FROM dbo.CTR_DETAIL_HT d
-JOIN dbo.CTR_HEADER_T h ON h.CTR_HEADER_ID = d.CTR_HEADER_ID
-WHERE d.ITEM_CATEGORY = N'捲筒' and h.CONTAINER_NO  = @CONTAINER_NO");
-                    return mesContext.Database.SqlQuery<DetailModel.RollModel>(query.ToString(), new SqlParameter("@CONTAINER_NO", CONTAINER_NO)).ToList();
+                    string commandText = string.Format(query.ToString());
+                    commandText = string.Concat(commandText, " UNION ", commandText.Replace("CTR_DETAIL_T", "CTR_DETAIL_HT"));
+                    return mesContext.Database.SqlQuery<DetailModel.RollModel>(commandText, new SqlParameter("@CONTAINER_NO", CONTAINER_NO)).ToList();
                 }
             }
             catch (Exception e)
@@ -784,55 +706,12 @@ p.LOT_NUMBER as LotNumber,
 p.STATUS as Status,
 p.REASON_DESC as Reason,
 p.NOTE as Remark
-FROM dbo.CTR_PICKED_T p
-LEFT JOIN dbo.CTR_HEADER_T h ON h.CTR_HEADER_ID = p.CTR_HEADER_ID
+FROM CTR_PICKED_T p
+LEFT JOIN CTR_HEADER_T h ON h.CTR_HEADER_ID = p.CTR_HEADER_ID
 WHERE p.ITEM_CATEGORY = N'捲筒' and h.CONTAINER_NO  = @CONTAINER_NO");
-                    return mesContext.Database.SqlQuery<DetailModel.RollDetailModel>(query.ToString(), new SqlParameter("@CONTAINER_NO", CONTAINER_NO)).ToList();
-                }
-            }
-            catch (Exception e)
-            {
-                logger.Error(e.Message.ToString());
-                return new List<DetailModel.RollDetailModel>();
-            }
-        }
-
-        /// <summary>
-        /// 取得紙捲歷史明細資料
-        /// </summary>
-        /// <param name="CONTAINER_NO"></param>
-        /// <returns></returns>
-        public List<DetailModel.RollDetailModel> GetHtPaperRollDetailList(string CONTAINER_NO)
-        {
-            try
-            {
-                using (var mesContext = new MesContext())
-                {
-                    StringBuilder query = new StringBuilder();
-                    query.Append(
-                    @"SELECT 
-ROW_NUMBER() OVER(ORDER BY p.CTR_DETAIL_ID ) AS SubId,
-p.CTR_PICKED_ID as Id,
-h.SUBINVENTORY as Subinventory, 
-p.LOCATOR_CODE as Locator,
-p.BARCODE as Barcode,
-p.SHIP_ITEM_NUMBER as Item_No,
-p.PAPER_TYPE as PaperType,
-p.BASIC_WEIGHT as BaseWeight,
-p.SPECIFICATION as Specification,
-p.THEORY_WEIGHT as TheoreticalWeight,
-p.TRANSACTION_QUANTITY as TransactionQuantity,
-p.TRANSACTION_UOM as TransactionUom,
-p.PRIMARY_QUANTITY as PrimanyQuantity,
-p.PRIMARY_UOM as PrimaryUom,
-p.LOT_NUMBER as LotNumber,
-p.STATUS as Status,
-p.REASON_DESC as Reason,
-p.NOTE as Remark
-FROM dbo.CTR_PICKED_HT p
-LEFT JOIN dbo.CTR_HEADER_T h ON h.CTR_HEADER_ID = p.CTR_HEADER_ID
-WHERE p.ITEM_CATEGORY = N'捲筒' and h.CONTAINER_NO  = @CONTAINER_NO");
-                    return mesContext.Database.SqlQuery<DetailModel.RollDetailModel>(query.ToString(), new SqlParameter("@CONTAINER_NO", CONTAINER_NO)).ToList();
+                    string commandText = string.Format(query.ToString());
+                    commandText = string.Concat(commandText, " UNION ", commandText.Replace("CTR_PICKED_T", "CTR_PICKED_HT"));
+                    return mesContext.Database.SqlQuery<DetailModel.RollDetailModel>(commandText, new SqlParameter("@CONTAINER_NO", CONTAINER_NO)).ToList();
                 }
             }
             catch (Exception e)
@@ -872,7 +751,9 @@ p.NOTE as Remark
 FROM CTR_PICKED_T p
 JOIN CTR_HEADER_T h ON h.CTR_HEADER_ID = p.CTR_HEADER_ID
 WHERE p.ITEM_CATEGORY = N'平張' and h.CONTAINER_NO  = @CONTAINER_NO");
-                    return mesContext.Database.SqlQuery<DetailModel.FlatDetailModel>(query.ToString(), new SqlParameter("@CONTAINER_NO", CONTAINER_NO)).ToList();
+                    string commandText = string.Format(query.ToString());
+                    commandText = string.Concat(commandText, " UNION ", commandText.Replace("CTR_PICKED_T", "CTR_PICKED_HT"));
+                    return mesContext.Database.SqlQuery<DetailModel.FlatDetailModel>(commandText, new SqlParameter("@CONTAINER_NO", CONTAINER_NO)).ToList();
                 }
             }
             catch (Exception e)
@@ -883,51 +764,11 @@ WHERE p.ITEM_CATEGORY = N'平張' and h.CONTAINER_NO  = @CONTAINER_NO");
         }
 
         /// <summary>
-        /// 取得平張歷史明細資料
-        /// </summary>
-        /// <param name="CONTAINER_NO"></param>
-        /// <returns></returns>
-        public List<DetailModel.FlatDetailModel> GetHtFlatDetailList(string CONTAINER_NO)
-        {
-            try
-            {
-                using (var mesContext = new MesContext())
-                {
-                    StringBuilder query = new StringBuilder();
-                    query.Append(
-                    @"SELECT 
-ROW_NUMBER() OVER(ORDER BY p.CTR_DETAIL_ID ) AS SubId,
-p.CTR_PICKED_ID as Id,
-h.SUBINVENTORY as Subinventory, 
-p.LOCATOR_CODE as Locator,
-p.BARCODE as Barcode,
-p.SHIP_ITEM_NUMBER as Item_No,
-p.REAM_WEIGHT as ReamWeight,
-p.PACKING_TYPE as PackingType,
-p.ROLL_REAM_WT as Pieces_Qty,
-CAST(1 AS decimal) as Qty,
-p.STATUS as Status,
-p.REASON_DESC as Reason,
-p.NOTE as Remark
-FROM dbo.CTR_PICKED_HT p
-LEFT JOIN dbo.CTR_HEADER_T h ON h.CTR_HEADER_ID = p.CTR_HEADER_ID
-WHERE p.ITEM_CATEGORY = N'平張' and h.CONTAINER_NO  = @CONTAINER_NO");
-                    return mesContext.Database.SqlQuery<DetailModel.FlatDetailModel>(query.ToString(), new SqlParameter("@CONTAINER_NO", CONTAINER_NO)).ToList();
-                }
-            }
-            catch (Exception e)
-            {
-                logger.Error(e.Message.ToString());
-                return new List<DetailModel.FlatDetailModel>();
-            }
-        }
-
-        /// <summary>
-        /// 取得捲筒編輯資料
+        /// 取得捲筒編輯資料&&檢視資料
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public DetailModel.RollDetailModel GetPaperRollEdit(string id)
+        public DetailModel.RollDetailModel GetPaperRollEditView(string id)
         {
             try
             {
@@ -959,53 +800,9 @@ p.LAST_UPDATE_USER_NAME as CreatedUserName
 FROM dbo.CTR_PICKED_T p
 LEFT JOIN dbo.CTR_HEADER_T h ON h.CTR_HEADER_ID = p.CTR_HEADER_ID
 WHERE p.ITEM_CATEGORY = N'捲筒' and p.CTR_PICKED_ID  = @CTR_PICKED_ID");
-                    return mesContext.Database.SqlQuery<DetailModel.RollDetailModel>(query.ToString(), new SqlParameter("@CTR_PICKED_ID", id)).SingleOrDefault();
-                }
-            }
-            catch (Exception e)
-            {
-                logger.Error(e.Message);
-                return new DetailModel.RollDetailModel();
-            }
-        }
-
-        /// <summary>
-        /// 取得捲筒檢視資料pickt歷史資料
-        /// </summary>
-        /// <returns></returns>
-        public DetailModel.RollDetailModel GetPaperRollView(string id)
-        {
-            try
-            {
-                using (var mesContext = new MesContext())
-                {
-                    StringBuilder query = new StringBuilder();
-                    query.Append(
-                    @"SELECT 
-ROW_NUMBER() OVER(ORDER BY p.CTR_DETAIL_ID ) AS SubId,
-p.CTR_PICKED_ID as Id,
-h.SUBINVENTORY as Subinventory, 
-p.LOCATOR_CODE as Locator,
-p.BARCODE as Barcode,
-p.SHIP_ITEM_NUMBER as Item_No,
-p.PAPER_TYPE as PaperType,
-p.BASIC_WEIGHT as BaseWeight,
-p.SPECIFICATION as Specification,
-p.THEORY_WEIGHT as TheoreticalWeight,
-p.TRANSACTION_QUANTITY as TransactionQuantity,
-p.TRANSACTION_UOM as TransactionUom,
-p.PRIMARY_QUANTITY as PrimanyQuantity,
-p.PRIMARY_UOM as PrimaryUom,
-p.LOT_NUMBER as LotNumber,
-p.STATUS as Status,
-p.REASON_DESC as Reason,
-p.NOTE as Remark,
-p.LAST_UPDATE_DATE as CreationDate,
-p.LAST_UPDATE_USER_NAME as CreatedUserName 
-FROM dbo.CTR_PICKED_HT p
-LEFT JOIN dbo.CTR_HEADER_T h ON h.CTR_HEADER_ID = p.CTR_HEADER_ID
-WHERE p.ITEM_CATEGORY = N'捲筒' and p.CTR_PICKED_ID  = @CTR_PICKED_ID");
-                    return mesContext.Database.SqlQuery<DetailModel.RollDetailModel>(query.ToString(), new SqlParameter("@CTR_PICKED_ID", id)).SingleOrDefault();
+                    string commandText = string.Format(query.ToString());
+                    commandText = string.Concat(commandText, " UNION ", commandText.Replace("CTR_PICKED_T", "CTR_PICKED_HT"));
+                    return mesContext.Database.SqlQuery<DetailModel.RollDetailModel>(commandText, new SqlParameter("@CTR_PICKED_ID", id)).SingleOrDefault();
                 }
             }
             catch (Exception e)
@@ -1221,11 +1018,11 @@ WHERE p.ITEM_CATEGORY = N'捲筒' and p.CTR_PICKED_ID  = @CTR_PICKED_ID");
         }
 
         /// <summary>
-        /// 取得編輯平張資料
+        /// 取得編輯平張資料&&檢視資料
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public DetailModel.FlatDetailModel GetFlatEdit(string id)
+        public DetailModel.FlatDetailModel GetFlatEditView(string id)
         {
             try
             {
@@ -1253,50 +1050,9 @@ FROM CTR_PICKED_T p
 JOIN CTR_HEADER_T h ON h.CTR_HEADER_ID = p.CTR_HEADER_ID
 JOIN CTR_DETAIL_T D ON D.CTR_DETAIL_ID = P.CTR_DETAIL_ID
 WHERE p.ITEM_CATEGORY = N'平張' and p.CTR_PICKED_ID  = @CTR_PICKED_ID");
-                    return mesContext.Database.SqlQuery<DetailModel.FlatDetailModel>(query.ToString(), new SqlParameter("@CTR_PICKED_ID", id)).SingleOrDefault();
-                }
-            }
-            catch (Exception e)
-            {
-                logger.Error(e.Message.ToString());
-                return new DetailModel.FlatDetailModel();
-            }
-        }
-
-        /// <summary>
-        /// 取得平張檢視歷史pcikt資料
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        public DetailModel.FlatDetailModel GetFlatView(string id)
-        {
-            try
-            {
-                using (var mesContext = new MesContext())
-                {
-                    StringBuilder query = new StringBuilder();
-                    query.Append(
-                    @"SELECT 
-ROW_NUMBER() OVER(ORDER BY p.CTR_DETAIL_ID ) AS SubId,
-p.CTR_PICKED_ID as Id,
-h.SUBINVENTORY as Subinventory, 
-p.LOCATOR_CODE as Locator,
-p.BARCODE as Barcode,
-p.SHIP_ITEM_NUMBER as Item_No,
-p.REAM_WEIGHT as ReamWeight,
-p.PACKING_TYPE as PackingType,
-p.ROLL_REAM_WT as Pieces_Qty,
-d.ROLL_REAM_QTY as Qty,
-p.STATUS as Status,
-p.REASON_DESC as Reason,
-p.NOTE as Remark,
-p.LAST_UPDATE_DATE as CreationDate,
-p.LAST_UPDATE_USER_NAME as CreatedUserName 
-FROM CTR_PICKED_HT p
-JOIN CTR_HEADER_T h ON h.CTR_HEADER_ID = p.CTR_HEADER_ID
-JOIN CTR_DETAIL_HT D ON D.CTR_DETAIL_ID = P.CTR_DETAIL_ID
-WHERE p.ITEM_CATEGORY = N'平張' and p.CTR_PICKED_ID  = @CTR_PICKED_ID");
-                    return mesContext.Database.SqlQuery<DetailModel.FlatDetailModel>(query.ToString(), new SqlParameter("@CTR_PICKED_ID", id)).SingleOrDefault();
+                    string commandText = string.Format(query.ToString());
+                    commandText = string.Concat(commandText, " UNION ", commandText.Replace("CTR_PICKED_T", "CTR_PICKED_HT"));
+                    return mesContext.Database.SqlQuery<DetailModel.FlatDetailModel>(commandText, new SqlParameter("@CTR_PICKED_ID", id)).SingleOrDefault();
                 }
             }
             catch (Exception e)
@@ -1621,7 +1377,7 @@ P.BASIC_WEIGHT,P.REAM_WEIGHT,P.ROLL_REAM_WT,P.SPECIFICATION,P.PACKING_TYPE,
 '',P.LOT_NUMBER,P.BARCODE,P.PRIMARY_UOM,P.PRIMARY_QUANTITY,
 P.PRIMARY_QUANTITY,0,P.SECONDARY_UOM,P.SECONDARY_QUANTITY,P.SECONDARY_QUANTITY,
 0,P.REASON_CODE,P.REASON_DESC,P.NOTE,P.STATUS,
-P.CREATED_BY,GETDATE(),null
+P.CREATED_BY,GETDATE(),null,null
 FROM CTR_PICKED_T P
 left join CTR_HEADER_T H on H.CTR_HEADER_ID = P.CTR_HEADER_ID
 left join CTR_DETAIL_T D on D.CTR_DETAIL_ID = P.CTR_DETAIL_ID
@@ -1679,52 +1435,13 @@ WHERE D.CTR_HEADER_ID = @CTR_HEADER_ID");
         {
             try
             {
-                if (PurchaseStatusCode.PurchaseHeaderAlready == Status)
-                {
-                    List<LabelModel> labelModelList = new List<LabelModel>();
-                    if (PICKED_IDs == null || PICKED_IDs.Count == 0) return new ResultDataModel<List<LabelModel>>(false, "找不到揀貨資料", null);
-                    var pickDataList = ctrPickedHtRepositiory.GetAll().AsNoTracking().Where(x => PICKED_IDs.Contains(x.CtrPickedId)).ToList();
-                    if (pickDataList == null || pickDataList.Count == 0) return new ResultDataModel<List<LabelModel>>(false, "找不到揀貨資料", null);
 
-                    for (int i = 0; i < pickDataList.Count; i++)
-                    {
-                        List<SqlParameter> sqlParameterList = new List<SqlParameter>();
-                        StringBuilder cmd = new StringBuilder(
-    @"
-SELECT 
-CAST(PT.BARCODE AS nvarchar) AS Barocde,
-@userName as PrintBy,
-CAST(tt.ITEM_DESC_TCH AS nvarchar) AS BarocdeName, 
-CAST(PT.PAPER_TYPE AS nvarchar) AS PapaerType,
-CAST(PT.BASIC_WEIGHT AS nvarchar) AS BasicWeight,
-CAST(PT.SPECIFICATION AS nvarchar) AS Specification,
-CAST(FORMAT(PT.ROLL_REAM_WT,'0.##########') AS nvarchar) AS Qty,
-CAST(PT.SECONDARY_UOM AS nvarchar) AS Unit
---CAST(CT.CONTAINER_NO AS nvarchar) AS BatchNo
-FROM [CTR_PICKED_HT] PT
-join CTR_HEADER_T CT ON CT.CTR_HEADER_ID = PT.CTR_HEADER_ID
-join ITEMS_T tt on tt.INVENTORY_ITEM_ID = PT.INVENTORY_ITEM_ID
-WHERE PT.ITEM_CATEGORY = N'平張'
-AND pt.CTR_PICKED_ID = @CTR_PICKED_ID
-");
-                        sqlParameterList.Add(new SqlParameter("@userName", userName));
-                        sqlParameterList.Add(new SqlParameter("@CTR_PICKED_ID", pickDataList[0].CtrPickedId));
-                        var labelModel = this.Context.Database.SqlQuery<LabelModel>(cmd.ToString(), sqlParameterList.ToArray()).SingleOrDefault();
-                        if (labelModel == null) return new ResultDataModel<List<LabelModel>>(false, "找不到標籤資料", null);
-                        labelModelList.Add(labelModel);
-                    }
-                    return new ResultDataModel<List<LabelModel>>(true, "取得標籤資料成功", labelModelList);
-                }
-                else
+                List<LabelModel> labelModelList = new List<LabelModel>();
+                if (PICKED_IDs == null || PICKED_IDs.Count == 0) return new ResultDataModel<List<LabelModel>>(false, "找不到揀貨資料", null);
+                for (int i = 0; i < PICKED_IDs.Count; i++)
                 {
-                    List<LabelModel> labelModelList = new List<LabelModel>();
-                    if (PICKED_IDs == null || PICKED_IDs.Count == 0) return new ResultDataModel<List<LabelModel>>(false, "找不到揀貨資料", null);
-                    var pickDataList = ctrPickedTRepositiory.GetAll().AsNoTracking().Where(x => PICKED_IDs.Contains(x.CtrPickedId)).ToList();
-                    if (pickDataList == null || pickDataList.Count == 0) return new ResultDataModel<List<LabelModel>>(false, "找不到揀貨資料", null);
-                    for (int i = 0; i < pickDataList.Count; i++)
-                    {
-                        List<SqlParameter> sqlParameterList = new List<SqlParameter>();
-                        StringBuilder cmd = new StringBuilder(
+                    List<SqlParameter> sqlParameterList = new List<SqlParameter>();
+                    StringBuilder cmd = new StringBuilder(
 @"
 SELECT 
 CAST(PT.BARCODE AS nvarchar) AS Barocde,
@@ -1742,14 +1459,15 @@ join ITEMS_T tt on tt.INVENTORY_ITEM_ID = PT.INVENTORY_ITEM_ID
 WHERE PT.ITEM_CATEGORY = N'平張'
 AND pt.CTR_PICKED_ID = @CTR_PICKED_ID
 ");
-                        sqlParameterList.Add(new SqlParameter("@userName", userName));
-                        sqlParameterList.Add(new SqlParameter("@CTR_PICKED_ID", pickDataList[0].CtrPickedId));
-                        var labelModel = this.Context.Database.SqlQuery<LabelModel>(cmd.ToString(), sqlParameterList.ToArray()).SingleOrDefault();
-                        if (labelModel == null) return new ResultDataModel<List<LabelModel>>(false, "找不到標籤資料", null);
-                        labelModelList.Add(labelModel);
-                    }
-                    return new ResultDataModel<List<LabelModel>>(true, "取得標籤資料成功", labelModelList);
+                    sqlParameterList.Add(new SqlParameter("@userName", userName));
+                    sqlParameterList.Add(new SqlParameter("@CTR_PICKED_ID", PICKED_IDs[i]));
+                    string commandText = string.Format(cmd.ToString());
+                    commandText = string.Concat(commandText, " UNION ", commandText.Replace("CTR_PICKED_T", "CTR_PICKED_HT"));
+                    var labelModel = this.Context.Database.SqlQuery<LabelModel>(commandText, sqlParameterList.ToArray()).SingleOrDefault();
+                    if (labelModel == null) return new ResultDataModel<List<LabelModel>>(false, "找不到標籤資料", null);
+                    labelModelList.Add(labelModel);
                 }
+                return new ResultDataModel<List<LabelModel>>(true, "取得標籤資料成功", labelModelList);
 
             }
             catch (Exception ex)
@@ -1772,52 +1490,13 @@ AND pt.CTR_PICKED_ID = @CTR_PICKED_ID
         {
             try
             {
-                if (PurchaseStatusCode.PurchaseHeaderAlready == Status)
-                {
-                    List<LabelModel> labelModelList = new List<LabelModel>();
-                    if (PICKED_IDs == null || PICKED_IDs.Count == 0) return new ResultDataModel<List<LabelModel>>(false, "找不到揀貨資料", null);
-                    var pickDataList = ctrPickedHtRepositiory.GetAll().AsNoTracking().Where(x => PICKED_IDs.Contains(x.CtrPickedId)).ToList();
-                    if (pickDataList == null || pickDataList.Count == 0) return new ResultDataModel<List<LabelModel>>(false, "找不到揀貨資料", null);
-                    for (int i = 0; i < pickDataList.Count; i++)
-                    {
-                        List<SqlParameter> sqlParameterList = new List<SqlParameter>();
-                        StringBuilder cmd = new StringBuilder(
-@"
-SELECT 
-CAST(PT.BARCODE AS nvarchar) AS Barocde,
-@userName as PrintBy,
-CAST(tt.ITEM_DESC_TCH AS nvarchar) AS BarocdeName, 
-CAST(PT.PAPER_TYPE AS nvarchar) AS PapaerType,
-CAST(PT.BASIC_WEIGHT AS nvarchar) AS BasicWeight,
-CAST(PT.SPECIFICATION AS nvarchar) AS Specification,
-CAST(FORMAT(PT.PRIMARY_QUANTITY,'0.##########') AS nvarchar) AS Qty,
-CAST(PT.PRIMARY_UOM AS nvarchar) AS Unit
---CAST(CT.CONTAINER_NO AS nvarchar) AS BatchNo
-FROM [CTR_PICKED_HT] PT
-join CTR_HEADER_T CT ON CT.CTR_HEADER_ID = PT.CTR_HEADER_ID
-join ITEMS_T tt on tt.INVENTORY_ITEM_ID = PT.INVENTORY_ITEM_ID
-WHERE PT.ITEM_CATEGORY = N'捲筒'
-AND pt.CTR_PICKED_ID = @CTR_PICKED_ID
-");
-                        sqlParameterList.Add(new SqlParameter("@userName", userName));
-                        sqlParameterList.Add(new SqlParameter("@CTR_PICKED_ID", pickDataList[0].CtrPickedId));
-                        var labelModel = this.Context.Database.SqlQuery<LabelModel>(cmd.ToString(), sqlParameterList.ToArray()).SingleOrDefault(); ;
-                        if (labelModel == null) return new ResultDataModel<List<LabelModel>>(false, "找不到標籤資料", null);
-                        labelModelList.Add(labelModel);
-                    }
-                    return new ResultDataModel<List<LabelModel>>(true, "取得標籤資料成功", labelModelList);
-                }
-                else
-                {
-                    List<LabelModel> labelModelList = new List<LabelModel>();
-                    if (PICKED_IDs == null || PICKED_IDs.Count == 0) return new ResultDataModel<List<LabelModel>>(false, "找不到揀貨資料", null);
-                    var pickDataList = ctrPickedTRepositiory.GetAll().AsNoTracking().Where(x => PICKED_IDs.Contains(x.CtrPickedId)).ToList();
-                    if (pickDataList == null || pickDataList.Count == 0) return new ResultDataModel<List<LabelModel>>(false, "找不到揀貨資料", null);
 
-                    for (int i = 0; i < pickDataList.Count; i++)
-                    {
-                        List<SqlParameter> sqlParameterList = new List<SqlParameter>();
-                        StringBuilder cmd = new StringBuilder(
+                List<LabelModel> labelModelList = new List<LabelModel>();
+                if (PICKED_IDs == null || PICKED_IDs.Count == 0) return new ResultDataModel<List<LabelModel>>(false, "找不到揀貨資料", null);
+                for (int i = 0; i < PICKED_IDs.Count; i++)
+                {
+                    List<SqlParameter> sqlParameterList = new List<SqlParameter>();
+                    StringBuilder cmd = new StringBuilder(
 @"
 SELECT 
 CAST(PT.BARCODE AS nvarchar) AS Barocde,
@@ -1835,14 +1514,16 @@ join ITEMS_T tt on tt.INVENTORY_ITEM_ID = PT.INVENTORY_ITEM_ID
 WHERE PT.ITEM_CATEGORY = N'捲筒'
 AND pt.CTR_PICKED_ID = @CTR_PICKED_ID
 ");
-                        sqlParameterList.Add(new SqlParameter("@userName", userName));
-                        sqlParameterList.Add(new SqlParameter("@CTR_PICKED_ID", pickDataList[0].CtrPickedId));
-                        var labelModel = this.Context.Database.SqlQuery<LabelModel>(cmd.ToString(), sqlParameterList.ToArray()).SingleOrDefault();
-                        if (labelModel == null) return new ResultDataModel<List<LabelModel>>(false, "找不到標籤資料", null);
-                        labelModelList.Add(labelModel);
-                    }
-                    return new ResultDataModel<List<LabelModel>>(true, "取得標籤資料成功", labelModelList);
+                    sqlParameterList.Add(new SqlParameter("@userName", userName));
+                    sqlParameterList.Add(new SqlParameter("@CTR_PICKED_ID", PICKED_IDs[i]));
+                    string commandText = string.Format(cmd.ToString());
+                    commandText = string.Concat(commandText, " UNION ", commandText.Replace("CTR_PICKED_T", "CTR_PICKED_HT"));
+                    var labelModel = this.Context.Database.SqlQuery<LabelModel>(commandText, sqlParameterList.ToArray()).SingleOrDefault();
+                    if (labelModel == null) return new ResultDataModel<List<LabelModel>>(false, "找不到標籤資料", null);
+                    labelModelList.Add(labelModel);
                 }
+                return new ResultDataModel<List<LabelModel>>(true, "取得標籤資料成功", labelModelList);
+
 
             }
             catch (Exception ex)
@@ -1903,6 +1584,12 @@ AND LOCATOR_TYPE != '1'
             }
         }
 
+        /// <summary>
+        /// 編輯取得儲位
+        /// </summary>
+        /// <param name="ORGANIZATION_ID"></param>
+        /// <param name="PickId"></param>
+        /// <returns></returns>
         public List<SelectListItem> GetLocator(string ORGANIZATION_ID, string PickId)
         {
             try
