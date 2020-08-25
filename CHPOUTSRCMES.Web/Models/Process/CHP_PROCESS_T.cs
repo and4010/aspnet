@@ -41,29 +41,29 @@ namespace CHPOUTSRCMES.Web.Models.Process
         [Display(Name = "機台")]
         public string MachineNum { set; get; }
 
-        [Display(Name = "客戶名稱")] //CUSTOMER_NAME
+        [Display(Name = "客戶名稱")] 
         public string CustomerName { set; get; }
 
-        [Display(Name = "訂單編號")] //ORDER_NUMBER
+        [Display(Name = "訂單編號")] 
         public long OrderNumber { set; get; }
 
-        [Display(Name = "明細行")] //ORDER_LINE_NUMBER
+        [Display(Name = "明細行")] 
         public string OrderLineNumber { set; get; }
 
-        [Display(Name = "基重")] //BASIC_WEIGHT
+        [Display(Name = "基重")] 
         public string BasicWeight { set; get; }
 
-        [Display(Name = "規格")] //SPECIFICATION
+        [Display(Name = "規格")] 
         public string Specification { set; get; }
 
-        [Display(Name = "絲向")] //GRAIN_DIRECTION
+        [Display(Name = "絲向")] 
         public string GrainDirection { set; get; }
 
-        [Display(Name = "令重")] //ORDER_WEIGHT
+        [Display(Name = "令重")] 
         public string OrderWeight { set; get; }
 
-        [Display(Name = "令數")] //REAM_WT
-        public string ReamWt { set; get; }
+        [Display(Name = "令數")] 
+        public decimal ReamWt { set; get; }
 
         [Display(Name = "主要重量")] //PRIMARY_QUANTITY
         public decimal PrimaryQuantity { set; get; }

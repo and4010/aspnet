@@ -6,6 +6,7 @@ using Microsoft.AspNet.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Web;
 using System.Web.Mvc;
 
@@ -28,11 +29,17 @@ namespace CHPOUTSRCMES.Web.Controllers
 
         public ActionResult Schedule(long id)
         {
+            //取得使用者角色
+            var userIdentity = (ClaimsIdentity)User.Identity;
+            var claims = userIdentity.Claims;
+            var roleClaimType = userIdentity.RoleClaimType;
+            var roles = claims.Where(c => c.Type == ClaimTypes.Role).ToList();
             ProcessViewModel procesViewModel = new ProcessViewModel();
             ViewBag.RemnantItem = procesViewModel.GetRemnantItem();
             ViewBag.CotangentItem = procesViewModel.GetCotangentItem();
             procesViewModel.CHP_PROCESS_T = procesViewModel.GetViewModel(id);
             procesViewModel.YieldVariance = procesViewModel.GetRate(id);
+            procesViewModel.Authority = procesViewModel.GetAuthority(roles);
             return View(procesViewModel);
         }
 
@@ -53,18 +60,27 @@ namespace CHPOUTSRCMES.Web.Controllers
 
         public ActionResult Flat(long id)
         {
+            var userIdentity = (ClaimsIdentity)User.Identity;
+            var claims = userIdentity.Claims;
+            var roleClaimType = userIdentity.RoleClaimType;
+            var roles = claims.Where(c => c.Type == ClaimTypes.Role).ToList();
             ProcessViewModel procesViewModel = new ProcessViewModel();
             procesViewModel.CHP_PROCESS_T = procesViewModel.GetViewModel(id);
             procesViewModel.YieldVariance = procesViewModel.GetRate(id);
+            procesViewModel.Authority = procesViewModel.GetAuthority(roles);
             return View(procesViewModel);
         }
 
         public ActionResult PaperRoll(long id)
         {
-
+            var userIdentity = (ClaimsIdentity)User.Identity;
+            var claims = userIdentity.Claims;
+            var roleClaimType = userIdentity.RoleClaimType;
+            var roles = claims.Where(c => c.Type == ClaimTypes.Role).ToList();
             ProcessViewModel procesViewModel = new ProcessViewModel();
             procesViewModel.CHP_PROCESS_T = procesViewModel.GetViewModel(id);
             procesViewModel.YieldVariance = procesViewModel.GetRate(id);
+            procesViewModel.Authority = procesViewModel.GetAuthority(roles);
             return View(procesViewModel);
         }
 
@@ -85,6 +101,12 @@ namespace CHPOUTSRCMES.Web.Controllers
             return PartialView();
         }
 
+        /// <summary>
+        /// 存檔入庫用
+        /// </summary>
+        /// <param name="OspHeaderId"></param>
+        /// <param name="Locator"></param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult ChangeHeaderStauts(long OspHeaderId, long Locator)
         {
@@ -95,6 +117,25 @@ namespace CHPOUTSRCMES.Web.Controllers
             var name = this.User.Identity.GetUserName();
             var resultModel = viewModel.ChangeHeaderStauts(OspHeaderId, Locator, Userid, name);
             
+            return Json(new { resultModel }, JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
+        /// 完工紀錄編輯更改狀態
+        /// </summary>
+        /// <param name="OspHeaderId"></param>
+        /// <param name="Locator"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult EditHeaderStauts(long OspHeaderId)
+        {
+            ProcessViewModel viewModel = new ProcessViewModel();
+            //取得使用者ID
+            var Userid = this.User.Identity.GetUserId();
+            //取得使用者帳號
+            var name = this.User.Identity.GetUserName();
+            var resultModel = viewModel.EditHeaderStauts(OspHeaderId, Userid, name);
+
             return Json(new { resultModel }, JsonRequestBehavior.AllowGet);
         }
 
@@ -223,6 +264,11 @@ namespace CHPOUTSRCMES.Web.Controllers
             return Json(new { resultModel }, JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>
+        /// 加工Editor
+        /// </summary>
+        /// <param name="ProductionDTEditor"></param>
+        /// <returns></returns>
         [HttpPost]
         public JsonResult ProductionEdit(ProcessUOW.ProductionDTEditor ProductionDTEditor)
         {
@@ -232,6 +278,23 @@ namespace CHPOUTSRCMES.Web.Controllers
             //取得使用者帳號
             var name = this.User.Identity.GetUserName();
             var resultModel =  viewModel.SetProductionEditor(ProductionDTEditor, id, name);
+            return Json(new { resultModel }, JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
+        /// 代紙紙捲Editor
+        /// </summary>
+        /// <param name="ProductionDTEditor"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public JsonResult PaperRollerProductionEdit(ProcessUOW.ProductionDTEditor ProductionDTEditor)
+        {
+            ProcessViewModel viewModel = new ProcessViewModel();
+            //取得使用者ID
+            var id = this.User.Identity.GetUserId();
+            //取得使用者帳號
+            var name = this.User.Identity.GetUserName();
+            var resultModel = viewModel.SetPaperRollerProductionEditor(ProductionDTEditor, id, name);
             return Json(new { resultModel }, JsonRequestBehavior.AllowGet);
         }
 
@@ -322,41 +385,59 @@ namespace CHPOUTSRCMES.Web.Controllers
             return Json(new { resultModel }, JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>
+        /// 代紙紙捲產出明細
+        /// </summary>
+        /// <param name="PaperRoll_Basic_Weight"></param>
+        /// <param name="PaperRoll_Specification"></param>
+        /// <param name="PaperRoll_Lot_Number"></param>
+        /// <param name="Process_Detail_Id"></param>
+        /// <returns></returns>
         [HttpPost]
-        public JsonResult PaperRollProductionDetail(string PaperRoll_Basic_Weight, string PaperRoll_Specification, string PaperRoll_Lot_Number, string Product_Item, string Process_Detail_Id)
+        public JsonResult PaperRollCreateProduction(string PaperRoll_Basic_Weight, string PaperRoll_Specification, string PaperRoll_Lot_Number, long OspDetailOutId)
         {
-            //List<Production> model = ProcessViewModel.ListProductions;
-            //var boolean = true;
-            //if (PaperRoll_Lot_Number != null)
-            //{
-            //    model.Add(new Production
-            //    {
-            //        //Process_Detail_Id = int.Parse(Process_Detail_Id),
-            //        //Production_Id = model.Count == 0 ? (1) : (model.Count + 1),
-            //        //Barcode = "W201006000" + (model.Count == 0 ? (1).ToString() : (model.Count + 1).ToString()),
-            //        //Weight = PaperRoll_Basic_Weight.ToString(),
-            //        //Status = "待入庫",
-            //        //Item_No = Product_Item,
-            //        //Lot_Number = PaperRoll_Lot_Number
-            //    });
+            //取得使用者ID
+            var Userid = this.User.Identity.GetUserId();
+            //取得使用者帳號
+            var UserName = this.User.Identity.GetUserName();
+            ProcessViewModel viewModel = new ProcessViewModel();
+            var resultModel = viewModel.PaperRollCreateProduction(PaperRoll_Basic_Weight, PaperRoll_Specification, PaperRoll_Lot_Number, OspDetailOutId, Userid, UserName);
 
-            //}
-
-
-            return Json(new {  }, JsonRequestBehavior.AllowGet);
+            return Json(new { resultModel }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
-        public ActionResult GetPickInLabels(List<long> OspPickedInId)
+        public ActionResult GeProductLabels(List<long> OspPickedOutId,List<long> OspCotangentId)
         {
             //取得使用者帳號
             ProcessViewModel procesViewModel = new ProcessViewModel();
             var name = this.User.Identity.GetUserName();
-            return procesViewModel.GetPickInLabels(OspPickedInId, name);
+            return procesViewModel.GeProductLabels(OspPickedOutId, name, OspCotangentId);
+        }
+
+        /// <summary>
+        /// 列印代紙紙捲條碼
+        /// </summary>
+        /// <param name="OspPickedOutId"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult GePaperRollerProductLabels(List<long> OspPickedOutId)
+        {
+            //取得使用者帳號
+            ProcessViewModel procesViewModel = new ProcessViewModel();
+            var name = this.User.Identity.GetUserName();
+            return procesViewModel.GePaperRollerProductLabels(OspPickedOutId, name);
         }
 
 
-
+        [HttpPost]
+        public ActionResult RePrintLabel(List<long> StockId, string Status)
+        {
+            //取得使用者帳號
+            ProcessViewModel viewModel = new ProcessViewModel();
+            var name = this.User.Identity.GetUserName();
+            return viewModel.RePrintLabel(StockId, name, Status);
+        }
 
 
 

@@ -32,7 +32,8 @@ else
 @Html.HiddenFor(model => model.CHP_PROCESS_T.Status, new { id = "Status" })
 
 @Html.HiddenFor(model => model.CHP_PROCESS_T.OspDetailInId, new { id = "OspDetailInId" })
-
+@Html.HiddenFor(model => model.CHP_PROCESS_T.OspDetailOutId, new { id = "OspDetailOutId" })
+@Html.HiddenFor(model => model.CHP_PROCESS_T.OspHeaderId, new { id = "OspHeaderId" })
 
 <div class="row">
 
@@ -67,14 +68,6 @@ else
             @Html.DisplayFor(model => model.CHP_PROCESS_T.CustomerName)
         </div>
 
-        @* 訂單編號 *@
-        <div class="form-inline col col-md-1  text-right">
-            @Html.LabelFor(model => model.CHP_PROCESS_T.OrderNumber)
-        </div>
-
-        <div class="form-inline col col-md-1">
-            @Html.DisplayFor(model => model.CHP_PROCESS_T.OrderNumber)
-        </div>
 
     </div>
 
@@ -215,10 +208,13 @@ else
         </form>
         <button class="btn btn-danger" type="button" id="BtnProcess_Batch_no">比對</button>
         <button class="btn btn-danger" type="button" id="BtnEdit">修改</button>
-        <button class="btn btn-danger" type="button" id="BtnApprove">核准</button>
+        @if (Model.Authority)
+        {
+            <button class="btn btn-danger" type="button" id="BtnApprove">核准</button>
+        }
     </div>
 
-    <div class="row col-md-12 form-group">
+    <div class="row row-std">
 
         <div class="form-inline col col-md-1  text-right">
             <label>
@@ -231,14 +227,14 @@ else
     </div>
 
 
-    <div class="row col-md-12 form-group">
+    <div class="row col-md-12">
         @* 條碼編號 *@
         <div class="form-inline col col-md-1 text-right">
             @Html.LabelFor(model => model.Invest.Barcode)
         </div>
 
         <div class="form-inline col col-md-2">
-            <input class="form-control input-sm" autocomplete="off" id="PaperRoll_Invest_Barcode" />
+            <input class="text" autocomplete="off" id="PaperRoll_Invest_Barcode" />
         </div>
 
         @* 原重量 *@
@@ -276,6 +272,8 @@ else
                 <table class="table table-striped table-bordered table-hover" id="PaperRollInvestDataTables">
                     <thead>
                         <tr>
+                            <th></th>
+                            <th></th>
                             <th></th>
                             <th>
                                 @Html.DisplayName("條碼號")
@@ -352,7 +350,7 @@ else
         </div>
 
         <div class="form-inline col col-md-2">
-            <input class="form-control input-sm" id="PaperRoll_Basic_Weight" autocomplete="off" />
+            <input class="form-control input-sm" id="PaperRoll_Basic_Weight" autocomplete="off" type="number" />
         </div>
 
         @* 寬幅 *@
@@ -361,7 +359,7 @@ else
         </div>
 
         <div class="form-inline col col-md-2">
-            <input class="form-control input-sm" id="PaperRoll_Specification" autocomplete="off" />
+            <input class="form-control input-sm" id="PaperRoll_Specification" autocomplete="off" type="number"/>
         </div>
 
         @* 捲號 *@
@@ -370,7 +368,7 @@ else
         </div>
 
         <div class="form-inline col col-md-2">
-            <input class="form-control input-sm" id="PaperRoll_Lot_Number" autocomplete="off" />
+            <input class="form-control input-sm" id="PaperRoll_Lot_Number" autocomplete="off" type="number"/>
         </div>
 
         <div class="form-group col-md-1 ">
@@ -397,6 +395,7 @@ else
                     <table class="table table-striped table-bordered table-hover" id="PaperRollProductionDataTables">
                         <thead>
                             <tr>
+                                <th rowspan="2" colspan="1"></th>
                                 <th rowspan="2" colspan="1"></th>
                                 <th rowspan="2" colspan="1">條碼號</th>
                                 <th rowspan="2" colspan="1">料號</th>
@@ -460,18 +459,20 @@ else
         </div>
     </div>
     <div class="row col-md-12">
-        <div class="form-inline col col-md-3">
-            @Html.LabelFor(model => model.Production.Loss)
-            <label id="Production_Loss">@Html.DisplayFor(model => model.Production.Loss)</label>
+        <div class="form-inline col col-md-1">
+            @Html.LabelFor(model => model.YieldVariance.LossWeight)
+            <label id="Production_Loss">@Html.DisplayFor(model => model.YieldVariance.LossWeight)</label>
         </div>
-
+        <div class="form-inline col col-md-1">
+            @Html.LabelFor(model => model.YieldVariance.Rate)
+            <label id="Rate">@Html.DisplayFor(model => model.YieldVariance.Rate)</label>
+        </div>
         <div class="col-md-2">
-            @Html.HiddenFor(model => model.CHP_PROCESS_T.Loss, new { id = "CHP_PROCESS_T_Weight" })
-            <button class="btn btn-primary" type="button" id="BtnPaperRollCalculate">計算</button>
+            @Html.HiddenFor(model => model.CHP_PROCESS_T.Loss, new { id = "Loss" })
+            <button class="btn btn-primary" type="button" id="BtnCalculate">計算</button>
         </div>
 
     </div>
-
 
     <div class="row col-md-12 col-lg-12 col-sm-12" id="User">
         <div>

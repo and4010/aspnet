@@ -35,14 +35,13 @@ $(document).ready(function () {
             window.location.href = '/Process/Schedule/' + data.OspHeaderId;
         }
         if (BatchType == "TMP") {
-            window.location.href = '/Process/Flat/' + data.OspHeaderId;
+            if (data.PackingType == "" || data.PackingType == null) {
+                window.location.href = '/Process/PaperRoll/' + data.OspHeaderId;
+            } else {
+                window.location.href = '/Process/Flat/' + data.OspHeaderId;
+            }
+
         }
-
-        if (BatchType == 3) {
-            window.location.href = '/Process/PaperRoll/' + data.OspHeaderId;
-        }
-
-
 
     });
 
@@ -79,7 +78,7 @@ function ProcessLoadTable(Status, BatchNo, MachineNum, DueDate, CuttingDateFrom,
         "language": {
             "url": "/bower_components/datatables/language/zh-TW.json"
         },
-        scrollX : true,
+        scrollX: true,
         destroy: true,
         processing: true,
         serverSide: true,
@@ -148,7 +147,7 @@ function ProcessLoadTable(Status, BatchNo, MachineNum, DueDate, CuttingDateFrom,
                 }, "className": "dt-body-center"
             },
             { data: "BatchNo", "name": "工單號", "autoWidth": true, "className": "dt-body-center" },
-            { data: "MachineNum", "name": "機台", "autoWidth": true, "className": "dt-body-center"},
+            { data: "MachineNum", "name": "機台", "autoWidth": true, "className": "dt-body-center" },
             {
                 data: "Status", "name": "狀態", "autoWidth": true, "render": function (data, type, row) {
                     if (data == "已排單") {
@@ -157,11 +156,15 @@ function ProcessLoadTable(Status, BatchNo, MachineNum, DueDate, CuttingDateFrom,
                                 return '<a href=/Process/Schedule/' + row.OspDetailInId + '> ' + data + '</a>';
                                 break;
                             case "TMP":
-                                return '<a href=/Process/Flat/' + row.OspDetailInId + '> ' + data + '</a>';
-                                break;
-                            case "R":
-                                return '<a href=/Process/PaperRoll/' + row.OspDetailInId + '> ' + data + '</a>';
-                                break;
+                                if (row.PackingType == "" || row.PackingType == null) {
+                                    return '<a href=/Process/PaperRoll/' + row.OspDetailInId + '> ' + data + '</a>';
+                                    break;
+                                } else {
+                                    return '<a href=/Process/Flat/' + row.OspDetailInId + '> ' + data + '</a>';
+                                    break;
+                                }
+
+
                         }
                     } else {
                         return data;
@@ -173,34 +176,36 @@ function ProcessLoadTable(Status, BatchNo, MachineNum, DueDate, CuttingDateFrom,
                                 return '<a href=/Process/Schedule/' + row.OspDetailInId + '> ' + data + '</a>';
                                 break;
                             case "TMP":
-                                return '<a href=/Process/Flat/' + row.OspDetailInId + '> ' + data + '</a>';
-                                break;
-                            case "R":
-                                return '<a href=/Process/PaperRoll/' + row.OspDetailInId + '> ' + data + '</a>';
-                                break;
+                                if (row.PackingType == "" || row.PackingType == null) {
+                                    return '<a href=/Process/PaperRoll/' + row.OspDetailInId + '> ' + data + '</a>';
+                                    break;
+                                } else {
+                                    return '<a href=/Process/Flat/' + row.OspDetailInId + '> ' + data + '</a>';
+                                    break;
+                                }
                         }
                     }
 
 
                 }, "className": "dt-body-center"
             },
-            { data: "CustomerName", "name": "客戶名稱", "autoWidth": true, "className": "dt-body-center"},
-            { data: "PaperType", "name": "紙別", "autoWidth": true, "className": "dt-body-center"},
-            { data: "BasicWeight", "name": "基重", "autoWidth": true, "className": "dt-body-right"},
-            { data: "Specification", "name": "規格", "autoWidth": true, "className": "dt-body-center"},
-            { data: "OrderWeight", "name": "令重", "autoWidth": true, "className": "dt-body-right"},
-            { data: "GrainDirection", "name": "絲向", "autoWidth": true, "className": "dt-body-center"},
+            { data: "CustomerName", "name": "客戶名稱", "autoWidth": true, "className": "dt-body-center" },
+            { data: "PaperType", "name": "紙別", "autoWidth": true, "className": "dt-body-center" },
+            { data: "BasicWeight", "name": "基重", "autoWidth": true, "className": "dt-body-right" },
+            { data: "Specification", "name": "規格", "autoWidth": true, "className": "dt-body-center" },
+            { data: "OrderWeight", "name": "令重", "autoWidth": true, "className": "dt-body-right" },
+            { data: "GrainDirection", "name": "絲向", "autoWidth": true, "className": "dt-body-center" },
             { data: "ReamWt", "name": "令數", "autoWidth": true, "className": "dt-body-right" },
             { data: "TransactionUom", "name": "交易單位", "autoWidth": true, "className": "dt-body-center" },
             { data: "PrimaryQuantity", "name": "重量", "autoWidth": true, "className": "dt-body-right" },
-            { data: "PrimaryUom", "name": "主要單位", "autoWidth": true, "className": "dt-body-center"},
-            { data: "PackingType", "name": "包裝方式", "autoWidth": true, "className": "dt-body-center"},
-            { data: "OspRemark", "name": "委外工單備註", "autoWidth": true, "className": "dt-body-center"},
-            { data: "Note", "name": "生產備註", "autoWidth": true, "className": "dt-body-center"},
-            { data: "SelectedInventoryItemNumber", "name": "組成成份料號", "autoWidth": true, "className": "dt-body-center"},
-            { data: "Product_Item", "name": "產品料號", "autoWidth": true, "className": "dt-body-center"},
-            { data: "OrderNumber", "name": "訂單編號", "autoWidth": true, "className": "dt-body-center"},
-            { data: "OrderLineNumber", "name": "明細行", "autoWidth": true, "className": "dt-body-center"},
+            { data: "PrimaryUom", "name": "主要單位", "autoWidth": true, "className": "dt-body-center" },
+            { data: "PackingType", "name": "包裝方式", "autoWidth": true, "className": "dt-body-center" },
+            { data: "OspRemark", "name": "委外工單備註", "autoWidth": true, "className": "dt-body-center" },
+            { data: "Note", "name": "生產備註", "autoWidth": true, "className": "dt-body-center" },
+            { data: "SelectedInventoryItemNumber", "name": "組成成份料號", "autoWidth": true, "className": "dt-body-center" },
+            { data: "Product_Item", "name": "產品料號", "autoWidth": true, "className": "dt-body-center" },
+            { data: "OrderNumber", "name": "訂單編號", "autoWidth": true, "className": "dt-body-center" },
+            { data: "OrderLineNumber", "name": "明細行", "autoWidth": true, "className": "dt-body-center" },
             {
                 data: "", "autoWidth": true, "render": function (data, type, row) {
                     if (row.Status == "已完工") {
@@ -214,7 +219,7 @@ function ProcessLoadTable(Status, BatchNo, MachineNum, DueDate, CuttingDateFrom,
                     } else {
                         return '<button class="btn btn-primary btn-sm" id = "btnEdit">編輯</button>';
                     }
-       
+
                 }
             }
         ],
@@ -318,8 +323,8 @@ function search() {
         var Subinventory = $("#Subinventory").val();
 
         ProcessLoadTable(Status, BatchNo, MachineNum, DueDate, CuttingDateFrom, CuttingDateTo, Subinventory);
-        
-        
+
+
     });
 
 }

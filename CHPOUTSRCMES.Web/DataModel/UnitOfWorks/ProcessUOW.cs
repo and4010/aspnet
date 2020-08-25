@@ -15,6 +15,7 @@ using System.Data.Entity;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Net;
+using System.Security.Claims;
 using System.Text;
 using System.Threading;
 using System.Web;
@@ -118,7 +119,6 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                 oSP.Specification = "362KRL00";
                 oSP.GrainDirection = "S";
                 oSP.ReamWt = "20";
-                oSP.PackingType = "令";
                 oSP.PlanQty = 1;
                 oSP.WipPLAN_QTY = 1;
                 oSP.DtlUom = "KG";
@@ -186,11 +186,10 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                 oSP.PackingType = "無令打包";
                 oSP.PaperType = "FU0S";
                 oSP.OrderWeight = "20";
-                oSP.BasicWeight = "020000";
+                oSP.BasicWeight = "02000";
                 oSP.Specification = "889RL00";
                 oSP.GrainDirection = "S";
                 oSP.ReamWt = "20";
-                oSP.PackingType = "令";
                 oSP.PlanQty = 1;
                 oSP.WipPLAN_QTY = 1;
                 oSP.DtlUom = "KG";
@@ -230,6 +229,304 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                 oSP.LastUpdateBy = "1";
                 oSP.LastUpdateDate = DateTime.Now;
                 OspOrgTRepositiory.Create(oSP, true);
+
+
+                //代紙平張
+
+                oSP.ProcessCode = "XXIFP221";
+                oSP.ServerCode = "124";
+                oSP.BatchId = "20201112141600100000";
+                oSP.BatchLineId = 2;
+                oSP.PeBatchId = 2;
+                oSP.BatchNo = "P100000";
+                oSP.BatchType = "TMP";
+                oSP.BatchStatus = 0;
+                oSP.BatchStatusDesc = "待排單";
+                oSP.OrgId = 1;
+                oSP.OrgName = "加工";
+                oSP.OrganizationId = 265;
+                oSP.OrganizationCode = "FTY";
+                oSP.DueDate = DateTime.Now;
+                oSP.PlanStartDate = DateTime.Now;
+                oSP.PlanCmpltDate = DateTime.Now;
+                oSP.PeCreatedBy = "1";
+                oSP.PeCreationDate = DateTime.Now;
+                oSP.PeLastUpdateBy = "1";
+                oSP.PeLastUpdateDate = DateTime.Now;
+                oSP.LineType = "I";
+                oSP.LineNo = 2;
+                oSP.InventoryItemId = 504124;
+                oSP.InventoryItemNumber = "4DM00P02700252K512K";
+                oSP.PackingType = "無令打件";
+                oSP.PaperType = "DM00";
+                oSP.OrderWeight = "27";
+                oSP.BasicWeight = "2700";
+                oSP.Specification = "252K512K";
+                oSP.GrainDirection = "S";
+                oSP.ReamWt = "27";
+                oSP.PlanQty = 2;
+                oSP.WipPLAN_QTY = 3;
+                oSP.DtlUom = "RE";
+                oSP.OrderHeaderId = 2;
+                oSP.OrderNumber = 654321;
+                oSP.OrderLineId = 2;
+                oSP.OrderLineNumber = "9536852";
+                oSP.CustomerId = 2;
+                oSP.CustomerNumber = "321";
+                oSP.CustomerName = "中華彩色印刷股份有限公司";
+                oSP.PrNumber = 2;
+                oSP.PrLineNumber = 2;
+                oSP.RequisitionLineId = 2;
+                oSP.PoNumber = 2;
+                oSP.PoLineNumber = 2;
+                oSP.PoLineId = 2;
+                oSP.PoUnitPrice = 40;
+                oSP.PoRevisionNum = 2;
+                oSP.PoStatus = "待印";
+                oSP.PoVendorNum = "2";
+                oSP.OspRemark = "N11/25入倉";
+                oSP.Subinventory = "TB3";
+                oSP.LocatorId = 23265;
+                oSP.LocatorCode = "FTY.REVT.A11.B12";
+                oSP.ReservationUomCode = "RE";
+                oSP.ReservationQuantity = 2;
+                oSP.LineCreatedBy = 1;
+                oSP.LineCreationDate = DateTime.Now;
+                oSP.LineLastUpdateBy = 1;
+                oSP.LineLastUpdateDate = DateTime.Now;
+                oSP.TransactionQuantity = 2000;
+                oSP.TransactionUom = "KG";
+                oSP.PrimaryQuantity = 2000;
+                oSP.SecondaryQuantity = 1000;
+                oSP.SecondaryUom = "RE";
+                oSP.PrimaryUom = "KG";
+                oSP.CreatedBy = "1";
+                oSP.CreationDate = DateTime.Now;
+                oSP.LastUpdateBy = "1";
+                oSP.LastUpdateDate = DateTime.Now;
+                OspOrgTRepositiory.Create(oSP, true);
+
+
+                oSP.ProcessCode = "XXIFP221";
+                oSP.ServerCode = "124";
+                oSP.BatchId = "20201112141600100000";
+                oSP.BatchLineId = 2;
+                oSP.PeBatchId = 2;
+                oSP.BatchNo = "P100000";
+                oSP.BatchType = "TMP";
+                oSP.BatchStatus = 0;
+                oSP.BatchStatusDesc = "待排單";
+                oSP.OrgId = 1;
+                oSP.OrgName = "加工";
+                oSP.OrganizationId = 265;
+                oSP.OrganizationCode = "FTY";
+                oSP.DueDate = DateTime.Now;
+                oSP.PlanStartDate = DateTime.Now;
+                oSP.PlanCmpltDate = DateTime.Now;
+                oSP.PeCreatedBy = "1";
+                oSP.PeCreationDate = DateTime.Now;
+                oSP.PeLastUpdateBy = "1";
+                oSP.PeLastUpdateDate = DateTime.Now;
+                oSP.LineType = "P";
+                oSP.LineNo = 2;
+                oSP.InventoryItemId = 504125;
+                oSP.InventoryItemNumber = "4DM00P02700330K512K";
+                oSP.PackingType = "無令打件";
+                oSP.PaperType = "DM00";
+                oSP.OrderWeight = "27";
+                oSP.BasicWeight = "2700";
+                oSP.Specification = "330K512K";
+                oSP.GrainDirection = "S";
+                oSP.ReamWt = "27";
+                oSP.PlanQty = 2;
+                oSP.WipPLAN_QTY = 3;
+                oSP.DtlUom = "RE";
+                oSP.OrderHeaderId = 2;
+                oSP.OrderNumber = 654321;
+                oSP.OrderLineId = 2;
+                oSP.OrderLineNumber = "9536852";
+                oSP.CustomerId = 2;
+                oSP.CustomerNumber = "321";
+                oSP.CustomerName = "中華彩色印刷股份有限公司";
+                oSP.PrNumber = 2;
+                oSP.PrLineNumber = 2;
+                oSP.RequisitionLineId = 2;
+                oSP.PoNumber = 2;
+                oSP.PoLineNumber = 2;
+                oSP.PoLineId = 2;
+                oSP.PoUnitPrice = 40;
+                oSP.PoRevisionNum = 2;
+                oSP.PoStatus = "待印";
+                oSP.PoVendorNum = "2";
+                oSP.OspRemark = "N11/25入倉";
+                oSP.Subinventory = "TB3";
+                oSP.LocatorId = 23265;
+                oSP.LocatorCode = "FTY.REVT.A11.B12";
+                oSP.ReservationUomCode = "RE";
+                oSP.ReservationQuantity = 2;
+                oSP.LineCreatedBy = 1;
+                oSP.LineCreationDate = DateTime.Now;
+                oSP.LineLastUpdateBy = 1;
+                oSP.LineLastUpdateDate = DateTime.Now;
+                oSP.TransactionQuantity = 2000;
+                oSP.TransactionUom = "KG";
+                oSP.PrimaryQuantity = 2000;
+                oSP.SecondaryQuantity = 1000;
+                oSP.SecondaryUom = "RE";
+                oSP.PrimaryUom = "KG";
+                oSP.CreatedBy = "1";
+                oSP.CreationDate = DateTime.Now;
+                oSP.LastUpdateBy = "1";
+                oSP.LastUpdateDate = DateTime.Now;
+                OspOrgTRepositiory.Create(oSP, true);
+
+                //代紙平張
+
+                oSP.ProcessCode = "XXIFP221";
+                oSP.ServerCode = "124";
+                oSP.BatchId = "20201112141600100000";
+                oSP.BatchLineId = 3;
+                oSP.PeBatchId = 3;
+                oSP.BatchNo = "K100000";
+                oSP.BatchType = "TMP";
+                oSP.BatchStatus = 0;
+                oSP.BatchStatusDesc = "待排單";
+                oSP.OrgId = 1;
+                oSP.OrgName = "加工";
+                oSP.OrganizationId = 265;
+                oSP.OrganizationCode = "FTY";
+                oSP.DueDate = DateTime.Now;
+                oSP.PlanStartDate = DateTime.Now;
+                oSP.PlanCmpltDate = DateTime.Now;
+                oSP.PeCreatedBy = "1";
+                oSP.PeCreationDate = DateTime.Now;
+                oSP.PeLastUpdateBy = "1";
+                oSP.PeLastUpdateDate = DateTime.Now;
+                oSP.LineType = "I";
+                oSP.LineNo = 2;
+                oSP.InventoryItemId = 558789;
+                oSP.InventoryItemNumber = "4AH00C01055294KRL00";
+                oSP.PackingType = "";
+                oSP.PaperType = "AH00";
+                oSP.OrderWeight = "22";
+                oSP.BasicWeight = "1055";
+                oSP.Specification = "294KRL00";
+                oSP.GrainDirection = "A";
+                oSP.ReamWt = "22";
+                oSP.PlanQty = 3;
+                oSP.WipPLAN_QTY = 4;
+                oSP.DtlUom = "RE";
+                oSP.OrderHeaderId = 32;
+                oSP.OrderNumber = 9513542;
+                oSP.OrderLineId = 3;
+                oSP.OrderLineNumber = "1111536";
+                oSP.CustomerId = 3;
+                oSP.CustomerNumber = "321";
+                oSP.CustomerName = "彩色印刷股份有限公司";
+                oSP.PrNumber = 3;
+                oSP.PrLineNumber = 3;
+                oSP.RequisitionLineId = 3;
+                oSP.PoNumber = 3;
+                oSP.PoLineNumber = 3;
+                oSP.PoLineId = 3;
+                oSP.PoUnitPrice = 50;
+                oSP.PoRevisionNum = 3;
+                oSP.PoStatus = "待印";
+                oSP.PoVendorNum = "3";
+                oSP.OspRemark = "N11/25入倉";
+                oSP.Subinventory = "TB3";
+                oSP.LocatorId = 23265;
+                oSP.LocatorCode = "FTY.REVT.A11.B12";
+                oSP.ReservationUomCode = "RE";
+                oSP.ReservationQuantity = 2;
+                oSP.LineCreatedBy = 1;
+                oSP.LineCreationDate = DateTime.Now;
+                oSP.LineLastUpdateBy = 1;
+                oSP.LineLastUpdateDate = DateTime.Now;
+                oSP.TransactionQuantity = 3000;
+                oSP.TransactionUom = "KG";
+                oSP.PrimaryQuantity = 3000;
+                oSP.PrimaryUom = "KG";
+                oSP.CreatedBy = "1";
+                oSP.CreationDate = DateTime.Now;
+                oSP.LastUpdateBy = "1";
+                oSP.LastUpdateDate = DateTime.Now;
+                OspOrgTRepositiory.Create(oSP, true);
+
+
+                oSP.ProcessCode = "XXIFP221";
+                oSP.ServerCode = "124";
+                oSP.BatchId = "20201112141600100000";
+                oSP.BatchLineId = 3;
+                oSP.PeBatchId = 3;
+                oSP.BatchNo = "K100000";
+                oSP.BatchType = "TMP";
+                oSP.BatchStatus = 0;
+                oSP.BatchStatusDesc = "待排單";
+                oSP.OrgId = 1;
+                oSP.OrgName = "加工";
+                oSP.OrganizationId = 265;
+                oSP.OrganizationCode = "FTY";
+                oSP.DueDate = DateTime.Now;
+                oSP.PlanStartDate = DateTime.Now;
+                oSP.PlanCmpltDate = DateTime.Now;
+                oSP.PeCreatedBy = "1";
+                oSP.PeCreationDate = DateTime.Now;
+                oSP.PeLastUpdateBy = "1";
+                oSP.PeLastUpdateDate = DateTime.Now;
+                oSP.LineType = "P";
+                oSP.LineNo = 2;
+                oSP.InventoryItemId = 558790;
+                oSP.InventoryItemNumber = "4AH00E01000340KRL00";
+                oSP.PackingType = "";
+                oSP.PaperType = "AH00";
+                oSP.OrderWeight = "22";
+                oSP.BasicWeight = "1000";
+                oSP.Specification = "340KRL00";
+                oSP.GrainDirection = "C";
+                oSP.ReamWt = "22";
+                oSP.PlanQty = 3;
+                oSP.WipPLAN_QTY = 4;
+                oSP.DtlUom = "RE";
+                oSP.OrderHeaderId = 3;
+                oSP.OrderNumber = 4357213;
+                oSP.OrderLineId = 3;
+                oSP.OrderLineNumber = "4357213";
+                oSP.CustomerId = 3;
+                oSP.CustomerNumber = "753";
+                oSP.CustomerName = "彩色印刷股份有限公司";
+                oSP.PrNumber = 3;
+                oSP.PrLineNumber = 3;
+                oSP.RequisitionLineId = 3;
+                oSP.PoNumber = 3;
+                oSP.PoLineNumber = 3;
+                oSP.PoLineId = 3;
+                oSP.PoUnitPrice = 50;
+                oSP.PoRevisionNum = 3;
+                oSP.PoStatus = "待印";
+                oSP.PoVendorNum = "3";
+                oSP.OspRemark = "N11/25入倉";
+                oSP.Subinventory = "TB3";
+                oSP.LocatorId = 23265;
+                oSP.LocatorCode = "FTY.REVT.A11.B12";
+                oSP.ReservationUomCode = "RE";
+                oSP.ReservationQuantity = 3;
+                oSP.LineCreatedBy = 1;
+                oSP.LineCreationDate = DateTime.Now;
+                oSP.LineLastUpdateBy = 1;
+                oSP.LineLastUpdateDate = DateTime.Now;
+                oSP.TransactionQuantity = 3000;
+                oSP.TransactionUom = "KG";
+                oSP.PrimaryQuantity = 3000;
+                oSP.PrimaryUom = "KG";
+                oSP.CreatedBy = "1";
+                oSP.CreationDate = DateTime.Now;
+                oSP.LastUpdateBy = "1";
+                oSP.LastUpdateDate = DateTime.Now;
+                OspOrgTRepositiory.Create(oSP, true);
+
+
+
             }
             catch (Exception e)
             {
@@ -457,10 +754,10 @@ DI.BASIC_WEIGHT AS BasicWeight,
 DI.SPECIFICATION AS Specification,
 DI.GRAIN_DIRECTION AS GrainDirection,
 DI.ORDER_WEIGHT AS OrderWeight,
-DI.REAM_WT AS ReamWt,
-DI.PRIMARY_QUANTITY AS PrimaryQuantity,
-DI.PRIMARY_UOM AS PrimaryUom,
-DI.TRANSACTION_UOM AS TransactionUom,
+DO.TRANSACTION_QUANTITY AS ReamWt,
+DO.PRIMARY_QUANTITY AS PrimaryQuantity,
+DO.PRIMARY_UOM AS PrimaryUom,
+DO.TRANSACTION_UOM AS TransactionUom,
 DI.PACKING_TYPE AS PackingType,
 DI.PAPER_TYPE AS PaperType,
 DI.OSP_REMARK AS OspRemark,
@@ -560,10 +857,10 @@ DI.BASIC_WEIGHT AS BasicWeight,
 DI.SPECIFICATION AS Specification,
 DI.GRAIN_DIRECTION AS GrainDirection,
 DI.ORDER_WEIGHT AS OrderWeight,
-DI.REAM_WT AS ReamWt,
-DI.PRIMARY_QUANTITY AS PrimaryQuantity,
-DI.PRIMARY_UOM AS PrimaryUom,
-DI.TRANSACTION_UOM AS TransactionUom,
+DO.TRANSACTION_QUANTITY AS ReamWt,
+DO.PRIMARY_QUANTITY AS PrimaryQuantity,
+DO.PRIMARY_UOM AS PrimaryUom,
+DO.TRANSACTION_UOM AS TransactionUom,
 DI.PACKING_TYPE AS PackingType,
 DI.PAPER_TYPE AS PaperType,
 DI.OSP_REMARK AS OspRemark,
@@ -925,12 +1222,10 @@ AND ST.BARCODE = @BARCODE");
             {
                 try
                 {
-                    using (var mesContext = new MesContext())
-                    {
-                        List<SqlParameter> sqlParameterList = new List<SqlParameter>();
-                        StringBuilder query = new StringBuilder();
-                        query.Append(
-    @"SELECT
+                    List<SqlParameter> sqlParameterList = new List<SqlParameter>();
+                    StringBuilder query = new StringBuilder();
+                    query.Append(
+@"SELECT
 ST.[STOCK_ID] as StockId
 ,ST.[ORGANIZATION_ID] as OrganizationId
 ,ST.[ORGANIZATION_CODE] as OrganizationCode
@@ -970,64 +1265,61 @@ FROM [STOCK_T] ST
 join OSP_DETAIL_IN_T DT ON DT.OSP_DETAIL_IN_ID = @OSP_DETAIL_IN_ID
 WHERE ST.ITEM_NUMBER = DT.INVENTORY_ITEM_NUMBER
 AND ST.BARCODE = @BARCODE");
-                        sqlParameterList.Add(new SqlParameter("@OSP_DETAIL_IN_ID", OspDetailInId));
-                        sqlParameterList.Add(new SqlParameter("@BARCODE", Barcode));
-                        var data = mesContext.Database.SqlQuery<STOCK_T>(query.ToString(), sqlParameterList.ToArray()).SingleOrDefault();
+                    sqlParameterList.Add(new SqlParameter("@OSP_DETAIL_IN_ID", OspDetailInId));
+                    sqlParameterList.Add(new SqlParameter("@BARCODE", Barcode));
+                    var data = Context.Database.SqlQuery<STOCK_T>(query.ToString(), sqlParameterList.ToArray()).SingleOrDefault();
 
-                        if (data == null)
+                    if (data == null)
+                    {
+                        return new ResultModel(false, "無條碼資料");
+                    }
+
+                    var OspPickIn = OspPickedInTRepositiory.Get(x => x.Barcode == Barcode && x.OspDetailInId == OspDetailInId).SingleOrDefault();
+                    if (OspPickIn == null)
+                    {
+                        var detailin = OspDetailInTRepositiory.Get(x => x.OspDetailInId == OspDetailInId).SingleOrDefault();
+                        var Header = OspHeaderTRepositiory.Get(x => x.OspHeaderId == detailin.OspHeaderId).SingleOrDefault();
+                        OSP_PICKED_IN_T oSP_PICKED_IN_T = new OSP_PICKED_IN_T();
+                        oSP_PICKED_IN_T.OspDetailInId = OspDetailInId;
+                        oSP_PICKED_IN_T.OspHeaderId = detailin == null ? 0 : detailin.OspHeaderId;
+                        oSP_PICKED_IN_T.StockId = data.StockId;
+                        oSP_PICKED_IN_T.Barcode = Barcode;
+                        oSP_PICKED_IN_T.InventoryItemId = data.InventoryItemId;
+                        oSP_PICKED_IN_T.InventoryItemNumber = data.ItemNumber;
+                        oSP_PICKED_IN_T.PaperType = data.PaperType;
+                        oSP_PICKED_IN_T.BasicWeight = data.BasicWeight;
+                        oSP_PICKED_IN_T.Specification = data.Specification;
+                        oSP_PICKED_IN_T.LotNumber = data.LotNumber;
+                        oSP_PICKED_IN_T.PrimaryQuantity = data.PrimaryAvailableQty;
+                        oSP_PICKED_IN_T.PrimaryUom = data.PrimaryUomCode;
+                        oSP_PICKED_IN_T.SecondaryQuantity = data.SecondaryAvailableQty;
+                        oSP_PICKED_IN_T.SecondaryUom = data.SecondaryUomCode;
+                        oSP_PICKED_IN_T.HasRemaint = Remnant == "1" ? "有" : "無";
+                        oSP_PICKED_IN_T.RemainingQuantity = Remaining_Weight == "" ? 0 : decimal.Parse(Remaining_Weight);
+                        oSP_PICKED_IN_T.RemainingUom = Remaining_Weight == "" ? null : "KG";
+                        oSP_PICKED_IN_T.CreatedBy = UserId;
+                        oSP_PICKED_IN_T.CreatedUserName = UserName;
+                        oSP_PICKED_IN_T.CreationDate = DateTime.Now;
+                        OspPickedInTRepositiory.Create(oSP_PICKED_IN_T, true);
+                        var aft = Remaining_Weight == "" ? 0 : decimal.Parse(Remaining_Weight);
+                        var chg = data.PrimaryAvailableQty - (Remaining_Weight == "" ? 0 : decimal.Parse(Remaining_Weight));
+                        if (data.PrimaryAvailableQty >= aft)
                         {
-                            return new ResultModel(false, "無條碼資料");
-                        }
-
-                        var OspPickIn = OspPickedInTRepositiory.Get(x => x.Barcode == Barcode && x.OspDetailInId == OspDetailInId).SingleOrDefault();
-                        if (OspPickIn == null)
-                        {
-                            var detailin = OspDetailInTRepositiory.Get(x => x.OspDetailInId == OspDetailInId).SingleOrDefault();
-                            var Header = OspHeaderTRepositiory.Get(x => x.OspHeaderId == detailin.OspHeaderId).SingleOrDefault();
-                            OSP_PICKED_IN_T oSP_PICKED_IN_T = new OSP_PICKED_IN_T();
-                            oSP_PICKED_IN_T.OspDetailInId = OspDetailInId;
-                            oSP_PICKED_IN_T.OspHeaderId = detailin == null ? 0 : detailin.OspHeaderId;
-                            oSP_PICKED_IN_T.StockId = data.StockId;
-                            oSP_PICKED_IN_T.Barcode = Barcode;
-                            oSP_PICKED_IN_T.InventoryItemId = data.InventoryItemId;
-                            oSP_PICKED_IN_T.InventoryItemNumber = data.ItemNumber;
-                            oSP_PICKED_IN_T.PaperType = data.PaperType;
-                            oSP_PICKED_IN_T.BasicWeight = data.BasicWeight;
-                            oSP_PICKED_IN_T.Specification = data.Specification;
-                            oSP_PICKED_IN_T.LotNumber = data.LotNumber;
-                            oSP_PICKED_IN_T.PrimaryQuantity = data.PrimaryAvailableQty;
-                            oSP_PICKED_IN_T.PrimaryUom = data.PrimaryUomCode;
-                            oSP_PICKED_IN_T.SecondaryQuantity = data.SecondaryAvailableQty;
-                            oSP_PICKED_IN_T.SecondaryUom = data.SecondaryUomCode;
-                            oSP_PICKED_IN_T.HasRemaint = Remnant == "1" ? "有" : "無";
-                            oSP_PICKED_IN_T.RemainingQuantity = Remaining_Weight == "" ? 0 : decimal.Parse(Remaining_Weight);
-                            oSP_PICKED_IN_T.RemainingUom = Remaining_Weight == "" ? null : "KG";
-                            oSP_PICKED_IN_T.CreatedBy = UserId;
-                            oSP_PICKED_IN_T.CreatedUserName = UserName;
-                            oSP_PICKED_IN_T.CreationDate = DateTime.Now;
-                            OspPickedInTRepositiory.Create(oSP_PICKED_IN_T, true);
-                            var aft = Remaining_Weight == "" ? 0 : decimal.Parse(Remaining_Weight);
-                            var chg = data.PrimaryAvailableQty - (Remaining_Weight == "" ? 0 : decimal.Parse(Remaining_Weight));
-                            if (data.PrimaryAvailableQty >= aft)
-                            {
-                                CheckStock(data.StockId, UserId, aft, ActionCode.Picked);
-                                StockRecord(data.StockId, aft, chg, 0, 0, CategoryCode.Process, ActionCode.Picked, Header.BatchNo, UserId);
-                                txn.Commit();
-                                return new ResultModel(true, "寫入成功");
-                            }
-                            else
-                            {
-                                txn.Rollback();
-                                return new ResultModel(false, "庫存數量不正確");
-                            }
-
+                            CheckStock(data.StockId, UserId, aft, ActionCode.Picked);
+                            StockRecord(data.StockId, aft, chg, 0, 0, CategoryCode.Process, ActionCode.Picked, Header.BatchNo, UserId);
+                            txn.Commit();
+                            return new ResultModel(true, "寫入成功");
                         }
                         else
                         {
-                            return new ResultModel(false, "條碼資料已存在");
+                            txn.Rollback();
+                            return new ResultModel(false, "庫存數量不正確");
                         }
 
-
+                    }
+                    else
+                    {
+                        return new ResultModel(false, "條碼資料已存在");
                     }
 
                 }
@@ -1098,9 +1390,115 @@ AND ST.BARCODE = @BARCODE");
         /// <returns></returns>
         public ResultModel InsertPickOut(string UserId, string UserName, string Production_Roll_Ream_Qty, string Production_Roll_Ream_Wt, string Cotangent, long OspDetailOutId)
         {
-            try
+            using (var db = new MesContext())
             {
-                using (var db = new MesContext())
+                var detailout = OspDetailOutTRepositiory.Get(x => x.OspDetailOutId == OspDetailOutId).SingleOrDefault();
+                var header = OspHeaderTRepositiory.Get(x => x.OspHeaderId == detailout.OspHeaderId).SingleOrDefault();
+                if (detailout == null)
+                {
+                    return new ResultModel(false, "ID錯誤");
+                }
+                OSP_PICKED_OUT_T ospPickOut = new OSP_PICKED_OUT_T();
+                OSP_COTANGENT_T ospCotanget = new OSP_COTANGENT_T();
+
+                if (Cotangent == "1")
+                {
+                    var relate = db.OspDetailOutTs.
+                        Join(db.RelatedTs,
+                        s => s.InventoryItemId,
+                        c => c.InventoryItemId,
+                        (s, c) => new
+                        {
+                            a = s,
+                            b = c
+
+                        }).Where(
+                        x => x.a.OspDetailOutId == OspDetailOutId &&
+                        x.b.InventoryItemId == x.a.InventoryItemId &&
+                        x.b.ControlFlag != "D").SingleOrDefault();
+
+                    //尋找餘切
+                    var Relateitem = db.ItemsTs.Where(x => x.InventoryItemId == relate.b.RelatedItemId).SingleOrDefault();
+
+
+                    ospCotanget.OspDetailOutId = OspDetailOutId;
+                    ospCotanget.OspHeaderId = detailout.OspHeaderId;
+                    ospCotanget.StockId = null;
+                    ospCotanget.Barcode = GenerateBarcodes(header.OrganizationId, detailout.Subinventory, 1, UserName).Data[0];
+                    ospCotanget.InventoryItemId = Relateitem.InventoryItemId;
+                    ospCotanget.InventoryItemNumber = Relateitem.ItemNumber;
+                    ospCotanget.BasicWeight = Relateitem.CatalogElemVal040;
+                    ospCotanget.Specification = Relateitem.CatalogElemVal050;
+                    ospCotanget.PaperType = Relateitem.CatalogElemVal020;
+                    ospCotanget.LotNumber = "";
+                    ospCotanget.PrimaryQuantity = 0M;
+                    ospCotanget.PrimaryUom = Relateitem.PrimaryUomCode;
+                    ospCotanget.SecondaryQuantity = 0M;
+                    ospCotanget.SecondaryUom = Relateitem.SecondaryUomCode;
+                    ospCotanget.Status = "待入庫";
+                    ospCotanget.CreatedBy = UserId;
+                    ospCotanget.CreatedUserName = UserName;
+                    ospCotanget.CreationDate = DateTime.Now;
+                    OspCotangenTRepository.Create(ospCotanget, true);
+
+                }
+                for (int i = 0; i < int.Parse(Production_Roll_Ream_Qty); i++)
+                {
+                    ospPickOut.OspDetailOutId = OspDetailOutId;
+                    ospPickOut.OspHeaderId = detailout.OspHeaderId;
+                    ospPickOut.StockId = null;
+                    ospPickOut.Barcode = GenerateBarcodes(header.OrganizationId, detailout.Subinventory, int.Parse(Production_Roll_Ream_Qty), UserName).Data[i];
+                    ospPickOut.InventoryItemId = detailout.InventoryItemId;
+                    ospPickOut.InventoryItemNumber = detailout.InventoryItemNumber;
+                    ospPickOut.BasicWeight = detailout.BasicWeight;
+                    ospPickOut.Specification = detailout.Specification;
+                    ospPickOut.PaperType = detailout.PaperType;
+                    ospPickOut.LotNumber = "";
+                    ospPickOut.PrimaryQuantity = uomConversion.Convert(detailout.InventoryItemId, decimal.Parse(Production_Roll_Ream_Wt), "RE", "KG").Data;
+                    ospPickOut.PrimaryUom = "KG";
+                    ospPickOut.SecondaryQuantity = decimal.Parse(Production_Roll_Ream_Wt);
+                    ospPickOut.SecondaryUom = "RE";
+                    ospPickOut.Status = "待入庫";
+                    ospPickOut.Cotangent = Cotangent == "1" ? "Y" : "N";
+                    ospPickOut.OspCotangentId = ospCotanget.OspCotangentId;
+                    ospPickOut.CreatedBy = UserId;
+                    ospPickOut.CreatedUserName = UserName;
+                    ospPickOut.CreationDate = DateTime.Now;
+                    OspPickedOutTRepositiory.Create(ospPickOut, true);
+                }
+
+                return new ResultModel(true, "");
+            }
+
+        }
+
+        /// <summary>
+        /// 代工-紙捲產出條碼
+        /// </summary>
+        /// <param name="PaperRoll_Basic_Weight"></param>
+        /// <param name="PaperRoll_Specification"></param>
+        /// <param name="PaperRoll_Lot_Number"></param>
+        /// <param name="OspDetailOutId"></param>
+        /// <param name="UserId"></param>
+        /// <param name="UserName"></param>
+        /// <returns></returns>
+        public ResultModel PaperRollCreateProduction(string PaperRoll_Basic_Weight, string PaperRoll_Specification, string PaperRoll_Lot_Number, long OspDetailOutId, string UserId, string UserName)
+        {
+            if (PaperRoll_Basic_Weight == null)
+            {
+                return new ResultModel(false, "令數不得空白");
+            }
+            if (PaperRoll_Specification == null)
+            {
+                return new ResultModel(false, "棧板數不得空白");
+            }
+            if (PaperRoll_Lot_Number == null)
+            {
+                return new ResultModel(false, "捲號不得空白");
+            }
+            using (var txn = this.Context.Database.BeginTransaction())
+            {
+                try
                 {
                     var detailout = OspDetailOutTRepositiory.Get(x => x.OspDetailOutId == OspDetailOutId).SingleOrDefault();
                     var header = OspHeaderTRepositiory.Get(x => x.OspHeaderId == detailout.OspHeaderId).SingleOrDefault();
@@ -1111,83 +1509,40 @@ AND ST.BARCODE = @BARCODE");
                     OSP_PICKED_OUT_T ospPickOut = new OSP_PICKED_OUT_T();
                     OSP_COTANGENT_T ospCotanget = new OSP_COTANGENT_T();
 
-                    if (Cotangent == "1")
-                    {
-                        var relate = db.OspDetailOutTs.
-                            Join(db.RelatedTs,
-                            s => s.InventoryItemId,
-                            c => c.InventoryItemId,
-                            (s, c) => new
-                            {
-                                a = s,
-                                b = c
-
-                            }).Where(
-                            x => x.a.OspDetailOutId == OspDetailOutId &&
-                            x.b.InventoryItemId == x.a.InventoryItemId &&
-                            x.b.ControlFlag != "D").SingleOrDefault();
-
-                        //尋找餘切
-                        var Relateitem = db.ItemsTs.Where(x => x.InventoryItemId == relate.b.RelatedItemId).SingleOrDefault();
-
-
-                        ospCotanget.OspDetailOutId = OspDetailOutId;
-                        ospCotanget.OspHeaderId = detailout.OspHeaderId;
-                        ospCotanget.StockId = null;
-                        ospCotanget.Barcode = GenerateBarcodes(header.OrganizationId, detailout.Subinventory, 1, UserName).Data[0];
-                        ospCotanget.InventoryItemId = Relateitem.InventoryItemId;
-                        ospCotanget.InventoryItemNumber = Relateitem.ItemNumber;
-                        ospCotanget.BasicWeight = Relateitem.CatalogElemVal040;
-                        ospCotanget.Specification = Relateitem.CatalogElemVal050;
-                        ospCotanget.PaperType = Relateitem.CatalogElemVal020;
-                        ospCotanget.LotNumber = "";
-                        ospCotanget.PrimaryQuantity = 0M;
-                        ospCotanget.PrimaryUom = Relateitem.PrimaryUomCode;
-                        ospCotanget.SecondaryQuantity = 0M;
-                        ospCotanget.SecondaryUom = Relateitem.SecondaryUomCode;
-                        ospCotanget.Status = "待入庫";
-                        ospCotanget.CreatedBy = UserId;
-                        ospCotanget.CreatedUserName = UserName;
-                        ospCotanget.CreationDate = DateTime.Now;
-                        OspCotangenTRepository.Create(ospCotanget, true);
-
-                    }
-                    for (int i = 0; i < int.Parse(Production_Roll_Ream_Qty); i++)
-                    {
-                        ospPickOut.OspDetailOutId = OspDetailOutId;
-                        ospPickOut.OspHeaderId = detailout.OspHeaderId;
-                        ospPickOut.StockId = null;
-                        ospPickOut.Barcode = GenerateBarcodes(header.OrganizationId, detailout.Subinventory, int.Parse(Production_Roll_Ream_Qty), UserName).Data[i];
-                        ospPickOut.InventoryItemId = detailout.InventoryItemId;
-                        ospPickOut.InventoryItemNumber = detailout.InventoryItemNumber;
-                        ospPickOut.BasicWeight = detailout.BasicWeight;
-                        ospPickOut.Specification = detailout.Specification;
-                        ospPickOut.PaperType = detailout.PaperType;
-                        ospPickOut.LotNumber = "";
-                        ospPickOut.PrimaryQuantity = uomConversion.Convert(detailout.InventoryItemId, decimal.Parse(Production_Roll_Ream_Wt), "RE", "KG").Data;
-                        ospPickOut.PrimaryUom = "KG";
-                        ospPickOut.SecondaryQuantity = decimal.Parse(Production_Roll_Ream_Wt);
-                        ospPickOut.SecondaryUom = "RE";
-                        ospPickOut.Status = "待入庫";
-                        ospPickOut.Cotangent = Cotangent == "1" ? "Y" : "N";
-                        ospPickOut.OspCotangentId = ospCotanget.OspCotangentId;
-                        ospPickOut.CreatedBy = UserId;
-                        ospPickOut.CreatedUserName = UserName;
-                        ospPickOut.CreationDate = DateTime.Now;
-                        OspPickedOutTRepositiory.Create(ospPickOut, true);
-                    }
-
-                    return new ResultModel(true, "");
+                    ospPickOut.OspDetailOutId = OspDetailOutId;
+                    ospPickOut.OspHeaderId = detailout.OspHeaderId;
+                    ospPickOut.StockId = null;
+                    ospPickOut.Barcode = GenerateBarcodes(header.OrganizationId, detailout.Subinventory, 1, UserName).Data[0];
+                    ospPickOut.InventoryItemId = detailout.InventoryItemId;
+                    ospPickOut.InventoryItemNumber = detailout.InventoryItemNumber;
+                    ospPickOut.BasicWeight = detailout.BasicWeight;
+                    ospPickOut.Specification = detailout.Specification;
+                    ospPickOut.PaperType = detailout.PaperType;
+                    ospPickOut.LotNumber = PaperRoll_Lot_Number;
+                    ospPickOut.PrimaryQuantity = decimal.Parse(PaperRoll_Basic_Weight);
+                    ospPickOut.PrimaryUom = "KG";
+                    ospPickOut.SecondaryQuantity = 0;
+                    ospPickOut.SecondaryUom = "";
+                    ospPickOut.Status = "待入庫";
+                    ospPickOut.Cotangent = "N";
+                    ospPickOut.OspCotangentId = ospCotanget.OspCotangentId;
+                    ospPickOut.CreatedBy = UserId;
+                    ospPickOut.CreatedUserName = UserName;
+                    ospPickOut.CreationDate = DateTime.Now;
+                    OspPickedOutTRepositiory.Create(ospPickOut, true);
+                    txn.Commit();
+                    return new ResultModel(true,"");
+                }
+                catch (Exception e)
+                {
+                    txn.Rollback();
+                    logger.Error(e.Message);
+                    return new ResultModel(false, e.Message);
                 }
 
             }
-            catch (Exception e)
-            {
-                logger.Error(e.Message);
-                return new ResultModel(false, e.Message);
-            }
-
         }
+
 
         /// <summary>
         /// 取得產出檢貨picket
@@ -1234,9 +1589,9 @@ WHERE OSP_HEADER_ID = @OSP_HEADER_ID");
         }
 
         /// <summary>
-        /// 餘切資料
+        /// 取得餘切資料
         /// </summary>
-        /// <param name="OspDetailOutId"></param>
+        /// <param name="OspHeaderId"></param>
         /// <returns></returns>
         public List<Cotangent> GetCotangents(long OspHeaderId)
         {
@@ -1291,6 +1646,64 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
                         {
                             id.SecondaryQuantity = ProductionDTEditor.ProductionList[0].SecondaryQuantity;
                             id.PrimaryQuantity = uomConversion.Convert(id.InventoryItemId, ProductionDTEditor.ProductionList[0].SecondaryQuantity, "RE", "KG").Data;
+                            id.LastUpdateBy = UserId;
+                            id.LastUpdateUserName = UserName;
+                            id.LastUpdateDate = DateTime.Now;
+                            OspPickedOutTRepositiory.Update(id, true);
+                            txn.Commit();
+                            return new ResultModel(true, "");
+                        }
+                    }
+                    if (ProductionDTEditor.Action == "remove")
+                    {
+                        var OspPickedOutId = ProductionDTEditor.ProductionList[0].OspPickedOutId;
+                        var id = OspPickedOutTRepositiory.Get(r => r.OspPickedOutId == OspPickedOutId).SingleOrDefault();
+                        if (id != null)
+                        {
+                            var PickedOut = OspPickedOutTRepositiory.GetAll().ToList();
+                            if (PickedOut.Count == 1)
+                            {
+                                var cotangent = OspCotangenTRepository.Get(x => x.OspCotangentId == id.OspCotangentId).SingleOrDefault();
+                                if (cotangent != null)
+                                {
+                                    OspCotangenTRepository.Delete(cotangent, true);
+                                }
+                            }
+                            OspPickedOutTRepositiory.Delete(id, true);
+                            txn.Commit();
+                            return new ResultModel(true, "");
+                        }
+                    }
+                    return new ResultModel(false, "找不到ID");
+                }
+                catch (Exception e)
+                {
+                    txn.Rollback();
+                    logger.Error(LogUtilities.BuildExceptionMessage(e));
+                    return new ResultModel(false, e.Message);
+                }
+
+            }
+        }
+
+        /// <summary>
+        /// 代紙紙捲產出Editor
+        /// </summary>
+        /// <param name="ProductionDTEditor"></param>
+        /// <returns></returns>
+        public ResultModel SetPaperRollerProductionEditor(ProductionDTEditor ProductionDTEditor, string UserId, string UserName)
+        {
+            using (var txn = this.Context.Database.BeginTransaction())
+            {
+                try
+                {
+                    if (ProductionDTEditor.Action == "edit")
+                    {
+                        var OspPickedOutId = ProductionDTEditor.ProductionList[0].OspPickedOutId;
+                        var id = OspPickedOutTRepositiory.Get(r => r.OspPickedOutId == OspPickedOutId).SingleOrDefault();
+                        if (id != null)
+                        {
+                            id.PrimaryQuantity = ProductionDTEditor.ProductionList[0].PrimaryQuantity;
                             id.LastUpdateBy = UserId;
                             id.LastUpdateUserName = UserName;
                             id.LastUpdateDate = DateTime.Now;
@@ -1566,60 +1979,6 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
         }
 
         /// <summary>
-        /// 列印標籤
-        /// </summary>
-        /// <param name="StockId"></param>
-        /// <param name="userName"></param>
-        /// <returns></returns>
-        public ResultDataModel<List<LabelModel>> GetStockLabels(List<long> OspPickedInId, string userName)
-        {
-            try
-            {
-
-                List<LabelModel> labelModelList = new List<LabelModel>();
-                if (OspPickedInId == null || OspPickedInId.Count == 0) return new ResultDataModel<List<LabelModel>>(false, "找不到揀貨資料", null);
-                var pickDataList = OspPickedInTRepositiory.GetAll().AsNoTracking().Where(x => OspPickedInId.Contains(x.OspPickedInId)).ToList();
-                if (pickDataList == null || pickDataList.Count == 0) return new ResultDataModel<List<LabelModel>>(false, "找不到揀貨資料", null);
-                for (int i = 0; i < pickDataList.Count; i++)
-                {
-                    List<SqlParameter> sqlParameterList = new List<SqlParameter>();
-                    StringBuilder cmd = new StringBuilder(
-@"
-SELECT 
-CAST(PTI.BARCODE AS nvarchar) AS Barocde,
-@userName as PrintBy,
-CAST(tt.ITEM_DESC_TCH AS nvarchar) AS BarocdeName, 
-CAST(PTI.PAPER_TYPE AS nvarchar) AS PapaerType,
-CAST(PTI.BASIC_WEIGHT AS nvarchar) AS BasicWeight,
-CAST(PTI.SPECIFICATION AS nvarchar) AS Specification,
-CAST(FORMAT(PTI.PRIMARY_QUANTITY,'0.##########') AS nvarchar) AS Qty,
-CAST(PTI.PRIMARY_UOM AS nvarchar) AS Unit
---CAST(OH.BATCH_NO AS nvarchar) AS BatchNo
-FROM OSP_PICKED_IN_T PTI
-join OSP_HEADER_T OH ON OH.OSP_HEADER_ID = PTI.OSP_HEADER_ID
-join ITEMS_T tt on tt.INVENTORY_ITEM_ID = PTI.INVENTORY_ITEM_ID
-AND PTI.OSP_PICKED_IN_ID = @OSP_PICKED_IN_ID
-");
-                    sqlParameterList.Add(new SqlParameter("@userName", userName));
-                    sqlParameterList.Add(new SqlParameter("@OSP_PICKED_IN_ID", pickDataList[0].StockId));
-                    var labelModel = this.Context.Database.SqlQuery<LabelModel>(cmd.ToString(), sqlParameterList.ToArray()).SingleOrDefault(); ;
-                    if (labelModel == null) return new ResultDataModel<List<LabelModel>>(false, "找不到標籤資料", null);
-                    labelModelList.Add(labelModel);
-                }
-                return new ResultDataModel<List<LabelModel>>(true, "取得標籤資料成功", labelModelList);
-
-
-            }
-            catch (Exception ex)
-            {
-                logger.Error(LogUtilities.BuildExceptionMessage(ex));
-                return new ResultDataModel<List<LabelModel>>(false, "取得標籤資料失敗:" + ex.Message, null);
-            }
-
-
-        }
-
-        /// <summary>
         /// 取得得率重量
         /// </summary>
         /// <param name="OspDetailInId"></param>
@@ -1732,6 +2091,47 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
         }
 
         /// <summary>
+        /// 完工紀錄工單號狀態更改
+        /// </summary>
+        /// <param name="OspDetailOutId"></param>
+        /// <param name="UserId"></param>
+        /// <param name="UserName"></param>
+        /// <returns></returns>
+        public ResultModel EditHeaderStauts(long OspHeaderId, string UserId, string UserName)
+        {
+            using (var txn = this.Context.Database.BeginTransaction())
+            {
+                try
+                {
+                    var header = OspHeaderTRepositiory.Get(x => x.OspHeaderId == OspHeaderId).SingleOrDefault();
+                    var DetailOut = OspDetailOutTRepositiory.Get(x => x.OspHeaderId == OspHeaderId).SingleOrDefault();
+                    var DetailIn = OspDetailInTRepositiory.Get(x => x.OspHeaderId == OspHeaderId).SingleOrDefault();
+
+                    if (header == null)
+                    {
+                        return new ResultModel(false, "找不到id");
+                    }
+
+                    header.Status = "待核准";
+                    header.PeLastUpdateBy = UserId;
+                    header.PeLastUpdateDate = DateTime.Now;
+                    OspHeaderTRepositiory.Update(header, true);
+
+                    txn.Commit();
+                    return new ResultModel(true, "");
+
+                }
+                catch (Exception e)
+                {
+                    txn.Rollback();
+                    logger.Error(LogUtilities.BuildExceptionMessage(e));
+                    return new ResultModel(false, e.Message);
+                }
+            }
+
+        }
+
+        /// <summary>
         /// 完工紀錄編輯
         /// </summary>
         /// <param name="BatchNo"></param>
@@ -1755,7 +2155,7 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
 
                     if (batchno.Status == "已完工")
                     {
-                        if(batchno.Modifications == 1)
+                        if (batchno.Modifications == 1)
                         {
                             return new ResultModel(false, "已修改過，無法再修改");
                         }
@@ -2262,6 +2662,246 @@ WHERE CHT.OSP_HEADER_ID = @OSP_HEADER_ID");
 
 
         /// <summary>
+        ///  補印標籤
+        /// </summary>
+        /// <param name="stockIds"></param>
+        /// <param name="userName"></param>
+        /// <param name="ItemCategory"></param>
+        /// <returns></returns>
+        public ResultDataModel<List<LabelModel>> RePrintLabel(List<long> stockIds, string userName, string ItemCategory)
+        {
+            try
+            {
+                List<LabelModel> labelModelList = new List<LabelModel>();
+                if (stockIds == null || stockIds.Count == 0) return new ResultDataModel<List<LabelModel>>(false, "找不到揀貨資料", null);
+                var stockDataList = stockTRepositiory.GetAll().AsNoTracking().Where(x => stockIds.Contains(x.StockId)).ToList();
+                if (stockDataList == null || stockDataList.Count == 0) return new ResultDataModel<List<LabelModel>>(false, "找不到揀貨資料", null);
+                for (int i = 0; i < stockDataList.Count; i++)
+                {
+                    StringBuilder cmd = new StringBuilder();
+                    List<SqlParameter> sqlParameterList = new List<SqlParameter>();
+                    if (ItemCategory == "平版")
+                    {
+                        cmd.Append(
+@"
+SELECT 
+CAST(ST.BARCODE AS nvarchar) AS Barocde,
+@userName as PrintBy,
+CAST(tt.ITEM_DESC_TCH AS nvarchar) AS BarocdeName, 
+CAST(ST.PAPER_TYPE AS nvarchar) AS PapaerType,
+CAST(ST.BASIC_WEIGHT AS nvarchar) AS BasicWeight,
+CAST(ST.SPECIFICATION AS nvarchar) AS Specification,
+CAST(FORMAT(ST.SECONDARY_TRANSACTION_QTY,'0.##########') AS nvarchar) AS Qty,
+CAST(ST.SECONDARY_UOM_CODE AS nvarchar) AS Unit
+--CAST(CT.CONTAINER_NO AS nvarchar) AS BatchNo
+FROM STOCK_T ST
+join ITEMS_T tt on tt.INVENTORY_ITEM_ID = ST.INVENTORY_ITEM_ID
+WHERE ST.ITEM_CATEGORY = N'平版'
+AND ST.STOCK_ID = @STOCK_ID
+");
+                    }
+                    else
+                    {
+                        cmd.Append(
+@"
+SELECT 
+CAST(ST.BARCODE AS nvarchar) AS Barocde,
+@userName as PrintBy,
+CAST(tt.ITEM_DESC_TCH AS nvarchar) AS BarocdeName, 
+CAST(ST.PAPER_TYPE AS nvarchar) AS PapaerType,
+CAST(ST.BASIC_WEIGHT AS nvarchar) AS BasicWeight,
+CAST(ST.SPECIFICATION AS nvarchar) AS Specification,
+CAST(FORMAT(ST.PRIMARY_TRANSACTION_QTY,'0.##########') AS nvarchar) AS Qty,
+CAST(ST.PRIMARY_UOM_CODE AS nvarchar) AS Unit
+--CAST(CT.CONTAINER_NO AS nvarchar) AS BatchNo
+FROM STOCK_T ST
+join ITEMS_T tt on tt.INVENTORY_ITEM_ID = ST.INVENTORY_ITEM_ID
+WHERE ST.ITEM_CATEGORY = N'捲筒'
+AND ST.STOCK_ID = @STOCK_ID
+");
+                    }
+
+                    sqlParameterList.Add(new SqlParameter("@userName", userName));
+                    sqlParameterList.Add(new SqlParameter("@STOCK_ID", stockDataList[i].StockId));
+                    var labelModel = this.Context.Database.SqlQuery<LabelModel>(cmd.ToString(), sqlParameterList.ToArray()).SingleOrDefault(); ;
+                    if (labelModel == null) return new ResultDataModel<List<LabelModel>>(false, "找不到標籤資料", null);
+                    labelModelList.Add(labelModel);
+                }
+                return new ResultDataModel<List<LabelModel>>(true, "取得標籤資料成功", labelModelList);
+
+            }
+            catch (Exception ex)
+            {
+                logger.Error(LogUtilities.BuildExceptionMessage(ex));
+                return new ResultDataModel<List<LabelModel>>(false, "取得標籤資料失敗:" + ex.Message, null);
+            }
+
+
+        }
+
+        /// <summary>
+        /// 列印產出成品標籤
+        /// </summary>
+        /// <param name="StockId"></param>
+        /// <param name="userName"></param>
+        /// <returns></returns>
+        public ResultDataModel<List<LabelModel>> GeProductLabels(List<long> OspPickedOutId, string userName)
+        {
+            try
+            {
+
+                List<LabelModel> labelModelList = new List<LabelModel>();
+                if (OspPickedOutId == null || OspPickedOutId.Count == 0) return new ResultDataModel<List<LabelModel>>(false, "找不到揀貨資料", null);
+                var pickDataList = OspPickedOutTRepositiory.GetAll().AsNoTracking().Where(x => OspPickedOutId.Contains(x.OspPickedOutId)).ToList();
+                if (pickDataList == null || pickDataList.Count == 0) return new ResultDataModel<List<LabelModel>>(false, "找不到揀貨資料", null);
+                for (int i = 0; i < pickDataList.Count; i++)
+                {
+                    List<SqlParameter> sqlParameterList = new List<SqlParameter>();
+                    StringBuilder cmd = new StringBuilder(
+@"
+SELECT 
+CAST(OPO.BARCODE AS nvarchar) AS Barocde,
+@userName as PrintBy,
+CAST(tt.ITEM_DESC_TCH AS nvarchar) AS BarocdeName, 
+CAST(OPO.PAPER_TYPE AS nvarchar) AS PapaerType,
+CAST(OPO.BASIC_WEIGHT AS nvarchar) AS BasicWeight,
+CAST(OPO.SPECIFICATION AS nvarchar) AS Specification,
+CAST(FORMAT(OPO.SECONDARY_QUANTITY,'0.##########') AS nvarchar) AS Qty,
+CAST(OPO.SECONDARY_UOM AS nvarchar) AS Unit
+--CAST(OH.BATCH_NO AS nvarchar) AS BatchNo
+FROM OSP_PICKED_OUT_T OPO
+join OSP_HEADER_T OH ON OH.OSP_HEADER_ID = OPO.OSP_HEADER_ID
+join ITEMS_T tt on tt.INVENTORY_ITEM_ID = OPO.INVENTORY_ITEM_ID
+AND OPO.OSP_PICKED_OUT_ID = @OSP_PICKED_OUT_ID
+");
+                    sqlParameterList.Add(new SqlParameter("@userName", userName));
+                    sqlParameterList.Add(new SqlParameter("@OSP_PICKED_OUT_ID", pickDataList[i].OspPickedOutId));
+                    var labelModel = this.Context.Database.SqlQuery<LabelModel>(cmd.ToString(), sqlParameterList.ToArray()).SingleOrDefault();
+                    if (labelModel == null) return new ResultDataModel<List<LabelModel>>(false, "找不到標籤資料", null);
+                    labelModelList.Add(labelModel);
+                }
+                return new ResultDataModel<List<LabelModel>>(true, "取得標籤資料成功", labelModelList);
+
+
+            }
+            catch (Exception ex)
+            {
+                logger.Error(LogUtilities.BuildExceptionMessage(ex));
+                return new ResultDataModel<List<LabelModel>>(false, "取得標籤資料失敗:" + ex.Message, null);
+            }
+
+
+        }
+
+        /// <summary>
+        /// 列印餘切成品標籤
+        /// </summary>
+        /// <param name="StockId"></param>
+        /// <param name="userName"></param>
+        /// <returns></returns>
+        public ResultDataModel<List<LabelModel>> GeCotangentLabels(List<long> OspCotangentId, string userName)
+        {
+            try
+            {
+
+                List<LabelModel> labelModelList = new List<LabelModel>();
+                if (OspCotangentId == null || OspCotangentId.Count == 0) return new ResultDataModel<List<LabelModel>>(false, "找不到揀貨資料", null);
+                var pickDataList = OspCotangenTRepository.GetAll().AsNoTracking().Where(x => OspCotangentId.Contains(x.OspCotangentId)).ToList();
+                if (pickDataList == null || pickDataList.Count == 0) return new ResultDataModel<List<LabelModel>>(false, "找不到揀貨資料", null);
+                for (int i = 0; i < pickDataList.Count; i++)
+                {
+                    List<SqlParameter> sqlParameterList = new List<SqlParameter>();
+                    StringBuilder cmd = new StringBuilder(
+@"
+SELECT 
+CAST(OCT.BARCODE AS nvarchar) AS Barocde,
+@userName as PrintBy,
+CAST(tt.ITEM_DESC_TCH AS nvarchar) AS BarocdeName, 
+CAST(OCT.PAPER_TYPE AS nvarchar) AS PapaerType,
+CAST(OCT.BASIC_WEIGHT AS nvarchar) AS BasicWeight,
+CAST(OCT.SPECIFICATION AS nvarchar) AS Specification,
+CAST(FORMAT(OCT.PRIMARY_QUANTITY,'0.##########') AS nvarchar) AS Qty,
+CAST(OCT.PRIMARY_UOM AS nvarchar) AS Unit
+--CAST(OH.BATCH_NO AS nvarchar) AS BatchNo
+FROM OSP_COTANGENT_T OCT
+join OSP_HEADER_T OH ON OH.OSP_HEADER_ID = OCT.OSP_HEADER_ID
+join ITEMS_T tt on tt.INVENTORY_ITEM_ID = OCT.INVENTORY_ITEM_ID
+AND OCT.OSP_COTANGENT_ID = @OSP_COTANGENT_ID
+");
+                    sqlParameterList.Add(new SqlParameter("@userName", userName));
+                    sqlParameterList.Add(new SqlParameter("@OSP_COTANGENT_ID", pickDataList[i].OspCotangentId));
+                    var labelModel = this.Context.Database.SqlQuery<LabelModel>(cmd.ToString(), sqlParameterList.ToArray()).SingleOrDefault();
+                    if (labelModel == null) return new ResultDataModel<List<LabelModel>>(false, "找不到標籤資料", null);
+                    labelModelList.Add(labelModel);
+                }
+                return new ResultDataModel<List<LabelModel>>(true, "取得標籤資料成功", labelModelList);
+
+
+            }
+            catch (Exception ex)
+            {
+                logger.Error(LogUtilities.BuildExceptionMessage(ex));
+                return new ResultDataModel<List<LabelModel>>(false, "取得標籤資料失敗:" + ex.Message, null);
+            }
+
+
+        }
+
+        /// <summary>
+        /// 列印代紙紙捲產出成品標籤
+        /// </summary>
+        /// <param name="StockId"></param>
+        /// <param name="userName"></param>
+        /// <returns></returns>
+        public ResultDataModel<List<LabelModel>> GePaperRollerProductLabels(List<long> OspPickedOutId, string userName)
+        {
+            try
+            {
+
+                List<LabelModel> labelModelList = new List<LabelModel>();
+                if (OspPickedOutId == null || OspPickedOutId.Count == 0) return new ResultDataModel<List<LabelModel>>(false, "找不到揀貨資料", null);
+                var pickDataList = OspPickedOutTRepositiory.GetAll().AsNoTracking().Where(x => OspPickedOutId.Contains(x.OspPickedOutId)).ToList();
+                if (pickDataList == null || pickDataList.Count == 0) return new ResultDataModel<List<LabelModel>>(false, "找不到揀貨資料", null);
+                for (int i = 0; i < pickDataList.Count; i++)
+                {
+                    List<SqlParameter> sqlParameterList = new List<SqlParameter>();
+                    StringBuilder cmd = new StringBuilder(
+@"
+SELECT 
+CAST(OPO.BARCODE AS nvarchar) AS Barocde,
+@userName as PrintBy,
+CAST(tt.ITEM_DESC_TCH AS nvarchar) AS BarocdeName, 
+CAST(OPO.PAPER_TYPE AS nvarchar) AS PapaerType,
+CAST(OPO.BASIC_WEIGHT AS nvarchar) AS BasicWeight,
+CAST(OPO.SPECIFICATION AS nvarchar) AS Specification,
+CAST(FORMAT(OPO.PRIMARY_QUANTITY,'0.##########') AS nvarchar) AS Qty,
+CAST(OPO.PRIMARY_UOM AS nvarchar) AS Unit
+--CAST(OH.BATCH_NO AS nvarchar) AS BatchNo
+FROM OSP_PICKED_OUT_T OPO
+join OSP_HEADER_T OH ON OH.OSP_HEADER_ID = OPO.OSP_HEADER_ID
+join ITEMS_T tt on tt.INVENTORY_ITEM_ID = OPO.INVENTORY_ITEM_ID
+AND OPO.OSP_PICKED_OUT_ID = @OSP_PICKED_OUT_ID
+");
+                    sqlParameterList.Add(new SqlParameter("@userName", userName));
+                    sqlParameterList.Add(new SqlParameter("@OSP_PICKED_OUT_ID", pickDataList[i].OspPickedOutId));
+                    var labelModel = this.Context.Database.SqlQuery<LabelModel>(cmd.ToString(), sqlParameterList.ToArray()).SingleOrDefault();
+                    if (labelModel == null) return new ResultDataModel<List<LabelModel>>(false, "找不到標籤資料", null);
+                    labelModelList.Add(labelModel);
+                }
+                return new ResultDataModel<List<LabelModel>>(true, "取得標籤資料成功", labelModelList);
+
+
+            }
+            catch (Exception ex)
+            {
+                logger.Error(LogUtilities.BuildExceptionMessage(ex));
+                return new ResultDataModel<List<LabelModel>>(false, "取得標籤資料失敗:" + ex.Message, null);
+            }
+
+
+        }
+
+        /// <summary>
         /// 取得工單號
         /// </summary>
         /// <returns></returns>
@@ -2376,6 +3016,40 @@ and SUBINVENTORY_CODE = @SUBINVENTORY_CODE");
             return BatchStatusDesc;
         }
 
+        /// <summary>
+        /// 取得權限
+        /// </summary>
+        /// <param name="roles"></param>
+        /// <returns></returns>
+        public Boolean GetAuthority(List<Claim> roles)
+        {
+            var boolean = false;
+            try
+            {
+                if (roles != null && roles.Count > 0)
+                {
+                    foreach (Claim role in roles)
+                    {
+                        if (role.Value == UserRole.Adm || role.Value == UserRole.ChpUser)
+                        {
+                            boolean = true;
+                            break;
+                        }
+                        else
+                        {
+                            boolean = false;
+                        }
+                    }
+                }
+                return boolean;
+            }
+            catch (Exception e)
+            {
+                logger.Error(LogUtilities.BuildExceptionMessage(e));
+                return boolean;
+            }
+
+        }
 
         public class DetailDTEditor
         {

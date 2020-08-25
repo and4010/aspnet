@@ -7,6 +7,7 @@ using CHPOUTSRCMES.Web.Models.Process;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Web;
 using System.Web.Mvc;
 
@@ -19,7 +20,7 @@ namespace CHPOUTSRCMES.Web.ViewModels.Process
         public CHP_PROCESS_T CHP_PROCESS_T { set; get; }
         public Production Production { set; get; }
         public YieldVariance YieldVariance { set; get; }
-    
+        public Boolean Authority { set; get; }
 
         /// <summary>
         /// 取得畫面資料
@@ -153,21 +154,6 @@ namespace CHPOUTSRCMES.Web.ViewModels.Process
         }
 
         /// <summary>
-        /// 投入條碼列印
-        /// </summary>
-        /// <param name="StockId"></param>
-        /// <param name="userName"></param>
-        /// <returns></returns>
-        public ActionResult GetPickInLabels(List<long> StockId, string userName)
-        {
-            using (var context = new MesContext())
-            {
-                var label = new ProcessUOW(context).GetStockLabels(StockId, userName);
-                return new MasterUOW(context).PrintLable(label.Data);
-            }
-        }
-
-        /// <summary>
         /// 儲存產出條碼
         /// </summary>
         /// <param name="UserId"></param>
@@ -183,6 +169,23 @@ namespace CHPOUTSRCMES.Web.ViewModels.Process
               return new ProcessUOW(context).CreateProduction(UserId, UserName, Production_Roll_Ream_Qty, Production_Roll_Ream_Wt, Cotangent, OspDetailOutId);
             }
         }
+
+        /// <summary>
+        /// 產出儲存條碼
+        /// </summary>
+        /// <param name="PaperRoll_Basic_Weight"></param>
+        /// <param name="PaperRoll_Specification"></param>
+        /// <param name="PaperRoll_Lot_Number"></param>
+        /// <param name="Process_Detail_Id"></param>
+        /// <returns></returns>
+        public ResultModel PaperRollCreateProduction(string PaperRoll_Basic_Weight, string PaperRoll_Specification, string PaperRoll_Lot_Number, long OspDetailOutId,string UserId,string UserName)
+        {
+            using (var context = new MesContext())
+            {
+                return new ProcessUOW(context).PaperRollCreateProduction(PaperRoll_Basic_Weight, PaperRoll_Specification, PaperRoll_Lot_Number, OspDetailOutId, UserId, UserName);
+            }
+        }
+
 
         /// <summary>
         /// 取得產出檢貨pick
@@ -220,6 +223,19 @@ namespace CHPOUTSRCMES.Web.ViewModels.Process
             using (var context = new MesContext())
             {
                 return new ProcessUOW(context).SetProductionEditor(ProductionDTEditor, UserId, UserName);
+            }
+        }
+
+        /// <summary>
+        /// 代紙紙捲產出Editor
+        /// </summary>
+        /// <param name="ProductionDTEditor"></param>
+        /// <returns></returns>
+        public ResultModel SetPaperRollerProductionEditor(ProcessUOW.ProductionDTEditor ProductionDTEditor, string UserId, string UserName)
+        {
+            using (var context = new MesContext())
+            {
+                return new ProcessUOW(context).SetPaperRollerProductionEditor(ProductionDTEditor, UserId, UserName);
             }
         }
 
@@ -302,6 +318,20 @@ namespace CHPOUTSRCMES.Web.ViewModels.Process
             using var context = new MesContext();
             return new ProcessUOW(context).ChangeHeaderStauts(OspHeaderId, Locator, UserId, UserName);
         }
+
+        /// <summary>
+        /// 完工紀錄編輯
+        /// </summary>
+        /// <param name="OspDetailOutId"></param>
+        /// <param name="UserId"></param>
+        /// <param name="UserName"></param>
+        /// <returns></returns>
+        public ResultModel EditHeaderStauts(long OspHeaderId, string UserId, string UserName)
+        {
+            using var context = new MesContext();
+            return new ProcessUOW(context).EditHeaderStauts(OspHeaderId, UserId, UserName);
+        }
+
         /// <summary>
         /// 完工紀錄編輯
         /// </summary>
@@ -418,6 +448,77 @@ namespace CHPOUTSRCMES.Web.ViewModels.Process
             return GetCotangentItem;
         }
 
+
+        /// <summary>
+        /// 補印標籤
+        /// </summary>
+        /// <param name="stockIds"></param>
+        /// <param name="userName"></param>
+        /// <param name="ItemCategory"></param>
+        /// <returns></returns>
+        public ActionResult RePrintLabel(List<long> stockIds, string userName ,string ItemCategory)
+        {
+            using (var context = new MesContext())
+            {
+                var label = new ProcessUOW(context).RePrintLabel(stockIds, userName, ItemCategory);
+                return new MasterUOW(context).PrintLable(label.Data);
+            }
+        }
+
+        /// <summary>
+        /// 產出條碼列印
+        /// </summary>
+        /// <param name="StockId"></param>
+        /// <param name="userName"></param>
+        /// <returns></returns>
+        public ActionResult GeProductLabels(List<long> OspPickedOutId, string userName, List<long> OspCotangentId)
+        {
+            using (var context = new MesContext())
+            {
+                List<LabelModel> labels = new List<LabelModel>();
+                if (OspPickedOutId != null)
+                {
+                    var label = new ProcessUOW(context).GeProductLabels(OspPickedOutId, userName);
+                    labels.AddRange(label.Data);
+                }
+                if(OspCotangentId != null)
+                {
+                    var label = new ProcessUOW(context).GeCotangentLabels(OspCotangentId, userName);
+                    labels.AddRange(label.Data);
+                }
+
+                return new MasterUOW(context).PrintLable(labels);
+            }
+        }
+
+        /// <summary>
+        /// 產出代紙紙捲條碼列印
+        /// </summary>
+        /// <param name="StockId"></param>
+        /// <param name="userName"></param>
+        /// <returns></returns>
+        public ActionResult GePaperRollerProductLabels(List<long> OspPickedOutId, string userName)
+        {
+            using (var context = new MesContext())
+            {
+                List<LabelModel> labels = new List<LabelModel>();
+                var label = new ProcessUOW(context).GePaperRollerProductLabels(OspPickedOutId, userName);
+                return new MasterUOW(context).PrintLable(label.Data);
+            }
+        }
+
+        /// <summary>
+        /// 取得權限
+        /// </summary>
+        /// <param name="roles"></param>
+        /// <returns></returns>
+        public Boolean GetAuthority(List<Claim> roles)
+        {
+            using (var context = new MesContext())
+            {
+                return new ProcessUOW(context).GetAuthority(roles);
+            }
+        }
 
         internal class ChpProcessModelDTOrder
         {
@@ -594,7 +695,7 @@ namespace CHPOUTSRCMES.Web.ViewModels.Process
                         || (!string.IsNullOrEmpty(p.Specification) && p.Specification.ToLower().Contains(search.ToLower()))
                         || (!string.IsNullOrEmpty(p.GrainDirection) && p.GrainDirection.ToLower().Contains(search.ToLower()))
                         || (!string.IsNullOrEmpty(p.OrderWeight) && p.OrderWeight.ToLower().Contains(search.ToLower()))
-                        || (!string.IsNullOrEmpty(p.ReamWt) && p.ReamWt.ToLower().Contains(search.ToLower()))
+                        || (!string.IsNullOrEmpty(p.ReamWt.ToString()) && p.ReamWt.ToString().ToLower().Contains(search.ToLower()))
                         || (!string.IsNullOrEmpty(p.PrimaryQuantity.ToString()) && p.PrimaryQuantity.ToString().ToLower().Contains(search.ToLower()))
                         || (!string.IsNullOrEmpty(p.PrimaryUom) && p.PrimaryUom.ToLower().Contains(search.ToLower()))
                         || (!string.IsNullOrEmpty(p.TransactionUom) && p.TransactionUom.ToLower().Contains(search.ToLower()))
