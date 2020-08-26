@@ -673,8 +673,15 @@ function LoadPaperRollHeard() {
         columns: [
             { data: "Id", "name": "項次", "autoWidth": true, "className": "dt-body-center", visible: false },
             { data: "SubId", "name": "項次", "autoWidth": true, "className": "dt-body-center" },
-            { data: "Subinventory", "name": "倉庫", "autoWidth": true, "className": "dt-body-center" },
-            { data: "Locator", "name": "儲位", "autoWidth": true, "className": "dt-body-center" },
+            {
+                data: "Subinventory", "name": "倉庫", "autoWidth": true, "className": "dt-body-center"
+            },
+            {
+                data: "Locator", "name": "儲位", "autoWidth": true, "className": "dt-body-center", "render": function (data, type, row) {
+                    var locator = data.split(".");
+                    return locator[2];
+                }
+            },
             { data: "Item_No", "name": "料號", "autoWidth": true, "className": "dt-body-left" },
             { data: "PaperType", "name": "紙別", "autoWidth": true, "className": "dt-body-center" },
             { data: "BaseWeight", "name": "基重", "autoWidth": true, "className": "dt-body-center" },
@@ -711,7 +718,12 @@ function LoadFlatHeader() {
             { data: "Id", "name": "項次", "autoWidth": true, "className": "dt-body-center", visible: false },
             { data: "SubId", "name": "項次", "autoWidth": true, "className": "dt-body-center" },
             { data: "Subinventory", "name": "倉庫", "autoWidth": true, "className": "dt-body-center" },
-            { data: "Locator", "name": "儲位", "autoWidth": true, "className": "dt-body-center" },
+            {
+                data: "Locator", "name": "儲位", "autoWidth": true, "className": "dt-body-center", "render": function (data, type, row) {
+                    var locator = data.split(".");
+                    return locator[2];
+                }
+            },
             { data: "Item_No", "name": "料號", "autoWidth": true, "className": "dt-body-left" },
             { data: "ReamWeight", "name": "令重", "autoWidth": true, "className": "dt-body-right" },
             { data: "RollReamQty", "name": "捲數/棧板數", "autoWidth": true, "className": "dt-body-right" },
@@ -772,7 +784,12 @@ function PaperRolldataTablesBody() {
             { data: "Id", "name": "項次", "autoWidth": true, "className": "dt-body-center", visible: false },
             { data: "SubId", "name": "項次", "autoWidth": true, "className": "dt-body-center" },
             { data: "Subinventory", "name": "倉庫", "autoWidth": true, "className": "dt-body-center" },
-            { data: "Locator", "name": "儲位", "autoWidth": true, "className": "dt-body-center" },
+            {
+                data: "Locator", "name": "儲位", "autoWidth": true, "className": "dt-body-center", "render": function (data, type, row) {
+                    var locator = data.split(".");
+                    return locator[2];
+                }
+            },
             { data: "Barcode", "name": "條碼號", "autoWidth": true, "className": "dt-body-center" },
             {
                 data: "Status", "name": "入庫狀態", "autoWidth": true, "className": "dt-body-center", "render": function (data) {
@@ -846,7 +863,12 @@ function FlatdataTablesBody() {
             { data: "Id", "name": "項次", "autoWidth": true, "className": "dt-body-center", visible: false },
             { data: "SubId", "name": "項次", "autoWidth": true, "className": "dt-body-center" },
             { data: "Subinventory", "name": "倉庫", "autoWidth": true, "className": "dt-body-center" },
-            { data: "Locator", "name": "儲位", "autoWidth": true, "className": "dt-body-center" },
+            {
+                data: "Locator", "name": "儲位", "autoWidth": true, "className": "dt-body-center", "render": function (data, type, row) {
+                    var locator = data.split(".");
+                    return locator[2];
+                }
+            },
             { data: "Barcode", "name": "條碼號", "autoWidth": true, "className": "dt-body-center" },
             {
                 data: "Status", "name": "入庫狀態", "autoWidth": true, "className": "dt-body-center", "render": function (data) {

@@ -117,7 +117,10 @@ else
         </form>
         <button class="btn btn-danger" type="button" id="BtnCheckBatchNo">比對</button>
         <button class="btn btn-danger" type="button" id="BtnEdit">修改</button>
-        <button class="btn btn-danger" type="button" id="BtnApprove">核准</button>
+        @if (Model.Authority)
+        {
+            <button class="btn btn-danger" type="button" id="BtnApprove">核准</button>
+        }
     </div>
 
 
@@ -226,6 +229,7 @@ else
                 <table class="table table-striped table-bordered table-hover" id="InvestDataTables">
                     <thead>
                         <tr>
+                            <th></th>
                             <th></th>
                             <th></th>
                             <th>
@@ -366,6 +370,7 @@ else
                         <thead>
                             <tr>
                                 <th rowspan="2" colspan="1"></th>
+                                <th rowspan="2" colspan="1"></th>
                                 <th rowspan="2" colspan="1">條碼號</th>
                                 <th rowspan="2" colspan="1">料號</th>
                                 <th rowspan="1" colspan="2">主單位</th>
@@ -432,6 +437,7 @@ else
                     <table class="table table-striped table-bordered table-hover" id="CotangentDataTables">
                         <thead>
                             <tr>
+                                <th rowspan="2" colspan="1"></th>
                                 <th rowspan="2" colspan="1"></th>
                                 <th rowspan="2" colspan="1">條碼號</th>
                                 <th rowspan="2" colspan="1">料號</th>

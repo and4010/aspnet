@@ -20,9 +20,9 @@ $(document).ready(function () {
         DisplayInvestEnable(true);
         DisplayProductionEnable(true);
         ///隱藏按鈕
-        InvestDataTables.column(10).visible(false);
-        ProductionTables.column(8).visible(false);
-        CotangentDataTable.column(8).visible(false);
+        InvestDataTables.column(11).visible(false);
+        ProductionTables.column(9).visible(false);
+        CotangentDataTable.column(9).visible(false);
     } else {
         DisplayInvestEnable(true);
         DisplayProductionEnable(true);
@@ -49,6 +49,7 @@ $(document).ready(function () {
     InvestDataTables.on('click', '#btnEdit', function (e) {
         e.preventDefault();
         $('#Production_Loss').html("");
+        $('#Rate').html("");
         editorInvest.edit($(this).closest('tr'), {
             title: '編輯',
             buttons: '確定'
@@ -56,9 +57,9 @@ $(document).ready(function () {
     });
 
     InvestDataTables.on('click', '#btnDelete', function (e) {
-
         e.preventDefault();
         $('#Production_Loss').html("");
+        $('#Rate').html("");
         editorInvest.remove($(this).closest('tr'), {
             title: '刪除',
             message: '確定要刪除?',
@@ -69,6 +70,7 @@ $(document).ready(function () {
 
     ProductionTables.on('click', '#btnDeleteProductionTable', function (e) {
         $('#Production_Loss').html("");
+        $('#Rate').html("");
         editorProduct.remove($(this).closest('tr'), {
             title: '刪除',
             message: '確定要刪除?',
@@ -79,6 +81,7 @@ $(document).ready(function () {
     ProductionTables.on('click', '#btnEdit', function (e) {
         e.preventDefault();
         $('#Production_Loss').html("");
+        $('#Rate').html("");
         editorProduct.edit($(this).closest('tr'), {
             title: '編輯',
             buttons: '確定'
@@ -104,6 +107,7 @@ $(document).ready(function () {
     CotangentDataTable.on('click', '#btnDelete', function (e) {
         e.preventDefault();
         $('#Production_Loss').html("");
+        $('#Rate').html("");
         EditorCotangent.remove($(this).closest('tr'), {
             title: '刪除',
             message: '確定要刪除?',
@@ -114,6 +118,7 @@ $(document).ready(function () {
     CotangentDataTable.on('click', '#btnInsert', function (e) {
         e.preventDefault();
         $('#Production_Loss').html("");
+        $('#Rate').html("");
         EditorCotangent.edit($(this).closest('tr'), {
             title: '新增',
             buttons: '確定'
@@ -387,13 +392,14 @@ function BtnClick() {
 
     //列印標籤紙捲
     $('#BtnRePrint').click(function () {
-        PrintLable(InvestDataTables, "/Process/GetPickInLabels", "1");
+        var Status = "捲筒"
+        PrintLableParameter(InvestDataTables, "/Process/RePrintLabel", "2",Status);
     })
 
 
     //列印標籤紙捲
     $('#BtnLabel').click(function () {
-        PrintLable(ProductionTables, "/Home/GetLabel", "1", $('#CotangentDataTables').DataTable(), "1");
+        PrintLable(ProductionTables, "/Process/GeProductLabels", "1", CotangentDataTable, "1");
     })
 
 
@@ -543,7 +549,7 @@ function LoadInvestDataTable() {
             selector: 'td:first-child'
         },
         columnDefs: [{
-            orderable: false, targets: [0, 10], width: "60px",
+            orderable: false, targets: [0, 11], width: "60px",
         }],
         buttons: [
             'selectAll',
@@ -559,6 +565,7 @@ function LoadInvestDataTable() {
                 targets: 0
             },
             { data: "OspPickedInId", "name": "ID", "autoWidth": true, "className": "dt-body-center", visible: false },
+            { data: "StockId", "name": "ID", "autoWidth": true, "className": "dt-body-center", visible: false },
             { data: "Barcode", "name": "條碼號", "autoWidth": true, "className": "dt-body-center" },
             { data: "HasRemaint", "name": "殘捲", "autoWidth": true, "className": "dt-body-center" },
             { data: "BasicWeight", "name": "基重", "autoWidth": true, "className": "dt-body-center" },
@@ -700,7 +707,7 @@ function LoadProductionDataTable() {
 
         ],
         columnDefs: [{
-            orderable: false, targets: [0, 8], width: "60px",
+            orderable: false, targets: [0, 9], width: "60px",
         }],
         columns: [
             {
@@ -710,6 +717,7 @@ function LoadProductionDataTable() {
                 orderable: false,
                 targets: 0
             },
+            { data: "OspPickedOutId", "name": "條碼號", "autoWidth": true, "className": "dt-body-center", visible: false },
             { data: "Barcode", "name": "條碼號", "autoWidth": true, "className": "dt-body-center" },
             { data: "Product_Item", "name": "料號", "autoWidth": true, "className": "dt-body-left" },
             { data: "PrimaryQuantity", "name": "重量", "autoWidth": true, "className": "dt-body-right" },
@@ -901,7 +909,7 @@ function CotangentDataTables() {
             'selectNone'
         ],
         columnDefs: [{
-            orderable: false, targets: [0, 8], width: "60px",
+            orderable: false, targets: [0, 9], width: "60px",
         }],
         columns: [
             {
@@ -911,6 +919,7 @@ function CotangentDataTables() {
                 orderable: false,
                 targets: 0
             },
+            { data: "OspCotangentId", "name": "條碼號", "autoWidth": true, "className": "dt-body-center", visible: false },
             { data: "Barcode", "name": "條碼號", "autoWidth": true, "className": "dt-body-center" },
             { data: "Related_item", "name": "料號", "autoWidth": true, "className": "dt-body-left" },
             { data: "PrimaryQuantity", "name": "重量", "autoWidth": true, "className": "dt-body-right" },
@@ -1069,7 +1078,7 @@ function DisplayProductionEnable(boolean) {
 
 
 
-//完工紀錄使用
+
 function displaytext(rowData) {
     var Barcode = rowData.pluck('Barcode')[0]
     var Invest_Remnant = rowData.pluck('HasRemaint')[0]
@@ -1089,6 +1098,18 @@ function displaytext(rowData) {
     $('#Invest_Specification').text(Invest_Specification);
     $('#Invest_Lot_Number').text(Invest_Lot_Number);
 
+}
+
+
+
+function clear() {
+    $('#Invest_Barcode').text("");
+    $('#Invest_Remnant').val(0);
+    $('#Invest_Original_Weight').text("");
+    $('#Invest_Remaining_Weight').val("");
+    $('#Invest_Basic_Weight').text("");
+    $('#Invest_Specification').text("");
+    $('#Invest_Lot_Number').text("");
 }
 
 //完工紀錄使用
@@ -1138,25 +1159,14 @@ function BtnRecordEdit() {
 
 }
 
-function clear() {
-    $('#Invest_Barcode').text("");
-    $('#Invest_Remnant').val(0);
-    $('#Invest_Original_Weight').text("");
-    $('#Invest_Remaining_Weight').val("");
-    $('#Invest_Basic_Weight').text("");
-    $('#Invest_Specification').text("");
-    $('#Invest_Lot_Number').text("");
-}
-
 //完工紀錄使用
 function ChangeStaus() {
     var OspHeaderId = $("#OspHeaderId").val();
-    var Locator = 0;
     $.ajax({
-        url: '/Process/ChangeHeaderStauts/',
+        url: '/Process/EditHeaderStauts/',
         dataType: 'json',
         type: 'post',
-        data: { OspHeaderId: OspHeaderId, Locator: Locator },
+        data: { OspHeaderId: OspHeaderId },
         success: function (data) {
             if (data.resultModel.Success) {
                 DisplayInvestEnable(false);

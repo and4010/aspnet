@@ -13,27 +13,22 @@ $(document).ready(function () {
     LoadPaperRollProductionDataTable();
     onclick();
 
-    var Process_Status = $('#Process_Status').val();
-    if (Process_Status == "已完工" || Process_Status == "待核准") {
+    var Status = $('#Status').val();
+    if (Status == "已完工" || Status == "待核准") {
   
         //完工紀錄使用
         DsiplayPaperRollHide();
         DisplayInvestPaperRollEnable(true);
         DisplayProductionPaperRollEnable(true);
+        ///隱藏按鈕
+        PaperRollInvestDataTables.column(9).visible(false);
+        PaperRollProductionDataTables.column(8).visible(false);
     } else {
         DisplayInvestPaperRollEnable(true);
         DisplayProductionPaperRollEnable(true);
         DsiplayPaperRollShow();
     }
 
-    //setTimeout(function () {
-    //    var table = $('#PaperRollInvestDataTables').DataTable();
-    //    if (table.data().length == 0) {
-    //        DisplayPaperRollEnable(true);
-    //    } else {
-    //        DisplayPaperRollEnable(true);
-    //    }
-    //}, 100);
 
     //重新整理表格寬度
     $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
@@ -52,6 +47,7 @@ $(document).ready(function () {
     PaperRollInvestDataTables.on('click', '#btnDelete', function (e) {
         e.preventDefault();
         $('#Production_Loss').html("");
+        $('#Rate').html("");
         EditorInvest.remove($(this).closest('tr'), {
             title: '刪除',
             message: '你確定要刪除?',
@@ -62,6 +58,7 @@ $(document).ready(function () {
     PaperRollInvestDataTables.on('click', '#btnEdit', function (e) {
         e.preventDefault();
         $('#Production_Loss').html("");
+        $('#Rate').html("");
         EditorInvest.edit($(this).closest('tr'), {
             title: '編輯',
             buttons: '確定'
@@ -71,6 +68,7 @@ $(document).ready(function () {
     PaperRollProductionDataTables.on('click', '#btnDeleteProductionTable', function (e) {
         e.preventDefault();
         $('#Production_Loss').html("");
+        $('#Rate').html("");
         EditorProduction.remove($(this).closest('tr'), {
             title: '刪除',
             message: '你確定要刪除?',
@@ -80,6 +78,7 @@ $(document).ready(function () {
 
     PaperRollProductionDataTables.on('click', '#btnEdit', function (e) {
         $('#Production_Loss').html("");
+        $('#Rate').html("");
         e.preventDefault();
         EditorProduction.edit($(this).closest('tr'), {
             title: '編輯',
@@ -87,9 +86,9 @@ $(document).ready(function () {
         });
 
         EditorProduction.on('preSubmit', function (e, d) {
-            var Weight = this.field('Weight');
+            var Weight = this.field('PrimaryQuantity');
             if (Weight.val() === '') {
-                this.field('Weight').error('請勿空白');
+                this.field('PrimaryQuantity').error('請勿空白');
                 return false;
             }
             return true;
@@ -104,15 +103,15 @@ function init() {
     //條碼欄位事件
     $('#PaperRoll_Invest_Barcode').change(function (e) {
         var Barcode = $('#PaperRoll_Invest_Barcode').val();
-        var Process_Detail_Id = $("#Process_Detail_Id").val();
+        var OspDetailInId = $("#OspDetailInId").val();
         $.ajax({
-            url: '/Process/Barcode',
+            url: '/Process/CheckStockBarcode',
             type: 'post',
             datatype: 'json',
-            data: { Barcode: Barcode, Process_Detail_Id: Process_Detail_Id },
+            data: { Barcode: Barcode, OspDetailInId: OspDetailInId },
             success: function (data) {
-                if (data.result == false) {
-                    swal.fire("條碼無資料");
+                if (data.resultDataModel.Success == false) {
+                    swal.fire(data.resultDataModel.Msg);
                     ClearTextPaperRoll();
                 } else {
                     PaperRollDispalyText(data);
@@ -125,19 +124,19 @@ function init() {
 
     });
 
-    //1 有殘捲 0 無殘捲
-    $('#PaperRoll_Invest_Remaining_Weight').attr("disabled", true);
-    $('#PaperRoll_Invest_Remnant').change(function (e) {
-        var Remnant = $("#PaperRoll_Invest_Remnant").val();
-        if (Remnant == 1) {
-            $('#PaperRoll_Invest_Remaining_Weight').attr("disabled", false);
-        } else {
-            $('#PaperRoll_Invest_Remaining_Weight').val("");
-            $('#PaperRoll_Invest_Remaining_Weight').attr("disabled", true);
+    ////1 有殘捲 0 無殘捲
+    //$('#PaperRoll_Invest_Remaining_Weight').attr("disabled", true);
+    //$('#PaperRoll_Invest_Remnant').change(function (e) {
+    //    var Remnant = $("#PaperRoll_Invest_Remnant").val();
+    //    if (Remnant == 1) {
+    //        $('#PaperRoll_Invest_Remaining_Weight').attr("disabled", false);
+    //    } else {
+    //        $('#PaperRoll_Invest_Remaining_Weight').val("");
+    //        $('#PaperRoll_Invest_Remaining_Weight').attr("disabled", true);
 
-        }
+    //    }
 
-    });
+    //});
 
 
     //在關鍵字input按下Enter，執行n送出 紙捲
@@ -147,16 +146,7 @@ function init() {
         }
     });
 
-    //列印標籤紙捲
-    $('#BtnRePrint').click(function () {
-        PrintLable(PaperRollInvestDataTables, "/Home/GetLabel", "1");
-    });
-
-
-    //列印標籤紙捲
-    $('#BtnLabel').click(function () {
-        PrintLable(PaperRollProductionDataTables, "/Home/GetLabel", "1");
-    });
+ 
 
 
     $("#Process_Batch_no").keyup(function (event) {
@@ -170,19 +160,34 @@ function init() {
 
 function onclick() {
 
+
+    //列印標籤紙捲
+    $('#BtnRePrint').click(function () {
+        var Status = "捲筒"
+        PrintLableParameter(PaperRollInvestDataTables, "/Process/RePrintLabel", "2", Status);
+    });
+
+
+    //列印成品標籤紙捲
+    $('#BtnLabel').click(function () {
+        PrintLable(PaperRollProductionDataTables, "/Process/GePaperRollerProductLabels", "1");
+    });
+
+
     //投入
     $('#BtnProcess_Batch_no').click(function (e) {
-        var ProcessBatchNo = $('#ProcessBatchNo').val();
+        var BatchNo = $('#ProcessBatchNo').val();
+        var OspHeaderId = $('#OspHeaderId').val();
         $.ajax({
-            url: '/Process/CheckOrderNumber',
+            url: '/Process/CheckBatchNo',
             datatype: 'json',
             type: "POST",
-            data: { ProcessBatchNo: ProcessBatchNo },
+            data: { BatchNo: BatchNo, OspHeaderId: OspHeaderId },
             success: function (data) {
-                if (data.boolean) {
+                if (data.resultModel.Success) {
                     DisplayInvestPaperRollEnable(false);
                 } else {
-                    swal.fire("訂單輸入不對請重新輸入");
+                    swal.fire(data.resultModel.Msg);
                 }
             },
             error: function () {
@@ -194,17 +199,18 @@ function onclick() {
 
     //投出驗證單號
     $('#BtnProcess_Production_Batch_no').click(function (e) {
-        var ProcessBatchNo = $('#ProcessProductionBatchNo').val();
+        var BatchNo = $('#ProcessProductionBatchNo').val();
+        var OspHeaderId = $('#OspHeaderId').val();
         $.ajax({
-            url: '/Process/CheckOrderNumber',
+            url: '/Process/CheckBatchNo',
             datatype: 'json',
             type: "POST",
-            data: { ProcessBatchNo: ProcessBatchNo },
+            data: { BatchNo: BatchNo, OspHeaderId: OspHeaderId },
             success: function (data) {
-                if (data.boolean) {
+                if (data.resultModel.Success) {
                     DisplayProductionPaperRollEnable(false);
                 } else {
-                    swal.fire("訂單輸入不對請重新輸入");
+                    swal.fire(data.resultModel.Msg);
                 }
             },
             error: function () {
@@ -220,8 +226,8 @@ function onclick() {
     $('#Btn_PaperRoll_ProcessSave').click(function () {
         var Barcode = $('#PaperRoll_Invest_Barcode').val().trim();
         var Remnant = $('#PaperRoll_Invest_Remnant').val();
-        var Remaining_Weight = $('#PaperRoll_Invest_Remaining_Weight').val();
-        var Process_Detail_Id = $("#Process_Detail_Id").val();
+        var Remaining_Weight = "";
+        var OspDetailInId = $("#OspDetailInId").val();
         if (Barcode.length == 0) {
             swal.fire("投入條碼不得空白");
             return;
@@ -233,7 +239,7 @@ function onclick() {
             }
 
         }
-        PaperInvestSaveBarcode(Barcode, Remnant, Remaining_Weight, Process_Detail_Id);
+        PaperInvestSaveBarcode(Barcode, Remnant, Remaining_Weight, OspDetailInId);
         $('#Btn_PaperRoll_ProcessSave').select();
     });
 
@@ -244,8 +250,7 @@ function onclick() {
         var PaperRoll_Specification = $('#PaperRoll_Specification').val().trim();
         var PaperRoll_Lot_Number = $('#PaperRoll_Lot_Number').val().trim();
         var PaperRollInvestDataTables = $('#PaperRollInvestDataTables').DataTable().data();
-        var Product_Item = $('#PaperRoll_Product_Item').text();
-        var Process_Detail_Id = $("#Process_Detail_Id").val();
+        var OspDetailOutId = $("#OspDetailOutId").val();
 
 
         if (PaperRollInvestDataTables.length == 0) {
@@ -266,7 +271,7 @@ function onclick() {
             return;
         }
 
-        PaperRollProductionDetail(PaperRoll_Basic_Weight, PaperRoll_Specification, PaperRoll_Lot_Number, Product_Item, Process_Detail_Id);
+        PaperRollProductionDetail(PaperRoll_Basic_Weight, PaperRoll_Specification, PaperRoll_Lot_Number, OspDetailOutId);
 
     })
 
@@ -274,7 +279,7 @@ function onclick() {
 
         var Production_Barcode = $('#PaperRoll_Production_Barcode').val();
         var table = $('#PaperRollProductionDataTables').DataTable();
-        var Process_Detail_Id = $("#Process_Detail_Id").val();
+        var OspDetailOutId = $("#OspDetailOutId").val();
         if (Production_Barcode.length == 0) {
             swal.fire("條碼請勿空白。");
             return;
@@ -283,67 +288,34 @@ function onclick() {
             swal.fire("表格無資料，請先輸入資料。");
             return;
         }
-        PaperRollChangeProductionStauts(Production_Barcode, Process_Detail_Id);
+        PaperRollChangeProductionStauts(Production_Barcode, OspDetailOutId);
         $('#PaperRoll_Production_Barcode').select();
     })
 
     //計算損失
-    $('#BtnPaperRollCalculate').click(function () {
-        var Process_Detail_Id = $("#Process_Detail_Id").val()
-        var Investtable = $('#PaperRollInvestDataTables').DataTable();
-        var Productiontable = $('#PaperRollProductionDataTables').DataTable();
-        if (Investtable.data().length == 0) {
-            swal.fire("表格無資料，請先輸入資料。");
-            return;
-        }
-        if (Productiontable.data().length == 0) {
-            swal.fire("表格無資料，請先輸入資料。");
-            return;
+    $('#BtnCalculate').click(function () {
+        var OspDetailInId = $("#OspDetailInId").val()
+        var OspDetailOutId = $("#OspDetailOutId").val()
+        var table = $('#PaperRollProductionDataTables').DataTable();
+        if (table.data().length == 0) {
+            swal.fire("產出無資料，請先輸入資料。")
+            return
         }
 
-        var PaperRollProductionDataTables = $('#PaperRollProductionDataTables').DataTable().column(6).data();
-
-        for (i = 0; i < PaperRollProductionDataTables.length; i++) {
-            if (PaperRollProductionDataTables[i] == "待入庫") {
-                Swal.fire({
-                    title: '產出資料錯誤',
-                    text: "尚有資料未入庫",
-                    icon: 'warning',
-                    showCancelButton: false,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: '確定',
-                    cancelButtonText: '取消'
-                });
-                return;
-            }
-        }
-  
-        var data = PaperRollInvestDataTables.column(6).data();
-        var OriginalWeight = 0;
-        var OW = data[0];
-        //投入重量
-        for (i = 0; i < OW.length; i++) {
-            OriginalWeight += parseFloat(OW[i]);
-        }
-        var InvestWeight = OriginalWeight;
-
-
-        //訂單總重
-        var OrderWeight = $('#CHP_PROCESS_T_Weight').val();
-        var ProductWeight = parseFloat(OrderWeight*100);
-        var TotalWeight = (ProductWeight / InvestWeight).toFixed(2);
-        var Percentage = ((InvestWeight / ProductWeight) * 100).toFixed(2);
         $.ajax({
             "url": "/Process/Loss",
             "type": "POST",
             "datatype": "json",
-            "data": { TotalWeight: TotalWeight, Percentage: Percentage, Process_Detail_Id: Process_Detail_Id },
-            success: function () {
-                $('#Production_Loss').html("重量(KG)&ensp;" + TotalWeight + "&emsp;得率" + Percentage + "%");
+            "data": { OspDetailInId: OspDetailInId, OspDetailOutId: OspDetailOutId },
+            success: function (data) {
+                if (data.resultDataModel.Success) {
+                    $('#Production_Loss').html(data.resultDataModel.Data.LossWeight);
+                    $('#Rate').html(data.resultDataModel.Data.Rate + "%");
+                } else {
+                    swal.fire(data.resultDataModel.Msg)
+                }
             }
         });
-
 
     });
 
@@ -354,37 +326,22 @@ function onclick() {
 
     $('#BtnSave').click(function () {
         var loss = $('#Production_Loss').text();
-
-        var Process_Batch_no = $('#PaperRoll_Process_Batch_no').text();
-        var PaperRollProductionDataTables = $('#PaperRollProductionDataTables').DataTable().column(6).data();
-
-        for (i = 0; i < PaperRollProductionDataTables.length; i++) {
-            if (PaperRollProductionDataTables[i] == "待入庫") {
-                Swal.fire({
-                    title: '產出資料錯誤',
-                    text: "尚有資料未入庫",
-                    icon: 'warning',
-                    showCancelButton: false,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: '確定',
-                    cancelButtonText: '取消'
-                });
-                return;
-            }
-        }
-
-        if (loss.length == 0) {
+        var Process_Batch_no = $('#Process_Batch_no').text()
+        var OspDetailOutId = $("#OspDetailOutId").val();
+        if (loss == 0) {
             swal.fire("損耗量未計算");
             return;
         }
 
+
         $.ajax({
-            url: '/Process/_Subinventory/',
+            url: '/Process/_Locator/',
             type: 'POST',
+            datatype: 'json',
+            data: { OspDetailOutId: OspDetailOutId },
             success: function (result) {
                 $('body').append(result);
-                Open($('#SubinventoryModal'), Process_Batch_no);
+                Open($('#SubinventoryModal'));
             }
         });
 
@@ -410,9 +367,8 @@ function LoadPaperRollInvestDataTable() {
                 $.each(d.data, function (key, value) {
 
                     var Invest = {
-                        'Invest_Id': d.data[key]['Invest_Id'],
-                        'Remnant': d.data[key]['Remnant'],
-                        'Remaining_Weight': d.data[key]['Remaining_Weight']
+                        'OspPickedInId': d.data[key]['OspPickedInId'],
+                        'RemainingQuantity': d.data[key]['RemainingQuantity']
                     }
                     InvestList.push(Invest);
                 });
@@ -429,11 +385,11 @@ function LoadPaperRollInvestDataTable() {
             }
         },
         table: "#PaperRollInvestDataTables",
-        idSrc: 'Invest_Id',
+        idSrc: 'OspPickedInId',
         fields: [
             {
                 label: "殘捲",
-                name: "Remnant",
+                name: "HasRemaint",
                 type: "select",
                 options: [
                     { label: "無", value: "無" },
@@ -442,7 +398,7 @@ function LoadPaperRollInvestDataTable() {
             },
             {
                 label: "餘重:",
-                name: "Remaining_Weight",
+                name: "RemainingQuantity",
                 attr: {
                     type: "number",
                     min: "0"
@@ -451,7 +407,7 @@ function LoadPaperRollInvestDataTable() {
             ,
             {
                 label: "ID:",
-                name: "Invest_Id",
+                name: "OspPickedInId",
             }
         ],
         i18n: {
@@ -460,24 +416,33 @@ function LoadPaperRollInvestDataTable() {
                 title: "更改原因",
                 submit: "確定",
             },
+            remove: {
+                button: '刪除',
+                title: "刪除",
+                submit: "確定",
+                confirm: {
+                    "_": "你確定要刪除這筆資料?",
+                    "1": "你確定要刪除這筆資料?"
+                }
+            },
         }
 
 
     });
 
-    EditorInvest.hide('Invest_Id');
+    EditorInvest.hide('OspPickedInId');
 
     EditorInvest.on('preSubmit', function (e, d) {
         var Remnant
         var Remaining_Weight
         $.each(d.data, function (key, values) {
-            Remnant = d.data[key]['Remnant']
-            Remaining_Weight = d.data[key]['Remaining_Weight']
+            Remnant = d.data[key]['HasRemaint']
+            Remaining_Weight = d.data[key]['RemainingQuantity']
         });
 
         if (Remnant == "有") {
             if (Remaining_Weight == '') {
-                this.field('Remaining_Weight').error('請勿空白');
+                this.field('RemainingQuantity').error('請勿空白');
                 return false;
             }
         } else {
@@ -487,24 +452,24 @@ function LoadPaperRollInvestDataTable() {
         return true;
     });
 
-    EditorInvest.dependent('Remnant', function (val, data, callback) {
+    EditorInvest.dependent('HasRemaint', function (val, data, callback) {
         if (val == '無') {
-            EditorInvest.field('Remaining_Weight').set('');
+            EditorInvest.field('RemainingQuantity').set('');
         }
         return val === '無' ?
-            { hide: 'Remaining_Weight' } : { show: 'Remaining_Weight' };
+            { hide: 'RemainingQuantity' } : { show: 'RemainingQuantity' };
 
 
     });
 
-    var Process_Detail_Id = $("#Process_Detail_Id").val();
+    var OspHeaderId = $("#OspHeaderId").val();
     PaperRollInvestDataTables = $('#PaperRollInvestDataTables').DataTable({
         "language": {
             "url": "/bower_components/datatables/language/zh-TW.json"
         },
         destroy: true,
-        //processing: true,
-        //serverSide: true,
+        processing: true,
+        serverSide: true,
         //scrollX: true,
         autoWidth: false,
         dom:
@@ -515,7 +480,7 @@ function LoadPaperRollInvestDataTable() {
             "url": "/Process/InvestLoadTable",
             "type": "POST",
             "datatype": "json",
-            "data": { Process_Detail_Id: Process_Detail_Id }
+            "data": { OspHeaderId: OspHeaderId }
         },
         select: {
             style: 'multi',
@@ -526,7 +491,7 @@ function LoadPaperRollInvestDataTable() {
             'selectNone'
         ],
         columnDefs: [{
-            orderable: false, targets: [0, 7], width: "60px",
+            orderable: false, targets: [0, 9], width: "60px",
         }],
         columns: [
             {
@@ -536,12 +501,14 @@ function LoadPaperRollInvestDataTable() {
                 orderable: false,
                 targets: 0
             },
+            { data: "OspPickedInId", "name": "ID", "autoWidth": true, "className": "dt-body-center", visible: false },
+            { data: "StockId", "name": "ID", "autoWidth": true, "className": "dt-body-center", visible: false },
             { data: "Barcode", "name": "條碼號", "autoWidth": true, "className": "dt-body-center"},
-            { data: "Basic_Weight", "name": "基重", "autoWidth": true, "className": "dt-body-center"},
+            { data: "BasicWeight", "name": "基重", "autoWidth": true, "className": "dt-body-center"},
             { data: "Specification", "name": "規格", "autoWidth": true, "className": "dt-body-center"},
-            { data: "Lot_Number", "name": "捲號", "autoWidth": true, "className": "dt-body-center"},
-            { data: "Paper_Type", "name": "紙別", "autoWidth": true, "className": "dt-body-center"},
-            { data: "Original_Weight", "name": "原重", "autoWidth": true, "className": "dt-body-right"},
+            { data: "LotNumber", "name": "捲號", "autoWidth": true, "className": "dt-body-center"},
+            { data: "PaperType", "name": "紙別", "autoWidth": true, "className": "dt-body-center"},
+            { data: "PrimaryQuantity", "name": "原重", "autoWidth": true, "className": "dt-body-right"},
             {
                 data: "", "autoWidth": true, "render": function (data) {
                     return '<button class = "btn btn-danger btn-sm" id = "btnDelete">刪除</button>';
@@ -557,20 +524,18 @@ function LoadPaperRollInvestDataTable() {
 
 }
 
-//投入條碼
-function PaperInvestSaveBarcode(Barcode, Remnant, Remaining_Weight, Process_Detail_Id) {
+//儲存投入條碼
+function PaperInvestSaveBarcode(Barcode, Remnant, Remaining_Weight, OspDetailInId) {
     $.ajax({
-        "url": "/Process/InvestTable",
+        "url": "/Process/SaveInvestBarcode",
         "type": "POST",
         "datatype": "json",
-        "data": { Barcode: Barcode, Remnant: Remnant, Remaining_Weight: Remaining_Weight, Process_Detail_Id: Process_Detail_Id },
+        "data": { Barcode: Barcode, Remnant: Remnant, Remaining_Weight: Remaining_Weight, OspDetailInId: OspDetailInId },
         success: function (data) {
-            if (data.check == 0) {
+            if (data.resultModel.Success) {
                 LoadPaperRollInvestDataTable();
-            } else if (data.check == 1) {
-                swal.fire("條碼資料已存在");
-            } else if (data.check == 2) {
-                swal.fire("資料不存在");
+            } else {
+                swal.fire(data.resultModel.Msg);
             }
         }
 
@@ -585,7 +550,7 @@ function LoadPaperRollProductionDataTable() {
 
     EditorProduction = new $.fn.dataTable.Editor({
         ajax: {
-            url: '/Process/ProductionEdit',
+            url: '/Process/PaperRollerProductionEdit',
             type: "POST",
             datatype: "json",
             contentType: 'application/json',
@@ -594,10 +559,8 @@ function LoadPaperRollProductionDataTable() {
                 $.each(d.data, function (key, value) {
 
                     var Production = {
-                        'Production_Id': d.data[key]['Production_Id'],
-                        'Roll_Ream_Wt': d.data[key]['Roll_Ream_Wt'],
-                        'Weight': d.data[key]['Weight']
-
+                        'OspPickedOutId': d.data[key]['OspPickedOutId'],
+                        'PrimaryQuantity': d.data[key]['PrimaryQuantity']
                     }
                     ProductionList.push(Production);
                 });
@@ -610,18 +573,18 @@ function LoadPaperRollProductionDataTable() {
                 return JSON.stringify(data);
             },
             success: function () {
-                //LoadProductionDataTable();
+                LoadPaperRollProductionDataTable();
             }
         },
         table: "#PaperRollProductionDataTables",
-        idSrc: 'Production_Id',
+        idSrc: 'OspPickedOutId',
         fields: [
             {
                 label: "重量",
-                name: "Weight"
+                name: "PrimaryQuantity"
             },
             {
-                name: "Production_Id"
+                name: "OspPickedOutId"
             },
         ],
         i18n: {
@@ -634,16 +597,16 @@ function LoadPaperRollProductionDataTable() {
 
     });
 
-    EditorProduction.field('Production_Id').hide();
+    EditorProduction.field('OspPickedOutId').hide();
 
-    var Process_Detail_Id = $("#Process_Detail_Id").val();
+    var OspHeaderId = $("#OspHeaderId").val();
     PaperRollProductionDataTables = $('#PaperRollProductionDataTables').DataTable({
         "language": {
             "url": "/bower_components/datatables/language/zh-TW.json"
         },
         destroy: true,
-        //processing: true,
-        //serverSide: true,
+        processing: true,
+        serverSide: true,
         //scrollX: true,
         autoWidth: false,
         dom:
@@ -654,7 +617,7 @@ function LoadPaperRollProductionDataTable() {
             "url": "/Process/ProductionLoadDataTables",
             "type": "POST",
             "datatype": "json",
-            "data": { Process_Detail_Id: Process_Detail_Id },
+            "data": { OspHeaderId: OspHeaderId },
         },
         select: {
             style: 'multi',
@@ -665,7 +628,7 @@ function LoadPaperRollProductionDataTable() {
             'selectNone'
         ],
         columnDefs: [{
-            orderable: false, targets: [0, 7], width: "60px",
+            orderable: false, targets: [0, 8], width: "60px",
         }],
         columns: [
             {
@@ -675,10 +638,11 @@ function LoadPaperRollProductionDataTable() {
                 orderable: false,
                 targets: 0
             },
+            { data: "OspPickedOutId", "name": "", "autoWidth": true, "className": "dt-body-center", visible: false },
             { data: "Barcode", "name": "條碼號", "autoWidth": true, "className": "dt-body-center"},
-            { data: "Item_No", "name": "料號", "autoWidth": true, "className": "dt-body-left"},
-            { data: "Lot_Number", "name": "捲數", "autoWidth": true, "className": "dt-body-center" },
-            { data: "Weight", "name": "重量", "autoWidth": true, "className": "dt-body-right" },
+            { data: "Product_Item", "name": "料號", "autoWidth": true, "className": "dt-body-left"},
+            { data: "LotNumber", "name": "捲數", "autoWidth": true, "className": "dt-body-center" },
+            { data: "PrimaryQuantity", "name": "重量", "autoWidth": true, "className": "dt-body-right" },
             {
                 data: "", "name": "單位", "autoWidth": true, "className": "dt-body-center", render: function () {
                     return 'KG';
@@ -705,24 +669,26 @@ function LoadPaperRollProductionDataTable() {
 
 }
 
-function PaperRollProductionDetail(PaperRoll_Basic_Weight, PaperRoll_Specification, PaperRoll_Lot_Number ,Product_Item, Process_Detail_Id) {
+///產生明細
+function PaperRollProductionDetail(PaperRoll_Basic_Weight, PaperRoll_Specification, PaperRoll_Lot_Number, OspDetailOutId) {
 
     $.ajax({
-        "url": "/Process/PaperRollProductionDetail",
+        "url": "/Process/PaperRollCreateProduction",
         "type": "POST",
         "datatype": "json",
         "data": {
             PaperRoll_Basic_Weight: PaperRoll_Basic_Weight,
             PaperRoll_Specification: PaperRoll_Specification,
             PaperRoll_Lot_Number: PaperRoll_Lot_Number,
-            Product_Item: Product_Item,
-            Process_Detail_Id: Process_Detail_Id
+            OspDetailOutId: OspDetailOutId
         },
         success: function (data) {
-            if (data.boolean) {
-                LoadPaperRollProductionDataTable();
-            } else {
-                swal.fire("");
+            if (data != null) {
+                if (data.resultModel.Success) {
+                    LoadPaperRollProductionDataTable();
+                } else {
+                    swal.fire(data.resultModel.Msg);
+                }
             }
         }
     })
@@ -730,19 +696,18 @@ function PaperRollProductionDetail(PaperRoll_Basic_Weight, PaperRoll_Specificati
 
 }
 
-function PaperRollChangeProductionStauts(Production_Barcode, Process_Detail_Id) {
+//產出條碼入庫
+function PaperRollChangeProductionStauts(Production_Barcode, OspDetailOutId) {
     $.ajax({
         "url": "/Process/ProductionChangeStatus",
         "type": "POST",
         "datatype": "json",
-        "data": { Production_Barcode: Production_Barcode, Process_Detail_Id: Process_Detail_Id },
+        "data": { Production_Barcode: Production_Barcode, OspDetailOutId: OspDetailOutId },
         success: function (data) {
-            if (data.check == 1) {
-                swal.fire("此條碼已入庫")
-            } else if (data.check == 2) {
+            if (data.resultModel.Success) {
                 LoadPaperRollProductionDataTable();
-            } else if (data.check == 3) {
-                swal.fire("無條碼資料");
+            } else {
+                swal.fire(data.resultModel.Msg);
             }
         }
     })
@@ -757,9 +722,8 @@ function ClearTextPaperRoll() {
 }
 
 function PaperRollDispalyText(data) {
-    $('#PaperRoll_Invest_Original_Weight').html(data.cpd.Original_Weight);
-    $('#PaperRoll_Item_No').html(data.cpd.Item_No);
-    $('#PaperRoll_Invest_Lot_Number').html(data.cpd.Lot_Number);
+    $('#PaperRoll_Invest_Original_Weight').html(data.resultDataModel.Data.PrimaryAvailableQty);
+    $('#PaperRoll_Invest_Lot_Number').html(data.resultDataModel.Data.LotNumber);
 }
 
 function EnableBarcode(boolean) {
@@ -787,21 +751,22 @@ function Open(modal_dialog, Process_Batch_no) {
 
     //確認按鍵
     modal_dialog.on('click', '#btnSaveSubinventory', function (e) {
-        var Subinventory = $('#dialg_Subinventory').val();
-
-
-
+        var Locator = $('#dialg_Locator').val();
+        var OspHeaderId = $("#OspHeaderId").val();
         $.ajax({
-            url: '/Process/ChagneIndexStatus/',
+            url: '/Process/ChangeHeaderStauts/',
             dataType: 'json',
             type: 'post',
-            data: { Process_Batch_no: Process_Batch_no, Subinventory: Subinventory },
-            success: function (e) {
-                window.location.href = '/Process/Index';
+            data: { OspHeaderId: OspHeaderId, Locator: Locator },
+            success: function (data) {
+                if (data.resultModel.Success) {
+                    window.location.href = '/Process/Index';
+                } else {
+                    swal.fire(data.resultModel.Msg)
+                }
+
             }
-        })
-
-
+        });
 
     });
 
@@ -810,58 +775,14 @@ function Open(modal_dialog, Process_Batch_no) {
     modal_dialog.modal('show');
 
 }
-//完工紀錄使用
-function BtnRecord() {
-    $('#BtnEdit').click(function () {
-        var ProcessBatchNo = $('#ProcessBatchNo').val();
-        $.ajax({
-            url: '/Process/CheckOrderNumber',
-            datatype: 'json',
-            type: "POST",
-            data: { ProcessBatchNo: ProcessBatchNo },
-            success: function (data) {
-                if (data.boolean) {
-                    DisplayInvestPaperRollEnable(false);
-                    changeStaus();
-                } else {
-                    swal.fire("訂單輸入不對請重新輸入");
-                }
-            },
-            error: function () {
-
-            }
-        });
-
-    });
-
-    $('#BtnApprove').click(function () {
-        var Process_Batch_no = $('#PaperRoll_Process_Batch_no').text();
-        var Status = "核准";
-        $.ajax({
-            url: '/Process/ChagneIndexStatus/',
-            dataType: 'json',
-            type: 'post',
-            data: { Process_Batch_no: Process_Batch_no, Status: Status },
-            success: function (e) {
-                window.location.href = '/Process/Index';
-            }
-        });
-
-
-    });
 
 
 
-
-}
-
-//完工紀錄使用
 function DisplayInvestPaperRollEnable(boolean) {
     $('#PaperRoll_Invest_Barcode').attr('disabled', boolean);
     $('#Btn_PaperRoll_ProcessSave').attr('disabled', boolean);
 
     
-
 }
 
 function DisplayProductionPaperRollEnable(boolean) {
@@ -871,8 +792,10 @@ function DisplayProductionPaperRollEnable(boolean) {
     $('#Btn_PaperRoll_Product_detail').attr('disabled', boolean);
     $('#PaperRoll_Production_Barcode').attr('disabled', boolean);
     $('#BtnPaperRollBarcodeSave').attr('disabled', boolean);
-    $('#BtnPaperRollCalculate').attr('disabled', boolean);
-
+    $('#BtnCalculate').attr('disabled', boolean);
+    $('#BtnLabel').attr('disabled', boolean);
+    $('#BtnPurchase').attr('disabled', boolean);
+    
 }
 
 
@@ -891,16 +814,66 @@ function DsiplayPaperRollShow() {
 }
 
 //完工紀錄使用
+function BtnRecord() {
+    $('#BtnEdit').click(function () {
+        var BatchNo = $('#ProcessBatchNo').val();
+        var OspHeaderId = $('#OspHeaderId').val();
+        $.ajax({
+            url: '/Process/FinisheEdit',
+            datatype: 'json',
+            type: "POST",
+            data: { BatchNo: BatchNo, OspHeaderId: OspHeaderId },
+            success: function (data) {
+                if (data.resultModel.Success) {
+                    changeStaus();
+                } else {
+                    swal.fire(data.resultModel.Msg);
+                }
+            },
+            error: function () {
+
+            }
+        });
+
+    });
+
+    $('#BtnApprove').click(function () {
+        var OspHeaderId = $("#OspHeaderId").val();
+        var Status = "核准";
+        $.ajax({
+            url: '/Process/ApproveHeaderStauts/',
+            dataType: 'json',
+            type: 'post',
+            data: { OspHeaderId: OspHeaderId },
+            success: function (data) {
+                if (data.resultModel.Success) {
+                    window.location.href = '/Process/Index';
+                } else {
+                    swal.fire(data.resultModel.Msg)
+                }
+            }
+        });
+
+    });
+
+}
+//完工紀錄使用
 function changeStaus() {
-    var Process_Batch_no = $('#ProcessBatchNo').val();
-    var Status = "完工紀錄";
+    var OspHeaderId = $("#OspHeaderId").val();
     $.ajax({
-        url: '/Process/ChagneIndexStatus/',
+        url: '/Process/EditHeaderStauts/',
         dataType: 'json',
         type: 'post',
-        data: { Process_Batch_no: Process_Batch_no, Status: Status },
-        success: function (e) {
-            //window.location.href = '/Process/Index';
+        data: { OspHeaderId: OspHeaderId },
+        success: function (data) {
+            if (data.resultModel.Success) {
+                DisplayInvestPaperRollEnable(false);
+                DisplayProductionPaperRollEnable(false);
+                PaperRollInvestDataTables.column(9).visible(true);
+                PaperRollProductionDataTables.column(8).visible(true);
+            } else {
+                swal.fire(data.resultModel.Msg)
+            }
         }
     });
 }

@@ -77,15 +77,15 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
         {
             using (var context = new MesContext())
             {
-                if (Status == PurchaseHeaderPending)
-                {
-                    return new PurchaseUOW(context).GetPaperRollHeaderList(CONTAINER_NO);
-                }
-                else
-                {
-                    return new PurchaseUOW(context).GetPaperRollHeaderHtList(CONTAINER_NO);
-                }
-
+                //if (Status == PurchaseHeaderPending)
+                //{
+                //    return new PurchaseUOW(context).GetPaperRollHeaderList(CONTAINER_NO);
+                //}
+                //else
+                //{
+                //    return new PurchaseUOW(context).GetPaperRollHeaderHtList(CONTAINER_NO);
+                //}
+                return new PurchaseUOW(context).GetPaperRollHeaderList(CONTAINER_NO);
             }
         }
 
@@ -100,16 +100,16 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
 
             using (var context = new MesContext())
             {
-                if (Status == PurchaseHeaderPending)
-                {
-                    return new PurchaseUOW(context).GetFlatHeaderList(CONTAINER_NO);
-                }
-                else
-                {
-                    return new PurchaseUOW(context).GetFlatHeaderHtList(CONTAINER_NO);
-                }
+                //if (Status == PurchaseHeaderPending)
+                //{
+                //    return new PurchaseUOW(context).GetFlatHeaderList(CONTAINER_NO);
+                //}
+                //else
+                //{
+                //    return new PurchaseUOW(context).GetFlatHeaderHtList(CONTAINER_NO);
+                //}
 
-
+                return new PurchaseUOW(context).GetFlatHeaderList(CONTAINER_NO);
             }
         }
 
@@ -137,14 +137,15 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
         {
             using (var context = new MesContext())
             {
-                if (Status == PurchaseHeaderPending)
-                {
-                    return new PurchaseUOW(context).GetPaperRollDetailList(CONTAINER_NO);
-                }
-                else
-                {
-                    return new PurchaseUOW(context).GetHtPaperRollDetailList(CONTAINER_NO);
-                }
+                //if (Status == PurchaseHeaderPending)
+                //{
+                //    return new PurchaseUOW(context).GetPaperRollDetailList(CONTAINER_NO);
+                //}
+                //else
+                //{
+                //    return new PurchaseUOW(context).GetHtPaperRollDetailList(CONTAINER_NO);
+                //}
+                return new PurchaseUOW(context).GetPaperRollDetailList(CONTAINER_NO);
             }
         }
         /// <summary>
@@ -157,14 +158,15 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
 
             using (var context = new MesContext())
             {
-                if (Status == PurchaseHeaderPending)
-                {
-                    return new PurchaseUOW(context).GetFlatDetailList(CONTAINER_NO);
-                }
-                else
-                {
-                    return new PurchaseUOW(context).GetHtFlatDetailList(CONTAINER_NO);
-                }
+                //if (Status == PurchaseHeaderPending)
+                //{
+                //    return new PurchaseUOW(context).GetFlatDetailList(CONTAINER_NO);
+                //}
+                //else
+                //{
+                //    return new PurchaseUOW(context).GetHtFlatDetailList(CONTAINER_NO);
+                //}
+                return new PurchaseUOW(context).GetFlatDetailList(CONTAINER_NO);
             }
 
         }
@@ -205,7 +207,7 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
         {
             using (var context = new MesContext())
             {
-                return new PurchaseUOW(context).GetPaperRollEdit(Id);
+                return new PurchaseUOW(context).GetPaperRollEditView(Id);
             }
         }
 
@@ -218,7 +220,7 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
         {
             using (var context = new MesContext())
             {
-                return new PurchaseUOW(context).GetPaperRollView(Id);
+                return new PurchaseUOW(context).GetPaperRollEditView(Id);
             }
         }
         /// <summary>
@@ -294,7 +296,7 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
         {
             using (var context = new MesContext())
             {
-                return new PurchaseUOW(context).GetFlatEdit(Id);
+                return new PurchaseUOW(context).GetFlatEditView(Id);
             }
         }
 
@@ -307,7 +309,7 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
         {
             using (var context = new MesContext())
             {
-                return new PurchaseUOW(context).GetFlatView(Id);
+                return new PurchaseUOW(context).GetFlatEditView(Id);
             }
         }
 

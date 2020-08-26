@@ -23,8 +23,10 @@ else
 }
 
 @Html.HiddenFor(model => model.CHP_PROCESS_T.Status, new { id = "Status" })
-@Html.HiddenFor(model => model.CHP_PROCESS_T.OspDetailInId, new { id = "OspDetailInId" })
 
+@Html.HiddenFor(model => model.CHP_PROCESS_T.OspDetailInId, new { id = "OspDetailInId" })
+@Html.HiddenFor(model => model.CHP_PROCESS_T.OspDetailOutId, new { id = "OspDetailOutId" })
+@Html.HiddenFor(model => model.CHP_PROCESS_T.OspHeaderId, new { id = "OspHeaderId" })
 <div class="row">
 
     <div class="row form-group">
@@ -61,16 +63,6 @@ else
 
         <div class="form-inline col col-md-1">
             @Html.DisplayFor(model => model.CHP_PROCESS_T.CustomerName)
-        </div>
-
-        @* 訂單編號 *@
-        <div class="form-inline col col-md-1 text-right">
-            @Html.LabelFor(model => model.CHP_PROCESS_T.OrderNumber)
-
-        </div>
-
-        <div class="form-inline col col-md-1">
-            @Html.DisplayFor(model => model.CHP_PROCESS_T.OrderNumber)
         </div>
 
 
@@ -213,7 +205,7 @@ else
         </div>
     </div>
 
-    <div class="row row-std form-group">
+    <div class="row row-std">
 
         <form class="bs-example bs-example-form col-md-3" id="form" onsubmit="return false">
             <div class="input-group form-row">
@@ -223,7 +215,10 @@ else
         </form>
         <button class="btn btn-danger" type="button" id="BtnProcess_Batch_no">比對</button>
         <button class="btn btn-danger" type="button" id="BtnEdit">修改</button>
-        <button class="btn btn-danger" type="button" id="BtnApprove">核准</button>
+        @if (Model.Authority)
+        {
+            <button class="btn btn-danger" type="button" id="BtnApprove">核准</button>
+        }
     </div>
 
 
@@ -263,6 +258,8 @@ else
                 <table class="table table-striped table-bordered table-hover" id="FlatInvestDataTables">
                     <thead>
                         <tr>
+                            <th></th>
+                            <th></th>
                             <th></th>
                             <th>
                                 @Html.DisplayName("條碼號")
@@ -373,6 +370,7 @@ else
                         <thead>
                             <tr>
                                 <th rowspan="2" colspan="1"></th>
+                                <th rowspan="2" colspan="1"></th>
                                 <th rowspan="2" colspan="1">條碼號</th>
                                 <th rowspan="2" colspan="1">料號</th>
                                 <th rowspan="1" colspan="2">主單位</th>
@@ -435,17 +433,17 @@ else
         </div>
     </div>
     <div class="row col-md-12">
-        <div class="form-group col col-md-1">
-            @Html.LabelFor(model => model.Production.Loss)
+        <div class="form-inline col col-md-1">
+            @Html.LabelFor(model => model.YieldVariance.LossWeight)
+            <label id="Production_Loss">@Html.DisplayFor(model => model.YieldVariance.LossWeight)</label>
         </div>
-
-        <div class="form-group col col-md-2">
-            <label id="Production_Loss">@Html.DisplayFor(model => model.Production.Loss)</label>
+        <div class="form-inline col col-md-1">
+            @Html.LabelFor(model => model.YieldVariance.Rate)
+            <label id="Rate">@Html.DisplayFor(model => model.YieldVariance.Rate)</label>
         </div>
-
         <div class="col-md-2">
-            @Html.HiddenFor(model => model.CHP_PROCESS_T.Loss, new { id = "CHP_PROCESS_T_Weight" })
-            <button class="btn btn-primary" type="button" id="BtnFlatCalculate">計算</button>
+            @Html.HiddenFor(model => model.CHP_PROCESS_T.Loss, new { id = "Loss" })
+            <button class="btn btn-primary" type="button" id="BtnCalculate">計算</button>
         </div>
 
     </div>

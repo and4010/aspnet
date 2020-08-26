@@ -307,7 +307,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity
         /// 更新時間
         /// </summary>
         /// 
-        [Required]
         [DataType(DataType.Date)]
         [Column("LAST_UPDATE_DATE")]
         public DateTime? LastUpdateDate { set; get; }
