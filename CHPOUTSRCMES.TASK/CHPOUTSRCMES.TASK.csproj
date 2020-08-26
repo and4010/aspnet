@@ -23,6 +23,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>preview</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -32,6 +33,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>preview</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Dapper, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -80,15 +82,21 @@
     <Compile Include="Models\Entity\Temp\SUBINVENTORY_TMP_T.cs" />
     <Compile Include="Models\Entity\Temp\TRANSACTION_TYPE_TMP_T.cs" />
     <Compile Include="Models\Entity\Temp\YSZMPCKQ_TMP_T.cs" />
+    <Compile Include="Models\Entity\XXIF_CHP_P217_CONTAINER_ST.cs" />
+    <Compile Include="Models\Entity\XXIF_CHP_CONTROL_ST.cs" />
     <Compile Include="Models\IBulkCopier.cs" />
     <Compile Include="Models\BulkCopier.cs" />
+    <Compile Include="Models\Repository\MsSql\ControlStageRepository.cs" />
+    <Compile Include="Models\Repository\MsSql\GenericRepository.cs" />
     <Compile Include="Models\Repository\Oracle\GenericRepository.cs" />
+    <Compile Include="Models\Repository\MsSql\CtrStRepository.cs" />
     <Compile Include="Models\Repository\Interface\IGenericRepository.cs" />
     <Compile Include="Models\Repository\Oracle\SubinventoryRepository.cs" />
     <Compile Include="Models\Repository\Oracle\ItemRepository.cs" />
     <Compile Include="Models\ResultDataModel.cs" />
     <Compile Include="Models\ResultModel.cs" />
     <Compile Include="Models\UnitOfWork\IUnitOfWork.cs" />
+    <Compile Include="Models\UnitOfWork\CtrStUOW.cs" />
     <Compile Include="Models\UnitOfWork\MasterUOW .cs" />
     <Compile Include="Models\UnitOfWork\UnitOfWork.cs" />
     <Compile Include="Forms\ChildForm.cs">

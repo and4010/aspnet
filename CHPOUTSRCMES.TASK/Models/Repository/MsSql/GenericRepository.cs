@@ -10,7 +10,7 @@ using CHPOUTSRCMES.TASK.Models.Repository.Interface;
 using Dapper;
 
 
-namespace CHPOUTSRCMES.TASK.Models.Repository.Oracle
+namespace CHPOUTSRCMES.TASK.Models.Repository.MsSql
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
@@ -59,18 +59,18 @@ namespace CHPOUTSRCMES.TASK.Models.Repository.Oracle
 
         public async Task<IEnumerable<T>> GetAllAsync()
         {
-            return await Connection.QueryAsync<T>($"{GenerateSelectQuery()}");
+            return await Connection.QueryAsync<T>(GenerateSelectQuery());
         }
 
 
         public async Task DeleteRowAsync(long id)
         {
-                await Connection.ExecuteAsync($"DELETE FROM {tableName} WHERE Id=:Id", new { Id = id });
+                await Connection.ExecuteAsync($"DELETE FROM {tableName} WHERE Id=@Id", new { Id = id });
         }
 
         public async Task<T> GetAsync(long id)
         {
-            var result = await Connection.QuerySingleOrDefaultAsync<T>($"{GenerateSelectQuery()} WHERE Id=:Id", new { Id = id });
+            var result = await Connection.QuerySingleOrDefaultAsync<T>($"{GenerateSelectQuery()} WHERE Id=@Id", new { Id = id });
             if (result == null)
                 throw new KeyNotFoundException($"{tableName} with id [{id}] could not be found.");
 
@@ -90,7 +90,7 @@ namespace CHPOUTSRCMES.TASK.Models.Repository.Oracle
             int cnt = await Connection.ExecuteAsync(insertQuery, entity);
             if (cnt > 0)
             {
-                id = (await Connection.QueryAsync<long>("SELECT LAST_INSERT_ROWID() AS id")).FirstOrDefault();
+                id = (await Connection.QueryAsync<long>("SELECT SCOPE_IDENTITY() AS id")).FirstOrDefault();
             }
 
             return id;
@@ -108,9 +108,7 @@ namespace CHPOUTSRCMES.TASK.Models.Repository.Oracle
 
         public async Task TruncateAsync()
         {
-            await Connection.ExecuteAsync($"DELETE FROM [{tableName}]");
-
-            await Connection.ExecuteAsync($"DELETE FROM SQLITE_SEQUENCE WHERE NAME='{tableName}'");
+            await Connection.ExecuteAsync($"TRUNCATE FROM [{tableName}]");
         }
 
         protected string GenerateSelectQuery()
@@ -174,12 +172,12 @@ namespace CHPOUTSRCMES.TASK.Models.Repository.Oracle
             {
                 if (!property.Equals("Id"))
                 {
-                    updateQuery.Append($"{property}=:{property},");
+                    updateQuery.Append($"{property}=@{property},");
                 }
             });
 
             updateQuery.Remove(updateQuery.Length - 1, 1); //remove last comma
-            updateQuery.Append(" WHERE Id=:Id");
+            updateQuery.Append(" WHERE Id=@Id");
 
             return updateQuery.ToString();
         }

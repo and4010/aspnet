@@ -91,6 +91,8 @@ namespace CHPOUTSRCMES.TASK
             taskList = new Dictionary<string, Task>();
         }
 
+        #region 任務計數器
+
         /// <summary>
         /// 開始計時器
         /// </summary>
@@ -142,7 +144,7 @@ namespace CHPOUTSRCMES.TASK
         /// <summary>
         /// 停止計時器
         /// </summary>
-        internal async void StopTimer()
+        internal void StopTimer()
         {
             if (!cancelTokenSource.IsCancellationRequested)
             {
@@ -151,7 +153,7 @@ namespace CHPOUTSRCMES.TASK
 
             try
             {
-                await Task.WhenAll(taskList.Values.ToArray());
+                Task.WaitAll(taskList.Values.ToArray());
             }
             catch (OperationCanceledException)
             {
@@ -169,50 +171,48 @@ namespace CHPOUTSRCMES.TASK
         /// <param name="tasker"></param>
         internal void AddTasker(ITasker tasker)
         {
-            taskers.Add(tasker);
+            if(!TaskerExists(tasker.Name))
+            {
+                taskers.Add(tasker);
+            }
         }
 
-        /// <summary>
-        /// LOG - 一般
-        /// </summary>
-        /// <param name="message"></param>
-        private void LogInfo(string message)
+        internal bool TaskerExists(string taskname)
         {
-            logger.Info(message);
-            Console.WriteLine(message);
+            bool found = false;
+            for (int i = 0; i < taskers.Count; i++)
+            {
+                string name = taskers?[i]?.Name;
+                found = !string.IsNullOrEmpty(name) && taskname.CompareTo(name) == 0;
+                if (found) break;
+            }
+            return found;
         }
 
-        /// <summary>
-        /// LOG - 錯誤
-        /// </summary>
-        /// <param name="message"></param>
-        private void LogError(string message)
-        {
-            logger.Error(message);
-            Console.WriteLine(message);
-        }
+        #endregion 任務計數器
+
+        #region 主檔更新 (ORACLE VIEWs TO MES)
 
         internal void AddMasterTasker()
         {
-            AddTasker(new Tasker("主檔轉檔程序", 1, ImportMaster));
-        }
+            AddTasker(new Tasker("主檔轉檔程序", 1, (tasker, token) => {
+                //組織倉庫儲位
+                var taskSubinventory = importSubinventory(tasker, token);
+                //庫存交易類別
+                var taskTransactionType = importTransactionType(tasker, token);
+                //料號
+                var taskItem = taskSubinventory.ContinueWith(task => importItem(tasker, token), TaskContinuationOptions.OnlyOnRanToCompletion);
+                //餘切規格
+                var taskOspRelatedItem = taskItem.ContinueWith(subTask => importOspRelatedItem(tasker, token), TaskContinuationOptions.OnlyOnRanToCompletion);
+                //紙別機台
+                var taskMachinePaperType = taskItem.ContinueWith(subTask => importMachinePaperType(tasker, token), TaskContinuationOptions.OnlyOnRanToCompletion);
+                //令重張數
+                var tasYszmpckq = taskItem.ContinueWith(subTask => importYszmpckq(tasker, token), TaskContinuationOptions.OnlyOnRanToCompletion);
 
-        internal async void ImportMaster(Tasker tasker, CancellationToken token)
-        {
-            //組織倉庫儲位
-            var taskSubinventory = importSubinventory(tasker, token);
-            //庫存交易類別
-            var taskTransactionType = importTransactionType(tasker, token);
-            //料號
-            var taskItem = taskSubinventory.ContinueWith(task => importItem(tasker, token), TaskContinuationOptions.OnlyOnRanToCompletion);
-            //餘切規格
-            var taskOspRelatedItem = taskItem.ContinueWith(subTask => importOspRelatedItem(tasker, token), TaskContinuationOptions.OnlyOnRanToCompletion);
-            //紙別機台
-            var taskMachinePaperType = taskItem.ContinueWith(subTask => importMachinePaperType(tasker, token), TaskContinuationOptions.OnlyOnRanToCompletion);
-            //令重張數
-            var tasYszmpckq = taskItem.ContinueWith(subTask => importYszmpckq(tasker, token), TaskContinuationOptions.OnlyOnRanToCompletion);
+                Task.WaitAll(taskSubinventory, taskTransactionType, taskItem, taskOspRelatedItem, taskMachinePaperType, tasYszmpckq);
 
-            Task.WaitAll(taskSubinventory, taskTransactionType, taskItem, taskOspRelatedItem, taskMachinePaperType, tasYszmpckq);
+                AddCtrStTasker();
+            }));
         }
 
         /// <summary>
@@ -516,7 +516,12 @@ namespace CHPOUTSRCMES.TASK
 
             LogInfo($"[{tasker.Name}]-{tasker.Unit}-importMachinePaperType-結束");
         }
-
+        /// <summary>
+        /// 同步 料號
+        /// </summary>
+        /// <param name="tasker"></param>
+        /// <param name="token"></param>
+        /// <returns></returns>
         private async Task importItem(Tasker tasker, CancellationToken token)
         {
             
@@ -611,6 +616,15 @@ namespace CHPOUTSRCMES.TASK
             LogInfo($"[{tasker.Name}]-{tasker.Unit}-importItem-結束");
         }
 
+        /// <summary>
+        /// 同步 料號 - 全部重抓
+        /// </summary>
+        /// <param name="sqlConn"></param>
+        /// <param name="trans"></param>
+        /// <param name="masterUOW"></param>
+        /// <param name="tableName"></param>
+        /// <param name="spName"></param>
+        /// <returns></returns>
         private async Task<ResultModel> ReimportItem(SqlConnection sqlConn, SqlTransaction trans, MasterUOW masterUOW, string tableName, string spName)
         {
             long dividedCount = 5000;
@@ -676,6 +690,15 @@ namespace CHPOUTSRCMES.TASK
             return new ResultModel(true, "");
         }
 
+        /// <summary>
+        ///  同步 料號 - 更新部分(依最後更新時間來判斷)
+        /// </summary>
+        /// <param name="sqlConn"></param>
+        /// <param name="trans"></param>
+        /// <param name="masterUOW"></param>
+        /// <param name="lastUpdateDate"></param>
+        /// <param name="spName"></param>
+        /// <returns></returns>
         private async Task<ResultModel> ImportItemPartially(SqlConnection sqlConn, SqlTransaction trans, MasterUOW masterUOW, DateTime lastUpdateDate, string spName)
         {
             BulkCopier bCopier = new BulkCopier(sqlConn, trans);
@@ -723,7 +746,12 @@ namespace CHPOUTSRCMES.TASK
 
         }
 
-
+        /// <summary>
+        /// 同步 餘切規格
+        /// </summary>
+        /// <param name="tasker"></param>
+        /// <param name="token"></param>
+        /// <returns></returns>
         private async Task importOspRelatedItem(Tasker tasker, CancellationToken token)
         {
             LogInfo($"[{tasker.Name}]-{tasker.Unit}-importOspRelatedItem-開始");
@@ -890,6 +918,156 @@ namespace CHPOUTSRCMES.TASK
             }
 
             LogInfo($"[{tasker.Name}]-{tasker.Unit}-importYszmpckq-結束");
+        }
+
+        #endregion 主檔更新 (ORACLE VIEWs TO MES)
+
+        #region SOA同步 (SQL SOA StageTable TO MES)
+
+        /// <summary>
+        /// 進櫃SOA排程
+        /// </summary>
+        internal void AddCtrStTasker()
+        {
+            AddTasker(new Tasker("進櫃轉檔程序", 1, (tasker, token) => {
+                var task = ImportCtrSt(tasker, token);
+                var rvTask = task.ContinueWith(subTask => ExportCtrStRv(tasker, token), TaskContinuationOptions.OnlyOnRanToCompletion);
+
+                Task.WaitAll(task, rvTask);
+            }));
+        }
+
+        
+
+        /// <summary>
+        /// SOA進櫃入庫 資料下載
+        /// </summary>
+        /// <param name="tasker"></param>
+        /// <param name="token"></param>
+        /// <returns></returns>
+        internal async Task ImportCtrSt(Tasker tasker, CancellationToken token)
+        {
+            LogInfo($"[{tasker.Name}]-{tasker.Unit}-ImportCtrSt-開始");
+
+            try
+            {
+                if (token.IsCancellationRequested)
+                {
+                    token.ThrowIfCancellationRequested();
+                }
+
+                using var ctrStUow = new CtrStUOW(new SqlConnection(MesConnStr));
+
+
+                var list = await ctrStUow.GetByProcessCodeAsync("XXIFP217");
+
+
+                if (list == null || list.Count() == 0)
+                {
+                    LogInfo($"[{tasker.Name}]-{tasker.Unit}-ImportCtrSt-無可轉入資料");
+                    return;
+                }
+
+                for (int i = 0; i < list.Count(); i++)
+                {
+                    var st = list?[i];
+                    if (st == null)
+                    {
+                        continue;
+                    }
+                    //取第一筆資料來確認 新增/取消/修改
+                    var ctrSt = await ctrStUow.GetSingleCtrStByAsync(st.PROCESS_CODE, st.SERVER_CODE, st.BATCH_ID);
+                    if(ctrSt == null)
+                    {
+                        LogInfo($"[{tasker.Name}]-{tasker.Unit}-ImportCtrSt ({st.PROCESS_CODE}, {st.SERVER_CODE}, {st.BATCH_ID})-無法取得CONTAINER_ST明細首筆");
+                        continue;
+                    }
+                    
+                    
+                    ResultModel model = new ResultModel(false, "未知的 ATTRIBUTE1");
+                    switch (ctrSt.ATTRIBUTE1.ToUpper())
+                    {
+                        case "N":
+                            model = await ctrStUow.ContainerStReceive(st);
+                            break;
+                        case "Y":
+                            model = await ctrStUow.ContainerStChange(st);
+                            break;
+                        case "C":
+                            model = await ctrStUow.ContainerStCancel(st);
+                            break;
+                        default:
+                            break;
+                    }
+
+                    LogInfo($"[{tasker.Name}]-{tasker.Unit}-ImportCtrSt ({ctrSt.ATTRIBUTE1}, {st.PROCESS_CODE}, {st.SERVER_CODE}, {st.BATCH_ID})-{model}");
+
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                LogInfo($"[{tasker.Name}]-{tasker.Unit}-ImportCtrSt-使用者取消");
+            }
+            catch (Exception ex)
+            {
+                LogError($"[{tasker.Name}]-{tasker.Unit}-ImportCtrSt-錯誤-{ex.Message}-{ex.StackTrace}");
+            }
+
+           LogInfo($"[{tasker.Name}]-{tasker.Unit}-ImportCtrSt-結束");
+        }
+        /// <summary>
+        /// SOA進櫃入庫 資料上傳
+        /// </summary>
+        /// <param name="tasker"></param>
+        /// <param name="token"></param>
+        /// <returns></returns>
+        internal async Task ExportCtrStRv(Tasker tasker, CancellationToken token)
+        {
+            LogInfo($"[{tasker.Name}]-{tasker.Unit}-ImportCtrStRv-開始");
+
+            try
+            {
+                if (token.IsCancellationRequested)
+                {
+                    token.ThrowIfCancellationRequested();
+                }
+
+                using var ctrStUow = new CtrStUOW(new SqlConnection(MesConnStr));
+
+
+            }
+            catch (OperationCanceledException)
+            {
+                LogInfo($"[{tasker.Name}]-{tasker.Unit}-ImportCtrStRv-使用者取消");
+            }
+            catch (Exception ex)
+            {
+                LogError($"[{tasker.Name}]-{tasker.Unit}-ImportCtrStRv-錯誤-{ex.Message}-{ex.StackTrace}");
+            }
+
+            LogInfo($"[{tasker.Name}]-{tasker.Unit}-ImportCtrStRv-結束");
+        }
+
+        #endregion SOA同步 (SQL SOA StageTable TO MES)
+
+        /// <summary>
+        /// LOG - 一般
+        /// </summary>
+        /// <param name="message"></param>
+        private void LogInfo(string message)
+        {
+            logger.Info(message);
+            Console.WriteLine(message);
+        }
+
+        /// <summary>
+        /// LOG - 錯誤
+        /// </summary>
+        /// <param name="message"></param>
+        private void LogError(string message)
+        {
+            logger.Error(message);
+            Console.WriteLine(message);
         }
 
         /// <summary>

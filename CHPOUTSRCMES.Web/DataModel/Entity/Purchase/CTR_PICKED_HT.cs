@@ -1,12 +1,8 @@
-﻿using CHPOUTSRCMES.DataAnnotation;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Web;
 
-namespace CHPOUTSRCMES.Web.DataModel.Entity
+namespace CHPOUTSRCMES.Web.DataModel.Entity.Purchase
 {
     public class CTR_PICKED_HT
     {
@@ -29,6 +25,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity
         [Column("CTR_PICKED_ID")]
         public long CtrPickedId { set; get; }
 
+
         /// <summary>
         /// 表頭ID
         /// </summary>
@@ -38,7 +35,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity
         public long CtrHeaderId { set; get; }
 
         /// <summary>
-        /// 明細ID
+        /// 檔頭ID
         /// </summary>
         /// 
         [Required]
@@ -118,7 +115,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity
         /// </summary>
         /// 
         [StringLength(30)]
-        [Required]
         [Column("REAM_WEIGHT")]
         public string ReamWeight { set; get; }
 
@@ -128,7 +124,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity
         /// 
         [Required]
         [Column("ROLL_REAM_WT")]
-        [Precision(30,10)]
         public decimal RollReamWt { set; get; }
 
         /// <summary>
@@ -145,7 +140,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity
         /// </summary>
         /// 
         [StringLength(30)]
-        [Required]
         [Column("PACKING_TYPE")]
         public string PackingType { set; get; }
 
@@ -153,10 +147,8 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity
         /// 出貨數量(MT)
         /// </summary>
         /// 
-        [Required]
         [Column("SHIP_MT_QTY")]
-        [Precision(30, 10)]
-        public decimal ShipMtQty { set; get; }
+        public decimal? ShipMtQty { set; get; }
 
         /// <summary>
         /// 交易數量
@@ -164,7 +156,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity
         /// 
         [Required]
         [Column("TRANSACTION_QUANTITY")]
-        [Precision(30, 10)]
         public decimal TransactionQuantity { set; get; }
 
         /// <summary>
@@ -182,7 +173,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity
         /// 
         [Required]
         [Column("PRIMARY_QUANTITY")]
-        [Precision(30, 10)]
         public decimal PrimaryQuantity { set; get; }
 
         /// <summary>
@@ -199,7 +189,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity
         /// </summary>
         /// 
         [Column("SECONDARY_QUANTITY")]
-        [Precision(30, 10)]
         public decimal? SecondaryQuantity { set; get; }
 
         /// <summary>
@@ -216,8 +205,8 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity
         /// </summary>
         /// 
         [StringLength(80)]
-        [Required(AllowEmptyStrings = true)]
         [Column("LOT_NUMBER")]
+        [Required(AllowEmptyStrings = true)]
         public string LotNumber { set; get; }
 
         /// <summary>
@@ -225,8 +214,8 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity
         /// </summary>
         /// 
         [StringLength(80)]
-        [Required(AllowEmptyStrings = true)]
         [Column("THEORY_WEIGHT")]
+        [Required(AllowEmptyStrings = true)]
         public string TheoryWeight { set; get; }
 
 
@@ -271,6 +260,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity
         [StringLength(500)]
         [Column("NOTE")]
         public string Note { set; get; }
+
 
         /// <summary>
         /// 建立人員

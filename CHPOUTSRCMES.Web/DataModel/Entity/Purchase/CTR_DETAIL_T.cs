@@ -1,10 +1,7 @@
 ﻿using CHPOUTSRCMES.DataAnnotation;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Web;
 
 namespace CHPOUTSRCMES.Web.DataModel.Entity.Purchase
 {
@@ -404,7 +401,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Purchase
         [Column("CREATED_USER_NAME")]
         public string CreatedUserName { set; get; }
 
-
         /// <summary>
         /// 建立時間
         /// </summary>
@@ -421,7 +417,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Purchase
         [StringLength(128)]
         [Column("LAST_UPDATE_BY")]
         public string LastUpdateBy { set; get; }
-
 
         /// <summary>
         /// 更新人員名稱
