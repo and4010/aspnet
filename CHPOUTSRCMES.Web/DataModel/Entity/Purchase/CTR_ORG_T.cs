@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Web;
 
 namespace CHPOUTSRCMES.Web.DataModel.Entity.Purchase
 {
@@ -87,6 +84,14 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Purchase
         [Column("ORG_NAME")]
         public string OrgName { set; get; }
 
+        /// <summary>
+        /// 提單號碼
+        /// </summary>
+        /// 
+        [StringLength(40)]
+        [Required]
+        [Column("BL_NO")]
+        public string BlNo { set; get; }
 
         /// <summary>
         /// 櫃表維護 Line ID

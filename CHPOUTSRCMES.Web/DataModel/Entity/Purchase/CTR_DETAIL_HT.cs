@@ -1,12 +1,9 @@
 ﻿using CHPOUTSRCMES.DataAnnotation;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Web;
 
-namespace CHPOUTSRCMES.Web.DataModel.Entity
+namespace CHPOUTSRCMES.Web.DataModel.Entity.Purchase
 {
     public class CTR_DETAIL_HT
     {
@@ -112,7 +109,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity
         /// 儲位
         /// </summary>
         /// 
-        [StringLength(30)]
+        [StringLength(163)]
         [Column("LOCATOR_CODE")]
         public string LocatorCode { set; get; }
 
@@ -158,7 +155,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity
         /// </summary>
         /// 
         [StringLength(30)]
-        [Required]
         [Column("REAM_WEIGHT")]
         public string ReamWeight { set; get; }
 
@@ -203,7 +199,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity
         /// </summary>
         /// 
         [StringLength(30)]
-        [Required]
         [Column("PACKING_TYPE")]
         public string PackingType { set; get; }
 
@@ -211,10 +206,9 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity
         /// 出貨數量(MT)
         /// </summary>
         /// 
-        [Required]
         [Column("SHIP_MT_QTY")]
         [Precision(30, 10)]
-        public decimal ShipMtQty { set; get; }
+        public decimal? ShipMtQty { set; get; }
 
         /// <summary>
         /// 交易數量
@@ -267,26 +261,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity
         [StringLength(3)]
         [Column("SECONDARY_UOM")]
         public string SecondaryUom { set; get; }
-
-
-        /// <summary>
-        /// 批號
-        /// </summary>
-        /// 
-        [StringLength(80)]
-        [Required]
-        [Column("LOT_NUMBER")]
-        public string LotNumber { set; get; }
-
-        /// <summary>
-        /// 理論重(批號數量)
-        /// </summary>
-        /// 
-        [StringLength(30)]
-        [Required]
-        [Column("THEORY_WEIGHT")]
-        public string TheoryWeight { set; get; }
-
 
         /// <summary>
         /// 捲筒\平板

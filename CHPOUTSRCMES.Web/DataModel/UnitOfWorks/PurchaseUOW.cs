@@ -85,6 +85,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                 ctrorg.HeaderId = 1;
                 ctrorg.OrgId = 1;
                 ctrorg.OrgName = "入庫";
+                ctrorg.BlNo = "123456";
                 ctrorg.LineId = 1;
                 ctrorg.ContainerNo = "WHAU5231488";
                 ctrorg.MvContainerDate = DateTime.Now;
@@ -125,6 +126,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                 ctrorg.HeaderId = 2;
                 ctrorg.OrgId = 2;
                 ctrorg.OrgName = "入庫";
+                ctrorg.BlNo = "123456";
                 ctrorg.LineId = 2;
                 ctrorg.ContainerNo = "WHAU5231488";
                 ctrorg.MvContainerDate = DateTime.Now;
@@ -165,6 +167,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                 ctrorg.HeaderId = 3;
                 ctrorg.OrgId = 3;
                 ctrorg.OrgName = "入庫";
+                ctrorg.BlNo = "123456";
                 ctrorg.LineId = 3;
                 ctrorg.ContainerNo = "WHAU5231488";
                 ctrorg.MvContainerDate = DateTime.Now;
@@ -226,6 +229,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                         ctrheaderT.HeaderId = org[i].HeaderId;
                         ctrheaderT.OrgId = org[i].OrgId;
                         ctrheaderT.OrgName = org[i].OrgName;
+                        ctrheaderT.BlNo = org[i].BlNo;
                         ctrheaderT.LineId = org[i].LineId;
                         ctrheaderT.ContainerNo = org[i].ContainerNo;
                         ctrheaderT.MvContainerDate = org[i].MvContainerDate;
@@ -243,6 +247,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                         ctrheaderT.HeaderId = org[i].HeaderId;
                         ctrheaderT.OrgId = org[i].OrgId;
                         ctrheaderT.OrgName = org[i].OrgName;
+                        ctrheaderT.BlNo = org[i].BlNo;
                         ctrheaderT.LineId = org[i].LineId;
                         ctrheaderT.ContainerNo = org[i].ContainerNo;
                         ctrheaderT.MvContainerDate = org[i].MvContainerDate;

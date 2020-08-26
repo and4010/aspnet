@@ -1435,6 +1435,9 @@
     <Content Include="Data\SQLScript\211_CONTROL_ST_DATA.sql" />
     <Content Include="Data\SQLScript\212_CONTAINER_ST_DATA.sql" />
     <Content Include="Data\SQLScript\213_DELIVERY_ST_DATA.sql" />
+    <Content Include="Data\SQLScript\110_SP_P217_CtrStCreateNew.sql" />
+    <Content Include="Data\SQLScript\111_SP_P217_CtrStChange.sql" />
+    <Content Include="Data\SQLScript\112_SP_P217_CtrStCancel.sql" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
