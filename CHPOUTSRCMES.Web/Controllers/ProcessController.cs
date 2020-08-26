@@ -205,6 +205,14 @@ namespace CHPOUTSRCMES.Web.Controllers
             return Json(new { resultDataModel }, JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>
+        /// 入庫儲存條碼
+        /// </summary>
+        /// <param name="Barcode"></param>
+        /// <param name="Remnant"></param>
+        /// <param name="Remaining_Weight"></param>
+        /// <param name="OspDetailInId"></param>
+        /// <returns></returns>
         [HttpPost]
         public JsonResult SaveInvestBarcode(string Barcode, string Remnant, string Remaining_Weight, long OspDetailInId)
         {

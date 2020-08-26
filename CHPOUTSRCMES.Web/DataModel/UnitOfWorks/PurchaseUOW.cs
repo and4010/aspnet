@@ -846,10 +846,6 @@ WHERE p.ITEM_CATEGORY = N'捲筒' and p.CTR_PICKED_ID  = @CTR_PICKED_ID");
                         var Id = locatorTRepositiory.Get(x => x.LocatorId == LocatorId).SingleOrDefault();
                         ctrPickT.LocatorId = Id.LocatorId;
                         ctrPickT.LocatorCode = Id.LocatorSegments;
-                        var ctrdetail = ctrDetailTRepositiory.Get(x => x.CtrDetailId == ctrPickT.CtrDetailId).SingleOrDefault();
-                        ctrdetail.LocatorId = Id.LocatorId;
-                        ctrdetail.LocatorCode = Id.LocatorSegments;
-                        ctrDetailTRepositiory.Update(ctrdetail, true);
                     }
                     ctrPickT.Note = Remark;
                     ctrPickT.LastUpdateBy = LastUpdateBy;
@@ -893,7 +889,7 @@ WHERE p.ITEM_CATEGORY = N'捲筒' and p.CTR_PICKED_ID  = @CTR_PICKED_ID");
                     var ctrPickT = ctrPickedTRepositiory.Get(x => x.CtrPickedId == id).SingleOrDefault();
                     if (Reason != "請選擇")
                     {
-                        var reason = stockTRepositiory.Get(x => x.ReasonCode == Reason).SingleOrDefault();
+                        var reason = stkReasonTRepositiory.Get(x => x.ReasonCode == Reason).SingleOrDefault();
                         ctrPickT.ReasonDesc = reason.ReasonDesc;
                         ctrPickT.ReasonCode = reason.ReasonCode;
                     }
@@ -903,10 +899,6 @@ WHERE p.ITEM_CATEGORY = N'捲筒' and p.CTR_PICKED_ID  = @CTR_PICKED_ID");
                         var Id = locatorTRepositiory.Get(x => x.LocatorId == LocatorId).SingleOrDefault();
                         ctrPickT.LocatorId = Id.LocatorId;
                         ctrPickT.LocatorCode = Id.LocatorSegments;
-                        var ctrdetail = ctrDetailTRepositiory.Get(x => x.CtrDetailId == ctrPickT.CtrDetailId).SingleOrDefault();
-                        ctrdetail.LocatorId = Id.LocatorId;
-                        ctrdetail.LocatorCode = Id.LocatorSegments;
-                        ctrDetailTRepositiory.Update(ctrdetail, true);
                     }
                     ctrPickT.Note = Remark;
                     ctrPickT.LastUpdateBy = LastUpdateBy;
@@ -938,7 +930,7 @@ WHERE p.ITEM_CATEGORY = N'捲筒' and p.CTR_PICKED_ID  = @CTR_PICKED_ID");
             {
                 try
                 {
-                    var ctrPickT = ctrPickedTRepositiory.Get(x => x.Barcode == Barcode).SingleOrDefault();
+                    var ctrPickT = ctrPickedTRepositiory.Get(x => x.Barcode == Barcode && x.ItemCategory == "捲筒").SingleOrDefault();
                     if (ctrPickT != null)
                     {
                         if (ctrPickT.Status == "已入庫")
@@ -983,7 +975,7 @@ WHERE p.ITEM_CATEGORY = N'捲筒' and p.CTR_PICKED_ID  = @CTR_PICKED_ID");
             {
                 try
                 {
-                    var ctrPickT = ctrPickedTRepositiory.Get(x => x.Barcode == Barcode).SingleOrDefault();
+                    var ctrPickT = ctrPickedTRepositiory.Get(x => x.Barcode == Barcode && x.ItemCategory == "平張").SingleOrDefault();
                     if (ctrPickT != null)
                     {
                         if (ctrPickT.Status == "已入庫")
@@ -1615,14 +1607,14 @@ where pt.CTR_PICKED_ID = @CTR_PICKED_ID
                     query.Append(
 @"
 SELECT
-[LOCATOR_ID] as Value,
+CAST ([LOCATOR_ID] AS varchar)as Value,
 [SEGMENT3] as Text
 FROM [LOCATOR_T] lt
 join SUBINVENTORY_T st on st.SUBINVENTORY_CODE = lt.SUBINVENTORY_CODE
 ");
                     cond.Add("lt.CONTROL_FLAG <> 'D'");
                     cond.Add("st.LOCATOR_TYPE = '2'");
-                    cond.Add("lt.LOCATOR_DISABLE_DATE IS NOT NULL AND lt.LOCATOR_DISABLE_DATE >= GETDATE()");
+                    cond.Add("lt.LOCATOR_DISABLE_DATE >= GETDATE() OR lt.LOCATOR_DISABLE_DATE is null");
                     sqlParameterList.Add(new SqlParameter("@LOCATOR_DISABLE_DATE", DateTime.Now));
                     if (ORGANIZATION_ID != "*")
                     {

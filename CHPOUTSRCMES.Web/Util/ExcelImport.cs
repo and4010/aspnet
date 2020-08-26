@@ -66,10 +66,10 @@ namespace CHPOUTSRCMES.Web.Util
                     throw new Exception("找不到料號欄位");
                 }
 
-                PaperType_cell = ExcelUtil.FindCell("紙別代碼", sheet);
+                PaperType_cell = ExcelUtil.FindCell("紙別", sheet);
                 if (PaperType_cell == null)
                 {
-                    throw new Exception("找不到紙別代碼欄位");
+                    throw new Exception("找不到紙別欄位");
                 }
 
                 BaseWeight_cell = ExcelUtil.FindCell("基重", sheet);
