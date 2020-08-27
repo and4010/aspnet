@@ -295,6 +295,12 @@
         InBoundSaveTransfer();
     });
 
+    if ($('#btnSaveTransfer2').is(":visible")) {
+        $("#btnSaveTransfer2").click(function () {
+            InBoundSaveTransferNoCheckStockStatus();
+        });
+    }
+
     $("#btnSaveStockTransferDT").click(function () {
         CheckCreateInboundBarcode();
     });
@@ -389,20 +395,35 @@
     //});
 
     function SelectShipmentNumber() {
+        var transferHeaderId = 0;
         if (getShipmentNumber() == "新增編號") {
-            $("#scrollbox").collapse('show');
-            $('#AutoCompleteItemNumber').focus();
-            return;
+            transferHeaderId = 0;
+            //InputOpen();
+            //$("#scrollbox").collapse('show');
+            //$('#AutoCompleteItemNumber').focus();
+            //return;
+        } else {
+            transferHeaderId = getTransferHeaderId();
         }
 
         $.ajax({
             url: "/StockTransaction/GetShipmentNumberData",
             type: "post",
             data: {
-                transferHeaderId: getTransferHeaderId()
+                transferHeaderId: transferHeaderId
             },
             success: function (data) {
                 if (data.Success) {
+                    if (data.Msg == "新增編號") {
+                        InputOpen();
+                        $('#txtBARCODE').val("");
+                        selectedTransferHeaderId = 0;
+                        selectedNumberStatus = "0";
+                        InBoundBarcodeDataTablesBody.ajax.reload();
+                        $("#scrollbox").collapse('show');
+                        $('#AutoCompleteItemNumber').focus();
+                        return;
+                    }
                     selectedTransferHeaderId = data.Data.TransferHeaderId;
                     selectedNumberStatus = data.Data.NumberStatus;
 
@@ -414,7 +435,6 @@
                         $("#ddlInLocator").val(data.Data.TransferLocatorId);
                     }
 
-                    $('#CountyDDL').val('someValue');
                     InputOpen();
                     $('#txtBARCODE').val("");
                     InBoundBarcodeDataTablesBody.ajax.reload();
@@ -536,6 +556,7 @@
         $('#btnSaveBarcode').attr('disabled', false);
         $('#btnSaveTransfer').attr('disabled', false);
         $('#btnSaveStockTransferDT').attr('disabled', false);
+        $('#btnSaveTransfer2').attr('disabled', false);
     }
 
     function InputClose() {
@@ -553,6 +574,7 @@
         $('#btnSaveBarcode').attr('disabled', true);
         $('#btnSaveTransfer').attr('disabled', true);
         $('#btnSaveStockTransferDT').attr('disabled', true);
+        $('#btnSaveTransfer2').attr('disabled', true);
     }
 
 
@@ -851,12 +873,44 @@
             buttons: [
                 'selectAll',
                 'selectNone',
+                //{
+                //    extend: "remove",
+                //    className: 'btn-danger',
+                //    editor: editor
+                //},
                 {
                     extend: "remove",
+                    text: '刪除',
+                    name: 'remove',
                     className: 'btn-danger',
-                    editor: editor
+                    editor: editor,
+                    enabled: false,
+                    init: function (api, node, config) {
+                        $(node).removeClass('btn-default')
+                    },
+                    action: function (e, dt, node, config) {
+                        var rows = InBoundBarcodeDataTablesBody.rows({ selected: true }).indexes();
+
+                        if (rows.length === 0) {
+                            return;
+                        }
+
+                        editor.remove(rows, {
+                            title: '刪除',
+                            message: rows.length === 1 ?
+                                '你確定要刪除這筆資料?' :
+                                '你確定要刪除這些資料?',
+                            buttons:
+                            {
+                                text: '刪除',
+                                className: 'btn-danger',
+                                action: function () {
+                                    this.submit();
+                                }
+                            }
+                        })
+                    }
                 },
-                
                 //{
                 //    text: '刪除',
                 //    className: 'btn-danger',
@@ -1251,24 +1305,6 @@
     }
 
     function InBoundSaveTransfer() {
-        var TransactionType = GetTransactionType();
-        var Number = $('#ddlShipmentNumber').val();
-        //var Number = $('#AutoCompleteShipmentNumber').val();
-        if (Number == "") {
-            //swal.fire('請輸入編號');
-            //event.preventDefault();
-            //return false;
-            if (TransactionType == "出貨編號") {
-                swal.fire('請輸入出貨編號');
-                event.preventDefault();
-                return false;
-            }
-            if (TransactionType == "移轉編號") {
-                swal.fire('請輸入移轉編號');
-                event.preventDefault();
-                return false;
-            }
-        }
 
         swal.fire({
             title: "入庫存檔",
@@ -1312,11 +1348,56 @@
 
     }
 
+    function InBoundSaveTransferNoCheckStockStatus() {
+
+        swal.fire({
+            title: "入庫存檔",
+            text: "確定入庫存檔嗎?",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "確定",
+            cancelButtonText: "取消"
+        }).then(function (result) {
+            if (result.value) {
+                $.ajax({
+                    url: "/StockTransaction/InBoundSaveTransferNoCheckStockStatus",
+                    type: "post",
+                    data: {
+                        transferHeaderId: getTransferHeaderId()
+                    },
+                    success: function (data) {
+                        if (data.status) {
+
+                            swal.fire(data.result);
+                            SelectShipmentNumber();
+                            //GetNumberStatus();
+                        } else {
+                            swal.fire(data.result);
+                        }
+                    },
+                    error: function () {
+                        swal.fire('出庫存檔失敗');
+                    },
+                    complete: function (data) {
+
+
+                    }
+
+                });
+
+            }
+        });
+
+
+    }
+
     function GetRollReamWT() {
         if ($('#REAM_INPUT_AREA').is(":visible")) {
             return $('#txtRollReamWT').val();
         } else {
-            return $('#txtInputTransactionQty').val();
+            //return $('#txtInputTransactionQty').val();
+            return 0;
         }
     }
 
@@ -1421,12 +1502,12 @@
                 cancelButtonText: "取消"
             }).then(function (result) {
                 if (result.value) {
-                    TransferCreateDetail();
+                    InboundCreateDetail();
 
                 }
             });
         } else {
-            TransferCreateDetail();
+            InboundCreateDetail();
         }
 
 
@@ -1484,9 +1565,9 @@
         //});
     }
 
-    function TransferCreateDetail() {
+    function InboundCreateDetail() {
         $.ajax({
-            url: "/StockTransaction/TransferCreateDetail",
+            url: "/StockTransaction/InboundCreateDetail",
             type: "post",
             data: {
                 shipmentNumber: getShipmentNumber(),
@@ -1652,52 +1733,37 @@
             var table = $('#ImportPaperRollTable').DataTable();
 
             var dd = table.rows().data().toArray();
-            var StockTransferBarcodeDTList = [];
+ 
+            var excelList = [];
             $.each(dd, function (index, value) {
-                var StockTransferBarcodeDT = {
-                    'IN_SUBINVENTORY_CODE': value.Subinventory,
-                    'IN_LOCATOR_ID': value.Locator,
-                    'ITEM_NUMBER': value.ITEM_NUMBER,
-                    'PRIMARY_QUANTITY': value.PRIMARY_QUANTITY,
-                    'LOT_NUMBER': value.LOT_NUMBER
+                var InboundImportExcelModel = {
+                    'ItemNumber': value.ITEM_NUMBER,
+                    'Qty': value.PRIMARY_QUANTITY,
+                    'LotNumber': value.LOT_NUMBER,
+                    'RollReamWt': GetRollReamWT()
                 }
-                StockTransferBarcodeDTList.push(StockTransferBarcodeDT);
+                excelList.push(InboundImportExcelModel);
             });
-            var TransactionType = GetTransactionType();
-            var data = {
-                TransactionType: TransactionType,
-                OUT_SUBINVENTORY_CODE: getOutSubinventoryCode(),
-                OUT_LOCATOR_ID: $("#ddlOutLocator").val(),
-                IN_SUBINVENTORY_CODE: getInSubinventoryCode(),
-                IN_LOCATOR_ID: $("#ddlInLocator").val(),
-                Number: $('#ddlShipmentNumber').val(),
-                //Number: $('#AutoCompleteShipmentNumber').val(),
-                'StockTransferBarcodeDTList': StockTransferBarcodeDTList
-            }
-
-            var json = JSON.stringify(data);
 
             $.ajax({
-                "url": "/StockTransaction/ImportRollInboundBarcode",
+                "url": "/StockTransaction/InboundImportExcel",
                 "type": "POST",
-                "datatype": "json",
-                contentType: 'application/json',
-                "data": json,
+                //"datatype": "json",
+                //contentType: 'application/json',
+                "data": {
+                    excelList: excelList,
+                    shipmentNumber: getShipmentNumber(),
+                    transferType: $("#ddlTransferType").val(),
+                    outOrganizationId: getOutOrganizationId(),
+                    outSubinventoryCode: getOutSubinventoryCode(),
+                    outLocatorId: getOutLocatorId(),
+                    inOrganizationId: getInOrganizationId(),
+                    inSubinventoryCode: getInSubinventoryCode(),
+                    inLocatorId: getInLocatorId()
+                },
                 success: function (data) {
                     if (data.status) {
-                        if (TransactionType == "出貨編號") {
-                            GetShipmentNumberList(data.number, data.number);
-                        }
-                        else if (TransactionType == "移轉編號") {
-                            GetSubinventoryTransferNumberList(data.number, data.number);
-                        }
-                        else {
-
-                        }
-
-                        //GetNumberStatus();
-
-                        //swal.fire(data.result);
+                        GetShipmentNumberList(data.transferHeaderId, data.shipmentNumber);
                     } else {
                         swal.fire(data.result);
                     }
@@ -1735,53 +1801,63 @@
             var table = $('#ImportFlatTable').DataTable();
 
             var dd = table.rows().data().toArray();
-            var StockTransferDTList = [];
-            $.each(dd, function (index, value) {
-                var StockTransferDT = {
-                    'IN_SUBINVENTORY_CODE': value.Subinventory,
-                    'IN_LOCATOR_ID': value.Locator,
-                    'ITEM_NUMBER': value.ITEM_NUMBER,
-                    'REQUESTED_QUANTITY': value.REQUESTED_QUANTITY,
-                    'REQUESTED_QUANTITY2': value.REQUESTED_QUANTITY2,
-                    'ROLL_REAM_WT': value.ROLL_REAM_WT,
-                    'ROLL_REAM_QTY': value.ROLL_REAM_QTY
-                }
-                StockTransferDTList.push(StockTransferDT);
-            });
-            var TransactionType = GetTransactionType();
-            var data = {
-                TransactionType: TransactionType,
-                OUT_SUBINVENTORY_CODE: getOutSubinventoryCode(),
-                OUT_LOCATOR_ID: $("#ddlOutLocator").val(),
-                IN_SUBINVENTORY_CODE: getInSubinventoryCode(),
-                IN_LOCATOR_ID: $("#ddlInLocator").val(),
-                Number: $('#ddlShipmentNumber').val(),
-                //Number: $('#AutoCompleteShipmentNumber').val(),
-                'StockTransferDTList': StockTransferDTList
-            }
+            //var StockTransferDTList = [];
+            //$.each(dd, function (index, value) {
+            //    var StockTransferDT = {
+            //        'IN_SUBINVENTORY_CODE': value.Subinventory,
+            //        'IN_LOCATOR_ID': value.Locator,
+            //        'ITEM_NUMBER': value.ITEM_NUMBER,
+            //        'REQUESTED_QUANTITY': value.REQUESTED_QUANTITY,
+            //        'REQUESTED_QUANTITY2': value.REQUESTED_QUANTITY2,
+            //        'ROLL_REAM_WT': value.ROLL_REAM_WT,
+            //        'ROLL_REAM_QTY': value.ROLL_REAM_QTY
+            //    }
+            //    StockTransferDTList.push(StockTransferDT);
+            //});
+            //var TransactionType = GetTransactionType();
+            //var data = {
+            //    TransactionType: TransactionType,
+            //    OUT_SUBINVENTORY_CODE: getOutSubinventoryCode(),
+            //    OUT_LOCATOR_ID: $("#ddlOutLocator").val(),
+            //    IN_SUBINVENTORY_CODE: getInSubinventoryCode(),
+            //    IN_LOCATOR_ID: $("#ddlInLocator").val(),
+            //    Number: $('#ddlShipmentNumber').val(),
+            //    //Number: $('#AutoCompleteShipmentNumber').val(),
+            //    'StockTransferDTList': StockTransferDTList
+            //}
 
-            var json = JSON.stringify(data);
+            //var json = JSON.stringify(data);
+
+            var excelList = [];
+            $.each(dd, function (index, value) {
+                var InboundImportExcelModel = {
+                    'ItemNumber': value.ITEM_NUMBER,
+                    'Qty': value.PRIMARY_QUANTITY,
+                    'LotNumber': value.LOT_NUMBER,
+                    'RollReamWt': GetRollReamWT()
+                }
+                excelList.push(InboundImportExcelModel);
+            });
 
             $.ajax({
-                "url": "/StockTransaction/ImportFlatInboundBarcode",
+                "url": "/StockTransaction/InboundImportExcel",
                 "type": "POST",
-                "datatype": "json",
-                contentType: 'application/json',
-                "data": json,
+                //"datatype": "json",
+                //contentType: 'application/json',
+                "data": {
+                    excelList: excelList,
+                    shipmentNumber: getShipmentNumber(),
+                    transferType: $("#ddlTransferType").val(),
+                    outOrganizationId: getOutOrganizationId(),
+                    outSubinventoryCode: getOutSubinventoryCode(),
+                    outLocatorId: getOutLocatorId(),
+                    inOrganizationId: getInOrganizationId(),
+                    inSubinventoryCode: getInSubinventoryCode(),
+                    inLocatorId: getInLocatorId()
+                },
                 success: function (data) {
                     if (data.status) {
-                        if (TransactionType == "出貨編號") {
-                            GetShipmentNumberList(data.number, data.number);
-                        }
-                        else if (TransactionType == "移轉編號") {
-                            GetSubinventoryTransferNumberList(data.number, data.number);
-                        }
-                        else {
-
-                        }
-                        //GetNumberStatus();
-
-                        //swal.fire(data.result);
+                        GetShipmentNumberList(data.transferHeaderId, data.shipmentNumber);
                     } else {
                         swal.fire(data.result);
                     }

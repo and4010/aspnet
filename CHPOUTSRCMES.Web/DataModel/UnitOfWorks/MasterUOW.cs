@@ -181,7 +181,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
         /// <summary>
         /// 棧板狀態
         /// </summary>
-        public class PalletStatusCode
+        public class PalletStatusCode : ICategory
         {
             /// <summary>
             /// 整板
@@ -195,6 +195,21 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             /// 併板
             /// </summary>
             public const string Merge = "2";
+
+            public string GetDesc(string palletStatusCode)
+            {
+                switch (palletStatusCode)
+                {
+                    case All:
+                        return "整板";
+                    case Split:
+                        return "拆板";
+                    case Merge:
+                        return "併板";
+                    default:
+                        return "";
+                }
+            }
         }
 
         /// <summary>
@@ -210,6 +225,13 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             /// 無儲位
             /// </summary>
             public const long NotUsed = 1;
+        }
+
+        public class PackingType
+        {
+            public const string Ream = "令包";
+
+            public const string NoReam = "無令打件";
         }
 
         /// <summary>
@@ -497,9 +519,14 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             //}
         }
 
+        public STOCK_T GetStock(string barcode, string stockStatusCode)
+        {
+            return stockTRepositiory.GetAll().AsNoTracking().FirstOrDefault(x => x.Barcode == barcode && x.StatusCode == stockStatusCode);
+        }
+
         public STOCK_T GetStock(string barcode)
         {
-            return stockTRepositiory.GetAll().FirstOrDefault(x => x.Barcode == barcode);
+            return stockTRepositiory.GetAll().AsNoTracking().FirstOrDefault(x => x.Barcode == barcode);
         }
 
         /// <summary>
@@ -601,7 +628,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
 
             if (locatorList == null || locatorList.Count == 0) return new ResultDataModel<STOCK_T>(false, "找不到庫存所屬儲位" + stock.LocatorSegments + "資料", stock);
 
-            if (locatorList[0].LocatorStatusCode != "有效") return new ResultDataModel<STOCK_T>(false, "庫存所屬儲位" + locatorList[0].LocatorSegments + "狀態不是有效", stock);
+            if (locatorList[0].LocatorStatusCode != LocatorStatusCode.CanShip) return new ResultDataModel<STOCK_T>(false, "庫存所屬儲位" + locatorList[0].LocatorSegments + "狀態不是有效", stock);
 
             var commonCheckStockLocationResult = CommonCheckStockLocation(stock, now, subinventoryList[0], locatorList[0]);
 
@@ -1100,7 +1127,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                     ReasonDesc = "",
                     OspBatchNo = "P9B0288",
                     LotNumber = "",
-                    StatusCode = "",
+                    StatusCode = StockStatusCode.InStock,
                     PrimaryTransactionQty = 200,
                     PrimaryAvailableQty = 200,
                     PrimaryUomCode = "KG",
@@ -1139,7 +1166,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                     ReasonDesc = "",
                     OspBatchNo = "P2010087",
                     LotNumber = "",
-                    StatusCode = "",
+                    StatusCode = StockStatusCode.InStock,
                     PrimaryTransactionQty = 100,
                     PrimaryAvailableQty = 100,
                     PrimaryUomCode = "KG",
@@ -1178,7 +1205,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                     ReasonDesc = "",
                     OspBatchNo = "",
                     LotNumber = "1234567890",
-                    StatusCode = "",
+                    StatusCode = StockStatusCode.InStock,
                     PrimaryTransactionQty = 1000,
                     PrimaryAvailableQty = 1000,
                     PrimaryUomCode = "KG",
@@ -1217,7 +1244,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                     ReasonDesc = "",
                     OspBatchNo = "",
                     LotNumber = "1234567891",
-                    StatusCode = "",
+                    StatusCode = StockStatusCode.InStock,
                     PrimaryTransactionQty = 1000,
                     PrimaryAvailableQty = 1000,
                     PrimaryUomCode = "KG",
@@ -1256,7 +1283,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                     ReasonDesc = "",
                     OspBatchNo = "P2010088",
                     LotNumber = "",
-                    StatusCode = "",
+                    StatusCode = StockStatusCode.InStock,
                     PrimaryTransactionQty = 100,
                     PrimaryAvailableQty = 100,
                     PrimaryUomCode = "KG",

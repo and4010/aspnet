@@ -73,6 +73,15 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Transfer
         public string PackingType { set; get; }
 
         /// <summary>
+        /// 捲筒\平板
+        /// </summary>
+        /// 
+        [StringLength(10)]
+        [Required]
+        [Column("ITEM_CATEGORY")]
+        public string ItemCategory { set; get; }
+
+        /// <summary>
         /// 交易單位
         /// </summary>
         /// 
@@ -132,6 +141,15 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Transfer
         [Column("ROLL_REAM_QTY")]
         [Precision(30, 10)]
         public decimal RollReamQty { set; get; }
+
+        /// <summary>
+        /// 每件令數
+        /// </summary>
+        /// 
+        [Required]
+        [Column("ROLL_REAM_WT")]
+        [Precision(30, 10)]
+        public decimal RollReamWt { set; get; }
 
         /// <summary>
         /// 修改權限

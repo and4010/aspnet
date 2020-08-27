@@ -1,4 +1,5 @@
-﻿using CHPOUTSRCMES.Web.Models.Stock;
+﻿using CHPOUTSRCMES.Web.DataModel.Entiy.Transfer;
+using CHPOUTSRCMES.Web.Models.Stock;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -13,7 +14,7 @@ namespace CHPOUTSRCMES.Web.ViewModels.StockTransaction
         public string MergeBarcode { set; get; }
 
         //待併板條碼清單
-        public List<StockTransferBarcodeDT> WaitMergeBarcodeList { set; get; }
+        public List<TRF_INBOUND_PICKED_T> WaitMergeBarcodeList { set; get; }
 
         [Display(Name = "條碼")]
         public string OriginalBarcode { set; get; }

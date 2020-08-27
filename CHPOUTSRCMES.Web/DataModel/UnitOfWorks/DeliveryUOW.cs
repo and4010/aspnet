@@ -279,7 +279,7 @@ OR SUM(ISNULL(p.SECONDARY_QUANTITY, 0)) <> MIN(d.REQUESTED_SECONDARY_QUANTITY)";
                     var addDate = DateTime.Now;
                     foreach (DLV_PICKED_T data in pickedDataList)
                     {
-                        var stock = GetStock(data.Barcode);
+                        var stock = stockTRepositiory.GetAll().FirstOrDefault(x => x.StockId == data.Stock_Id);
                         if (stock == null) throw new Exception("找不到庫存資料");
                         STK_TXN_T stkTxnT = CreateStockRecord(stock, null, "", "", null, CategoryCode.Delivery, ActionCode.Deleted, headerData[0].DeliveryName);
                         decimal? priQty = data.PrimaryQuantity;
@@ -1519,7 +1519,7 @@ where DLV_HEADER_ID = @DLV_HEADER_ID";
         #region 平版
 
         /// <summary>
-        /// 取得捲筒明細表單內容
+        /// 取得平版明細表單內容
         /// </summary>
         /// <param name="dlvHeaderId"></param>
         /// <returns></returns>

@@ -62,7 +62,7 @@ namespace CHPOUTSRCMES.Web.ViewModels.StockTransaction
         public string ROLL_REAM_QTY { get; set; }
 
         [Display(Name = "項次")]
-        public string StockTransferDT_ID { get; set; }
+        public string DetailSubId { get; set; }
 
         [Display(Name = "料號")]
         public string SelectedItemNumber2 { get; set; }

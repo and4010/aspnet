@@ -37,18 +37,18 @@
                             <div class="row input-lg">
                                 <div class="form-group form-inline">
                                     <div class="col-md-7">
-                                        <div class="pickId" style="display:none">@Html.DisplayFor(ID => x.ID)</div>
+                                        <div class="pickId" style="display:none">@Html.DisplayFor(ID => x.TransferPickedId)</div>
                                         <div class="col-md-2 text-right">
-                                            @Html.DisplayNameFor(BARCODE => x.BARCODE)
+                                            @Html.DisplayName("條碼")
                                         </div>
                                         <div class="col-md-4 ">
-                                            @Html.DisplayFor(BARCODE => x.BARCODE)
+                                            @Html.DisplayFor(BARCODE => x.Barcode)
                                         </div>
                                         <div class="col-md-3 text-right">
-                                            @Html.DisplayFor(Qty => x.SECONDARY_QUANTITY)
+                                            @Html.DisplayFor(Qty => x.SecondaryQuantity)
                                         </div>
                                         <div class="col-md-2">
-                                            @Html.DisplayFor(Unit => x.SECONDARY_UOM)
+                                            @Html.DisplayFor(Unit => x.SecondaryUom)
                                         </div>
                                         @*@if (x.ITEM_CATEGORY == "平版")
                                     {
