@@ -57,60 +57,58 @@ namespace CHPOUTSRCMES.TASK.Models.Repository.Oracle
             return typeof(T).GetProperties();
         }
 
-        public async Task<IEnumerable<T>> GetAllAsync()
+        public async Task<IEnumerable<T>> GetAllAsync(IDbTransaction transaction = null)
         {
-            return await Connection.QueryAsync<T>($"{GenerateSelectQuery()}");
+            return await Connection.QueryAsync<T>($"{GenerateSelectQuery()}", transaction: transaction);
         }
 
 
-        public async Task DeleteRowAsync(long id)
+        public async Task DeleteRowAsync(long id, IDbTransaction transaction = null)
         {
-                await Connection.ExecuteAsync($"DELETE FROM {tableName} WHERE Id=:Id", new { Id = id });
+                await Connection.ExecuteAsync($"DELETE FROM {tableName} WHERE Id=:Id", new { Id = id }, transaction: transaction);
         }
 
-        public async Task<T> GetAsync(long id)
+        public async Task<T> GetAsync(long id, IDbTransaction transaction = null)
         {
-            var result = await Connection.QuerySingleOrDefaultAsync<T>($"{GenerateSelectQuery()} WHERE Id=:Id", new { Id = id });
+            var result = await Connection.QuerySingleOrDefaultAsync<T>($"{GenerateSelectQuery()} WHERE Id=:Id", new { Id = id }, transaction: transaction);
             if (result == null)
                 throw new KeyNotFoundException($"{tableName} with id [{id}] could not be found.");
 
             return result;
         }
 
-        public async Task<int> SaveRangeAsync(IEnumerable<T> list)
+        public async Task<int> SaveRangeAsync(IEnumerable<T> list, IDbTransaction transaction = null)
         {
             var query = GenerateInsertQuery();
-            return await Connection.ExecuteAsync(GenerateInsertQuery(), list);
+            return await Connection.ExecuteAsync(GenerateInsertQuery(), list, transaction: transaction);
         }
 
-        public async Task<long?> InsertAsync(T entity)
+        public async Task<long?> InsertAsync(T entity, IDbTransaction transaction = null)
         {
             var insertQuery = GenerateInsertQuery();
             long? id = null;
-            int cnt = await Connection.ExecuteAsync(insertQuery, entity);
+            int cnt = await Connection.ExecuteAsync(insertQuery, entity, transaction: transaction);
             if (cnt > 0)
             {
-                id = (await Connection.QueryAsync<long>("SELECT LAST_INSERT_ROWID() AS id")).FirstOrDefault();
+                id = (await Connection.QueryAsync<long>("SELECT LAST_INSERT_ROWID() AS id", transaction: transaction)).FirstOrDefault();
             }
 
             return id;
         }
 
-        public async Task UpdateAsync(T entity)
+        public async Task UpdateAsync(T entity, IDbTransaction transaction = null)
         {
-            await Connection.ExecuteAsync(GenerateUpdateQuery(), entity);
+            await Connection.ExecuteAsync(GenerateUpdateQuery(), entity, transaction: transaction);
         }
 
-        public async Task<int> CountAsync()
+        public async Task<int> CountAsync(IDbTransaction transaction = null)
         {
-            return await Connection.QuerySingleAsync<int>($"SELECT COUNT(*) FROM {tableName}");
+            return await Connection.QuerySingleAsync<int>($"SELECT COUNT(*) FROM {tableName}", transaction: transaction);
         }
 
-        public async Task TruncateAsync()
+        public async Task TruncateAsync(IDbTransaction transaction = null)
         {
-            await Connection.ExecuteAsync($"DELETE FROM [{tableName}]");
-
-            await Connection.ExecuteAsync($"DELETE FROM SQLITE_SEQUENCE WHERE NAME='{tableName}'");
+            await Connection.ExecuteAsync($"DELETE FROM [{tableName}]", transaction: transaction);
         }
 
         protected string GenerateSelectQuery()

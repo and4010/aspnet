@@ -14,6 +14,9 @@ namespace CHPOUTSRCMES.TASK.Models.Repository.MsSql
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
+
+        public string IdField { set; get; }
+
         #region Context Property
 
         private string _tableName;
@@ -38,12 +41,13 @@ namespace CHPOUTSRCMES.TASK.Models.Repository.MsSql
         #region Constructor
         public GenericRepository()
         {
-
+            IdField = "Id";
         }
 
         public GenericRepository(IDbConnection conn, string tableName)
         {
-            this.Connection = conn;
+            IdField = "Id";
+            Connection = conn;
             this.tableName = tableName;
         }
 
@@ -57,58 +61,54 @@ namespace CHPOUTSRCMES.TASK.Models.Repository.MsSql
             return typeof(T).GetProperties();
         }
 
-        public async Task<IEnumerable<T>> GetAllAsync()
+        public async Task<IEnumerable<T>> GetAllAsync(IDbTransaction transaction = null)
         {
-            return await Connection.QueryAsync<T>(GenerateSelectQuery());
+            return await Connection.QueryAsync<T>(GenerateSelectQuery(), transaction: transaction);
         }
 
 
-        public async Task DeleteRowAsync(long id)
+        public async Task DeleteRowAsync(long id, IDbTransaction transaction = null)
         {
-                await Connection.ExecuteAsync($"DELETE FROM {tableName} WHERE Id=@Id", new { Id = id });
+                await Connection.ExecuteAsync($"DELETE FROM {tableName} WHERE {IdField}=@Id", new { Id = id }, transaction: transaction);
         }
 
-        public async Task<T> GetAsync(long id)
+        public async Task<T> GetAsync(long id, IDbTransaction transaction = null)
         {
-            var result = await Connection.QuerySingleOrDefaultAsync<T>($"{GenerateSelectQuery()} WHERE Id=@Id", new { Id = id });
+            var result = await Connection.QuerySingleOrDefaultAsync<T>($"{GenerateSelectQuery()} WHERE {IdField}=@Id", new { Id = id }, transaction: transaction);
             if (result == null)
                 throw new KeyNotFoundException($"{tableName} with id [{id}] could not be found.");
 
             return result;
         }
 
-        public async Task<int> SaveRangeAsync(IEnumerable<T> list)
+        public async Task<int> SaveRangeAsync(IEnumerable<T> list, IDbTransaction transaction = null)
         {
             var query = GenerateInsertQuery();
-            return await Connection.ExecuteAsync(GenerateInsertQuery(), list);
+            return await Connection.ExecuteAsync(query, list, transaction: transaction);
         }
 
-        public async Task<long?> InsertAsync(T entity)
+        public async Task<long?> InsertAsync(T entity, IDbTransaction transaction = null)
         {
             var insertQuery = GenerateInsertQuery();
             long? id = null;
-            int cnt = await Connection.ExecuteAsync(insertQuery, entity);
-            if (cnt > 0)
-            {
-                id = (await Connection.QueryAsync<long>("SELECT SCOPE_IDENTITY() AS id")).FirstOrDefault();
-            }
+            id = await Connection.QuerySingleAsync<long>(insertQuery, entity, transaction: transaction);
 
             return id;
         }
 
-        public async Task UpdateAsync(T entity)
+        public async Task UpdateAsync(T entity, IDbTransaction transaction = null)
         {
-            await Connection.ExecuteAsync(GenerateUpdateQuery(), entity);
+            await Connection.ExecuteAsync(GenerateUpdateQuery(), entity, transaction: transaction);
         }
 
-        public async Task<int> CountAsync()
+        public async Task<int> CountAsync(IDbTransaction transaction = null)
         {
-            return await Connection.QuerySingleAsync<int>($"SELECT COUNT(*) FROM {tableName}");
+            return await Connection.QuerySingleAsync<int>($"SELECT COUNT(*) FROM {tableName}", transaction: transaction);
         }
 
-        public async Task TruncateAsync()
+        public async Task TruncateAsync(IDbTransaction transaction = null)
         {
-            await Connection.ExecuteAsync($"TRUNCATE FROM [{tableName}]");
+            await Connection.ExecuteAsync($"TRUNCATE FROM [{tableName}]", transaction: transaction);
         }
 
         protected string GenerateSelectQuery()
@@ -138,7 +138,7 @@ namespace CHPOUTSRCMES.TASK.Models.Repository.MsSql
             var properties = GenerateListOfProperties(GetProperties());
             properties.ForEach(prop =>
             {
-                if (!prop.Equals("Id"))
+                if (!prop.Equals(IdField))
                 { 
                     insertQuery.Append(string.Format("{0},", prop)); 
                 }
@@ -146,13 +146,15 @@ namespace CHPOUTSRCMES.TASK.Models.Repository.MsSql
 
             insertQuery
                 .Remove(insertQuery.Length - 1, 1)
-                .Append(") VALUES (");
+                .Append(") ")
+                .AppendLine($"OUTPUT INSERTED.{IdField}")
+                .Append(" VALUES (");
 
             properties.ForEach(prop =>
             {
-                if (!prop.Equals("Id"))
+                if (!prop.Equals(IdField))
                 {
-                    insertQuery.Append($"{prop},");
+                    insertQuery.Append($"@{prop},");
                 }
             });
 
@@ -170,14 +172,14 @@ namespace CHPOUTSRCMES.TASK.Models.Repository.MsSql
 
             properties.ForEach(property =>
             {
-                if (!property.Equals("Id"))
+                if (!property.Equals(IdField))
                 {
                     updateQuery.Append($"{property}=@{property},");
                 }
             });
 
             updateQuery.Remove(updateQuery.Length - 1, 1); //remove last comma
-            updateQuery.Append(" WHERE Id=@Id");
+            updateQuery.Append($" WHERE {IdField}=@Id");
 
             return updateQuery.ToString();
         }

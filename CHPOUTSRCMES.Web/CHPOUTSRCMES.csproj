@@ -1859,6 +1859,18 @@
     <Content Include="bower_components\adminlte\css\skins\.DS_Store" />
     <Content Include="bower_components\adminlte\js\.DS_Store" />
     <Content Include="Data\Excel\ERP_20200807.xlsx" />
+    <Content Include="bower_components\theme-login\fonts\Roboto\Roboto-Regular.ttf" />
+    <Content Include="bower_components\theme-login\fonts\Roboto\Roboto-Black.ttf" />
+    <Content Include="bower_components\theme-login\fonts\Roboto\Roboto-BlackItalic.ttf" />
+    <Content Include="bower_components\theme-login\fonts\Roboto\Roboto-Bold.ttf" />
+    <Content Include="bower_components\theme-login\fonts\Roboto\Roboto-BoldItalic.ttf" />
+    <Content Include="bower_components\theme-login\fonts\Roboto\Roboto-Italic.ttf" />
+    <Content Include="bower_components\theme-login\fonts\Roboto\Roboto-Light.ttf" />
+    <Content Include="bower_components\theme-login\fonts\Roboto\Roboto-LightItalic.ttf" />
+    <Content Include="bower_components\theme-login\fonts\Roboto\Roboto-Medium.ttf" />
+    <Content Include="bower_components\theme-login\fonts\Roboto\Roboto-MediumItalic.ttf" />
+    <Content Include="bower_components\theme-login\fonts\Roboto\Roboto-Thin.ttf" />
+    <Content Include="bower_components\theme-login\fonts\Roboto\Roboto-ThinItalic.ttf" />
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>
