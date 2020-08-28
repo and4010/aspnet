@@ -3,6 +3,7 @@ using CHPOUTSRCMES.Web.Models.Purchase;
 using CHPOUTSRCMES.Web.Models.Stock;
 using CHPOUTSRCMES.Web.ViewModels;
 using CHPOUTSRCMES.Web.ViewModels.Purchase;
+using NLog.Time;
 using NPOI.HSSF.UserModel;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
@@ -17,14 +18,13 @@ namespace CHPOUTSRCMES.Web.Util
 {
     public class ExcelImport
     {
-        public const string PurchaseHeaderPending= "1";
-        public ResultModel PaperRollDetail(HttpPostedFileBase file, ref List<DetailModel.RollDetailModel> PaperRollDetail,string CONTAINER_NO, ref ResultModel result,
+
+        public ResultModel PaperRollDetail(HttpPostedFileBase file, ref List<DetailModel.RollDetailModel> PaperRollDetail, long CtrHeaderId, ref ResultModel result,
             string createby, string userName)
         {
             PurchaseViewModel purchaseView = new PurchaseViewModel();
-            var RollHeader = purchaseView.GetRollHeader(CONTAINER_NO, PurchaseHeaderPending);
+            var RollHeader = purchaseView.GetRollHeader(CtrHeaderId);
             IWorkbook workbook = null;
-            DataTable dt = new DataTable();
             if (file.FileName.Substring(file.FileName.LastIndexOf(".")).Equals(".xls"))
             {
                 //xls
@@ -66,10 +66,10 @@ namespace CHPOUTSRCMES.Web.Util
                     throw new Exception("找不到料號欄位");
                 }
 
-                PaperType_cell = ExcelUtil.FindCell("紙別代碼", sheet);
+                PaperType_cell = ExcelUtil.FindCell("紙別", sheet);
                 if (PaperType_cell == null)
                 {
-                    throw new Exception("找不到紙別代碼欄位");
+                    throw new Exception("找不到紙別欄位");
                 }
 
                 BaseWeight_cell = ExcelUtil.FindCell("基重", sheet);
@@ -114,33 +114,33 @@ namespace CHPOUTSRCMES.Web.Util
                             var excelPartNo = ExcelUtil.GetStringCellValue(i, PartNo_cell.ColumnIndex, sheet).Trim();
                             if (RollHeader[j].Item_No.Equals(excelPartNo))
                             {
-                                if(RollHeader[j].PrimanyQuantity == decimal.Parse(ExcelUtil.GetStringCellValue(i, TheoreticalWeight_cell.ColumnIndex, sheet).Trim()))
-                                {
-                                    var model = new DetailModel.RollDetailModel();
-                                    model.Id = i;
-                                    model.Barcode = "";
-                                    model.Item_No = ExcelUtil.GetStringCellValue(i, PartNo_cell.ColumnIndex, sheet).Trim();
-                                    model.PaperType = ExcelUtil.GetStringCellValue(i, PaperType_cell.ColumnIndex, sheet).Trim();
-                                    model.BaseWeight = ExcelUtil.GetStringCellValue(i, BaseWeight_cell.ColumnIndex, sheet).Trim();
-                                    model.Specification = ExcelUtil.GetStringCellValue(i, Specification_cell.ColumnIndex, sheet).Trim();
-                                    model.TheoreticalWeight = ExcelUtil.GetStringCellValue(i, TheoreticalWeight_cell.ColumnIndex, sheet).Trim();
-                                    model.TransactionQuantity = ExcelUtil.GetDecimalCellValue(i, TheoreticalWeight_cell.ColumnIndex, sheet);
-                                    model.TransactionUom = RollHeader[j].TransactionUom;
-                                    model.PrimanyQuantity = ExcelUtil.GetDecimalCellValue(i, TheoreticalWeight_cell.ColumnIndex, sheet);
-                                    model.PrimaryUom = ExcelUtil.GetStringCellValue(i, PrimaryUom_cell.ColumnIndex, sheet).Trim();
-                                    model.LotNumber = ExcelUtil.GetStringCellValue(i, LotNumber_cell.ColumnIndex, sheet).Trim();
-                                    model.Status = "待入庫";
-                                    //model.Remark = ExcelUtil.GetCellString(i, Remark_cell.ColumnIndex, sheet).Trim();
-                                    model.Subinventory = RollHeader[j].Subinventory;
-                                    model.Locator = RollHeader[j].Locator;
-                                    PaperRollDetail.Add(model);
-                                }
-                                else
-                                {
-                                    result.Msg = "數量不正確";
-                                    result.Success = true;
-                                    break;
-                                }
+                                //if(RollHeader[j].PrimanyQuantity == decimal.Parse(ExcelUtil.GetStringCellValue(i, TheoreticalWeight_cell.ColumnIndex, sheet).Trim()))
+                                //{
+                                var model = new DetailModel.RollDetailModel();
+                                model.Id = i;
+                                model.Barcode = "";
+                                model.Item_No = ExcelUtil.GetStringCellValue(i, PartNo_cell.ColumnIndex, sheet).Trim();
+                                model.PaperType = ExcelUtil.GetStringCellValue(i, PaperType_cell.ColumnIndex, sheet).Trim();
+                                model.BaseWeight = ExcelUtil.GetStringCellValue(i, BaseWeight_cell.ColumnIndex, sheet).Trim();
+                                model.Specification = ExcelUtil.GetStringCellValue(i, Specification_cell.ColumnIndex, sheet).Trim();
+                                model.TheoreticalWeight = ExcelUtil.GetStringCellValue(i, TheoreticalWeight_cell.ColumnIndex, sheet).Trim();
+                                model.TransactionQuantity = ExcelUtil.GetDecimalCellValue(i, TheoreticalWeight_cell.ColumnIndex, sheet);
+                                model.TransactionUom = RollHeader[j].TransactionUom;
+                                model.PrimanyQuantity = ExcelUtil.GetDecimalCellValue(i, TheoreticalWeight_cell.ColumnIndex, sheet);
+                                model.PrimaryUom = ExcelUtil.GetStringCellValue(i, PrimaryUom_cell.ColumnIndex, sheet).Trim();
+                                model.LotNumber = ExcelUtil.GetStringCellValue(i, LotNumber_cell.ColumnIndex, sheet).Trim();
+                                model.Status = "待入庫";
+                                //model.Remark = ExcelUtil.GetCellString(i, Remark_cell.ColumnIndex, sheet).Trim();
+                                model.Subinventory = RollHeader[j].Subinventory;
+                                model.Locator = RollHeader[j].Locator;
+                                PaperRollDetail.Add(model);
+                                //}
+                                //else
+                                //{
+                                //    result.Msg = "數量不正確";
+                                //    result.Success = true;
+                                //    break;
+                                //}
 
                             }
 
@@ -162,9 +162,33 @@ namespace CHPOUTSRCMES.Web.Util
                 return result;
             }
 
-            if (PaperRollDetail.Count == RollHeader.Count)
+            var CheckQty = false;
+            for (int j = 0; j < RollHeader.Count; j++)
             {
-                result = purchaseView.ImportPaperRollPickT(CONTAINER_NO, PaperRollDetail, createby,userName);
+                var totle = 0M;
+                for (int i = 0; i < PaperRollDetail.Count; i++)
+                {
+                    if (RollHeader[j].Item_No == PaperRollDetail[i].Item_No)
+                    {
+                        totle += PaperRollDetail[i].PrimanyQuantity;
+                    }
+                        
+                }
+                if(RollHeader[j].PrimanyQuantity == totle)
+                {
+                    CheckQty = true;
+                }
+                else
+                {
+                    CheckQty = false;
+                    break;
+                }
+            }
+
+
+            if (CheckQty)
+            {
+                result = purchaseView.ImportPaperRollPickT(CtrHeaderId, PaperRollDetail, createby, userName);
             }
             else
             {
@@ -172,38 +196,18 @@ namespace CHPOUTSRCMES.Web.Util
                 result.Success = false;
             }
 
-
-            //for (int i = header.FirstCellNum; i<cellCount; i++)
-            //{
-            //    DataColumn column = new DataColumn(header.GetCell(i).StringCellValue);
-            //    dt.Columns.Add(column);
-            //}
-
-            //int rowCount = sheet.LastRowNum;
-
-            //for(int i = (sheet.FirstRowNum +1 );i < sheet.LastRowNum; i++)
-            //{
-            //  IRow row = sheet.GetRow(i);
-            //    DataRow datarow = dt.NewRow();
-            //    for(int j = row.FirstCellNum; j < cellCount; j++)
-            //    {
-            //        if (row.GetCell(j) != null)
-            //            datarow[j] = row.GetCell(j).ToString();
-            //    }
-            //    dt.Rows.Add(datarow);
-            //}
             workbook = null;
             sheet = null;
 
             return result;
         }
 
-        
 
 
 
 
-        public ResultModel TransferPaperRoll(HttpPostedFileBase file, ref List<StockTransferBarcodeDT> stockTransferBarcodeDTs, ref ResultModel result,string ddlInSubinventory,string ddlInLocator)
+
+        public ResultModel TransferPaperRoll(HttpPostedFileBase file, ref List<StockTransferBarcodeDT> stockTransferBarcodeDTs, ref ResultModel result, string ddlInSubinventory, string ddlInLocator)
         {
             IWorkbook workbook = null;
             DataTable dt = new DataTable();
@@ -313,7 +317,7 @@ namespace CHPOUTSRCMES.Web.Util
                         //model.Remark = ExcelUtil.GetCellString(i, Remark_cell.ColumnIndex, sheet).Trim();
                         //model.Lo = RollHeader[j].Locator;
                         stockTransferBarcodeDTs.Add(model);
-                      
+
                     }
                     catch (Exception e)
                     {
@@ -482,7 +486,7 @@ namespace CHPOUTSRCMES.Web.Util
             sheet = null;
 
             return result;
-        
+
         }
 
     }

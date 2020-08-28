@@ -16,6 +16,7 @@ using System.Drawing;
 using Image = System.Drawing.Image;
 using System.Web.UI.WebControls;
 using Microsoft.AspNet.Identity;
+using CHPOUTSRCMES.Web.ViewModels.Process;
 
 namespace CHPOUTSRCMES.Web.Controllers
 {
@@ -52,10 +53,10 @@ namespace CHPOUTSRCMES.Web.Controllers
         }
 
         [HttpPost]
-        public JsonResult ReturnIndex(string CabinetNumber)
+        public JsonResult ReturnIndex(long CtrHeaderId)
         {
             PurchaseViewModel purchaseViewModel = new PurchaseViewModel();
-            var resultModel = purchaseViewModel.ChageHeaderStatus(CabinetNumber);
+            var resultModel = purchaseViewModel.ChageHeaderStatus(CtrHeaderId);
             return Json(new { resultModel }, JsonRequestBehavior.AllowGet);
         }
 
@@ -63,24 +64,25 @@ namespace CHPOUTSRCMES.Web.Controllers
 
         // GET: Purchase
         [HttpGet, ActionName("Detail")]
-        public ActionResult Detail(string CONTAINER_NO = "", string Start = "", string Status = "", string Subinventory = "")
+        public ActionResult Detail(long CtrHeaderId)
         {
             PurchaseViewModel model = new PurchaseViewModel();
-
-            model.CreateDate = Start;
-            model.CabinetNumber = CONTAINER_NO;
-            model.Subinventory = Subinventory;
-            model.Status = Status;
+            var Header = model.GetDetail(CtrHeaderId);
+            model.CtrHeaderId = CtrHeaderId;
+            model.CreateDate = Header.MvContainerDate; 
+            model.CabinetNumber = Header.ContainerNo;
+            model.Subinventory = Header.Subinventory;
+            model.Status = Header.Status;
             return View(model);
         }
 
 
         [HttpPost, ActionName("RollHeader")]
-        public JsonResult RollHeader(DataTableAjaxPostViewModel data, string CabinetNumber,string Status)
+        public JsonResult RollHeader(DataTableAjaxPostViewModel data, long CtrHeaderId)
         {
             PurchaseViewModel purchaseViewModel = new PurchaseViewModel();
             List<DetailModel.RollModel> model;
-            model = purchaseViewModel.GetRollHeader(CabinetNumber, Status);
+            model = purchaseViewModel.GetRollHeader(CtrHeaderId);
             return Json(new { draw = data.Draw, recordsFiltered = model.Count, recordsTotal = model.Count, data = model }, JsonRequestBehavior.AllowGet);
             //draw：為避免XSS攻擊，內建的控制。 
             //recordsTotal：篩選前的總資料數 
@@ -92,10 +94,10 @@ namespace CHPOUTSRCMES.Web.Controllers
 
 
         [HttpPost, ActionName("RollBody")]
-        public JsonResult RollBody(DataTableAjaxPostViewModel data, string status, string CabinetNumber)
+        public JsonResult RollBody(DataTableAjaxPostViewModel data, long CtrHeaderId)
         {
             PurchaseViewModel viewModel = new PurchaseViewModel();
-            List<DetailModel.RollDetailModel> model = viewModel.GetPaperRollPickT(CabinetNumber,status);
+            List<DetailModel.RollDetailModel> model = viewModel.GetPaperRollPickT(CtrHeaderId);
             model = PurchaseViewModel.RollDetailModelDTOrder.Search(data, model);
             model = PurchaseViewModel.RollDetailModelDTOrder.Order(data.Order, model).ToList();
             var data1 = model.Skip(data.Start).Take(data.Length).ToList();
@@ -109,12 +111,12 @@ namespace CHPOUTSRCMES.Web.Controllers
 
 
         [HttpPost, ActionName("FlatHeader")]
-        public JsonResult FlatHeader(DataTableAjaxPostViewModel data, string CabinetNumber, string Status)
+        public JsonResult FlatHeader(DataTableAjaxPostViewModel data, long CtrHeaderId)
         {
             PurchaseViewModel purchaseViewModel = new PurchaseViewModel();
             List<DetailModel.FlatModel> model;
 
-            model = purchaseViewModel.GetFlatHeader(CabinetNumber, Status);
+            model = purchaseViewModel.GetFlatHeader(CtrHeaderId);
 
             return Json(new { draw = data.Draw, recordsFiltered = model.Count, recordsTotal = model.Count, data = model }, JsonRequestBehavior.AllowGet);
             //draw：為避免XSS攻擊，內建的控制。 
@@ -127,11 +129,11 @@ namespace CHPOUTSRCMES.Web.Controllers
 
 
         [HttpPost, ActionName("FlatBody")]
-        public JsonResult FlatBody(DataTableAjaxPostViewModel data, string status, string CabinetNumber)
+        public JsonResult FlatBody(DataTableAjaxPostViewModel data,long CtrHeaderId)
         {
 
             PurchaseViewModel viewModel = new PurchaseViewModel();
-            List<DetailModel.FlatDetailModel> model = viewModel.GetFlatPickT(CabinetNumber, status);
+            List<DetailModel.FlatDetailModel> model = viewModel.GetFlatPickT(CtrHeaderId);
 
             model = PurchaseViewModel.FlatDetailModelDTOrder.Search(data, model);
             model = PurchaseViewModel.FlatDetailModelDTOrder.Order(data.Order, model).ToList();
@@ -177,13 +179,14 @@ namespace CHPOUTSRCMES.Web.Controllers
         /// <param name="CabinetNumber"></param>
         /// <param name="CreateDate"></param>
         /// <returns></returns>
-        public ActionResult RollView(string Id, string CabinetNumber, string CreateDate)
+        public ActionResult RollView(long CtrPickedId, long CtrHeaderId)
         {
             PurchaseViewModel model = new PurchaseViewModel();
-            model.CabinetNumber = CabinetNumber;
-            model.CreateDate = CreateDate;
-            model.Subinventory = model.GetPaperRollView(Id).Subinventory;
-            model.RollDetailModel = model.GetPaperRollView(Id);
+            var herader = model.GetDetail(CtrHeaderId);
+            model.CabinetNumber = herader.ContainerNo;
+            model.CreateDate = herader.MvContainerDate;
+            model.Subinventory = model.GetPaperRollView(CtrPickedId).Subinventory;
+            model.RollDetailModel = model.GetPaperRollView(CtrPickedId);
 
 
             return View(model);
@@ -196,9 +199,9 @@ namespace CHPOUTSRCMES.Web.Controllers
         /// <param name="cabinetNumber"></param>
         /// <param name="CreateDate"></param>
         /// <returns></returns>
-        public ActionResult RollViewParameter(string id = "", string cabinetNumber = "", string CreateDate = "")
+        public ActionResult RollViewParameter(string CtrPickedId = "", string CtrHeaderId = "")
         {
-            return Json(new { id, cabinetNumber, CreateDate }, JsonRequestBehavior.AllowGet);
+            return Json(new { CtrPickedId, CtrHeaderId }, JsonRequestBehavior.AllowGet);
         }
 
         /// <summary>
@@ -207,7 +210,7 @@ namespace CHPOUTSRCMES.Web.Controllers
         /// <param name="id"></param>
         /// <param name="CabinetNumber"></param>
         /// <returns></returns>
-        public ActionResult FlatView(string id,string CabinetNumber)
+        public ActionResult FlatView(long CtrPickedId, long CtrHeaderId)
         {
 
             
@@ -216,10 +219,9 @@ namespace CHPOUTSRCMES.Web.Controllers
 
             //ViewBag.LocatorItems = model.GetLocator(Id);
             ViewBag.ReasonItems = model.GetReason();
-
-            model.FlatDetailModel = model.GetFlatView(id);
+            model.FlatDetailModel = model.GetFlatView(CtrPickedId);
             //model.CreateDate = "2020-06-08 10:00:00";
-            model.CabinetNumber = CabinetNumber;
+            model.CabinetNumber = model.GetDetail(CtrHeaderId).ContainerNo;
             //model.Subinventory = "TB2";
 
 
@@ -232,9 +234,9 @@ namespace CHPOUTSRCMES.Web.Controllers
         /// <param name="id"></param>
         /// <param name="cabinetNumber"></param>
         /// <returns></returns>
-        public ActionResult FlatViewParameter(string id = "", string cabinetNumber = "")
+        public ActionResult FlatViewParameter(string CtrPickedId = "", string CtrHeaderId = "")
         {
-            return Json(new { id, cabinetNumber }, JsonRequestBehavior.AllowGet);
+            return Json(new { CtrPickedId, CtrHeaderId }, JsonRequestBehavior.AllowGet);
         }
 
         /// <summary>
@@ -244,16 +246,16 @@ namespace CHPOUTSRCMES.Web.Controllers
         /// <param name="CabinetNumber"></param>
         /// <param name="CreateDate"></param>
         /// <returns></returns>
-        public ActionResult RollEdit(string Id,string CabinetNumber,string CreateDate)
+        public ActionResult RollEdit(long CtrPickedId, long CtrHeaderId)
         {
 
             PurchaseViewModel model = new PurchaseViewModel();
-        
-            model.RollDetailModel = model.GetPaperRollEdit(Id);
-            ViewBag.LocatorItems = model.GetLocator(Id);
+            var header = model.GetDetail(CtrHeaderId);
+            model.RollDetailModel = model.GetPaperRollEdit(CtrPickedId);
+            ViewBag.LocatorItems = model.GetLocator(CtrPickedId);
             ViewBag.ReasonItems = model.GetReason();
-            model.CabinetNumber = CabinetNumber;
-            model.CreateDate = CreateDate;
+            model.CabinetNumber = header.ContainerNo;
+            model.CreateDate = header.MvContainerDate;
             return View(model);
         }
 
@@ -265,9 +267,9 @@ namespace CHPOUTSRCMES.Web.Controllers
         /// <param name="CreateDate"></param>
         /// <returns></returns>
         [HttpPost]
-        public JsonResult RollEditParameter(string id = "", string cabinetNumber = "",string CreateDate ="")
+        public JsonResult RollEditParameter(string CtrPickedId = "", string CtrHeaderId = "")
         {
-            return Json(new { id, cabinetNumber , CreateDate }, JsonRequestBehavior.AllowGet);
+            return Json(new { CtrPickedId, CtrHeaderId }, JsonRequestBehavior.AllowGet);
         }
 
         /// <summary>
@@ -276,16 +278,16 @@ namespace CHPOUTSRCMES.Web.Controllers
         /// <param name="Id"></param>
         /// <param name="CabinetNumber"></param>
         /// <returns></returns>
-        public ActionResult FlatEdit(string Id,string CabinetNumber)
+        public ActionResult FlatEdit(long CtrPickedId, long CtrHeaderId)
         {
             PurchaseViewModel model = new PurchaseViewModel();
-            ViewBag.LocatorItems = model.GetLocator(Id);
+            ViewBag.LocatorItems = model.GetLocator(CtrPickedId);
             ViewBag.ReasonItems = model.GetReason();
-            model.FlatDetailModel = model.GetFlatEdit(Id);
+            model.FlatDetailModel = model.GetFlatEdit(CtrPickedId);
 
             //model.Status = purchaseViewModel.Status;
             //model.CreateDate = purchaseViewModel.CreateDate;
-            model.CabinetNumber = CabinetNumber;
+            model.CabinetNumber = model.GetDetail(CtrHeaderId).ContainerNo;
             //model.Subinventory = purchaseViewModel.Subinventory;
 
             return View(model);
@@ -298,9 +300,9 @@ namespace CHPOUTSRCMES.Web.Controllers
         /// <param name="id"></param>
         /// <param name="cabinetNumber"></param>
         /// <returns></returns>
-        public JsonResult FlatEditParameter(string id = "",string cabinetNumber = "")
+        public JsonResult FlatEditParameter(string CtrPickedId = "",string CtrHeaderId = "")
         {
-            return Json(new { id, cabinetNumber },JsonRequestBehavior.AllowGet);
+            return Json(new { CtrPickedId, CtrHeaderId },JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
@@ -412,7 +414,7 @@ namespace CHPOUTSRCMES.Web.Controllers
                     try
                     {
                         //file.SaveAs(Path.Combine(filelocation, file.FileName));
-                        ExcelImportRoll(file, ref detail, ref result, formCollection["CabinetNumber"]);
+                        ExcelImportRoll(file, ref detail, ref result, long.Parse(formCollection["CtrHeaderId"]));
                     }
                     catch (Exception e)
                     {
@@ -431,22 +433,22 @@ namespace CHPOUTSRCMES.Web.Controllers
         }
 
         [HttpPost]
-        public JsonResult ExcelImportRoll(HttpPostedFileBase file, ref List<DetailModel.RollDetailModel> PaperRollModel, ref ResultModel result, string CONTAINER_NO)
+        public JsonResult ExcelImportRoll(HttpPostedFileBase file, ref List<DetailModel.RollDetailModel> PaperRollModel, ref ResultModel result, long CtrHeaderId)
         {
             //取得使用者ID
             var id = this.User.Identity.GetUserId();
             //取得使用者帳號
             var name = this.User.Identity.GetUserName();
             var Excel = new ExcelImport();
-            Excel.PaperRollDetail(file, ref PaperRollModel, CONTAINER_NO, ref result,id,name);
+            Excel.PaperRollDetail(file, ref PaperRollModel, CtrHeaderId, ref result,id,name);
             return Json(new { data = PaperRollModel, result }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
-        public JsonResult ExcelDelete(string CabinetNumber)
+        public JsonResult ExcelDelete(long CtrHeaderId)
         {
             PurchaseViewModel purchaseView = new PurchaseViewModel();
-            purchaseView.ExcelDelete(CabinetNumber);
+            purchaseView.ExcelDelete(CtrHeaderId);
             return Json(JsonRequestBehavior.AllowGet);
         }
 
@@ -456,11 +458,11 @@ namespace CHPOUTSRCMES.Web.Controllers
         /// <param name="CabinetNumber"></param>
         /// <returns></returns>
         [HttpPost]
-        public JsonResult PaperNumber(string CabinetNumber)
+        public JsonResult PaperNumber(long CtrHeaderId)
         {
             
             PurchaseViewModel viewModel = new PurchaseViewModel();
-            var PaperTotle = viewModel.GetPaperRollNumberTab(CabinetNumber);
+            var PaperTotle = viewModel.GetPaperRollNumberTab(CtrHeaderId);
             return Json(new { PaperTotle }, JsonRequestBehavior.AllowGet);
         }
         /// <summary>
@@ -469,10 +471,10 @@ namespace CHPOUTSRCMES.Web.Controllers
         /// <param name="CabinetNumber"></param>
         /// <returns></returns>
         [HttpPost]
-        public JsonResult FlatNumber(string CabinetNumber)
+        public JsonResult FlatNumber(long CtrHeaderId)
         {
             PurchaseViewModel viewModel = new PurchaseViewModel();
-            var FlatTotle = viewModel.GetFlatNumberTab(CabinetNumber);
+            var FlatTotle = viewModel.GetFlatNumberTab(CtrHeaderId);
             return Json(new { FlatTotle }, JsonRequestBehavior.AllowGet);
         }
 
@@ -617,5 +619,12 @@ namespace CHPOUTSRCMES.Web.Controllers
            
         }
 
+
+        public JsonResult SetSpinnerValue(long PickId)
+        {
+            PurchaseViewModel ViewModel = new PurchaseViewModel();
+            var resultDataModel = ViewModel.SetSpinnerValue(PickId);
+            return Json(new { resultDataModel }, JsonRequestBehavior.AllowGet);
+        }
     }
 }

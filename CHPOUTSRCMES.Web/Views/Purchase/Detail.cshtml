@@ -16,6 +16,7 @@
 @Html.HiddenFor(model => model.CabinetNumber, new { id = "CabinetNumber" })
 @Html.HiddenFor(model => model.CreateDate, new { id = "CreateDate" })
 @Html.HiddenFor(model => model.Subinventory, new { id = "Subinventory" })
+@Html.HiddenFor(model => model.CtrHeaderId, new { id = "CtrHeaderId" })
 
 <div class="row row-std col-md-12">
     <div class="box box-success">
@@ -312,7 +313,7 @@
             </div>
         </div>
         @{
-            if (Model.Status == "1")
+            if (Model.Status == 1)
             {
                 <div class="box-footer">
                     <div class="pull-right">
