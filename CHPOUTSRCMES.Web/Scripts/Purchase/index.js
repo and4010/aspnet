@@ -139,7 +139,7 @@ $(document).ready(function () {
         calendar.addEventSource('/Purchase/GetEvents/' + warehouse);
         //calendar.events = '/Purchase/GetEvents';
         //calendar.refetchEvents();
-        //calendar.gotoDate(date);
+        calendar.gotoDate(date);
         //});
     });
 
@@ -163,7 +163,7 @@ $(document).ready(function () {
         calendar.addEventSource('/Purchase/GetEvents/' + warehouse);
         //calendar.events = '/Purchase/GetEvents';
         //calendar.refetchEvents();
-        //calendar.gotoDate(date);
+        calendar.gotoDate(date);
         //});
     });
 

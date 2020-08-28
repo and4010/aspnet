@@ -3,7 +3,7 @@
     click();
     photoView();
     getServicePhoto();
-    //getSpinnerValue();
+    SetSpinnerValue();
 });
 
 
@@ -146,22 +146,23 @@ function getServicePhoto() {
     });
 }
 
-//function getSpinnerValue() {
-//   $("#select-reason").change(function (e) {
-//        var reason = $("#select-reason").val();
-//        $.ajax({
-//            url: '/Purchase/Reason/',
-//            type: "POST",
-//            dataType: 'json', // 轉json
-//            data: { reason },
-//            success: function (data) {
-//                $("#textarea").val(data);
-//            },
-//            error: function () {
-//                $.swal.fire("失敗")
-//            }
-//        });
-
-//    });
-
-//}
+function SetSpinnerValue() {
+    var PickId = $("#Id").val();
+    $.ajax({
+        url: '/Purchase/SetSpinnerValue/',
+        type: "POST",
+        dataType: 'json',
+        data: { PickId: PickId },
+        success: function (data) {
+            if (data.resultDataModel.Success) {
+                if (data.resultDataModel.Data.ReasonCode != "") {
+                    $("#select-reason").val(data.resultDataModel.Data.ReasonCode);
+                }
+                $("#select-Locator").val(data.resultDataModel.Data.LocatorId);
+            }
+        },
+        error: function () {
+            $.swal.fire("失敗")
+        }
+    });
+}

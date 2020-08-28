@@ -23,18 +23,18 @@ $(document).ready(function () {
     $('#PaperRolldataTablesBody tbody').on('click', '.btn-edit', function (e) {
 
         var data = $('#PaperRolldataTablesBody').DataTable().row($(this).parents('tr')).data();
-        var id = data.Id;
+        var CtrPickedId = data.Id;
         if (data == null) {
             return false;
         }
-        var CabinetNumber = $('#CabinetNumber').val();
+        var CtrHeaderId = $('#CtrHeaderId').val();
         var CreateDate = $('#CreateDate').val();
         $.ajax({
             url: '/Purchase/RollEditParameter/',
             type: "POST",
-            data: { id: id, CabinetNumber: CabinetNumber, CreateDate: CreateDate },
+            data: { CtrPickedId: CtrPickedId, CtrHeaderId: CtrHeaderId, CreateDate: CreateDate },
             success: function (data) {
-                window.location.href = "RollEdit?Id=" + data.id + "&CabinetNumber=" + data.cabinetNumber + "&CreateDate=" +data.CreateDate; 
+                window.location.href = "RollEdit?CtrPickedId=" + CtrPickedId + "&CtrHeaderId=" + CtrHeaderId; 
             },
             error: function() {
                 swal("失敗")
@@ -47,18 +47,18 @@ $(document).ready(function () {
     $('#PaperRolldataTablesBody tbody').on('click', '#btnView', function (e) {
 
         var data = $('#PaperRolldataTablesBody').DataTable().row($(this).parents('tr')).data();
-        var id = data.Id;
+        var CtrPickedId = data.Id;
         if (data == null) {
             return false;
         }
-        var CabinetNumber = $('#CabinetNumber').val();
+        var CtrHeaderId = $('#CtrHeaderId').val();
         var CreateDate = $('#CreateDate').val();
         $.ajax({
             url: '/Purchase/RollViewParameter/',
             type: "POST",
-            data: { id: id, CabinetNumber: CabinetNumber, CreateDate: CreateDate },
+            data: { CtrPickedId: CtrPickedId, CtrHeaderId: CtrHeaderId },
             success: function (data) {
-                window.location.href = "RollView?Id=" + data.id + "&CabinetNumber=" + data.cabinetNumber + "&CreateDate=" + data.CreateDate;
+                window.location.href = "RollView?CtrPickedId=" + CtrPickedId + "&CtrHeaderId=" + CtrHeaderId; 
             },
             error: function () {
                 swal("失敗")
@@ -71,17 +71,17 @@ $(document).ready(function () {
     //平張表身編輯事件
     $('#FlatdataTablesBody tbody').on('click', '.btn-edit', function (e) {
         var data = $('#FlatdataTablesBody').DataTable().row($(this).parents('tr')).data();
-        var id = data.Id;
+        var CtrPickedId = data.Id;
         if (data == null) {
             return false;
         }
-        var CabinetNumber = $('#CabinetNumber').val();
+        var CtrHeaderId = $('#CtrHeaderId').val();
         $.ajax({
             url: '/Purchase/FlatEditParameter/',
             type: "POST",
-            data: { id: id, CabinetNumber: CabinetNumber },
+            data: { CtrPickedId: CtrPickedId, CtrHeaderId: CtrHeaderId },
             success: function (data) {
-                window.location.href = "FlatEdit?Id=" + data.id + "&CabinetNumber=" + data.cabinetNumber; 
+                window.location.href = "FlatEdit?CtrPickedId=" + CtrPickedId + "&CtrHeaderId=" + CtrHeaderId; 
             },
             error: function () {
 
@@ -94,17 +94,17 @@ $(document).ready(function () {
     $('#FlatdataTablesBody tbody').on('click', '#btnView', function (e) {
 
         var data = $('#FlatdataTablesBody').DataTable().row($(this).parents('tr')).data();
-        var id = data.Id;
+        var CtrPickedId = data.Id;
         if (data == null) {
             return false;
         }
-        var CabinetNumber = $('#CabinetNumber').val();
+        var CtrHeaderId = $('#CtrHeaderId').val();
         $.ajax({
             url: '/Purchase/FlatViewParameter/',
             type: "POST",
-            data: { id: id, CabinetNumber: CabinetNumber },
+            data: { CtrPickedId: CtrPickedId, CtrHeaderId: CtrHeaderId },
             success: function (data) {
-                window.location.href = "FlatView?Id=" + data.id + "&CabinetNumber=" + data.cabinetNumber;
+                window.location.href = "FlatView?CtrPickedId=" + CtrPickedId + "&CtrHeaderId=" + CtrHeaderId; 
             },
             error: function () {
 
@@ -156,12 +156,12 @@ $(document).ready(function () {
 
 
 function PaperNavsNumber() {
-    var CabinetNumber = $("#CabinetNumber").val();
+    var CtrHeaderId = $("#CtrHeaderId").val();
     $.ajax({
         url: '/Purchase/PaperNumber',
         type: 'POST',
         datatype: 'json',
-        data: { CabinetNumber: CabinetNumber },
+        data: { CtrHeaderId: CtrHeaderId },
         success: function (data) {
             $('#PaperRollSpan').text(data.PaperTotle);
         },
@@ -173,12 +173,12 @@ function PaperNavsNumber() {
 }
 
 function FlatNavsNumber() {
-    var CabinetNumber = $("#CabinetNumber").val();
+    var CtrHeaderId = $("#CtrHeaderId").val();
     $.ajax({
         url: '/Purchase/FlatNumber',
         type: 'POST',
         datatype: 'json',
-        data: { CabinetNumber: CabinetNumber },
+        data: { CtrHeaderId: CtrHeaderId },
         success: function (data) {
             $('#FlatSpan').text(data.FlatTotle);
         },
@@ -329,32 +329,14 @@ function init(status) {
 
     //存檔入庫
     $("#btnSaveInvenorty").click(function () {
-        var CabinetNumber = $("#CabinetNumber").val()
+        var CtrHeaderId = $("#CtrHeaderId").val()
         var CreateDate = $("#CreateDate").val();
         var PaperRollSpan = $('#PaperRollSpan').text();
         var FlatSpan = $('#FlatSpan').text();
         var PaperRolldata = $('#PaperRolldataTablesBody').DataTable().column(15).data();
         var Flatdata = $('#FlatdataTablesBody').DataTable().column(10).data();
 
-        if (PaperRollSpan != "0") {
-            Swal.fire({
-                title: '確定要返回?',
-                text: "尚有資料未入庫",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: '確定',
-                cancelButtonText: '取消'
-            }).then(function (result) {
-                if (result.value) {
-                    window.location.href = '/Purchase/Index';
-                }
-            });
-            return;
-        }
-
-        if (FlatSpan != "0") {
+        if (PaperRollSpan != "0" && FlatSpan != "0") {
             Swal.fire({
                 title: '確定要返回?',
                 text: "尚有資料未入庫",
@@ -376,10 +358,12 @@ function init(status) {
             url: '/Purchase/ReturnIndex',
             type: 'POST',
             datatype: 'json',
-            data: { CabinetNumber: CabinetNumber, CreateDate: CreateDate },
+            data: { CtrHeaderId: CtrHeaderId},
             success: function (data) {
                 if (data.resultModel.Success) {
                     window.location.href = '/Purchase/Index';
+                } else {
+                    swal.fire(data.resultModel.Msg);
                 }
             }
         });
@@ -492,14 +476,14 @@ function Open(modal_dialog) {
     });
 
     modal_dialog.on('click', '#BtnCancel', function () {
-        var CabinetNumber = $("#CabinetNumber").val();
+        var CtrHeaderId = $("#CtrHeaderId").val();
         var table = $('#ImportPaperRollTable').DataTable();
         if (table.column(0).data().length) {
             $.ajax({
                 "url": "/Purchase/ExcelDelete",
                 "type": "POST",
                 "datatype": "json",
-                "data": { CabinetNumber: CabinetNumber },
+                "data": { CtrHeaderId: CtrHeaderId },
                 success: function (data) {
                     swal.fire(data.result.Msg);
                 },
@@ -525,11 +509,11 @@ function ImportPaperRoll() {
 
 
     var fileInput = $('#file').get(0).files;
-    var CabinetNumber = $("#CabinetNumber").val();
+    var CtrHeaderId = $("#CtrHeaderId").val();
     var formData = new FormData();
     if (fileInput.length > 0) {
         formData.append("file", fileInput[0]);
-        formData.append("CabinetNumber", CabinetNumber);
+        formData.append("CtrHeaderId", CtrHeaderId);
     }
     $.ajax({
         "url": "/Purchase/UploadFileRoll",
@@ -653,8 +637,7 @@ function ImportFlatTable(data) {
 
 //紙捲表頭
 function LoadPaperRollHeard() {
-    var CabinetNumber = $("#CabinetNumber").val();
-    var Status = $("#Status").val();
+    var CtrHeaderId = $("#CtrHeaderId").val();
     //紙捲表頭
     PaperRolldataTablesHeader = $('#PaperRolldataTablesHeader').DataTable({
         "language": {
@@ -668,7 +651,7 @@ function LoadPaperRollHeard() {
             "url": "/Purchase/RollHeader",
             "type": "POST",
             "datatype": "json",
-            "data": { CabinetNumber: CabinetNumber, Status: Status }
+            "data": { CtrHeaderId: CtrHeaderId }
         },
         columns: [
             { data: "Id", "name": "項次", "autoWidth": true, "className": "dt-body-center", visible: false },
@@ -679,7 +662,11 @@ function LoadPaperRollHeard() {
             {
                 data: "Locator", "name": "儲位", "autoWidth": true, "className": "dt-body-center", "render": function (data, type, row) {
                     var locator = data.split(".");
-                    return locator[2];
+                    if (locator.length < 3) {
+                        return data;
+                    } else {
+                        return locator[2];
+                    }
                 }
             },
             { data: "Item_No", "name": "料號", "autoWidth": true, "className": "dt-body-left" },
@@ -698,8 +685,7 @@ function LoadPaperRollHeard() {
 //平張表頭
 function LoadFlatHeader() {
     //平張表頭
-    var CabinetNumber = $("#CabinetNumber").val();
-    var Status = $("#Status").val();
+    var CtrHeaderId = $("#CtrHeaderId").val();
     FlatdataTablesHeader = $('#FlatdataTablesHeader').DataTable({
         "language": {
             "url": "/bower_components/datatables/language/zh-TW.json"
@@ -712,7 +698,7 @@ function LoadFlatHeader() {
             "url": "/Purchase/FlatHeader",
             "type": "POST",
             "datatype": "json",
-            "data": { CabinetNumber: CabinetNumber, Status: Status},
+            "data": { CtrHeaderId: CtrHeaderId},
         },
         columns: [
             { data: "Id", "name": "項次", "autoWidth": true, "className": "dt-body-center", visible: false },
@@ -721,7 +707,11 @@ function LoadFlatHeader() {
             {
                 data: "Locator", "name": "儲位", "autoWidth": true, "className": "dt-body-center", "render": function (data, type, row) {
                     var locator = data.split(".");
-                    return locator[2];
+                    if (locator.length < 3) {
+                       return data;
+                    } else {
+                        return locator[2];
+                    }
                 }
             },
             { data: "Item_No", "name": "料號", "autoWidth": true, "className": "dt-body-left" },
@@ -741,7 +731,7 @@ function LoadFlatHeader() {
 
 //紙捲表身
 function PaperRolldataTablesBody() {
-    var CabinetNumber = $("#CabinetNumber").val();
+    var CtrHeaderId = $("#CtrHeaderId").val();
     var Status = $("#Status").val();
     $('#PaperRolldataTablesBody').DataTable({
         "language": {
@@ -771,7 +761,7 @@ function PaperRolldataTablesBody() {
             "url": "/Purchase/RollBody",
             "type": "POST",
             "datatype": "json",
-            "data": { Status: Status, CabinetNumber: CabinetNumber }
+            "data": {  CtrHeaderId: CtrHeaderId }
         },
         columns: [
             {
@@ -787,7 +777,12 @@ function PaperRolldataTablesBody() {
             {
                 data: "Locator", "name": "儲位", "autoWidth": true, "className": "dt-body-center", "render": function (data, type, row) {
                     var locator = data.split(".");
-                    return locator[2];
+                    if (locator.length < 3) {
+                        return data;
+                    } else {
+                        return locator[2];
+                    }
+                    
                 }
             },
             { data: "Barcode", "name": "條碼號", "autoWidth": true, "className": "dt-body-center" },
@@ -828,8 +823,8 @@ function PaperRolldataTablesBody() {
 
 //平張表身
 function FlatdataTablesBody() {
+    var CtrHeaderId = $("#CtrHeaderId").val();
     var Status = $("#Status").val();
-    var CabinetNumber = $("#CabinetNumber").val();
     $('#FlatdataTablesBody').DataTable({
         "language": {
             "url": "/bower_components/datatables/language/zh-TW.json"
@@ -850,7 +845,7 @@ function FlatdataTablesBody() {
             "url": "/Purchase/FlatBody",
             "type": "POST",
             "datatype": "json",
-            "data": { Status: Status, CabinetNumber: CabinetNumber }
+            "data": {  CtrHeaderId: CtrHeaderId }
         },
         columns: [
             {
@@ -866,7 +861,11 @@ function FlatdataTablesBody() {
             {
                 data: "Locator", "name": "儲位", "autoWidth": true, "className": "dt-body-center", "render": function (data, type, row) {
                     var locator = data.split(".");
-                    return locator[2];
+                    if (locator.length < 3) {
+                        return data;
+                    } else {
+                        return locator[2];
+                    }
                 }
             },
             { data: "Barcode", "name": "條碼號", "autoWidth": true, "className": "dt-body-center" },
@@ -924,4 +923,6 @@ function EnableBarcode(boolean) {
     $('#PaperRollBarcode').attr('disabled', boolean);
     $('#FlatBarcode').attr('disabled', boolean);
     $("#BtnImportRoll").attr('disabled', boolean);
+    $("#BtnPaperRollSaveBarcode").attr('disabled', boolean);
+    $("#BtnFlatSaveBarcode").attr('disabled', boolean);
 }

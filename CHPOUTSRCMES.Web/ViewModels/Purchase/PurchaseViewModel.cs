@@ -14,6 +14,7 @@ using System.Drawing.Imaging;
 using System.Web.Services.Protocols;
 using Microsoft.Graph;
 using NLog;
+using CHPOUTSRCMES.Web.DataModel.Entity.Purchase;
 
 namespace CHPOUTSRCMES.Web.ViewModels.Purchase
 {
@@ -26,13 +27,16 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
         [Display(Name = "儲位")]
         public string Locator { set; get; }
         [Display(Name = "建立時間")]
-        public string CreateDate { set; get; }
+        public DateTime CreateDate { set; get; }
         [Display(Name = "櫃號")]
         public string CabinetNumber { set; get; }
         [Display(Name = "倉庫")]
         public string Subinventory { set; get; }
         [Display(Name = "狀態")]
-        public string Status { set; get; }
+        public long Status { set; get; }
+
+
+        public long CtrHeaderId { set; get; }
 
         public List<DetailModel> Purchase { get; set; }
         private ILogger logger = LogManager.GetCurrentClassLogger();
@@ -67,25 +71,25 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
             }
         }
 
+        public CTR_HEADER_T GetDetail(long CtrHeaderId)
+        {
+            using (var context = new MesContext())
+            {
+                return new PurchaseUOW(context).GetDetail(CtrHeaderId);
+            }
+        }
+
         /// <summary>
         /// 取得紙捲表頭資料
         /// </summary>
         /// <param name="CONTAINER_NO"></param>
         /// <param name=""></param>
         /// <returns></returns>
-        public List<DetailModel.RollModel> GetRollHeader(string CONTAINER_NO, string Status)
+        public List<DetailModel.RollModel> GetRollHeader(long CtrHeaderId)
         {
             using (var context = new MesContext())
             {
-                //if (Status == PurchaseHeaderPending)
-                //{
-                //    return new PurchaseUOW(context).GetPaperRollHeaderList(CONTAINER_NO);
-                //}
-                //else
-                //{
-                //    return new PurchaseUOW(context).GetPaperRollHeaderHtList(CONTAINER_NO);
-                //}
-                return new PurchaseUOW(context).GetPaperRollHeaderList(CONTAINER_NO);
+                return new PurchaseUOW(context).GetPaperRollHeaderList(CtrHeaderId);
             }
         }
 
@@ -95,21 +99,12 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
         /// <param name="CONTAINER_NO"></param>
         /// <param name="Status"></param>
         /// <returns></returns>
-        public List<DetailModel.FlatModel> GetFlatHeader(string CONTAINER_NO, string Status)
+        public List<DetailModel.FlatModel> GetFlatHeader(long CtrHeaderId)
         {
 
             using (var context = new MesContext())
             {
-                //if (Status == PurchaseHeaderPending)
-                //{
-                //    return new PurchaseUOW(context).GetFlatHeaderList(CONTAINER_NO);
-                //}
-                //else
-                //{
-                //    return new PurchaseUOW(context).GetFlatHeaderHtList(CONTAINER_NO);
-                //}
-
-                return new PurchaseUOW(context).GetFlatHeaderList(CONTAINER_NO);
+                return new PurchaseUOW(context).GetFlatHeaderList(CtrHeaderId);
             }
         }
 
@@ -120,11 +115,11 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
         /// <param name="CONTAINER_NO"></param>
         /// <param name="PaperRollModel"></param>
         /// <returns></returns>
-        public ResultModel ImportPaperRollPickT(string CONTAINER_NO, List<DetailModel.RollDetailModel> PaperRollModel, string createby, string userName)
+        public ResultModel ImportPaperRollPickT(long CtrHeaderId ,List<DetailModel.RollDetailModel> PaperRollModel, string createby, string userName)
         {
             using (var context = new MesContext())
             {
-                return new PurchaseUOW(context).ImportPaperRollDetail(CONTAINER_NO, PaperRollModel, createby, userName);
+                return new PurchaseUOW(context).ImportPaperRollDetail(CtrHeaderId, PaperRollModel, createby, userName);
             }
         }
 
@@ -133,19 +128,11 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
         /// </summary>
         /// <param name="CONTAINER_NO"></param>
         /// <returns></returns>
-        public List<DetailModel.RollDetailModel> GetPaperRollPickT(string CONTAINER_NO, string Status)
+        public List<DetailModel.RollDetailModel> GetPaperRollPickT(long CtrHeaderId)
         {
             using (var context = new MesContext())
             {
-                //if (Status == PurchaseHeaderPending)
-                //{
-                //    return new PurchaseUOW(context).GetPaperRollDetailList(CONTAINER_NO);
-                //}
-                //else
-                //{
-                //    return new PurchaseUOW(context).GetHtPaperRollDetailList(CONTAINER_NO);
-                //}
-                return new PurchaseUOW(context).GetPaperRollDetailList(CONTAINER_NO);
+                return new PurchaseUOW(context).GetPaperRollDetailList(CtrHeaderId);
             }
         }
         /// <summary>
@@ -153,20 +140,12 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
         /// </summary>
         /// <param name="CONTAINER_NO"></param>
         /// <returns></returns>
-        public List<DetailModel.FlatDetailModel> GetFlatPickT(string CONTAINER_NO, string Status)
+        public List<DetailModel.FlatDetailModel> GetFlatPickT(long CtrHeaderId)
         {
 
             using (var context = new MesContext())
             {
-                //if (Status == PurchaseHeaderPending)
-                //{
-                //    return new PurchaseUOW(context).GetFlatDetailList(CONTAINER_NO);
-                //}
-                //else
-                //{
-                //    return new PurchaseUOW(context).GetHtFlatDetailList(CONTAINER_NO);
-                //}
-                return new PurchaseUOW(context).GetFlatDetailList(CONTAINER_NO);
+                return new PurchaseUOW(context).GetFlatDetailList(CtrHeaderId);
             }
 
         }
@@ -203,11 +182,11 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
-        public DetailModel.RollDetailModel GetPaperRollEdit(string Id)
+        public DetailModel.RollDetailModel GetPaperRollEdit(long CtrPickedId)
         {
             using (var context = new MesContext())
             {
-                return new PurchaseUOW(context).GetPaperRollEditView(Id);
+                return new PurchaseUOW(context).GetPaperRollEditView(CtrPickedId);
             }
         }
 
@@ -216,11 +195,11 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
-        public DetailModel.RollDetailModel GetPaperRollView(string Id)
+        public DetailModel.RollDetailModel GetPaperRollView(long CTR_PICKED_ID)
         {
             using (var context = new MesContext())
             {
-                return new PurchaseUOW(context).GetPaperRollEditView(Id);
+                return new PurchaseUOW(context).GetPaperRollEditView(CTR_PICKED_ID);
             }
         }
         /// <summary>
@@ -278,11 +257,11 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
         /// </summary>
         /// <param name="CONTAINER_NO"></param>
         /// <returns></returns>
-        public ResultModel ExcelDelete(string CONTAINER_NO)
+        public ResultModel ExcelDelete(long CtrHeaderId)
         {
             using (var context = new MesContext())
             {
-                return new PurchaseUOW(context).DeleteExcel(CONTAINER_NO);
+                return new PurchaseUOW(context).DeleteExcel(CtrHeaderId);
             }
         }
 
@@ -292,11 +271,11 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
-        public DetailModel.FlatDetailModel GetFlatEdit(string Id)
+        public DetailModel.FlatDetailModel GetFlatEdit(long CtrPickedId)
         {
             using (var context = new MesContext())
             {
-                return new PurchaseUOW(context).GetFlatEditView(Id);
+                return new PurchaseUOW(context).GetFlatEditView(CtrPickedId);
             }
         }
 
@@ -305,11 +284,11 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
-        public DetailModel.FlatDetailModel GetFlatView(string Id)
+        public DetailModel.FlatDetailModel GetFlatView(long CtrPickedId)
         {
             using (var context = new MesContext())
             {
-                return new PurchaseUOW(context).GetFlatEditView(Id);
+                return new PurchaseUOW(context).GetFlatEditView(CtrPickedId);
             }
         }
 
@@ -318,11 +297,11 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
         /// </summary>
         /// <param name="CabinetNumber"></param>
         /// <returns></returns>
-        public decimal GetFlatNumberTab(string CabinetNumber)
+        public decimal GetFlatNumberTab(long CtrHeaderId)
         {
             using (var context = new MesContext())
             {
-                return new PurchaseUOW(context).GetFlatNumberTab(CabinetNumber);
+                return new PurchaseUOW(context).GetFlatNumberTab(CtrHeaderId);
             }
         }
 
@@ -331,11 +310,11 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
         /// </summary>
         /// <param name="CabinetNumber"></param>
         /// <returns></returns>
-        public decimal GetPaperRollNumberTab(string CabinetNumber)
+        public decimal GetPaperRollNumberTab(long CtrHeaderId)
         {
             using (var context = new MesContext())
             {
-                return new PurchaseUOW(context).GetPaperRollNumberTab(CabinetNumber);
+                return new PurchaseUOW(context).GetPaperRollNumberTab(CtrHeaderId);
             }
 
         }
@@ -353,11 +332,11 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
         /// <summary>
         /// 已入庫完成更改表頭狀態
         /// </summary>
-        public ResultModel ChageHeaderStatus(string ContainerNo)
+        public ResultModel ChageHeaderStatus(long CtrHeaderId)
         {
             using (var context = new MesContext())
             {
-                return new PurchaseUOW(context).ChangeHeaderStatus(ContainerNo);
+                return new PurchaseUOW(context).ChangeHeaderStatus(CtrHeaderId);
             }
         }
 
@@ -463,7 +442,7 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
         /// 編輯取得儲位
         /// </summary>
         /// <returns></returns>
-        public List<SelectListItem> GetLocator(string PickId)
+        public List<SelectListItem> GetLocator(long PickId)
         {
             using (var context = new MesContext())
             {
@@ -517,7 +496,13 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
             }
         }
 
-        
+        public ResultDataModel<CTR_PICKED_T> SetSpinnerValue(long PickId)
+        {
+            using (var context = new MesContext())
+            {
+                return new PurchaseUOW(context).SetSpinnerValue(PickId);
+            }
+        }
 
         internal class RollDetailModelDTOrder
         {
@@ -544,34 +529,36 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
                     case 1:
                         return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Id) : models.OrderBy(x => x.Id);
                     case 2:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Subinventory) : models.OrderBy(x => x.Subinventory);
+                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.SubId) : models.OrderBy(x => x.SubId);
                     case 3:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Locator) : models.OrderBy(x => x.Locator);
+                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Subinventory) : models.OrderBy(x => x.Subinventory);
                     case 4:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Barcode) : models.OrderBy(x => x.Barcode);
+                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Locator) : models.OrderBy(x => x.Locator);
                     case 5:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Item_No) : models.OrderBy(x => x.Item_No);
+                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Barcode) : models.OrderBy(x => x.Barcode);
                     case 6:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.PaperType) : models.OrderBy(x => x.PaperType);
-                    case 7:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.BaseWeight) : models.OrderBy(x => x.BaseWeight);
-                    case 8:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Specification) : models.OrderBy(x => x.Specification);
-                    case 9:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.TheoreticalWeight) : models.OrderBy(x => x.TheoreticalWeight);
-                    case 10:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.TransactionQuantity) : models.OrderBy(x => x.TransactionQuantity);
-                    case 11:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.TransactionUom) : models.OrderBy(x => x.TransactionUom);
-                    case 12:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.PrimanyQuantity) : models.OrderBy(x => x.PrimanyQuantity);
-                    case 13:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.PrimaryUom) : models.OrderBy(x => x.PrimaryUom);
-                    case 14:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.LotNumber) : models.OrderBy(x => x.LotNumber);
-                    case 15:
                         return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Status) : models.OrderBy(x => x.Status);
+                    case 7:
+                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Item_No) : models.OrderBy(x => x.Item_No);
+                    case 8:
+                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.PaperType) : models.OrderBy(x => x.PaperType);
+                    case 9:
+                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.BaseWeight) : models.OrderBy(x => x.BaseWeight);
+                    case 10:
+                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Specification) : models.OrderBy(x => x.Specification);
+                    case 11:
+                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.TheoreticalWeight) : models.OrderBy(x => x.TheoreticalWeight);
+                    case 12:
+                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.TransactionQuantity) : models.OrderBy(x => x.TransactionQuantity);
+                    case 13:
+                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.TransactionUom) : models.OrderBy(x => x.TransactionUom);
+                    case 14:
+                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.PrimanyQuantity) : models.OrderBy(x => x.PrimanyQuantity);
+                    case 15:
+                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.PrimaryUom) : models.OrderBy(x => x.PrimaryUom);
                     case 16:
+                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.LotNumber) : models.OrderBy(x => x.LotNumber);
+                    case 17:
                         return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Remark) : models.OrderBy(x => x.Remark);
 
                 }
@@ -585,34 +572,36 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
                     case 1:
                         return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Id) : models.OrderBy(x => x.Id);
                     case 2:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Subinventory) : models.OrderBy(x => x.Subinventory);
+                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.SubId) : models.OrderBy(x => x.SubId);
                     case 3:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Locator) : models.OrderBy(x => x.Locator);
+                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Subinventory) : models.OrderBy(x => x.Subinventory);
                     case 4:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Barcode) : models.OrderBy(x => x.Barcode);
+                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Locator) : models.OrderBy(x => x.Locator);
                     case 5:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Item_No) : models.OrderBy(x => x.Item_No);
+                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Barcode) : models.OrderBy(x => x.Barcode);
                     case 6:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.PaperType) : models.OrderBy(x => x.PaperType);
-                    case 7:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.BaseWeight) : models.OrderBy(x => x.BaseWeight);
-                    case 8:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Specification) : models.OrderBy(x => x.Specification);
-                    case 9:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.TheoreticalWeight) : models.OrderBy(x => x.TheoreticalWeight);
-                    case 10:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.TransactionQuantity) : models.OrderBy(x => x.TransactionQuantity);
-                    case 11:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.TransactionUom) : models.OrderBy(x => x.TransactionUom);
-                    case 12:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.PrimanyQuantity) : models.OrderBy(x => x.PrimanyQuantity);
-                    case 13:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.PrimaryUom) : models.OrderBy(x => x.PrimaryUom);
-                    case 14:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.LotNumber) : models.OrderBy(x => x.LotNumber);
-                    case 15:
                         return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Status) : models.OrderBy(x => x.Status);
+                    case 7:
+                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Item_No) : models.OrderBy(x => x.Item_No);
+                    case 8:
+                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.PaperType) : models.OrderBy(x => x.PaperType);
+                    case 9:
+                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.BaseWeight) : models.OrderBy(x => x.BaseWeight);
+                    case 10:
+                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Specification) : models.OrderBy(x => x.Specification);
+                    case 11:
+                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.TheoreticalWeight) : models.OrderBy(x => x.TheoreticalWeight);
+                    case 12:
+                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.TransactionQuantity) : models.OrderBy(x => x.TransactionQuantity);
+                    case 13:
+                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.TransactionUom) : models.OrderBy(x => x.TransactionUom);
+                    case 14:
+                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.PrimanyQuantity) : models.OrderBy(x => x.PrimanyQuantity);
+                    case 15:
+                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.PrimaryUom) : models.OrderBy(x => x.PrimaryUom);
                     case 16:
+                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.LotNumber) : models.OrderBy(x => x.LotNumber);
+                    case 17:
                         return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Remark) : models.OrderBy(x => x.Remark);
 
                 }
@@ -675,27 +664,27 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
                     case 1:
                         return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Id) : models.OrderBy(x => x.Id);
                     case 2:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Subinventory) : models.OrderBy(x => x.Subinventory);
+                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.SubId) : models.OrderBy(x => x.SubId);
                     case 3:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Locator) : models.OrderBy(x => x.Locator);
+                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Subinventory) : models.OrderBy(x => x.Subinventory);
                     case 4:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Barcode) : models.OrderBy(x => x.Barcode);
+                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Locator) : models.OrderBy(x => x.Locator);
                     case 5:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Item_No) : models.OrderBy(x => x.Item_No);
+                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Barcode) : models.OrderBy(x => x.Barcode);
                     case 6:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.ReamWeight) : models.OrderBy(x => x.ReamWeight);
-                    case 7:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.PackingType) : models.OrderBy(x => x.PackingType);
-                    case 8:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Pieces_Qty) : models.OrderBy(x => x.Pieces_Qty);
-                    case 9:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Qty) : models.OrderBy(x => x.Qty);
-                    case 10:
                         return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Status) : models.OrderBy(x => x.Status);
+                    case 7:
+                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Item_No) : models.OrderBy(x => x.Item_No);
+                    case 8:
+                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.ReamWeight) : models.OrderBy(x => x.ReamWeight);
+                    case 9:
+                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.PackingType) : models.OrderBy(x => x.PackingType);
+                    case 10:
+                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Pieces_Qty) : models.OrderBy(x => x.Pieces_Qty);
                     case 11:
+                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Qty) : models.OrderBy(x => x.Qty);
+                    case 12:
                         return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Remark) : models.OrderBy(x => x.Remark);
-
-
                 }
             }
 
@@ -707,24 +696,26 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
                     case 1:
                         return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Id) : models.OrderBy(x => x.Id);
                     case 2:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Subinventory) : models.OrderBy(x => x.Subinventory);
+                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.SubId) : models.OrderBy(x => x.SubId);
                     case 3:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Locator) : models.OrderBy(x => x.Locator);
+                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Subinventory) : models.OrderBy(x => x.Subinventory);
                     case 4:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Barcode) : models.OrderBy(x => x.Barcode);
+                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Locator) : models.OrderBy(x => x.Locator);
                     case 5:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Item_No) : models.OrderBy(x => x.Item_No);
+                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Barcode) : models.OrderBy(x => x.Barcode);
                     case 6:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.ReamWeight) : models.OrderBy(x => x.ReamWeight);
-                    case 7:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.PackingType) : models.OrderBy(x => x.PackingType);
-                    case 8:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Pieces_Qty) : models.OrderBy(x => x.Pieces_Qty);
-                    case 9:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Qty) : models.OrderBy(x => x.Qty);
-                    case 10:
                         return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Status) : models.OrderBy(x => x.Status);
+                    case 7:
+                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Item_No) : models.OrderBy(x => x.Item_No);
+                    case 8:
+                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.ReamWeight) : models.OrderBy(x => x.ReamWeight);
+                    case 9:
+                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.PackingType) : models.OrderBy(x => x.PackingType);
+                    case 10:
+                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Pieces_Qty) : models.OrderBy(x => x.Pieces_Qty);
                     case 11:
+                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Qty) : models.OrderBy(x => x.Qty);
+                    case 12:
                         return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Remark) : models.OrderBy(x => x.Remark);
                 }
             }

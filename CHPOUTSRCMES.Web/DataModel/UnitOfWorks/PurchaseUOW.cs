@@ -291,7 +291,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                     ctrdetailT.SecondaryUom = org[i].SecondaryUom;
                     if (org[i].SecondaryQuantity > 0)
                     {
-                        ctrdetailT.ItemCategory = "平張";
+                        ctrdetailT.ItemCategory = "平版";
                     }
                     else
                     {
@@ -310,83 +310,107 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
 
         }
 
+        public CTR_HEADER_T GetDetail(long CtrHeaderId)
+        {
+            try
+            {
+                return ctrHeaderTRepositiory.Get(x => x.CtrHeaderId == CtrHeaderId).SingleOrDefault();
+            }
+            catch(Exception e)
+            {
+                logger.Error(e.Message);
+                return null;
+            }
+           
+        }
+
         /// <summary>
         /// 紙捲匯入pickt資料
         /// </summary>
         /// <param name="CONTAINER_NO"></param>
         /// <param name="PaperRollModel"></param>
         /// <returns></returns>
-        public ResultModel ImportPaperRollDetail(string CONTAINER_NO, List<DetailModel.RollDetailModel> PaperRollModel, string createby, string userName)
+        public ResultModel ImportPaperRollDetail(long CtrHeaderId, List<DetailModel.RollDetailModel> PaperRollModel, string createby, string userName)
         {
 
             CTR_PICKED_T cTR_PICKED_T = new CTR_PICKED_T();
-            try
+            using (var txn = this.Context.Database.BeginTransaction())
             {
-                var ctrpick = ctrPickedTRepositiory.Get(x => x.ItemCategory == "捲筒").ToList();
-                if (ctrpick.Count == PaperRollModel.Count)
+                try
                 {
-                    return new ResultModel(false, "資料已存在無法匯入");
-                }
-
-                using (var db = new MesContext())
-                {
-                    var ctrDetail = db.CTR_DETAIL_Ts.Join(
-                   db.CTR_HEADER_Ts,               //要Join的資料表
-                   c => c.CtrHeaderId,    //c代表db.CTR_DETAIL_Ts(c可以自己定義名稱)，這邊放主要資料表要串聯的key
-                   cd => cd.CtrHeaderId,  //cd代表db.CTR_HEADER_Ts(cd可以自己定義名稱)，這邊放次資料表要串聯的key
-                   (c, cd) => new         //將兩個自定義名稱用小括胡包起來，接著透過 『=>』 可以自己選擇要取用要用資料 
-                   {
-                       d = c,
-                       e = cd
-                   }
-                   ).Where(x => x.d.ItemCategory == "捲筒" && x.e.ContainerNo == CONTAINER_NO).ToList();
-
-                    for (int i = 0; i < ctrDetail.Count; i++)
+                    var ctrpick = ctrPickedTRepositiory.Get(x => x.ItemCategory == "捲筒").ToList();
+                    if (ctrpick.Count == PaperRollModel.Count)
                     {
-                        cTR_PICKED_T.CtrHeaderId = ctrDetail[i].d.CtrHeaderId;
-                        cTR_PICKED_T.CtrDetailId = ctrDetail[i].d.CtrDetailId;
-                        cTR_PICKED_T.StockId = null;
-                        cTR_PICKED_T.LocatorId = ctrDetail[i].d.LocatorId;
-                        cTR_PICKED_T.LocatorCode = ctrDetail[i].d.LocatorCode;
-                        cTR_PICKED_T.Barcode = GenerateBarcodes(ctrDetail[i].e.OrganizationId, ctrDetail[i].e.Subinventory, PaperRollModel.Count, userName).Data[i];
-                        cTR_PICKED_T.InventoryItemId = ctrDetail[i].d.InventoryItemId;
-                        cTR_PICKED_T.ShipItemNumber = PaperRollModel[i].Item_No;
-                        cTR_PICKED_T.PaperType = PaperRollModel[i].PaperType;
-                        cTR_PICKED_T.BasicWeight = PaperRollModel[i].BaseWeight;
-                        cTR_PICKED_T.ReamWeight = ctrDetail[i].d.ReamWeight;
-                        cTR_PICKED_T.RollReamWt = ctrDetail[i].d.RollReamWt;
-                        cTR_PICKED_T.Specification = PaperRollModel[i].Specification;
-                        cTR_PICKED_T.PackingType = ctrDetail[i].d.PackingType;
-                        cTR_PICKED_T.ShipMtQty = ctrDetail[i].d.ShipMtQty ?? 0;
-                        cTR_PICKED_T.TransactionQuantity = ctrDetail[i].d.TransactionQuantity;
-                        cTR_PICKED_T.TransactionUom = ctrDetail[i].d.TransactionUom;
-                        cTR_PICKED_T.PrimaryQuantity = PaperRollModel[i].PrimanyQuantity;
-                        cTR_PICKED_T.PrimaryUom = PaperRollModel[i].PrimaryUom;
-                        cTR_PICKED_T.SecondaryQuantity = ctrDetail[i].d.SecondaryQuantity;
-                        cTR_PICKED_T.SecondaryUom = ctrDetail[i].d.SecondaryUom;
-                        cTR_PICKED_T.LotNumber = PaperRollModel[i].LotNumber;
-                        cTR_PICKED_T.TheoryWeight = PaperRollModel[i].TheoreticalWeight;
-                        cTR_PICKED_T.ItemCategory = ctrDetail[i].d.ItemCategory;
-                        cTR_PICKED_T.Status = "待入庫";
-                        cTR_PICKED_T.ReasonCode = "";
-                        cTR_PICKED_T.ReasonDesc = "";
-                        cTR_PICKED_T.Note = "";
-                        cTR_PICKED_T.CreatedBy = createby;
-                        cTR_PICKED_T.CreationDate = DateTime.Now;
-                        cTR_PICKED_T.CreatedUserName = userName;
-                        ctrPickedTRepositiory.Create(cTR_PICKED_T, true);
-
+                        return new ResultModel(false, "資料已存在無法匯入");
                     }
+
+
+                    var ctrDetail = ctrDetailTRepositiory.GetAll().Join(
+                    ctrHeaderTRepositiory.GetAll(),               //要Join的資料表
+                    c => c.CtrHeaderId,    //c代表db.CTR_DETAIL_Ts(c可以自己定義名稱)，這邊放主要資料表要串聯的key
+                    cd => cd.CtrHeaderId,  //cd代表db.CTR_HEADER_Ts(cd可以自己定義名稱)，這邊放次資料表要串聯的key
+                    (c, cd) => new         //將兩個自定義名稱用小括胡包起來，接著透過 『=>』 可以自己選擇要取用要用資料 
+                   {
+                        d = c,
+                        e = cd
+                    }
+                    ).Where(x => x.d.ItemCategory == "捲筒" && x.e.CtrHeaderId == CtrHeaderId).ToList();
+                    var header = ctrHeaderTRepositiory.Get(x => x.CtrHeaderId == CtrHeaderId).SingleOrDefault();
+                    var barcode = GenerateBarcodes(header.OrganizationId, header.Subinventory, PaperRollModel.Count, userName);
+                    for (int j = 0; j < ctrDetail.Count; j++)
+                    {
+
+                        for (int i = 0; i < PaperRollModel.Count; i++)
+                        {
+                            if (ctrDetail[j].d.ShipItemNumber == PaperRollModel[i].Item_No)
+                            {
+                                cTR_PICKED_T.CtrHeaderId = ctrDetail[j].d.CtrHeaderId;
+                                cTR_PICKED_T.CtrDetailId = ctrDetail[j].d.CtrDetailId;
+                                cTR_PICKED_T.StockId = null;
+                                cTR_PICKED_T.LocatorId = ctrDetail[j].d.LocatorId;
+                                cTR_PICKED_T.LocatorCode = ctrDetail[j].d.LocatorCode;
+                                cTR_PICKED_T.Barcode = barcode.Data[i];
+                                cTR_PICKED_T.InventoryItemId = ctrDetail[j].d.InventoryItemId;
+                                cTR_PICKED_T.ShipItemNumber = PaperRollModel[i].Item_No;
+                                cTR_PICKED_T.PaperType = PaperRollModel[i].PaperType;
+                                cTR_PICKED_T.BasicWeight = PaperRollModel[i].BaseWeight;
+                                cTR_PICKED_T.ReamWeight = ctrDetail[j].d.ReamWeight;
+                                cTR_PICKED_T.RollReamWt = ctrDetail[j].d.RollReamWt;
+                                cTR_PICKED_T.Specification = PaperRollModel[i].Specification;
+                                cTR_PICKED_T.PackingType = ctrDetail[j].d.PackingType;
+                                cTR_PICKED_T.ShipMtQty = ctrDetail[j].d.ShipMtQty ?? 0;
+                                cTR_PICKED_T.TransactionQuantity = PaperRollModel[i].PrimanyQuantity;
+                                cTR_PICKED_T.TransactionUom = PaperRollModel[i].PrimaryUom;
+                                cTR_PICKED_T.PrimaryQuantity = PaperRollModel[i].PrimanyQuantity;
+                                cTR_PICKED_T.PrimaryUom = PaperRollModel[i].PrimaryUom;
+                                cTR_PICKED_T.SecondaryQuantity = ctrDetail[j].d.SecondaryQuantity;
+                                cTR_PICKED_T.SecondaryUom = ctrDetail[j].d.SecondaryUom;
+                                cTR_PICKED_T.LotNumber = PaperRollModel[i].LotNumber;
+                                cTR_PICKED_T.TheoryWeight = PaperRollModel[i].TheoreticalWeight;
+                                cTR_PICKED_T.ItemCategory = ctrDetail[j].d.ItemCategory;
+                                cTR_PICKED_T.Status = "待入庫";
+                                cTR_PICKED_T.ReasonCode = "";
+                                cTR_PICKED_T.ReasonDesc = "";
+                                cTR_PICKED_T.Note = "";
+                                cTR_PICKED_T.CreatedBy = createby;
+                                cTR_PICKED_T.CreationDate = DateTime.Now;
+                                cTR_PICKED_T.CreatedUserName = userName;
+                                ctrPickedTRepositiory.Create(cTR_PICKED_T, true);
+                            }
+                        }
+                    }
+                    txn.Commit();
                     return new ResultModel(true, "匯入成功");
+
+
                 }
-
+                catch (Exception e)
+                {
+                    txn.Rollback();
+                    logger.Error(e.Message);
+                    return new ResultModel(false, e.Message.ToString());
+                }
             }
-            catch (Exception e)
-            {
-                logger.Error(e.Message);
-                return new ResultModel(false, e.Message.ToString());
-            }
-
         }
 
         /// <summary>
@@ -394,7 +418,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
         /// </summary>
         /// <param name="CONTAINER_NO"></param>
         /// <returns></returns>
-        public ResultModel DeleteExcel(string CONTAINER_NO)
+        public ResultModel DeleteExcel(long CtrHeaderId)
         {
 
             try
@@ -409,9 +433,9 @@ INNER JOIN CTR_HEADER_T h
 INNER JOIN CTR_DETAIL_T d
 ON h.CTR_HEADER_ID = d.CTR_HEADER_ID
 ON d.CTR_DETAIL_ID = p.CTR_DETAIL_ID
-where h.CONTAINER_NO = @CONTAINER_NO
+where h.CTR_HEADER_ID = @CTR_HEADER_ID
 and d.ITEM_CATEGORY = N'捲筒'");
-                    mesContext.Database.ExecuteSqlCommand(query.ToString(), new SqlParameter("@CONTAINER_NO", CONTAINER_NO));
+                    mesContext.Database.ExecuteSqlCommand(query.ToString(), new SqlParameter("@CTR_HEADER_ID", CtrHeaderId));
                     return new ResultModel(true, "捲筒刪除成功");
                 }
 
@@ -425,11 +449,11 @@ and d.ITEM_CATEGORY = N'捲筒'");
         }
 
         /// <summary>
-        /// 平張明細資料
+        /// 平版明細資料
         /// </summary>
         public void generateFlatDetail()
         {
-            var ctrDetail = ctrDetailTRepositiory.Get(s => s.ItemCategory == "平張").ToList();
+            var ctrDetail = ctrDetailTRepositiory.Get(s => s.ItemCategory == "平版").ToList();
 
             CTR_PICKED_T cTR_PICKED_T = new CTR_PICKED_T();
             try
@@ -507,10 +531,7 @@ and d.ITEM_CATEGORY = N'捲筒'");
                         allDay = false,
                         url = objUrlHelper.Action("Detail", "Purchase", new
                         {
-                            CONTAINER_NO = header[i].ContainerNo,
-                            Start = ConvertDateTime.ConverYYYY(header[i].MvContainerDate),
-                            Status = header[i].Status,
-                            Subinventory = header[i].Subinventory
+                            CtrHeaderId = header[i].CtrHeaderId
                         }),
                         Status = header[i].Status
                     });
@@ -524,6 +545,7 @@ and d.ITEM_CATEGORY = N'捲筒'");
                         start = ConvertDateTime.ConverYYYY(header[i].MvContainerDate),
                         end = ConvertDateTime.ConverYYYY(header[i].MvContainerDate),
                         allDay = false,
+                        url = "",
                         Status = header[i].Status,
                         color = "#E60000"
                     });
@@ -538,11 +560,8 @@ and d.ITEM_CATEGORY = N'捲筒'");
                         end = ConvertDateTime.ConverYYYY(header[i].MvContainerDate),
                         allDay = false,
                         url = objUrlHelper.Action("Detail", "Purchase", new
-                        {
-                            CONTAINER_NO = header[i].ContainerNo,
-                            Start = ConvertDateTime.ConverYYYY(header[i].MvContainerDate),
-                            Status = header[i].Status,
-                            Subinventory = header[i].Subinventory
+                        { 
+                            CtrHeaderId = header[i].CtrHeaderId
                         }),
                         Status = header[i].Status,
                     });
@@ -557,13 +576,19 @@ and d.ITEM_CATEGORY = N'捲筒'");
         /// </summary>
         /// <param name="ContainerNo"></param>
         /// <returns></returns>
-        public ResultModel ChangeHeaderStatus(string ContainerNo)
+        public ResultModel ChangeHeaderStatus(long CtrHeaderId)
         {
             using (var txn = this.Context.Database.BeginTransaction())
             {
                 try
                 {
-                    var header = ctrHeaderTRepositiory.Get(x => x.ContainerNo == ContainerNo).ToList();
+
+                    var pick = ctrPickedTRepositiory.Get(x => x.CtrHeaderId == CtrHeaderId && x.Status == "待入庫").ToList();
+                    if(pick.Count > 0)
+                    {
+                        return new ResultModel(false, "有條碼尚未入庫");
+                    }
+                    var header = ctrHeaderTRepositiory.Get(x => x.CtrHeaderId == CtrHeaderId).ToList();
                     if (header != null)
                     {
                         for (int i = 0; i < header.Count; i++)
@@ -594,11 +619,11 @@ and d.ITEM_CATEGORY = N'捲筒'");
         }
 
         /// <summary>
-        /// 取得平張header資料
+        /// 取得平版header資料
         /// </summary>
         /// <param name="CONTAINER_NO"></param>
         /// <returns></returns>
-        public List<DetailModel.FlatModel> GetFlatHeaderList(string CONTAINER_NO)
+        public List<DetailModel.FlatModel> GetFlatHeaderList(long CtrHeaderId)
         {
             try
             {
@@ -624,10 +649,10 @@ d.PRIMARY_QUANTITY AS DeliveryQty,
 d.PRIMARY_UOM AS DeliveryUom
 FROM CTR_DETAIL_T d
 JOIN CTR_HEADER_T h ON h.CTR_HEADER_ID = d.CTR_HEADER_ID
-WHERE d.ITEM_CATEGORY = N'平張' and h.CONTAINER_NO  = @CONTAINER_NO");
+WHERE d.ITEM_CATEGORY = N'平版' and h.CTR_HEADER_ID = @CTR_HEADER_ID");
                     string commandText = string.Format(query.ToString());
                     commandText = string.Concat(commandText, " UNION ", commandText.Replace("CTR_DETAIL_T", "CTR_DETAIL_HT"));
-                    return mesContext.Database.SqlQuery<DetailModel.FlatModel>(commandText, new SqlParameter("@CONTAINER_NO", CONTAINER_NO)).ToList();
+                    return mesContext.Database.SqlQuery<DetailModel.FlatModel>(commandText, new SqlParameter("@CTR_HEADER_ID", CtrHeaderId)).ToList();
                 }
             }
             catch (Exception e)
@@ -642,7 +667,7 @@ WHERE d.ITEM_CATEGORY = N'平張' and h.CONTAINER_NO  = @CONTAINER_NO");
         /// </summary>
         /// <param name="CONTAINER_NO"></param>
         /// <returns></returns>
-        public List<DetailModel.RollModel> GetPaperRollHeaderList(string CONTAINER_NO)
+        public List<DetailModel.RollModel> GetPaperRollHeaderList(long CtrHeaderId)
         {
             try
             {
@@ -666,10 +691,10 @@ d.PRIMARY_QUANTITY AS PrimanyQuantity,
 d.PRIMARY_UOM AS PrimaryUom
 FROM CTR_DETAIL_T d
 JOIN CTR_HEADER_T h ON h.CTR_HEADER_ID = d.CTR_HEADER_ID
-WHERE d.ITEM_CATEGORY = N'捲筒' and h.CONTAINER_NO  = @CONTAINER_NO");
+WHERE d.ITEM_CATEGORY = N'捲筒' and h.CTR_HEADER_ID = @CTR_HEADER_ID");
                     string commandText = string.Format(query.ToString());
                     commandText = string.Concat(commandText, " UNION ", commandText.Replace("CTR_DETAIL_T", "CTR_DETAIL_HT"));
-                    return mesContext.Database.SqlQuery<DetailModel.RollModel>(commandText, new SqlParameter("@CONTAINER_NO", CONTAINER_NO)).ToList();
+                    return mesContext.Database.SqlQuery<DetailModel.RollModel>(commandText, new SqlParameter("@CTR_HEADER_ID", CtrHeaderId)).ToList();
                 }
             }
             catch (Exception e)
@@ -684,7 +709,7 @@ WHERE d.ITEM_CATEGORY = N'捲筒' and h.CONTAINER_NO  = @CONTAINER_NO");
         /// </summary>
         /// <param name="CONTAINER_NO"></param>
         /// <returns></returns>
-        public List<DetailModel.RollDetailModel> GetPaperRollDetailList(string CONTAINER_NO)
+        public List<DetailModel.RollDetailModel> GetPaperRollDetailList(long CtrHeaderId)
         {
             try
             {
@@ -713,10 +738,10 @@ p.REASON_DESC as Reason,
 p.NOTE as Remark
 FROM CTR_PICKED_T p
 LEFT JOIN CTR_HEADER_T h ON h.CTR_HEADER_ID = p.CTR_HEADER_ID
-WHERE p.ITEM_CATEGORY = N'捲筒' and h.CONTAINER_NO  = @CONTAINER_NO");
+WHERE p.ITEM_CATEGORY = N'捲筒' and h.CTR_HEADER_ID = @CTR_HEADER_ID");
                     string commandText = string.Format(query.ToString());
                     commandText = string.Concat(commandText, " UNION ", commandText.Replace("CTR_PICKED_T", "CTR_PICKED_HT"));
-                    return mesContext.Database.SqlQuery<DetailModel.RollDetailModel>(commandText, new SqlParameter("@CONTAINER_NO", CONTAINER_NO)).ToList();
+                    return mesContext.Database.SqlQuery<DetailModel.RollDetailModel>(commandText, new SqlParameter("@CTR_HEADER_ID", CtrHeaderId)).ToList();
                 }
             }
             catch (Exception e)
@@ -727,11 +752,11 @@ WHERE p.ITEM_CATEGORY = N'捲筒' and h.CONTAINER_NO  = @CONTAINER_NO");
         }
 
         /// <summary>
-        /// 取得平張明細資料
+        /// 取得平版明細資料
         /// </summary>
         /// <param name="CONTAINER_NO"></param>
         /// <returns></returns>
-        public List<DetailModel.FlatDetailModel> GetFlatDetailList(string CONTAINER_NO)
+        public List<DetailModel.FlatDetailModel> GetFlatDetailList(long CtrHeaderId)
         {
             try
             {
@@ -755,10 +780,10 @@ p.REASON_DESC as Reason,
 p.NOTE as Remark
 FROM CTR_PICKED_T p
 JOIN CTR_HEADER_T h ON h.CTR_HEADER_ID = p.CTR_HEADER_ID
-WHERE p.ITEM_CATEGORY = N'平張' and h.CONTAINER_NO  = @CONTAINER_NO");
+WHERE p.ITEM_CATEGORY = N'平版' and h.CTR_HEADER_ID = @CTR_HEADER_ID");
                     string commandText = string.Format(query.ToString());
                     commandText = string.Concat(commandText, " UNION ", commandText.Replace("CTR_PICKED_T", "CTR_PICKED_HT"));
-                    return mesContext.Database.SqlQuery<DetailModel.FlatDetailModel>(commandText, new SqlParameter("@CONTAINER_NO", CONTAINER_NO)).ToList();
+                    return mesContext.Database.SqlQuery<DetailModel.FlatDetailModel>(commandText, new SqlParameter("@CTR_HEADER_ID", CtrHeaderId)).ToList();
                 }
             }
             catch (Exception e)
@@ -773,7 +798,7 @@ WHERE p.ITEM_CATEGORY = N'平張' and h.CONTAINER_NO  = @CONTAINER_NO");
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public DetailModel.RollDetailModel GetPaperRollEditView(string id)
+        public DetailModel.RollDetailModel GetPaperRollEditView(long CTR_PICKED_ID)
         {
             try
             {
@@ -807,7 +832,7 @@ LEFT JOIN dbo.CTR_HEADER_T h ON h.CTR_HEADER_ID = p.CTR_HEADER_ID
 WHERE p.ITEM_CATEGORY = N'捲筒' and p.CTR_PICKED_ID  = @CTR_PICKED_ID");
                     string commandText = string.Format(query.ToString());
                     commandText = string.Concat(commandText, " UNION ", commandText.Replace("CTR_PICKED_T", "CTR_PICKED_HT"));
-                    return mesContext.Database.SqlQuery<DetailModel.RollDetailModel>(commandText, new SqlParameter("@CTR_PICKED_ID", id)).SingleOrDefault();
+                    return mesContext.Database.SqlQuery<DetailModel.RollDetailModel>(commandText, new SqlParameter("@CTR_PICKED_ID", CTR_PICKED_ID)).SingleOrDefault();
                 }
             }
             catch (Exception e)
@@ -871,7 +896,7 @@ WHERE p.ITEM_CATEGORY = N'捲筒' and p.CTR_PICKED_ID  = @CTR_PICKED_ID");
         }
 
         /// <summary>
-        /// 平張寫入原因儲位
+        /// 平版寫入原因儲位
         /// </summary>
         /// <param name="id"></param>
         /// <param name="Reason"></param>
@@ -970,7 +995,7 @@ WHERE p.ITEM_CATEGORY = N'捲筒' and p.CTR_PICKED_ID  = @CTR_PICKED_ID");
         }
 
         /// <summary>
-        /// 平張條碼已入庫
+        /// 平版條碼已入庫
         /// </summary>
         /// <param name="Barcode"></param>
         /// <returns></returns>
@@ -980,7 +1005,7 @@ WHERE p.ITEM_CATEGORY = N'捲筒' and p.CTR_PICKED_ID  = @CTR_PICKED_ID");
             {
                 try
                 {
-                    var ctrPickT = ctrPickedTRepositiory.Get(x => x.Barcode == Barcode && x.ItemCategory == "平張").SingleOrDefault();
+                    var ctrPickT = ctrPickedTRepositiory.Get(x => x.Barcode == Barcode && x.ItemCategory == "平版").SingleOrDefault();
                     if (ctrPickT != null)
                     {
                         if (ctrPickT.Status == "已入庫")
@@ -1015,11 +1040,11 @@ WHERE p.ITEM_CATEGORY = N'捲筒' and p.CTR_PICKED_ID  = @CTR_PICKED_ID");
         }
 
         /// <summary>
-        /// 取得編輯平張資料&&檢視資料
+        /// 取得編輯平版資料&&檢視資料
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public DetailModel.FlatDetailModel GetFlatEditView(string id)
+        public DetailModel.FlatDetailModel GetFlatEditView(long CtrPickedId)
         {
             try
             {
@@ -1046,10 +1071,10 @@ p.LAST_UPDATE_USER_NAME as CreatedUserName
 FROM CTR_PICKED_T p
 JOIN CTR_HEADER_T h ON h.CTR_HEADER_ID = p.CTR_HEADER_ID
 JOIN CTR_DETAIL_T D ON D.CTR_DETAIL_ID = P.CTR_DETAIL_ID
-WHERE p.ITEM_CATEGORY = N'平張' and p.CTR_PICKED_ID  = @CTR_PICKED_ID");
+WHERE p.ITEM_CATEGORY = N'平版' and p.CTR_PICKED_ID  = @CTR_PICKED_ID");
                     string commandText = string.Format(query.ToString());
                     commandText = string.Concat(commandText, " UNION ", commandText.Replace("CTR_PICKED_T", "CTR_PICKED_HT"));
-                    return mesContext.Database.SqlQuery<DetailModel.FlatDetailModel>(commandText, new SqlParameter("@CTR_PICKED_ID", id)).SingleOrDefault();
+                    return mesContext.Database.SqlQuery<DetailModel.FlatDetailModel>(commandText, new SqlParameter("@CTR_PICKED_ID", CtrPickedId)).SingleOrDefault();
                 }
             }
             catch (Exception e)
@@ -1060,11 +1085,11 @@ WHERE p.ITEM_CATEGORY = N'平張' and p.CTR_PICKED_ID  = @CTR_PICKED_ID");
         }
 
         /// <summary>
-        /// 取得頁籤平張數量
+        /// 取得頁籤平版數量
         /// </summary>
         /// <param name="CONTAINER_NO"></param>
         /// <returns></returns>
-        public decimal GetFlatNumberTab(string CONTAINER_NO)
+        public decimal GetFlatNumberTab(long CtrHeaderId)
         {
             try
             {
@@ -1078,11 +1103,11 @@ sum(d1.ROLL_REAM_QTY)-
 count(p.CTR_PICKED_ID)
 FROM CTR_PICKED_T p
 JOIN CTR_HEADER_T h2 ON h2.CTR_HEADER_ID = p.CTR_HEADER_ID
-WHERE p.ITEM_CATEGORY = N'平張' and h2.CONTAINER_NO  = @CONTAINER_NO and p.STATUS = N'已入庫')
+WHERE p.ITEM_CATEGORY = N'平版' and h2.CTR_HEADER_ID  = @CTR_HEADER_ID and p.STATUS = N'已入庫')
 FROM CTR_DETAIL_T d1
 JOIN CTR_HEADER_T h1 ON h1.CTR_HEADER_ID = d1.CTR_HEADER_ID
-WHERE d1.ITEM_CATEGORY = N'平張' and h1.CONTAINER_NO  = @CONTAINER_NO");
-                    return mesContext.Database.SqlQuery<decimal>(query.ToString(), new SqlParameter("@CONTAINER_NO", CONTAINER_NO)).SingleOrDefault();
+WHERE d1.ITEM_CATEGORY = N'平版' and h1.CTR_HEADER_ID  = @CTR_HEADER_ID");
+                    return mesContext.Database.SqlQuery<decimal>(query.ToString(), new SqlParameter("@CTR_HEADER_ID", CtrHeaderId)).SingleOrDefault();
                 }
 
             }
@@ -1098,7 +1123,7 @@ WHERE d1.ITEM_CATEGORY = N'平張' and h1.CONTAINER_NO  = @CONTAINER_NO");
         /// </summary>
         /// <param name="CONTAINER_NO"></param>
         /// <returns></returns>
-        public decimal GetPaperRollNumberTab(string CONTAINER_NO)
+        public decimal GetPaperRollNumberTab(long CtrHeaderId)
         {
             try
             {
@@ -1112,11 +1137,11 @@ sum(d1.ROLL_REAM_QTY)-
 count(p.CTR_PICKED_ID)
 FROM CTR_PICKED_T p
 JOIN CTR_HEADER_T h2 ON h2.CTR_HEADER_ID = p.CTR_HEADER_ID
-WHERE p.ITEM_CATEGORY = N'捲筒' and h2.CONTAINER_NO  = @CONTAINER_NO and p.STATUS = N'已入庫')
+WHERE p.ITEM_CATEGORY = N'捲筒' and h2.CTR_HEADER_ID  = @CTR_HEADER_ID and p.STATUS = N'已入庫')
 FROM CTR_DETAIL_T d1
 JOIN CTR_HEADER_T h1 ON h1.CTR_HEADER_ID = d1.CTR_HEADER_ID
-WHERE d1.ITEM_CATEGORY = N'捲筒' and h1.CONTAINER_NO  = @CONTAINER_NO");
-                    return mesContext.Database.SqlQuery<decimal>(query.ToString(), new SqlParameter("@CONTAINER_NO", CONTAINER_NO)).SingleOrDefault();
+WHERE d1.ITEM_CATEGORY = N'捲筒' and h1.CTR_HEADER_ID  = @CTR_HEADER_ID");
+                    return mesContext.Database.SqlQuery<decimal>(query.ToString(), new SqlParameter("@CTR_HEADER_ID", CtrHeaderId)).SingleOrDefault();
                 }
 
             }
@@ -1359,7 +1384,8 @@ delete CTR_DETAIL_T where CTR_HEADER_ID = @CTR_HEADER_ID");
         {
             StringBuilder query = new StringBuilder();
             query.Append(
-            @"INSERT INTO [STOCK_T]
+            @"
+INSERT INTO [STOCK_T]
 ([ORGANIZATION_ID],[ORGANIZATION_CODE] ,[SUBINVENTORY_CODE] ,[LOCATOR_ID],[LOCATOR_SEGMENTS]
 ,[INVENTORY_ITEM_ID] ,[ITEM_NUMBER] ,[ITEM_DESCRIPTION] ,[ITEM_CATEGORY] ,[PAPER_TYPE]
 ,[BASIC_WEIGHT],[REAM_WEIGHT],[ROLL_REAM_WT],[SPECIFICATION] ,[PACKING_TYPE]
@@ -1369,8 +1395,8 @@ delete CTR_DETAIL_T where CTR_HEADER_ID = @CTR_HEADER_ID");
 ,[CREATED_BY],[CREATION_DATE] ,[LAST_UPDATE_BY],[LAST_UPDATE_DATE])
 SELECT 
 H.ORGANIZATION_ID,H.ORGANIZATION_CODE,H.SUBINVENTORY,P.LOCATOR_ID,P.LOCATOR_CODE,
-P.INVENTORY_ITEM_ID,P.SHIP_ITEM_NUMBER,'',P.ITEM_CATEGORY,P.PAPER_TYPE,
-P.BASIC_WEIGHT,P.REAM_WEIGHT,P.ROLL_REAM_WT,P.SPECIFICATION,P.PACKING_TYPE,
+P.INVENTORY_ITEM_ID,P.SHIP_ITEM_NUMBER,IT.ITEM_DESC_TCH,P.ITEM_CATEGORY,P.PAPER_TYPE,
+P.BASIC_WEIGHT,ISNULL(P.REAM_WEIGHT, '') ,P.ROLL_REAM_WT,P.SPECIFICATION,P.PACKING_TYPE,
 '',P.LOT_NUMBER,P.BARCODE,P.PRIMARY_UOM,P.PRIMARY_QUANTITY,
 P.PRIMARY_QUANTITY,0,P.SECONDARY_UOM,P.SECONDARY_QUANTITY,P.SECONDARY_QUANTITY,
 0,P.REASON_CODE,P.REASON_DESC,P.NOTE,P.STATUS,
@@ -1378,6 +1404,7 @@ P.CREATED_BY,GETDATE(),null,null
 FROM CTR_PICKED_T P
 left join CTR_HEADER_T H on H.CTR_HEADER_ID = P.CTR_HEADER_ID
 left join CTR_DETAIL_T D on D.CTR_DETAIL_ID = P.CTR_DETAIL_ID
+left join ITEMS_T IT ON IT.INVENTORY_ITEM_ID = P.INVENTORY_ITEM_ID
 where P.CTR_HEADER_ID = @CTR_HEADER_ID
 UPDATE P
 SET P.STOCK_ID = S.STOCK_ID
@@ -1385,7 +1412,8 @@ FROM CTR_PICKED_T P
 JOIN STOCK_T S ON P.BARCODE = S.BARCODE
 JOIN CTR_DETAIL_T D on D.CTR_DETAIL_ID = P.CTR_DETAIL_ID
 JOIN CTR_HEADER_T H on H.CTR_HEADER_ID = P.CTR_HEADER_ID
-WHERE P.CTR_HEADER_ID = @CTR_HEADER_ID");
+WHERE P.CTR_HEADER_ID = @CTR_HEADER_ID
+");
             Context.Database.ExecuteSqlCommand(query.ToString(), new SqlParameter("@CTR_HEADER_ID", CTR_HEADER_ID));
         }
 
@@ -1422,7 +1450,7 @@ WHERE D.CTR_HEADER_ID = @CTR_HEADER_ID");
         }
 
         /// <summary>
-        /// 列印平張標籤
+        /// 列印平版標籤
         /// </summary>
         /// <param name="PICKED_IDs"></param>
         /// <param name="userName"></param>
@@ -1453,7 +1481,7 @@ CAST(PT.SECONDARY_UOM AS nvarchar) AS Unit
 FROM [CTR_PICKED_T] PT
 join CTR_HEADER_T CT ON CT.CTR_HEADER_ID = PT.CTR_HEADER_ID
 join ITEMS_T tt on tt.INVENTORY_ITEM_ID = PT.INVENTORY_ITEM_ID
-WHERE PT.ITEM_CATEGORY = N'平張'
+WHERE PT.ITEM_CATEGORY = N'平版'
 AND pt.CTR_PICKED_ID = @CTR_PICKED_ID
 ");
                     sqlParameterList.Add(new SqlParameter("@userName", userName));
@@ -1552,8 +1580,8 @@ SELECT
 SUBINVENTORY_CODE as Text,
 SUBINVENTORY_CODE as Value
 FROM SUBINVENTORY_T
-WHERE OSP_FLAG != 'Y'
-AND CONTROL_FLAG != 'D'
+--WHERE OSP_FLAG != 'Y'
+WHERE CONTROL_FLAG != 'D'
 AND LOCATOR_TYPE != '1'
 ");
                     if (ORGANIZATION_ID != "*")
@@ -1587,7 +1615,7 @@ AND LOCATOR_TYPE != '1'
         /// <param name="ORGANIZATION_ID"></param>
         /// <param name="PickId"></param>
         /// <returns></returns>
-        public List<SelectListItem> GetLocator(string ORGANIZATION_ID, string PickId)
+        public List<SelectListItem> GetLocator(string ORGANIZATION_ID, long PickId)
         {
             try
             {
@@ -1653,6 +1681,26 @@ join SUBINVENTORY_T st on st.SUBINVENTORY_CODE = lt.SUBINVENTORY_CODE
                 return new List<SelectListItem>();
             }
         }
+
+        /// <summary>
+        /// 設定原因
+        /// </summary>
+        /// <param name="PickId"></param>
+        /// <returns></returns>
+        public ResultDataModel<CTR_PICKED_T> SetSpinnerValue(long PickId)
+        {
+            try
+            {
+                var pick = ctrPickedTRepositiory.Get(x => x.CtrPickedId == PickId).SingleOrDefault();
+                return new ResultDataModel<CTR_PICKED_T>(true, "成功", pick);
+            }
+            catch (Exception e)
+            {
+                logger.Error(LogUtilities.BuildExceptionMessage(e));
+                return new ResultDataModel<CTR_PICKED_T>(false, "取得原因失敗:" + e.Message, null);
+            }
+        }
+
 
         public class PurchaseStatusCode
         {
