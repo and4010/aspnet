@@ -1596,23 +1596,10 @@ function OutBoundInit() {
     }
 
     function OutBoundSaveTransfer() {
-        var TransactionType = GetTransactionType();
-        //var Number = $('#AutoCompleteShipmentNumber').val();
-        var Number = $('#ddlShipmentNumber').val();
-        if (Number == "") {
-            //swal.fire('請輸入編號');
-            //event.preventDefault();
-            //return false;
-            if (TransactionType == "出貨編號") {
-                swal.fire('請輸入出貨編號');
-                event.preventDefault();
-                return false;
-            }
-            if (TransactionType == "移轉編號") {
-                swal.fire('請輸入移轉編號');
-                event.preventDefault();
-                return false;
-            }
+        if (getShipmentNumber() == "新增編號") {
+            swal.fire('請選擇出貨編號');
+            event.preventDefault();
+            return;
         }
 
         swal.fire({
@@ -1629,8 +1616,7 @@ function OutBoundInit() {
                     url: "/StockTransaction/OutBoundSaveTransfer",
                     type: "post",
                     data: {
-                        TransactionType: TransactionType,
-                        Number: Number
+                        transferHeaderId: getTransferHeaderId()
                     },
                     success: function (data) {
                         if (data.status) {

@@ -1293,7 +1293,12 @@
     }
 
     function InBoundSaveTransfer() {
-
+        if (getShipmentNumber() == "新增編號") {
+            swal.fire('請選擇出貨編號');
+            event.preventDefault();
+            return;
+        }
+        
         swal.fire({
             title: "入庫存檔",
             text: "確定入庫存檔嗎?",
@@ -1321,7 +1326,7 @@
                         }
                     },
                     error: function () {
-                        swal.fire('出庫存檔失敗');
+                        swal.fire('入庫存檔失敗');
                     },
                     complete: function (data) {
 
