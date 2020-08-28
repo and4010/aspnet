@@ -97,7 +97,7 @@
                 </div>
             </div>
         </div>*@
-</div>
+@*</div>*@
 @*<div id="SUBINVENTORY_TRANSFER_NUMBER_AREA">
         <div class="row row-std form-inline">
             <div class="form-group col col-md-6">
@@ -229,8 +229,9 @@
 
     <div class="col-md-12">
         <div class="col col-md-2 input-lg form-group">
-            @Html.LabelFor(model => model.StockTransferDT_ID, new { @class = "input-lg" })
-            <span id="StockTransferDT_ID">@Html.DisplayFor(model => model.StockTransferDT_ID)</span>
+            <span id="DetailId" style="display: none;"></span>
+            @Html.LabelFor(model => model.DetailSubId, new { @class = "input-lg" })
+            <span id="DetailSubId">@Html.DisplayFor(model => model.DetailSubId)</span>
         </div>
         <div class="col col-md-4 input-lg form-group">
             @Html.LabelFor(model => model.SelectedItemNumber2, new { @class = "input-lg" })
@@ -259,7 +260,7 @@
                 @Html.TextBoxFor(model => model.InputReamQty, new { @class = "form-control", placeholder = "請輸入令數", id = "txtSECONDARY_QUANTITY", autocomplete = "off" })
             </div>
 
-            <input type="button" id="btnSaveBarcode" value="新增" class="btn btn-danger" />
+            <input type="button" id="btnPickBarcode" value="新增" class="btn btn-danger" />
 
         </form>
     </div>

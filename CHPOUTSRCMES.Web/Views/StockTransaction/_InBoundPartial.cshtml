@@ -40,7 +40,7 @@
         <input type="button" id="btnImportFlatFile" value="平張匯入" class="btn btn-primary" />
         <input type="button" id="btnExampleDownload" value="範例下載" class="btn btn-primary" />
         <input type="button" id="btnPrintPick" value="列印入庫單" class="btn btn-primary" />
-        <input type="button" id="btnMultiLable" value="列印全部標籤" class="btn btn-primary" />
+        <input type="button" id="btnMultiLable" value="列印全部標籤" class="btn btn-primary" style="display: none;" />
     </div>
 
 </div>
@@ -72,7 +72,7 @@
                 </div>
 
                 <div class="row row-std col-md-12 form-inline">
-                    <div id="REAM_INPUT_AREA" class="input-group col-md-3">
+                    <div id="REAM_INPUT_AREA" class="input-group col-md-3" style="display: none;">
                         <span class="input-group-addon" style="width: 53px;">每棧令數</span>
                         <input class="form-control" type="text" id="txtRollReamWT" placeholder="請輸入令數" />
                     </div>
@@ -101,6 +101,10 @@
 
 <div class="row row-std col-md-12">
     <input type="button" id="btnSaveTransfer" value="入庫存檔" class="btn btn-danger" />
+    @if (Model.Advanced)
+    {
+        <input type="button" id="btnSaveTransfer2" value="直接入庫存檔" class="btn btn-danger" />
+    }
 </div>
 
 <div class="row row-sd">

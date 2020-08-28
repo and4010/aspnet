@@ -64,8 +64,9 @@ namespace CHPOUTSRCMES.Web.ViewModels.StockTransaction
         [Display(Name = "捲號")]
         public string LOT_NUMBER { get; set; }
         
+        public bool Advanced { get; set; }
 
-     
+
 
 
     }

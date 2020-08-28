@@ -14,6 +14,7 @@ using CHPOUTSRCMES.Web.DataModel;
 using CHPOUTSRCMES.Web.DataModel.UnitOfWorks;
 using Microsoft.AspNet.Identity;
 using CHPOUTSRCMES.Web.DataModel.Entiy.Transfer;
+using System.Security.Claims;
 
 namespace CHPOUTSRCMES.Web.Controllers
 {
@@ -51,8 +52,14 @@ namespace CHPOUTSRCMES.Web.Controllers
         [HttpPost]
         public ActionResult MergeBarcodeDialog(List<long> IDs)
         {
-            MergeBarcodeViewModel vieModel = stockTransferBarcodeData.GetMergeBarcodeViewModel(IDs);
-            return PartialView("_MergeBarcodePartial", vieModel);
+            using (var context = new MesContext())
+            {
+                using (TransferUOW uow = new TransferUOW(context))
+                {
+                    MergeBarcodeViewModel vieModel = stockTransferData.GetMergeBarcodeViewModel(uow, IDs);
+                    return PartialView("_MergeBarcodePartial", vieModel);
+                }
+            }
         }
 
 
@@ -89,6 +96,11 @@ namespace CHPOUTSRCMES.Web.Controllers
                     //取得使用者帳號
                     //var name = this.User.Identity.GetUserName();
                     //StockData.addDefault();
+                    //取得使用者角色
+                    var userIdentity = (ClaimsIdentity)User.Identity;
+                    var claims = userIdentity.Claims;
+                    var roleClaimType = userIdentity.RoleClaimType;
+                    var roles = claims.Where(c => c.Type == ClaimTypes.Role).ToList();
 
                     if (TransferType == TransferUOW.TransferType.Outbound)
                     {
@@ -96,7 +108,7 @@ namespace CHPOUTSRCMES.Web.Controllers
                     }
                     else if (TransferType == TransferUOW.TransferType.InBound)
                     {
-                        return PartialView("_InBoundPartial", stockTransferData.GetInBoundViewModel(uow, id));
+                        return PartialView("_InBoundPartial", stockTransferData.GetInBoundViewModel(uow, roles, id));
                     }
                     else
                     {
@@ -119,7 +131,7 @@ namespace CHPOUTSRCMES.Web.Controllers
                 }
             }
         }
-
+        
         [HttpPost, ActionName("GetInboundShipmentNumberList")]
         public JsonResult GetInboundShipmentNumberList(long outOrganizationId, string outSubinventoryCode, long inOrganizationId, string inSubinventoryCode)
         {
@@ -127,24 +139,19 @@ namespace CHPOUTSRCMES.Web.Controllers
             {
                 using (TransferUOW uow = new TransferUOW(context))
                 {
-
                     return new JsonResult { Data = stockTransferData.GetInboundShipmentNumberList(uow, outOrganizationId, outSubinventoryCode, inOrganizationId, inSubinventoryCode) };
-
                 }
             }
         }
 
-        [HttpPost, ActionName("GetShipmentNumberList")]
-        public JsonResult GetShipmentNumberList(string transferType, long outOrganizationId, string outSubinventoryCode, long inOrganizationId, string inSubinventoryCode)
+        [HttpPost, ActionName("GetOutboundShipmentNumberList")]
+        public JsonResult GetOutboundShipmentNumberList(long outOrganizationId, string outSubinventoryCode, long inOrganizationId, string inSubinventoryCode)
         {
             using (var context = new MesContext())
             {
                 using (TransferUOW uow = new TransferUOW(context))
                 {
-
-                    return new JsonResult { Data = stockTransferData.GetInboundShipmentNumberList(uow, outOrganizationId, outSubinventoryCode, inOrganizationId, inSubinventoryCode) };
-                    //return Json(items, JsonRequestBehavior.AllowGet);
-                    //return new JsonResult { Data = new { transferCatalog = transferCatalog, items = items } };
+                    return new JsonResult { Data = stockTransferData.GetOutboundShipmentNumberList(uow, outOrganizationId, outSubinventoryCode, inOrganizationId, inSubinventoryCode) };
                 }
             }
         }
@@ -234,7 +241,13 @@ namespace CHPOUTSRCMES.Web.Controllers
         [HttpPost, ActionName("GetMergeBarocdeStatus")]
         public JsonResult GetMergeBarocdeStatus(string MergeBarocde, List<long> waitMergeIDs)
         {
-            return stockTransferBarcodeData.GetMergeBarocdeStatus(MergeBarocde, waitMergeIDs);
+            using (var context = new MesContext())
+            {
+                using (TransferUOW uow = new TransferUOW(context))
+                {
+                    return stockTransferData.GetMergeBarocdeStatus(uow, MergeBarocde, waitMergeIDs);
+                }
+            }
         }
 
         [HttpPost, ActionName("GetStockItemData")]
@@ -324,47 +337,43 @@ namespace CHPOUTSRCMES.Web.Controllers
             return Json(new { draw = data.Draw, recordsFiltered = filteredCount, recordsTotal = totalCount, data = model }, JsonRequestBehavior.AllowGet);
         }
 
-        [HttpPost, ActionName("GetStockTransferDT")]
-        public JsonResult GetStockTransferDT(DataTableAjaxPostViewModel data, string TransactionType, string OutSubinventoryCode, string OutLocator, string InSubinventoryCode, string InLocator, string Number, string NumberStatus)
+        [HttpPost, ActionName("GetOutboundStockTransferDT")]
+        public JsonResult GetOutboundStockTransferDT(DataTableAjaxPostViewModel data, long transferHeaderId, string numberStatus)
         {
-            List<StockTransferDT> model;
-            if (TransactionType == "出貨編號" && !string.IsNullOrEmpty(Number) && NumberStatus != "非MES入庫手動新增" && NumberStatus != "非MES入庫檔案匯入" && NumberStatus != "非MES已入庫")
+
+            using (var context = new MesContext())
             {
-                model = stockTransferData.GetModelFromShipmentNumber(OutSubinventoryCode, OutLocator, InSubinventoryCode, InLocator, Number);
-            }
-            else if (TransactionType == "移轉編號" && !string.IsNullOrEmpty(Number) && NumberStatus != "非MES入庫手動新增" && NumberStatus != "非MES入庫檔案匯入" && NumberStatus != "非MES已入庫")
-            {
-                model = stockTransferData.GetModelFromSubinventoryTransferNumber(OutSubinventoryCode, OutLocator, InSubinventoryCode, InLocator, Number);
-            }
-            else
-            {
-                model = new List<StockTransferDT>();
-            }
+                using (TransferUOW uow = new TransferUOW(context))
+                {
+
+                    List<StockTransferDT> model = stockTransferData.GetOutboundDetailData(uow, transferHeaderId, numberStatus);
 
             var totalCount = model.Count;
-            string search = data.Search.Value;
+                    string search = data.Search.Value;
 
-            if (!string.IsNullOrEmpty(search) && !string.IsNullOrWhiteSpace(search))
-            {
-                // Apply search   
-                model = model.Where(p => (p.ID.ToString().ToLower().Contains(search.ToLower()))
-                    || (!string.IsNullOrEmpty(p.ITEM_NUMBER) && p.ITEM_NUMBER.ToLower().Contains(search.ToLower()))
-                    || (!string.IsNullOrEmpty(p.PACKING_TYPE) && p.PACKING_TYPE.ToLower().Contains(search.ToLower()))
-                    || (p.ROLL_REAM_QTY.ToString().ToLower().Contains(search.ToLower()))
-                    || (p.REQUESTED_QUANTITY.ToString().ToLower().Contains(search.ToLower()))
-                    || (p.PICKED_QUANTITY.ToString().ToLower().Contains(search.ToLower()))
-                    || (!string.IsNullOrEmpty(p.REQUESTED_QUANTITY_UOM) && p.REQUESTED_QUANTITY_UOM.ToLower().Contains(search.ToLower()))
-                    || (p.REQUESTED_QUANTITY2.ToString().ToLower().Contains(search.ToLower()))
-                    || (p.PICKED_QUANTITY2.ToString().ToLower().Contains(search.ToLower()))
-                    || (!string.IsNullOrEmpty(p.SRC_REQUESTED_QUANTITY_UOM2) && p.SRC_REQUESTED_QUANTITY_UOM2.ToLower().Contains(search.ToLower()))
-                    ).ToList();
+                    if (!string.IsNullOrEmpty(search) && !string.IsNullOrWhiteSpace(search))
+                    {
+                        // Apply search   
+                        model = model.Where(p => (p.ID.ToString().ToLower().Contains(search.ToLower()))
+                            || (!string.IsNullOrEmpty(p.ITEM_NUMBER) && p.ITEM_NUMBER.ToLower().Contains(search.ToLower()))
+                            || (!string.IsNullOrEmpty(p.PACKING_TYPE) && p.PACKING_TYPE.ToLower().Contains(search.ToLower()))
+                            || (p.ROLL_REAM_QTY.ToString().ToLower().Contains(search.ToLower()))
+                            || (p.REQUESTED_QUANTITY.ToString().ToLower().Contains(search.ToLower()))
+                            || (p.PICKED_QUANTITY.ToString().ToLower().Contains(search.ToLower()))
+                            || (!string.IsNullOrEmpty(p.REQUESTED_QUANTITY_UOM) && p.REQUESTED_QUANTITY_UOM.ToLower().Contains(search.ToLower()))
+                            || (p.REQUESTED_QUANTITY2.ToString().ToLower().Contains(search.ToLower()))
+                            || (p.PICKED_QUANTITY2.ToString().ToLower().Contains(search.ToLower()))
+                            || (!string.IsNullOrEmpty(p.REQUESTED_QUANTITY_UOM2) && p.REQUESTED_QUANTITY_UOM2.ToLower().Contains(search.ToLower()))
+                            ).ToList();
+                    }
+
+                    var filteredCount = model.Count;
+                    model = StockTransferDTOrder.Order(data.Order, model).ToList();
+                    model = model.Skip(data.Start).Take(data.Length).ToList();
+
+                    return Json(new { draw = data.Draw, recordsFiltered = filteredCount, recordsTotal = totalCount, data = model }, JsonRequestBehavior.AllowGet);
+                }
             }
-
-            var filteredCount = model.Count;
-            model = StockTransferDTOrder.Order(data.Order, model).ToList();
-            model = model.Skip(data.Start).Take(data.Length).ToList();
-
-            return Json(new { draw = data.Draw, recordsFiltered = filteredCount, recordsTotal = totalCount, data = model }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost, ActionName("GetShipmentNumberData")]
@@ -382,7 +391,7 @@ namespace CHPOUTSRCMES.Web.Controllers
         }
 
         [HttpPost]
-        public ActionResult InboundEditor(InboundEditor inboundEditor)
+        public ActionResult InboundPickEditor(PickEditor pickEditor)
         {
             using (var context = new MesContext())
             {
@@ -392,7 +401,41 @@ namespace CHPOUTSRCMES.Web.Controllers
                     var id = this.User.Identity.GetUserId();
                     //取得使用者帳號
                     var name = this.User.Identity.GetUserName();
-                    var result = stockTransferData.InboundEditor(uow, inboundEditor, id, name);
+                    var result = stockTransferData.InboundPickEditor(uow, pickEditor, id, name);
+                    return new JsonResult { Data = new { status = result.Success, result = result.Msg } };
+                }
+            }
+        }
+
+        [HttpPost]
+        public ActionResult OutboundDetailEditor(DetailEditor detailEditor)
+        {
+            using (var context = new MesContext())
+            {
+                using (TransferUOW uow = new TransferUOW(context))
+                {
+                    //取得使用者ID
+                    var id = this.User.Identity.GetUserId();
+                    //取得使用者帳號
+                    var name = this.User.Identity.GetUserName();
+                    var result = stockTransferData.OutboundDetailEditor(uow, detailEditor, id, name);
+                    return new JsonResult { Data = new { status = result.Success, result = result.Msg } };
+                }
+            }
+        }
+
+        [HttpPost]
+        public ActionResult OutboundPickEditor(PickEditor pickEditor)
+        {
+            using (var context = new MesContext())
+            {
+                using (TransferUOW uow = new TransferUOW(context))
+                {
+                    //取得使用者ID
+                    var id = this.User.Identity.GetUserId();
+                    //取得使用者帳號
+                    var name = this.User.Identity.GetUserName();
+                    var result = stockTransferData.OutboundPickEditor(uow, pickEditor, id, name);
                     return new JsonResult { Data = new { status = result.Success, result = result.Msg } };
                 }
             }
@@ -445,28 +488,14 @@ namespace CHPOUTSRCMES.Web.Controllers
         }
 
 
-        [HttpPost, ActionName("GetStockTransferBarcodeDT")]
-        public JsonResult GetStockTransferBarcodeDT(DataTableAjaxPostViewModel data, string TransactionType, string OUT_SUBINVENTORY_CODE, string OUT_LOCATOR_ID, string IN_SUBINVENTORY_CODE, string IN_LOCATOR_ID, string Number, string NumberStatus)
+        [HttpPost, ActionName("GetOutboundStockTransferBarcodeDT")]
+        public JsonResult GetOutboundStockTransferBarcodeDT(DataTableAjaxPostViewModel data, long transferHeaderId, string numberStatus)
         {
             using (var context = new MesContext())
             {
                 using (TransferUOW uow = new TransferUOW(context))
-                {
-                    List<StockTransferBarcodeDT> model;
-                    if (TransactionType == "出貨編號" && !string.IsNullOrEmpty(Number) && NumberStatus != "非MES入庫手動新增" && NumberStatus != "非MES入庫檔案匯入" && NumberStatus != "非MES已入庫")
-                    {
-                        model = stockTransferBarcodeData.GetModelFromShipmentNumber(OUT_SUBINVENTORY_CODE, OUT_LOCATOR_ID, IN_SUBINVENTORY_CODE, IN_LOCATOR_ID, Number);
-                    }
-                    else if (TransactionType == "移轉編號" && !string.IsNullOrEmpty(Number) && NumberStatus != "非MES入庫手動新增" && NumberStatus != "非MES入庫檔案匯入" && NumberStatus != "非MES已入庫")
-                    {
-                        model = stockTransferBarcodeData.GetModelFromSubinventoryTransferNumber(OUT_SUBINVENTORY_CODE, OUT_LOCATOR_ID, IN_SUBINVENTORY_CODE, IN_LOCATOR_ID, Number);
-                    }
-                    else
-                    {
-                        model = new List<StockTransferBarcodeDT>();
-                    }
-
-
+                {  
+                    List<StockTransferBarcodeDT> model = stockTransferData.GetOutboundPickedData(uow, transferHeaderId, numberStatus);
 
                     var totalCount = model.Count;
                     string search = data.Search.Value;
@@ -559,8 +588,57 @@ namespace CHPOUTSRCMES.Web.Controllers
             return new JsonResult { Data = new { status = result.Success, result = result.Msg } };
         }
 
-        [HttpPost, ActionName("TransferCreateDetail")]
-        public JsonResult TransferCreateDetail(string shipmentNumber, string transferType, string itemNumber, long outOrganizationId,
+        [HttpPost, ActionName("OutboundCreateDetail")]
+        public JsonResult OutboundCreateDetail(string shipmentNumber, string transferType, string itemNumber, long outOrganizationId,
+            string outSubinventoryCode, long? outLocatorId, long inOrganizationId, string inSubinventoryCode, long? inLocatorId,
+            decimal requestedQty, decimal rollReamQty)
+        {
+            using (var context = new MesContext())
+            {
+                using (TransferUOW uow = new TransferUOW(context))
+                {
+                    //取得使用者ID
+                    var id = this.User.Identity.GetUserId();
+                    //取得使用者帳號
+                    var name = this.User.Identity.GetUserName();
+
+                    ResultDataModel<TRF_HEADER_T> result = stockTransferData.OutboundCreateDetail(uow, shipmentNumber, transferType, itemNumber, outOrganizationId,
+             outSubinventoryCode, outLocatorId, inOrganizationId, inSubinventoryCode, inLocatorId, requestedQty, rollReamQty, id, name);
+                    if (result.Success)
+                    {
+                        return new JsonResult { Data = new { status = result.Success, result = result.Msg, shipmentNumber = result.Data.ShipmentNumber, transferHeaderId = result.Data.TransferHeaderId } };
+                    }
+                    else
+                    {
+                        return new JsonResult { Data = new { status = result.Success, result = result.Msg } };
+                    }
+
+
+                }
+            }
+        }
+
+        [HttpPost, ActionName("OutboundCreatePick")]
+        public JsonResult OutboundCreatePick(long transferHeaderId, long transferDetailId, string barcode, decimal reamQty)
+        {
+            using (var context = new MesContext())
+            {
+                using (TransferUOW uow = new TransferUOW(context))
+                {
+                    //取得使用者ID
+                    var id = this.User.Identity.GetUserId();
+                    //取得使用者帳號
+                    var name = this.User.Identity.GetUserName();
+
+                    ResultModel result = stockTransferData.OutboundCreatePick(uow, transferHeaderId, transferDetailId, barcode, reamQty, id, name);
+                    return new JsonResult { Data = new { status = result.Success, result = result.Msg } };
+                }
+            }
+        }
+        
+
+        [HttpPost, ActionName("InboundCreateDetail")]
+        public JsonResult InboundCreateDetail(string shipmentNumber, string transferType, string itemNumber, long outOrganizationId,
             string outSubinventoryCode, long? outLocatorId, long inOrganizationId, string inSubinventoryCode, long? inLocatorId,
             decimal requestedQty, decimal rollReamWt, string lotNumber)
         {
@@ -573,7 +651,7 @@ namespace CHPOUTSRCMES.Web.Controllers
                     //取得使用者帳號
                     var name = this.User.Identity.GetUserName();
 
-                    ResultDataModel<TRF_HEADER_T> result = stockTransferData.TransferCreateDetail(uow, shipmentNumber, transferType, itemNumber, outOrganizationId,
+                    ResultDataModel<TRF_HEADER_T> result = stockTransferData.InboundCreateDetail(uow, shipmentNumber, transferType, itemNumber, outOrganizationId,
              outSubinventoryCode, outLocatorId, inOrganizationId, inSubinventoryCode, inLocatorId, requestedQty, rollReamWt, lotNumber, id, name);
                     if (result.Success)
                     {
@@ -589,6 +667,8 @@ namespace CHPOUTSRCMES.Web.Controllers
             }
         }
 
+
+
         [HttpPost, ActionName("CreateInboundBarcode")]
         public JsonResult CreateInboundBarcode(string TransactionType, string OUT_SUBINVENTORY_CODE, string OUT_LOCATOR_ID, string IN_SUBINVENTORY_CODE, string IN_LOCATOR_ID,
             string Number, string ITEM_NUMBER, decimal REQUESTED_QTY, decimal ROLL_REAM_WT, string LOT_NUMBER)
@@ -596,6 +676,32 @@ namespace CHPOUTSRCMES.Web.Controllers
             ResultModel result = stockTransferBarcodeData.CreateInboundBarcode(TransactionType, OUT_SUBINVENTORY_CODE, OUT_LOCATOR_ID, IN_SUBINVENTORY_CODE, IN_LOCATOR_ID,
             ref Number, ITEM_NUMBER, REQUESTED_QTY, ROLL_REAM_WT, LOT_NUMBER, "非MES入庫手動新增");
             return new JsonResult { Data = new { status = result.Success, result = result.Msg, number = Number } };
+        }
+
+        [HttpPost, ActionName("InboundImportExcel")]
+        public JsonResult InboundImportExcel(List<InboundImportExcelModel> excelList, string shipmentNumber, string transferType,
+            long outOrganizationId, string outSubinventoryCode, long? outLocatorId, long inOrganizationId, string inSubinventoryCode, long? inLocatorId)
+        {
+            using (var context = new MesContext())
+            {
+                using (TransferUOW uow = new TransferUOW(context))
+                {
+                    //取得使用者ID
+                    var id = this.User.Identity.GetUserId();
+                    //取得使用者帳號
+                    var name = this.User.Identity.GetUserName();
+                    ResultDataModel<TRF_HEADER_T> result = stockTransferData.InboundImportExcel(uow, excelList, shipmentNumber, transferType,
+             outOrganizationId, outSubinventoryCode, outLocatorId, inOrganizationId, inSubinventoryCode, inLocatorId, id, name);
+                    if (result.Success)
+                    {
+                        return new JsonResult { Data = new { status = result.Success, result = result.Msg, shipmentNumber = result.Data.ShipmentNumber, transferHeaderId = result.Data.TransferHeaderId } };
+                    }
+                    else
+                    {
+                        return new JsonResult { Data = new { status = result.Success, result = result.Msg } };
+                    }
+                }
+            }
         }
 
         [HttpPost, ActionName("ImportRollInboundBarcode")]
@@ -653,11 +759,40 @@ namespace CHPOUTSRCMES.Web.Controllers
         }
 
         [HttpPost, ActionName("InBoundSaveTransfer")]
-        public JsonResult InBoundSaveTransfer(string TransactionType, string Number)
+        public JsonResult InBoundSaveTransfer(long transferHeaderId)
         {
-            ResultModel result = stockTransferData.InBoundSaveTransfer(TransactionType, Number);
-            return new JsonResult { Data = new { status = result.Success, result = result.Msg } };
+            using (var context = new MesContext())
+            {
+                using (TransferUOW uow = new TransferUOW(context))
+                {
+                    //取得使用者ID
+                    var id = this.User.Identity.GetUserId();
+                    //取得使用者帳號
+                    var name = this.User.Identity.GetUserName();
+                    ResultModel result = stockTransferData.InBoundSaveTransfer(uow, transferHeaderId, id, name);
+                    return new JsonResult { Data = new { status = result.Success, result = result.Msg } };
+                }
+            }
         }
+
+
+        [HttpPost, ActionName("InBoundSaveTransferNoCheckStockStatus")]
+        public JsonResult InBoundSaveTransferNoCheckStockStatus(long transferHeaderId)
+        {
+            using (var context = new MesContext())
+            {
+                using (TransferUOW uow = new TransferUOW(context))
+                {
+                    //取得使用者ID
+                    var id = this.User.Identity.GetUserId();
+                    //取得使用者帳號
+                    var name = this.User.Identity.GetUserName();
+                    ResultModel result = stockTransferData.InBoundSaveTransferNoCheckStockStatus(uow, transferHeaderId, id, name);
+                    return new JsonResult { Data = new { status = result.Success, result = result.Msg } };
+                }
+            }
+        }
+        
 
 
         [HttpPost]
@@ -695,8 +830,18 @@ namespace CHPOUTSRCMES.Web.Controllers
         [HttpPost]
         public ActionResult MergeBarcode(string MergeBarocde, List<long> waitMergeIDs)
         {
-            ResultModel result = stockTransferBarcodeData.MergeBarcode(MergeBarocde, waitMergeIDs);
-            return new JsonResult { Data = new { status = result.Success, result = result.Msg } };
+            using (var context = new MesContext())
+            {
+                using (TransferUOW uow = new TransferUOW(context))
+                {
+                    //取得使用者ID
+                    var id = this.User.Identity.GetUserId();
+                    //取得使用者帳號
+                    var name = this.User.Identity.GetUserName();
+                    ResultModel result = stockTransferData.MergeBarcode(uow, MergeBarocde, waitMergeIDs, id, name);
+                    return new JsonResult { Data = new { status = result.Success, result = result.Msg } };
+                }
+            }
         }
 
 
@@ -791,6 +936,20 @@ namespace CHPOUTSRCMES.Web.Controllers
                     //取得使用者帳號
                     var name = this.User.Identity.GetUserName();
                     return stockTransferData.PrintInboundLabel(uow, ID, name);
+                }
+            }
+        }
+
+        [HttpPost]
+        public ActionResult PrintOutboundLabel(List<long> ID)
+        {
+            using (var context = new MesContext())
+            {
+                using (TransferUOW uow = new TransferUOW(context))
+                {
+                    //取得使用者帳號
+                    var name = this.User.Identity.GetUserName();
+                    return stockTransferData.PrintOutboundLabel(uow, ID, name);
                 }
             }
         }

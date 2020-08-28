@@ -7,6 +7,7 @@ using CHPOUTSRCMES.Web.ViewModels.StockTransaction;
 using CHPOUTSRCMES.Web.ViewModels;
 using System.Text;
 using System.Web.Mvc;
+using CHPOUTSRCMES.Web.DataModel.Entiy.Transfer;
 
 namespace CHPOUTSRCMES.Web.Models.Stock
 {
@@ -106,6 +107,9 @@ namespace CHPOUTSRCMES.Web.Models.Stock
         [Display(Name = "更新日期")]
         public DateTime LAST_UPDATE_DATE { get; set; }
 
+
+        [Display(Name = "棧板狀態")]
+        public string PALLET_STATUS { get; set; }
     }
 
 
@@ -584,24 +588,24 @@ namespace CHPOUTSRCMES.Web.Models.Stock
         }
 
 
-        public MergeBarcodeViewModel GetMergeBarcodeViewModel(List<long> IDs)
-        {
-            MergeBarcodeViewModel vieModel = new MergeBarcodeViewModel();
-            vieModel.WaitMergeBarcodeList = new List<StockTransferBarcodeDT>();
+        //public MergeBarcodeViewModel GetMergeBarcodeViewModel(TransferUOW List<long> IDs)
+        //{
+        //    MergeBarcodeViewModel vieModel = new MergeBarcodeViewModel();
+        //    vieModel.WaitMergeBarcodeList = new List<TRF_INBOUND_PICKED_T>();
 
-            var query = from data in model
-                        where IDs.Contains(data.ID)
-                        select data;
+        //    var query = from data in model
+        //                where IDs.Contains(data.ID)
+        //                select data;
 
-            var waitMergeBarcodeList = query.ToList();
+        //    var waitMergeBarcodeList = query.ToList();
 
-            if (waitMergeBarcodeList.Count != 0)
-            {
-                vieModel.WaitMergeBarcodeList = waitMergeBarcodeList;
-            }
-            return vieModel;
+        //    if (waitMergeBarcodeList.Count != 0)
+        //    {
+        //        vieModel.WaitMergeBarcodeList = waitMergeBarcodeList;
+        //    }
+        //    return vieModel;
 
-        }
+        //}
 
         public JsonResult GetMergeBarocdeStatus(string MergeBarocde, List<long> waitMergeIDs)
         {
@@ -637,37 +641,6 @@ namespace CHPOUTSRCMES.Web.Models.Stock
                 }
             };
 
-            //if (mergeBarocdeDataList.Count > 0 && mergeBarocdeDataList[0].ITEM_CATEGORY == "平版")
-            //{
-            //    if (mergeBarocdeDataList[0].PACKING_TYPE == "令包")
-            //    {
-            //        return new JsonResult
-            //        {
-            //            Data = new
-            //            {
-            //                status = true,
-            //                Barcode = mergeBarocdeDataList[0].BARCODE,
-            //                OriginalBarcode = mergeBarocdeDataList[0].SECONDARY_AVAILABLE_QTY,
-            //                OriginalUnit = mergeBarocdeDataList[0].SECONDARY_UOM_CODE,
-            //                AfterBarcode = mergeBarocdeDataList[0].BARCODE,
-            //                AfterQty = mergeBarocdeDataList[0].SECONDARY_AVAILABLE_QTY + waitMergeTotalQty,
-            //                AfterUnit = mergeBarocdeDataList[0].SECONDARY_UOM_CODE
-            //            }
-            //        };
-            //    }
-            //    else
-            //    {
-            //        return new JsonResult { Data = new { status = false, result = "此條碼打包方式不是令包" } };
-            //    }
-            //}
-            //else if (mergeBarocdeDataList.Count > 0 && mergeBarocdeDataList[0].ITEM_CATEGORY == "捲筒")
-            //{
-            //    return new JsonResult { Data = new { status = false, result = "捲筒不可併板" } };
-            //}
-            //else
-            //{
-            //    return new JsonResult { Data = new { status = false, result = "找不到條碼資料" } };
-            //}
         }
 
         public ResultModel checkMergeBarcode(List<StockDT> mergeBarocdeDataList, List<StockTransferBarcodeDT> waitMergeBarcodeDataList)

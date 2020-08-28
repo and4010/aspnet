@@ -12,6 +12,10 @@ using CHPOUTSRCMES.Web.Models.Information;
 using CHPOUTSRCMES.Web.DataModel.UnitOfWorks;
 using CHPOUTSRCMES.Web.DataModel.Entity.Information;
 using CHPOUTSRCMES.Web.DataModel.Entiy.Transfer;
+using System.Security.Claims;
+using CHPOUTSRCMES.Web.DataModel.Entity;
+using NLog;
+using CHPOUTSRCMES.Web.Util;
 
 namespace CHPOUTSRCMES.Web.Models.Stock
 {
@@ -19,6 +23,7 @@ namespace CHPOUTSRCMES.Web.Models.Stock
     {
         public long ID { get; set; }
 
+        public long SUB_ID { get; set; }
 
         [Display(Name = "料號")]
         public string ITEM_NUMBER { get; set; }
@@ -63,7 +68,7 @@ namespace CHPOUTSRCMES.Web.Models.Stock
         public decimal INBOUND_PICKED_QUANTITY2 { get; set; }
 
         [Display(Name = "單位")] //輔單位
-        public string SRC_REQUESTED_QUANTITY_UOM2 { get; set; }
+        public string REQUESTED_QUANTITY_UOM2 { get; set; }
 
         [Display(Name = "每棧令數")]
         public decimal ROLL_REAM_WT { get; set; }
@@ -126,7 +131,7 @@ namespace CHPOUTSRCMES.Web.Models.Stock
         public List<StockTransferDT> importModel = new List<StockTransferDT>();
         public OrgSubinventoryData orgData = new OrgSubinventoryData();
 
-
+        private ILogger logger = LogManager.GetCurrentClassLogger();
         public static void resetData()
         {
             model = new List<StockTransferDT>();
@@ -186,7 +191,7 @@ namespace CHPOUTSRCMES.Web.Models.Stock
             return viewModel;
         }
 
-        public InBoundViewModel GetInBoundViewModel(TransferUOW uow, string userId)
+        public InBoundViewModel GetInBoundViewModel(TransferUOW uow, List<Claim> roles, string userId)
         {
             InBoundViewModel viewModel = new InBoundViewModel();
 
@@ -202,7 +207,21 @@ namespace CHPOUTSRCMES.Web.Models.Stock
 
             viewModel.ShipmentNumberItems = uow.createDropDownList(MasterUOW.DropDownListType.Add);
 
-
+            if (roles != null && roles.Count > 0)
+            {
+                foreach (Claim role in roles)
+                {
+                    if (role.Value == MasterUOW.UserRole.Adm || role.Value == MasterUOW.UserRole.ChpUser)
+                    {
+                        viewModel.Advanced = true;
+                        break;
+                    }
+                    else
+                    {
+                        viewModel.Advanced = false;
+                    }
+                }
+            }
 
             return viewModel;
         }
@@ -236,7 +255,7 @@ namespace CHPOUTSRCMES.Web.Models.Stock
         public ResultDataModel<ITEMS_T> GetItemNumberData(TransferUOW uow, string itemNumber)
         {
             var item = uow.GetItemNumber(itemNumber);
-            if (item == null) new ResultDataModel<ITEMS_T>(false, "找不到料號資料", null);
+            if (item == null) return new ResultDataModel<ITEMS_T>(false, "找不到料號資料", null);
             return new ResultDataModel<ITEMS_T>(true, "取得料號資料成功", item);
 
         }
@@ -310,43 +329,56 @@ namespace CHPOUTSRCMES.Web.Models.Stock
             };
         }
 
-        public GetShipmentNumberListResult GetShipmentNumberList(TransferUOW uow, string transferType, string outSubinventoryCode, string inSubinventoryCode)
+        public GetShipmentNumberListResult GetOutboundShipmentNumberList(TransferUOW uow, long outOrganizationId, string outSubinventoryCode, long inOrganizationId, string inSubinventoryCode)
         {
-            var outSubinventory = uow.GetSubinventoryT(outSubinventoryCode);
-            if (outSubinventory == null || outSubinventory.Count == 0) return new GetShipmentNumberListResult { status = false, result = "找不到出貨倉庫資料" };
-            var inSubinventory = uow.GetSubinventoryT(inSubinventoryCode);
-            if (inSubinventory == null || inSubinventory.Count == 0) return new GetShipmentNumberListResult { status = false, result = "找不到出貨倉庫資料" };
-
-            string TRANSFER_CATALOG = "";
-            if (outSubinventory[0].OrganizationId == inSubinventory[0].OrganizationId)
-            {
-                TRANSFER_CATALOG = TransferUOW.TransferCatalog.InvTransfer;
-            }
-            else
-            {
-                TRANSFER_CATALOG = TransferUOW.TransferCatalog.OrgTransfer;
-            }
-
-            //string transferCatalog = uow.GetTransferCatalog(outSubinventoryCode, inSubinventoryCode);
-            //List<SelectListItem> items = uow.GetShipmentNumberDropDownList(TRANSFER_CATALOG, transferType, outSubinventoryCode, inSubinventoryCode);
-            //if (items == null || items.Count == 0) return new GetShipmentNumberListResult { status = false, msg = "找不到出貨倉庫資料" };
-
-            var headerList = uow.GetTrfHeaderList(TRANSFER_CATALOG, outSubinventory[0].OrganizationId, outSubinventoryCode, inSubinventory[0].OrganizationId, inSubinventoryCode);
+            var headerList = uow.GetOutBoundShipmentNumberDropDownList(outOrganizationId, outSubinventoryCode, inOrganizationId, inSubinventoryCode);
             if (headerList == null || headerList.Count == 0) return new GetShipmentNumberListResult { status = true, result = "找不到出貨編號", items = uow.createDropDownList(MasterUOW.DropDownListType.Add) };
-
-            List<SelectListItem> items = headerList.Select(i => new SelectListItem() { Text = i.ShipmentNumber, Value = i.ShipmentNumber }).ToList();
 
             return new GetShipmentNumberListResult
             {
                 status = true,
                 result = "取得出貨編號成功",
-                items = items,
-                isMes = headerList[0].IsMes,
-                numberStatus = headerList[0].NumberStatus,
-                transferType = headerList[0].TransferType,
-                transferCatalog = headerList[0].TransferCatalog
+                items = headerList
             };
         }
+
+        //public GetShipmentNumberListResult GetShipmentNumberList(TransferUOW uow, string transferType, string outSubinventoryCode, string inSubinventoryCode)
+        //{
+        //    var outSubinventory = uow.GetSubinventoryT(outSubinventoryCode);
+        //    if (outSubinventory == null || outSubinventory.Count == 0) return new GetShipmentNumberListResult { status = false, result = "找不到出貨倉庫資料" };
+        //    var inSubinventory = uow.GetSubinventoryT(inSubinventoryCode);
+        //    if (inSubinventory == null || inSubinventory.Count == 0) return new GetShipmentNumberListResult { status = false, result = "找不到出貨倉庫資料" };
+
+        //    string TRANSFER_CATALOG = "";
+        //    if (outSubinventory[0].OrganizationId == inSubinventory[0].OrganizationId)
+        //    {
+        //        TRANSFER_CATALOG = TransferUOW.TransferCatalog.InvTransfer;
+        //    }
+        //    else
+        //    {
+        //        TRANSFER_CATALOG = TransferUOW.TransferCatalog.OrgTransfer;
+        //    }
+
+        //    //string transferCatalog = uow.GetTransferCatalog(outSubinventoryCode, inSubinventoryCode);
+        //    //List<SelectListItem> items = uow.GetShipmentNumberDropDownList(TRANSFER_CATALOG, transferType, outSubinventoryCode, inSubinventoryCode);
+        //    //if (items == null || items.Count == 0) return new GetShipmentNumberListResult { status = false, msg = "找不到出貨倉庫資料" };
+
+        //    var headerList = uow.GetTrfHeaderList(TRANSFER_CATALOG, outSubinventory[0].OrganizationId, outSubinventoryCode, inSubinventory[0].OrganizationId, inSubinventoryCode);
+        //    if (headerList == null || headerList.Count == 0) return new GetShipmentNumberListResult { status = true, result = "找不到出貨編號", items = uow.createDropDownList(MasterUOW.DropDownListType.Add) };
+
+        //    List<SelectListItem> items = headerList.Select(i => new SelectListItem() { Text = i.ShipmentNumber, Value = i.ShipmentNumber }).ToList();
+
+        //    return new GetShipmentNumberListResult
+        //    {
+        //        status = true,
+        //        result = "取得出貨編號成功",
+        //        items = items,
+        //        isMes = headerList[0].IsMes,
+        //        numberStatus = headerList[0].NumberStatus,
+        //        transferType = headerList[0].TransferType,
+        //        transferCatalog = headerList[0].TransferCatalog
+        //    };
+        //}
 
         //public List<AutoCompletedItem> AutoCompleteShipmentNumber(string TransactionType, string outSubInventory, string outLocator, string inSubInventory, string inLocator, string Prefix)
         //{
@@ -487,45 +519,60 @@ namespace CHPOUTSRCMES.Web.Models.Stock
         /// <param name="createUser"></param>
         /// <param name="createUserName"></param>
         /// <returns></returns>
-        public ResultDataModel<TRF_HEADER_T> TransferCreateDetail(TransferUOW uow, string shipmentNumber, string transferType, string itemNumber, long outOrganizationId,
+        public ResultDataModel<TRF_HEADER_T> InboundCreateDetail(TransferUOW uow, string shipmentNumber, string transferType, string itemNumber, long outOrganizationId,
             string outSubinventoryCode, long? outLocatorId, long inOrganizationId, string inSubinventoryCode, long? inLocatorId,
             decimal requestedQty, decimal rollReamWt, string lotNumber, string createUser, string createUserName)
         {
-            return uow.CreateDetail(shipmentNumber, transferType, itemNumber, outOrganizationId,
+            return uow.InboundCreateDetail(shipmentNumber, transferType, itemNumber, outOrganizationId,
                 outSubinventoryCode, outLocatorId, inOrganizationId, inSubinventoryCode, inLocatorId,
-                TransferUOW.DataUpadteAuthority.Permit, TransferUOW.DataWriteType.KeyIn, requestedQty, rollReamWt, lotNumber, createUser, createUserName);
+                TransferUOW.DataUpdateAuthority.Permit, TransferUOW.DataWriteType.KeyIn, requestedQty, rollReamWt, lotNumber, createUser, createUserName);
         }
 
-        public ResultModel CheckCreateDetail(TransferUOW uow, string shipmentNumber, string transferType, string itemNumber, long outOrganizationId, string outSubinventoryCode, long outLocatorId, long inOrganizationId, string inSubinventoryCode, long inLocatorId)
+        public ResultDataModel<TRF_HEADER_T> OutboundCreateDetail(TransferUOW uow, string shipmentNumber, string transferType, string itemNumber, long outOrganizationId,
+           string outSubinventoryCode, long? outLocatorId, long inOrganizationId, string inSubinventoryCode, long? inLocatorId,
+           decimal requestedQty, decimal rollReamQty, string createUser, string createUserName)
         {
-            var itemNumberOrganizationIdList = uow.GetItemNumberOrganizationId(itemNumber);
-            if (itemNumberOrganizationIdList == null || itemNumberOrganizationIdList.Count == 0) return new ResultModel(false, "找不到料號所屬組織");
-
-            if (transferType == TransferUOW.TransferType.InBound)
-            {
-                if (itemNumberOrganizationIdList.Where(x => x == inOrganizationId).ToList().Count == 0) return new ResultModel(false, "入庫組織沒有此料號");
-            }
-            else
-            {
-                if (itemNumberOrganizationIdList.Where(x => x == outOrganizationId).ToList().Count == 0) return new ResultModel(false, "出庫組織沒有此料號");
-            }
-
-            if (shipmentNumber == TransferUOW.DropDownListTypeValue.Add) return new ResultModel(true, "為新增編號");
-
-            var trfHeaderList = uow.GetTrfHeader(shipmentNumber, transferType);
-            if (trfHeaderList == null) return new ResultModel(false, "找不到出貨單資料");
-            if (trfHeaderList.OrganizationId != outOrganizationId) return new ResultModel(false, "出庫組織比對錯誤，請檢查出庫倉庫是否選擇正確");
-            if (trfHeaderList.SubinventoryCode != outSubinventoryCode) return new ResultModel(false, "出庫倉庫比對錯誤，請檢查出庫倉庫是否選擇正確");
-            if (trfHeaderList.LocatorId != outLocatorId) return new ResultModel(false, "出庫儲位比對錯誤，請檢查出庫儲位是否選擇正確");
-            if (trfHeaderList.TransferOrganizationId != inOrganizationId) return new ResultModel(false, "入庫組織比對錯誤，請檢查入庫倉庫是否選擇正確");
-            if (trfHeaderList.TransferSubinventoryCode != inSubinventoryCode) return new ResultModel(false, "入庫倉庫比對錯誤，請檢查入庫倉庫是否選擇正確");
-            if (trfHeaderList.TransferLocatorId != inLocatorId) return new ResultModel(false, "入庫儲位比對錯誤，請檢查入庫儲位是否選擇正確");
-
-            var trfDeatilList = uow.GetTrfDetailList(trfHeaderList.TransferHeaderId, itemNumber);
-            if (trfDeatilList != null && trfDeatilList.Count > 0) return new ResultModel(false, "料號重複輸入");
-
-            return new ResultModel(true, "新增明細檢查正確");
+            return uow.OutboundCreateDetail(shipmentNumber, transferType, itemNumber, outOrganizationId,
+                outSubinventoryCode, outLocatorId, inOrganizationId, inSubinventoryCode, inLocatorId,
+                TransferUOW.DataUpdateAuthority.Permit, TransferUOW.DataWriteType.KeyIn, requestedQty, rollReamQty, createUser, createUserName);
         }
+
+        public ResultModel OutboundCreatePick(TransferUOW uow, long transferHeaderId, long transferDetailId, string barcode,
+        decimal reamQty, string createUser, string createUserName)
+        {
+            return uow.OutboundCreatePick(transferHeaderId, transferDetailId, barcode, reamQty, createUser, createUserName);
+        }
+
+        //public ResultModel CheckCreateDetail(TransferUOW uow, string shipmentNumber, string transferType, string itemNumber, long outOrganizationId, string outSubinventoryCode, long outLocatorId, long inOrganizationId, string inSubinventoryCode, long inLocatorId)
+        //{
+        //    var itemNumberOrganizationIdList = uow.GetItemNumberOrganizationId(itemNumber);
+        //    if (itemNumberOrganizationIdList == null || itemNumberOrganizationIdList.Count == 0) return new ResultModel(false, "找不到料號所屬組織");
+
+        //    if (transferType == TransferUOW.TransferType.InBound)
+        //    {
+        //        if (itemNumberOrganizationIdList.Where(x => x == inOrganizationId).ToList().Count == 0) return new ResultModel(false, "入庫組織沒有此料號");
+        //    }
+        //    else
+        //    {
+        //        if (itemNumberOrganizationIdList.Where(x => x == outOrganizationId).ToList().Count == 0) return new ResultModel(false, "出庫組織沒有此料號");
+        //    }
+
+        //    if (shipmentNumber == TransferUOW.DropDownListTypeValue.Add) return new ResultModel(true, "為新增編號");
+
+        //    var trfHeaderList = uow.GetTrfHeader(shipmentNumber, transferType);
+        //    if (trfHeaderList == null) return new ResultModel(false, "找不到出貨單資料");
+        //    if (trfHeaderList.OrganizationId != outOrganizationId) return new ResultModel(false, "出庫組織比對錯誤，請檢查出庫倉庫是否選擇正確");
+        //    if (trfHeaderList.SubinventoryCode != outSubinventoryCode) return new ResultModel(false, "出庫倉庫比對錯誤，請檢查出庫倉庫是否選擇正確");
+        //    if (trfHeaderList.LocatorId != outLocatorId) return new ResultModel(false, "出庫儲位比對錯誤，請檢查出庫儲位是否選擇正確");
+        //    if (trfHeaderList.TransferOrganizationId != inOrganizationId) return new ResultModel(false, "入庫組織比對錯誤，請檢查入庫倉庫是否選擇正確");
+        //    if (trfHeaderList.TransferSubinventoryCode != inSubinventoryCode) return new ResultModel(false, "入庫倉庫比對錯誤，請檢查入庫倉庫是否選擇正確");
+        //    if (trfHeaderList.TransferLocatorId != inLocatorId) return new ResultModel(false, "入庫儲位比對錯誤，請檢查入庫儲位是否選擇正確");
+
+        //    var trfDeatilList = uow.GetTrfDetailList(trfHeaderList.TransferHeaderId, itemNumber);
+        //    if (trfDeatilList != null && trfDeatilList.Count > 0) return new ResultModel(false, "料號重複輸入");
+
+        //    return new ResultModel(true, "新增明細檢查正確");
+        //}
 
         public ResultModel CheckNumber(string TransactionType, string OUT_SUBINVENTORY_CODE, string OUT_LOCATOR_ID, string IN_SUBINVENTORY_CODE, string IN_LOCATOR_ID,
             string Number)
@@ -763,7 +810,7 @@ namespace CHPOUTSRCMES.Web.Models.Stock
                     stockTransferDT.ROLL_REAM_UOM = "板";
                 }
                 stockTransferDT.REQUESTED_QUANTITY_UOM = itemList[0].PRIMARY_UOM_CODE;
-                stockTransferDT.SRC_REQUESTED_QUANTITY_UOM2 = itemList[0].SECONDARY_UOM_CODE;
+                stockTransferDT.REQUESTED_QUANTITY_UOM2 = itemList[0].SECONDARY_UOM_CODE;
                 stockTransferDT.ROLL_REAM_QTY = ROLL_REAM_QTY;
                 stockTransferDT.NUMBER_STATUS = "MES未出庫";
                 model.Add(stockTransferDT);
@@ -905,7 +952,7 @@ namespace CHPOUTSRCMES.Web.Models.Stock
                         stockTransferDT.INBOUND_PICKED_QUANTITY2 = PICKED_QTY;
                     }
                     stockTransferDT.REQUESTED_QUANTITY_UOM = itemList[0].PRIMARY_UOM_CODE;
-                    stockTransferDT.SRC_REQUESTED_QUANTITY_UOM2 = itemList[0].SECONDARY_UOM_CODE;
+                    stockTransferDT.REQUESTED_QUANTITY_UOM2 = itemList[0].SECONDARY_UOM_CODE;
                     stockTransferDT.ROLL_REAM_QTY = ROLL_REAM_QTY;
                     //stockTransferDT.NUMBER_STATUS = "非MES入庫手動新增";
                     stockTransferDT.NUMBER_STATUS = NUMBER_STATUS;
@@ -1103,18 +1150,33 @@ namespace CHPOUTSRCMES.Web.Models.Stock
 
         }
 
-     
+
 
         public List<StockTransferBarcodeDT> GetInboundPickedData(TransferUOW uow, long transferHeaderId, string numberStatus)
         {
             return uow.GetTrfInboundPickedTList(transferHeaderId, numberStatus);
         }
 
+        public List<StockTransferDT> GetOutboundDetailData(TransferUOW uow, long transferHeaderId, string numberStatus)
+        {
+            return uow.GetTrfOutboundDetailTList(transferHeaderId, numberStatus);
+        }
+
+        public List<StockTransferBarcodeDT> GetOutboundPickedData(TransferUOW uow, long transferHeaderId, string numberStatus)
+        {
+            return uow.GetTrfOutboundPickedTList(transferHeaderId, numberStatus);
+        }
 
         public ResultDataModel<TRF_HEADER_T> GetShipmentNumberData(TransferUOW uow, long transferHeaderId)
         {
+            if (transferHeaderId == 0)
+            {
+                return new ResultDataModel<TRF_HEADER_T>(true, "新增編號", null);
+            }
+
             var trfHeader = uow.GetTrfHeader(transferHeaderId);
-            if (trfHeader == null) {
+            if (trfHeader == null)
+            {
                 return new ResultDataModel<TRF_HEADER_T>(false, "找不到出貨編號資料", null);
             }
             else
@@ -1277,6 +1339,16 @@ namespace CHPOUTSRCMES.Web.Models.Stock
             return new ResultModel(true, "出庫存檔成功");
         }
 
+        public ResultModel InBoundSaveTransfer(TransferUOW uow, long transferHeaderId, string userId, string userName)
+        {
+            return uow.InBoundSaveTransfer(transferHeaderId, userId, userName, true);
+        }
+
+        public ResultModel InBoundSaveTransferNoCheckStockStatus(TransferUOW uow, long transferHeaderId, string userId, string userName)
+        {
+            return uow.InBoundSaveTransfer(transferHeaderId, userId, userName, false);
+        }
+
         //儲位異動入庫存檔
         public ResultModel InBoundSaveTransfer(string TransactionType, string Number)
         {
@@ -1432,17 +1504,17 @@ namespace CHPOUTSRCMES.Web.Models.Stock
 
         //}
 
-        public ResultModel InboundEditor(TransferUOW uow, InboundEditor inboundEditor, string userId, string userName)
+        public ResultModel InboundPickEditor(TransferUOW uow, PickEditor pickEditor, string userId, string userName)
         {
-            if (inboundEditor.Action == "remove")
+            if (pickEditor.Action == "remove")
             {
-                var transferPickedIdList = inboundEditor.StockTransferBarcodeDTList.Select(x => x.ID).ToList();
+                var transferPickedIdList = pickEditor.StockTransferBarcodeDTList.Select(x => x.ID).ToList();
                 return uow.DelInboundPickData(transferPickedIdList, userId, userName);
             }
-            else if (inboundEditor.Action == "edit")
+            else if (pickEditor.Action == "edit")
             {
-                var transferPickedIdList = inboundEditor.StockTransferBarcodeDTList.Select(x => x.ID).ToList();
-                string note = inboundEditor.StockTransferBarcodeDTList[0].REMARK;
+                var transferPickedIdList = pickEditor.StockTransferBarcodeDTList.Select(x => x.ID).ToList();
+                string note = pickEditor.StockTransferBarcodeDTList[0].REMARK;
                 return uow.UpdateInboundPickNote(transferPickedIdList, note, userId, userName);
             }
             else
@@ -1451,7 +1523,39 @@ namespace CHPOUTSRCMES.Web.Models.Stock
             }
         }
 
-        public ResultModel ChangeToAlreadyInBound (TransferUOW uow, long transferHeaderId, string barcode, string userId, string userName)
+        public ResultModel OutboundDetailEditor(TransferUOW uow, DetailEditor detailEditor, string userId, string userName)
+        {
+            if (detailEditor.Action == "remove")
+            {
+                var transferDetailIdList = detailEditor.StockTransferDTList.Select(x => x.ID).ToList();
+                return uow.DelOutboundDetailData(transferDetailIdList, userId, userName);
+            }
+            else
+            {
+                return new ResultModel(false, "無法識別作業項目");
+            }
+        }
+
+        public ResultModel OutboundPickEditor(TransferUOW uow, PickEditor pickEditor, string userId, string userName)
+        {
+            if (pickEditor.Action == "remove")
+            {
+                var transferDetailIdList = pickEditor.StockTransferBarcodeDTList.Select(x => x.ID).ToList();
+                return uow.DelOutboundPickedData(transferDetailIdList, userId, userName);
+            }
+            else if (pickEditor.Action == "edit")
+            {
+                var transferPickedIdList = pickEditor.StockTransferBarcodeDTList.Select(x => x.ID).ToList();
+                string note = pickEditor.StockTransferBarcodeDTList[0].REMARK;
+                return uow.UpdateOutboundPickNote(transferPickedIdList, note, userId, userName);
+            }
+            else
+            {
+                return new ResultModel(false, "無法識別作業項目");
+            }
+        }
+
+        public ResultModel ChangeToAlreadyInBound(TransferUOW uow, long transferHeaderId, string barcode, string userId, string userName)
         {
             return uow.ChangeToAlreadyInBound(transferHeaderId, barcode, userId, userName);
         }
@@ -1462,10 +1566,140 @@ namespace CHPOUTSRCMES.Web.Models.Stock
             return uow.PrintLable(resultData.Data);
         }
 
-        public ResultModel WaitPrintToWaitInbound(TransferUOW uow, List<long> transferPickedIdList,string userId, string userName)
+        public ActionResult PrintOutboundLabel(TransferUOW uow, List<long> transferPickedIdList, string userName)
+        {
+            var resultData = uow.GetOutboundLabels(transferPickedIdList, userName);
+            return uow.PrintLable(resultData.Data);
+        }
+
+        public ResultModel WaitPrintToWaitInbound(TransferUOW uow, List<long> transferPickedIdList, string userId, string userName)
         {
             return uow.WaitPrintToWaitInbound(transferPickedIdList, userId, userName);
         }
+
+        #region 併板
+
+        public MergeBarcodeViewModel GetMergeBarcodeViewModel(TransferUOW uow, List<long> transferPickedIdList)
+        {
+            MergeBarcodeViewModel vieModel = new MergeBarcodeViewModel();
+            vieModel.WaitMergeBarcodeList = new List<TRF_INBOUND_PICKED_T>();
+
+            var waitMergeBarcodeList = uow.GetTrfInboundPickedList(transferPickedIdList);
+
+            if (waitMergeBarcodeList.Count != 0)
+            {
+                vieModel.WaitMergeBarcodeList = waitMergeBarcodeList;
+            }
+            return vieModel;
+
+        }
+
+        public JsonResult GetMergeBarocdeStatus(TransferUOW uow, string MergeBarocde, List<long> waitMergeIDs)
+        {
+            try
+            {
+                var mergeBarocdeData = uow.GetStock(MergeBarocde);
+                var waitMergeBarcodeDataList = uow.GetTrfInboundPickedList(waitMergeIDs);
+
+                ResultModel checkResult = checkMergeBarcode(mergeBarocdeData, waitMergeBarcodeDataList);
+                if (!checkResult.Success)
+                {
+                    return new JsonResult { Data = new { status = checkResult.Success, result = checkResult.Msg } };
+                }
+
+                decimal waitMergeTotalQty = 0;
+                foreach (TRF_INBOUND_PICKED_T data in waitMergeBarcodeDataList)
+                {
+                    waitMergeTotalQty = waitMergeTotalQty + (decimal)data.SecondaryQuantity;
+                }
+
+                return new JsonResult
+                {
+                    Data = new
+                    {
+                        status = true,
+                        OriginalBarcode = mergeBarocdeData.Barcode,
+                        OriginalQty = mergeBarocdeData.SecondaryAvailableQty,
+                        OriginalUnit = mergeBarocdeData.SecondaryUomCode,
+                        AfterBarcode = mergeBarocdeData.Barcode,
+                        AfterQty = mergeBarocdeData.SecondaryAvailableQty + waitMergeTotalQty,
+                        AfterUnit = mergeBarocdeData.SecondaryUomCode
+                    }
+                };
+            }
+            catch (Exception ex)
+            {
+                logger.Error(LogUtilities.BuildExceptionMessage(ex));
+                return new JsonResult { Data = new { status = false, result = "失敗:" + ex.Message } };
+            }
+
+
+        }
+
+        public ResultModel checkMergeBarcode(STOCK_T mergeBarocdeData, List<TRF_INBOUND_PICKED_T> waitMergeBarcodeDataList)
+        {
+            if (mergeBarocdeData == null)
+            {
+                return new ResultModel(false, "找不到條碼資料");
+            }
+
+            if (mergeBarocdeData.StatusCode != TransferUOW.StockStatusCode.InStock)
+            {
+                return new ResultModel(false, "此條碼不在庫");
+            }
+
+            if (waitMergeBarcodeDataList.Count == 0)
+            {
+                return new ResultModel(false, "找不到待併板條碼資料");
+            }
+
+            if (mergeBarocdeData.ItemCategory == TransferUOW.ItemCategory.Roll)
+            {
+                return new ResultModel(false, "捲筒不可併板");
+            }
+
+            if (mergeBarocdeData.PackingType != TransferUOW.PackingType.Ream)
+            {
+                return new ResultModel(false, "打包方式不是令包不可併板");
+            }
+
+            foreach (TRF_INBOUND_PICKED_T data in waitMergeBarcodeDataList)
+            {
+                if (data.ItemNumber != mergeBarocdeData.ItemNumber)
+                {
+                    return new ResultModel(false, "併板料號須相同");
+                }
+            }
+
+            return new ResultModel(true, "併板條碼檢查成功");
+        }
+
+        public ResultModel MergeBarcode(TransferUOW uow, string MergeBarocde, List<long> waitMergeIDs, string userId, string userName)
+        {
+            var mergeBarocdeData = uow.GetStock(MergeBarocde);
+            var waitMergeBarcodeDataList = uow.GetTrfInboundPickedList2(waitMergeIDs);
+
+            ResultModel checkResult = checkMergeBarcode(mergeBarocdeData, waitMergeBarcodeDataList);
+            if (!checkResult.Success)
+            {
+                return checkResult;
+            }
+
+            return uow.MergeBarcode(mergeBarocdeData, waitMergeBarcodeDataList, userId, userName);
+        }
+
+        #endregion
+
+        #region 庫存移轉-入庫 Excel匯入
+        public ResultDataModel<TRF_HEADER_T> InboundImportExcel(TransferUOW uow, List<InboundImportExcelModel> excelList, string shipmentNumber, string transferType,
+            long outOrganizationId, string outSubinventoryCode, long? outLocatorId, long inOrganizationId, string inSubinventoryCode, long? inLocatorId, string userId, string userName)
+        {
+            return uow.InboundImportExcel(shipmentNumber, transferType, outOrganizationId, outSubinventoryCode, outLocatorId, inOrganizationId,
+               inSubinventoryCode, inLocatorId, excelList, userId, userName);
+
+        }
+
+        #endregion
     }
 
 
@@ -1511,7 +1745,7 @@ namespace CHPOUTSRCMES.Web.Models.Stock
                 case 9:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.PICKED_QUANTITY2) : models.OrderBy(x => x.PICKED_QUANTITY2);
                 case 10:
-                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.SRC_REQUESTED_QUANTITY_UOM2) : models.OrderBy(x => x.SRC_REQUESTED_QUANTITY_UOM2);
+                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.REQUESTED_QUANTITY_UOM2) : models.OrderBy(x => x.REQUESTED_QUANTITY_UOM2);
 
             }
         }
@@ -1540,15 +1774,44 @@ namespace CHPOUTSRCMES.Web.Models.Stock
                 case 9:
                     return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.PICKED_QUANTITY2) : models.ThenBy(x => x.PICKED_QUANTITY2);
                 case 10:
-                    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.SRC_REQUESTED_QUANTITY_UOM2) : models.ThenBy(x => x.SRC_REQUESTED_QUANTITY_UOM2);
+                    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.REQUESTED_QUANTITY_UOM2) : models.ThenBy(x => x.REQUESTED_QUANTITY_UOM2);
 
             }
         }
     }
 
-    public class InboundEditor
+    public class PickEditor
     {
         public string Action { get; set; }
         public List<StockTransferBarcodeDT> StockTransferBarcodeDTList { get; set; }
+    }
+
+    public class DetailEditor
+    {
+
+        public string Action { get; set; }
+        public List<StockTransferDT> StockTransferDTList { get; set; }
+    }
+
+    public class InboundImportExcelModel
+    {
+        /// <summary>
+        /// 料號
+        /// </summary>
+        public string ItemNumber { get; set; }
+        /// <summary>
+        /// 數量;平版時填總令數,捲筒時為重量
+        /// </summary>
+        public decimal Qty { get; set; }
+        /// <summary>
+        /// 捲號;平版時填空字串("")
+        /// </summary>
+        public string LotNumber { get; set; }
+        /// <summary>
+        /// 每件令數;紙捲時填0
+        /// </summary>
+        public decimal RollReamWt { get; set; }
+
+
     }
 }
