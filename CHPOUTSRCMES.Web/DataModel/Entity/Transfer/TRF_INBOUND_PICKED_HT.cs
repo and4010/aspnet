@@ -146,6 +146,17 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Transfer
         [Column("STATUS")]
         public string Status { set; get; }
 
+
+        /// <summary>
+        /// 拆至條碼
+        /// </summary>
+        /// 
+        [Required]
+        [StringLength(10)]
+        [Column("SPLIT_FROM_BARCODE")]
+        public string SplitFromBarcode { set; get; }
+        
+
         /// <summary>
         /// 棧板狀態
         /// </summary>

@@ -3,7 +3,7 @@ function OutBoundInit() {
 
     var selected = [];
     var detailEditor;
-    var editor;
+    var pickEditor;
 
     var selectedNumber;
     var selectedNumberStatus = "0";
@@ -560,14 +560,14 @@ function OutBoundInit() {
                 //}
             },
             buttons: [
-                  'selectAll',
+                  
                 'selectNone',
                 {
                     extend: "remove",
                     text: '刪除',
                     name: 'remove',
                     className: 'btn-danger',
-                    editor: editor,
+                    editor: pickEditor,
                     enabled: false,
                     init: function (api, node, config) {
                         $(node).removeClass('btn-default')
@@ -695,12 +695,12 @@ function OutBoundInit() {
     });
 
 
-    editor = new $.fn.dataTable.Editor({
+    pickEditor = new $.fn.dataTable.Editor({
         "language": {
             "url": "/bower_components/datatables/language/zh-TW.json"
         },
         ajax: {
-            url: '/StockTransaction/UpdateRemark',
+            url: '/StockTransaction/OutboundPickEditor',
             "type": "POST",
             "dataType": "json",
             contentType: 'application/json',
@@ -726,6 +726,15 @@ function OutBoundInit() {
 
                 return JSON.stringify(data);
             },
+            success: function (data) {
+                if (data.status) {
+                    OutBoundDataTablesBody.ajax.reload(null, false);
+                    OutBoundBarcodeDataTablesBody.ajax.reload();
+                }
+                else {
+                    swal.fire(data.result);
+                }
+            }
         },
         table: "#OutBoundBarcodeDataTablesBody",
         idSrc: 'ID',
@@ -743,7 +752,15 @@ function OutBoundInit() {
                 submit: "確定",
                 'className': 'btn-danger'
             },
-
+            remove: {
+                button: "刪除",
+                title: "確定要刪除??",
+                submit: "確定",
+                confirm: {
+                    "_": "你確定要刪除這筆資料?",
+                    "1": "你確定要刪除這些資料?"
+                }
+            },
             multi: {
                 "title": "多欄位異動",
                 "info": "請注意，您一次選擇多個不同的備註，此次異動將會變成同樣的備註！",
@@ -800,7 +817,7 @@ function OutBoundInit() {
          },
          { data: "SECONDARY_UOM", name: "次要單位", autoWidth: true },
          { data: "REMARK", name: "備註", autoWidth: true, className: "dt-body-left" },
-
+            { data: "ID", name: "ID", autoWidth: true, visible: false },
         ],
 
         order: [[1, 'desc']],
@@ -822,40 +839,114 @@ function OutBoundInit() {
             buttons: [
                 'selectAll',
                 'selectNone',
-                 {
-                     text: '刪除',
-                     className: 'btn-danger',
-                     action: function () {
-                         var selectedData = OutBoundBarcodeDataTablesBody.rows('.selected').data();
-                         if (selectedData.length == 0) {
-                             swal.fire("請選擇要刪除的條碼");
-                             return;
-                         }
+                {
+                    extend: "remove",
+                    text: '刪除',
+                    name: 'remove',
+                    className: 'btn-danger',
+                    editor: pickEditor,
+                    enabled: false,
+                    init: function (api, node, config) {
+                        $(node).removeClass('btn-default')
+                    },
+                    action: function (e, dt, node, config) {
+                        var rows = OutBoundBarcodeDataTablesBody.rows({ selected: true }).indexes();
 
-                         swal.fire({
-                             title: "條碼資料刪除",
-                             text: "確定刪除嗎?",
-                             type: "warning",
-                             showCancelButton: true,
-                             confirmButtonColor: "#DD6B55",
-                             confirmButtonText: "確定",
-                             cancelButtonText: "取消"
-                         }).then(function (result) {
-                             if (result.value) {
-                                 DeleteBarcode(selectedData);
-                             }
-                         });
+                        if (rows.length === 0) {
+                            return;
+                        }
 
-                     }
-                 },
+                        pickEditor.remove(rows, {
+                            title: '刪除',
+                            message: rows.length === 1 ?
+                                '你確定要刪除這筆資料?' :
+                                '你確定要刪除這些資料?',
+                            buttons:
+                            {
+                                text: '刪除',
+                                className: 'btn-danger',
+                                action: function () {
+                                    this.submit();
+                                }
+                            }
+                        })
+                    }
+                },
+                 //{
+                 //    text: '刪除',
+                 //    className: 'btn-danger',
+                 //    action: function () {
+                 //        var selectedData = OutBoundBarcodeDataTablesBody.rows('.selected').data();
+                 //        if (selectedData.length == 0) {
+                 //            swal.fire("請選擇要刪除的條碼");
+                 //            return;
+                 //        }
+
+                 //        swal.fire({
+                 //            title: "條碼資料刪除",
+                 //            text: "確定刪除嗎?",
+                 //            type: "warning",
+                 //            showCancelButton: true,
+                 //            confirmButtonColor: "#DD6B55",
+                 //            confirmButtonText: "確定",
+                 //            cancelButtonText: "取消"
+                 //        }).then(function (result) {
+                 //            if (result.value) {
+                 //                DeleteBarcode(selectedData);
+                 //            }
+                 //        });
+
+                 //    }
+                 //},
                 {
                     text: '<span class="glyphicon glyphicon-print"></span>&nbsp列印標籤',
                     //className: 'btn-default btn-sm',
                     action: function (e) {
-                        PrintLable(OutBoundBarcodeDataTablesBody, "/Home/GetLabel2", "2");
+                        var data = OutBoundBarcodeDataTablesBody.rows('.selected').data();
+                        if (data.length == 0) {
+                            return false;
+                        }
+                        var barcode = [];
+                        var transferPickedIdList = [];
+                        for (var i = 0; i < data.length; i++) {
+                            transferPickedIdList.push(data[i].ID);
+                            if (data[i].PALLET_STATUS == '1') { //是否為拆板
+
+                                barcode.push(data[i].BARCODE);
+                            }
+                        }
+                        if (barcode.length > 0) {
+                            swal.fire({
+                                title: "注意",
+                                html: "以下為拆板後的條碼，請更換庫存棧板上的舊條碼。<br>" + barcode.join('<br>'),
+                                type: "warning",
+                                confirmButtonColor: "#DD6B55",
+                                confirmButtonText: "確定",
+                            }).then(function (result) {
+                                if (result.value) {  
+                                    PrintLable(OutBoundBarcodeDataTablesBody, "/StockTransaction/PrintOutboundLabel", "10");
+                                }
+                            });
+                        } else {
+                            PrintLable(OutBoundBarcodeDataTablesBody, "/StockTransaction/PrintOutboundLabel", "10");
+                        }
                     },
-                    className: "btn-primary"
+                    className: "btn-primary",
+                    enabled: false,
+                    init: function (api, node, config) {
+                        $(node).removeClass('btn-default')
+                    }
                 },
+
+
+                //{
+                //    text: '<span class="glyphicon glyphicon-print"></span>&nbsp列印標籤',
+                //    //className: 'btn-default btn-sm',
+                //    action: function (e) {
+                //        PrintLable(OutBoundBarcodeDataTablesBody, "/Home/GetLabel2", "2");
+                //    },
+                //    className: "btn-primary"
+                //},
                 {
                     text: '編輯備註',
                     className: 'btn-danger',
@@ -866,19 +957,7 @@ function OutBoundInit() {
                             return;
                         }
 
-                        //for (i = 0 ; i < count ; i++) {
-
-                        //    if (dt.rows({ selected: true }).data().pluck('DELIVERY_STATUS')[i] == '已出貨') {
-                        //        swal.fire('已出貨，無法再修改核准日');
-                        //        return;
-                        //    }
-                        //    if (dt.rows({ selected: true }).data().pluck('DELIVERY_STATUS')[i] == '取消') {
-                        //        swal.fire('已取消，無法再修改核准日');
-                        //        return;
-                        //    }
-                        //}
-
-                        editor.edit(OutBoundBarcodeDataTablesBody.rows({ selected: true }).indexes())
+                        pickEditor.edit(OutBoundBarcodeDataTablesBody.rows({ selected: true }).indexes())
                         .title('編輯備註')
                         .buttons({
                             text: '確定',

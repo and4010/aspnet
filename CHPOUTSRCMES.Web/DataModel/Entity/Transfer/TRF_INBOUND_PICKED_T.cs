@@ -148,6 +148,15 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Transfer
         public string PalletStatus { set; get; }
 
         /// <summary>
+        /// 拆至條碼
+        /// </summary>
+        /// 
+        [Required]
+        [StringLength(10)]
+        [Column("SPLIT_FROM_BARCODE")]
+        public string SplitFromBarcode { set; get; }
+
+        /// <summary>
         /// 建立人員
         /// </summary>
         /// 

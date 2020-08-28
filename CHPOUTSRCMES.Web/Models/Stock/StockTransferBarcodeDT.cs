@@ -107,6 +107,9 @@ namespace CHPOUTSRCMES.Web.Models.Stock
         [Display(Name = "更新日期")]
         public DateTime LAST_UPDATE_DATE { get; set; }
 
+
+        [Display(Name = "棧板狀態")]
+        public string PALLET_STATUS { get; set; }
     }
 
 

@@ -1684,9 +1684,12 @@ where DLV_HEADER_ID = @DLV_HEADER_ID"; ;
                 if (PICKED_IDs == null || PICKED_IDs.Count == 0) return new ResultDataModel<List<LabelModel>>(false, "找不到揀貨資料", null);
                 var pickDataList = dlvPickedTRepositiory.GetAll().AsNoTracking().Where(x => PICKED_IDs.Contains(x.DlvPickedId)).ToList();
                 if (pickDataList == null || pickDataList.Count == 0) return new ResultDataModel<List<LabelModel>>(false, "找不到揀貨資料", null);
-
-                foreach (DLV_PICKED_T data in pickDataList)
+                if (pickDataList.Count != PICKED_IDs.Count) throw new Exception("找不到部分揀貨資料");
+                foreach (DLV_PICKED_T pick in pickDataList)
                 {
+                    var detail = dlvDetailTRepositiory.GetAll().AsNoTracking().FirstOrDefault(x => x.DlvHeaderId == pick.DlvHeaderId && x.DlvDetailId == pick.DlvDetailId);
+                    if (detail == null) return new ResultDataModel<List<LabelModel>>(false, "找不到明細資料", null);
+
                     StringBuilder cmd = new StringBuilder(@"
 SELECT p.BARCODE as Barocde
 ,@userName as PrintBy
@@ -1696,9 +1699,9 @@ SELECT p.BARCODE as Barocde
 ,s.SPECIFICATION as Specification
 ,s.OSP_BATCH_NO as BatchNo");
 
-                    if (data.PalletStatus == PalletStatusCode.Split) //判斷是否拆板
+                    if (pick.PalletStatus == PalletStatusCode.Split) //判斷是否拆板
                     {
-                        if (data.SecondaryQuantity != null) //判斷是否為平版
+                        if (detail.ItemCategory == ItemCategory.Flat) //判斷是否為平版
                         {
                             //拆板 平版 數量為庫存數量(拆板後的剩餘數量)
                             cmd.Append(@"
@@ -1709,15 +1712,19 @@ INNER JOIN STOCK_T s ON p.BARCODE = s.BARCODE
 WHERE p.BARCODE = @Barcode
 ");
                         }
-                        else
+                        else if (detail.ItemCategory == ItemCategory.Roll)
                         {
                             //拆板 捲筒
                             return new ResultDataModel<List<LabelModel>>(false, "捲筒不能拆板", null);
                         }
+                        else
+                        {
+                            throw new Exception("無法識別貨品類別");
+                        }
                     }
-                    else if (data.PalletStatus == PalletStatusCode.All) //判斷是否整版
+                    else if (pick.PalletStatus == PalletStatusCode.All) //判斷是否整版
                     {
-                        if (data.SecondaryQuantity != null) //判斷是否為平版
+                        if (detail.ItemCategory == ItemCategory.Flat) //判斷是否為平版
                         {
                             //整板 平版 數量為揀貨的數量
                             cmd.Append(@"
@@ -1728,7 +1735,7 @@ INNER JOIN STOCK_T s ON p.BARCODE = s.BARCODE
 WHERE p.BARCODE = @Barcode
 ");
                         }
-                        else
+                        else if (detail.ItemCategory == ItemCategory.Roll)
                         {
                             //整板 捲筒
                             cmd.Append(@"
@@ -1739,6 +1746,10 @@ INNER JOIN STOCK_T s ON p.BARCODE = s.BARCODE
 WHERE p.BARCODE = @Barcode
 ");
                         }
+                        else
+                        {
+                            throw new Exception("無法識別貨品類別");
+                        }
                     }
                     else
                     {
@@ -1747,7 +1758,7 @@ WHERE p.BARCODE = @Barcode
                     }
                     //new SqlParameter("@userName", userName);
 
-                    var labelModel = this.Context.Database.SqlQuery<LabelModel>(cmd.ToString(), new SqlParameter("@userName", userName), new SqlParameter("@Barcode", data.Barcode)).ToList();
+                    var labelModel = this.Context.Database.SqlQuery<LabelModel>(cmd.ToString(), new SqlParameter("@userName", userName), new SqlParameter("@Barcode", pick.Barcode)).ToList();
                     if (labelModel == null || labelModel.Count == 0) return new ResultDataModel<List<LabelModel>>(false, "找不到標籤資料", null);
                     labelModelList.Add(labelModel[0]);
                 }

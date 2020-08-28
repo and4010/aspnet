@@ -391,7 +391,7 @@ namespace CHPOUTSRCMES.Web.Controllers
         }
 
         [HttpPost]
-        public ActionResult InboundEditor(InboundEditor inboundEditor)
+        public ActionResult InboundPickEditor(PickEditor pickEditor)
         {
             using (var context = new MesContext())
             {
@@ -401,7 +401,7 @@ namespace CHPOUTSRCMES.Web.Controllers
                     var id = this.User.Identity.GetUserId();
                     //取得使用者帳號
                     var name = this.User.Identity.GetUserName();
-                    var result = stockTransferData.InboundEditor(uow, inboundEditor, id, name);
+                    var result = stockTransferData.InboundPickEditor(uow, pickEditor, id, name);
                     return new JsonResult { Data = new { status = result.Success, result = result.Msg } };
                 }
             }
@@ -419,6 +419,23 @@ namespace CHPOUTSRCMES.Web.Controllers
                     //取得使用者帳號
                     var name = this.User.Identity.GetUserName();
                     var result = stockTransferData.OutboundDetailEditor(uow, detailEditor, id, name);
+                    return new JsonResult { Data = new { status = result.Success, result = result.Msg } };
+                }
+            }
+        }
+
+        [HttpPost]
+        public ActionResult OutboundPickEditor(PickEditor pickEditor)
+        {
+            using (var context = new MesContext())
+            {
+                using (TransferUOW uow = new TransferUOW(context))
+                {
+                    //取得使用者ID
+                    var id = this.User.Identity.GetUserId();
+                    //取得使用者帳號
+                    var name = this.User.Identity.GetUserName();
+                    var result = stockTransferData.OutboundPickEditor(uow, pickEditor, id, name);
                     return new JsonResult { Data = new { status = result.Success, result = result.Msg } };
                 }
             }
@@ -919,6 +936,20 @@ namespace CHPOUTSRCMES.Web.Controllers
                     //取得使用者帳號
                     var name = this.User.Identity.GetUserName();
                     return stockTransferData.PrintInboundLabel(uow, ID, name);
+                }
+            }
+        }
+
+        [HttpPost]
+        public ActionResult PrintOutboundLabel(List<long> ID)
+        {
+            using (var context = new MesContext())
+            {
+                using (TransferUOW uow = new TransferUOW(context))
+                {
+                    //取得使用者帳號
+                    var name = this.User.Identity.GetUserName();
+                    return stockTransferData.PrintOutboundLabel(uow, ID, name);
                 }
             }
         }

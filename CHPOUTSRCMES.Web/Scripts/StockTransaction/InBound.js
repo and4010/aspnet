@@ -628,7 +628,7 @@
             "url": "/bower_components/datatables/language/zh-TW.json"
         },
         ajax: {
-            url: '/StockTransaction/InboundEditor',
+            url: '/StockTransaction/InboundPickEditor',
             "type": "POST",
             "dataType": "json",
             contentType: 'application/json',
@@ -993,18 +993,6 @@
                         if (count == 0) {
                             return;
                         }
-
-                        //for (i = 0 ; i < count ; i++) {
-
-                        //    if (dt.rows({ selected: true }).data().pluck('DELIVERY_STATUS')[i] == '已出貨') {
-                        //        swal.fire('已出貨，無法再修改核准日');
-                        //        return;
-                        //    }
-                        //    if (dt.rows({ selected: true }).data().pluck('DELIVERY_STATUS')[i] == '取消') {
-                        //        swal.fire('已取消，無法再修改核准日');
-                        //        return;
-                        //    }
-                        //}
 
                         editor.edit(InBoundBarcodeDataTablesBody.rows({ selected: true }).indexes())
                             .title('編輯備註')

@@ -1504,17 +1504,17 @@ namespace CHPOUTSRCMES.Web.Models.Stock
 
         //}
 
-        public ResultModel InboundEditor(TransferUOW uow, InboundEditor inboundEditor, string userId, string userName)
+        public ResultModel InboundPickEditor(TransferUOW uow, PickEditor pickEditor, string userId, string userName)
         {
-            if (inboundEditor.Action == "remove")
+            if (pickEditor.Action == "remove")
             {
-                var transferPickedIdList = inboundEditor.StockTransferBarcodeDTList.Select(x => x.ID).ToList();
+                var transferPickedIdList = pickEditor.StockTransferBarcodeDTList.Select(x => x.ID).ToList();
                 return uow.DelInboundPickData(transferPickedIdList, userId, userName);
             }
-            else if (inboundEditor.Action == "edit")
+            else if (pickEditor.Action == "edit")
             {
-                var transferPickedIdList = inboundEditor.StockTransferBarcodeDTList.Select(x => x.ID).ToList();
-                string note = inboundEditor.StockTransferBarcodeDTList[0].REMARK;
+                var transferPickedIdList = pickEditor.StockTransferBarcodeDTList.Select(x => x.ID).ToList();
+                string note = pickEditor.StockTransferBarcodeDTList[0].REMARK;
                 return uow.UpdateInboundPickNote(transferPickedIdList, note, userId, userName);
             }
             else
@@ -1536,6 +1536,25 @@ namespace CHPOUTSRCMES.Web.Models.Stock
             }
         }
 
+        public ResultModel OutboundPickEditor(TransferUOW uow, PickEditor pickEditor, string userId, string userName)
+        {
+            if (pickEditor.Action == "remove")
+            {
+                var transferDetailIdList = pickEditor.StockTransferBarcodeDTList.Select(x => x.ID).ToList();
+                return uow.DelOutboundPickedData(transferDetailIdList, userId, userName);
+            }
+            else if (pickEditor.Action == "edit")
+            {
+                var transferPickedIdList = pickEditor.StockTransferBarcodeDTList.Select(x => x.ID).ToList();
+                string note = pickEditor.StockTransferBarcodeDTList[0].REMARK;
+                return uow.UpdateOutboundPickNote(transferPickedIdList, note, userId, userName);
+            }
+            else
+            {
+                return new ResultModel(false, "無法識別作業項目");
+            }
+        }
+
         public ResultModel ChangeToAlreadyInBound(TransferUOW uow, long transferHeaderId, string barcode, string userId, string userName)
         {
             return uow.ChangeToAlreadyInBound(transferHeaderId, barcode, userId, userName);
@@ -1544,6 +1563,12 @@ namespace CHPOUTSRCMES.Web.Models.Stock
         public ActionResult PrintInboundLabel(TransferUOW uow, List<long> transferPickedIdList, string userName)
         {
             var resultData = uow.GetInboundLabels(transferPickedIdList, userName);
+            return uow.PrintLable(resultData.Data);
+        }
+
+        public ActionResult PrintOutboundLabel(TransferUOW uow, List<long> transferPickedIdList, string userName)
+        {
+            var resultData = uow.GetOutboundLabels(transferPickedIdList, userName);
             return uow.PrintLable(resultData.Data);
         }
 
@@ -1755,7 +1780,7 @@ namespace CHPOUTSRCMES.Web.Models.Stock
         }
     }
 
-    public class InboundEditor
+    public class PickEditor
     {
         public string Action { get; set; }
         public List<StockTransferBarcodeDT> StockTransferBarcodeDTList { get; set; }
