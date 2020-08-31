@@ -259,7 +259,6 @@ AND TRANSFER_SUBINVENTORY_CODE = @trfSubCode AND TRANSFER_ORGANIZATION_ID = @trf
 
 UNION 
 
-
 SELECT
 CONVERT(varchar(10), s.TRANSFER_HEADER_ID) as Value,
 s.SHIPMENT_NUMBER as Text
@@ -1076,7 +1075,10 @@ SELECT [TRANSFER_PICKED_ID] as ID
                     }
                     else if (item.CatalogElemVal070 == ItemCategory.Flat)
                     {
-                        rollReamWt = Math.Ceiling(requestedQty / rollReamQty); //每件令數 = 總令數 除以 棧板數 無條件進位
+                        rollReamWt = Math.Ceiling(requestedQty / rollReamQty); //每件令數 = 總令數 除以 棧板數 無條件進位 待確認是否正確
+                        //var yszmpckq = GetYszmpckq(outOrganization.OrganizationId, outOrganization.OrganizationCode, outSubinventoryCode, item.CatalogElemVal020);
+                        //if (yszmpckq == null) throw new Exception("找不到令重包數資料");
+                        //rollReamWt = yszmpckq.PiecesQty;
                     }
                     else
                     {
@@ -1135,6 +1137,8 @@ SELECT [TRANSFER_PICKED_ID] as ID
                     };
 
                     trfDetailTRepositiory.Create(trfDeatil, true);
+                    trfDeatil.OutboundTransferDetailId = trfDeatil.TransferDetailId;
+                    trfDetailTRepositiory.Update(trfDeatil, true);
 
                     txn.Commit();
                     return new ResultDataModel<TRF_HEADER_T>(true, "新增明細成功", trfHeader);
@@ -1162,21 +1166,7 @@ SELECT [TRANSFER_PICKED_ID] as ID
                     var detail = GetTrfDetail(transferHeaderId, transferDetailId);
                     if (detail == null) throw new Exception("找不到明細資料");
 
-
-                    var pick = trfOutboundPickedTRepositiory.GetAll().AsNoTracking().FirstOrDefault(x => x.Barcode == barcode);
-                    if (pick != null)
-                    {
-                        var tempHeader = GetTrfHeader(pick.TransferHeaderId);
-                        if (tempHeader == null)
-                        {
-                            throw new Exception("找不到出貨編號資料");
-                        }
-                        else
-                        {
-                            throw new Exception("此條碼已存在出貨編號" + tempHeader.ShipmentNumber + "裡");
-                        }
-                    }
-
+                    //檢查庫存
                     var stock = stockTRepositiory.GetAll().FirstOrDefault(x => x.Barcode == barcode);
                     if (stock == null) throw new Exception("找不到庫存資料");
                     if (stock.StatusCode != StockStatusCode.InStock) throw new Exception("不在庫");
@@ -1194,12 +1184,37 @@ SELECT [TRANSFER_PICKED_ID] as ID
                         throw new Exception("無法識別貨品類別");
                     }
 
+                    //檢查是否重複輸入條碼
+                    if (stock.PackingType != PackingType.Ream)
+                    {
+                        //包裝方式不為令包時 要檢查條碼重複輸入
+                        var pick = trfOutboundPickedTRepositiory.GetAll().AsNoTracking().FirstOrDefault(x => x.Barcode == barcode);
+                        if (pick != null)
+                        {
+
+                            var tempHeader = GetTrfHeader(pick.TransferHeaderId);
+                            if (tempHeader == null)
+                            {
+                                throw new Exception("找不到出貨編號資料");
+                            }
+                            else
+                            {
+                                throw new Exception("此條碼已存在出貨編號" + tempHeader.ShipmentNumber + "裡");
+                            }
+                        }
+                    }
+                    
+
                     //判斷棧板狀態
                     string note = "";
                     string palletStatus = "";
                     if (stock.PackingType == PackingType.Ream)
                     {
-                        if (reamQty == stock.SecondaryAvailableQty)
+                        //if (reamQty == stock.SecondaryAvailableQty)
+                        //{
+                        //    palletStatus = PalletStatusCode.All;
+                        //}
+                        if (reamQty == detail.RollReamWt)
                         {
                             palletStatus = PalletStatusCode.All;
                         }
@@ -2071,6 +2086,7 @@ INSERT INTO TRF_DETAIL_HT
       ,[ROLL_REAM_WT]
       ,[DATA_UPADTE_AUTHORITY]
       ,[DATA_WRITE_TYPE]
+      ,[OUTBOUND_TRANSFER_DETAIL_ID]
       ,[CREATED_BY]
       ,[CREATED_USER_NAME]
       ,[CREATION_DATE]
@@ -2095,6 +2111,7 @@ SELECT [TRANSFER_DETAIL_ID]
       ,[ROLL_REAM_WT]
       ,[DATA_UPADTE_AUTHORITY]
       ,[DATA_WRITE_TYPE]
+      ,[OUTBOUND_TRANSFER_DETAIL_ID]
       ,[CREATED_BY]
       ,[CREATED_USER_NAME]
       ,[CREATION_DATE]
@@ -2210,206 +2227,402 @@ SELECT [TRANSFER_PICKED_ID]
         /// <param name="userName"></param>
         /// <param name="checkStockStatus"></param>
         /// <returns></returns>
-//        public ResultModel OutBoundSaveTransfer(long transferHeaderId, string userId, string userName)
-//        {
-//            using (var txn = this.Context.Database.BeginTransaction())
-//            {
-//                try
-//                {
-//                    var detail = trfDetailHtRepositiory.GetAll().FirstOrDefault(x => x.TransferHeaderId == transferHeaderId);
-//                    if (detail == null) return new ResultModel(true, "請輸入出庫明細");
+        public ResultModel OutBoundSaveTransfer(long transferHeaderId, string userId, string userName)
+        {
+            using (var txn = this.Context.Database.BeginTransaction())
+            {
+                try
+                {
+                    var detail = trfDetailTRepositiory.GetAll().AsNoTracking().FirstOrDefault(x => x.TransferHeaderId == transferHeaderId);
+                    if (detail == null) return new ResultModel(true, "請輸入出庫明細");
 
-//                    //檢查出貨編號是否揀完
-//                    string cmd = @"
-//           SELECT 
-//d.TRANSFER_DETAIL_ID AS ID
-//FROM TRF_DETAIL_T d
-//JOIN TRF_HEADER_T h ON h.TRANSFER_HEADER_ID = d.TRANSFER_HEADER_ID
-//LEFT JOIN TRF_OUTBOUND_PICKED_T p ON p.TRANSFER_HEADER_ID = d.TRANSFER_HEADER_ID AND p.TRANSFER_DETAIL_ID = d.TRANSFER_DETAIL_ID
-//WHERE h.TRANSFER_HEADER_ID = @transferHeaderId
-//GROUP BY d.TRANSFER_DETAIL_ID
-//HAVING SUM(ISNULL(p.PRIMARY_QUANTITY, 0)) <> MIN(d.REQUESTED_PRIMARY_QUANTITY) 
-//OR SUM(ISNULL(p.SECONDARY_QUANTITY, 0)) <> MIN(d.REQUESTED_SECONDARY_QUANTITY)";
+                    //檢查出貨編號是否揀完
+                    string cmd = @"
+           SELECT 
+d.TRANSFER_DETAIL_ID AS ID
+FROM TRF_DETAIL_T d
+JOIN TRF_HEADER_T h ON h.TRANSFER_HEADER_ID = d.TRANSFER_HEADER_ID
+LEFT JOIN TRF_OUTBOUND_PICKED_T p ON p.TRANSFER_HEADER_ID = d.TRANSFER_HEADER_ID AND p.TRANSFER_DETAIL_ID = d.TRANSFER_DETAIL_ID
+WHERE h.TRANSFER_HEADER_ID = @transferHeaderId
+GROUP BY d.TRANSFER_DETAIL_ID
+HAVING SUM(ISNULL(p.PRIMARY_QUANTITY, 0)) <> MIN(d.REQUESTED_PRIMARY_QUANTITY)
+OR SUM(ISNULL(p.SECONDARY_QUANTITY, 0)) <> MIN(d.REQUESTED_SECONDARY_QUANTITY)
+OR MIN(d.ROLL_REAM_QTY) <> COUNT(p.TRANSFER_DETAIL_ID)";
 
-//                    var list = this.Context.Database.SqlQuery<long>(cmd, new SqlParameter("@transferHeaderId", transferHeaderId)).ToList();
-//                    if (list.Count != 0) return new ResultModel(true, "此出貨編號尚未揀完");
+                    var list = this.Context.Database.SqlQuery<long>(cmd, new SqlParameter("@transferHeaderId", transferHeaderId)).ToList();
+                    if (list.Count != 0) return new ResultModel(true, "此出貨編號尚未揀完");
 
-//                    var pickList = trfInboundPickedTRepositiory.GetAll().Where(x => x.TransferHeaderId == transferHeaderId).ToList();
-//                    if (pickList == null || pickList.Count == 0) throw new Exception("找不到揀貨資料");
+                    var pickList = trfOutboundPickedTRepositiory.GetAll().Where(x => x.TransferHeaderId == transferHeaderId).ToList();
+                    if (pickList == null || pickList.Count == 0) throw new Exception("找不到揀貨資料");
 
-//                    DateTime now = DateTime.Now;
+                    DateTime now = DateTime.Now;
 
-//                    var header = trfHeaderTRepositiory.GetAll().FirstOrDefault(x => x.TransferHeaderId == transferHeaderId);
-//                    if (header == null) throw new Exception("找不到出貨編號資料");
-//                    header.TransactionDate = now;
-//                    header.NumberStatus = NumberStatus.Saved;
-//                    header.LastUpdateBy = userId;
-//                    header.LastUpdateDate = now;
-//                    header.LastUpdateUserName = userName;
-//                    trfHeaderTRepositiory.SaveChanges();
-                   
-//                    TRF_HEADER_T newHeader = new TRF_HEADER_T();
-//                    newHeader.OrgId = header.OrgId;
-//                    newHeader.OrganizationId = header.OrganizationId;
-//                    newHeader.OrganizationCode = header.OrganizationCode;
-//                    newHeader.ShipmentNumber = header.ShipmentNumber;
-//                    newHeader.TransferCatalog = header.TransferCatalog;
-//                    newHeader.TransferType = TransferType.InBound;
-//                    newHeader.NumberStatus = NumberStatus.NotSaved;
-//                    newHeader.IsMes = header.IsMes;
-//                    newHeader.SubinventoryCode = header.SubinventoryCode;
-//                    newHeader.LocatorId = header.LocatorId;
-//                    newHeader.LocatorCode = header.LocatorCode;
-//                    newHeader.TransactionDate = now;
-//                    newHeader.TransactionTypeId = header.TransactionTypeId;
-//                    newHeader.TransactionTypeName = header.TransactionTypeName;
-//                    newHeader.TransferOrgId = header.TransferOrgId;
-//                    newHeader.TransferOrganizationId = header.TransferOrganizationId;
-//                    newHeader.TransferOrganizationCode = header.TransferOrganizationCode;
-//                    newHeader.TransferSubinventoryCode = header.TransferSubinventoryCode;
-//                    newHeader.TransferLocatorId = header.TransferLocatorId;
-//                    newHeader.TransferLocatorCode = header.TransferLocatorCode;
-//                    newHeader.CreatedBy = header.CreatedBy;
-//                    newHeader.CreatedUserName = header.CreatedUserName;
-//                    newHeader.CreationDate = header.CreationDate;
-//                    newHeader.LastUpdateBy = header.LastUpdateBy;
-//                    newHeader.LastUpdateUserName = header.LastUpdateUserName;
-//                    newHeader.LastUpdateDate = header.LastUpdateDate;
-//                    trfHeaderTRepositiory.Create(newHeader, true);
+                    var header = trfHeaderTRepositiory.GetAll().FirstOrDefault(x => x.TransferHeaderId == transferHeaderId);
+                    if (header == null) throw new Exception("找不到出貨編號資料");
+                    header.TransactionDate = now;
+                    header.NumberStatus = NumberStatus.Saved;
+                    header.LastUpdateBy = userId;
+                    header.LastUpdateDate = now;
+                    header.LastUpdateUserName = userName;
+                    trfHeaderTRepositiory.SaveChanges();
+
+                    foreach(TRF_OUTBOUND_PICKED_T pick in pickList)
+                    {
+                        var stock = stockTRepositiory.GetAll().FirstOrDefault(x => x.StockId == pick.StockId);
+                        if (stock == null) throw new Exception("找不到庫存資料");
+                        STK_TXN_T stkTxnT =  CreateStockRecord(stock, header.TransferOrganizationId, header.TransferOrganizationCode, header.TransferSubinventoryCode, header.TransferLocatorId, CategoryCode.TransferOutbound, ActionCode.OutBoundSaveTransfer, header.ShipmentNumber);
+                        var updateStockLockQtyResult = UpdateStockLockQty(stock, stkTxnT, -1 * pick.PrimaryQuantity, -1 * pick.SecondaryQuantity, pickSatus, PickStatus.Shipped, userId, now);
+                        if (!updateStockLockQtyResult.Success) throw new Exception(updateStockLockQtyResult.Msg);
+                    }
+                    stkTxnTRepositiory.SaveChanges();
+                    stockTRepositiory.SaveChanges();
+
+                    //複製出庫明細資料到入庫歷史明細
+                    cmd = @"
+INSERT INTO TRF_DETAIL_HT
+(
+      [TRANSFER_DETAIL_ID]
+      ,[TRANSFER_HEADER_ID]
+      ,[INVENTORY_ITEM_ID]
+      ,[ITEM_NUMBER]
+      ,[ITEM_DESCRIPTION]
+      ,[ITEM_CATEGORY]
+      ,[PACKING_TYPE]
+      ,[REQUESTED_TRANSACTION_UOM]
+      ,[REQUESTED_TRANSACTION_QUANTITY]
+      ,[REQUESTED_PRIMARY_UOM]
+      ,[REQUESTED_PRIMARY_QUANTITY]
+      ,[REQUESTED_SECONDARY_UOM]
+      ,[REQUESTED_SECONDARY_QUANTITY]
+      ,[ROLL_REAM_QTY]
+      ,[ROLL_REAM_WT]
+      ,[DATA_UPADTE_AUTHORITY]
+      ,[DATA_WRITE_TYPE]
+      ,[OUTBOUND_TRANSFER_DETAIL_ID]
+      ,[CREATED_BY]
+      ,[CREATED_USER_NAME]
+      ,[CREATION_DATE]
+      ,[LAST_UPDATE_BY]
+      ,[LAST_UPDATE_USER_NAME]
+      ,[LAST_UPDATE_DATE]
+)
+SELECT [TRANSFER_DETAIL_ID]
+      ,[TRANSFER_HEADER_ID]
+      ,[INVENTORY_ITEM_ID]
+      ,[ITEM_NUMBER]
+      ,[ITEM_DESCRIPTION]
+      ,[ITEM_CATEGORY]
+      ,[PACKING_TYPE]
+      ,[REQUESTED_TRANSACTION_UOM]
+      ,[REQUESTED_TRANSACTION_QUANTITY]
+      ,[REQUESTED_PRIMARY_UOM]
+      ,[REQUESTED_PRIMARY_QUANTITY]
+      ,[REQUESTED_SECONDARY_UOM]
+      ,[REQUESTED_SECONDARY_QUANTITY]
+      ,[ROLL_REAM_QTY]
+      ,[ROLL_REAM_WT]
+      ,[DATA_UPADTE_AUTHORITY]
+      ,[DATA_WRITE_TYPE]
+      ,[OUTBOUND_TRANSFER_DETAIL_ID]
+      ,[CREATED_BY]
+      ,[CREATED_USER_NAME]
+      ,[CREATION_DATE]
+      ,[LAST_UPDATE_BY]
+      ,[LAST_UPDATE_USER_NAME]
+      ,[LAST_UPDATE_DATE]
+  FROM [TRF_DETAIL_T]
+  WHERE [TRANSFER_HEADER_ID] = @TRANSFER_HEADER_ID
+";
+                    if (this.Context.Database.ExecuteSqlCommand(cmd, new SqlParameter("@TRANSFER_HEADER_ID", transferHeaderId)) <= 0)
+                    {
+                        throw new Exception("複製出庫明細資料到出庫歷史明細失敗");
+                    }
+
+                    //刪除出庫明細資料
+                    cmd = @"
+  DELETE FROM [TRF_DETAIL_T]
+  WHERE TRANSFER_HEADER_ID = @TRANSFER_HEADER_ID";
+                    if (this.Context.Database.ExecuteSqlCommand(cmd, new SqlParameter("@TRANSFER_HEADER_ID", transferHeaderId)) <= 0)
+                    {
+                        throw new Exception("刪除出庫明細資料失敗");
+                    }
+
+                    //複製出庫揀貨資料到出庫歷史揀貨
+                    cmd = @"
+INSERT INTO [TRF_OUTBOUND_PICKED_HT]
+(
+      [TRANSFER_PICKED_ID]
+      ,[TRANSFER_DETAIL_ID]
+      ,[TRANSFER_HEADER_ID]
+      ,[INVENTORY_ITEM_ID]
+      ,[ITEM_NUMBER]
+      ,[STOCK_ID]
+      ,[BARCODE]
+      ,[PRIMARY_QUANTITY]
+      ,[PRIMARY_UOM]
+      ,[SECONDARY_QUANTITY]
+      ,[SECONDARY_UOM]
+      ,[LOT_NUMBER]
+      ,[LOT_QUANTITY]
+      ,[NOTE]
+      ,[STATUS]
+      ,[PALLET_STATUS]
+      ,[CREATED_BY]
+      ,[CREATED_USER_NAME]
+      ,[CREATION_DATE]
+      ,[LAST_UPDATE_BY]
+      ,[LAST_UPDATE_USER_NAME]
+      ,[LAST_UPDATE_DATE]
+)
+SELECT [TRANSFER_PICKED_ID]
+      ,[TRANSFER_DETAIL_ID]
+      ,[TRANSFER_HEADER_ID]
+      ,[INVENTORY_ITEM_ID]
+      ,[ITEM_NUMBER]
+      ,[STOCK_ID]
+      ,[BARCODE]
+      ,[PRIMARY_QUANTITY]
+      ,[PRIMARY_UOM]
+      ,[SECONDARY_QUANTITY]
+      ,[SECONDARY_UOM]
+      ,[LOT_NUMBER]
+      ,[LOT_QUANTITY]
+      ,[NOTE]
+      ,[STATUS]
+      ,[PALLET_STATUS]
+      ,[CREATED_BY]
+      ,[CREATED_USER_NAME]
+      ,[CREATION_DATE]
+      ,[LAST_UPDATE_BY]
+      ,[LAST_UPDATE_USER_NAME]
+      ,[LAST_UPDATE_DATE]
+  FROM [TRF_OUTBOUND_PICKED_T]
+  WHERE [TRANSFER_HEADER_ID] = @TRANSFER_HEADER_ID
+";
+                    if (this.Context.Database.ExecuteSqlCommand(cmd, new SqlParameter("@TRANSFER_HEADER_ID", transferHeaderId)) <= 0)
+                    {
+                        throw new Exception("複製出庫揀貨資料到出庫歷史揀貨失敗");
+                    }
+
+                    //刪除入庫揀貨資料
+                    cmd = @"
+  DELETE FROM [TRF_OUTBOUND_PICKED_T]
+  WHERE TRANSFER_HEADER_ID = @TRANSFER_HEADER_ID";
+                    if (this.Context.Database.ExecuteSqlCommand(cmd, new SqlParameter("@TRANSFER_HEADER_ID", transferHeaderId)) <= 0)
+                    {
+                        throw new Exception("刪除出庫揀貨資料失敗");
+                    }
+
+                    txn.Commit();
+                    return new ResultModel(true, "出庫存檔成功");
+                }
+                catch (Exception ex)
+                {
+                    logger.Error(LogUtilities.BuildExceptionMessage(ex));
+                    txn.Rollback();
+                    return new ResultModel(false, "出庫存檔失敗:" + ex.Message);
+                }
+            }
+        }
+
+        public ResultDataModel<TRF_HEADER_T> OutBoundToInbound(long transferHeaderId, string userId, string userName)
+        {
+            using (var txn = this.Context.Database.BeginTransaction())
+            {
+                try
+                {
+                    DateTime now = DateTime.Now;
+
+                    var header = trfHeaderTRepositiory.GetAll().FirstOrDefault(x => x.TransferHeaderId == transferHeaderId);
+                    if (header == null) throw new Exception("找不到出貨編號資料");
+
+                    TRF_HEADER_T newHeader = new TRF_HEADER_T();
+                    newHeader.OrgId = header.OrgId;
+                    newHeader.OrganizationId = header.OrganizationId;
+                    newHeader.OrganizationCode = header.OrganizationCode;
+                    newHeader.ShipmentNumber = header.ShipmentNumber;
+                    newHeader.TransferCatalog = header.TransferCatalog;
+                    newHeader.TransferType = TransferType.InBound;
+                    newHeader.NumberStatus = NumberStatus.NotSaved;
+                    newHeader.IsMes = header.IsMes;
+                    newHeader.SubinventoryCode = header.SubinventoryCode;
+                    newHeader.LocatorId = header.LocatorId;
+                    newHeader.LocatorCode = header.LocatorCode;
+                    newHeader.TransactionDate = now;
+                    newHeader.TransactionTypeId = header.TransactionTypeId;
+                    newHeader.TransactionTypeName = header.TransactionTypeName;
+                    newHeader.TransferOrgId = header.TransferOrgId;
+                    newHeader.TransferOrganizationId = header.TransferOrganizationId;
+                    newHeader.TransferOrganizationCode = header.TransferOrganizationCode;
+                    newHeader.TransferSubinventoryCode = header.TransferSubinventoryCode;
+                    newHeader.TransferLocatorId = header.TransferLocatorId;
+                    newHeader.TransferLocatorCode = header.TransferLocatorCode;
+                    newHeader.CreatedBy = header.CreatedBy;
+                    newHeader.CreatedUserName = header.CreatedUserName;
+                    newHeader.CreationDate = header.CreationDate;
+                    newHeader.LastUpdateBy = header.LastUpdateBy;
+                    newHeader.LastUpdateUserName = header.LastUpdateUserName;
+                    newHeader.LastUpdateDate = header.LastUpdateDate;
+                    trfHeaderTRepositiory.Create(newHeader, true);
 
 
-//                    //出庫明細轉入庫明細
-//                    cmd = @"
-//INSERT INTO TRF_DETAIL_HT
-//(
-//      [TRANSFER_DETAIL_ID]
-//      ,[TRANSFER_HEADER_ID]
-//      ,[INVENTORY_ITEM_ID]
-//      ,[ITEM_NUMBER]
-//      ,[ITEM_DESCRIPTION]
-//      ,[ITEM_CATEGORY]
-//      ,[PACKING_TYPE]
-//      ,[REQUESTED_TRANSACTION_UOM]
-//      ,[REQUESTED_TRANSACTION_QUANTITY]
-//      ,[REQUESTED_PRIMARY_UOM]
-//      ,[REQUESTED_PRIMARY_QUANTITY]
-//      ,[REQUESTED_SECONDARY_UOM]
-//      ,[REQUESTED_SECONDARY_QUANTITY]
-//      ,[ROLL_REAM_QTY]
-//      ,[ROLL_REAM_WT]
-//      ,[DATA_UPADTE_AUTHORITY]
-//      ,[DATA_WRITE_TYPE]
-//      ,[CREATED_BY]
-//      ,[CREATED_USER_NAME]
-//      ,[CREATION_DATE]
-//      ,[LAST_UPDATE_BY]
-//      ,[LAST_UPDATE_USER_NAME]
-//      ,[LAST_UPDATE_DATE]
-//)
-//SELECT [TRANSFER_DETAIL_ID]
-//      ,@NEW_TRANSFER_HEADER_ID
-//      ,[INVENTORY_ITEM_ID]
-//      ,[ITEM_NUMBER]
-//      ,[ITEM_DESCRIPTION]
-//      ,[ITEM_CATEGORY]
-//      ,[PACKING_TYPE]
-//      ,[REQUESTED_TRANSACTION_UOM]
-//      ,[REQUESTED_TRANSACTION_QUANTITY]
-//      ,[REQUESTED_PRIMARY_UOM]
-//      ,[REQUESTED_PRIMARY_QUANTITY]
-//      ,[REQUESTED_SECONDARY_UOM]
-//      ,[REQUESTED_SECONDARY_QUANTITY]
-//      ,[ROLL_REAM_QTY]
-//      ,[ROLL_REAM_WT]
-//      ,@DATA_UPADTE_AUTHORITY
-//      ,[DATA_WRITE_TYPE]
-//      ,[CREATED_BY]
-//      ,[CREATED_USER_NAME]
-//      ,[CREATION_DATE]
-//      ,[LAST_UPDATE_BY]
-//      ,[LAST_UPDATE_USER_NAME]
-//      ,[LAST_UPDATE_DATE]
-//  FROM [TRF_DETAIL_T]
-//  WHERE [TRANSFER_HEADER_ID] = @TRANSFER_HEADER_ID
-//";
-//                    if (this.Context.Database.ExecuteSqlCommand(cmd, new SqlParameter("@TRANSFER_HEADER_ID", transferHeaderId),
-//                        new SqlParameter("@NEW_TRANSFER_HEADER_ID", newHeader.TransferHeaderId),
-//                        new SqlParameter("@DATA_UPADTE_AUTHORITY", DataUpdateAuthority.Permit) //待確認MES出庫轉MES入庫是否要封鎖Detail修改權限
-//                        ) <= 0)  
-//                    {
-//                        throw new Exception("出庫明細轉入庫明細失敗");
-//                    }
+                    //出庫歷史明細轉入庫明細
+                    string cmd = @"
+INSERT INTO TRF_DETAIL_T
+(
+      [TRANSFER_HEADER_ID]
+      ,[INVENTORY_ITEM_ID]
+      ,[ITEM_NUMBER]
+      ,[ITEM_DESCRIPTION]
+      ,[ITEM_CATEGORY]
+      ,[PACKING_TYPE]
+      ,[REQUESTED_TRANSACTION_UOM]
+      ,[REQUESTED_TRANSACTION_QUANTITY]
+      ,[REQUESTED_PRIMARY_UOM]
+      ,[REQUESTED_PRIMARY_QUANTITY]
+      ,[REQUESTED_SECONDARY_UOM]
+      ,[REQUESTED_SECONDARY_QUANTITY]
+      ,[ROLL_REAM_QTY]
+      ,[ROLL_REAM_WT]
+      ,[DATA_UPADTE_AUTHORITY]
+      ,[DATA_WRITE_TYPE]
+      ,[OUTBOUND_TRANSFER_DETAIL_ID]
+      ,[CREATED_BY]
+      ,[CREATED_USER_NAME]
+      ,[CREATION_DATE]
+      ,[LAST_UPDATE_BY]
+      ,[LAST_UPDATE_USER_NAME]
+      ,[LAST_UPDATE_DATE]
+)
+SELECT
+      @NEW_TRANSFER_HEADER_ID
+      ,[INVENTORY_ITEM_ID]
+      ,[ITEM_NUMBER]
+      ,[ITEM_DESCRIPTION]
+      ,[ITEM_CATEGORY]
+      ,[PACKING_TYPE]
+      ,[REQUESTED_TRANSACTION_UOM]
+      ,[REQUESTED_TRANSACTION_QUANTITY]
+      ,[REQUESTED_PRIMARY_UOM]
+      ,[REQUESTED_PRIMARY_QUANTITY]
+      ,[REQUESTED_SECONDARY_UOM]
+      ,[REQUESTED_SECONDARY_QUANTITY]
+      ,[ROLL_REAM_QTY]
+      ,[ROLL_REAM_WT]
+      ,@DATA_UPADTE_AUTHORITY
+      ,[DATA_WRITE_TYPE]
+      ,[OUTBOUND_TRANSFER_DETAIL_ID]
+      ,[CREATED_BY]
+      ,[CREATED_USER_NAME]
+      ,[CREATION_DATE]
+      ,[LAST_UPDATE_BY]
+      ,[LAST_UPDATE_USER_NAME]
+      ,[LAST_UPDATE_DATE]
+  FROM [TRF_DETAIL_HT]
+  WHERE [TRANSFER_HEADER_ID] = @TRANSFER_HEADER_ID
+";
+                    if (this.Context.Database.ExecuteSqlCommand(cmd, new SqlParameter("@TRANSFER_HEADER_ID", transferHeaderId),
+                        new SqlParameter("@NEW_TRANSFER_HEADER_ID", newHeader.TransferHeaderId),
+                        new SqlParameter("@DATA_UPADTE_AUTHORITY", DataUpdateAuthority.Permit) //待確認MES出庫轉MES入庫是否要封鎖Detail修改權限
+                        ) <= 0)
+                    {
+                        throw new Exception("出庫明細轉入庫明細失敗");
+                    }
 
-//                    //出庫揀貨轉入庫揀貨
-//                    cmd = @"
-//INSERT INTO [TRF_INBOUND_PICKED_HT]
-//(
-//      [TRANSFER_PICKED_ID]
-//      ,[TRANSFER_DETAIL_ID]
-//      ,[TRANSFER_HEADER_ID]
-//      ,[INVENTORY_ITEM_ID]
-//      ,[ITEM_NUMBER]
-//      ,[STOCK_ID]
-//      ,[BARCODE]
-//      ,[PRIMARY_QUANTITY]
-//      ,[PRIMARY_UOM]
-//      ,[SECONDARY_QUANTITY]
-//      ,[SECONDARY_UOM]
-//      ,[LOT_NUMBER]
-//      ,[LOT_QUANTITY]
-//      ,[NOTE]
-//      ,[STATUS]
-//      ,[PALLET_STATUS]
-//      ,[CREATED_BY]
-//      ,[CREATED_USER_NAME]
-//      ,[CREATION_DATE]
-//      ,[LAST_UPDATE_BY]
-//      ,[LAST_UPDATE_USER_NAME]
-//      ,[LAST_UPDATE_DATE]
-//)
-//SELECT [TRANSFER_PICKED_ID]
-//      ,[TRANSFER_DETAIL_ID]
-//      ,@NEW_TRANSFER_HEADER_ID
-//      ,[INVENTORY_ITEM_ID]
-//      ,[ITEM_NUMBER]
-//      ,[STOCK_ID]
-//      ,[BARCODE]
-//      ,[PRIMARY_QUANTITY]
-//      ,[PRIMARY_UOM]
-//      ,[SECONDARY_QUANTITY]
-//      ,[SECONDARY_UOM]
-//      ,[LOT_NUMBER]
-//      ,[LOT_QUANTITY]
-//      ,[NOTE]
-//      ,[STATUS]
-//      ,[PALLET_STATUS]
-//      ,[CREATED_BY]
-//      ,[CREATED_USER_NAME]
-//      ,[CREATION_DATE]
-//      ,[LAST_UPDATE_BY]
-//      ,[LAST_UPDATE_USER_NAME]
-//      ,[LAST_UPDATE_DATE]
-//  FROM [TRF_OUTBOUND_PICKED_T]
-//  WHERE [TRANSFER_HEADER_ID] = @TRANSFER_HEADER_ID
-//";
-//                    if (this.Context.Database.ExecuteSqlCommand(cmd, new SqlParameter("@TRANSFER_HEADER_ID", transferHeaderId),
-//                         new SqlParameter("@NEW_TRANSFER_HEADER_ID", newHeader.TransferHeaderId),
-//                          new SqlParameter("@NEW_TRANSFER_DETAIL_ID", newHeader.),
+                    //出庫揀貨複製到入庫揀貨
+                    cmd = @"
+INSERT INTO [TRF_INBOUND_PICKED_T]
+(
+      
+      [TRANSFER_DETAIL_ID]
+      ,[TRANSFER_HEADER_ID]
+      ,[INVENTORY_ITEM_ID]
+      ,[ITEM_NUMBER]
+      ,[STOCK_ID]
+      ,[BARCODE]
+      ,[PRIMARY_QUANTITY]
+      ,[PRIMARY_UOM]
+      ,[SECONDARY_QUANTITY]
+      ,[SECONDARY_UOM]
+      ,[LOT_NUMBER]
+      ,[LOT_QUANTITY]
+      ,[NOTE]
+      ,[STATUS]
+      ,[PALLET_STATUS]
+      ,[CREATED_BY]
+      ,[CREATED_USER_NAME]
+      ,[CREATION_DATE]
+      ,[LAST_UPDATE_BY]
+      ,[LAST_UPDATE_USER_NAME]
+      ,[LAST_UPDATE_DATE]
+)
+SELECT 
+      d.[TRANSFER_DETAIL_ID]
+      ,d.[TRANSFER_HEADER_ID]
+      ,p.[INVENTORY_ITEM_ID]
+      ,p.[ITEM_NUMBER]
+      ,[STOCK_ID]
+      ,[BARCODE]
+      ,[PRIMARY_QUANTITY]
+      ,[PRIMARY_UOM]
+      ,[SECONDARY_QUANTITY]
+      ,[SECONDARY_UOM]
+      ,[LOT_NUMBER]
+      ,[LOT_QUANTITY]
+      ,[NOTE]
+      ,@STATUS
+      ,[PALLET_STATUS]
+      ,p.[CREATED_BY]
+      ,p.[CREATED_USER_NAME]
+      ,p.[CREATION_DATE]
+      ,p.[LAST_UPDATE_BY]
+      ,p.[LAST_UPDATE_USER_NAME]
+      ,p.[LAST_UPDATE_DATE]
+  FROM [TRF_OUTBOUND_PICKED_HT] p
+  inner join TRF_DETAIL_T d on p.TRANSFER_DETAIL_ID = d.OUTBOUND_TRANSFER_DETAIL_ID
+  WHERE p.[TRANSFER_HEADER_ID] = @TRANSFER_HEADER_ID
+";
+                    if (this.Context.Database.ExecuteSqlCommand(cmd, new SqlParameter("@TRANSFER_HEADER_ID", transferHeaderId),
+                        new SqlParameter("@STATUS", InboundStatus.WaitInbound)
+                        ) <= 0)
+                    {
+                        throw new Exception("出庫揀貨複製到入庫揀貨失敗");
+                    }
 
-//                        ) <= 0)
-//                    {
-//                        throw new Exception("出庫揀貨轉入庫揀貨失敗");
-//                    }
+                    //處理拆板
+                    var pickList = trfInboundPickedTRepositiory.GetAll().Where(x => x.TransferHeaderId == newHeader.TransferHeaderId && x.PalletStatus == PalletStatusCode.Split).ToList();
+                    if (pickList != null && pickList.Count > 0)
+                    {
+                        var generateBarcodesResult = GenerateBarcodes((long)newHeader.TransferOrganizationId, newHeader.TransferSubinventoryCode, pickList.Count, userId);
+                        if (!generateBarcodesResult.Success) throw new Exception(generateBarcodesResult.Msg);
 
-//                }
-//                catch (Exception ex)
-//                {
-//                    logger.Error(LogUtilities.BuildExceptionMessage(ex));
-//                    txn.Rollback();
-//                    return new ResultModel(false, "出庫存檔失敗:" + ex.Message);
-//                }
-//            }
-//        }
+                        for(int i = 0; i < pickList.Count; i++)
+                        {
+                            pickList[i].SplitFromBarcode = pickList[i].Barcode;
+                            pickList[i].Barcode = generateBarcodesResult.Data[i];
+                            pickList[i].StockId = 0;
+                            pickList[i].Status = InboundStatus.WaitPrint;
+                            pickList[i].Note = "拆至" + pickList[i].SplitFromBarcode;
+                            pickList[i].PalletStatus = PalletStatusCode.All;
+                            pickList[i].LastUpdateBy = userId;
+                            pickList[i].LastUpdateUserName = userName;
+                            trfInboundPickedTRepositiory.Update(pickList[i]);
+                        }
+                        trfInboundPickedTRepositiory.SaveChanges();
+                    }
+
+                    txn.Commit();
+                    return new ResultDataModel<TRF_HEADER_T>(true, "MES出庫轉入庫成功", newHeader);
+
+                }
+                catch (Exception ex)
+                {
+                    logger.Error(LogUtilities.BuildExceptionMessage(ex));
+                    txn.Rollback();
+                    return new ResultDataModel<TRF_HEADER_T>(false, "MES出庫轉入庫失敗:" + ex.Message, null);
+                }
+            }
+        }
 
         public ResultModel MergeBarcode(STOCK_T mergeBarocdeData, List<TRF_INBOUND_PICKED_T> waitMergeBarcodeDataList, string userId, string userName)
         {

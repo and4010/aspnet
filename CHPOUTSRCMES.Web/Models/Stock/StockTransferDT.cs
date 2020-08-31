@@ -236,10 +236,24 @@ namespace CHPOUTSRCMES.Web.Models.Stock
 
 
 
-        public IEnumerable<SelectListItem> GetLocatorListForUserId(MasterUOW uow, string userId, string SUBINVENTORY_CODE, MasterUOW.DropDownListType type)
+        public List<SelectListItem> GetLocatorListForUserId(MasterUOW uow, string userId, string SUBINVENTORY_CODE, MasterUOW.DropDownListType type)
         {
             //return orgData.GetLocatorList(uow, "265", SUBINVENTORY_CODE, type);
             return orgData.GetLocatorListForUserId(uow, userId, SUBINVENTORY_CODE, type);
+        }
+
+        /// <summary>
+        /// 取得儲位下拉選單,
+        /// 條件:ORGANIZATION_ID 和 SUBINVENTORY_CODE 和 LOCATOR_TYPE為2 和 CONTROL_FLAG 不為D 和 LOCATOR_DISABLE_DATE為NULL或大於系統時間,
+        /// 適用作業: 庫存移轉-入庫 發貨儲位、庫存移轉-出庫 收貨儲位、基本資料-組織倉庫
+        /// </summary>
+        /// <param name="uow"></param>
+        /// <param name="ORGANIZATION_ID">組織Id, *為全部組織</param>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public List<SelectListItem> GetLocatorList(MasterUOW uow, string ORGANIZATION_ID, string SUBINVENTORY_CODE, MasterUOW.DropDownListType type)
+        {
+            return uow.GetLocatorDropDownList(ORGANIZATION_ID, SUBINVENTORY_CODE, type);
         }
 
         /// <summary>
@@ -1236,13 +1250,27 @@ namespace CHPOUTSRCMES.Web.Models.Stock
             return query.ToList();
         }
 
-        //儲位異動出庫存檔
+        /// <summary>
+        /// 出庫存檔
+        /// </summary>
+        /// <param name="uow"></param>
+        /// <param name="transferHeaderId"></param>
+        /// <param name="userId"></param>
+        /// <param name="userName"></param>
+        /// <returns></returns>
         public ResultModel OutBoundSaveTransfer(TransferUOW uow, long transferHeaderId, string userId, string userName)
         {
-            return new ResultModel(true, "");
-            //return uow.OutBoundSaveTransfer(transferHeaderId, userId, userName);
+            return uow.OutBoundSaveTransfer(transferHeaderId, userId, userName);
         }
 
+        /// <summary>
+        /// 入庫存檔
+        /// </summary>
+        /// <param name="uow"></param>
+        /// <param name="transferHeaderId"></param>
+        /// <param name="userId"></param>
+        /// <param name="userName"></param>
+        /// <returns></returns>
         public ResultModel InBoundSaveTransfer(TransferUOW uow, long transferHeaderId, string userId, string userName)
         {
             return uow.InBoundSaveTransfer(transferHeaderId, userId, userName, true);
@@ -1351,9 +1379,14 @@ namespace CHPOUTSRCMES.Web.Models.Stock
             return uow.WaitPrintToWaitInbound(transferPickedIdList, userId, userName);
         }
 
-        #region 併板
+        public ResultDataModel<TRF_HEADER_T> OutBoundToInbound(TransferUOW uow, long transferHeaderId, string userId, string userName)
+        {
+            return uow.OutBoundToInbound(transferHeaderId, userId, userName);
+        }
 
-        public MergeBarcodeViewModel GetMergeBarcodeViewModel(TransferUOW uow, List<long> transferPickedIdList)
+            #region 併板
+
+            public MergeBarcodeViewModel GetMergeBarcodeViewModel(TransferUOW uow, List<long> transferPickedIdList)
         {
             MergeBarcodeViewModel vieModel = new MergeBarcodeViewModel();
             vieModel.WaitMergeBarcodeList = new List<TRF_INBOUND_PICKED_T>();

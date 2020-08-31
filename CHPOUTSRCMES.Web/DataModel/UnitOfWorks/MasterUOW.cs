@@ -376,7 +376,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
 
         public TRANSACTION_TYPE_T GetTransactionType(long transactionTypeId)
         {
-            return transactionTypeRepositiory.GetAll().AsNoTracking().FirstOrDefault(x => x.TransactionActionId == transactionTypeId && x.ControlFlag != ControlFlag.Deleted);
+            return transactionTypeRepositiory.GetAll().AsNoTracking().FirstOrDefault(x => x.TransactionTypeId == transactionTypeId && x.ControlFlag != ControlFlag.Deleted);
         }
 
         #endregion
@@ -804,7 +804,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
         /// <param name="lastUpdatedBy"></param>
         /// <param name="addDate"></param>
         /// <returns></returns>
-        public ResultDataModel<STOCK_T> UpdateStockLockQty(STOCK_T stock, STK_TXN_T stkTxnT, decimal addPriLockQty, decimal? addSecLockQty, IDetail detail, string statusCode, string lastUpdatedBy, DateTime addDate)
+        public ResultDataModel<STOCK_T> UpdateStockLockQty(STOCK_T stock, STK_TXN_T stkTxnT, decimal addPriLockQty, decimal? addSecLockQty, IDetail detail, string statusCode, string lastUpdatedBy, DateTime now)
         {
             try
             {
@@ -814,7 +814,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                 stock.StatusCode = stock.PrimaryAvailableQty == 0 ? detail.ToStockStatus(statusCode) : StockStatusCode.InStock;
 
                 stock.LastUpdateBy = lastUpdatedBy;
-                stock.LastUpdateDate = addDate;
+                stock.LastUpdateDate = now;
                 stkTxnT.CreatedBy = stock.CreatedBy;
                 stkTxnT.CreationDate = stock.CreationDate;
                 stkTxnT.LastUpdateBy = null;
@@ -1583,9 +1583,9 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
         /// </summary>
         /// <param name="organiztionId">組織ID</param>
         /// <param name="subinventoryCode">倉庫</param>
-        /// <param name="prefix">前置碼</param>
         /// <param name="requestQty">數量</param>
         /// <param name="userId">使用者ID</param>
+        /// <param name="prefix">前置碼</param>
         /// <returns>ResultDataModel 條碼清單</returns>
         public ResultDataModel<List<string>> GenerateBarcodes(long organiztionId, string subinventoryCode, int requestQty, string userId, string prefix = "")
         {
@@ -2487,6 +2487,12 @@ on s.ORGANIZATION_ID = l.ORGANIZATION_ID and s.SUBINVENTORY_CODE = l.SUBINVENTOR
 
 
             return Subinventory;
+        }
+
+        public YSZMPCKQ_T GetYszmpckq(long organizationId, string organizationCode, string ospSubinventory, string pstyp)
+        {
+            return yszmpckqTRepositiory.GetAll().AsNoTracking().FirstOrDefault(x => x.OrganizationId == organizationId &&
+            x.OrganizationCode == organizationCode && x.OspSubinventory == ospSubinventory && x.Pstyp == pstyp);
         }
 
         public class PickStatus : IDetail

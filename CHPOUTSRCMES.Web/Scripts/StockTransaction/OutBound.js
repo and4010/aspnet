@@ -266,7 +266,7 @@ function OutBoundInit() {
 
             var SUBINVENTORY_CODE = getInSubinventoryCode();
             $.ajax({
-                url: "/OrgSubinventory/GetLocatorList",
+                url: "/StockTransaction/GetLocatorList",
                 type: "post",
                 data: {
                     ORGANIZATION_ID: "*",
@@ -1109,7 +1109,7 @@ function OutBoundInit() {
                     OutBoundBarcodeDataTablesBody.ajax.reload();
                     if (data.Data.NumberStatus == "1") {
                         //出貨編號已存檔
-                        InputClose();
+                        inputClose();
                     } else {
                         
                     }
@@ -1204,6 +1204,7 @@ function OutBoundInit() {
         $('#btnPickBarcode').attr('disabled', false);
         $('#btnSaveTransfer').attr('disabled', false);
         $('#btnSaveStockTransferDT').attr('disabled', false);
+        $('#txtSECONDARY_QUANTITY').attr('disabled', false);
     }
 
     function inputClose() {
@@ -1217,6 +1218,7 @@ function OutBoundInit() {
         $('#btnPickBarcode').attr('disabled', true);
         $('#btnSaveTransfer').attr('disabled', true);
         $('#btnSaveStockTransferDT').attr('disabled', true);
+        $('#txtSECONDARY_QUANTITY').attr('disabled', true);
     }
 
 
@@ -1294,7 +1296,7 @@ function OutBoundInit() {
         }
 
         if ($('#ddlOutLocatorArea').is(":visible") && $('#ddlInLocatorArea').is(":visible")) {
-            if ($('#ddlOutLocatorArea').val() == $('#ddlInLocatorArea').val()) {
+            if (getOutLocatorId() == getInLocatorId()) {
                 swal.fire('同倉庫儲位要不同');
                 event.preventDefault();
                 return;

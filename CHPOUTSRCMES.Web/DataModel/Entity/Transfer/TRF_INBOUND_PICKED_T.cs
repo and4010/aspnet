@@ -151,7 +151,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Transfer
         /// 拆至條碼
         /// </summary>
         /// 
-        [StringLength(10)]
+        [StringLength(20)]
         [Column("SPLIT_FROM_BARCODE")]
         public string SplitFromBarcode { set; get; }
 
