@@ -1263,7 +1263,7 @@ function OutBoundInit() {
 
     //離開料號欄位自動搜尋
     $('#AutoCompleteItemNumber').blur(function () {
-        GetStockItemData($('#AutoCompleteItemNumber').val());
+        GetStockItemData($('#AutoCompleteItemNumber').val(), false);
     });
 
     
@@ -1645,7 +1645,7 @@ function OutBoundInit() {
 
     }
 
-    function GetStockItemData(ITEM_NO) {
+    function GetStockItemData(ITEM_NO, focusNext) {
 
         $.ajax({
             url: "/StockTransaction/GetStockItemData",
@@ -1663,13 +1663,17 @@ function OutBoundInit() {
                         $('#PACKING_TYPE').show();
                         $('#PACKING_TYPE').html(data.Data.CatalogElemVal110);
                         $('#UNIT').html(data.Data.SecondaryUomCode);
-                        $('#txtInputTransactionQty').focus();
+                        if (focusNext) {
+                            $('#txtInputTransactionQty').focus();
+                        }
                     } else {
                         $('#PACKING_TYPE_LABEL').hide();
                         $('#PACKING_TYPE').hide();
                         $('#PACKING_TYPE').html("");
                         $('#UNIT').html(data.Data.PrimaryUomCode);
-                        $('#txtInputTransactionQty').focus();
+                        if (focusNext) {
+                            $('#txtInputTransactionQty').focus();
+                        }
                     }
 
                 } else {

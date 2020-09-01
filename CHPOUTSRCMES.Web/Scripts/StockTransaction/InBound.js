@@ -713,7 +713,7 @@
 
     //離開料號欄位自動搜尋
     $('#AutoCompleteItemNumber').blur(function () {
-        GetStockItemData($('#AutoCompleteItemNumber').val());
+        GetStockItemData($('#AutoCompleteItemNumber').val(), false);
     });
 
     editor = new $.fn.dataTable.Editor({
@@ -1294,7 +1294,7 @@
         //}
     }
 
-    function GetStockItemData(ITEM_NO) {
+    function GetStockItemData(ITEM_NO, focusNext) {
 
         $.ajax({
             url: "/StockTransaction/GetStockItemData",
@@ -1312,7 +1312,9 @@
                         $('#PACKING_TYPE').show();
                         $('#PACKING_TYPE').html(data.Data.CatalogElemVal110);
                         $('#UNIT').html(data.Data.SecondaryUomCode);
-                        $('#txtInputTransactionQty').focus();
+                        if (focusNext) {
+                            $('#txtInputTransactionQty').focus();
+                        }
                         $('#ROLL_INPUT_AREA').hide();
                         $('#REAM_INPUT_AREA').show();
                     } else {
@@ -1320,7 +1322,9 @@
                         $('#PACKING_TYPE').hide();
                         $('#PACKING_TYPE').html("");
                         $('#UNIT').html(data.Data.PrimaryUomCode);
-                        $('#txtInputTransactionQty').focus();
+                        if (focusNext) {
+                            $('#txtInputTransactionQty').focus();
+                        }
                         $('#ROLL_INPUT_AREA').show();
                         $('#REAM_INPUT_AREA').hide();
                     }
@@ -1826,7 +1830,7 @@
                     'ItemNumber': value.ITEM_NUMBER,
                     'Qty': value.PRIMARY_QUANTITY,
                     'LotNumber': value.LOT_NUMBER,
-                    'RollReamWt': GetRollReamWT()
+                    'RollReamWt': 0
                 }
                 excelList.push(InboundImportExcelModel);
             });
@@ -1918,9 +1922,9 @@
             $.each(dd, function (index, value) {
                 var InboundImportExcelModel = {
                     'ItemNumber': value.ITEM_NUMBER,
-                    'Qty': value.PRIMARY_QUANTITY,
-                    'LotNumber': value.LOT_NUMBER,
-                    'RollReamWt': GetRollReamWT()
+                    'Qty': value.REQUESTED_QUANTITY2,
+                    'LotNumber': "",
+                    'RollReamWt': value.ROLL_REAM_WT
                 }
                 excelList.push(InboundImportExcelModel);
             });

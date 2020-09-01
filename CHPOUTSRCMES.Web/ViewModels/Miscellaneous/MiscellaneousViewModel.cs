@@ -14,7 +14,7 @@ namespace CHPOUTSRCMES.Web.ViewModels.Miscellaneous
         public string SelectedMiscellaneous { set; get; }
 
         [Display(Name = "項次")]
-        public string StockId { set; get; }
+        public string SUB_ID { set; get; }
 
         [Display(Name = "倉庫")]
         public string Subinventory { set; get; }
@@ -32,11 +32,11 @@ namespace CHPOUTSRCMES.Web.ViewModels.Miscellaneous
 
         public string TransactionUnit { set; get; }
 
-        public decimal? SearchQty { set; get; }
+        public string SearchQty { set; get; }
 
-        public decimal? PercentageError { set; get; }
+        public string PercentageError { set; get; }
 
-        public decimal? Qty { set; get; }
+        public string Qty { set; get; }
 
         [Display(Name = "備註")]
         public string Note { set; get; }

@@ -13,6 +13,8 @@ namespace CHPOUTSRCMES.Web.Models.Stock
     public class StockDT
     {
         public long ID { set; get; }
+
+        public long SUB_ID { set; get; }
         public long ORGANIZATION_ID { set; get; }
         public string ORGANIZATION_NAME { set; get; }
         public string SUBINVENTORY_CODE { set; get; }
@@ -47,6 +49,8 @@ namespace CHPOUTSRCMES.Web.Models.Stock
         public long LAST_UPDATE_BY { set; get; }
         public string LAST_UPDATE_BY_USERNAME { set; get; }
         public string LAST_UPDATE_DATE { get; set; }
+
+        public StockDT() { }
 
         public StockDT(long ID, long ORGANIZATION_ID, string ORGANIZATION_NAME, string SUBINVENTORY_CODE, string SUBINVENTORY_NAME,
             long LOCATOR_ID, long LOCATOR_TYPE, string SEGMENT3, long INVENTORY_ITEM_ID, string ITEM_NO, string OSP_BATCH_NO, string ITEM_DESCRIPTION, string ITEM_CATEGORY,

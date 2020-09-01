@@ -253,6 +253,9 @@
     <Compile Include="Controllers\YszmpckqController.cs" />
     <Compile Include="DataAnnotation\Precision.cs" />
     <Compile Include="DataModel\Entity\Information\ORG_UNIT_T.cs" />
+    <Compile Include="DataModel\Entity\Miscellaneous\TRF_MISCELLANEOUS_HEADER_T.cs" />
+    <Compile Include="DataModel\Entity\Miscellaneous\TRF_MISCELLANEOUS_HT.cs" />
+    <Compile Include="DataModel\Entity\Miscellaneous\TRF_MISCELLANEOUS_T.cs" />
     <Compile Include="DataModel\Entity\Temp\ORG_UNIT_T.cs" />
     <Compile Include="DataModel\Entity\Transfer\TRF_DETAIL_HT.cs" />
     <Compile Include="DataModel\Entity\Transfer\TRF_DETAIL_T.cs" />
@@ -284,6 +287,7 @@
     <Compile Include="DataModel\Entity\Process\OSP_PICKED_OUT_T.cs" />
     <Compile Include="DataModel\Entity\Process\OSP_YIELD_VARIANCE_HT.cs" />
     <Compile Include="DataModel\Entity\Process\OSP_YIELD_VARIANCE_T.cs" />
+    <Compile Include="DataModel\UnitOfWorks\MiscellaneousUOW.cs" />
     <Compile Include="DataModel\UnitOfWorks\ProcessUOW.cs" />
     <Compile Include="DataModel\UnitOfWorks\ItemNoUOW.cs" />
     <Compile Include="DataModel\UnitOfWorks\MaincheTypeUOW.cs" />

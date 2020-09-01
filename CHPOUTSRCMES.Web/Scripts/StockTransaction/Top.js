@@ -78,12 +78,12 @@ function TopInit() {
                 type: "POST",
                 dataType: "json",
                 data: {
-                    SubinventoryCode: $("#ddlSubinventory").val(),
-                    Locator: $("#ddlLocator").val(),
+                    //SubinventoryCode: $("#ddlSubinventory").val(),
+                    //Locator: $("#ddlLocator").val(),
                     Prefix: request.term
                 },
                 success: function (data) {
-                    response($.map(data, function (item) {
+                    response($.map(data.slice(0, 20), function (item) {
                         return { label: item.Description, value: item.Value };
                     }))
                 }
@@ -94,9 +94,14 @@ function TopInit() {
         },
         select: function (event, ui) {
             if (ui.item) {
+                $('#txtItemNumber').val(ui.item.value);
                 AutoCompleteItemNumberSelectCallBack(ui.item.value);
             }
         }
+    });
+
+    $('#txtItemNumber').blur(function () {
+        LostFocusItemNumberCallBack($('#txtItemNumber').val());
     });
 
     //$('#txtItemNumber').keydown(function (e) {
