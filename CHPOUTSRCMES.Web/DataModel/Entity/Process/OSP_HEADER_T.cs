@@ -204,5 +204,38 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Process
         /// 
         [Column("MODIFICATIONS")]
         public int Modifications { set; get; }
+
+        /// <summary>
+        /// 建立人員
+        /// </summary>
+        /// 
+        [Required]
+        [Column("CREATED_BY")]
+        [StringLength(128)]
+        public string CreatedBy { set; get; }
+
+        /// <summary>
+        /// 建立時間
+        /// </summary>
+        /// 
+        [DataType(DataType.Date)]
+        [Column("CREATION_DATE")]
+        public DateTime? CreationDate { set; get; }
+
+        /// <summary>
+        /// 更新人員
+        /// </summary>
+        /// 
+        [Column("LAST_UPDATE_BY")]
+        [StringLength(128)]
+        public string LastUpdateBy { set; get; }
+
+        /// <summary>
+        /// 更新時間
+        /// </summary>
+        /// 
+        [Column("LAST_UPDATE_DATE")]
+        [DataType(DataType.Date)]
+        public DateTime? LastUpdateDate { set; get; }
     }
 }

@@ -1421,6 +1421,7 @@
     <Content Include="Data\SQLScript\107_SP_YszmpckqSync.sql" />
     <Content Include="Data\SQLScript\108_SP_RelatedSync.sql" />
     <Content Include="Data\SQLScript\109_SP_ItemSync.sql" />
+    <Content Include="Data\SQLScript\114_SP_P219_OspStCreateNew.sql" />
     <Content Include="Data\SQLScript\113_SP_P220_DlvStCreateNew.sql" />
     <Content Include="Data\SQLScript\201_XXIF_CHP_CONTROL_ST.sql" />
     <Content Include="Data\SQLScript\202_XXIF_CHP_P217_CONTAINER_ST.sql" />

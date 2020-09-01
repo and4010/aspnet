@@ -72,6 +72,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\Entity\CTR_DETAIL_T.cs" />
+    <Compile Include="Models\Entity\CTR_HEADER_T.cs" />
+    <Compile Include="Models\Entity\CTR_PICKED_T.cs" />
+    <Compile Include="Models\Entity\DLV_DETAIL_T.cs" />
+    <Compile Include="Models\Entity\DLV_HEADER_T.cs" />
+    <Compile Include="Models\Entity\DLV_ORG_T.cs" />
     <Compile Include="Models\Entity\Temp\ITEMS_TMP_T.cs" />
     <Compile Include="Models\Entity\Temp\LOCATOR_TMP_T.cs" />
     <Compile Include="Models\Entity\Temp\MACHINE_PAPER_TYPE_TMP_T.cs" />
@@ -87,6 +93,11 @@
     <Compile Include="Models\IBulkCopier.cs" />
     <Compile Include="Models\BulkCopier.cs" />
     <Compile Include="Models\Repository\MsSql\ControlStageRepository.cs" />
+    <Compile Include="Models\Repository\MsSql\CtrDetailRepository.cs" />
+    <Compile Include="Models\Repository\MsSql\CtrHeaderRepository.cs" />
+    <Compile Include="Models\Repository\MsSql\CtrPickedRepository.cs" />
+    <Compile Include="Models\Repository\MsSql\DlvDetailRepository.cs" />
+    <Compile Include="Models\Repository\MsSql\DlvHeaderRepository.cs" />
     <Compile Include="Models\Repository\MsSql\GenericRepository.cs" />
     <Compile Include="Models\Repository\Oracle\GenericRepository.cs" />
     <Compile Include="Models\Repository\MsSql\CtrStRepository.cs" />
@@ -95,6 +106,13 @@
     <Compile Include="Models\Repository\Oracle\ItemRepository.cs" />
     <Compile Include="Models\ResultDataModel.cs" />
     <Compile Include="Models\ResultModel.cs" />
+    <Compile Include="Models\Service\CtrStService.cs" />
+    <Compile Include="Models\Service\OspStService.cs" />
+    <Compile Include="Models\Service\DlvStService.cs" />
+    <Compile Include="Models\Service\MasterService.cs" />
+    <Compile Include="Models\UnitOfWork\BaseUOW.cs" />
+    <Compile Include="Models\UnitOfWork\OspStUOW.cs" />
+    <Compile Include="Models\UnitOfWork\DlvStUOW.cs" />
     <Compile Include="Models\UnitOfWork\IUnitOfWork.cs" />
     <Compile Include="Models\UnitOfWork\CtrStUOW.cs" />
     <Compile Include="Models\UnitOfWork\MasterUOW .cs" />

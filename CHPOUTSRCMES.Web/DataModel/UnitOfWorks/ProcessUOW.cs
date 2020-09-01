@@ -88,7 +88,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             OSP_ORG_T oSP = new OSP_ORG_T();
             try
             {
-                oSP.ProcessCode = "XXIFP220";
+                oSP.ProcessCode = "XXIFP219";
                 oSP.ServerCode = "123";
                 oSP.BatchId = "20191112141600100000";
                 oSP.BatchLineId = 1;
@@ -159,7 +159,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                 oSP.LastUpdateDate = DateTime.Now;
                 OspOrgTRepositiory.Create(oSP, true);
 
-                oSP.ProcessCode = "XXIFP220";
+                oSP.ProcessCode = "XXIFP219";
                 oSP.ServerCode = "123";
                 oSP.BatchId = "20191112141600100000";
                 oSP.BatchLineId = 1;
@@ -233,7 +233,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
 
                 //代紙平張
 
-                oSP.ProcessCode = "XXIFP221";
+                oSP.ProcessCode = "XXIFP219";
                 oSP.ServerCode = "124";
                 oSP.BatchId = "20201112141600100000";
                 oSP.BatchLineId = 2;
@@ -307,7 +307,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                 OspOrgTRepositiory.Create(oSP, true);
 
 
-                oSP.ProcessCode = "XXIFP221";
+                oSP.ProcessCode = "XXIFP219";
                 oSP.ServerCode = "124";
                 oSP.BatchId = "20201112141600100000";
                 oSP.BatchLineId = 2;
@@ -382,7 +382,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
 
                 //代紙平張
 
-                oSP.ProcessCode = "XXIFP221";
+                oSP.ProcessCode = "XXIFP219";
                 oSP.ServerCode = "124";
                 oSP.BatchId = "20201112141600100000";
                 oSP.BatchLineId = 3;
@@ -454,7 +454,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                 OspOrgTRepositiory.Create(oSP, true);
 
 
-                oSP.ProcessCode = "XXIFP221";
+                oSP.ProcessCode = "XXIFP219";
                 oSP.ServerCode = "124";
                 oSP.BatchId = "20201112141600100000";
                 oSP.BatchLineId = 3;
@@ -570,6 +570,8 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                         OspHeaderT.PeLastUpdateDate = org[i].PeLastUpdateDate;
                         OspHeaderT.Status = "待排單";
                         OspHeaderT.Modifications = 0;
+                        OspHeaderT.CreatedBy = "SYS";
+                        OspHeaderT.CreationDate = DateTime.Now;
                         OspHeaderTRepositiory.Create(OspHeaderT, true);
                     }
                     else if (batch.BatchNo != org[i].BatchNo)
@@ -592,6 +594,8 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                         OspHeaderT.PeLastUpdateDate = org[i].PeLastUpdateDate;
                         OspHeaderT.Status = "待排單";
                         OspHeaderT.Modifications = 0;
+                        OspHeaderT.CreatedBy = "SYS";
+                        OspHeaderT.CreationDate = DateTime.Now;
                         OspHeaderTRepositiory.Create(OspHeaderT, true);
                     }
 
@@ -599,6 +603,10 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                     if (org[i].LineType == "I")
                     {
                         OspDetailInT.OspHeaderId = OspHeaderT.OspHeaderId;
+                        OspDetailInT.ProcessCode = org[i].ProcessCode;
+                        OspDetailInT.ServerCode = org[i].ServerCode;
+                        OspDetailInT.BatchId = org[i].BatchId;
+                        OspDetailInT.BatchLineId = org[i].BatchLineId;
                         OspDetailInT.LineType = org[i].LineType;
                         OspDetailInT.LineNo = org[i].LineNo;
                         OspDetailInT.InventoryItemId = org[i].InventoryItemId;
@@ -658,6 +666,10 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                     if (org[i].LineType == "P")
                     {
                         OspDetailOutT.OspHeaderId = OspHeaderT.OspHeaderId;
+                        OspDetailOutT.ProcessCode = org[i].ProcessCode;
+                        OspDetailOutT.ServerCode = org[i].ServerCode;
+                        OspDetailOutT.BatchId = org[i].BatchId;
+                        OspDetailOutT.BatchLineId = org[i].BatchLineId;
                         OspDetailOutT.LineType = org[i].LineType;
                         OspDetailOutT.LineNo = org[i].LineNo;
                         OspDetailOutT.InventoryItemId = org[i].InventoryItemId;

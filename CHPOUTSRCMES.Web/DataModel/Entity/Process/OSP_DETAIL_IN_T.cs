@@ -29,6 +29,44 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Process
         public long OspHeaderId { set; get; }
 
         /// <summary>
+        /// XXIFP219
+        /// </summary>
+        /// 
+        [StringLength(20)]
+        [Required]
+        [Column("PROCESS_CODE")]
+        public string ProcessCode { set; get; }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// 
+        [StringLength(20)]
+        [Required]
+        [Column("SERVER_CODE")]
+        public string ServerCode { set; get; }
+
+
+        /// <summary>
+        /// 20191112141600100000
+        /// </summary>
+        /// 
+        [StringLength(20)]
+        [Required]
+        [Column("BATCH_ID")]
+        public string BatchId { set; get; }
+
+
+        /// <summary>
+        /// 1
+        /// </summary>
+        /// 
+        [Required]
+        [Column("BATCH_LINE_ID")]
+        public long BatchLineId { set; get; }
+
+        /// <summary>
         /// 類別(I(-1)：組成成份、P(1)：產品)
         /// </summary>
         /// 

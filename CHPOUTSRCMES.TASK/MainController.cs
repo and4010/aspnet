@@ -210,6 +210,7 @@ namespace CHPOUTSRCMES.TASK
 
                 AddCtrStTasker();
                 AddDlvStTasker();
+                AddOspStTasker();
             }));
         }
 
@@ -238,6 +239,22 @@ namespace CHPOUTSRCMES.TASK
                 var rvTask = task.ContinueWith(subTask => service.ExportDlvStRv(tasker, token), TaskContinuationOptions.OnlyOnRanToCompletion);
 
                 Task.WaitAll(task, rvTask);
+            }));
+        }
+
+        /// <summary>
+        /// 加工SOA排程
+        /// </summary>
+        internal void AddOspStTasker()
+        {
+            AddTasker(new Tasker("加工轉檔程序", 1, (tasker, token) => {
+                OspStService service = new OspStService(MesConnStr, ErpConnStr);
+                var task = service.ImportOspSt(tasker, token);
+                var rvStage1Task = task.ContinueWith(subTask => service.ExportOspStRv(tasker, token), TaskContinuationOptions.OnlyOnRanToCompletion);
+                var rvStage2Task = task.ContinueWith(subTask => service.ExportOspStRv(tasker, token), TaskContinuationOptions.OnlyOnRanToCompletion);
+                var rvStage3Task = task.ContinueWith(subTask => service.ExportOspStRv(tasker, token), TaskContinuationOptions.OnlyOnRanToCompletion);
+                var rvStage4Task = task.ContinueWith(subTask => service.ExportOspStRv(tasker, token), TaskContinuationOptions.OnlyOnRanToCompletion);
+                Task.WaitAll(task, rvStage1Task, rvStage2Task, rvStage3Task, rvStage4Task);
             }));
         }
 
