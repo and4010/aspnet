@@ -202,6 +202,11 @@ function callDailog(status) {
             return;
         }
 
+        if (PaperRolldataTablesHeader.data().length == "0") {
+            swal.fire("表頭無資料，無法匯入");
+            return;
+        }
+
         $.ajax({
             url: '/Purchase/_ImportBodyRoll/',
             type: "POST",
@@ -246,11 +251,16 @@ function init(status) {
     //儲存紙捲條碼按鈕
     $("#BtnPaperRollSaveBarcode").click(function (e) {
         var barcode = $('#PaperRollBarcode').val();
+        var CtrHeaderId = $('#CtrHeaderId').val();
         var table = $('#PaperRolldataTablesBody').DataTable();
         if (status == "0") {
             swal.fire("已入庫無法儲存條碼")
             e.preventDefault();
             $('#PaperRollBarcode').select();
+            return;
+        }
+        if (PaperRolldataTablesHeader.data().length == "0") {
+            swal.fire("表頭無資料，無法匯入");
             return;
         }
         if (barcode.length == 0) {
@@ -261,7 +271,7 @@ function init(status) {
             swal.fire("表身無資料，請先匯入資料。");
             return;
         }
-        InsertPaperRollBarcode(barcode);
+        InsertPaperRollBarcode(barcode, CtrHeaderId);
         $('#PaperRollBarcode').select();
     });
 
@@ -276,9 +286,14 @@ function init(status) {
     $("#BtnFlatSaveBarcode").click(function () {
         var barcode = $('#FlatBarcode').val();
         var table = $('#FlatdataTablesBody').DataTable();
+        var CtrHeaderId = $('#CtrHeaderId').val();
         if (status == "0") {
             swal.fire("已入庫無法儲存條碼");
             $('#FlatBarcode').select();
+            return;
+        }
+        if (FlatdataTablesHeader.data().length == "0") {
+            swal.fire("表頭無資料，無法匯入");
             return;
         }
         if (barcode.length == 0) {
@@ -289,7 +304,7 @@ function init(status) {
             swal.fire("表身無資料，請先匯入資料。");
             return;
         }
-        InsertFlatBarocde(barcode);
+        InsertFlatBarocde(barcode, CtrHeaderId);
         $('#FlatBarcode').select();
 
     });
@@ -386,53 +401,41 @@ function init(status) {
     })
 }
 
-//儲存紙捲條碼
-function InsertPaperRollBarcode(barcode) {
+//儲存紙捲入庫條碼
+function InsertPaperRollBarcode(barcode, CtrHeaderId) {
     $.ajax({
         "url": "/Purchase/RollSaveBarcode",
         "type": "POST",
         "datatype": "json",
-        "data": { barcode: barcode },
+        "data": { barcode: barcode, CtrHeaderId: CtrHeaderId},
         success: function (data) {
-            if (data.status == 1) {
-                swal.fire("條碼已入庫");
-                return;
-            }
-            if (data.status == 0) {
-                PaperRolldataTablesBody();
-                PaperNavsNumber();
-            } else if (data.status == 2) {
-                swal.fire("此無條碼");
+            if (data.resultModel.Success) {
+              
             } else {
-                swal.fire("此無條碼");
+                swal.fire(data.resultModel.Msg);
             }
-
+            PaperRolldataTablesBody();
+            PaperNavsNumber();
         }
     });
 
 }
-//儲存平張條碼
-function InsertFlatBarocde(barcode) {
+//儲存平張入庫條碼
+function InsertFlatBarocde(barcode, CtrHeaderId) {
 
     $.ajax({
         "url": "/Purchase/FlatSaveBarcode",
         "type": "POST",
         "datatype": "json",
-        "data": { barcode: barcode },
+        "data": { barcode: barcode, CtrHeaderId: CtrHeaderId},
         success: function (data) {
-            if (data.status == 1) {
-                swal.fire("條碼已入庫");
-                return;
-            }
-            if (data.status == 0) {
-                FlatdataTablesBody();
-                FlatNavsNumber();
-            } else if (data.status == 2) {
-                swal.fire("此無條碼");
+            if (data.resultModel.Success) {
+              
             } else {
-                swal.fire("此無條碼");
+                swal.fire(data.resultModel.Msg);
             }
-
+            FlatdataTablesBody();
+            FlatNavsNumber();
         }
     });
 

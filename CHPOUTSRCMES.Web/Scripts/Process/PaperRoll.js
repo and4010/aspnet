@@ -14,7 +14,7 @@ $(document).ready(function () {
     onclick();
 
     var Status = $('#Status').val();
-    if (Status == "已完工" || Status == "待核准") {
+    if (Status == CompletedBatch || Status == PendingBatch) {
   
         //完工紀錄使用
         DsiplayPaperRollHide();

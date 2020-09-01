@@ -774,7 +774,7 @@ p.SHIP_ITEM_NUMBER as Item_No,
 p.REAM_WEIGHT as ReamWeight,
 p.PACKING_TYPE as PackingType,
 p.ROLL_REAM_WT as Pieces_Qty,
-CAST(1 AS decimal) as Qty,
+P.TRANSACTION_QUANTITY as Qty,
 p.STATUS as Status,
 p.REASON_DESC as Reason,
 p.NOTE as Remark
@@ -954,34 +954,30 @@ WHERE p.ITEM_CATEGORY = N'捲筒' and p.CTR_PICKED_ID  = @CTR_PICKED_ID");
         /// </summary>
         /// <param name="Barcode"></param>
         /// <returns></returns>
-        public int SavePaperRollBarcode(String Barcode, string LastUpdateBy, string LastUpdateUserName)
+        public ResultModel SavePaperRollBarcode(String Barcode,long CtrHeaderId, string LastUpdateBy, string LastUpdateUserName)
         {
             using (var txn = this.Context.Database.BeginTransaction())
             {
                 try
                 {
-                    var ctrPickT = ctrPickedTRepositiory.Get(x => x.Barcode == Barcode && x.ItemCategory == "捲筒").SingleOrDefault();
-                    if (ctrPickT != null)
+                    var ctrPickT = ctrPickedTRepositiory.Get(x => x.Barcode == Barcode && x.ItemCategory == "捲筒" && x.CtrHeaderId == CtrHeaderId).SingleOrDefault();
+                    if (ctrPickT == null)
                     {
-                        if (ctrPickT.Status == "已入庫")
-                        {
-                            return 1;
-                        }
-                        else
-                        {
-                            ctrPickT.Status = "已入庫";
-                            ctrPickT.LastUpdateBy = LastUpdateBy;
-                            ctrPickT.LastUpdateUserName = LastUpdateUserName;
-                            ctrPickT.LastUpdateDate = DateTime.Now;
-                            ctrPickedTRepositiory.Update(ctrPickT, true);
-                            txn.Commit();
-                            return 0;
-                        }
-
+                        return new ResultModel(false, "此無條碼");
+                    }
+                    if (ctrPickT.Status == "已入庫")
+                    {
+                        return new ResultModel(false, "條碼已入庫");
                     }
                     else
                     {
-                        return 2;
+                        ctrPickT.Status = "已入庫";
+                        ctrPickT.LastUpdateBy = LastUpdateBy;
+                        ctrPickT.LastUpdateUserName = LastUpdateUserName;
+                        ctrPickT.LastUpdateDate = DateTime.Now;
+                        ctrPickedTRepositiory.Update(ctrPickT, true);
+                        txn.Commit();
+                        return new ResultModel(true, "");
                     }
 
                 }
@@ -989,7 +985,7 @@ WHERE p.ITEM_CATEGORY = N'捲筒' and p.CTR_PICKED_ID  = @CTR_PICKED_ID");
                 {
                     txn.Rollback();
                     logger.Error(e.Message);
-                    return 3;
+                    return new ResultModel(false, e.Message);
                 }
             }
         }
@@ -999,34 +995,30 @@ WHERE p.ITEM_CATEGORY = N'捲筒' and p.CTR_PICKED_ID  = @CTR_PICKED_ID");
         /// </summary>
         /// <param name="Barcode"></param>
         /// <returns></returns>
-        public int SaveFlatBarcode(String Barcode, string LastUpdateBy, string LastUpdateUserName)
+        public ResultModel SaveFlatBarcode(String Barcode, long CtrHeaderId, string LastUpdateBy, string LastUpdateUserName)
         {
             using (var txn = this.Context.Database.BeginTransaction())
             {
                 try
                 {
-                    var ctrPickT = ctrPickedTRepositiory.Get(x => x.Barcode == Barcode && x.ItemCategory == "平版").SingleOrDefault();
-                    if (ctrPickT != null)
+                    var ctrPickT = ctrPickedTRepositiory.Get(x => x.Barcode == Barcode && x.ItemCategory == "平版" && x.CtrHeaderId == CtrHeaderId).SingleOrDefault();
+                    if (ctrPickT == null)
                     {
-                        if (ctrPickT.Status == "已入庫")
-                        {
-                            return 1;
-                        }
-                        else
-                        {
-                            ctrPickT.Status = "已入庫";
-                            ctrPickedTRepositiory.Update(ctrPickT, true);
-                            ctrPickT.LastUpdateBy = LastUpdateBy;
-                            ctrPickT.LastUpdateUserName = LastUpdateUserName;
-                            ctrPickT.LastUpdateDate = DateTime.Now;
-                            txn.Commit();
-                            return 0;
-                        }
-
+                        return new ResultModel(false, "此無條碼");
+                    }
+                    if (ctrPickT.Status == "已入庫")
+                    {
+                        return new ResultModel(false, "條碼已入庫");
                     }
                     else
                     {
-                        return 2;
+                        ctrPickT.Status = "已入庫";
+                        ctrPickedTRepositiory.Update(ctrPickT, true);
+                        ctrPickT.LastUpdateBy = LastUpdateBy;
+                        ctrPickT.LastUpdateUserName = LastUpdateUserName;
+                        ctrPickT.LastUpdateDate = DateTime.Now;
+                        txn.Commit();
+                        return new ResultModel(true, "");
                     }
 
                 }
@@ -1034,7 +1026,7 @@ WHERE p.ITEM_CATEGORY = N'捲筒' and p.CTR_PICKED_ID  = @CTR_PICKED_ID");
                 {
                     txn.Rollback();
                     logger.Error(e.Message);
-                    return 3;
+                    return new ResultModel(false, e.Message);
                 }
             }
         }

@@ -2,6 +2,7 @@
 using CHPOUTSRCMES.Web.DataModel.Entity.Interfaces;
 using CHPOUTSRCMES.Web.DataModel.Entity.Process;
 using CHPOUTSRCMES.Web.DataModel.Entity.Repositorys;
+using CHPOUTSRCMES.Web.DataModel.Interfaces;
 using CHPOUTSRCMES.Web.DataModel.UnitOfWorks;
 using CHPOUTSRCMES.Web.Models;
 using CHPOUTSRCMES.Web.Models.Process;
@@ -96,7 +97,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                 oSP.BatchNo = "W100000";
                 oSP.BatchType = "OSP";
                 oSP.BatchStatus = 0;
-                oSP.BatchStatusDesc = "待排單";
+                oSP.BatchStatusDesc = ProcessStatusCode.WaitBatch;
                 oSP.OrgId = 1;
                 oSP.OrgName = "加工";
                 oSP.OrganizationId = 265;
@@ -167,7 +168,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                 oSP.BatchNo = "W100000";
                 oSP.BatchType = "OSP";
                 oSP.BatchStatus = 0;
-                oSP.BatchStatusDesc = "待排單";
+                oSP.BatchStatusDesc = ProcessStatusCode.WaitBatch;
                 oSP.OrgId = 1;
                 oSP.OrgName = "加工";
                 oSP.OrganizationId = 265;
@@ -241,7 +242,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                 oSP.BatchNo = "P100000";
                 oSP.BatchType = "TMP";
                 oSP.BatchStatus = 0;
-                oSP.BatchStatusDesc = "待排單";
+                oSP.BatchStatusDesc = ProcessStatusCode.WaitBatch;
                 oSP.OrgId = 1;
                 oSP.OrgName = "加工";
                 oSP.OrganizationId = 265;
@@ -315,7 +316,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                 oSP.BatchNo = "P100000";
                 oSP.BatchType = "TMP";
                 oSP.BatchStatus = 0;
-                oSP.BatchStatusDesc = "待排單";
+                oSP.BatchStatusDesc = ProcessStatusCode.WaitBatch;
                 oSP.OrgId = 1;
                 oSP.OrgName = "加工";
                 oSP.OrganizationId = 265;
@@ -390,7 +391,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                 oSP.BatchNo = "K100000";
                 oSP.BatchType = "TMP";
                 oSP.BatchStatus = 0;
-                oSP.BatchStatusDesc = "待排單";
+                oSP.BatchStatusDesc = ProcessStatusCode.WaitBatch;
                 oSP.OrgId = 1;
                 oSP.OrgName = "加工";
                 oSP.OrganizationId = 265;
@@ -462,7 +463,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                 oSP.BatchNo = "K100000";
                 oSP.BatchType = "TMP";
                 oSP.BatchStatus = 0;
-                oSP.BatchStatusDesc = "待排單";
+                oSP.BatchStatusDesc = ProcessStatusCode.WaitBatch;
                 oSP.OrgId = 1;
                 oSP.OrgName = "加工";
                 oSP.OrganizationId = 265;
@@ -568,7 +569,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                         OspHeaderT.PeCreationDate = org[i].PeCreationDate;
                         OspHeaderT.PeLastUpdateBy = org[i].PeLastUpdateBy;
                         OspHeaderT.PeLastUpdateDate = org[i].PeLastUpdateDate;
-                        OspHeaderT.Status = "待排單";
+                        OspHeaderT.Status = ProcessStatusCode.WaitBatch;
                         OspHeaderT.Modifications = 0;
                         OspHeaderT.CreatedBy = "SYS";
                         OspHeaderT.CreationDate = DateTime.Now;
@@ -592,7 +593,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                         OspHeaderT.PeCreationDate = org[i].PeCreationDate;
                         OspHeaderT.PeLastUpdateBy = org[i].PeLastUpdateBy;
                         OspHeaderT.PeLastUpdateDate = org[i].PeLastUpdateDate;
-                        OspHeaderT.Status = "待排單";
+                        OspHeaderT.Status = ProcessStatusCode.WaitBatch;
                         OspHeaderT.Modifications = 0;
                         OspHeaderT.CreatedBy = "SYS";
                         OspHeaderT.CreationDate = DateTime.Now;
@@ -2054,16 +2055,16 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
                         return new ResultModel(false, "找不到id");
                     }
 
-                    if (header.Status == "已完工")
+                    if (header.Status == ProcessStatusCode.CompletedBatch)
                     {
-                        header.Status = "待核准";
+                        header.Status = ProcessStatusCode.PendingBatch;
                         header.PeLastUpdateBy = UserId;
                         header.PeLastUpdateDate = DateTime.Now;
                         OspHeaderTRepositiory.Update(header, true);
                     }
-                    else if (header.Status == "待核准")
+                    else if (header.Status == ProcessStatusCode.PendingBatch)
                     {
-                        header.Status = "已完工";
+                        header.Status = ProcessStatusCode.CompletedBatch;
                         header.PeLastUpdateBy = UserId;
                         header.PeLastUpdateDate = DateTime.Now;
                         header.Modifications = 1;
@@ -2078,7 +2079,7 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
                     }
                     else
                     {
-                        header.Status = "已完工";
+                        header.Status = ProcessStatusCode.CompletedBatch;
                         header.PeLastUpdateBy = UserId;
                         header.PeLastUpdateDate = DateTime.Now;
                         OspHeaderTRepositiory.Update(header, true);
@@ -2127,7 +2128,7 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
                         return new ResultModel(false, "找不到id");
                     }
 
-                    header.Status = "待核准";
+                    header.Status = ProcessStatusCode.PendingBatch;
                     header.PeLastUpdateBy = UserId;
                     header.PeLastUpdateDate = DateTime.Now;
                     OspHeaderTRepositiory.Update(header, true);
@@ -2168,7 +2169,7 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
                         return new ResultModel(false, "工單號輸入不對請重新輸入");
                     }
 
-                    if (batchno.Status == "已完工")
+                    if (batchno.Status == ProcessStatusCode.CompletedBatch)
                     {
                         if (batchno.Modifications == 1)
                         {
@@ -2975,6 +2976,29 @@ and SUBINVENTORY_CODE = @SUBINVENTORY_CODE");
             }
         }
 
+        public List<SelectListItem> GetSelectMachine(string PaperType)
+        {
+            try
+            {
+                List<SelectListItem> ManchineNum = new List<SelectListItem>();
+                var MachineCode = machinePaperTypeRepositiory.Get(x => x.ControlFlag != ControlFlag.Deleted && x.PaperType == PaperType)
+                             .Select(x => new SelectListItem
+                             {
+                                 Text = x.MachineCode,
+                                 Value = x.MachineCode
+                             }).ToList();
+                ManchineNum.AddRange(MachineCode);
+
+
+                return ManchineNum;
+            }
+            catch(Exception e)
+            {
+                logger.Error(LogUtilities.BuildExceptionMessage(e));
+                return new List<SelectListItem>();
+            }
+        }
+
         /// <summary>
         /// 狀態
         /// </summary>
@@ -2992,31 +3016,31 @@ and SUBINVENTORY_CODE = @SUBINVENTORY_CODE");
                 new SelectListItem()
                 {
                     Text = "待排單",
-                    Value = "待排單",
+                    Value = "0",
                     Selected = false,
                 },
                 new SelectListItem()
                 {
                     Text = "已排單",
-                    Value = "已排單",
+                    Value = "1",
                     Selected = false,
                 },
                 new SelectListItem()
                 {
                     Text = "待核准",
-                    Value = "待核准",
+                    Value = "2",
                     Selected = false,
                 },
                 new SelectListItem()
                 {
                     Text = "已完工",
-                    Value = "已完工",
+                    Value = "3",
                     Selected = false,
                 },
                 new SelectListItem()
                 {
                     Text = "關帳",
-                    Value = "關帳",
+                    Value = "4",
                     Selected = false,
                 }
             };
@@ -3074,6 +3098,51 @@ and SUBINVENTORY_CODE = @SUBINVENTORY_CODE");
         {
             public string Action { get; set; }
             public List<Cotangent> CotangentList { get; set; }
+        }
+
+
+        public class ProcessStatusCode : IStatus
+        {
+            /// <summary>
+            /// 待排單
+            /// </summary>
+            public const string WaitBatch = "0";
+            /// <summary>
+            /// 已排單
+            /// </summary>
+            public const string DwellBatch = "1";
+            /// <summary>
+            /// 待核准
+            /// </summary>
+            public const string PendingBatch = "2";
+            /// <summary>
+            /// 已完工
+            /// </summary>
+            public const string CompletedBatch = "3";
+            /// <summary>
+            /// 關帳
+            /// </summary>
+            public const string CloseBatch = "4";
+
+
+            public string GetDesc(string statusCode)
+            {
+                switch (statusCode)
+                {
+                    case WaitBatch:
+                        return "待排單";
+                    case DwellBatch:
+                        return "已排單";
+                    case PendingBatch:
+                        return "待核准";
+                    case CompletedBatch:
+                        return "已完工";
+                    case CloseBatch:
+                        return "關帳";
+                    default:
+                        return "";
+                }
+            }
         }
     }
 }
