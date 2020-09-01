@@ -1,8 +1,34 @@
 ﻿var rowData
 var ProcessDataTables
+/// <summary>
+/// 待排單
+/// </summary>
+const WaitBatch = "0";
+/// <summary>
+/// 已排單
+/// </summary>
+const DwellBatch = "1";
+/// <summary>
+/// 待核准
+/// </summary>
+const PendingBatch = "2";
+/// <summary>
+/// 已完工
+/// </summary>
+const CompletedBatch = "3";
+/// <summary>
+/// 關帳
+/// </summary>
+const CloseBatch = "4";
+
+
 $(document).ready(function () {
     BtnEvent();
     search();
+    $('#Status').combobox();
+    $('#BatchNo').combobox();
+    $('#MachineNum').combobox();
+    $('#Subinventory').combobox();
     //初始化日期
     $('#DueDate').datepicker({
         dateFormat: 'yy-mm-dd',
@@ -19,7 +45,7 @@ $(document).ready(function () {
         changeMonth: true,
         changeYear: true
     });
-
+    
 
     firstLoad();
 
@@ -150,42 +176,25 @@ function ProcessLoadTable(Status, BatchNo, MachineNum, DueDate, CuttingDateFrom,
             { data: "MachineNum", "name": "機台", "autoWidth": true, "className": "dt-body-center" },
             {
                 data: "Status", "name": "狀態", "autoWidth": true, "render": function (data, type, row) {
-                    if (data == "已排單") {
+                    if (data == DwellBatch) {
                         switch (row.BatchType) {
                             case "OSP":
-                                return '<a href=/Process/Schedule/' + row.OspDetailInId + '> ' + data + '</a>';
+                                return '<a href=/Process/Schedule/' + row.OspDetailInId + '> ' + GetStatusCode(data) + '</a>';
                                 break;
                             case "TMP":
                                 if (row.PackingType == "" || row.PackingType == null) {
-                                    return '<a href=/Process/PaperRoll/' + row.OspDetailInId + '> ' + data + '</a>';
+                                    return '<a href=/Process/PaperRoll/' + row.OspDetailInId + '> ' + GetStatusCode(data) + '</a>';
                                     break;
                                 } else {
-                                    return '<a href=/Process/Flat/' + row.OspDetailInId + '> ' + data + '</a>';
+                                    return '<a href=/Process/Flat/' + row.OspDetailInId + '> ' + GetStatusCode(data) + '</a>';
                                     break;
                                 }
 
 
                         }
                     } else {
-                        return data;
+                        return GetStatusCode(data);
                     }
-
-                    if (data == "已排單") {
-                        switch (row.BatchType) {
-                            case "OSP":
-                                return '<a href=/Process/Schedule/' + row.OspDetailInId + '> ' + data + '</a>';
-                                break;
-                            case "TMP":
-                                if (row.PackingType == "" || row.PackingType == null) {
-                                    return '<a href=/Process/PaperRoll/' + row.OspDetailInId + '> ' + data + '</a>';
-                                    break;
-                                } else {
-                                    return '<a href=/Process/Flat/' + row.OspDetailInId + '> ' + data + '</a>';
-                                    break;
-                                }
-                        }
-                    }
-
 
                 }, "className": "dt-body-center"
             },
@@ -208,13 +217,13 @@ function ProcessLoadTable(Status, BatchNo, MachineNum, DueDate, CuttingDateFrom,
             { data: "OrderLineNumber", "name": "明細行", "autoWidth": true, "className": "dt-body-center" },
             {
                 data: "", "autoWidth": true, "render": function (data, type, row) {
-                    if (row.Status == "已完工") {
+                    if (row.Status == CompletedBatch) {
                         return '<button class="btn btn-primary btn-sm" id = "btnEdit">編輯</button>' + '<button class="btn btn-primary btn-sm" id = "btnRecord">完工紀錄</button>';
                     }
-                    if (row.Status == "待核准") {
+                    if (row.Status == PendingBatch) {
                         return '<button class="btn btn-primary btn-sm" id = "btnEdit">編輯</button>' + '<button class="btn btn-primary btn-sm" id = "btnRecord">完工紀錄</button>';
                     }
-                    if (row.Status == "已排單") {
+                    if (row.Status == DwellBatch) {
                         return '<button class="btn btn-primary btn-sm" id = "btnEdit">編輯</button>';
                     } else {
                         return '<button class="btn btn-primary btn-sm" id = "btnEdit">編輯</button>';
@@ -245,16 +254,15 @@ function BtnEvent() {
         }
         var Status = rowData.pluck('Status')[0]
         var OspHeaderId = rowData.pluck('OspHeaderId')[0]
-        if (Status == "待排單") {
+        var PaperType = rowData.pluck('PaperType')[0]
+        if (Status == WaitBatch) {
             $.ajax({
                 url: '/Process/_ProcessIndex',
                 type: "POST",
+                data: { PaperType: PaperType},
                 success: function (result) {
                     $('body').append(result);
                     Open($('#ProcessModal'), OspHeaderId);
-                },
-                error: function () {
-                    swal.fire("失敗");
                 }
             });
 
@@ -286,27 +294,28 @@ function BtnEvent() {
 
     $('#BtnEdit').click(function () {
         if (rowData == null) {
-            swal.fire("請先選擇一項")
+            swal.fire("請先選擇一項");
             return;
         }
         var Status = rowData.pluck('Status')[0]
         var OspHeaderId = rowData.pluck('OspHeaderId')[0]
-        if (Status == "已排單") {
+        var PaperType = rowData.pluck('PaperType')[0]
+        if (Status == DwellBatch) {
             $.ajax({
                 url: '/Process/_ProcessIndex',
                 type: "POST",
+                data: { PaperType: PaperType },
                 success: function (result) {
                     $('body').append(result);
                     Open($('#ProcessModal'), OspHeaderId);
-                },
-                error: function () {
-                    swal.fire("失敗");
                 }
             });
+
         } else {
             swal.fire("加工狀態不正確，重新選擇");
             return;
         }
+
 
     });
 }
@@ -362,7 +371,7 @@ function Open(modal_dialog, OspHeaderId) {
         var Dialog_CuttingDateFrom = $('#Dialog_CuttingDateFrom').val();
         var Dialog_CuttingDateTo = $('#Dialog_CuttingDateTo').val();
         var Dialog_MachineNum = $('#Dialog_MachineNum').val();
-        var BtnStatus = "已排單";
+        var BtnStatus = DwellBatch;
 
         if (Dialog_CuttingDateFrom.length == 0) {
             swal.fire("裁切日期(起)不得空白");
@@ -371,11 +380,6 @@ function Open(modal_dialog, OspHeaderId) {
 
         if (Dialog_CuttingDateTo.length == 0) {
             swal.fire("裁切日期(迄)不得空白");
-            return
-        }
-
-        if (Dialog_MachineNum.length == 0) {
-            swal.fire("機台不得空白");
             return
         }
 
@@ -439,4 +443,22 @@ function firstLoad() {
     var Subinventory = $("#Subinventory").val();
 
     ProcessLoadTable(Status, BatchNo, MachineNum, DueDate, CuttingDateFrom, CuttingDateTo, Subinventory);
+}
+
+
+function GetStatusCode(StatusCode) {
+    switch (StatusCode) {
+        case '0':
+            return '待排單';
+        case '1':
+            return '已排單';
+        case '2':
+            return '待核准';
+        case '3':
+            return '已完工';
+        case '4':
+            return '關帳';
+        default:
+            return '';
+    }
 }

@@ -86,10 +86,10 @@ namespace CHPOUTSRCMES.Web.Controllers
 
 
         [HttpPost]
-        public ActionResult _ProcessIndex()
+        public ActionResult _ProcessIndex(string PaperType)
         {
             ProcessViewModel viewModel = new ProcessViewModel();
-            ViewBag.MachineItems = viewModel.GetManchine();
+            ViewBag.MachineItems = viewModel.GetSelectMachine(PaperType);
             return PartialView();
         }
 

@@ -155,11 +155,11 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
         /// </summary>
         /// <param name="Barcode"></param>
         /// <returns></returns>
-        public int SavePaperRollBarcode(String Barcode, string LastUpdateBy, string LastUpdateUserName)
+        public ResultModel SavePaperRollBarcode(String Barcode,long CtrHeaderId, string LastUpdateBy, string LastUpdateUserName)
         {
             using (var context = new MesContext())
             {
-                return new PurchaseUOW(context).SavePaperRollBarcode(Barcode, LastUpdateBy, LastUpdateUserName);
+                return new PurchaseUOW(context).SavePaperRollBarcode(Barcode, CtrHeaderId, LastUpdateBy, LastUpdateUserName);
             }
 
         }
@@ -169,11 +169,11 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
         /// </summary>
         /// <param name="Barcode"></param>
         /// <returns></returns>
-        public int SaveFlatBarcode(string Barcode, string LastUpdateBy, string LastUpdateUserName)
+        public ResultModel SaveFlatBarcode(string Barcode, long CtrHeaderId, string LastUpdateBy, string LastUpdateUserName)
         {
             using (var context = new MesContext())
             {
-                return new PurchaseUOW(context).SaveFlatBarcode(Barcode, LastUpdateBy, LastUpdateUserName);
+                return new PurchaseUOW(context).SaveFlatBarcode(Barcode, CtrHeaderId, LastUpdateBy, LastUpdateUserName);
             }
         }
 

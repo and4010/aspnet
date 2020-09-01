@@ -368,6 +368,14 @@ namespace CHPOUTSRCMES.Web.ViewModels.Process
             }
         }
 
+        public List<SelectListItem> GetSelectMachine(string PaperType)
+        {
+            using (var context = new MesContext())
+            {
+                return new ProcessUOW(context).GetSelectMachine(PaperType);
+            }
+        }
+
         /// <summary>
         /// 取得公單號
         /// </summary>

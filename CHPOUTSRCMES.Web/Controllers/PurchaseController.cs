@@ -364,29 +364,29 @@ namespace CHPOUTSRCMES.Web.Controllers
 
 
         [HttpPost]
-        public JsonResult RollSaveBarcode(string Barcode)
+        public JsonResult RollSaveBarcode(string Barcode,long CtrHeaderId)
         {
             //取得使用者ID
             var id = this.User.Identity.GetUserId();
             //取得使用者帳號
             var name = this.User.Identity.GetUserName();
             PurchaseViewModel purchaseViewModel = new PurchaseViewModel();
-            var status = purchaseViewModel.SavePaperRollBarcode(Barcode,id,name);
-            return Json(new { status }, JsonRequestBehavior.AllowGet);
+            var resultModel = purchaseViewModel.SavePaperRollBarcode(Barcode, CtrHeaderId, id,name);
+            return Json(new { resultModel }, JsonRequestBehavior.AllowGet);
         }
 
 
 
         [HttpPost]
-        public JsonResult FlatSaveBarcode(string Barcode)
+        public JsonResult FlatSaveBarcode(string Barcode, long CtrHeaderId)
         {
             //取得使用者ID
             var id = this.User.Identity.GetUserId();
             //取得使用者帳號
             var name = this.User.Identity.GetUserName();
             PurchaseViewModel purchaseViewModel = new PurchaseViewModel();
-            var status = purchaseViewModel.SaveFlatBarcode(Barcode,id,name);
-            return Json(new { status }, JsonRequestBehavior.AllowGet);
+            var resultModel = purchaseViewModel.SaveFlatBarcode(Barcode,CtrHeaderId,id,name);
+            return Json(new { resultModel }, JsonRequestBehavior.AllowGet);
         }
 
 

@@ -45,3 +45,8 @@ th, td {
 	width: 100% !important;
 }
 /*紙捲表頭顯示scrollX*/
+
+div.dataTables_wrapper {
+	width: 1000px;
+	margin: 0 auto;
+}

@@ -72,6 +72,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\Entity\CTR_DETAIL_T.cs" />
+    <Compile Include="Models\Entity\CTR_HEADER_T.cs" />
+    <Compile Include="Models\Entity\CTR_PICKED_T.cs" />
     <Compile Include="Models\Entity\Temp\ITEMS_TMP_T.cs" />
     <Compile Include="Models\Entity\Temp\LOCATOR_TMP_T.cs" />
     <Compile Include="Models\Entity\Temp\MACHINE_PAPER_TYPE_TMP_T.cs" />
@@ -87,6 +90,9 @@
     <Compile Include="Models\IBulkCopier.cs" />
     <Compile Include="Models\BulkCopier.cs" />
     <Compile Include="Models\Repository\MsSql\ControlStageRepository.cs" />
+    <Compile Include="Models\Repository\MsSql\CtrDetailRepository.cs" />
+    <Compile Include="Models\Repository\MsSql\CtrHeaderRepository.cs" />
+    <Compile Include="Models\Repository\MsSql\CtrPickedRepository.cs" />
     <Compile Include="Models\Repository\MsSql\GenericRepository.cs" />
     <Compile Include="Models\Repository\Oracle\GenericRepository.cs" />
     <Compile Include="Models\Repository\MsSql\CtrStRepository.cs" />
