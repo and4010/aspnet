@@ -38,6 +38,44 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Delivery
         public long DlvHeaderId { set; get; }
 
         /// <summary>
+        /// XXIFP220
+        /// </summary>
+        /// 
+        [StringLength(20)]
+        [Required]
+        [Column("PROCESS_CODE")]
+        public string ProcessCode { set; get; }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// 
+        [StringLength(20)]
+        [Required]
+        [Column("SERVER_CODE")]
+        public string ServerCode { set; get; }
+
+
+        /// <summary>
+        /// 20191112141600100000
+        /// </summary>
+        /// 
+        [StringLength(20)]
+        [Required]
+        [Column("BATCH_ID")]
+        public string BatchId { set; get; }
+
+
+        /// <summary>
+        /// 1
+        /// </summary>
+        /// 
+        [Required]
+        [Column("BATCH_LINE_ID")]
+        public long BatchLineId { set; get; }
+
+        /// <summary>
         /// 訂單編號
         /// </summary>
         /// 
@@ -63,11 +101,18 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Delivery
         public string OrderShipNumber { set; get; }
 
         /// <summary>
+        /// 出貨明細ID
+        /// </summary>
+        /// 
+        [Required]
+        [Column("DELIVERY_DETAIL_ID")]
+        public long DeliveryDetailId { set; get; }
+
+        /// <summary>
         /// 包裝方式
         /// </summary>
         /// 
         [StringLength(30)]
-        [Required(AllowEmptyStrings = true)]
         [Column("PACKING_TYPE")]
         public string PackingType { set; get; }
 
@@ -147,7 +192,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Delivery
         /// </summary>
         /// 
         [StringLength(30)]
-        [Required]
         [Column("GRAIN_DIRECTION")]
         public string GrainDirection { set; get; }
 

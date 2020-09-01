@@ -15,7 +15,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Delivery
         /// 出庫主檔ID
         /// </summary>
         /// 
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
         [Required]
         [Column("DLV_ORG_ID")]
@@ -223,7 +223,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Delivery
         /// </summary>
         /// 
         [StringLength(30)]
-        [Required]
         [Column("FREIGHT_TERMS_NAME")]
         public string Freight_Terms_Name { set; get; }
 
@@ -273,7 +272,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Delivery
         /// </summary>
         /// 
         [StringLength(30)]
-        [Required]
         [Column("PACKING_TYPE")]
         public string Packing_Type { set; get; }
 
@@ -335,7 +333,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Delivery
         /// </summary>
         /// 
         [StringLength(30)]
-        [Required]
         [Column("GRAIN_DIRECTION")]
         public string GrainDirection { set; get; }
 
@@ -403,20 +400,18 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Delivery
         /// 預計出庫次要數量
         /// </summary>
         /// 
-        [Required]
         [Column("REQUESTED_QUANTITY2")]
         [Precision(30, 10)]
-        public decimal RequestedQuantity2 { set; get; }
+        public decimal? RequestedQuantity2 { set; get; }
 
         /// <summary>
         /// 次要單位
         /// </summary>
         /// 
-        [Required]
         [StringLength(3)]
         [Column("REQUESTED_QUANTITY_UOM2")]
         public string RequestedQuantityUom2 { set; get; }
-    
+
         ///// <summary>
         ///// 批號
         ///// </summary>
@@ -424,7 +419,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Delivery
         //[StringLength(80)]
         //[Column("LOT_NUMBER")]
         //public string? Lot_Number { set; get; }
-    
+
         ///// <summary>
         ///// 批號數量
         ///// </summary>
@@ -432,14 +427,149 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Delivery
         //[Column("LOT_QUANTITY")]
         //public long? LotQuantity { set; get; }
 
+        /// <summary>
+        /// 文件(工單號碼) 
+        /// </summary>
+        /// 
+        [StringLength(32)]
+        [Column("BATCH_NO")]
+        public string TmpBatchNo { set; get; }
+
+        /// <summary>
+        /// 代紙料號 
+        /// </summary>
+        /// 
+        [StringLength(40)]
+        [Column("INVENTORY_ITEM_NUMBER")]
+        public string TmpItemNumber { set; get; }
 
         /// <summary>
         /// 備註
         /// </summary>
         /// 
         [StringLength(240)]
-        [Column("NOTE")]
-        public string Note { set; get; }
+        [Column("REMARK")]
+        public string Remark { set; get; }
+
+        /// <summary>
+        /// 預留欄位
+        /// </summary>
+        /// 
+        [StringLength(240)]
+        [Column("ATTRIBUTE1")]
+        public string Attribute1 { set; get; }
+
+        /// <summary>
+        /// 預留欄位
+        /// </summary>
+        /// 
+        [StringLength(240)]
+        [Column("ATTRIBUTE2")]
+        public string Attribute2 { set; get; }
+
+        /// <summary>
+        /// 預留欄位
+        /// </summary>
+        /// 
+        [StringLength(240)]
+        [Column("ATTRIBUTE3")]
+        public string Attribute3 { set; get; }
+
+        /// <summary>
+        /// 預留欄位
+        /// </summary>
+        /// 
+        [StringLength(240)]
+        [Column("ATTRIBUTE4")]
+        public string Attribute4 { set; get; }
+
+        /// <summary>
+        /// 預留欄位
+        /// </summary>
+        /// 
+        [StringLength(240)]
+        [Column("ATTRIBUTE5")]
+        public string Attribute5 { set; get; }
+
+        /// <summary>
+        /// 預留欄位
+        /// </summary>
+        /// 
+        [StringLength(240)]
+        [Column("ATTRIBUTE6")]
+        public string Attribute6 { set; get; }
+
+        /// <summary>
+        /// 預留欄位
+        /// </summary>
+        /// 
+        [StringLength(240)]
+        [Column("ATTRIBUTE7")]
+        public string Attribute7 { set; get; }
+
+        /// <summary>
+        /// 預留欄位
+        /// </summary>
+        /// 
+        [StringLength(240)]
+        [Column("ATTRIBUTE8")]
+        public string Attribute8 { set; get; }
+
+        /// <summary>
+        /// 預留欄位
+        /// </summary>
+        /// 
+        [StringLength(240)]
+        [Column("ATTRIBUTE9")]
+        public string Attribute9 { set; get; }
+
+        /// <summary>
+        /// 預留欄位
+        /// </summary>
+        /// 
+        [StringLength(240)]
+        [Column("ATTRIBUTE10")]
+        public string Attribute10 { set; get; }
+
+        /// <summary>
+        /// 預留欄位
+        /// </summary>
+        /// 
+        [StringLength(240)]
+        [Column("ATTRIBUTE11")]
+        public string Attribute11 { set; get; }
+
+        /// <summary>
+        /// 預留欄位
+        /// </summary>
+        /// 
+        [StringLength(240)]
+        [Column("ATTRIBUTE12")]
+        public string Attribute12 { set; get; }
+
+        /// <summary>
+        /// 預留欄位
+        /// </summary>
+        /// 
+        [StringLength(240)]
+        [Column("ATTRIBUTE13")]
+        public string Attribute13 { set; get; }
+
+        /// <summary>
+        /// 預留欄位
+        /// </summary>
+        /// 
+        [StringLength(240)]
+        [Column("ATTRIBUTE14")]
+        public string Attribute14 { set; get; }
+
+        /// <summary>
+        /// 預留欄位
+        /// </summary>
+        /// 
+        [StringLength(240)]
+        [Column("ATTRIBUTE15")]
+        public string Attribute15 { set; get; }
 
         /// <summary>
         /// ERP請求識別碼

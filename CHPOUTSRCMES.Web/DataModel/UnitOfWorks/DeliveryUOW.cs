@@ -409,7 +409,6 @@ OR SUM(ISNULL(p.SECONDARY_QUANTITY, 0)) <> MIN(d.REQUESTED_SECONDARY_QUANTITY)";
                 //DliveryHeaderRepositiory.getContext().Configuration.AutoDetectChangesEnabled = false;
                 dlvHeaderTRepositiory.Create(new DLV_HEADER_T()
                 {
-                    DlvHeaderId = 1,
                     OrgId = 1,
                     OrgName = "1",
                     OrganizationId = 265,
@@ -434,9 +433,11 @@ OR SUM(ISNULL(p.SECONDARY_QUANTITY, 0)) <> MIN(d.REQUESTED_SECONDARY_QUANTITY)";
                     DeliveryStatusCode = DeliveryStatusCode.Unprinted,
                     DeliveryStatusName = deliveryStatusCode.GetDesc(DeliveryStatusCode.Unprinted),
                     TransactionBy = null,
-                    TransactionDate = null,
+                    TransactionDate = null, 
+                    TransactionByUserNmae = null,
                     AuthorizeBy = null,
                     AuthorizeDate = null,
+                    AuthorizeByUserName = null,
                     Note = "FT1.P9B0288",
                     CreatedBy = "1",
                     CreatedUserName = "華紙",
@@ -451,8 +452,12 @@ OR SUM(ISNULL(p.SECONDARY_QUANTITY, 0)) <> MIN(d.REQUESTED_SECONDARY_QUANTITY)";
 
                 dlvDetailTRepositiory.Create(new DLV_DETAIL_T()
                 {
-                    DlvDetailId = 1,
-                    DlvHeaderId = 1,
+                    DlvHeaderId = 1, 
+                    ProcessCode = "XXIFP220",
+                    ServerCode = "FTY",
+                    BatchId = "20200730171945180831",
+                    BatchLineId = 1, 
+                    DeliveryDetailId = 1,
                     OrderNumber = 1192006167,
                     OrderLineId = 1,
                     OrderShipNumber = "1.2",
@@ -485,14 +490,13 @@ OR SUM(ISNULL(p.SECONDARY_QUANTITY, 0)) <> MIN(d.REQUESTED_SECONDARY_QUANTITY)";
                     CreationDate = DateTime.Now,
                     LastUpdateBy = "1",
                     LastUpdateUserName = "華紙",
-                    LastUpdateDate = DateTime.Now,
+                    LastUpdateDate = DateTime.Now, 
                 }, true);
                 #endregion
 
                 #region 第二筆測試資料 捲筒
                 dlvHeaderTRepositiory.Create(new DLV_HEADER_T()
                 {
-                    DlvHeaderId = 2,
                     OrgId = 1,
                     OrgName = "1",
                     OrganizationId = 265,
@@ -531,8 +535,12 @@ OR SUM(ISNULL(p.SECONDARY_QUANTITY, 0)) <> MIN(d.REQUESTED_SECONDARY_QUANTITY)";
 
                 dlvDetailTRepositiory.Create(new DLV_DETAIL_T()
                 {
-                    DlvDetailId = 2,
                     DlvHeaderId = 2,
+                    ProcessCode = "XXIFP220",
+                    ServerCode = "FTY",
+                    BatchId = "20200730173059000000",
+                    BatchLineId = 1,
+                    DeliveryDetailId = 2,
                     OrderNumber = 1192006167,
                     OrderLineId = 1,
                     OrderShipNumber = "1.2",
@@ -573,7 +581,6 @@ OR SUM(ISNULL(p.SECONDARY_QUANTITY, 0)) <> MIN(d.REQUESTED_SECONDARY_QUANTITY)";
                 #region 第三筆測試資料 平版 無令打件 代紙
                 dlvHeaderTRepositiory.Create(new DLV_HEADER_T()
                 {
-                    DlvHeaderId = 3,
                     OrgId = 1,
                     OrgName = "1",
                     OrganizationId = 265,
@@ -612,8 +619,12 @@ OR SUM(ISNULL(p.SECONDARY_QUANTITY, 0)) <> MIN(d.REQUESTED_SECONDARY_QUANTITY)";
 
                 dlvDetailTRepositiory.Create(new DLV_DETAIL_T()
                 {
-                    DlvDetailId = 3,
                     DlvHeaderId = 3,
+                    ProcessCode = "XXIFP220",
+                    ServerCode = "FTY",
+                    BatchId = "20200730173100000000",
+                    BatchLineId = 1,
+                    DeliveryDetailId = 3,
                     OrderNumber = 1202000114,
                     OrderLineId = 2,
                     OrderShipNumber = "1.1",
@@ -653,7 +664,6 @@ OR SUM(ISNULL(p.SECONDARY_QUANTITY, 0)) <> MIN(d.REQUESTED_SECONDARY_QUANTITY)";
                 #region 第四筆測試資料 捲筒
                 dlvHeaderTRepositiory.Create(new DLV_HEADER_T()
                 {
-                    DlvHeaderId = 4,
                     OrgId = 1,
                     OrgName = "1",
                     OrganizationId = 265,
@@ -692,8 +702,12 @@ OR SUM(ISNULL(p.SECONDARY_QUANTITY, 0)) <> MIN(d.REQUESTED_SECONDARY_QUANTITY)";
 
                 dlvDetailTRepositiory.Create(new DLV_DETAIL_T()
                 {
-                    DlvDetailId = 4,
                     DlvHeaderId = 4,
+                    ProcessCode = "XXIFP220",
+                    ServerCode = "FTY",
+                    BatchId = "20200730173200000000",
+                    BatchLineId = 1,
+                    DeliveryDetailId = 4,
                     OrderNumber = 1192006168,
                     OrderLineId = 3,
                     OrderShipNumber = "1.1",
@@ -1113,9 +1127,14 @@ INSERT INTO [DLV_DETAIL_HT]
 (
 	[DLV_DETAIL_ID]
       ,[DLV_HEADER_ID]
+      ,[PROCESS_CODE]
+      ,[SERVER_CODE]
+      ,[BATCH_ID]
+      ,[BATCH_LINE_ID]
       ,[Order_Number]
       ,[ORDER_LINE_ID]
       ,[ORDER_SHIP_NUMBER]
+      ,[DELIVERY_DETAIL_ID]
       ,[PACKING_TYPE]
       ,[INVENTORY_ITEM_ID]
       ,[ITEM_NUMBER]
@@ -1149,9 +1168,14 @@ INSERT INTO [DLV_DETAIL_HT]
 )
 SELECT [DLV_DETAIL_ID]
       ,[DLV_HEADER_ID]
+      ,[PROCESS_CODE]
+      ,[SERVER_CODE]
+      ,[BATCH_ID]
+      ,[BATCH_LINE_ID]
       ,[Order_Number]
       ,[ORDER_LINE_ID]
       ,[ORDER_SHIP_NUMBER]
+      ,[DELIVERY_DETAIL_ID]
       ,[PACKING_TYPE]
       ,[INVENTORY_ITEM_ID]
       ,[ITEM_NUMBER]

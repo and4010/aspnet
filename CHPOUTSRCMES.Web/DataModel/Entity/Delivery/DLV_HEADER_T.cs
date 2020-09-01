@@ -14,7 +14,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Delivery
         /// 出庫檔頭ID
         /// </summary>
         /// 
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
         [Required]
         [Column("DLV_HEADER_ID")]
@@ -202,7 +202,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Delivery
         /// </summary>
         /// 
         [StringLength(30)]
-        [Required]
         [Column("FREIGHT_TERMS_NAME")]
         public string FreightTermsName { set; get; }
 

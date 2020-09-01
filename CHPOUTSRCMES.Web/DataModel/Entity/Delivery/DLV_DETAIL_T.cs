@@ -15,7 +15,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Delivery
         /// 出庫明細ID
         /// </summary>
         /// 
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
         [Required]
         [Column("DLV_DETAIL_ID")]
@@ -28,6 +28,44 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Delivery
         [Required]
         [Column("DLV_HEADER_ID")]
         public long DlvHeaderId { set; get; }
+
+        /// <summary>
+        /// XXIFP220
+        /// </summary>
+        /// 
+        [StringLength(20)]
+        [Required]
+        [Column("PROCESS_CODE")]
+        public string ProcessCode { set; get; }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// 
+        [StringLength(20)]
+        [Required]
+        [Column("SERVER_CODE")]
+        public string ServerCode { set; get; }
+
+
+        /// <summary>
+        /// 20191112141600100000
+        /// </summary>
+        /// 
+        [StringLength(20)]
+        [Required]
+        [Column("BATCH_ID")]
+        public string BatchId { set; get; }
+
+
+        /// <summary>
+        /// 1
+        /// </summary>
+        /// 
+        [Required]
+        [Column("BATCH_LINE_ID")]
+        public long BatchLineId { set; get; }
 
         /// <summary>
         /// 訂單編號
@@ -55,12 +93,19 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Delivery
         public string OrderShipNumber { set; get; }
 
         /// <summary>
+        /// 出貨明細ID
+        /// </summary>
+        /// 
+        [Required]
+        [Column("DELIVERY_DETAIL_ID")]
+        public long DeliveryDetailId { set; get; }
+
+        /// <summary>
         /// 包裝方式
         /// </summary>
         /// 
         [StringLength(30)]
         [Column("PACKING_TYPE")]
-        [Required(AllowEmptyStrings = true)]
         public string PackingType { set; get; }
 
         /// <summary>
@@ -139,7 +184,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Delivery
         /// </summary>
         /// 
         [StringLength(30)]
-        [Required]
         [Column("GRAIN_DIRECTION")]
         public string GrainDirection { set; get; }
 
