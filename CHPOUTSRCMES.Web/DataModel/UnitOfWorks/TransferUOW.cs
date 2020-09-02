@@ -1821,7 +1821,7 @@ SELECT [TRANSFER_PICKED_ID] as ID
 
                                     //產生異動紀錄
                                     var stkTxnT = CreateStockRecord(stock, header.TransferOrganizationId, header.TransferOrganizationCode, header.TransferSubinventoryCode,
-                                    header.TransferLocatorId, CategoryCode.TransferInbound, ActionCode.InBoundSaveTransfer, header.ShipmentNumber,
+                                    header.TransferLocatorId, CategoryCode.TransferInbound, ActionCode.StockTransfer, header.ShipmentNumber,
                                     stock.PrimaryAvailableQty, 0, stock.PrimaryAvailableQty, stock.SecondaryAvailableQty, 0, stock.SecondaryAvailableQty, StockStatusCode.InStock, userId, now);
                                     stkTxnTRepositiory.Create(stkTxnT);
                                 }
@@ -1870,7 +1870,7 @@ SELECT [TRANSFER_PICKED_ID] as ID
 
                                     //產生異動紀錄
                                     var stkTxnT = CreateStockRecord(stock, header.TransferOrganizationId, header.TransferOrganizationCode, header.TransferSubinventoryCode,
-                                    header.TransferLocatorId, CategoryCode.TransferInbound, ActionCode.InBoundSaveTransfer, header.ShipmentNumber,
+                                    header.TransferLocatorId, CategoryCode.TransferInbound, ActionCode.StockTransfer, header.ShipmentNumber,
                                     0, stock.PrimaryAvailableQty, stock.PrimaryAvailableQty, 0, stock.SecondaryAvailableQty, stock.SecondaryAvailableQty, StockStatusCode.InStock, userId, now);
                                     stkTxnTRepositiory.Create(stkTxnT);
 
@@ -1884,7 +1884,7 @@ SELECT [TRANSFER_PICKED_ID] as ID
 
                                 //產生異動紀錄
                                 var stkTxnT = CreateStockRecord(stock, header.TransferOrganizationId, header.TransferOrganizationCode, header.TransferSubinventoryCode,
-                                header.TransferLocatorId, CategoryCode.TransferInbound, ActionCode.InBoundSaveTransfer, header.ShipmentNumber);
+                                header.TransferLocatorId, CategoryCode.TransferInbound, ActionCode.StockTransfer, header.ShipmentNumber);
 
                                 stock.OrganizationId = (long)header.TransferOrganizationId;
                                 stock.OrganizationCode = header.TransferOrganizationCode;
@@ -1985,7 +1985,7 @@ SELECT [TRANSFER_PICKED_ID] as ID
 
                                 //產生異動紀錄
                                 var stkTxnT = CreateStockRecord(stock, header.TransferOrganizationId, header.TransferOrganizationCode, header.TransferSubinventoryCode,
-                                header.TransferLocatorId, CategoryCode.TransferInbound, ActionCode.InBoundSaveTransfer, header.ShipmentNumber,
+                                header.TransferLocatorId, CategoryCode.TransferInbound, ActionCode.StockTransfer, header.ShipmentNumber,
                                 0, stock.PrimaryAvailableQty, stock.PrimaryAvailableQty, 0, stock.SecondaryAvailableQty, stock.SecondaryAvailableQty, StockStatusCode.InStock, userId, now);
                                 stkTxnTRepositiory.Create(stkTxnT);
                             }
@@ -1997,7 +1997,7 @@ SELECT [TRANSFER_PICKED_ID] as ID
 
                                 //產生異動紀錄
                                 var stkTxnT = CreateStockRecord(stock, header.TransferOrganizationId, header.TransferOrganizationCode, header.TransferSubinventoryCode,
-                                header.TransferLocatorId, CategoryCode.TransferInbound, ActionCode.InBoundSaveTransfer, header.ShipmentNumber);
+                                header.TransferLocatorId, CategoryCode.TransferInbound, ActionCode.StockTransfer, header.ShipmentNumber);
 
                                 stock.OrganizationId = (long)header.TransferOrganizationId;
                                 stock.OrganizationCode = header.TransferOrganizationCode;
@@ -2343,7 +2343,7 @@ OR MIN(d.ROLL_REAM_QTY) <> COUNT(p.TRANSFER_DETAIL_ID)";
                     {
                         var stock = stockTRepositiory.GetAll().FirstOrDefault(x => x.StockId == pick.StockId);
                         if (stock == null) throw new Exception("找不到庫存資料");
-                        STK_TXN_T stkTxnT =  CreateStockRecord(stock, header.TransferOrganizationId, header.TransferOrganizationCode, header.TransferSubinventoryCode, header.TransferLocatorId, CategoryCode.TransferOutbound, ActionCode.OutBoundSaveTransfer, header.ShipmentNumber);
+                        STK_TXN_T stkTxnT =  CreateStockRecord(stock, header.TransferOrganizationId, header.TransferOrganizationCode, header.TransferSubinventoryCode, header.TransferLocatorId, CategoryCode.TransferOutbound, ActionCode.StockTransfer, header.ShipmentNumber);
                         var updateStockLockQtyResult = UpdateStockLockQty(stock, stkTxnT, -1 * pick.PrimaryQuantity, -1 * pick.SecondaryQuantity, pickSatus, PickStatus.Shipped, userId, now);
                         if (!updateStockLockQtyResult.Success) throw new Exception(updateStockLockQtyResult.Msg);
                     }
