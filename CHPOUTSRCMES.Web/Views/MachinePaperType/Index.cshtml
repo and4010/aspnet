@@ -7,39 +7,40 @@
 
 
 @section scripts {
- 
     <script src="~/Scripts/MachinePaperType.js"></script>
-
-
 }
 
-<div class="row row-std">
+
     @{
-
         IEnumerable<SelectListItem> Organization_code = (IEnumerable<SelectListItem>)ViewBag.Organization_code;
-
     }
-
-    <div class="row">
-        <div class="col-md-1">
-            <label class="input-lg">組織</label>
+<div class="box box-primary" style="padding:20px;">
+    <div class="box-body">
+        <div class="row row-std">
+            <div class="row">
+                <div class="col-md-1">
+                    <label class="input-lg">組織</label>
+                </div>
+                <div class="col-md-2">
+                    @Html.DropDownListFor(model => model.MachinePaperType.Organization_code, Organization_code, new { @class = "form-control", id = "Organization_code", autocomplete = "off" })
+                </div>
+            </div>
         </div>
+        <div class="box-footer">
 
-        <div class="col-md-2">
-            @Html.DropDownListFor(model => model.MachinePaperType.Organization_code, Organization_code, new { @class = "form-control", id = "Organization_code", autocomplete = "off" })
+            <div class="col-md-1">
+                <div class="col-md-2">
+                    <button id="btnSearch" class="btn btn-primary externalBtn">查詢</button>
+                </div>
+            </div>
         </div>
-
     </div>
-    <div class="col-md-1">
-        <div class="col-md-2">
-            <button id="btnSearch" class="btn btn-primary externalBtn">查詢</button>
-        </div>
-    </div>
-
-    <div class="row row-std">
-        <div class="dataTables_wrapper ">
+</div>
+<div class="box box-primary" style="padding:20px;">
+    <div class="box-body">
+        <div class="row row-std">
             <div class="col-md-12">
-                <table class="table table-striped table-bordered" id="MachinePaperTypeTable">
+                <table class="table table-striped table-bordered dataTable" id="MachinePaperTypeTable">
                     <thead>
                         <tr>
                             <th>
@@ -82,8 +83,4 @@
             </div>
         </div>
     </div>
-
-
-
-
 </div>
