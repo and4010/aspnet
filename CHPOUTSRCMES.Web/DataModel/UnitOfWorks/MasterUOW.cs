@@ -2484,18 +2484,30 @@ and usb.UserId = @UserId
                     }
 
                     return sublist;
-        }
-
-        public YSZMPCKQ_T GetYszmpckq(long organizationId, string organizationCode, string ospSubinventory, string pstyp)
-        {
-            return yszmpckqTRepositiory.GetAll().AsNoTracking().FirstOrDefault(x => x.OrganizationId == organizationId &&
-            x.OrganizationCode == organizationCode && x.OspSubinventory == ospSubinventory && x.Pstyp == pstyp);
                 }
             }
             catch (Exception e)
             {
                 logger.Error(LogUtilities.BuildExceptionMessage(e));
                 return new List<SelectListItem>();
+            }
+        }
+            
+
+        public YSZMPCKQ_T GetYszmpckq(long organizationId, string organizationCode, string ospSubinventory, string pstyp)
+        {
+            try
+            {
+                using (var mesContext = new MesContext())
+                {
+                    return yszmpckqTRepositiory.GetAll().AsNoTracking().FirstOrDefault(x => x.OrganizationId == organizationId &&
+                        x.OrganizationCode == organizationCode && x.OspSubinventory == ospSubinventory && x.Pstyp == pstyp);
+                }
+            }
+            catch (Exception e)
+            {
+                logger.Error(LogUtilities.BuildExceptionMessage(e));
+                return null;
             }
         }
 
