@@ -29,12 +29,9 @@ namespace CHPOUTSRCMES.Web.Controllers
         public JsonResult PartNoJson(DataTableAjaxPostViewModel data,string Catalog_elem_val_050, string Catalog_elem_val_020,string Catalog_elem_val_070,string Organization_code)
         {
             PartNoViewModel partNoViewModel = new PartNoViewModel();
-            List<PartNoModel> model = partNoViewModel.GetItemNo(Catalog_elem_val_050, Catalog_elem_val_020, Catalog_elem_val_070, Organization_code); 
-            model = PartNoViewModel.Search(data, model);
-            model = PartNoViewModel.Order(data.Order, model).ToList();
-            var data1 = model.Skip(data.Start).Take(data.Length).ToList();
+            List<PartNoModel> model = partNoViewModel.GetItemNo(data, Catalog_elem_val_050, Catalog_elem_val_020, Catalog_elem_val_070, Organization_code); 
 
-            return Json(new { draw = data.Draw, recordsFiltered = model.Count, recordsTotal = model.Count, data = data1 }, JsonRequestBehavior.AllowGet);
+            return Json(new { draw = data.Draw, recordsFiltered = model.Count, recordsTotal = model.Count, data = model }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]

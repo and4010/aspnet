@@ -56,8 +56,8 @@ function LoadTable(Catalog_elem_val_050, Catalog_elem_val_020, Catalog_elem_val_
         buttons: [
             {
                 extend: 'excel',
-                text: '匯出Excel',
-                className: 'btn-primary'
+                text: '匯出Excel'
+
             },
         ],
         columns: [
