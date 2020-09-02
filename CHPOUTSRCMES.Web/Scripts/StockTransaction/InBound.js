@@ -48,7 +48,7 @@
 
         var SUBINVENTORY_CODE = getOutSubinventoryCode();
         $.ajax({
-            url: "/OrgSubinventory/GetLocatorList",
+            url: "/StockTransaction/GetLocatorList",
             type: "post",
             data: {
                 ORGANIZATION_ID: "*",
@@ -424,26 +424,83 @@
                         $('#AutoCompleteItemNumber').focus();
                         return;
                     }
-                    selectedTransferHeaderId = data.Data.TransferHeaderId;
-                    selectedNumberStatus = data.Data.NumberStatus;
-
-                    if ($('#ddlOutLocatorArea').is(":visible")) {
-                        $("#ddlOutLocator").val(data.Data.LocatorId);
-                    }
-
-                    if ($('#ddlInLocatorArea').is(":visible")) {
-                        $("#ddlInLocator").val(data.Data.TransferLocatorId);
-                    }
-
-                    InputOpen();
-                    $('#txtBARCODE').val("");
-                    InBoundBarcodeDataTablesBody.ajax.reload();
+                 
+                    
 
                     if (data.Data.NumberStatus == "1") {
                         //出貨編號已存檔
-                        InputClose();
-                    } else {
+                        if (data.Data.IsMes == "1" && data.Data.TransferType == "O") {
+                            //對方是MES出庫
+                            swal.fire({
+                                title: "出庫轉入庫",
+                                text: "是否匯入MES出庫資料?",
+                                type: "warning",
+                                showCancelButton: true,
+                                confirmButtonColor: "#DD6B55",
+                                confirmButtonText: "確定",
+                                cancelButtonText: "取消"
+                            }).then(function (result) {
+                                if (result.value) {
+                                    selectedTransferHeaderId = data.Data.TransferHeaderId;
+                                    selectedNumberStatus = data.Data.NumberStatus;
 
+                                    if ($('#ddlOutLocatorArea').is(":visible")) {
+                                        $("#ddlOutLocator").val(data.Data.LocatorId);
+                                    }
+
+                                    if ($('#ddlInLocatorArea').is(":visible")) {
+                                        $("#ddlInLocator").val(data.Data.TransferLocatorId);
+                                    }
+
+
+                                    $('#txtBARCODE').val("");
+                                    OutBoundToInbound();
+                                } else {
+                                    InputOpen();
+                                    $("#ddlShipmentNumber").combobox('autocomplete', "新增編號", "新增編號");
+                                    selectedTransferHeaderId = 0;
+                                    selectedNumberStatus = "0";
+                                    InBoundBarcodeDataTablesBody.ajax.reload();
+                                    $("#scrollbox").collapse('show');
+                                    $('#AutoCompleteItemNumber').focus();
+                                }
+                            });
+
+                        } else {
+                            //非MES入庫 已存檔
+                            selectedTransferHeaderId = data.Data.TransferHeaderId;
+                            selectedNumberStatus = data.Data.NumberStatus;
+
+                            if ($('#ddlOutLocatorArea').is(":visible")) {
+                                $("#ddlOutLocator").val(data.Data.LocatorId);
+                            }
+
+                            if ($('#ddlInLocatorArea').is(":visible")) {
+                                $("#ddlInLocator").val(data.Data.TransferLocatorId);
+                            }
+
+                            
+                            $('#txtBARCODE').val("");
+                            InBoundBarcodeDataTablesBody.ajax.reload();
+                            InputClose();
+                        }
+                        
+                        
+                    } else {
+                        //未存檔
+                        selectedTransferHeaderId = data.Data.TransferHeaderId;
+                        selectedNumberStatus = data.Data.NumberStatus;
+
+                        if ($('#ddlOutLocatorArea').is(":visible")) {
+                            $("#ddlOutLocator").val(data.Data.LocatorId);
+                        }
+
+                        if ($('#ddlInLocatorArea').is(":visible")) {
+                            $("#ddlInLocator").val(data.Data.TransferLocatorId);
+                        }
+                        $('#txtBARCODE').val("");
+                        InBoundBarcodeDataTablesBody.ajax.reload();
+                        InputOpen();
                     }
 
                 } else {
@@ -518,6 +575,42 @@
             }
         })
     }
+
+    function OutBoundToInbound() {
+        $.ajax({
+            url: "/StockTransaction/OutBoundToInbound",
+            type: "POST",
+            data: {
+                transferHeaderId : selectedTransferHeaderId
+            },
+            success: function (data) {
+                if (data.Success) {
+                    GetShipmentNumberList(data.Data.TransferHeaderId, data.Data.ShipmentNumber);
+                    //$("#ddlShipmentNumber").combobox('autocomplete', data.Data.TransferHeaderId, data.Data.ShipmentNumber);
+                    //selectedTransferHeaderId = data.Data.TransferHeaderId;
+                    //selectedNumberStatus = data.Data.NumberStatus;
+
+                    //if ($('#ddlOutLocatorArea').is(":visible")) {
+                    //    $("#ddlOutLocator").val(data.Data.LocatorId);
+                    //}
+
+                    //if ($('#ddlInLocatorArea').is(":visible")) {
+                    //    $("#ddlInLocator").val(data.Data.TransferLocatorId);
+                    //}
+                    //$('#txtBARCODE').val("");
+                    //InBoundBarcodeDataTablesBody.ajax.reload();
+                    //InputOpen();
+                   
+                } else {
+                    swal.fire(data.Msg);
+                }
+            },
+            error: function () {
+                swal.fire('匯入MES出庫資料失敗');
+            }
+        })
+    }
+
 
     function PickInputAreaHide() {
         $('#PickInputArea').hide();
@@ -620,7 +713,7 @@
 
     //離開料號欄位自動搜尋
     $('#AutoCompleteItemNumber').blur(function () {
-        GetStockItemData($('#AutoCompleteItemNumber').val());
+        GetStockItemData($('#AutoCompleteItemNumber').val(), false);
     });
 
     editor = new $.fn.dataTable.Editor({
@@ -1201,7 +1294,7 @@
         //}
     }
 
-    function GetStockItemData(ITEM_NO) {
+    function GetStockItemData(ITEM_NO, focusNext) {
 
         $.ajax({
             url: "/StockTransaction/GetStockItemData",
@@ -1219,7 +1312,9 @@
                         $('#PACKING_TYPE').show();
                         $('#PACKING_TYPE').html(data.Data.CatalogElemVal110);
                         $('#UNIT').html(data.Data.SecondaryUomCode);
-                        $('#txtInputTransactionQty').focus();
+                        if (focusNext) {
+                            $('#txtInputTransactionQty').focus();
+                        }
                         $('#ROLL_INPUT_AREA').hide();
                         $('#REAM_INPUT_AREA').show();
                     } else {
@@ -1227,7 +1322,9 @@
                         $('#PACKING_TYPE').hide();
                         $('#PACKING_TYPE').html("");
                         $('#UNIT').html(data.Data.PrimaryUomCode);
-                        $('#txtInputTransactionQty').focus();
+                        if (focusNext) {
+                            $('#txtInputTransactionQty').focus();
+                        }
                         $('#ROLL_INPUT_AREA').show();
                         $('#REAM_INPUT_AREA').hide();
                     }
@@ -1293,7 +1390,12 @@
     }
 
     function InBoundSaveTransfer() {
-
+        if (getShipmentNumber() == "新增編號") {
+            swal.fire('請選擇出貨編號');
+            event.preventDefault();
+            return;
+        }
+        
         swal.fire({
             title: "入庫存檔",
             text: "確定入庫存檔嗎?",
@@ -1321,7 +1423,7 @@
                         }
                     },
                     error: function () {
-                        swal.fire('出庫存檔失敗');
+                        swal.fire('入庫存檔失敗');
                     },
                     complete: function (data) {
 
@@ -1728,7 +1830,7 @@
                     'ItemNumber': value.ITEM_NUMBER,
                     'Qty': value.PRIMARY_QUANTITY,
                     'LotNumber': value.LOT_NUMBER,
-                    'RollReamWt': GetRollReamWT()
+                    'RollReamWt': 0
                 }
                 excelList.push(InboundImportExcelModel);
             });
@@ -1820,9 +1922,9 @@
             $.each(dd, function (index, value) {
                 var InboundImportExcelModel = {
                     'ItemNumber': value.ITEM_NUMBER,
-                    'Qty': value.PRIMARY_QUANTITY,
-                    'LotNumber': value.LOT_NUMBER,
-                    'RollReamWt': GetRollReamWT()
+                    'Qty': value.REQUESTED_QUANTITY2,
+                    'LotNumber': "",
+                    'RollReamWt': value.ROLL_REAM_WT
                 }
                 excelList.push(InboundImportExcelModel);
             });

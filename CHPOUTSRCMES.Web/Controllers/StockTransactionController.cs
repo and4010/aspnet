@@ -131,7 +131,20 @@ namespace CHPOUTSRCMES.Web.Controllers
                 }
             }
         }
-        
+
+        [HttpPost, ActionName("GetLocatorList")]
+        public JsonResult GetLocatorList(string ORGANIZATION_ID, string SUBINVENTORY_CODE)
+        {
+            using (var context = new MesContext())
+            {
+                using (MasterUOW uow = new MasterUOW(context))
+                {
+                    List<SelectListItem> items = stockTransferData.GetLocatorList(uow, ORGANIZATION_ID, SUBINVENTORY_CODE, MasterUOW.DropDownListType.Choice).ToList();
+                    return Json(items, JsonRequestBehavior.AllowGet);
+                }
+            }
+        }
+
         [HttpPost, ActionName("GetInboundShipmentNumberList")]
         public JsonResult GetInboundShipmentNumberList(long outOrganizationId, string outSubinventoryCode, long inOrganizationId, string inSubinventoryCode)
         {
@@ -389,6 +402,25 @@ namespace CHPOUTSRCMES.Web.Controllers
 
             }
         }
+
+       
+        [HttpPost, ActionName("OutBoundToInbound")]
+        public JsonResult OutBoundToInbound(long transferHeaderId)
+        {
+            using (var context = new MesContext())
+            {
+                using (TransferUOW uow = new TransferUOW(context))
+                {
+                    //取得使用者ID
+                    var id = this.User.Identity.GetUserId();
+                    //取得使用者帳號
+                    var name = this.User.Identity.GetUserName();
+                    return new JsonResult { Data = stockTransferData.OutBoundToInbound(uow, transferHeaderId, id, name) };
+                }
+
+            }
+        }
+        
 
         [HttpPost]
         public ActionResult InboundPickEditor(PickEditor pickEditor)
@@ -752,10 +784,20 @@ namespace CHPOUTSRCMES.Web.Controllers
         }
 
         [HttpPost, ActionName("OutBoundSaveTransfer")]
-        public JsonResult OutBoundSaveTransfer(string TransactionType, string Number)
+        public JsonResult OutBoundSaveTransfer(long transferHeaderId)
         {
-            ResultModel result = stockTransferData.OutBoundSaveTransfer(TransactionType, Number);
-            return new JsonResult { Data = new { status = result.Success, result = result.Msg } };
+            using (var context = new MesContext())
+            {
+                using (TransferUOW uow = new TransferUOW(context))
+                {
+                    //取得使用者ID
+                    var id = this.User.Identity.GetUserId();
+                    //取得使用者帳號
+                    var name = this.User.Identity.GetUserName();
+                    ResultModel result = stockTransferData.OutBoundSaveTransfer(uow, transferHeaderId, id, name);
+                    return new JsonResult { Data = new { status = result.Success, result = result.Msg } };
+                }
+            }
         }
 
         [HttpPost, ActionName("InBoundSaveTransfer")]

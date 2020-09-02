@@ -161,6 +161,14 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Transfer
         [Column("DATA_WRITE_TYPE")]
         public string DataWriteType { set; get; }
 
+
+        /// <summary>
+        /// MES出庫DeailId
+        /// </summary>
+        /// 
+        [Column("OUTBOUND_TRANSFER_DETAIL_ID")]
+        public long? OutboundTransferDetailId { set; get; }
+
         /// <summary>
         /// 建立人員
         /// </summary>

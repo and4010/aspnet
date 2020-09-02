@@ -266,7 +266,7 @@ function OutBoundInit() {
 
             var SUBINVENTORY_CODE = getInSubinventoryCode();
             $.ajax({
-                url: "/OrgSubinventory/GetLocatorList",
+                url: "/StockTransaction/GetLocatorList",
                 type: "post",
                 data: {
                     ORGANIZATION_ID: "*",
@@ -1109,7 +1109,7 @@ function OutBoundInit() {
                     OutBoundBarcodeDataTablesBody.ajax.reload();
                     if (data.Data.NumberStatus == "1") {
                         //出貨編號已存檔
-                        InputClose();
+                        inputClose();
                     } else {
                         
                     }
@@ -1204,6 +1204,7 @@ function OutBoundInit() {
         $('#btnPickBarcode').attr('disabled', false);
         $('#btnSaveTransfer').attr('disabled', false);
         $('#btnSaveStockTransferDT').attr('disabled', false);
+        $('#txtSECONDARY_QUANTITY').attr('disabled', false);
     }
 
     function inputClose() {
@@ -1217,6 +1218,7 @@ function OutBoundInit() {
         $('#btnPickBarcode').attr('disabled', true);
         $('#btnSaveTransfer').attr('disabled', true);
         $('#btnSaveStockTransferDT').attr('disabled', true);
+        $('#txtSECONDARY_QUANTITY').attr('disabled', true);
     }
 
 
@@ -1261,7 +1263,7 @@ function OutBoundInit() {
 
     //離開料號欄位自動搜尋
     $('#AutoCompleteItemNumber').blur(function () {
-        GetStockItemData($('#AutoCompleteItemNumber').val());
+        GetStockItemData($('#AutoCompleteItemNumber').val(), false);
     });
 
     
@@ -1294,7 +1296,7 @@ function OutBoundInit() {
         }
 
         if ($('#ddlOutLocatorArea').is(":visible") && $('#ddlInLocatorArea').is(":visible")) {
-            if ($('#ddlOutLocatorArea').val() == $('#ddlInLocatorArea').val()) {
+            if (getOutLocatorId() == getInLocatorId()) {
                 swal.fire('同倉庫儲位要不同');
                 event.preventDefault();
                 return;
@@ -1596,23 +1598,10 @@ function OutBoundInit() {
     }
 
     function OutBoundSaveTransfer() {
-        var TransactionType = GetTransactionType();
-        //var Number = $('#AutoCompleteShipmentNumber').val();
-        var Number = $('#ddlShipmentNumber').val();
-        if (Number == "") {
-            //swal.fire('請輸入編號');
-            //event.preventDefault();
-            //return false;
-            if (TransactionType == "出貨編號") {
-                swal.fire('請輸入出貨編號');
-                event.preventDefault();
-                return false;
-            }
-            if (TransactionType == "移轉編號") {
-                swal.fire('請輸入移轉編號');
-                event.preventDefault();
-                return false;
-            }
+        if (getShipmentNumber() == "新增編號") {
+            swal.fire('請選擇出貨編號');
+            event.preventDefault();
+            return;
         }
 
         swal.fire({
@@ -1629,8 +1618,7 @@ function OutBoundInit() {
                     url: "/StockTransaction/OutBoundSaveTransfer",
                     type: "post",
                     data: {
-                        TransactionType: TransactionType,
-                        Number: Number
+                        transferHeaderId: getTransferHeaderId()
                     },
                     success: function (data) {
                         if (data.status) {
@@ -1657,7 +1645,7 @@ function OutBoundInit() {
 
     }
 
-    function GetStockItemData(ITEM_NO) {
+    function GetStockItemData(ITEM_NO, focusNext) {
 
         $.ajax({
             url: "/StockTransaction/GetStockItemData",
@@ -1675,13 +1663,17 @@ function OutBoundInit() {
                         $('#PACKING_TYPE').show();
                         $('#PACKING_TYPE').html(data.Data.CatalogElemVal110);
                         $('#UNIT').html(data.Data.SecondaryUomCode);
-                        $('#txtInputTransactionQty').focus();
+                        if (focusNext) {
+                            $('#txtInputTransactionQty').focus();
+                        }
                     } else {
                         $('#PACKING_TYPE_LABEL').hide();
                         $('#PACKING_TYPE').hide();
                         $('#PACKING_TYPE').html("");
                         $('#UNIT').html(data.Data.PrimaryUomCode);
-                        $('#txtInputTransactionQty').focus();
+                        if (focusNext) {
+                            $('#txtInputTransactionQty').focus();
+                        }
                     }
 
                 } else {

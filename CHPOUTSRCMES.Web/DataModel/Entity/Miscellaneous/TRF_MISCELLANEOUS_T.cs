@@ -1,41 +1,33 @@
-﻿using System;
-using CHPOUTSRCMES.DataAnnotation;
+﻿using CHPOUTSRCMES.DataAnnotation;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
 
-namespace CHPOUTSRCMES.Web.DataModel.Entiy.Transfer
+namespace CHPOUTSRCMES.Web.DataModel.Entity.Miscellaneous
 {
-    [Table("TRF_DETAIL_HT")]
-    public class TRF_DETAIL_HT
+    [Table("TRF_MISCELLANEOUS_T")]
+    public class TRF_MISCELLANEOUS_T
     {
         /// <summary>
-        /// 庫存移轉明細ID
+        /// 庫存異動雜項ID
         /// </summary>
         /// 
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
         [Required]
-        [Column("TRANSFER_DETAIL_HIS_ID")]
-        public long TransferDetailHisId { set; get; }
+        [Column("TRANSFER_MISCELLANEOUS_ID")]
+        public long TransferMiscellaneousId { set; get; }
 
         /// <summary>
-        /// 庫存移轉明細ID
+        /// 庫存移轉雜項擋頭ID
         /// </summary>
         /// 
         [Required]
-        [Column("TRANSFER_DETAIL_ID")]
-        public long TransferDetailId { set; get; }
-
-        /// <summary>
-        /// 庫存移轉擋頭ID
-        /// </summary>
-        /// 
-        [Required]
-        [Column("TRANSFER_HEADER_ID")]
-        public long TransferHeaderId { set; get; }
+        [Column("TRANSFER_MISCELLANEOUS_HEADER_ID")]
+        public long TransferMiscellaneousHeaderId { set; get; }
 
         /// <summary>
         /// 料號ID
@@ -64,40 +56,21 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Transfer
         public string ItemDescription { set; get; }
 
         /// <summary>
-        /// 包裝方式
+        /// 條碼號
         /// </summary>
         /// 
-        [StringLength(30)]
-        [Required(AllowEmptyStrings = true)]
-        [Column("PACKING_TYPE")]
-        public string PackingType { set; get; }
-
-        /// <summary>
-        /// 捲筒\平板
-        /// </summary>
-        /// 
-        [StringLength(10)]
+        [StringLength(20)]
         [Required]
-        [Column("ITEM_CATEGORY")]
-        public string ItemCategory { set; get; }
+        [Column("BARCODE")]
+        public string Barcode { set; get; }
 
         /// <summary>
-        /// 交易單位
+        /// 庫存ID
         /// </summary>
         /// 
         [Required]
-        [StringLength(3)]
-        [Column("REQUESTED_TRANSACTION_UOM")]
-        public string RequestedTransactionUom { set; get; }
-
-        /// <summary>
-        /// 交易需求數量
-        /// </summary>
-        /// 
-        [Required]
-        [Column("REQUESTED_TRANSACTION_QUANTITY")]
-        [Precision(30, 10)]
-        public decimal RequestedTransactionQuantity { set; get; }
+        [Column("STOCK_ID")]
+        public long StockId { set; get; }
 
         /// <summary>
         /// 主要單位
@@ -105,76 +78,91 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Transfer
         /// 
         [Required]
         [StringLength(3)]
-        [Column("REQUESTED_PRIMARY_UOM")]
-        public string RequestedPrimaryUom { set; get; }
+        [Column("PRIMARY_UOM")]
+        public string PrimaryUom { set; get; }
 
         /// <summary>
-        /// 主要需求數量
+        /// 主要異動量
         /// </summary>
         /// 
         [Required]
-        [Column("REQUESTED_PRIMARY_QUANTITY")]
+        [Column("TRANSFER_PRIMARY_QUANTITY")]
         [Precision(30, 10)]
-        public decimal RequestedPrimaryQuantity { set; get; }
+        public decimal TransferPrimaryQuantity { set; get; }
+
+        /// <summary>
+        /// 原始主要數量
+        /// </summary>
+        /// 
+        [Required]
+        [Column("ORIGINAL_PRIMARY_QUANTITY")]
+        [Precision(30, 10)]
+        public decimal OriginalPrimaryQuantity { set; get; }
+
+        /// <summary>
+        /// 異動後主要數量
+        /// </summary>
+        /// 
+        [Required]
+        [Column("AFTER_PRIMARY_QUANTITY")]
+        [Precision(30, 10)]
+        public decimal AfterPrimaryQuantity { set; get; }
 
         /// <summary>
         /// 次要單位
         /// </summary>
         /// 
         [StringLength(3)]
-        [Column("REQUESTED_SECONDARY_UOM")]
-        public string RequestedSecondaryUom { set; get; }
+        [Column("SECONDARY_UOM")]
+        public string SecondaryUom { set; get; }
 
         /// <summary>
-        /// 預計出庫次要數量
+        /// 次要數量
         /// </summary>
         /// 
-        [Column("REQUESTED_SECONDARY_QUANTITY")]
+        [Column("TRANSFER_SECONDARY_QUANTITY")]
         [Precision(30, 10)]
-        public decimal? RequestedSecondaryQuantity { set; get; }
+        public decimal? TransferSecondaryQuantity { set; get; }
 
         /// <summary>
-        /// 捲數\棧板數
+        /// 原始次要數量
         /// </summary>
         /// 
-        [Required]
-        [Column("ROLL_REAM_QTY")]
+        [Column("ORIGINAL_SECONDARY_QUANTITY")]
         [Precision(30, 10)]
-        public decimal RollReamQty { set; get; }
+        public decimal? OriginalSecondaryQuantity { set; get; }
 
         /// <summary>
-        /// 每件令數
+        /// 異動後次要數量
         /// </summary>
         /// 
-        [Required]
-        [Column("ROLL_REAM_WT")]
+        [Column("AFTER_SECONDARY_QUANTITY")]
         [Precision(30, 10)]
-        public decimal RollReamWt { set; get; }
+        public decimal? AfterSecondaryQuantity { set; get; }
 
         /// <summary>
-        /// 修改權限
+        /// 捲號
         /// </summary>
         /// 
-        [StringLength(10)]
-        [Required]
-        [Column("DATA_UPADTE_AUTHORITY")]
-        public string DataUpadteAuthority { set; get; }
+        [StringLength(80)]
+        [Column("LOT_NUMBER")]
+        public string LotNumber { set; get; }
 
         /// <summary>
-        /// 寫入方式
+        /// 理論重(KG)
         /// </summary>
         /// 
-        [StringLength(10)]
-        [Required]
-        [Column("DATA_WRITE_TYPE")]
-        public string DataWriteType { set; get; }
+        [Column("LOT_QUANTITY")]
+        [Precision(30, 10)]
+        public decimal? LotQuantity { set; get; }
 
         /// <summary>
-        /// MES出庫DeailId
+        /// 備註
         /// </summary>
         /// 
-        [Column("OUTBOUND_TRANSFER_DETAIL_ID")]
-        public long? OutboundTransferDetailId { set; get; }
+        [StringLength(240)]
+        [Column("NOTE")]
+        public string Note { set; get; }
 
         /// <summary>
         /// 建立人員

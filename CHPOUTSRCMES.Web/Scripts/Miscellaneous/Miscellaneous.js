@@ -4,6 +4,46 @@ var editor;
 $(document).ready(function () {
 
     GetTop();
+
+    function getOrganizationId() {
+        var id = $("#ddlSubinventory").val();
+        if (id == '請選擇') {
+            id = '0';
+        }
+        return id;
+    }
+
+    function getSubinventoryCode() {
+        return $("#ddlSubinventory option:selected").text();
+    }
+
+    function getOutLocatorId() {
+        if ($('#ddlLocatorArea').is(":visible")) {
+            return $("#ddlLocator").val();
+        } else {
+            return null;
+        }
+    }
+
+    function getSearchQty() {
+        var qty = $("#txtSearchQty").val();
+        if (!qty) {
+            qty = 0;
+        }
+        return qty;
+    }
+
+    function getPercentageError() {
+        var percentageError = $("#txtPercentageError").val();
+        if (!percentageError) {
+            percentageError = 0;
+        }
+        return percentageError;
+    }
+
+  
+
+
     $('#txtSearchQty').keydown(function (e) {
         if (e.keyCode == 13) {
             $('#txtPercentageError').focus().select();
@@ -98,6 +138,7 @@ $(document).ready(function () {
         serverSide: true,
         processing: true,
         orderMulti: true,
+        deferLoading: 0, //初始化DataTable時，不發出ajax
         //pageLength: 2,
         dom:
             "<'row'<'col-sm-2'l><'col-sm-7'B><'col-sm-3'f>>" +
@@ -108,16 +149,17 @@ $(document).ready(function () {
             "type": "POST",
             "datatype": "json",
             "data": function (d) {
-                d.SubinventoryCode = $("#ddlSubinventory").val();
-                d.Locator = $("#ddlLocator").val();
-                d.ItemNumber = $("#txtItemNumber").val();
-                d.PrimaryQty = $("#txtSearchQty").val();
-                d.PercentageError = $("#txtPercentageError").val();
+                d.organizationId = getOrganizationId();
+                d.subinventoryCode = getSubinventoryCode();
+                d.locatorId = getOutLocatorId();
+                d.itemNumber = $("#txtItemNumber").val();
+                d.primaryQty = getSearchQty();
+                d.percentageError = getPercentageError();
             }
         },
         columns: [
             { data: null, defaultContent: '', className: 'select-checkbox', orderable: false, width: "40px" },
-            { data: "ID", name: "項次", autoWidth: true },
+            { data: "SUB_ID", name: "項次", autoWidth: true },
             { data: "SUBINVENTORY_CODE", name: "倉庫", autoWidth: true },
             { data: "SEGMENT3", name: "儲位", autoWidth: true },
             { data: "ITEM_NO", name: "料號", autoWidth: true, className: "dt-body-left" },
@@ -138,7 +180,8 @@ $(document).ready(function () {
             },
             { data: "SECONDARY_UOM_CODE", name: "次要單位", autoWidth: true },
             { data: "NOTE", name: "備註", autoWidth: true },
-            { data: "LAST_UPDATE_DATE", name: "更新日期", autoWidth: true, visible: false }
+            { data: "ID", name: "STOCK_ID", autoWidth: true, visible: false }
+            //{ data: "LAST_UPDATE_DATE", name: "更新日期", autoWidth: true, visible: false }
         ],
 
         order: [[11, 'desc']],
@@ -159,8 +202,10 @@ $(document).ready(function () {
 
     StockDT.on('select', function (e, dt, type, indexes) {
         if (type === 'row') {
-            var StockId = dt.rows(indexes).data().pluck('ID')[0];
+            var StockId = dt.rows(indexes).data().pluck('StockId')[0];
             $("#StockId").text(StockId);
+            var SUB_ID = dt.rows(indexes).data().pluck('SUB_ID')[0];
+            $("#SUB_ID").text(SUB_ID);
             var Subinventory = dt.rows(indexes).data().pluck('SUBINVENTORY_CODE')[0];
             $("#Subinventory").text(Subinventory);
             var Locator = dt.rows(indexes).data().pluck('SEGMENT3')[0];
@@ -202,6 +247,7 @@ $(document).ready(function () {
     StockDT.on('deselect', function (e, dt, type, indexes) {
         if (type === 'row') {
             $("#StockId").text("");
+            $("#SUB_ID").text("");
             $("#Subinventory").text("");
             $("#Locator").text("");
             $("#ItemNumber").text("");
@@ -582,22 +628,30 @@ function LocatorChangeCallBack() {
 
 function AutoCompleteItemNumberSelectCallBack(ITEM_NO) {
     //$("#txtItemNumber").val(ITEM_NO);
-    GetStockItemData(ITEM_NO);
+    
+    GetStockItemData(ITEM_NO, true);
 }
 
+function LostFocusItemNumberCallBack(ITEM_NO) {
+    
+    GetStockItemData(ITEM_NO, false);
+   
+}
 
-function GetStockItemData(ITEM_NO) {
+function GetStockItemData(ITEM_NO,focusNext) {
     $.ajax({
-        url: "/Miscellaneous/GetStockItemData",
+        url: "/StockTransaction/GetStockItemData",
         type: "post",
         data: {
-            SUBINVENTORY_CODE: $('#ddlSubinventory').val(),
+            SUBINVENTORY_CODE: $("#ddlSubinventory option:selected").text(),
             ITEM_NO: ITEM_NO
         },
         success: function (data) {
-            if (data.STATUS) {
-                $('#SearchUnit').html(data.UNIT);
-                $('#txtSearchQty').focus().select();
+            if (data.Success) {
+                $('#SearchUnit').html(data.Data.PrimaryUomCode);
+                if (focusNext) {
+                    $('#txtSearchQty').focus().select();
+                }
             } else {
                 $('#SearchUnit').html("");
             }

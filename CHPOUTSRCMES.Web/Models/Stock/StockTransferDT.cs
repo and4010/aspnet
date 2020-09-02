@@ -236,10 +236,24 @@ namespace CHPOUTSRCMES.Web.Models.Stock
 
 
 
-        public IEnumerable<SelectListItem> GetLocatorListForUserId(MasterUOW uow, string userId, string SUBINVENTORY_CODE, MasterUOW.DropDownListType type)
+        public List<SelectListItem> GetLocatorListForUserId(MasterUOW uow, string userId, string SUBINVENTORY_CODE, MasterUOW.DropDownListType type)
         {
             //return orgData.GetLocatorList(uow, "265", SUBINVENTORY_CODE, type);
             return orgData.GetLocatorListForUserId(uow, userId, SUBINVENTORY_CODE, type);
+        }
+
+        /// <summary>
+        /// 取得儲位下拉選單,
+        /// 條件:ORGANIZATION_ID 和 SUBINVENTORY_CODE 和 LOCATOR_TYPE為2 和 CONTROL_FLAG 不為D 和 LOCATOR_DISABLE_DATE為NULL或大於系統時間,
+        /// 適用作業: 庫存移轉-入庫 發貨儲位、庫存移轉-出庫 收貨儲位、基本資料-組織倉庫
+        /// </summary>
+        /// <param name="uow"></param>
+        /// <param name="ORGANIZATION_ID">組織Id, *為全部組織</param>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public List<SelectListItem> GetLocatorList(MasterUOW uow, string ORGANIZATION_ID, string SUBINVENTORY_CODE, MasterUOW.DropDownListType type)
+        {
+            return uow.GetLocatorDropDownList(ORGANIZATION_ID, SUBINVENTORY_CODE, type);
         }
 
         /// <summary>
@@ -1236,109 +1250,27 @@ namespace CHPOUTSRCMES.Web.Models.Stock
             return query.ToList();
         }
 
-        //儲位異動出庫存檔
-        public ResultModel OutBoundSaveTransfer(string TransactionType, string Number)
+        /// <summary>
+        /// 出庫存檔
+        /// </summary>
+        /// <param name="uow"></param>
+        /// <param name="transferHeaderId"></param>
+        /// <param name="userId"></param>
+        /// <param name="userName"></param>
+        /// <returns></returns>
+        public ResultModel OutBoundSaveTransfer(TransferUOW uow, long transferHeaderId, string userId, string userName)
         {
-            List<StockTransferDT> list = new List<StockTransferDT>();
-            if (TransactionType == "出貨編號")
-            {
-                var query = from stockTransferDT in model
-                            where Number == stockTransferDT.SHIPMENT_NUMBER
-                            select stockTransferDT;
-                list = query.ToList();
-                if (list.Count == 0)
-                {
-                    return new ResultModel(false, "出貨編號" + Number + "沒有資料");
-                }
-            }
-
-            if (TransactionType == "移轉編號")
-            {
-                var query = from stockTransferDT in model
-                            where Number == stockTransferDT.SUBINVENTORY_TRANSFER_NUMBER
-                            select stockTransferDT;
-                list = query.ToList();
-                if (list.Count == 0)
-                {
-                    return new ResultModel(false, "移轉編號" + Number + "沒有資料");
-                }
-            }
-
-            //棧板數/捲數檢查
-            foreach (StockTransferDT data in list)
-            {
-                var query = from barcodeData in StockTransferBarcodeData.model
-                            where data.ID == barcodeData.TransferDetailId
-                            select barcodeData.BARCODE;
-                decimal pickedCount = Convert.ToDecimal(query.ToList().Count);
-
-                if (pickedCount != data.ROLL_REAM_QTY)
-                {
-                    return new ResultModel(false, "料號" + data.ITEM_NUMBER + "的棧板數、捲數和輸入的條碼筆數不同");
-                }
-            }
-
-
-            //已揀數量檢查
-            foreach (StockTransferDT data in list)
-            {
-                if (data.REQUESTED_QUANTITY != data.PICKED_QUANTITY)
-                {
-                    return new ResultModel(false, "料號" + data.ITEM_NUMBER + "主單位已揀數量不等於需求數量");
-                }
-                if (data.REQUESTED_QUANTITY2 != data.PICKED_QUANTITY2)
-                {
-                    return new ResultModel(false, "料號" + data.ITEM_NUMBER + "次單位已揀數量不等於需求數量");
-                }
-            }
-
-            //庫存扣除
-            foreach (StockTransferBarcodeDT barcodeData in StockTransferBarcodeData.model)
-            {
-                foreach (StockDT stockData in StockData.source)
-                {
-                    if (TransactionType == "出貨編號")
-                    {
-                        if (barcodeData.SHIPMENT_NUMBER == Number && stockData.BARCODE == barcodeData.BARCODE)
-                        {
-                            stockData.PRIMARY_AVAILABLE_QTY = stockData.PRIMARY_AVAILABLE_QTY - barcodeData.PRIMARY_QUANTITY;
-                            stockData.SECONDARY_AVAILABLE_QTY = stockData.SECONDARY_AVAILABLE_QTY - barcodeData.SECONDARY_QUANTITY;
-                        }
-                    }
-
-                    if (TransactionType == "移轉編號")
-                    {
-                        if (barcodeData.SUBINVENTORY_TRANSFER_NUMBER == Number && stockData.BARCODE == barcodeData.BARCODE)
-                        {
-                            stockData.PRIMARY_AVAILABLE_QTY = stockData.PRIMARY_AVAILABLE_QTY - barcodeData.PRIMARY_QUANTITY;
-                            stockData.SECONDARY_AVAILABLE_QTY = stockData.SECONDARY_AVAILABLE_QTY - barcodeData.SECONDARY_QUANTITY;
-                        }
-                    }
-                }
-            }
-
-            //變更編號狀態
-            foreach (StockTransferDT data in model)
-            {
-                if (TransactionType == "出貨編號")
-                {
-                    if (data.SHIPMENT_NUMBER == Number)
-                    {
-                        data.NUMBER_STATUS = "MES已出庫";
-                    }
-                }
-                if (TransactionType == "移轉編號")
-                {
-                    if (data.SUBINVENTORY_TRANSFER_NUMBER == Number)
-                    {
-                        data.NUMBER_STATUS = "MES已出庫";
-                    }
-                }
-            }
-
-            return new ResultModel(true, "出庫存檔成功");
+            return uow.OutBoundSaveTransfer(transferHeaderId, userId, userName);
         }
 
+        /// <summary>
+        /// 入庫存檔
+        /// </summary>
+        /// <param name="uow"></param>
+        /// <param name="transferHeaderId"></param>
+        /// <param name="userId"></param>
+        /// <param name="userName"></param>
+        /// <returns></returns>
         public ResultModel InBoundSaveTransfer(TransferUOW uow, long transferHeaderId, string userId, string userName)
         {
             return uow.InBoundSaveTransfer(transferHeaderId, userId, userName, true);
@@ -1349,138 +1281,8 @@ namespace CHPOUTSRCMES.Web.Models.Stock
             return uow.InBoundSaveTransfer(transferHeaderId, userId, userName, false);
         }
 
-        //儲位異動入庫存檔
-        public ResultModel InBoundSaveTransfer(string TransactionType, string Number)
-        {
-            List<StockTransferDT> list = new List<StockTransferDT>();
-            if (TransactionType == "出貨編號")
-            {
-                var query = from stockTransferDT in model
-                            where Number == stockTransferDT.SHIPMENT_NUMBER
-                            select stockTransferDT;
-                list = query.ToList();
-                if (list.Count == 0)
-                {
-                    return new ResultModel(false, "出貨編號" + Number + "沒有資料");
-                }
-            }
-
-            if (TransactionType == "移轉編號")
-            {
-                var query = from stockTransferDT in model
-                            where Number == stockTransferDT.SUBINVENTORY_TRANSFER_NUMBER
-                            select stockTransferDT;
-                list = query.ToList();
-                if (list.Count == 0)
-                {
-                    return new ResultModel(false, "移轉編號" + Number + "沒有資料");
-                }
-            }
-
-            //棧板數/捲數檢查
-            foreach (StockTransferDT data in list)
-            {
-                var query = from barcodeData in StockTransferBarcodeData.model
-                            where data.ID == barcodeData.TransferDetailId
-                            select barcodeData.BARCODE;
-                decimal pickedCount = Convert.ToDecimal(query.ToList().Count);
-
-                if (pickedCount != data.ROLL_REAM_QTY)
-                {
-                    return new ResultModel(false, "料號" + data.ITEM_NUMBER + "的棧板數、捲數和輸入的條碼筆數不同");
-                }
-            }
-
-
-            //已揀數量檢查
-            foreach (StockTransferDT data in list)
-            {
-                if (data.REQUESTED_QUANTITY != data.INBOUND_PICKED_QUANTITY)
-                {
-                    //return new ResultModel(false, "料號" + data.ITEM_NUMBER + "入庫主單位已揀數量不等於需求數量");
-                    return new ResultModel(false, "料號" + data.ITEM_NUMBER + "未揀完");
-                }
-                if (data.REQUESTED_QUANTITY2 != data.INBOUND_PICKED_QUANTITY2)
-                {
-                    return new ResultModel(false, "料號" + data.ITEM_NUMBER + "未揀完");
-                }
-            }
-
-            //條碼入庫狀態檢查
-            foreach (StockTransferDT data in list)
-            {
-                var query = from barcodeData in StockTransferBarcodeData.model
-                            where data.ID == barcodeData.TransferDetailId &&
-                            barcodeData.Status != "已入庫"
-                            select barcodeData.BARCODE;
-                var barcodeList = query.ToList();
-                if (barcodeList.Count > 0)
-                {
-                    return new ResultModel(false, "條碼" + barcodeList[0] + "未揀完");
-                }
-            }
-
-
-            //庫存增加
-            foreach (StockTransferBarcodeDT barcodeData in StockTransferBarcodeData.model)
-            {
-                foreach (StockDT stockData in StockData.source)
-                {
-                    if (TransactionType == "出貨編號")
-                    {
-                        if (barcodeData.SHIPMENT_NUMBER == Number && stockData.BARCODE == barcodeData.BARCODE)
-                        {
-                            stockData.PRIMARY_AVAILABLE_QTY = stockData.PRIMARY_AVAILABLE_QTY + barcodeData.PRIMARY_QUANTITY;
-                            stockData.SECONDARY_AVAILABLE_QTY = stockData.SECONDARY_AVAILABLE_QTY + barcodeData.SECONDARY_QUANTITY;
-                        }
-                    }
-
-                    if (TransactionType == "移轉編號")
-                    {
-                        if (barcodeData.SUBINVENTORY_TRANSFER_NUMBER == Number && stockData.BARCODE == barcodeData.BARCODE)
-                        {
-                            stockData.PRIMARY_AVAILABLE_QTY = stockData.PRIMARY_AVAILABLE_QTY + barcodeData.PRIMARY_QUANTITY;
-                            stockData.SECONDARY_AVAILABLE_QTY = stockData.SECONDARY_AVAILABLE_QTY + barcodeData.SECONDARY_QUANTITY;
-                        }
-                    }
-                }
-            }
-
-            //變更編號狀態
-            foreach (StockTransferDT data in model)
-            {
-                if (TransactionType == "出貨編號")
-                {
-                    if (data.SHIPMENT_NUMBER == Number)
-                    {
-                        if (data.NUMBER_STATUS == "非MES入庫手動新增" || data.NUMBER_STATUS == "非MES入庫檔案匯入")
-                        {
-                            data.NUMBER_STATUS = "非MES已入庫";
-                        }
-                        else if (data.NUMBER_STATUS == "MES已出庫")
-                        {
-                            data.NUMBER_STATUS = "MES已入庫";
-                        }
-                    }
-                }
-                if (TransactionType == "移轉編號")
-                {
-                    if (data.SUBINVENTORY_TRANSFER_NUMBER == Number)
-                    {
-                        if (data.NUMBER_STATUS == "非MES入庫手動新增" || data.NUMBER_STATUS == "非MES入庫檔案匯入")
-                        {
-                            data.NUMBER_STATUS = "非MES已入庫";
-                        }
-                        else if (data.NUMBER_STATUS == "MES已出庫")
-                        {
-                            data.NUMBER_STATUS = "MES已入庫";
-                        }
-                    }
-                }
-            }
-
-            return new ResultModel(true, "入庫存檔成功");
-        }
+        
+        
 
         public ResultModel MergeBarcode(long ID, decimal PRIMARY_QUANTITY, decimal SECONDARY_QUANTITY, decimal addROLL_REAM_QTY)
         {
@@ -1577,9 +1379,14 @@ namespace CHPOUTSRCMES.Web.Models.Stock
             return uow.WaitPrintToWaitInbound(transferPickedIdList, userId, userName);
         }
 
-        #region 併板
+        public ResultDataModel<TRF_HEADER_T> OutBoundToInbound(TransferUOW uow, long transferHeaderId, string userId, string userName)
+        {
+            return uow.OutBoundToInbound(transferHeaderId, userId, userName);
+        }
 
-        public MergeBarcodeViewModel GetMergeBarcodeViewModel(TransferUOW uow, List<long> transferPickedIdList)
+            #region 併板
+
+            public MergeBarcodeViewModel GetMergeBarcodeViewModel(TransferUOW uow, List<long> transferPickedIdList)
         {
             MergeBarcodeViewModel vieModel = new MergeBarcodeViewModel();
             vieModel.WaitMergeBarcodeList = new List<TRF_INBOUND_PICKED_T>();

@@ -1,4 +1,5 @@
-﻿using CHPOUTSRCMES.Web.ViewModels;
+﻿using CHPOUTSRCMES.Web.DataModel.UnitOfWorks;
+using CHPOUTSRCMES.Web.ViewModels;
 using CHPOUTSRCMES.Web.ViewModels.Miscellaneous;
 using CHPOUTSRCMES.Web.ViewModels.StockInvetory;
 using System;
@@ -37,20 +38,20 @@ namespace CHPOUTSRCMES.Web.Models.Stock
             model = new List<StockMiscellaneousDT>();
         }
 
-        public MiscellaneousViewModel GetMiscellaneousViewModel()
+        public MiscellaneousViewModel GetMiscellaneousViewModel(MiscellaneousUOW uow)
         {
             MiscellaneousViewModel viewModel = new MiscellaneousViewModel();
             viewModel.SelectedMiscellaneous = "請選擇";
-            List<ListItem> miscellaneousList = new List<ListItem>();
-            miscellaneousList.Add(new ListItem("請選擇", "請選擇"));
-            miscellaneousList.Add(new ListItem("雜發", "雜發"));
-            miscellaneousList.Add(new ListItem("雜收", "雜收"));
+            //List<ListItem> miscellaneousList = new List<ListItem>();
+            //miscellaneousList.Add(new ListItem("請選擇", "請選擇"));
+            //miscellaneousList.Add(new ListItem("雜發", "雜發"));
+            //miscellaneousList.Add(new ListItem("雜收", "雜收"));
 
-            viewModel.MiscellaneousItems = miscellaneousList.Select(i => new SelectListItem() { Text = i.Text, Value = i.Value });
+            viewModel.MiscellaneousItems = uow.GetMiscellaneousTypeDropDownList();
 
-            viewModel.SearchQty = null;
-            viewModel.PercentageError = null;
-            viewModel.Qty = null;
+            viewModel.SearchQty = "";
+            viewModel.PercentageError = "";
+            viewModel.Qty = "";
 
 
             return viewModel;
@@ -65,6 +66,11 @@ namespace CHPOUTSRCMES.Web.Models.Stock
         //{
         //    return new MiscellaneousReceiveViewModel();
         //}
+
+        public List<StockDT> SearchStock(MiscellaneousUOW uow,long organizationId, string subinventoryCode, long? locatorId, string itemNumber, decimal primaryQty, decimal percentageError)
+        {
+            return uow.GetStockTList(organizationId, subinventoryCode, locatorId, itemNumber, primaryQty, percentageError);
+        }
 
         public List<StockMiscellaneousDT> GetModel()
         {

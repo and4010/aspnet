@@ -118,8 +118,9 @@
 <div class="row row-std ">
     <div class="col-md-12">
         <div class="col col-md-2 input-lg form-group">
-            @Html.LabelFor(model => model.StockId, new { @class = "input-lg" })
-            <span id="StockId">@Html.DisplayFor(model => model.StockId)</span>
+            <span id="StockId" style="display: none;"></span>
+            @Html.LabelFor(model => model.SUB_ID, new { @class = "input-lg" })
+            <span id="SUB_ID">@Html.DisplayFor(model => model.SUB_ID)</span>
         </div>
         <div class="col col-md-3 input-lg form-group">
             @Html.LabelFor(model => model.Subinventory, new { @class = "input-lg" })
