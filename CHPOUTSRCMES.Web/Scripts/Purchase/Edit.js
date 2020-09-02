@@ -158,7 +158,10 @@ function SetSpinnerValue() {
                 if (data.resultDataModel.Data.ReasonCode != "") {
                     $("#select-reason").val(data.resultDataModel.Data.ReasonCode);
                 }
-                $("#select-Locator").val(data.resultDataModel.Data.LocatorId);
+                if (data.resultDataModel.Data.LocatorId != null) {
+                    $("#select-Locator").val(data.resultDataModel.Data.LocatorId);
+                }
+            
             }
         },
         error: function () {

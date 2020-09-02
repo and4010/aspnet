@@ -91,9 +91,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                 ctrorg.MvContainerDate = DateTime.Now;
                 ctrorg.OrganizationId = 265;
                 ctrorg.OrganizationCode = "FTY";
-                ctrorg.Subinventory = "SFG";
-                ctrorg.LocatorId = 22016;
-                ctrorg.LocatorCode = "FTY.SFG.TB2.NA";
+                ctrorg.Subinventory = "TB3";
                 ctrorg.DetailId = 1;
                 ctrorg.InventoryItemId = 503376;
                 ctrorg.ShipItemNumber = "4DM00A03000407K471K";
@@ -132,9 +130,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                 ctrorg.MvContainerDate = DateTime.Now;
                 ctrorg.OrganizationId = 265;
                 ctrorg.OrganizationCode = "FTY";
-                ctrorg.Subinventory = "SFG";
-                ctrorg.LocatorId = 22016;
-                ctrorg.LocatorCode = "FTY.SFG.TB2.NA";
+                ctrorg.Subinventory = "TB3";
                 ctrorg.DetailId = 1;
                 ctrorg.InventoryItemId = 503375;
                 ctrorg.ShipItemNumber = "4DM00A03000386K471K";
@@ -173,9 +169,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                 ctrorg.MvContainerDate = DateTime.Now;
                 ctrorg.OrganizationId = 265;
                 ctrorg.OrganizationCode = "FTY";
-                ctrorg.Subinventory = "SFG";
-                ctrorg.LocatorId = 22016;
-                ctrorg.LocatorCode = "FTY.SFG.TB2.NA";
+                ctrorg.Subinventory = "TB3";
                 ctrorg.DetailId = 1;
                 ctrorg.InventoryItemId = 503374;
                 ctrorg.ShipItemNumber = "4DM00A03000352K471K";
@@ -870,7 +864,7 @@ WHERE p.ITEM_CATEGORY = N'捲筒' and p.CTR_PICKED_ID  = @CTR_PICKED_ID");
                         ctrPickT.ReasonDesc = reason.ReasonDesc;
                         ctrPickT.ReasonCode = reason.ReasonCode;
                     }
-                    if (Locator != "*")
+                    if (Locator != "null")
                     {
                         var LocatorId = Int32.Parse(Locator);
                         var Id = locatorTRepositiory.Get(x => x.LocatorId == LocatorId).SingleOrDefault();
@@ -923,7 +917,7 @@ WHERE p.ITEM_CATEGORY = N'捲筒' and p.CTR_PICKED_ID  = @CTR_PICKED_ID");
                         ctrPickT.ReasonDesc = reason.ReasonDesc;
                         ctrPickT.ReasonCode = reason.ReasonCode;
                     }
-                    if (Locator != "*")
+                    if (Locator != "null")
                     {
                         var LocatorId = Int32.Parse(Locator);
                         var Id = locatorTRepositiory.Get(x => x.LocatorId == LocatorId).SingleOrDefault();
@@ -1326,20 +1320,17 @@ where CTR_HEADER_ID = @CTR_HEADER_ID");
         /// <param name="CTR_HEADER_ID"></param>
         public void DetailToDetailHT(long CTR_HEADER_ID)
         {
-            try
-            {
-                using (var mesContext = new MesContext())
-                {
-                    StringBuilder query = new StringBuilder();
-                    query.Append(
-                    @"INSERT INTO [CTR_DETAIL_HT]
+
+            StringBuilder query = new StringBuilder();
+            query.Append(
+            @"INSERT INTO [CTR_DETAIL_HT]
 			([CTR_DETAIL_ID],[CTR_HEADER_ID],[PROCESS_CODE],[SERVER_CODE],
 			[BATCH_ID],[BATCH_LINE_ID],[HEADER_ID],[LINE_ID],[DETAIL_ID],
 			[LOCATOR_ID],[LOCATOR_CODE],[INVENTORY_ITEM_ID],[SHIP_ITEM_NUMBER],[PAPER_TYPE],
 			[BASIC_WEIGHT],[REAM_WEIGHT],[ROLL_REAM_QTY] ,[ROLL_REAM_WT],[TTL_ROLL_REAM],
 			[SPECIFICATION],[PACKING_TYPE],[SHIP_MT_QTY],[TRANSACTION_QUANTITY],[TRANSACTION_UOM],
-			[PRIMARY_QUANTITY] ,[PRIMARY_UOM],[SECONDARY_QUANTITY],[SECONDARY_UOM],[LOT_NUMBER],
-			[THEORY_WEIGHT],[ITEM_CATEGORY],[ATTRIBUTE1],[ATTRIBUTE2],[ATTRIBUTE3],
+			[PRIMARY_QUANTITY] ,[PRIMARY_UOM],[SECONDARY_QUANTITY],[SECONDARY_UOM],
+			[ITEM_CATEGORY],[ATTRIBUTE1],[ATTRIBUTE2],[ATTRIBUTE3],
 			[ATTRIBUTE4],[ATTRIBUTE5],[ATTRIBUTE6],[ATTRIBUTE7],[ATTRIBUTE8],
 			[ATTRIBUTE9],[ATTRIBUTE10],[ATTRIBUTE11],[ATTRIBUTE12],[ATTRIBUTE13] ,[ATTRIBUTE14],
 		    [ATTRIBUTE15],[CREATED_BY],[CREATED_USER_NAME],[CREATION_DATE],
@@ -1349,8 +1340,8 @@ SELECT [CTR_DETAIL_ID],[CTR_HEADER_ID],[PROCESS_CODE],[SERVER_CODE],
 			[LOCATOR_ID],[LOCATOR_CODE],[INVENTORY_ITEM_ID],[SHIP_ITEM_NUMBER],[PAPER_TYPE],
 			[BASIC_WEIGHT],[REAM_WEIGHT],[ROLL_REAM_QTY] ,[ROLL_REAM_WT],[TTL_ROLL_REAM],
 			[SPECIFICATION],[PACKING_TYPE],[SHIP_MT_QTY],[TRANSACTION_QUANTITY],[TRANSACTION_UOM],
-			[PRIMARY_QUANTITY] ,[PRIMARY_UOM],[SECONDARY_QUANTITY],[SECONDARY_UOM],[LOT_NUMBER],
-			[THEORY_WEIGHT],[ITEM_CATEGORY],[ATTRIBUTE1],[ATTRIBUTE2],[ATTRIBUTE3],
+			[PRIMARY_QUANTITY] ,[PRIMARY_UOM],[SECONDARY_QUANTITY],[SECONDARY_UOM],
+			[ITEM_CATEGORY],[ATTRIBUTE1],[ATTRIBUTE2],[ATTRIBUTE3],
 			[ATTRIBUTE4],[ATTRIBUTE5],[ATTRIBUTE6],[ATTRIBUTE7],[ATTRIBUTE8],
 			[ATTRIBUTE9],[ATTRIBUTE10],[ATTRIBUTE11],[ATTRIBUTE12],[ATTRIBUTE13] ,[ATTRIBUTE14],
 		    [ATTRIBUTE15],[CREATED_BY],[CREATED_USER_NAME],[CREATION_DATE],
@@ -1358,14 +1349,9 @@ SELECT [CTR_DETAIL_ID],[CTR_HEADER_ID],[PROCESS_CODE],[SERVER_CODE],
 FROM CTR_DETAIL_T D
 where D.CTR_HEADER_ID = @CTR_HEADER_ID
 delete CTR_DETAIL_T where CTR_HEADER_ID = @CTR_HEADER_ID");
-                    mesContext.Database.ExecuteSqlCommand(query.ToString(), new SqlParameter("@CTR_HEADER_ID", CTR_HEADER_ID));
-                }
+            Context.Database.ExecuteSqlCommand(query.ToString(), new SqlParameter("@CTR_HEADER_ID", CTR_HEADER_ID));
 
-            }
-            catch (Exception e)
-            {
-                logger.Error(e.Message);
-            }
+
         }
 
         /// <summary>
@@ -1595,7 +1581,6 @@ and lt.SUBINVENTORY_CODE = @SUBINVENTORY_CODE
 ");
                     sqlParameterList.Add(new SqlParameter("@SUBINVENTORY_CODE", SUBINVENTORY_CODE));
                     string commandText = string.Format(query + "{0}{1}", cond.Count > 0 ? " where " : "", string.Join(" and ", cond.ToArray()));
-                    Locatorlist.Add(new SelectListItem { Text = "請選擇", Value = "*" });
                     if (sqlParameterList.Count > 0)
                     {
                         Locatorlist.AddRange(mesContext.Database.SqlQuery<SelectListItem>(commandText, sqlParameterList.ToArray()).ToList());
