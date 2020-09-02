@@ -1,11 +1,35 @@
 ﻿$(document).ready(function () {
     onclick();
     LoadTable();
+    init();
     $("#Organization_code").combobox();
-    $("#Catalog_elem_val_050").combobox();
     $("#Catalog_elem_val_020").combobox();
     $("#Catalog_elem_val_070").combobox();
 });
+
+function init() {
+    $("#Catalog_elem_val_050").autocomplete({
+        source: function (request, response) {
+            $.ajax({
+                url: "/PartNo/GetSpec",
+                type: "post",
+                dataType: "json",
+                data: {
+                    pspec : request.term
+                },
+                success: function (data) {
+                    response($.map(data.slice(0, 20), function (item) {
+                        return {
+                            label: item.Description, value: item.Value
+                        };
+                    }));
+                }
+
+            });
+
+        }
+    });
+}
 
 function LoadTable(Catalog_elem_val_050, Catalog_elem_val_020, Catalog_elem_val_070, Organization_code) {
 
@@ -39,7 +63,7 @@ function LoadTable(Catalog_elem_val_050, Catalog_elem_val_020, Catalog_elem_val_
         columns: [
             { data: "Category_code_inv", "name": "存貨分類", "autoWidth": true, "className": "dt-body-center"},
             { data: "Category_code_cost", "name": "成本分類", "autoWidth": true, "className": "dt-body-center"},
-            { data: "Item_number", "name": "料號", "autoWidth": true, "className": "dt-body-left"},
+            { data: "Item_number", "name": "料號", "autoWidth": true, "className": "dt-body-center"},
             { data: "Item_desc_eng", "name": "英文摘要", "autoWidth": true, "className": "dt-body-center"},
             { data: "Item_desc_tch", "name": "中文摘要", "autoWidth": true, "className": "dt-body-center"},
             { data: "Primary_uom_code", "name": "主要單位", "autoWidth": true, "className": "dt-body-center"},

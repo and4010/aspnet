@@ -446,20 +446,20 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
         {
             using (var context = new MesContext())
             {
-                return new PurchaseUOW(context).GetLocator("*", PickId);
+                return new PurchaseUOW(context).GetLocator(PickId);
             }
 
         }
 
         /// <summary>
-        /// 編輯取得儲位
+        /// 編輯取得倉庫
         /// </summary>
         /// <returns></returns>
-        public List<SelectListItem> GetSubinventoryList()
+        public List<SelectListItem> GetSubinventoryList(string UserId,string OspFlag)
         {
             using (var context = new MesContext())
             {
-                return new PurchaseUOW(context).GetSubinventory("*");
+                return new PurchaseUOW(context).GetSubinventory(UserId, OspFlag);
             }
 
         }
