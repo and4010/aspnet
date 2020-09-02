@@ -304,6 +304,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
 
         //}
 
+        
         public class CategoryCode : ICategory
         {
             public const string Delivery = "C0";
@@ -519,10 +520,6 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             //}
         }
 
-        public STOCK_T GetStock(string barcode, string stockStatusCode)
-        {
-            return stockTRepositiory.GetAll().AsNoTracking().FirstOrDefault(x => x.Barcode == barcode && x.StatusCode == stockStatusCode);
-        }
 
         public STOCK_T GetStock(string barcode)
         {
@@ -1567,13 +1564,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
 
         #endregion
 
-        #region 儲位
-        public LOCATOR_T GetLocator(long organizationId, string subinventoryCode)
-        {
-            return locatorTRepositiory.GetAll().AsNoTracking().FirstOrDefault(x => x.OrganizationId == organizationId && x.SubinventoryCode == subinventoryCode && x.ControlFlag != ControlFlag.Deleted);
-        }
-
-        #endregion
+        
 
 
         #region 條碼

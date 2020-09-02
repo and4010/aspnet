@@ -9,13 +9,14 @@ using CHPOUTSRCMES.Web.DataModel.Entity.Interfaces;
 using CHPOUTSRCMES.Web.DataModel.Entity.Miscellaneous;
 using CHPOUTSRCMES.Web.DataModel.Entity.Repositorys;
 using CHPOUTSRCMES.Web.DataModel.Interfaces;
+using CHPOUTSRCMES.Web.Models;
 using CHPOUTSRCMES.Web.Models.Stock;
 using CHPOUTSRCMES.Web.Util;
 using NLog;
 
 namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
 {
-    public class MiscellaneousUOW : MasterUOW
+    public class MiscellaneousUOW : TransferUOW
     {
         private ILogger logger = LogManager.GetCurrentClassLogger();
 
@@ -173,5 +174,141 @@ SELECT [STOCK_ID] as ID
             }
 
         }
+
+
+        //public ResultModel CreateDetail(long transactionTypeId, long organizationId, string subinventoryCode, long? locatorId,
+        //    long stockId, decimal mPrimaryQty, string note, string userId, string userName)
+        //{
+        //    using (var txn = this.Context.Database.BeginTransaction())
+        //    {
+        //        try
+        //        {
+        //            var now = DateTime.Now;
+
+        //            var header = trfMiscellaneousHeaderTRepositiory.GetAll().FirstOrDefault(x => x.TransactionTypeId == transactionTypeId &&
+        //            x.OrganizationId == organizationId && x.SubinventoryCode == subinventoryCode && x.LocatorId == locatorId && x.NumberStatus == NumberStatus.NotSaved);
+        //            if (header == null)
+        //            {
+        //                //產生header資料
+        //                var organization = GetOrganization(organizationId);
+        //                if (organization == null) throw new Exception("找不到出庫組織資料");
+
+        //                var transactionType = GetTransactionType(transactionTypeId);
+        //                if (transactionType == null) throw new Exception("找不到庫存交易類別資料");
+
+        //                string locatorCode = null;
+        //                string segment3 = null;
+        //                if (locatorId != null)
+        //                {
+        //                    var outLocator = GetLocatorForTransfer(organizationId, subinventoryCode, now);
+        //                    if (outLocator == null) throw new Exception("找不到出庫儲位資料");
+        //                    locatorCode = outLocator.LocatorSegments;
+        //                    segment3 = outLocator.LocatorSegments;
+        //                }
+
+        //                header = new TRF_MISCELLANEOUS_HEADER_T() {
+        //                    OrgId = organization.OrgUnitId,
+        //                    OrganizationId = organizationId,
+        //                    OrganizationCode = organization.OrganizationCode,
+        //                    ShipmentNumber = GetShipmentNumberGuid(),
+        //                    SubinventoryCode = subinventoryCode,
+        //                    LocatorId = locatorId,
+        //                    LocatorCode = locatorCode,
+        //                    Segment3 = segment3,
+        //                    NumberStatus = NumberStatus.NotSaved,
+        //                    TransactionDate = now,
+        //                    TransactionTypeId = transactionTypeId,
+        //                    TransactionTypeName = transactionType.TransactionTypeName,
+        //                    TransferOrgId = null,
+        //                    TransferOrganizationId = null,
+        //                    TransferOrganizationCode = null,
+        //                    TransferSubinventoryCode = null,
+        //                    TransferLocatorId = null,
+        //                    TransferLocatorCode = null,
+        //                    CreatedBy = userId,
+        //                    CreatedUserName = userName,
+        //                    CreationDate = now,
+        //                    LastUpdateBy = null,
+        //                    LastUpdateUserName = null,
+        //                    LastUpdateDate = null
+        //                };
+
+        //                trfMiscellaneousHeaderTRepositiory.Create(header, true);
+        //            }
+
+        //            var detail = trfMiscellaneousTRepositiory.GetAll().FirstOrDefault(x =>
+        //            x.TransferMiscellaneousHeaderId == header.TransferMiscellaneousHeaderId &&
+        //            x.StockId == stockId);
+        //            if (detail != null) return new ResultModel(false, "已存在此條碼:" + detail.Barcode + "異動紀錄");
+
+        //            var stock = stockTRepositiory.GetAll().FirstOrDefault(x => x.StockId == stockId);
+        //            if (stock == null) throw new Exception("找不到庫存資料");
+
+        //            //處理異動量
+        //            if (transactionTypeId == TransactionTypeId.Chp37Out)
+        //            {
+        //                mPrimaryQty = -1 * Math.Abs(mPrimaryQty);
+        //            }
+        //            else if (transactionTypeId == TransactionTypeId.Chp37In)
+        //            {
+        //                mPrimaryQty = Math.Abs(mPrimaryQty);
+        //            }
+        //            else
+        //            {
+        //                throw new Exception("異動型態Id錯誤");
+        //            }
+
+        //            //計算異動後的數量
+        //            decimal aftPryQty = 0;
+        //            decimal? aftSecQty = null;
+        //            if (stock.ItemCategory == ItemCategory.Flat)
+        //            {
+        //                aftPryQty = stock.PrimaryAvailableQty + mPrimaryQty;
+        //                var uomConversionResult = uomConversion.Convert(stock.InventoryItemId, aftPryQty, stock.PrimaryUomCode, stock.SecondaryUomCode); //主單位數量轉次單位數量
+        //                if (!uomConversionResult.Success) throw new Exception(uomConversionResult.Msg);
+        //                aftSecQty = uomConversionResult.Data;
+        //            }
+        //            else if (stock.ItemCategory == ItemCategory.Roll)
+        //            {
+        //                aftPryQty = stock.PrimaryAvailableQty + mPrimaryQty;
+        //                aftSecQty = null;
+        //            }
+        //            else
+        //            {
+        //                throw new Exception("無法識別貨品類別");
+        //            }
+
+        //            //產生雜項異動明細
+        //            detail = new TRF_MISCELLANEOUS_T()
+        //            {
+        //                TransferMiscellaneousHeaderId = header.TransferMiscellaneousHeaderId,
+        //                InventoryItemId = stock.InventoryItemId,
+        //                ItemNumber = stock.ItemNumber,
+        //                ItemDescription = stock.ItemDescription,
+        //                Barcode = stock.Barcode,
+        //                StockId = stockId,
+        //                PrimaryUom = stock.PrimaryUomCode,
+        //                TransferPrimaryQuantity = mPrimaryQty,
+        //                OriginalPrimaryQuantity = stock.PrimaryAvailableQty,
+        //                AfterPrimaryQuantity = aftPryQty,
+        //                SecondaryUom = stock.SecondaryUomCode,
+        //                TransferSecondaryQuantity = aftSecQty,
+        //            }
+
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            logger.Error(LogUtilities.BuildExceptionMessage(ex));
+        //            txn.Rollback();
+        //            return new ResultModel(false, "新增明細失敗:" + ex.Message);
+        //        }
+
+        //    }
+        //}
+
+
+
+
+
     }
 }

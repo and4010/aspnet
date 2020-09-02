@@ -59,10 +59,10 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Miscellaneous
         public string OrganizationCode { set; get; }
 
         /// <summary>
-        /// 出貨編號
+        /// 出貨編號 Guid
         /// </summary>
         /// 
-        [StringLength(30)]
+        [StringLength(128)]
         [Column("SHIPMENT_NUMBER")]
         public string ShipmentNumber { set; get; }
 
@@ -89,6 +89,23 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Miscellaneous
         [StringLength(163)]
         [Column("LOCATOR_CODE")]
         public string LocatorCode { set; get; }
+
+        /// <summary>
+        /// 儲位第三節段
+        /// </summary>
+        /// 
+        [StringLength(40)]
+        [Column("SEGMENT3")]
+        public string Segment3 { set; get; }
+
+        /// <summary>
+        /// 出貨編號狀態
+        /// </summary>
+        /// 
+        [StringLength(10)]
+        [Required]
+        [Column("NUMBER_STATUS")]
+        public string NumberStatus { set; get; }
 
         /// <summary>
         /// 交易日期

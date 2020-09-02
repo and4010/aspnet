@@ -7,6 +7,7 @@ using System.Text;
 using System.Web;
 using System.Web.Mvc;
 using CHPOUTSRCMES.Web.DataModel.Entity;
+using CHPOUTSRCMES.Web.DataModel.Entity.Information;
 using CHPOUTSRCMES.Web.DataModel.Entity.Interfaces;
 using CHPOUTSRCMES.Web.DataModel.Entity.Repositorys;
 using CHPOUTSRCMES.Web.DataModel.Entiy.Transfer;
@@ -173,7 +174,21 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             }
         }
 
+        #region 儲位
+        /// <summary>
+        /// 取得儲位資料 給庫存異動用
+        /// </summary>
+        /// <param name="organizationId"></param>
+        /// <param name="subinventoryCode"></param>
+        /// <param name="now"></param>
+        /// <returns></returns>
+        public LOCATOR_T GetLocatorForTransfer(long organizationId, string subinventoryCode, DateTime now)
+        {
+            return locatorTRepositiory.GetAll().AsNoTracking().FirstOrDefault(x => x.OrganizationId == organizationId && x.SubinventoryCode == subinventoryCode &&
+            x.ControlFlag != ControlFlag.Deleted && (x.LocatorDisableDate == null || x.LocatorDisableDate > now));
+        }
 
+        #endregion
 
         #region 庫存移轉下拉選單
 
@@ -520,6 +535,11 @@ SELECT [TRANSFER_PICKED_ID] as ID
             return "(" + outSubinventoryCode + "-" + inSubinventoryCode + ")" + DateTime.Now.ToString("yyyyMMdd") + "-" + String.Format("{0:000}", randomList[0].ToString());
         }
 
+        public string GetShipmentNumberGuid()
+        {
+            return Guid.NewGuid().ToString();
+        }
+
         /// <summary>
         /// 新增明細
         /// </summary>
@@ -625,7 +645,7 @@ SELECT [TRANSFER_PICKED_ID] as ID
             string outLocatorSegment3 = "";
             if (outLocatorId != null)
             {
-                var outLocator = GetLocator(outOrganizationId, outSubinventoryCode);
+                var outLocator = GetLocatorForTransfer(outOrganizationId, outSubinventoryCode, now);
                 if (outLocator == null) throw new Exception("找不到出庫儲位資料");
                 locatorCode = outLocator.LocatorSegments;
                 outLocatorSegment3 = outLocator.Segment3;
@@ -638,7 +658,7 @@ SELECT [TRANSFER_PICKED_ID] as ID
             string inLocatorSegment3 = "";
             if (inLocatorId != null)
             {
-                var inLocator = GetLocator(inOrganizationId, inSubinventoryCode);
+                var inLocator = GetLocatorForTransfer(inOrganizationId, inSubinventoryCode, now);
                 if (inLocator == null) throw new Exception("找不到出庫儲位資料");
                 transferLocatorCode = inLocator.LocatorSegments;
                 inLocatorSegment3 = inLocator.Segment3;
@@ -1002,7 +1022,7 @@ SELECT [TRANSFER_PICKED_ID] as ID
                     string outLocatorSegment3 = "";
                     if (outLocatorId != null)
                     {
-                        var outLocator = GetLocator(outOrganizationId, outSubinventoryCode);
+                        var outLocator = GetLocatorForTransfer(outOrganizationId, outSubinventoryCode, now);
                         if (outLocator == null) throw new Exception("找不到出庫儲位資料");
                         locatorCode = outLocator.LocatorSegments;
                         outLocatorSegment3 = outLocator.Segment3;
@@ -1015,7 +1035,7 @@ SELECT [TRANSFER_PICKED_ID] as ID
                     string inLocatorSegment3 = "";
                     if (inLocatorId != null)
                     {
-                        var inLocator = GetLocator(inOrganizationId, inSubinventoryCode);
+                        var inLocator = GetLocatorForTransfer(inOrganizationId, inSubinventoryCode, now);
                         if (inLocator == null) throw new Exception("找不到出庫儲位資料");
                         transferLocatorCode = inLocator.LocatorSegments;
                         inLocatorSegment3 = inLocator.Segment3;
