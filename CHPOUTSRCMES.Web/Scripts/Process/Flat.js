@@ -2,7 +2,14 @@
 var FlatProductionDataTables
 var EditorFlatProduction
 var EditorFlatInvest
-
+/// <summary>
+/// 待核准
+/// </summary>
+const PendingBatch = "2";
+/// <summary>
+/// 已完工
+/// </summary>
+const CompletedBatch = "3";
 $(document).ready(function () {
     BtnRecord();
     init();

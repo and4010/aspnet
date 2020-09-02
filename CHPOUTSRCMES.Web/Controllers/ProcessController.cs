@@ -19,11 +19,13 @@ namespace CHPOUTSRCMES.Web.Controllers
         // GET: /Process/
         public ActionResult Index()
         {
+            //取得使用者ID
+            var id = this.User.Identity.GetUserId();
             ProcessViewModel viewModel = new ProcessViewModel();
             ViewBag.Process_Status = viewModel.GetBatchStatusDesc();
             ViewBag.Process_Batch_no = viewModel.GetBatchNo();
             ViewBag.Manchine_Num = viewModel.GetManchine();
-            ViewBag.Subinventory = viewModel.GetSubinventory();
+            ViewBag.Subinventory = viewModel.GetSubinventory(id,"Y");
             return View();
         }
 

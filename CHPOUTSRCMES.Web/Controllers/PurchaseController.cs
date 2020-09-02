@@ -34,9 +34,11 @@ namespace CHPOUTSRCMES.Web.Controllers
                 Month = DateTime.Now.Month.ToString("00")
                 //Warehouse = "TB2"
             };
+            //取得使用者ID
+            var id = this.User.Identity.GetUserId();
             ViewBag.MonthItems = model.GetMonths();
             ViewBag.YearItems = model.GetYears();
-            ViewBag.SubinventoryItems = model.GetSubinventoryList();
+            ViewBag.SubinventoryItems = model.GetSubinventoryList(id,"");
 
             return View(model);
         }

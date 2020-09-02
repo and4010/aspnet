@@ -36,12 +36,12 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
         /// 取得規格
         /// </summary>
         /// <returns></returns>
-        public List<SelectListItem> GetCatalog_elem_val_050()
+        public List<SelectListItem> GetCatalog_elem_val_050(string spec)
         {
             var SpecList = new List<SelectListItem>();
             try
             {
-                var tempList = ItemTRepositityory.GetAll().
+                var tempList = ItemTRepositityory.Get(x =>x.CatalogElemVal050.Contains(spec)).
                      GroupBy(x => x.CatalogElemVal050).
                      Select(x => new SelectListItem()
                      {

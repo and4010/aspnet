@@ -17,7 +17,6 @@ namespace CHPOUTSRCMES.Web.Controllers
         public ActionResult Index()
         {
             PartNoViewModel model = new PartNoViewModel();
-            ViewBag.Catalog_elem_val_050 = model.GetSpec();
             ViewBag.Catalog_elem_val_070 = model.Get070();
             ViewBag.Catalog_elem_val_020 = model.GetTypePaper();
             ViewBag.Organization_code = model.GetOrganization_code();
@@ -36,6 +35,14 @@ namespace CHPOUTSRCMES.Web.Controllers
             var data1 = model.Skip(data.Start).Take(data.Length).ToList();
 
             return Json(new { draw = data.Draw, recordsFiltered = model.Count, recordsTotal = model.Count, data = data1 }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public JsonResult GetSpec(string pspec)
+        {
+            PartNoViewModel partNoViewModel = new PartNoViewModel();
+            var spec = partNoViewModel.GetSpec(pspec);
+            return Json(new { spec }, JsonRequestBehavior.AllowGet);
         }
     }
 }

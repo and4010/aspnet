@@ -16,11 +16,11 @@ namespace CHPOUTSRCMES.Web.ViewModels
        
         public PartNoModel partNoModel { set; get; }
 
-        public IEnumerable<SelectListItem> GetSpec()
+        public IEnumerable<SelectListItem> GetSpec(string spec)
         {
             using (var context = new MesContext())
             {
-                return new ItemNoUOW(context).GetCatalog_elem_val_050();
+                return new ItemNoUOW(context).GetCatalog_elem_val_050(spec);
             }
         }
 
@@ -78,48 +78,47 @@ namespace CHPOUTSRCMES.Web.ViewModels
             {
                 default:
                 case 1:
-                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Organization_code) : models.OrderBy(x => x.Organization_code);
-                case 2:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Category_code_inv) : models.OrderBy(x => x.Category_code_inv);
-                case 3:
+                case 2:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Category_code_cost) : models.OrderBy(x => x.Category_code_cost);
+                case 3:
+                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Item_desc_eng) : models.OrderBy(x => x.Item_desc_eng);
                 case 4:
-                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Category_code_control) : models.OrderBy(x => x.Category_code_control);
-                case 5:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Item_desc_tch) : models.OrderBy(x => x.Item_desc_tch);
-                case 6:
+                case 5:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Primary_uom_code) : models.OrderBy(x => x.Primary_uom_code);
-                case 7:
+                case 6:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Secondary_uom_code) : models.OrderBy(x => x.Secondary_uom_code);
-                case 8:
-                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Item_number) : models.OrderBy(x => x.Item_number);
-                case 9:
-                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Inventory_item_status_code) : models.OrderBy(x => x.Inventory_item_status_code);
-                case 10:
+                case 7:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Item_type) : models.OrderBy(x => x.Item_type);
-                case 11:
+                case 8:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Catalog_elem_val_010) : models.OrderBy(x => x.Catalog_elem_val_010);
-                case 12:
+                case 9:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Catalog_elem_val_020) : models.OrderBy(x => x.Catalog_elem_val_020);
-                case 13:
+                case 10:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Catalog_elem_val_030) : models.OrderBy(x => x.Catalog_elem_val_030);
-                case 14:
+                case 11:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Catalog_elem_val_040) : models.OrderBy(x => x.Catalog_elem_val_040);
-                case 15:
+                case 12:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Catalog_elem_val_050) : models.OrderBy(x => x.Catalog_elem_val_050);
-                case 16:
+                case 13:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Catalog_elem_val_060) : models.OrderBy(x => x.Catalog_elem_val_060);
-                case 17:
+                case 14:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Catalog_elem_val_070) : models.OrderBy(x => x.Catalog_elem_val_070);
-                case 18:
+                case 15:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Catalog_elem_val_100) : models.OrderBy(x => x.Catalog_elem_val_100);
-                case 19:
+                case 16:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Catalog_elem_val_110) : models.OrderBy(x => x.Catalog_elem_val_110);
+                case 17:
+                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Catalog_elem_val_130) : models.OrderBy(x => x.Catalog_elem_val_130);
+                case 18:
+                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Created_by) : models.OrderBy(x => x.Created_by);
+                case 19:
+                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Creation_Date) : models.OrderBy(x => x.Creation_Date);
                 case 20:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Last_Updated_by) : models.OrderBy(x => x.Last_Updated_by);
                 case 21:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Last_Update_Date) : models.OrderBy(x => x.Last_Update_Date);
-   
             }
         }
 
@@ -129,48 +128,47 @@ namespace CHPOUTSRCMES.Web.ViewModels
             {
                 default:
                 case 1:
-                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Organization_code) : models.OrderBy(x => x.Organization_code);
-                case 2:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Category_code_inv) : models.OrderBy(x => x.Category_code_inv);
-                case 3:
+                case 2:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Category_code_cost) : models.OrderBy(x => x.Category_code_cost);
+                case 3:
+                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Item_desc_eng) : models.OrderBy(x => x.Item_desc_eng);
                 case 4:
-                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Category_code_control) : models.OrderBy(x => x.Category_code_control);
-                case 5:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Item_desc_tch) : models.OrderBy(x => x.Item_desc_tch);
-                case 6:
+                case 5:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Primary_uom_code) : models.OrderBy(x => x.Primary_uom_code);
-                case 7:
+                case 6:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Secondary_uom_code) : models.OrderBy(x => x.Secondary_uom_code);
-                case 8:
-                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Item_number) : models.OrderBy(x => x.Item_number);
-                case 9:
-                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Inventory_item_status_code) : models.OrderBy(x => x.Inventory_item_status_code);
-                case 10:
+                case 7:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Item_type) : models.OrderBy(x => x.Item_type);
-                case 11:
+                case 8:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Catalog_elem_val_010) : models.OrderBy(x => x.Catalog_elem_val_010);
-                case 12:
+                case 9:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Catalog_elem_val_020) : models.OrderBy(x => x.Catalog_elem_val_020);
-                case 13:
+                case 10:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Catalog_elem_val_030) : models.OrderBy(x => x.Catalog_elem_val_030);
-                case 14:
+                case 11:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Catalog_elem_val_040) : models.OrderBy(x => x.Catalog_elem_val_040);
-                case 15:
+                case 12:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Catalog_elem_val_050) : models.OrderBy(x => x.Catalog_elem_val_050);
-                case 16:
+                case 13:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Catalog_elem_val_060) : models.OrderBy(x => x.Catalog_elem_val_060);
-                case 17:
+                case 14:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Catalog_elem_val_070) : models.OrderBy(x => x.Catalog_elem_val_070);
-                case 18:
+                case 15:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Catalog_elem_val_100) : models.OrderBy(x => x.Catalog_elem_val_100);
-                case 19:
+                case 16:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Catalog_elem_val_110) : models.OrderBy(x => x.Catalog_elem_val_110);
+                case 17:
+                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Catalog_elem_val_130) : models.OrderBy(x => x.Catalog_elem_val_130);
+                case 18:
+                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Created_by) : models.OrderBy(x => x.Created_by);
+                case 19:
+                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Creation_Date) : models.OrderBy(x => x.Creation_Date);
                 case 20:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Last_Updated_by) : models.OrderBy(x => x.Last_Updated_by);
                 case 21:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Last_Update_Date) : models.OrderBy(x => x.Last_Update_Date);
-
             }
         }
 
@@ -201,6 +199,10 @@ namespace CHPOUTSRCMES.Web.ViewModels
                     || (!string.IsNullOrEmpty(p.Catalog_elem_val_070) && p.Catalog_elem_val_070.ToLower().Contains(search.ToLower()))
                     || (!string.IsNullOrEmpty(p.Catalog_elem_val_100) && p.Catalog_elem_val_100.ToLower().Contains(search.ToLower()))
                     || (!string.IsNullOrEmpty(p.Catalog_elem_val_110) && p.Catalog_elem_val_110.ToLower().Contains(search.ToLower()))
+                    || (!string.IsNullOrEmpty(p.Catalog_elem_val_130) && p.Catalog_elem_val_130.ToLower().Contains(search.ToLower()))
+                    || (!string.IsNullOrEmpty(p.Created_by.ToString()) && p.Created_by.ToString().ToLower().Contains(search.ToLower()))
+                    || (!string.IsNullOrEmpty(p.Creation_Date.ToString()) && p.Creation_Date.ToString().ToLower().Contains(search.ToLower()))
+                    || (!string.IsNullOrEmpty(p.Last_Update_Date.ToString()) && p.Last_Update_Date.ToString().ToLower().Contains(search.ToLower()))
                     || (!string.IsNullOrEmpty(p.Last_Updated_by.ToString()) && p.Last_Updated_by.ToString().ToLower().Contains(search.ToLower()))
                     ).ToList();
             }

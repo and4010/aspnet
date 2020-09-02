@@ -4,7 +4,14 @@ var CotangentDataTable
 var EditorCotangent
 var editorInvest
 var editorProduct
-
+/// <summary>
+/// 待核准
+/// </summary>
+const PendingBatch = "2";
+/// <summary>
+/// 已完工
+/// </summary>
+const CompletedBatch = "3";
 $(document).ready(function () {
     LoadInvestDataTable();
     LoadProductionDataTable();
@@ -14,7 +21,7 @@ $(document).ready(function () {
     CotangentDataTables();
 
     var Status = $('#Status').val();
-    if (Status == "已完工" || Status == "待核准") {
+    if (Status == CompletedBatch || Status == PendingBatch) {
         //完工紀錄使用
         DsiplayHide();
         DisplayInvestEnable(true);

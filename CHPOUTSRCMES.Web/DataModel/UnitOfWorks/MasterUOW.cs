@@ -824,12 +824,13 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                 stockTRepositiory.Update(stock);
                 stkTxnTRepositiory.Create(stkTxnT);
                 return new ResultDataModel<STOCK_T>(true, "庫存鎖定量更新成功", stock);
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 logger.Error(LogUtilities.BuildExceptionMessage(ex));
                 return new ResultDataModel<STOCK_T>(false, "庫存鎖定量更新失敗:" + ex.Message, null);
             }
-            
+
         }
 
         /// <summary>
@@ -1049,7 +1050,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             };
         }
 
-        public STK_TXN_T CreateStockRecord(STOCK_T stock, long? dstOrganizationId, string dstOrganizationCode, 
+        public STK_TXN_T CreateStockRecord(STOCK_T stock, long? dstOrganizationId, string dstOrganizationCode,
             string dstSubinventoryCode, long? dstLocatorId, string categoryCode, string actionCode, string doc,
             decimal? pryBefQty, decimal? pryChgQty, decimal? pryAftQty, decimal? secBefQty, decimal? secChgQty, decimal? secAftQty,
             string statusCode, string userId, DateTime createDate)
@@ -1699,9 +1700,9 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             return subinventoryList;
         }
 
-       
 
-        
+
+
 
         /// <summary>
         /// 取得儲位下拉式選單內容
@@ -1872,7 +1873,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             return subinventoryList;
         }
 
-       
+
 
         /// <summary>
         /// 取得使用者的倉庫SelectListItem
@@ -2116,10 +2117,10 @@ SELECT [ORGANIZATION_ID] FROM [SUBINVENTORY_T] WHERE SUBINVENTORY_CODE = @inSubi
 
         public class DropDownListTypeValue
         {
-            public const string  NoHeader = "";
-            public const string  All = "*";
-            public const string  Choice = "請選擇";
-            public const string  Add = "新增編號";
+            public const string NoHeader = "";
+            public const string All = "*";
+            public const string Choice = "請選擇";
+            public const string Add = "新增編號";
         }
 
         /// <summary>
@@ -2448,46 +2449,59 @@ on s.ORGANIZATION_ID = l.ORGANIZATION_ID and s.SUBINVENTORY_CODE = l.SUBINVENTOR
         }
 
         /// <summary>
-        /// 加工倉庫
+        /// 取得倉庫
         /// </summary>
-        /// <param name="OrganizationId"></param>
+        /// <param name="UserId"></param>
+        /// <param name="OspFlag"></param>
         /// <returns></returns>
-        public List<SelectListItem> GetSubinventory(string OrganizationId)
+        public List<SelectListItem> GetSubinventory(string UserId, string OspFlag)
         {
-            List<SelectListItem> Subinventory = new List<SelectListItem>();
-            Subinventory.Add(new SelectListItem()
+            try
             {
-                Text = "全部",
-                Value = "*",
-                Selected = false,
-            });
-            if (OrganizationId != "*")
-            {
-                var id = Int32.Parse(OrganizationId);
-                var sub = subinventoryRepositiory.Get(x => x.ControlFlag != ControlFlag.Deleted && x.OspFlag == OspFlag.IsProcessingPlant && x.OrganizationId == id)
-                     .Select(x => new SelectListItem
-                     {
-                         Text = x.SubinventoryCode,
-                         Value = x.SubinventoryCode
+                using (var mesContext = new MesContext())
+                {
+                    List<SelectListItem> sublist = new List<SelectListItem>();
+                    List<SqlParameter> sqlParameterList = new List<SqlParameter>();
+                    List<string> cond = new List<string>();
+                    StringBuilder query = new StringBuilder();
+                    query.Append(
+@"
+SELECT
+st.SUBINVENTORY_CODE as Text,
+st.SUBINVENTORY_CODE as Value
+FROM SUBINVENTORY_T st
+join USER_SUBINVENTORY_T usb on usb.SUBINVENTORY_CODE = st.SUBINVENTORY_CODE
+WHERE CONTROL_FLAG != 'D'
+and usb.UserId = @UserId
+");
+                    if (OspFlag == "Y")
+                    {
+                        cond.Add("and OSP_FLAG = @OSP_FLAG");
+                        sqlParameterList.Add(new SqlParameter("@OSP_FLAG", OspFlag));
+                        sublist.Add(new SelectListItem { Text = "全部", Value = "*" });
+                    }
 
-                     }).ToList();
-                Subinventory.AddRange(sub);
+                    sqlParameterList.Add(new SqlParameter("@UserId", UserId));
+                    string commandText = string.Format(query + "{0}", string.Join(" and ", cond.ToArray()));
+                    if (sqlParameterList.Count > 0)
+                    {
+                        sublist.AddRange(mesContext.Database.SqlQuery<SelectListItem>(commandText, sqlParameterList.ToArray()).ToList());
+                    }
+                    else
+                    {
+                        sublist.AddRange(mesContext.Database.SqlQuery<SelectListItem>(commandText).ToList());
+                    }
+
+                    return sublist;
+                }
             }
-            else
+            catch (Exception e)
             {
-                var sub = subinventoryRepositiory.Get(x => x.ControlFlag != ControlFlag.Deleted && x.OspFlag == OspFlag.IsProcessingPlant)
-                     .Select(x => new SelectListItem
-                     {
-                         Text = x.SubinventoryCode,
-                         Value = x.SubinventoryCode
-
-                     }).ToList();
-                Subinventory.AddRange(sub);
+                logger.Error(LogUtilities.BuildExceptionMessage(e));
+                return new List<SelectListItem>();
             }
-
-
-            return Subinventory;
         }
+
 
         public class PickStatus : IDetail
         {

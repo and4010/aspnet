@@ -392,11 +392,11 @@ namespace CHPOUTSRCMES.Web.ViewModels.Process
         /// 取得倉庫
         /// </summary>
         /// <returns></returns>
-        public List<SelectListItem> GetSubinventory()
+        public List<SelectListItem> GetSubinventory(string UserId, string OspFlag)
         {
             using (var context = new MesContext())
             {
-                return new MasterUOW(context).GetSubinventory("*");
+                return new MasterUOW(context).GetSubinventory(UserId, OspFlag);
             }
         }
         /// <summary>

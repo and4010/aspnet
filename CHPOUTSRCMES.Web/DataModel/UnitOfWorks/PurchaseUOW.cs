@@ -316,12 +316,12 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             {
                 return ctrHeaderTRepositiory.Get(x => x.CtrHeaderId == CtrHeaderId).SingleOrDefault();
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 logger.Error(e.Message);
                 return null;
             }
-           
+
         }
 
         /// <summary>
@@ -350,7 +350,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                     c => c.CtrHeaderId,    //c代表db.CTR_DETAIL_Ts(c可以自己定義名稱)，這邊放主要資料表要串聯的key
                     cd => cd.CtrHeaderId,  //cd代表db.CTR_HEADER_Ts(cd可以自己定義名稱)，這邊放次資料表要串聯的key
                     (c, cd) => new         //將兩個自定義名稱用小括胡包起來，接著透過 『=>』 可以自己選擇要取用要用資料 
-                   {
+                    {
                         d = c,
                         e = cd
                     }
@@ -560,7 +560,7 @@ and d.ITEM_CATEGORY = N'捲筒'");
                         end = ConvertDateTime.ConverYYYY(header[i].MvContainerDate),
                         allDay = false,
                         url = objUrlHelper.Action("Detail", "Purchase", new
-                        { 
+                        {
                             CtrHeaderId = header[i].CtrHeaderId
                         }),
                         Status = header[i].Status,
@@ -584,7 +584,7 @@ and d.ITEM_CATEGORY = N'捲筒'");
                 {
 
                     var pick = ctrPickedTRepositiory.Get(x => x.CtrHeaderId == CtrHeaderId && x.Status == "待入庫").ToList();
-                    if(pick.Count > 0)
+                    if (pick.Count > 0)
                     {
                         return new ResultModel(false, "有條碼尚未入庫");
                     }
@@ -954,7 +954,7 @@ WHERE p.ITEM_CATEGORY = N'捲筒' and p.CTR_PICKED_ID  = @CTR_PICKED_ID");
         /// </summary>
         /// <param name="Barcode"></param>
         /// <returns></returns>
-        public ResultModel SavePaperRollBarcode(String Barcode,long CtrHeaderId, string LastUpdateBy, string LastUpdateUserName)
+        public ResultModel SavePaperRollBarcode(String Barcode, long CtrHeaderId, string LastUpdateBy, string LastUpdateUserName)
         {
             using (var txn = this.Context.Database.BeginTransaction())
             {
@@ -1552,62 +1552,14 @@ AND pt.CTR_PICKED_ID = @CTR_PICKED_ID
 
         }
 
-        /// <summary>
-        /// 取得倉庫
-        /// </summary>
-        /// <param name="ORGANIZATION_ID"></param>
-        public List<SelectListItem> GetSubinventory(string ORGANIZATION_ID)
-        {
-            try
-            {
-                using (var mesContext = new MesContext())
-                {
-                    List<SelectListItem> sublist = new List<SelectListItem>();
-                    List<SqlParameter> sqlParameterList = new List<SqlParameter>();
-                    List<string> cond = new List<string>();
-                    StringBuilder query = new StringBuilder();
-                    query.Append(
-@"
-SELECT
-SUBINVENTORY_CODE as Text,
-SUBINVENTORY_CODE as Value
-FROM SUBINVENTORY_T
---WHERE OSP_FLAG != 'Y'
-WHERE CONTROL_FLAG != 'D'
-AND LOCATOR_TYPE != '1'
-");
-                    if (ORGANIZATION_ID != "*")
-                    {
-                        cond.Add("ORGANIZATION_ID = @ORGANIZATION_ID");
-                        sqlParameterList.Add(new SqlParameter("@ORGANIZATION_ID", ORGANIZATION_ID));
-                    }
-                    string commandText = string.Format(query + "{0}{1}", cond.Count > 0 ? " where " : "", string.Join(" and ", cond.ToArray()));
-                    if (sqlParameterList.Count > 0)
-                    {
-                        sublist.AddRange(mesContext.Database.SqlQuery<SelectListItem>(commandText, sqlParameterList.ToArray()).ToList());
-                    }
-                    else
-                    {
-                        sublist.AddRange(mesContext.Database.SqlQuery<SelectListItem>(commandText).ToList());
-                    }
-
-                    return sublist;
-                }
-            }
-            catch (Exception e)
-            {
-                logger.Error(LogUtilities.BuildExceptionMessage(e));
-                return new List<SelectListItem>();
-            }
-        }
 
         /// <summary>
         /// 編輯取得儲位
         /// </summary>
-        /// <param name="ORGANIZATION_ID"></param>
+        /// <param name="UserId"></param>
         /// <param name="PickId"></param>
         /// <returns></returns>
-        public List<SelectListItem> GetLocator(string ORGANIZATION_ID, long PickId)
+        public List<SelectListItem> GetLocator(long PickId)
         {
             try
             {
@@ -1636,25 +1588,14 @@ CAST ([LOCATOR_ID] AS varchar)as Value,
 [SEGMENT3] as Text
 FROM [LOCATOR_T] lt
 join SUBINVENTORY_T st on st.SUBINVENTORY_CODE = lt.SUBINVENTORY_CODE
+where lt.CONTROL_FLAG <> 'D'
+and st.LOCATOR_TYPE = '2'
+and lt.LOCATOR_DISABLE_DATE >= GETDATE() OR lt.LOCATOR_DISABLE_DATE is null
+and lt.SUBINVENTORY_CODE = @SUBINVENTORY_CODE
 ");
-                    cond.Add("lt.CONTROL_FLAG <> 'D'");
-                    cond.Add("st.LOCATOR_TYPE = '2'");
-                    cond.Add("lt.LOCATOR_DISABLE_DATE >= GETDATE() OR lt.LOCATOR_DISABLE_DATE is null");
-                    sqlParameterList.Add(new SqlParameter("@LOCATOR_DISABLE_DATE", DateTime.Now));
-                    if (ORGANIZATION_ID != "*")
-                    {
-                        cond.Add("lt.ORGANIZATION_ID = @ORGANIZATION_ID");
-                        sqlParameterList.Add(new SqlParameter("@ORGANIZATION_ID", ORGANIZATION_ID));
-                    }
-
-                    if (SUBINVENTORY_CODE != null)
-                    {
-                        cond.Add("lt.SUBINVENTORY_CODE = @SUBINVENTORY_CODE");
-                        sqlParameterList.Add(new SqlParameter("@SUBINVENTORY_CODE", SUBINVENTORY_CODE));
-                    }
-
+                    sqlParameterList.Add(new SqlParameter("@SUBINVENTORY_CODE", SUBINVENTORY_CODE));
                     string commandText = string.Format(query + "{0}{1}", cond.Count > 0 ? " where " : "", string.Join(" and ", cond.ToArray()));
-                    Locatorlist.Add(new SelectListItem { Text = "全部", Value = "*" });
+                    Locatorlist.Add(new SelectListItem { Text = "請選擇", Value = "*" });
                     if (sqlParameterList.Count > 0)
                     {
                         Locatorlist.AddRange(mesContext.Database.SqlQuery<SelectListItem>(commandText, sqlParameterList.ToArray()).ToList());
