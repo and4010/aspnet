@@ -664,6 +664,9 @@ function LoadPaperRollHeard() {
             },
             {
                 data: "Locator", "name": "儲位", "autoWidth": true, "className": "dt-body-center", "render": function (data, type, row) {
+                    if (data == null) {
+                        return data;
+                    }
                     var locator = data.split(".");
                     if (locator.length < 3) {
                         return data;
@@ -709,6 +712,9 @@ function LoadFlatHeader() {
             { data: "Subinventory", "name": "倉庫", "autoWidth": true, "className": "dt-body-center" },
             {
                 data: "Locator", "name": "儲位", "autoWidth": true, "className": "dt-body-center", "render": function (data, type, row) {
+                    if (data == null) {
+                        return data;
+                    }
                     var locator = data.split(".");
                     if (locator.length < 3) {
                        return data;
@@ -779,6 +785,9 @@ function PaperRolldataTablesBody() {
             { data: "Subinventory", "name": "倉庫", "autoWidth": true, "className": "dt-body-center" },
             {
                 data: "Locator", "name": "儲位", "autoWidth": true, "className": "dt-body-center", "render": function (data, type, row) {
+                    if (data == null) {
+                        return data;
+                    }
                     var locator = data.split(".");
                     if (locator.length < 3) {
                         return data;
@@ -863,6 +872,9 @@ function FlatdataTablesBody() {
             { data: "Subinventory", "name": "倉庫", "autoWidth": true, "className": "dt-body-center" },
             {
                 data: "Locator", "name": "儲位", "autoWidth": true, "className": "dt-body-center", "render": function (data, type, row) {
+                    if (data == null) {
+                        return data;
+                    }
                     var locator = data.split(".");
                     if (locator.length < 3) {
                         return data;
