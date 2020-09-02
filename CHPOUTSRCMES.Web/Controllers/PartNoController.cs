@@ -20,6 +20,7 @@ namespace CHPOUTSRCMES.Web.Controllers
             ViewBag.Catalog_elem_val_070 = model.Get070();
             ViewBag.Catalog_elem_val_020 = model.GetTypePaper();
             ViewBag.Organization_code = model.GetOrganization_code();
+            ViewBag.Catalog_elem_val_050 = model.GetSpec();
             return View();
         }
 
@@ -34,12 +35,5 @@ namespace CHPOUTSRCMES.Web.Controllers
             return Json(new { draw = data.Draw, recordsFiltered = model.Count, recordsTotal = model.Count, data = model }, JsonRequestBehavior.AllowGet);
         }
 
-        [HttpPost]
-        public JsonResult GetSpec(string pspec)
-        {
-            PartNoViewModel partNoViewModel = new PartNoViewModel();
-            var spec = partNoViewModel.GetSpec(pspec);
-            return Json(new { spec }, JsonRequestBehavior.AllowGet);
-        }
     }
 }

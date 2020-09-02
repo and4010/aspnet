@@ -13,9 +13,11 @@
 
 
     IEnumerable<SelectListItem> Catalog_elem_val_020 = (IEnumerable<SelectListItem>)ViewBag.Catalog_elem_val_020;
+    IEnumerable<SelectListItem> Catalog_elem_val_050 = (IEnumerable<SelectListItem>)ViewBag.Catalog_elem_val_050;
     IEnumerable<SelectListItem> Catalog_elem_val_070 = (IEnumerable<SelectListItem>)ViewBag.Catalog_elem_val_070;
     IEnumerable<SelectListItem> Organization_code = (IEnumerable<SelectListItem>)ViewBag.Organization_code;
 
+    
 }
 <div class="box box-primary">
     <div class="box-body">
@@ -35,7 +37,7 @@
             </div>
 
             <div class="col-md-2">
-                @Html.TextBoxFor(model => model.partNoModel.Catalog_elem_val_050, new { @class = "form-control", id = "Catalog_elem_val_050", autocomplete = "off" })
+                @Html.DropDownListFor(model => model.partNoModel.Catalog_elem_val_050 , Catalog_elem_val_050, new { @class = "form-control", id = "Catalog_elem_val_050", autocomplete = "off" })
             </div>
 
         </div>

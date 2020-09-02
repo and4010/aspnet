@@ -20,7 +20,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
     {
         private ILogger logger = LogManager.GetCurrentClassLogger();
 
-        private readonly IRepository<ITEMS_T> ItemTRepositityory;
+
 
         /// <summary>
         /// 組織料號
@@ -35,14 +35,13 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
         /// 取得規格
         /// </summary>
         /// <returns></returns>
-        public List<SelectListItem> GetCatalog_elem_val_050(string spec, int count = 100)
+        public List<SelectListItem> GetCatalog_elem_val_050(int count = 100)
         {
             var SpecList = new List<SelectListItem>();
             try
             {
-                var tempList = ItemTRepositityory.GetAll()
+                var tempList = itemsTRepositiory.GetAll()
                     .AsNoTracking()
-                    .Where(x => x.CatalogElemVal050.Contains(spec))
                     .GroupBy(x => x.CatalogElemVal050)
                     .Take(count)
                     .Select(x => new SelectListItem()
@@ -69,7 +68,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             var TypeList = new List<SelectListItem>();
             try
             {
-                var tempList = ItemTRepositityory.GetAll()
+                var tempList = itemsTRepositiory.GetAll()
                     .AsNoTracking()
                     .GroupBy(x => x.CatalogElemVal020)
                     .Take(count)
@@ -98,7 +97,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             var TypeList = new List<SelectListItem>();
             try
             {
-                var tempList = ItemTRepositityory.GetAll()
+                var tempList = itemsTRepositiory.GetAll()
                     .AsNoTracking()
                     .GroupBy(x => x.CatalogElemVal070)
                     .Take(count)
