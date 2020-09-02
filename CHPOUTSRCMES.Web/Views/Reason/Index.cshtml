@@ -6,88 +6,37 @@
 
 @section scripts {
     <script src="~/Scripts/Reason.js"></script>
-
 }
 
 
 
-<div class="row row-std">
-    @*@{
-        IEnumerable<SelectListItem> ContainerNo = (IEnumerable<SelectListItem>)ViewBag.ContainerNo;
-        IEnumerable<SelectListItem> Subinventory = (IEnumerable<SelectListItem>)ViewBag.Subinventory;
-        IEnumerable<SelectListItem> Locator = (IEnumerable<SelectListItem>)ViewBag.Locator;
-    }*@
-
-    @*<div class="col-md-12">
-
-        <div class="col-md-2">
-            <label class="input-lg">櫃號</label>
-        </div>
-
-        <div class="col-md-2">
-            @Html.DropDownListFor(model => model.ContainerNo, ContainerNo, new { @class = "form-control", id = "ContainerNo", autocomplete = "off" })
-        </div>
-
-        <div class="col-md-2">
-            <label class="input-lg">倉別</label>
-        </div>
-
-        <div class="col-md-2">
-            @Html.DropDownListFor(model => model.Subinventory, Subinventory, new { @class = "form-control", id = "Subinventory", autocomplete = "off" })
-        </div>
-
+<div class="box box-success">
+    <div class="box-header">
     </div>
 
+    <div class="box-body">
+        <div class="col-md-12">
+            <table class="table table-bordered table-striped dataTable" id="ReasonTable">
+                <thead>
+                    <tr>
+                        <th>
 
-
-    <div class="col-md-12">
-
-        <div class="col-md-2">
-            <label class="input-lg">儲位</label>
+                        </th>
+                        <th>
+                            @Html.DisplayName("代碼")
+                        </th>
+                        <th>
+                            @Html.DisplayName("原因")
+                        </th>
+                        <th>
+                            @Html.DisplayName("建立人員ID")
+                        </th>
+                        <th>
+                            @Html.DisplayName("建立日期")
+                        </th>
+                    </tr>
+                </thead>
+            </table>
         </div>
-
-        <div class="col-md-2">
-            @Html.DropDownListFor(model => model.Locator, Locator, new { @class = "form-control", id = "Locator", autocomplete = "off" })
-        </div>
-
-        <div class="col-md-3 col-lg-offset-3">
-            <button type="button" class="btn btn-primary" id="BtnPartNoSearch">搜尋</button>
-        </div>
-
-    </div>*@
-
-    <div>
-        <br />
-    </div>
-
-    <div class="row row-std">
-        <div class="dataTable_wrapper form">
-            <div class="col-md-12">
-                <table class="table table-striped table-bordered" id="ReasonTable">
-                    <thead>
-                        <tr>
-                            <th>
-
-                            </th>
-                            <th>
-                                @Html.DisplayName("代碼")
-                            </th>
-                            <th>
-                                @Html.DisplayName("原因")
-                            </th>
-                            <th>
-                                @Html.DisplayName("建立人員ID")
-                            </th>
-                            <th>
-                                @Html.DisplayName("建立日期")
-                            </th>
-                        </tr>
-                    </thead>
-                </table>
-            </div>
-
-        </div>
-
-
     </div>
 </div>

@@ -260,7 +260,7 @@ namespace CHPOUTSRCMES.TASK.Models.Service
         /// <returns></returns>
         internal async Task ExportCtrStRv(Tasker tasker, CancellationToken token)
         {
-            LogInfo($"[{tasker.Name}]-{tasker.Unit}-ImportCtrStRv-開始");
+            LogInfo($"[{tasker.Name}]-{tasker.Unit}-ExportCtrStRv-開始");
 
             try
             {
@@ -275,14 +275,14 @@ namespace CHPOUTSRCMES.TASK.Models.Service
             }
             catch (OperationCanceledException)
             {
-                LogInfo($"[{tasker.Name}]-{tasker.Unit}-ImportCtrStRv-使用者取消");
+                LogInfo($"[{tasker.Name}]-{tasker.Unit}-ExportCtrStRv-使用者取消");
             }
             catch (Exception ex)
             {
-                LogError($"[{tasker.Name}]-{tasker.Unit}-ImportCtrStRv-錯誤-{ex.Message}-{ex.StackTrace}");
+                LogError($"[{tasker.Name}]-{tasker.Unit}-ExportCtrStRv-錯誤-{ex.Message}-{ex.StackTrace}");
             }
 
-            LogInfo($"[{tasker.Name}]-{tasker.Unit}-ImportCtrStRv-結束");
+            LogInfo($"[{tasker.Name}]-{tasker.Unit}-ExportCtrStRv-結束");
         }
 
         /// <summary>

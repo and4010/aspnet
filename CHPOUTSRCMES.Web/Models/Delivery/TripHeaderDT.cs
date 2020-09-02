@@ -340,9 +340,10 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
         }
 
         public List<TripHeaderDT> DeliverySearch(DeliveryUOW uow, string TripActualShipBeginDate, string TripActualShipEndDate, string DeliveryName, string SelectedSubinventory,
-            string SelectedTrip, string TransactionDate, string SelectedDeliveryStatus)
+            string SelectedTrip, string TransactionDate, string SelectedDeliveryStatus, string userId)
         {
-            return uow.DeliverySearch(TripActualShipBeginDate, TripActualShipEndDate, DeliveryName, SelectedSubinventory, SelectedTrip, TransactionDate, SelectedDeliveryStatus);
+            return uow.DeliverySearch(TripActualShipBeginDate, TripActualShipEndDate, DeliveryName, SelectedSubinventory, SelectedTrip
+                , TransactionDate, SelectedDeliveryStatus, userId);
         }
 
         public static List<TripHeaderDT> Search(string TripActualShipBeginDate, string TripActualShipEndDate, string DeliveryName, string SelectedSubinventory,
@@ -422,7 +423,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
 
             //viewModel.TripNameItems = tripList.Select(i => new SelectListItem() { Text = i.Text, Value = i.Value });
 
-            viewModel.TripNameItems = uow.GetTripNameDropDownList(MasterUOW.DropDownListType.All);
+            viewModel.TripNameItems = uow.GetTripNameDropDownList(MasterUOW.DropDownListType.All, userId);
             //viewModel.SelectedSubinventory = "*";
             OrgSubinventoryData orgData = new OrgSubinventoryData();
             viewModel.SubinventoryNameItems = orgData.GetSubinventoryListForUserId(uow, userId, MasterUOW.DropDownListType.All);

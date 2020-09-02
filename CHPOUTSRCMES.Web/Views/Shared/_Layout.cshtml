@@ -54,23 +54,23 @@
         @Html.Action("Index", "Navbar")
 
         <div class="content-wrapper">
+
             <section class="content-header">
-                <h1 class="header_gray"><a href="#" data-toggle="control-sidebar" onclick="history.back()"><i class="fa fa-angle-left" aria-hidden="true"></i></a>@ViewBag.Title</h1>
+                <h1 class="header_gray">
+                    <a href="#" data-toggle="control-sidebar" onclick="history.back()" style="margin:10px;"><i class="fa fa-angle-left" aria-hidden="true"></i></a>@ViewBag.Title
+                </h1>
             </section>
 
             <!-- Main content -->
             <section class="content">
                 @RenderBody()
             </section>
-            <!-- Copyright -->
-            <footer class="footer-copyright text-center py-3">
-                © 2020 Copyright: CHP | 中華紙漿股份有限公司  -程式版本: @ViewContext.Controller.GetType().Assembly.GetName().Version
-            </footer>
-            <!-- Copyright -->
-
         </div>
-
-
+        <!-- Copyright -->
+        <footer class="main-footer">
+            <h4 class="header_gray center">©2020 Copyright: CHP | 中華紙漿股份有限公司  -程式版本: @ViewContext.Controller.GetType().Assembly.GetName().Version</h4>
+        </footer>
+        <!-- Copyright -->
         <!-- /#page-wrapper -->
     </div>
     <!-- /#wrapper -->

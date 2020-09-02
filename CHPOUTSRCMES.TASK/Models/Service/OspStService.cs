@@ -118,7 +118,7 @@ namespace CHPOUTSRCMES.TASK.Models.Service
         /// <returns></returns>
         internal async Task ExportOspStRv(Tasker tasker, CancellationToken token)
         {
-            LogInfo($"[{tasker.Name}]-{tasker.Unit}-ImportOspStRv-開始");
+            LogInfo($"[{tasker.Name}]-{tasker.Unit}-ExportOspStRv-開始");
 
             try
             {
@@ -133,14 +133,14 @@ namespace CHPOUTSRCMES.TASK.Models.Service
             }
             catch (OperationCanceledException)
             {
-                LogInfo($"[{tasker.Name}]-{tasker.Unit}-ImportOspStRv-使用者取消");
+                LogInfo($"[{tasker.Name}]-{tasker.Unit}-ExportOspStRv-使用者取消");
             }
             catch (Exception ex)
             {
-                LogError($"[{tasker.Name}]-{tasker.Unit}-ImportOspStRv-錯誤-{ex.Message}-{ex.StackTrace}");
+                LogError($"[{tasker.Name}]-{tasker.Unit}-ExportOspStRv-錯誤-{ex.Message}-{ex.StackTrace}");
             }
 
-            LogInfo($"[{tasker.Name}]-{tasker.Unit}-ImportOspStRv-結束");
+            LogInfo($"[{tasker.Name}]-{tasker.Unit}-ExportOspStRv-結束");
         }
 
         /// <summary>

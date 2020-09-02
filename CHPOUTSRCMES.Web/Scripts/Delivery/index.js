@@ -607,7 +607,7 @@ $(document).ready(function () {
     })
 
 
-    $('.row-std').on('click', '#btnSearch', function (e) {
+    $('.box-footer').on('click', '#btnSearch', function (e) {
         TripDataTablesBody.ajax.reload();
         return false;
 

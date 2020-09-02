@@ -61,7 +61,7 @@ namespace CHPOUTSRCMES.Web.Controllers
             {
                 using (DeliveryUOW uow = new DeliveryUOW(context))
                 {
-                    List<TripHeaderDT> model = tripHeaderData.DeliverySearch(uow, TripActualShipBeginDate, TripActualShipEndDate, DeliveryName, SelectedSubinventory, SelectedTrip, TransactionDate, SelectedDeliveryStatus);
+                    List<TripHeaderDT> model = tripHeaderData.DeliverySearch(uow, TripActualShipBeginDate, TripActualShipEndDate, DeliveryName, SelectedSubinventory, SelectedTrip, TransactionDate, SelectedDeliveryStatus, this.User.Identity.GetUserId());
                     var totalCount = model.Count;
                     string search = data.Search.Value;
 

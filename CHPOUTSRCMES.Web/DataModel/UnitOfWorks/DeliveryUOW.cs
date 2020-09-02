@@ -17,6 +17,7 @@ using System.Text;
 using System.Data.SqlClient;
 using CHPOUTSRCMES.Web.Models;
 using CHPOUTSRCMES.Web.DataModel.Interfaces;
+using CHPOUTSRCMES.Web.DataModel.Entity.Information;
 
 namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
 {
@@ -31,8 +32,6 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
         private readonly IRepository<DLV_PICKED_T> dlvPickedTRepositiory;
         private readonly IRepository<DLV_PICKED_HT> dlvPickedHtRepositiory;
 
-        
-
         /// <summary>
         /// 
         /// </summary>
@@ -40,12 +39,12 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
         public DeliveryUOW(DbContext context)
             : base(context)
         {
-            this.dlvOrgTRepositiory = new GenericRepository<DLV_ORG_T>(this);
-            this.dlvHeaderTRepositiory = new GenericRepository<DLV_HEADER_T>(this);
-            this.dlvDetailTRepositiory = new GenericRepository<DLV_DETAIL_T>(this);
-            this.dlvDetailHtRepositiory = new GenericRepository<DLV_DETAIL_HT>(this);
-            this.dlvPickedTRepositiory = new GenericRepository<DLV_PICKED_T>(this);
-            this.dlvPickedHtRepositiory = new GenericRepository<DLV_PICKED_HT>(this);
+            dlvOrgTRepositiory = new GenericRepository<DLV_ORG_T>(this);
+            dlvHeaderTRepositiory = new GenericRepository<DLV_HEADER_T>(this);
+            dlvDetailTRepositiory = new GenericRepository<DLV_DETAIL_T>(this);
+            dlvDetailHtRepositiory = new GenericRepository<DLV_DETAIL_HT>(this);
+            dlvPickedTRepositiory = new GenericRepository<DLV_PICKED_T>(this);
+            dlvPickedHtRepositiory = new GenericRepository<DLV_PICKED_HT>(this);
         }
         //private List<SelectListItem> deliveryStatusList = new List<SelectListItem>() 
         //{
@@ -754,10 +753,10 @@ OR SUM(ISNULL(p.SECONDARY_QUANTITY, 0)) <> MIN(d.REQUESTED_SECONDARY_QUANTITY)";
 
 
 
-        public List<SelectListItem> GetTripNameDropDownList(DropDownListType type)
+        public List<SelectListItem> GetTripNameDropDownList(DropDownListType type, string userId)
         {
             var tripNameList = createDropDownList(type);
-            tripNameList.AddRange(getTripNameList());
+            tripNameList.AddRange(getTripNameList(userId));
             return tripNameList;
         }
 
@@ -791,18 +790,22 @@ OR SUM(ISNULL(p.SECONDARY_QUANTITY, 0)) <> MIN(d.REQUESTED_SECONDARY_QUANTITY)";
 
 
 
-        private List<SelectListItem> getTripNameList()
+        private List<SelectListItem> getTripNameList(string userId)
         {
             var tripNameList = new List<SelectListItem>();
             try
             {
                 var tempList = dlvHeaderTRepositiory
                             .GetAll().AsNoTracking()
-                            .OrderBy(x => x.TripName)
+                            .Join(userSubinventoryTRepositiory.GetAll(), x=>x.SubinventoryCode, y => y.SubinventoryCode, (x, y) => new { user = y.UserId, header = x })
+                            .Where(x=>x.user == userId)
+                            .OrderByDescending(x => x.header.TripId)
+                            .Take(1000)
+                            .GroupBy(x => x.header.TripId)
                             .Select(x => new SelectListItem()
                             {
-                                Text = x.TripName,
-                                Value = x.TripId.ToString()
+                                Text = x.FirstOrDefault().header.TripName,
+                                Value = x.FirstOrDefault().header.TripId.ToString()
                             });
                 tripNameList.AddRange(tempList);
             }
@@ -814,7 +817,7 @@ OR SUM(ISNULL(p.SECONDARY_QUANTITY, 0)) <> MIN(d.REQUESTED_SECONDARY_QUANTITY)";
         }
 
         public List<TripHeaderDT> DeliverySearch(string TripActualShipBeginDate, string TripActualShipEndDate, string DeliveryName, string SelectedSubinventory,
-            string SelectedTrip, string TransactionDate, string SelectedDeliveryStatus)
+            string SelectedTrip, string TransactionDate, string SelectedDeliveryStatus, string userId)
         {
 
             DateTime shipBeginDate = new DateTime();
@@ -841,16 +844,17 @@ OR SUM(ISNULL(p.SECONDARY_QUANTITY, 0)) <> MIN(d.REQUESTED_SECONDARY_QUANTITY)";
             List<SqlParameter> sqlParameterList = new List<SqlParameter>();
             List<string> cond = new List<string>();
             string prefixCmd = @"
-select CONVERT(char(10), AUTHORIZE_DATE,126) as AUTHORIZE_DATE,
+SELECT 
+CONVERT(CHAR(10), AUTHORIZE_DATE,126) AS AUTHORIZE_DATE,
 CUSTOMER_LOCATION_CODE,
 CUSTOMER_NAME,
 DELIVERY_NAME,
-DELIVERY_STATUS_NAME as DELIVERY_STATUS,
-ITEM_CATEGORY as DetailType,
+DELIVERY_STATUS_NAME AS DELIVERY_STATUS,
+ITEM_CATEGORY AS DETAILTYPE,
 FREIGHT_TERMS_NAME,
-DLV_HEADER_ID as Id,
+DLV_HEADER_ID AS ID,
 NOTE,
-SUBINVENTORY_CODE,
+h.SUBINVENTORY_CODE,
 SHIP_CUSTOMER_NAME,
 SHIP_LOCATION_CODE,
 TRIP_ACTUAL_SHIP_DATE,
@@ -859,35 +863,12 @@ TRIP_CAR,
 TRIP_ID,
 TRIP_NAME,
 ROW_NUMBER() OVER(ORDER BY DLV_HEADER_ID) AS SUB_ID
-from DLV_HEADER_T";
-            //            string prefixCmd = @"
-            //select CONVERT(char(10), h.AUTHORIZE_DATE,126) as AUTHORIZE_DATE,
-            //h.CUSTOMER_LOCATION_CODE,
-            //h.CUSTOMER_NAME,
-            //h.DELIVERY_NAME,
-            //h.DELIVERY_STATUS_NAME as DELIVERY_STATUS,
-            //h.ITEM_CATEGORY as DetailType,
-            //h.FREIGHT_TERMS_NAME,
-            //h.DLV_HEADER_ID as Id,
-            //h.NOTE,
-            //h.SUBINVENTORY_CODE,
-            //h.SHIP_CUSTOMER_NAME,
-            //h.SHIP_LOCATION_CODE,
-            //h.TRIP_ACTUAL_SHIP_DATE,
-            //h.TRANSACTION_DATE,
-            //h.TRIP_CAR,
-            //h.TRIP_ID,
-            //h.TRIP_NAME,
-            //d.REQUESTED_PRIMARY_QUANTITY,
-            //d.REQUESTED_PRIMARY_UOM,
-            //d.REQUESTED_SECONDARY_QUANTITY,
-            //d.REQUESTED_SECONDARY_UOM,
-            //d.REQUESTED_TRANSACTION_QUANTITY,
-            //d.REQUESTED_TRANSACTION_UOM,
-            //ROW_NUMBER() OVER(ORDER BY h.DLV_HEADER_ID) AS SUB_ID
-            //from DLV_HEADER_T h
-            //inner join DLV_DETAIL_T d
-            //on h.DLV_HEADER_ID = d.DLV_HEADER_ID";
+FROM DLV_HEADER_T h
+JOIN USER_SUBINVENTORY_T s ON s.SUBINVENTORY_CODE = h.SUBINVENTORY_CODE";
+            
+            cond.Add("s.UserId = @userId");
+            sqlParameterList.Add(SqlParamHelper.GetNVarChar("@userId", userId));
+
 
             if (shipBeginDateStatus != false)
             {
@@ -907,7 +888,7 @@ from DLV_HEADER_T";
             }
             if (SelectedSubinventory != "全部")
             {
-                cond.Add("SUBINVENTORY_CODE = @SelectedSubinventory");
+                cond.Add("h.SUBINVENTORY_CODE = @SelectedSubinventory");
                 sqlParameterList.Add(SqlParamHelper.R.SubinventoryCode("@SelectedSubinventory", SelectedSubinventory));
             }
             if (SelectedTrip != "*")
@@ -926,65 +907,9 @@ from DLV_HEADER_T";
                 sqlParameterList.Add(new SqlParameter("@SelectedDeliveryStatus", SelectedDeliveryStatus));
             }
 
-            //string fullCmd = "";
-            string commandText = string.Format(prefixCmd + "{0}{1}", cond.Count > 0 ? " WHERE " : "", string.Join(" AND ", cond.ToArray()));
+            string commandText = $"{prefixCmd} WHERE {string.Join(" AND ", cond.ToArray())}";
+            return this.Context.Database.SqlQuery<TripHeaderDT>(commandText, sqlParameterList.ToArray()).ToList();
 
-
-            if (sqlParameterList.Count > 0)
-            {
-                return this.Context.Database.SqlQuery<TripHeaderDT>(commandText, sqlParameterList.ToArray()).ToList();
-
-            }
-            else
-            {
-                return this.Context.Database.SqlQuery<TripHeaderDT>(commandText).ToList();
-            }
-
-
-
-            //var query = dlvHeaderTRepositiory.GetAll().AsNoTracking()
-            //    .Join(dlvDetailHtRepositiory.GetAll().AsNoTracking(),
-            //    h => h.DlvHeaderId,
-            //    d => d.DlvHeaderId,
-            //     (h, d) => new TripHeaderDT
-            //  {
-            //      AUTHORIZE_DATE = h.AuthorizeDate != null ? ((DateTime)h.AuthorizeDate).ToString("yyyy-MM-dd") : "",
-            //      CUSTOMER_LOCATION_CODE = h.CustomerLocationCode,
-            //      CUSTOMER_NAME = h.CustomerName,
-            //      DELIVERY_NAME = h.DeliveryName,
-            //      DELIVERY_STATUS = h.DeliveryStatusName,
-            //      DELIVERY_STATUS_CODE = h.DeliveryStatusCode,
-            //      DetailType = h.ItemCategory,
-            //      FREIGHT_TERMS_NAME = h.FreightTermsName,
-            //      Id = h.DlvHeaderId,
-            //      REMARK = h.Note,
-            //      SUBINVENTORY_CODE = h.SubinventoryCode,
-            //      SHIP_CUSTOMER_NAME = h.ShipCustomerName,
-            //      SHIP_LOCATION_CODE = h.ShipLocationCode,
-            //      TRIP_ACTUAL_SHIP_DATE = h.TripActualShipDate,
-            //      TRANSACTION_DATE = h.TransactionDate,
-            //      TRIP_CAR = h.TripCar,
-            //      TRIP_ID = h.TripId,
-            //      TRIP_NAME = h.TripName,
-            //      REQUESTED_QUANTITY = d.RequestedQuantity,
-            //      REQUESTED_QUANTITY_UOM = d.RequestedQuantityUom,
-            //      REQUESTED_QUANTITY2 = d.RequestedQuantity2,
-            //      REQUESTED_QUANTITY_UOM2 = d.RequestedQuantityUom2,
-            //      SRC_REQUESTED_QUANTITY = d.SrcRequestedQuantity,
-            //      SRC_REQUESTED_QUANTITY_UOM = d.SrcRequestedQuantityUom,
-            //  })
-            //  .Where(
-            //  x =>
-            //       (shipBeginDateStatus == false || shipBeginDate <= x.TRIP_ACTUAL_SHIP_DATE) &&
-            //      (shipEndDateStatus == false || x.TRIP_ACTUAL_SHIP_DATE <= shipEndDate) &&
-            //  (x.DELIVERY_NAME != null && x.DELIVERY_NAME.ToLower().Contains(DeliveryName.ToLower())) &&
-            //  (SelectedSubinventory == "*" || x.SUBINVENTORY_CODE == SelectedSubinventory) &&
-            //   (SelectedTrip == "*" || x.TRIP_ID == tripId) &&
-            //    (transactionDateStatus == false || x.TRANSACTION_DATE == tdate) &&
-            //     (SelectedDeliveryStatus == "*" || x.DELIVERY_STATUS_CODE == SelectedDeliveryStatus)
-            //  );
-
-            //return tempList;
         }
 
         /// <summary>
