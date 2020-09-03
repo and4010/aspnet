@@ -85,7 +85,7 @@ $(document).ready(function () {
             },
             error: function () {
 
-                $.swal("失敗")
+                swal.fire("失敗");
             }
 
         })

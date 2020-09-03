@@ -17,121 +17,130 @@
 @Html.HiddenFor(model => model.FlatDetailModel.Id, new { id = "Id" })
 @Html.HiddenFor(model => model.Status, new { id = "Status" })
 
+@{
 
+    IEnumerable<SelectListItem> LocatorItems = (IEnumerable<SelectListItem>)ViewBag.LocatorItems;
+
+    IEnumerable<SelectListItem> ReasonItems = (IEnumerable<SelectListItem>)ViewBag.ReasonItems;
+
+}
 <div class="row">
-    @{
-
-        IEnumerable<SelectListItem> LocatorItems = (IEnumerable<SelectListItem>)ViewBag.LocatorItems;
-
-        IEnumerable<SelectListItem> ReasonItems = (IEnumerable<SelectListItem>)ViewBag.ReasonItems;
-
-    }
     <div class="col-md-12">
+        <div class="box box-success">
+            <div class="box-body">
 
-        <div class="col-md-1 text-right">
-            @Html.LabelFor(model => model.CabinetNumber)
-        </div>
-        <div class="col-md-2">
-            @Html.DisplayFor(model => model.CabinetNumber)
-        </div>
-        <div class="col-md-1 text-right" ">
-            @Html.LabelFor(model => model.FlatDetailModel.Item_No)
-        </div>
-        <div class="col-md-2">
-            @Html.DisplayFor(model => model.FlatDetailModel.Item_No)
-        </div>
-        <div class="col-md-1 text-right" ">
-            @Html.LabelFor(model => model.FlatDetailModel.ReamWeight)
-        </div>
-        <div class="col-md-2">
-            @Html.DisplayFor(model => model.FlatDetailModel.ReamWeight)
-        </div>
+                <div class="col-md-12">
 
-
-    </div>
-
-    <div class="col-md-12">
-        <div class="col-md-1 text-right">
-            @Html.LabelFor(model => model.FlatDetailModel.Pieces_Qty)
-        </div>
-
-        <div class="col-md-2">
-            @Html.DisplayFor(model => model.FlatDetailModel.Pieces_Qty)
-        </div>
-
-        <div class="col-md-1 text-right">
-            @Html.LabelFor(model => model.FlatDetailModel.Barcode)
-        </div>
-
-        <div class="col-md-2">
-            @Html.DisplayFor(model => model.FlatDetailModel.Barcode)
-        </div>
-
-        <div class="col-md-1 text-right">
-            @Html.LabelFor(model => model.FlatDetailModel.Qty)
-        </div>
-
-        <div class="col-md-2">
-            @Html.DisplayFor(model => model.FlatDetailModel.Qty)
-        </div>
-
-    </div>
+                    <div class="col-md-1 text-right">
+                        @Html.LabelFor(model => model.CabinetNumber)
+                    </div>
+                    <div class="col-md-2">
+                        @Html.DisplayFor(model => model.CabinetNumber)
+                    </div>
+                    <div class="col-md-1 text-right" ">
+                        @Html.LabelFor(model => model.FlatDetailModel.Item_No)
+                    </div>
+                    <div class="col-md-2">
+                        @Html.DisplayFor(model => model.FlatDetailModel.Item_No)
+                    </div>
+                    <div class="col-md-1 text-right" ">
+                        @Html.LabelFor(model => model.FlatDetailModel.ReamWeight)
+                    </div>
+                    <div class="col-md-2">
+                        @Html.DisplayFor(model => model.FlatDetailModel.ReamWeight)
+                    </div>
 
 
-    <div class="col-md-12">
-        <label class="col-md-1 text-right">異常原因</label>
-        <div class="col-md-2 form-inline">
-            @Html.DropDownListFor(model => model.Detail, ReasonItems, new { @class = "form-control", id = "select-reason" })
-        </div>
-    </div>
+                </div>
 
-    <div class="col-md-12">
-        <label class="col-md-1 text-right">儲位</label>
-        <div class="col-md-1 form-inline">
-            @Html.DropDownListFor(model => model.Locator, LocatorItems, new { @class = "form-control", id = "select-Locator" })
-        </div>
-    </div>
+                <div class="col-md-12">
+                    <div class="col-md-1 text-right">
+                        @Html.LabelFor(model => model.FlatDetailModel.Pieces_Qty)
+                    </div>
+
+                    <div class="col-md-2">
+                        @Html.DisplayFor(model => model.FlatDetailModel.Pieces_Qty)
+                    </div>
+
+                    <div class="col-md-1 text-right">
+                        @Html.LabelFor(model => model.FlatDetailModel.Barcode)
+                    </div>
+
+                    <div class="col-md-2">
+                        @Html.DisplayFor(model => model.FlatDetailModel.Barcode)
+                    </div>
+
+                    <div class="col-md-1 text-right">
+                        @Html.LabelFor(model => model.FlatDetailModel.Qty)
+                    </div>
+
+                    <div class="col-md-2">
+                        @Html.DisplayFor(model => model.FlatDetailModel.Qty)
+                    </div>
+
+                </div>
 
 
-    <div class="col-md-12">
-        <form class="col-md-12">
+                <div class="col-md-12">
+                    <label class="col-md-1 text-right">異常原因</label>
+                    <div class="col-md-2 form-inline">
+                        @Html.DropDownListFor(model => model.Detail, ReasonItems, new { @class = "form-control", id = "select-reason" })
+                    </div>
+                </div>
 
-            <h4 class="col-md-5"><label>備註</label></h4>
+                <div class="col-md-12">
+                    <label class="col-md-1 text-right">儲位</label>
+                    <div class="col-md-1 form-inline">
+                        @Html.DropDownListFor(model => model.Locator, LocatorItems, new { @class = "form-control", id = "select-Locator" })
+                    </div>
+                </div>
 
 
-            <h4 class="col-md-1"><label>照片上傳</label></h4>
-            <div class="form-inline col-md-6">
-                <input type="file" class="filestyle" id="fileinput" name="file" accept="image/*" data-icon="true" required data-buttonText="選擇照片" multiple>
+                <div class="col-md-12">
+                    <form class="col-md-12">
+
+                        <h4 class="col-md-5"><label>備註</label></h4>
+
+
+                        <h4 class="col-md-1"><label>照片上傳</label></h4>
+                        <div class="form-inline col-md-6">
+                            <input type="file" class="filestyle" id="fileinput" name="file" accept="image/*" data-icon="true" required data-buttonText="選擇照片" multiple>
+                        </div>
+
+                    </form>
+                </div>
+
+
+                <div class="col-md-12">
+                    <div  class="col-md-6">
+                        <form role="form">
+                            <div class="form-group">
+                                <textarea style="width:250px;height:250px;" class="form-control col-md-4" rows="3" id="textarea">@Html.DisplayFor(model =>model.FlatDetailModel.Remark)</textarea>
+                            </div>
+                        </form>
+                    </div>
+                   
+                    <div class="col-md-6" id="imgBox">
+                    </div>
+                </div>
+
+                <div class="col-md-12">
+                    <div class="col-md-6" id="saveBox">
+
+                    </div>
+                </div>
+
             </div>
 
-        </form>
-    </div>
-
-
-    <div class="col-md-12">
-
-        <form role="form" class="col-md-5">
-            <div class="form-group">
-                <textarea style="width:250px;height:250px;" class="form-control col-md-4" rows="3" id="textarea">@Html.DisplayFor(model =>model.FlatDetailModel.Remark)</textarea>
+            <div class="box-footer">
+                <div class="col-md-12">
+                    <button class="btn btn-danger" id="BtnFlatSave">存檔</button>
+                </div>
             </div>
-        </form>
-        <div class="col-md-6" id="imgBox">
-            @*<img class="col-md-6" id="img" onclick="imgDisplay(this)"
-                 src="" alt="" />*@
-        </div>
+
+        </div> 
     </div>
 
-    <div class="col-md-12">
-        <div class="col-md-6" id="saveBox">
-            @*<img class="col-md-6" id="SaveImg" onclick="imgDisplay(this)" src="" alt="" />*@
-        </div>
-    </div>
-
-    <br />
-    <div class="col-md-12">
-        @*<button class="btn btn-primary col-lg-offset-10" id="BtnReturn">返回</button>*@
-        <button class="btn btn-danger" id="BtnFlatSave">存檔</button>
-    </div>
 
 
 </div>

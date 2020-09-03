@@ -13,121 +13,122 @@
 
 @Html.HiddenFor(model => model.RollDetailModel.Id, new { id = "Id" })
 
-<div class="row">
+<div class="row row-std">
     <div class="col-md-12">
-        <div class="col-md-1 text-right">
-            @Html.LabelFor(model => model.CabinetNumber)
-        </div>
-        <div class="col-md-2">
-            @Html.DisplayFor(model => model.CabinetNumber)
-        </div>
-        <div class="col-md-1 text-right">
-            @Html.LabelFor(model => model.RollDetailModel.PaperType)
-        </div>
-        <div class="col-md-2">
-            @Html.DisplayFor(model => model.RollDetailModel.PaperType)
-        </div>
-        <div class="col-md-1 text-right">
-            @Html.LabelFor(model => model.RollDetailModel.TheoreticalWeight)
-        </div>
-        <div class="col-md-2">
-            @Html.DisplayFor(model => model.RollDetailModel.TheoreticalWeight)
-        </div>
+
+        <div class="box box-success">
+
+            <div class="box-body">
+
+                <div class="col-md-12">
+                    <div class="col-md-1 text-right">
+                        @Html.LabelFor(model => model.CabinetNumber)
+                    </div>
+                    <div class="col-md-2">
+                        @Html.DisplayFor(model => model.CabinetNumber)
+                    </div>
+                    <div class="col-md-1 text-right">
+                        @Html.LabelFor(model => model.RollDetailModel.PaperType)
+                    </div>
+                    <div class="col-md-2">
+                        @Html.DisplayFor(model => model.RollDetailModel.PaperType)
+                    </div>
+                    <div class="col-md-1 text-right">
+                        @Html.LabelFor(model => model.RollDetailModel.TheoreticalWeight)
+                    </div>
+                    <div class="col-md-2">
+                        @Html.DisplayFor(model => model.RollDetailModel.TheoreticalWeight)
+                    </div>
+
+                </div>
+
+                <div class="col-md-12">
+                    <div class="col-md-1 text-right">
+                        @Html.LabelFor(model => model.CreateDate)
+                    </div>
+
+                    <div class="col-md-2">
+                        @Html.DisplayFor(model => model.CreateDate)
+                    </div>
+                    <div class="col-md-1 text-right">
+                        @Html.LabelFor(model => model.RollDetailModel.BaseWeight)
+                    </div>
+
+                    <div class="col-md-2">
+                        @Html.DisplayFor(model => model.RollDetailModel.BaseWeight)
+                    </div>
+
+                    <div class="col-md-1 text-right">
+                        @Html.LabelFor(model => model.RollDetailModel.LotNumber)
+                    </div>
+
+                    <div class="col-md-2">
+                        @Html.DisplayFor(model => model.RollDetailModel.LotNumber)
+                    </div>
 
 
 
+                </div>
+
+                <div class="col-md-12">
+                    <div class="col-md-1 text-right">
+
+                        @Html.LabelFor(model => model.RollDetailModel.Barcode)
+                    </div>
+
+                    <div class="col-md-2">
+                        @Html.DisplayFor(model => model.RollDetailModel.Barcode)
+                    </div>
+
+                    <div class="col-md-1 text-right">
+                        @Html.LabelFor(model => model.RollDetailModel.Specification)
+                    </div>
+
+                    <div class="col-md-2">
+                        @Html.DisplayFor(model => model.RollDetailModel.Specification)
+                    </div>
+
+                    <div class="col-md-1 text-right">
+                        @Html.LabelFor(model => model.RollDetailModel.Locator)
+                    </div>
+                    <div class="col-md-2">
+                        @Html.DisplayFor(model => model.RollDetailModel.Locator)
+                    </div>
+
+                </div>
 
 
+                <div class="col-md-12" style="margin-top:30px">
+                    <h4 class="page-header">
+                        <label>備註</label>
+                    </h4>
 
-    </div>
+                    <div class="row col-md-12">
+                        <div class="col-md-12">
+                            @Html.DisplayFor(model => model.RollDetailModel.Reason) @Html.DisplayFor(model => model.RollDetailModel.Remark)
+                        </div>
+                        <div class="col-md-12">
+                            @Html.DisplayFor(model => model.RollDetailModel.CreatedUserName) @Html.DisplayFor(model => model.RollDetailModel.CreationDate)
+                        </div>
+                    </div>
 
-
-    <div class="col-md-12">
-        <div class="col-md-1 text-right">
-            @Html.LabelFor(model => model.CreateDate)
-        </div>
-
-        <div class="col-md-2">
-            @Html.DisplayFor(model => model.CreateDate)
-        </div>
-        <div class="col-md-1 text-right">
-            @Html.LabelFor(model => model.RollDetailModel.BaseWeight)
-        </div>
-
-        <div class="col-md-2">
-            @Html.DisplayFor(model => model.RollDetailModel.BaseWeight)
-        </div>
-
-        <div class="col-md-1 text-right">
-            @Html.LabelFor(model => model.RollDetailModel.LotNumber)
-        </div>
-
-        <div class="col-md-2">
-            @Html.DisplayFor(model => model.RollDetailModel.LotNumber)
-        </div>
+                </div>
 
 
+                <div class="col-md-12" style="margin-top:30px">
+                    <h4 class="page-header">
+                        <label> 照片</label>
+                    </h4>
 
-    </div>
+                    <div class="col-md-5" id="imgBox">
 
-    <div class="col-md-12">
-        <div class="col-md-1 text-right">
+                    </div>
 
-            @Html.LabelFor(model => model.RollDetailModel.Barcode)
-        </div>
-
-        <div class="col-md-2">
-            @Html.DisplayFor(model => model.RollDetailModel.Barcode)
-        </div>
-
-        <div class="col-md-1 text-right">
-            @Html.LabelFor(model => model.RollDetailModel.Specification)
-        </div>
-
-        <div class="col-md-2">
-            @Html.DisplayFor(model => model.RollDetailModel.Specification)
-        </div>
-
-        <div class="col-md-1 text-right">
-            @Html.LabelFor(model => model.RollDetailModel.Locator)
-        </div>
-        <div class="col-md-2">
-            @Html.DisplayFor(model => model.RollDetailModel.Locator)
-        </div>
-
-    </div>
+                </div>
 
 
-
-
-    <div class="row col-md-12" style="margin-top:30px">
-        <h4 class="page-header">
-            <label>備註</label>
-        </h4>
-
-
-        <div class="row col-md-12">
-            <div class="col-md-12">
-                @Html.DisplayFor(model => model.RollDetailModel.Reason) @Html.DisplayFor(model => model.RollDetailModel.Remark)
             </div>
-            <div class="col-md-12">
-                @Html.DisplayFor(model => model.RollDetailModel.CreatedUserName) @Html.DisplayFor(model => model.RollDetailModel.CreationDate)
-            </div>
-        </div>
 
-    </div>
-
-
-
-    <div class="row col-md-12">
-
-        <h4 class="page-header">
-            <label> 照片</label>
-        </h4>
-
-        <div class="col-md-5" id="imgBox">
-            @*<img class="col-md-5" id="img" onclick="imgDisplay(this)"
-                 src="" alt="" />*@
         </div>
 
     </div>
