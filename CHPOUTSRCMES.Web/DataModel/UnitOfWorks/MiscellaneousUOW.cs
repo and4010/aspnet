@@ -388,9 +388,18 @@ SELECT m.TRANSFER_MISCELLANEOUS_ID AS ID
 
                     foreach (TRF_MISCELLANEOUS_T data in list)
                     {
-                        trfMiscellaneousTRepositiory.Delete(data);
+                        var headerId = data.TransferMiscellaneousHeaderId;
+                        trfMiscellaneousTRepositiory.Delete(data, true);
+                        var detailList = trfMiscellaneousTRepositiory.GetAll().FirstOrDefault(x => x.TransferMiscellaneousHeaderId == headerId);
+                        if (detailList == null)
+                        {
+                            var header = trfMiscellaneousHeaderTRepositiory.GetAll().FirstOrDefault(x => x.TransferMiscellaneousHeaderId == headerId);
+                            if (header == null) throw new Exception("找不到檔頭資料");
+                            trfMiscellaneousHeaderTRepositiory.Delete(header);
+                        }
                     }
-                    trfMiscellaneousTRepositiory.SaveChanges();
+                    trfMiscellaneousHeaderTRepositiory.SaveChanges();
+
                     txn.Commit();
                     return new ResultModel(true, "刪除雜項異動明細成功");
                 }
