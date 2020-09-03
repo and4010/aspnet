@@ -121,7 +121,7 @@ namespace CHPOUTSRCMES.Web.Controllers
         }
 
         [HttpPost, ActionName("GetTransactionDetail")]
-        public JsonResult GetTransactionDetail(DataTableAjaxPostViewModel data)
+        public JsonResult GetTransactionDetail(DataTableAjaxPostViewModel data, long transactionTypeId)
         {
 
             using (var context = new MesContext())
@@ -129,7 +129,7 @@ namespace CHPOUTSRCMES.Web.Controllers
                 using (MiscellaneousUOW uow = new MiscellaneousUOW(context))
                 {
                     var id = this.User.Identity.GetUserId();
-                    List<StockMiscellaneousDT> model = miscellaneousData.GetMiscellaneousData(uow, id);
+                    List<StockMiscellaneousDT> model = miscellaneousData.GetMiscellaneousData(uow, id, transactionTypeId);
 
                     var totalCount = model.Count;
                     string search = data.Search.Value;
@@ -210,7 +210,7 @@ namespace CHPOUTSRCMES.Web.Controllers
         }
 
           [HttpPost]
-        public ActionResult SaveTransactionDetail()
+        public ActionResult SaveTransactionDetail(long transactionTypeId)
         {
             using (var context = new MesContext())
             {
@@ -220,7 +220,7 @@ namespace CHPOUTSRCMES.Web.Controllers
                     var id = this.User.Identity.GetUserId();
                     //取得使用者帳號
                     var name = this.User.Identity.GetUserName();
-                    ResultModel result = miscellaneousData.SaveTransactionDetail(uow, id, name);
+                    ResultModel result = miscellaneousData.SaveTransactionDetail(uow, transactionTypeId, id, name);
                     return new JsonResult { Data = new { status = result.Success, result = result.Msg } };
                 }
             }

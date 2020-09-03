@@ -9,6 +9,14 @@ $(document).ready(function () {
         return $("#ddlMiscellaneous option:selected").text();
     }
 
+    function getTransactionTypeId() {
+        var id = $("#ddlMiscellaneous").val();
+        if (id == '請選擇') {
+            id = '0';
+        }
+        return id;
+    }
+
     function getOrganizationId() {
         var id = $("#ddlSubinventory").val();
         if (id == '請選擇') {
@@ -93,7 +101,7 @@ $(document).ready(function () {
         } else {
             $("#qtyType").html("數量");
         }
-
+        TransactionDetailDT.ajax.reload();
         //var Miscellaneous = $("#ddlMiscellaneous").val();
         //if (Miscellaneous == "請選擇") {
         //    $('#Content').empty();
@@ -352,7 +360,9 @@ $(document).ready(function () {
             "url": "/Miscellaneous/GetTransactionDetail",
             "type": "POST",
             "datatype": "json",
-            "data": {}
+            "data": function (d) {
+                d.transactionTypeId = getTransactionTypeId();
+            }
         },
         columns: [
             { data: null, defaultContent: '', className: 'select-checkbox', orderable: false, width: "40px" },
@@ -642,6 +652,13 @@ $(document).ready(function () {
     }
 
     function SaveTransactionDetail() {
+        var Miscellaneous = $('#ddlMiscellaneous').val();
+        if (Miscellaneous == "請選擇") {
+            swal.fire('請選擇雜項異動類別');
+            event.preventDefault();
+            return false;
+        }
+
         var count = TransactionDetailDT.rows().count();
         if (count == 0) {
             swal.fire('請輸入異動明細');
@@ -662,7 +679,9 @@ $(document).ready(function () {
                 $.ajax({
                     url: "/Miscellaneous/SaveTransactionDetail",
                     type: "post",
-                    data: {},
+                    data: {
+                        transactionTypeId: Miscellaneous
+                    },
                     success: function (data) {
                         if (data.status) {
                             TransactionDetailDT.ajax.reload();

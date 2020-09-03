@@ -73,9 +73,9 @@ namespace CHPOUTSRCMES.Web.Models.Stock
             return uow.GetStockTList(organizationId, subinventoryCode, locatorId, itemNumber, primaryQty, percentageError);
         }
 
-        public List<StockMiscellaneousDT> GetMiscellaneousData(MiscellaneousUOW uow, string userId)
+        public List<StockMiscellaneousDT> GetMiscellaneousData(MiscellaneousUOW uow, string userId, long transactionTypeId)
         {
-            return uow.GetStockMiscellaneousTList(userId);
+            return uow.GetStockMiscellaneousTList(userId, transactionTypeId);
         }
 
         public List<StockMiscellaneousDT> GetModel()
@@ -146,9 +146,9 @@ namespace CHPOUTSRCMES.Web.Models.Stock
             return new ResultModel(true, "新增明細成功");
         }
 
-        public ResultModel SaveTransactionDetail(MiscellaneousUOW uow, string userId, string userName)
+        public ResultModel SaveTransactionDetail(MiscellaneousUOW uow, long transactionTypeId, string userId, string userName)
         {
-            return uow.SaveTransactionDetail(userId, userName);
+            return uow.SaveTransactionDetail(transactionTypeId, userId, userName);
 
             //foreach (StockMiscellaneousDT detailData in model)
             //{

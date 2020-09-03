@@ -183,7 +183,7 @@ SELECT [STOCK_ID] as ID
             }
         }
 
-        public List<StockMiscellaneousDT> GetStockMiscellaneousTList(string userId)
+        public List<StockMiscellaneousDT> GetStockMiscellaneousTList(string userId, long transactionTypeId)
         {
             try
             {
@@ -205,11 +205,12 @@ SELECT m.TRANSFER_MISCELLANEOUS_ID AS ID
   FROM TRF_MISCELLANEOUS_HEADER_T h
   INNER JOIN TRF_MISCELLANEOUS_T m on h.TRANSFER_MISCELLANEOUS_HEADER_ID = m.TRANSFER_MISCELLANEOUS_HEADER_ID 
   INNER JOIN USER_SUBINVENTORY_T u on h.ORGANIZATION_ID = u.ORGANIZATION_ID AND h.SUBINVENTORY_CODE = u.SUBINVENTORY_CODE
-  WHERE u.UserId = @userId
+  WHERE u.UserId = @userId AND h.TRANSACTION_TYPE_ID = @transactionTypeId
 ";
                 var pUserId = SqlParamHelper.GetNVarChar("@userId", userId);
+                var pTypeId = SqlParamHelper.GetBigInt("@transactionTypeId", transactionTypeId);
 
-                return this.Context.Database.SqlQuery<StockMiscellaneousDT>(cmd, pUserId).ToList();
+                return this.Context.Database.SqlQuery<StockMiscellaneousDT>(cmd, pUserId, pTypeId).ToList();
             }
             catch (Exception ex)
             {
@@ -447,7 +448,7 @@ SELECT m.TRANSFER_MISCELLANEOUS_ID AS ID
             }
         }
 
-        public ResultModel SaveTransactionDetail(string userId, string userName)
+        public ResultModel SaveTransactionDetail(long transactionTypeId, string userId, string userName)
         {
             using (var txn = this.Context.Database.BeginTransaction())
             {
@@ -462,6 +463,7 @@ SELECT m.TRANSFER_MISCELLANEOUS_ID AS ID
                         (h, d) => new
                         {
                             HeaderId = h.TransferMiscellaneousHeaderId,
+                            TransactionTypeId = h.TransactionTypeId,
                             OrganizationId = h.OrganizationId,
                             SubinventoryCode = h.SubinventoryCode
                         })
@@ -472,9 +474,10 @@ SELECT m.TRANSFER_MISCELLANEOUS_ID AS ID
                 (h, u) => new
                 {
                     HeaderId = h.HeaderId,
+                    TransactionTypeId = h.TransactionTypeId,
                     UserId = u.UserId
                 })
-                .Where(x => x.UserId == userId)
+                .Where(x => x.UserId == userId && x.TransactionTypeId == transactionTypeId)
                 .Select(x => x.HeaderId).ToList();
 
                     if (headerIdList == null || headerIdList.Count == 0) return new ResultModel(false, "沒有可存檔的資料");
