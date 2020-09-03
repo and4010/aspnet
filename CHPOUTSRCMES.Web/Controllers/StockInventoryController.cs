@@ -25,14 +25,14 @@ namespace CHPOUTSRCMES.Web.Controllers
         // GET: StockInventory
         public ActionResult Index()
         {
-            //ViewBag.TypeItem = GetTypeItem();
-            //ViewBag.ProfitItem = GetProfitItem();
-            //ViewBag.SubinventoryItem = GetSubinventoryItem();
-            //ViewBag.LocatorItem = GetLocatorItem();
-            //ViewBag.ItemNoItem = GetItemNoItem();
-
-            StockInventoryViewModel viewModel = stockInventoryData.GetStockInvetoryViewModel();
-            return View(viewModel);
+            using (var context = new MesContext())
+            {
+                using (InventoryUOW uow = new InventoryUOW(context))
+                {
+                    StockInventoryViewModel viewModel = stockInventoryData.GetStockInvetoryViewModel(uow);
+                    return View(viewModel);
+                }
+            }
         }
 
 
@@ -53,10 +53,10 @@ namespace CHPOUTSRCMES.Web.Controllers
             }
         }
 
-        public PartialViewResult GetContent(string TransactionType)
+        public PartialViewResult GetContent(long inventoryType)
         {
-            StockData.addDefault();
-            if (TransactionType == "盤虧")
+            //StockData.addDefault();
+            if (inventoryType == InventoryUOW.InventoryType.loss)
             {
                 return PartialView("_LossPartial");
             }
@@ -68,43 +68,40 @@ namespace CHPOUTSRCMES.Web.Controllers
         }
 
         [HttpPost, ActionName("SearchStock")]
-        public JsonResult SearchStock(DataTableAjaxPostViewModel data, string SubinventoryCode, string Locator, string ItemNumber)
+        public JsonResult SearchStock(DataTableAjaxPostViewModel data,long organizationId, string subinventoryCode, long? locatorId, string itemNumber)
         {
-            long locatorId;
-            try
+            using (var context = new MesContext())
             {
-                locatorId = Convert.ToInt64(Locator);
+                using (InventoryUOW uow = new InventoryUOW(context))
+                {
+
+                    List<StockDT> model = stockInventoryData.SearchStock(uow, organizationId, subinventoryCode, locatorId, itemNumber);
+
+                    var totalCount = model.Count;
+                    string search = data.Search.Value;
+
+                    if (!string.IsNullOrEmpty(search) && !string.IsNullOrWhiteSpace(search))
+                    {
+                        // Apply search   
+                        model = model.Where(p => (p.ID.ToString().ToLower().Contains(search.ToLower()))
+                            || (!string.IsNullOrEmpty(p.SUBINVENTORY_CODE) && p.SUBINVENTORY_CODE.ToLower().Contains(search.ToLower()))
+                            || (!string.IsNullOrEmpty(p.SEGMENT3) && p.SEGMENT3.ToLower().Contains(search.ToLower()))
+                            || (!string.IsNullOrEmpty(p.ITEM_NO) && p.ITEM_NO.ToLower().Contains(search.ToLower()))
+                            || (!string.IsNullOrEmpty(p.BARCODE) && p.BARCODE.ToLower().Contains(search.ToLower()))
+                            || (p.PRIMARY_AVAILABLE_QTY.ToString().ToLower().Contains(search.ToLower()))
+                            || (!string.IsNullOrEmpty(p.PRIMARY_UOM_CODE) && p.PRIMARY_UOM_CODE.ToLower().Contains(search.ToLower()))
+                            || (p.SECONDARY_AVAILABLE_QTY.ToString().ToLower().Contains(search.ToLower()))
+                            || (!string.IsNullOrEmpty(p.SECONDARY_UOM_CODE) && p.SECONDARY_UOM_CODE.ToLower().Contains(search.ToLower()))
+                            || (!string.IsNullOrEmpty(p.NOTE) && p.NOTE.ToLower().Contains(search.ToLower()))
+                            ).ToList();
+                    }
+
+                    var filteredCount = model.Count;
+                    model = StockDTOrder.Order(data.Order, model).ToList();
+                    model = model.Skip(data.Start).Take(data.Length).ToList();
+                    return Json(new { draw = data.Draw, recordsFiltered = filteredCount, recordsTotal = totalCount, data = model }, JsonRequestBehavior.AllowGet);
+                }
             }
-            catch
-            {
-                locatorId = 0;
-            }
-
-            List<StockDT> model = StockData.GetModel(SubinventoryCode, locatorId, ItemNumber);
-
-            var totalCount = model.Count;
-            string search = data.Search.Value;
-
-            if (!string.IsNullOrEmpty(search) && !string.IsNullOrWhiteSpace(search))
-            {
-                // Apply search   
-                model = model.Where(p => (p.ID.ToString().ToLower().Contains(search.ToLower()))
-                    || (!string.IsNullOrEmpty(p.SUBINVENTORY_CODE) && p.SUBINVENTORY_CODE.ToLower().Contains(search.ToLower()))
-                    || (!string.IsNullOrEmpty(p.SEGMENT3) && p.SEGMENT3.ToLower().Contains(search.ToLower()))
-                    || (!string.IsNullOrEmpty(p.ITEM_NO) && p.ITEM_NO.ToLower().Contains(search.ToLower()))
-                    || (!string.IsNullOrEmpty(p.BARCODE) && p.BARCODE.ToLower().Contains(search.ToLower()))
-                    || (p.PRIMARY_AVAILABLE_QTY.ToString().ToLower().Contains(search.ToLower()))
-                    || (!string.IsNullOrEmpty(p.PRIMARY_UOM_CODE) && p.PRIMARY_UOM_CODE.ToLower().Contains(search.ToLower()))
-                    || (p.SECONDARY_AVAILABLE_QTY.ToString().ToLower().Contains(search.ToLower()))
-                    || (!string.IsNullOrEmpty(p.SECONDARY_UOM_CODE) && p.SECONDARY_UOM_CODE.ToLower().Contains(search.ToLower()))
-                    || (!string.IsNullOrEmpty(p.NOTE) && p.NOTE.ToLower().Contains(search.ToLower()))
-                    ).ToList();
-            }
-
-            var filteredCount = model.Count;
-            model = StockDTOrder.Order(data.Order, model).ToList();
-            model = model.Skip(data.Start).Take(data.Length).ToList();
-            return Json(new { draw = data.Draw, recordsFiltered = filteredCount, recordsTotal = totalCount, data = model }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]

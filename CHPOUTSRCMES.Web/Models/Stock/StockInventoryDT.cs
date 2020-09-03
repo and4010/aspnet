@@ -8,12 +8,15 @@ using System.Web.UI.WebControls;
 using System.Web.Mvc;
 using System.Text;
 using CHPOUTSRCMES.Web.Models.Information;
+using CHPOUTSRCMES.Web.DataModel.UnitOfWorks;
 
 namespace CHPOUTSRCMES.Web.Models.Stock
 {
     public class StockInventoryDT
     {
         public long ID { set; get; }
+
+        public long SUB_ID { set; get; }
         public long STOCK_ID { set; get; }
         public string SUBINVENTORY_CODE { set; get; }
         public long LOCATOR_ID { set; get; }
@@ -50,25 +53,21 @@ namespace CHPOUTSRCMES.Web.Models.Stock
             lossModel = new List<StockInventoryDT>();
         }
 
-        public StockInventoryViewModel GetStockInvetoryViewModel()
+        public StockInventoryViewModel GetStockInvetoryViewModel(InventoryUOW uow)
         {
             StockInventoryViewModel viewModel = new StockInventoryViewModel();
-
-
-            viewModel.SelectedTransactionType = "請選擇";
-            List<ListItem> transactionTypeList = new List<ListItem>();
-            transactionTypeList.Add(new ListItem("請選擇", "請選擇"));
-            transactionTypeList.Add(new ListItem("盤盈", "盤盈"));
-            transactionTypeList.Add(new ListItem("盤虧", "盤虧"));
-
-            viewModel.TransactionTypeItems = transactionTypeList.Select(i => new SelectListItem() { Text = i.Text, Value = i.Value });
-
-            //viewModel.SearchQty = null;
-            //viewModel.PercentageError = null;
-            //viewModel.Qty = null;
-
-
+            viewModel.TransactionTypeItems = uow.GetInventoryTypeDropDownList();
             return viewModel;
+        }
+
+        public List<StockDT> SearchStock(InventoryUOW uow, long organizationId, string subinventoryCode, long? locatorId, string itemNumber)
+        {
+            return uow.GetStockTList(organizationId, subinventoryCode, locatorId, itemNumber);
+        }
+
+        public List<StockInventoryDT> GetInventoryData(InventoryUOW uow, string userId)
+        {
+            return uow.GetStockInventoryTList(userId);
         }
 
         public List<StockInventoryDT> GetProfitModel()

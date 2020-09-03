@@ -179,7 +179,7 @@ $(document).ready(function () {
             "url": "/bower_components/datatables/language/zh-TW.json"
         },
         ajax: {
-            url: '/Obsolete/UpdateRemark',
+            url: '/Obsolete/DetailEditor',
             "type": "POST",
             "dataType": "json",
             contentType: 'application/json',
@@ -201,17 +201,23 @@ $(document).ready(function () {
                     'action': d.action,
                     'StockObsoleteDTList': StockObsoleteDTList
                 }
-
-
                 return JSON.stringify(data);
             },
+            success: function (data) {
+                if (data.status) {
+                    TransactionDetailDT.ajax.reload();
+                }
+                else {
+                    swal.fire(data.result);
+                }
+            }
         },
         table: "#TransactionDetailDT",
         idSrc: 'ID',
         fields: [
             {
                 label: "備註:",
-                name: "REMARK",
+                name: "NOTE",
                 type: 'text'
             }
         ],
@@ -222,7 +228,15 @@ $(document).ready(function () {
                 submit: "確定",
                 'className': 'btn-danger'
             },
-
+            remove: {
+                button: "刪除",
+                title: "確定要刪除??",
+                submit: "確定",
+                confirm: {
+                    "_": "你確定要刪除這筆資料?",
+                    "1": "你確定要刪除這些資料?"
+                }
+            },
             multi: {
                 "title": "多欄位異動",
                 "info": "請注意，您一次選擇多個不同的備註，此次異動將會變成同樣的備註！",
@@ -255,7 +269,7 @@ $(document).ready(function () {
         },
         columns: [
             { data: null, defaultContent: '', className: 'select-checkbox', orderable: false, width: "40px" },
-            { data: "STOCK_ID", name: "項次", autoWidth: true },
+            { data: "SUB_ID", name: "項次", autoWidth: true },
             { data: "SUBINVENTORY_CODE", name: "倉庫", autoWidth: true },
             { data: "SEGMENT3", name: "儲位", autoWidth: true },
             { data: "ITEM_NO", name: "料號", autoWidth: true, className: "dt-body-left" },
@@ -289,10 +303,11 @@ $(document).ready(function () {
             },
             { data: "SECONDARY_UOM_CODE", name: "次要單位", autoWidth: true },
             { data: "NOTE", name: "備註", autoWidth: true },
-            { data: "LAST_UPDATE_DATE", name: "更新日期", autoWidth: true, visible: false }
+            { data: "STOCK_ID", name: "STOCK_ID", autoWidth: true, visible: false }
+            //{ data: "LAST_UPDATE_DATE", name: "更新日期", autoWidth: true, visible: false }
         ],
 
-        order: [[13, 'desc']],
+        order: [[1, 'desc']],
         select: {
             style: 'multi'
         },
@@ -305,32 +320,64 @@ $(document).ready(function () {
             buttons: [
                 'selectAll',
                 'selectNone',
-                 {
-                     text: '刪除',
-                     className: 'btn-danger',
-                     action: function () {
-                         var selectedData = TransactionDetailDT.rows('.selected').data();
-                         if (selectedData.length == 0) {
-                             swal.fire("請選擇要刪除的項目");
-                             return;
-                         }
+                {
+                    extend: "remove",
+                    text: '刪除',
+                    name: 'remove',
+                    className: 'btn-danger',
+                    editor: editor,
+                    init: function (api, node, config) {
+                        $(node).removeClass('btn-default')
+                    },
+                    action: function (e, dt, node, config) {
+                        var rows = TransactionDetailDT.rows({ selected: true }).indexes();
 
-                         swal.fire({
-                             title: "異動明細刪除",
-                             text: "確定刪除嗎?",
-                             type: "warning",
-                             showCancelButton: true,
-                             confirmButtonColor: "#DD6B55",
-                             confirmButtonText: "確定",
-                             cancelButtonText: "取消"
-                         }).then(function (result) {
-                             if (result.value) {
-                                 DelTransactionDetail(selectedData);
-                             }
-                         });
+                        if (rows.length === 0) {
+                            return;
+                        }
 
-                     }
-                 },
+                        editor.remove(rows, {
+                            title: '刪除',
+                            message: rows.length === 1 ?
+                                '你確定要刪除這筆資料?' :
+                                '你確定要刪除這些資料?',
+                            buttons:
+                            {
+                                text: '刪除',
+                                className: 'btn-danger',
+                                action: function () {
+                                    this.submit();
+                                }
+                            }
+                        })
+                    }
+                },
+                 //{
+                 //    text: '刪除',
+                 //    className: 'btn-danger',
+                 //    action: function () {
+                 //        var selectedData = TransactionDetailDT.rows('.selected').data();
+                 //        if (selectedData.length == 0) {
+                 //            swal.fire("請選擇要刪除的項目");
+                 //            return;
+                 //        }
+
+                 //        swal.fire({
+                 //            title: "異動明細刪除",
+                 //            text: "確定刪除嗎?",
+                 //            type: "warning",
+                 //            showCancelButton: true,
+                 //            confirmButtonColor: "#DD6B55",
+                 //            confirmButtonText: "確定",
+                 //            cancelButtonText: "取消"
+                 //        }).then(function (result) {
+                 //            if (result.value) {
+                 //                DelTransactionDetail(selectedData);
+                 //            }
+                 //        });
+
+                 //    }
+                 //},
                 {
                     text: '編輯備註',
                     className: 'btn-danger',
@@ -379,8 +426,11 @@ $(document).ready(function () {
             url: "/Obsolete/AddTransactionDetail",
             type: "post",
             data: {
-                ID: ID,
-                ObsoleteQty: ObsoleteQty
+                organizationId: getOrganizationId(),
+                subinventoryCode: getSubinventoryCode(),
+                locatorId: getLocatorId(),
+                stockId: $("#StockId").text(),
+                mQty: ObsoleteQty
             },
             success: function (data) {
                 if (data.status) {

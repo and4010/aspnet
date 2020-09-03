@@ -58,10 +58,15 @@ namespace CHPOUTSRCMES.Web.Models.Stock
             return uow.GetStockTList(organizationId, subinventoryCode, locatorId, itemNumber);
         }
 
-        public ResultModel CreateDetail(ObsoleteUOW uow, long transactionTypeId, long organizationId, string subinventoryCode, long? locatorId,
-      long stockId, decimal mQty, string note, string userId, string userName)
+        public ResultModel CreateDetail(ObsoleteUOW uow, long organizationId, string subinventoryCode, long? locatorId,
+      long stockId, decimal mQty, string userId, string userName)
         {
-            return uow.CreateDetail(transactionTypeId, organizationId, subinventoryCode, locatorId, stockId, mQty, note, userId, userName);
+            return uow.CreateDetail(organizationId, subinventoryCode, locatorId, stockId, mQty, userId, userName);
+        }
+
+        public List<StockObsoleteDT> GetObsoleteData(ObsoleteUOW uow, string userId)
+        {
+            return uow.GetStockObsoleteTList(userId);
         }
 
         public ResultModel AddTransactionDetail(long ID, decimal ObsoleteQty)
@@ -112,23 +117,9 @@ namespace CHPOUTSRCMES.Web.Models.Stock
             return new ResultModel(true, "新增明細成功");
         }
 
-        public ResultModel SaveTransactionDetail()
+        public ResultModel SaveTransactionDetail(ObsoleteUOW uow, string userId, string userName)
         {
-            foreach (StockObsoleteDT detailData in model)
-            {
-                foreach (StockDT stockData in StockData.source)
-                {
-                    if (detailData.STOCK_ID == stockData.ID && detailData.STATUS == "未異動存檔")
-                    {
-                        stockData.PRIMARY_AVAILABLE_QTY = detailData.PRIMARY_AVAILABLE_QTY;
-                        stockData.SECONDARY_AVAILABLE_QTY = detailData.SECONDARY_AVAILABLE_QTY;
-                        stockData.NOTE = detailData.NOTE;
-                        detailData.STATUS = "已異動存檔";
-                    }
-                }
-            }
-            resetData();
-            return new ResultModel(true, "異動存檔成功");
+            return uow.SaveTransactionDetail(userId, userName);
         }
 
         public List<StockObsoleteDT> UpdateRemark(StockObsoleteDTEditor data)
@@ -162,6 +153,25 @@ namespace CHPOUTSRCMES.Web.Models.Stock
             else
             {
                 return new ResultModel(false, "異動明細刪除失敗");
+            }
+        }
+
+        public ResultModel DetailEditor(ObsoleteUOW uow, StockObsoleteDTEditor editor, string userId, string userName)
+        {
+            if (editor.Action == "remove")
+            {
+                var ids = editor.StockObsoleteDTList.Select(x => x.ID).ToList();
+                return uow.DelDetailData(ids);
+            }
+            else if (editor.Action == "edit")
+            {
+                var ids = editor.StockObsoleteDTList.Select(x => x.ID).ToList();
+                string note = editor.StockObsoleteDTList[0].NOTE;
+                return uow.UpdateDetailNote(ids, note, userId, userName);
+            }
+            else
+            {
+                return new ResultModel(false, "無法識別作業項目");
             }
         }
     }

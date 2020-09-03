@@ -313,6 +313,7 @@ SELECT m.TRANSFER_MISCELLANEOUS_ID AS ID
                     if (stock.ItemCategory == ItemCategory.Flat)
                     {
                         aftPryQty = stock.PrimaryAvailableQty + mPrimaryQty;
+                        if (aftPryQty < 0) return new ResultModel(false, "超過庫存數量:" + stock.PrimaryAvailableQty + stock.PrimaryUomCode);
                         var uomConversionResult = uomConversion.Convert(stock.InventoryItemId, aftPryQty, stock.PrimaryUomCode, stock.SecondaryUomCode); //主單位數量轉次單位數量
                         if (!uomConversionResult.Success) throw new Exception(uomConversionResult.Msg);
                         aftSecQty = uomConversionResult.Data;
@@ -325,6 +326,7 @@ SELECT m.TRANSFER_MISCELLANEOUS_ID AS ID
                     else if (stock.ItemCategory == ItemCategory.Roll)
                     {
                         aftPryQty = stock.PrimaryAvailableQty + mPrimaryQty;
+                        if (aftPryQty < 0) return new ResultModel(false, "超過庫存數量:" + stock.PrimaryAvailableQty + stock.PrimaryUomCode);
                         aftSecQty = null;
                         mSecondaryQty = null;
                     }
@@ -482,6 +484,10 @@ SELECT m.TRANSFER_MISCELLANEOUS_ID AS ID
                         var header = trfMiscellaneousHeaderTRepositiory.GetAll().FirstOrDefault(x => x.TransferMiscellaneousHeaderId == headerId);
                         if (header == null) throw new Exception("找不到檔頭資料");
                         header.NumberStatus = NumberStatus.Saved;
+                        header.TransactionDate = now;
+                        header.LastUpdateBy = userId;
+                        header.LastUpdateDate = now;
+                        header.LastUpdateUserName = userName;
                         trfMiscellaneousHeaderTRepositiory.Update(header);
 
                         var detailList = trfMiscellaneousTRepositiory.GetAll().Where(x => x.TransferMiscellaneousHeaderId == header.TransferMiscellaneousHeaderId).ToList();

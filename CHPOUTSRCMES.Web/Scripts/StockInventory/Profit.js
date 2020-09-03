@@ -85,12 +85,12 @@ function ProfitTopInit() {
                 type: "POST",
                 dataType: "json",
                 data: {
-                    SubinventoryCode: $("#ddlSubinventory").val(),
-                    Locator: $("#ddlLocator").val(),
+                    //SubinventoryCode: $("#ddlSubinventory").val(),
+                    //Locator: $("#ddlLocator").val(),
                     Prefix: request.term
                 },
                 success: function (data) {
-                    response($.map(data, function (item) {
+                    response($.map(data.slice(0, 20), function (item) {
                         return { label: item.Description, value: item.Value };
                     }))
                 }
@@ -101,6 +101,7 @@ function ProfitTopInit() {
         },
         select: function (event, ui) {
             if (ui.item) {
+                $('#txtItemNumber').val(ui.item.value);
                 ProfitAutoCompleteItemNumberSelectCallBack(ui.item.value);
 
             }
