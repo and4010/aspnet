@@ -1898,6 +1898,7 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\label.js" />
+    <Content Include="Scripts\Logout.js" />
     <Content Include="Scripts\MachinePaperType.js" />
     <Content Include="Scripts\Miscellaneous\Miscellaneous.js" />
     <Content Include="Scripts\moment.js" />

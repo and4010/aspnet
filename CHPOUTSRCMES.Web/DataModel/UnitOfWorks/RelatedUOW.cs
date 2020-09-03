@@ -20,14 +20,9 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
     {
         private ILogger logger = LogManager.GetCurrentClassLogger();
 
-        /// <summary>
-        /// 餘切規格
-        /// </summary>
-        private readonly IRepository<RELATED_T> relatedTRepositiory;
 
         public RelatedUOW(DbContext context) : base(context)
         {
-            this.relatedTRepositiory = new GenericRepository<RELATED_T>(this);
         }
 
         public List<SelectListItem> GetInventoryItemNumber(string ORGANIZATION_ID)

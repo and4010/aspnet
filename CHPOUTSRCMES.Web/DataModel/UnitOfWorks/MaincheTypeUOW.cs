@@ -20,14 +20,9 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
 
         private ILogger logger = LogManager.GetCurrentClassLogger();
 
-        /// <summary>
-        /// 機台紙別
-        /// </summary>
-        private readonly IRepository<MACHINE_PAPER_TYPE_T> machinePaperTypeRepositiory;
 
         public MaincheTypeUOW(DbContext context) : base(context)
         {
-            this.machinePaperTypeRepositiory = new GenericRepository<MACHINE_PAPER_TYPE_T>(this);
         }
 
         /// <summary>
@@ -39,7 +34,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             var OrgList = new List<SelectListItem>();
             try
             {
-                var tempList = machinePaperTypeRepositiory.GetAll().
+                var tempList = machinePaperTypeRepository.GetAll().
                      GroupBy(x => x.OrganizationCode).
                      Select(x => new SelectListItem()
                      {

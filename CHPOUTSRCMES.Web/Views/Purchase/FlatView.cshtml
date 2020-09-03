@@ -16,94 +16,108 @@
 @Html.HiddenFor(model => model.FlatDetailModel.Id, new { id = "Id" })
 
 
-<div class="row">
+<div class="row row-std">
     <div class="col-md-12">
-        <div class="col-md-1 text-right">
-            @Html.LabelFor(model => model.CabinetNumber)
-        </div>
-        <div class="col-md-2">
-            @Html.DisplayFor(model => model.CabinetNumber)
-        </div>
-        <div class="col-md-1 text-right">
-            @Html.LabelFor(model => model.FlatDetailModel.Item_No)
-        </div>
-        <div class="col-md-2">
-            @Html.DisplayFor(model => model.FlatDetailModel.Item_No)
-        </div>
-        <div class="col-md-1 text-right">
-            @Html.LabelFor(model => model.FlatDetailModel.ReamWeight)
-        </div>
-        <div class="col-md-2">
-            @Html.DisplayFor(model => model.FlatDetailModel.ReamWeight)
-        </div>
-    </div>
 
 
-    <div class="col-md-12">
-        <div class="col-md-1 text-right">
-            @Html.LabelFor(model => model.FlatDetailModel.Pieces_Qty)
-        </div>
+        <div class="box box-success">
+            <div class="box-body">
 
-        <div class="col-md-2">
-            @Html.DisplayFor(model => model.FlatDetailModel.Pieces_Qty)
-        </div>
-
-        <div class="col-md-1 text-right">
-            @Html.LabelFor(model => model.FlatDetailModel.Barcode)
-        </div>
-
-        <div class="col-md-2">
-            @Html.DisplayFor(model => model.FlatDetailModel.Barcode)
-        </div>
-
-        <div class="col-md-1 text-right">
-            @Html.LabelFor(model => model.FlatDetailModel.Qty)
-        </div>
-
-        <div class="col-md-2">
-            @Html.DisplayFor(model => model.FlatDetailModel.Qty)
-        </div>
-
-        <div class="col-md-1 text-right">
-            @Html.LabelFor(model => model.FlatDetailModel.Locator)
-        </div>
-        <div class="col-md-2">
-            @Html.DisplayFor(model => model.FlatDetailModel.Locator)
-        </div>
-
-    </div>
+                <div class="col-md-12">
+                    <div class="col-md-1 text-right">
+                        @Html.LabelFor(model => model.CabinetNumber)
+                    </div>
+                    <div class="col-md-2">
+                        @Html.DisplayFor(model => model.CabinetNumber)
+                    </div>
+                    <div class="col-md-1 text-right">
+                        @Html.LabelFor(model => model.FlatDetailModel.Item_No)
+                    </div>
+                    <div class="col-md-2">
+                        @Html.DisplayFor(model => model.FlatDetailModel.Item_No)
+                    </div>
+                    <div class="col-md-1 text-right">
+                        @Html.LabelFor(model => model.FlatDetailModel.ReamWeight)
+                    </div>
+                    <div class="col-md-2">
+                        @Html.DisplayFor(model => model.FlatDetailModel.ReamWeight)
+                    </div>
+                </div>
 
 
-    <div class="col-md-12" style="margin-top:30px">
+                <div class="col-md-12">
+                    <div class="col-md-1 text-right">
+                        @Html.LabelFor(model => model.FlatDetailModel.Pieces_Qty)
+                    </div>
 
-        <h4 class="page-header">
-            <label>備註</label>
-        </h4>
+                    <div class="col-md-2">
+                        @Html.DisplayFor(model => model.FlatDetailModel.Pieces_Qty)
+                    </div>
 
-        <div class="col-md-12">
-            <div class="col-md-12">
-                @Html.DisplayFor(model => model.FlatDetailModel.Reason) @Html.DisplayFor(model => model.FlatDetailModel.Remark)
+                    <div class="col-md-1 text-right">
+                        @Html.LabelFor(model => model.FlatDetailModel.Barcode)
+                    </div>
+
+                    <div class="col-md-2">
+                        @Html.DisplayFor(model => model.FlatDetailModel.Barcode)
+                    </div>
+
+                    <div class="col-md-1 text-right">
+                        @Html.LabelFor(model => model.FlatDetailModel.Qty)
+                    </div>
+
+                    <div class="col-md-2">
+                        @Html.DisplayFor(model => model.FlatDetailModel.Qty)
+                    </div>
+
+                    <div class="col-md-1 text-right">
+                        @Html.LabelFor(model => model.FlatDetailModel.Locator)
+                    </div>
+                    <div class="col-md-2">
+                        @Html.DisplayFor(model => model.FlatDetailModel.Locator)
+                    </div>
+
+                </div>
+
+
+                <div class="col-md-12" style="margin-top:30px">
+
+                    <h4 class="page-header">
+                        <label>備註</label>
+                    </h4>
+
+                    <div class="col-md-12">
+                        <div class="col-md-12">
+                            @Html.DisplayFor(model => model.FlatDetailModel.Reason) @Html.DisplayFor(model => model.FlatDetailModel.Remark)
+                        </div>
+                        <div class="col-md-12">
+                            @Html.DisplayFor(model => model.FlatDetailModel.CreatedUserName) @Html.DisplayFor(model => model.FlatDetailModel.CreationDate)
+                        </div>
+                    </div>
+
+                </div>
+
+
+
+                <div class="col-md-12" style="margin-top:30px">
+                    <h4 class="page-header">
+                        <label>照片</label>
+                    </h4>
+
+                    <div class="col-md-5" id="imgBox">
+
+                    </div>
+                </div>
+
+
+
             </div>
-            <div class="col-md-12">
-                @Html.DisplayFor(model => model.FlatDetailModel.CreatedUserName) @Html.DisplayFor(model => model.FlatDetailModel.CreationDate)
-            </div>
+
         </div>
 
+
+
     </div>
-
-
-
-    <div class="col-md-12">
-        <h4 class="page-header">
-            <label>照片</label>
-        </h4>
-
-        <div class="col-md-5" id="imgBox">
-            <img class="col-md-5" id="img" onclick="imgDisplay(this)"
-                 src="" alt="" />
-        </div>
-    </div>
-
 
 
 </div>

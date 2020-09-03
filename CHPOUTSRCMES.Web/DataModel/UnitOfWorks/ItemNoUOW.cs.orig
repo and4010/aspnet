@@ -22,6 +22,16 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
     {
         private ILogger logger = LogManager.GetCurrentClassLogger();
 
+<<<<<<< HEAD
+=======
+
+
+        /// <summary>
+        /// 組織料號
+        /// </summary>
+        private readonly IRepository<ORG_ITEMS_T> orgItemRepositityory;
+
+>>>>>>> origin/Eric
         public ItemNoUOW(DbContext context) : base(context)
         {
         }
@@ -35,7 +45,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             var SpecList = new List<SelectListItem>();
             try
             {
-                var tempList = itemsTRepository.GetAll()
+                var tempList = itemsTRepositiory.GetAll()
                     .AsNoTracking()
                     .GroupBy(x => x.CatalogElemVal050)
                     .Take(count)
@@ -63,7 +73,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             var TypeList = new List<SelectListItem>();
             try
             {
-                var tempList = itemsTRepository.GetAll()
+                var tempList = itemsTRepositiory.GetAll()
                     .AsNoTracking()
                     .GroupBy(x => x.CatalogElemVal020)
                     .Take(count)
@@ -92,7 +102,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             var TypeList = new List<SelectListItem>();
             try
             {
-                var tempList = itemsTRepository.GetAll()
+                var tempList = itemsTRepositiory.GetAll()
                     .AsNoTracking()
                     .GroupBy(x => x.CatalogElemVal070)
                     .Take(count)
@@ -153,7 +163,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             long.TryParse(OrganizationId, out organId);
             try
             {
-                    var items = itemsTRepository.GetAll().Join(orgItemRepository.GetAll(), x => x.InventoryItemId, y => y.InventoryItemId, (x, y) => new { Item = x, OrganId = y.OrganizationId });
+                    var items = itemsTRepositiory.GetAll().Join(orgItemRepositityory.GetAll(), x => x.InventoryItemId, y => y.InventoryItemId, (x, y) => new { Item = x, OrganId = y.OrganizationId });
                         
                         
 

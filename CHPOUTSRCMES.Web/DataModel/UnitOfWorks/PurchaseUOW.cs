@@ -25,13 +25,13 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
     {
         private ILogger logger = LogManager.GetCurrentClassLogger();
 
-        private readonly IRepository<CTR_ORG_T> ctrOrgTRepositiory;
-        private readonly IRepository<CTR_HEADER_T> ctrHeaderTRepositiory;
-        private readonly IRepository<CTR_DETAIL_T> ctrDetailTRepositiory;
-        private readonly IRepository<CTR_PICKED_T> ctrPickedTRepositiory;
-        private readonly IRepository<CTR_PICKED_HT> ctrPickedHtRepositiory;
-        private readonly IRepository<CTR_FILEINFO_T> ctrFileInfoTRepositiory;
-        private readonly IRepository<CTR_FILES_T> ctrFilesTRepositiory;
+        private readonly IRepository<CTR_ORG_T> ctrOrgTRepository;
+        private readonly IRepository<CTR_HEADER_T> ctrHeaderTRepository;
+        private readonly IRepository<CTR_DETAIL_T> ctrDetailTRepository;
+        private readonly IRepository<CTR_PICKED_T> ctrPickedTRepository;
+        private readonly IRepository<CTR_PICKED_HT> ctrPickedHtRepository;
+        private readonly IRepository<CTR_FILEINFO_T> ctrFileInfoTRepository;
+        private readonly IRepository<CTR_FILES_T> ctrFilesTRepository;
 
 
         /// <summary>
@@ -40,13 +40,13 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
         /// <param name="context"></param>
         public PurchaseUOW(DbContext context) : base(context)
         {
-            this.ctrOrgTRepositiory = new GenericRepository<CTR_ORG_T>(this);
-            this.ctrHeaderTRepositiory = new GenericRepository<CTR_HEADER_T>(this);
-            this.ctrDetailTRepositiory = new GenericRepository<CTR_DETAIL_T>(this);
-            this.ctrPickedTRepositiory = new GenericRepository<CTR_PICKED_T>(this);
-            this.ctrPickedHtRepositiory = new GenericRepository<CTR_PICKED_HT>(this);
-            this.ctrFileInfoTRepositiory = new GenericRepository<CTR_FILEINFO_T>(this);
-            this.ctrFilesTRepositiory = new GenericRepository<CTR_FILES_T>(this);
+            this.ctrOrgTRepository = new GenericRepository<CTR_ORG_T>(this);
+            this.ctrHeaderTRepository = new GenericRepository<CTR_HEADER_T>(this);
+            this.ctrDetailTRepository = new GenericRepository<CTR_DETAIL_T>(this);
+            this.ctrPickedTRepository = new GenericRepository<CTR_PICKED_T>(this);
+            this.ctrPickedHtRepository = new GenericRepository<CTR_PICKED_HT>(this);
+            this.ctrFileInfoTRepository = new GenericRepository<CTR_FILEINFO_T>(this);
+            this.ctrFilesTRepository = new GenericRepository<CTR_FILES_T>(this);
         }
 
 
@@ -114,7 +114,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                 ctrorg.CreationDate = DateTime.Now;
                 ctrorg.LastUpdateBy = "1";
                 ctrorg.LastUpdateDate = DateTime.Now;
-                ctrOrgTRepositiory.Create(ctrorg, true);
+                ctrOrgTRepository.Create(ctrorg, true);
 
                 ctrorg.CtrOrgId = 2;
                 ctrorg.ProcessCode = "XXIFP217";
@@ -153,7 +153,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                 ctrorg.CreationDate = DateTime.Now;
                 ctrorg.LastUpdateBy = "1";
                 ctrorg.LastUpdateDate = DateTime.Now;
-                ctrOrgTRepositiory.Create(ctrorg, true);
+                ctrOrgTRepository.Create(ctrorg, true);
 
                 ctrorg.CtrOrgId = 3;
                 ctrorg.ProcessCode = "XXIFP217";
@@ -192,7 +192,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                 ctrorg.CreationDate = DateTime.Now;
                 ctrorg.LastUpdateBy = "1";
                 ctrorg.LastUpdateDate = DateTime.Now;
-                ctrOrgTRepositiory.Create(ctrorg, true);
+                ctrOrgTRepository.Create(ctrorg, true);
             }
             catch (Exception e)
             {
@@ -209,14 +209,14 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             CTR_HEADER_T ctrheaderT = new CTR_HEADER_T();
             CTR_DETAIL_T ctrdetailT = new CTR_DETAIL_T();
 
-            var org = ctrOrgTRepositiory.GetAll().AsNoTracking().ToList();
+            var org = ctrOrgTRepository.GetAll().AsNoTracking().ToList();
 
             try
             {
                 for (int i = 0; org.Count() > i; i++)
                 {
                     var ctrHeaderTContainerNo = org[i].ContainerNo;
-                    var ContainerNo = ctrHeaderTRepositiory.GetAll()
+                    var ContainerNo = ctrHeaderTRepository.GetAll()
                         .Where(x => x.ContainerNo == ctrHeaderTContainerNo).SingleOrDefault();
                     if (ContainerNo == null)
                     {
@@ -234,7 +234,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                         ctrheaderT.CreatedBy = org[i].CreatedBy.ToString();
                         ctrheaderT.CreatedUserName = org[i].CreatedBy.ToString();
                         ctrheaderT.CreationDate = org[i].CreationDate;
-                        ctrHeaderTRepositiory.Create(ctrheaderT, true);
+                        ctrHeaderTRepository.Create(ctrheaderT, true);
                     }
                     else if (ContainerNo.ContainerNo != org[i].ContainerNo)
                     {
@@ -252,7 +252,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                         ctrheaderT.CreatedBy = org[i].CreatedBy.ToString();
                         ctrheaderT.CreatedUserName = org[i].CreatedBy.ToString();
                         ctrheaderT.CreationDate = org[i].CreationDate;
-                        ctrHeaderTRepositiory.Create(ctrheaderT, true);
+                        ctrHeaderTRepository.Create(ctrheaderT, true);
                     }
 
 
@@ -294,7 +294,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                     ctrdetailT.CreatedBy = org[i].CreatedBy.ToString();
                     ctrdetailT.CreatedUserName = org[i].CreatedBy.ToString();
                     ctrdetailT.CreationDate = org[i].CreationDate;
-                    ctrDetailTRepositiory.Create(ctrdetailT, true);
+                    ctrDetailTRepository.Create(ctrdetailT, true);
                 }
             }
             catch (Exception e)
@@ -308,7 +308,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
         {
             try
             {
-                return ctrHeaderTRepositiory.Get(x => x.CtrHeaderId == CtrHeaderId).SingleOrDefault();
+                return ctrHeaderTRepository.Get(x => x.CtrHeaderId == CtrHeaderId).SingleOrDefault();
             }
             catch (Exception e)
             {
@@ -332,15 +332,15 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             {
                 try
                 {
-                    var ctrpick = ctrPickedTRepositiory.Get(x => x.ItemCategory == "捲筒").ToList();
+                    var ctrpick = ctrPickedTRepository.Get(x => x.ItemCategory == "捲筒").ToList();
                     if (ctrpick.Count == PaperRollModel.Count)
                     {
                         return new ResultModel(false, "資料已存在無法匯入");
                     }
 
 
-                    var ctrDetail = ctrDetailTRepositiory.GetAll().Join(
-                    ctrHeaderTRepositiory.GetAll(),               //要Join的資料表
+                    var ctrDetail = ctrDetailTRepository.GetAll().Join(
+                    ctrHeaderTRepository.GetAll(),               //要Join的資料表
                     c => c.CtrHeaderId,    //c代表db.CTR_DETAIL_Ts(c可以自己定義名稱)，這邊放主要資料表要串聯的key
                     cd => cd.CtrHeaderId,  //cd代表db.CTR_HEADER_Ts(cd可以自己定義名稱)，這邊放次資料表要串聯的key
                     (c, cd) => new         //將兩個自定義名稱用小括胡包起來，接著透過 『=>』 可以自己選擇要取用要用資料 
@@ -349,7 +349,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                         e = cd
                     }
                     ).Where(x => x.d.ItemCategory == "捲筒" && x.e.CtrHeaderId == CtrHeaderId).ToList();
-                    var header = ctrHeaderTRepositiory.Get(x => x.CtrHeaderId == CtrHeaderId).SingleOrDefault();
+                    var header = ctrHeaderTRepository.Get(x => x.CtrHeaderId == CtrHeaderId).SingleOrDefault();
                     var barcode = GenerateBarcodes(header.OrganizationId, header.Subinventory, PaperRollModel.Count, userName);
                     for (int j = 0; j < ctrDetail.Count; j++)
                     {
@@ -389,7 +389,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                                 cTR_PICKED_T.CreatedBy = createby;
                                 cTR_PICKED_T.CreationDate = DateTime.Now;
                                 cTR_PICKED_T.CreatedUserName = userName;
-                                ctrPickedTRepositiory.Create(cTR_PICKED_T, true);
+                                ctrPickedTRepository.Create(cTR_PICKED_T, true);
                             }
                         }
                     }
@@ -447,7 +447,7 @@ and d.ITEM_CATEGORY = N'捲筒'");
         /// </summary>
         public void generateFlatDetail()
         {
-            var ctrDetail = ctrDetailTRepositiory.Get(s => s.ItemCategory == "平版").ToList();
+            var ctrDetail = ctrDetailTRepository.Get(s => s.ItemCategory == "平版").ToList();
 
             CTR_PICKED_T cTR_PICKED_T = new CTR_PICKED_T();
             try
@@ -455,7 +455,7 @@ and d.ITEM_CATEGORY = N'捲筒'");
                 for (int i = 0; i < ctrDetail.Count; i++)
                 {
                     var HeaderId = ctrDetail[i].HeaderId;
-                    var ctrheader = ctrHeaderTRepositiory.Get(s => s.HeaderId == HeaderId).SingleOrDefault();
+                    var ctrheader = ctrHeaderTRepository.Get(s => s.HeaderId == HeaderId).SingleOrDefault();
                     for (int j = 0; j < decimal.ToInt32(ctrDetail[i].RollReamQty); j++)
                     {
                         cTR_PICKED_T.CtrHeaderId = HeaderId;
@@ -489,7 +489,7 @@ and d.ITEM_CATEGORY = N'捲筒'");
                         cTR_PICKED_T.CreatedBy = ctrDetail[i].CreatedBy;
                         cTR_PICKED_T.CreationDate = DateTime.Now;
                         cTR_PICKED_T.CreatedUserName = ctrDetail[i].CreatedUserName;
-                        ctrPickedTRepositiory.Create(cTR_PICKED_T, true);
+                        ctrPickedTRepository.Create(cTR_PICKED_T, true);
                     }
                 }
             }
@@ -507,7 +507,7 @@ and d.ITEM_CATEGORY = N'捲筒'");
         /// <returns></returns>
         public List<FullCalendarEventModel> getFullCalenderList(string Subinventory)
         {
-            var header = ctrHeaderTRepositiory.Get(x => x.Subinventory == Subinventory).GroupBy(x => x.ContainerNo).Select(x => x.FirstOrDefault()).ToList();
+            var header = ctrHeaderTRepository.Get(x => x.Subinventory == Subinventory).GroupBy(x => x.ContainerNo).Select(x => x.FirstOrDefault()).ToList();
 
             List<FullCalendarEventModel> fullCalendarEventModel = new List<FullCalendarEventModel>();
             UrlHelper objUrlHelper = new UrlHelper(HttpContext.Current.Request.RequestContext);
@@ -577,18 +577,18 @@ and d.ITEM_CATEGORY = N'捲筒'");
                 try
                 {
 
-                    var pick = ctrPickedTRepositiory.Get(x => x.CtrHeaderId == CtrHeaderId && x.Status == "待入庫").ToList();
+                    var pick = ctrPickedTRepository.Get(x => x.CtrHeaderId == CtrHeaderId && x.Status == "待入庫").ToList();
                     if (pick.Count > 0)
                     {
                         return new ResultModel(false, "有條碼尚未入庫");
                     }
-                    var header = ctrHeaderTRepositiory.Get(x => x.CtrHeaderId == CtrHeaderId).ToList();
+                    var header = ctrHeaderTRepository.Get(x => x.CtrHeaderId == CtrHeaderId).ToList();
                     if (header != null)
                     {
                         for (int i = 0; i < header.Count; i++)
                         {
                             header[i].Status = 0;
-                            ctrHeaderTRepositiory.Update(header[i], true);
+                            ctrHeaderTRepository.Update(header[i], true);
                             ConvertStock(header[i].CtrHeaderId);
                             StockRecord(header[i].CtrHeaderId);
                             PickToPickHT(header[i].CtrHeaderId);
@@ -825,7 +825,7 @@ FROM dbo.CTR_PICKED_T p
 LEFT JOIN dbo.CTR_HEADER_T h ON h.CTR_HEADER_ID = p.CTR_HEADER_ID
 WHERE p.ITEM_CATEGORY = N'捲筒' and p.CTR_PICKED_ID  = @CTR_PICKED_ID");
                     string commandText = string.Format(query.ToString());
-                    commandText = string.Concat(commandText, " UNION ", commandText.Replace("CTR_PICKED_T", "CTR_PICKED_HT"));
+                    commandText = string.Concat(commandText, " UNION ", commandText.Replace("CTR_PICKED_T", "CTR_PICKED_HT").Replace("CTR_DETAIL_T", "CTR_DETAIL_HT"));
                     return mesContext.Database.SqlQuery<DetailModel.RollDetailModel>(commandText, new SqlParameter("@CTR_PICKED_ID", CTR_PICKED_ID)).SingleOrDefault();
                 }
             }
@@ -857,17 +857,17 @@ WHERE p.ITEM_CATEGORY = N'捲筒' and p.CTR_PICKED_ID  = @CTR_PICKED_ID");
                             SaveCtrFileInfoT(VaryQualityLevel(hpf), hpf, id, LastUpdateBy);
                         }
                     }
-                    var ctrPickT = ctrPickedTRepositiory.Get(x => x.CtrPickedId == id).SingleOrDefault();
+                    var ctrPickT = ctrPickedTRepository.Get(x => x.CtrPickedId == id).SingleOrDefault();
                     if (Reason != "請選擇")
                     {
-                        var reason = stkReasonTRepositiory.Get(x => x.ReasonCode == Reason).SingleOrDefault();
+                        var reason = stkReasonTRepository.Get(x => x.ReasonCode == Reason).SingleOrDefault();
                         ctrPickT.ReasonDesc = reason.ReasonDesc;
                         ctrPickT.ReasonCode = reason.ReasonCode;
                     }
                     if (Locator != "null")
                     {
                         var LocatorId = Int32.Parse(Locator);
-                        var Id = locatorTRepositiory.Get(x => x.LocatorId == LocatorId).SingleOrDefault();
+                        var Id = locatorTRepository.Get(x => x.LocatorId == LocatorId).SingleOrDefault();
                         ctrPickT.LocatorId = Id.LocatorId;
                         ctrPickT.LocatorCode = Id.LocatorSegments;
                     }
@@ -875,7 +875,7 @@ WHERE p.ITEM_CATEGORY = N'捲筒' and p.CTR_PICKED_ID  = @CTR_PICKED_ID");
                     ctrPickT.LastUpdateBy = LastUpdateBy;
                     ctrPickT.LastUpdateUserName = LastUpdateUserName;
                     ctrPickT.LastUpdateDate = DateTime.Now;
-                    ctrPickedTRepositiory.Update(ctrPickT, true);
+                    ctrPickedTRepository.Update(ctrPickT, true);
                     mes.Commit();
                     return new ResultModel(true, "");
                 }
@@ -910,17 +910,17 @@ WHERE p.ITEM_CATEGORY = N'捲筒' and p.CTR_PICKED_ID  = @CTR_PICKED_ID");
                             SaveCtrFileInfoT(VaryQualityLevel(hpf), hpf, id, LastUpdateBy);
                         }
                     }
-                    var ctrPickT = ctrPickedTRepositiory.Get(x => x.CtrPickedId == id).SingleOrDefault();
+                    var ctrPickT = ctrPickedTRepository.Get(x => x.CtrPickedId == id).SingleOrDefault();
                     if (Reason != "請選擇")
                     {
-                        var reason = stkReasonTRepositiory.Get(x => x.ReasonCode == Reason).SingleOrDefault();
+                        var reason = stkReasonTRepository.Get(x => x.ReasonCode == Reason).SingleOrDefault();
                         ctrPickT.ReasonDesc = reason.ReasonDesc;
                         ctrPickT.ReasonCode = reason.ReasonCode;
                     }
                     if (Locator != "null")
                     {
                         var LocatorId = Int32.Parse(Locator);
-                        var Id = locatorTRepositiory.Get(x => x.LocatorId == LocatorId).SingleOrDefault();
+                        var Id = locatorTRepository.Get(x => x.LocatorId == LocatorId).SingleOrDefault();
                         ctrPickT.LocatorId = Id.LocatorId;
                         ctrPickT.LocatorCode = Id.LocatorSegments;
                     }
@@ -928,7 +928,7 @@ WHERE p.ITEM_CATEGORY = N'捲筒' and p.CTR_PICKED_ID  = @CTR_PICKED_ID");
                     ctrPickT.LastUpdateBy = LastUpdateBy;
                     ctrPickT.LastUpdateUserName = LastUpdateUserName;
                     ctrPickT.LastUpdateDate = DateTime.Now;
-                    ctrPickedTRepositiory.Update(ctrPickT, true);
+                    ctrPickedTRepository.Update(ctrPickT, true);
                     mes.Commit();
                     return new ResultModel(true, "");
                 }
@@ -954,7 +954,7 @@ WHERE p.ITEM_CATEGORY = N'捲筒' and p.CTR_PICKED_ID  = @CTR_PICKED_ID");
             {
                 try
                 {
-                    var ctrPickT = ctrPickedTRepositiory.Get(x => x.Barcode == Barcode && x.ItemCategory == "捲筒" && x.CtrHeaderId == CtrHeaderId).SingleOrDefault();
+                    var ctrPickT = ctrPickedTRepository.Get(x => x.Barcode == Barcode && x.ItemCategory == "捲筒" && x.CtrHeaderId == CtrHeaderId).SingleOrDefault();
                     if (ctrPickT == null)
                     {
                         return new ResultModel(false, "此無條碼");
@@ -969,7 +969,7 @@ WHERE p.ITEM_CATEGORY = N'捲筒' and p.CTR_PICKED_ID  = @CTR_PICKED_ID");
                         ctrPickT.LastUpdateBy = LastUpdateBy;
                         ctrPickT.LastUpdateUserName = LastUpdateUserName;
                         ctrPickT.LastUpdateDate = DateTime.Now;
-                        ctrPickedTRepositiory.Update(ctrPickT, true);
+                        ctrPickedTRepository.Update(ctrPickT, true);
                         txn.Commit();
                         return new ResultModel(true, "");
                     }
@@ -995,7 +995,7 @@ WHERE p.ITEM_CATEGORY = N'捲筒' and p.CTR_PICKED_ID  = @CTR_PICKED_ID");
             {
                 try
                 {
-                    var ctrPickT = ctrPickedTRepositiory.Get(x => x.Barcode == Barcode && x.ItemCategory == "平版" && x.CtrHeaderId == CtrHeaderId).SingleOrDefault();
+                    var ctrPickT = ctrPickedTRepository.Get(x => x.Barcode == Barcode && x.ItemCategory == "平版" && x.CtrHeaderId == CtrHeaderId).SingleOrDefault();
                     if (ctrPickT == null)
                     {
                         return new ResultModel(false, "此無條碼");
@@ -1007,7 +1007,7 @@ WHERE p.ITEM_CATEGORY = N'捲筒' and p.CTR_PICKED_ID  = @CTR_PICKED_ID");
                     else
                     {
                         ctrPickT.Status = "已入庫";
-                        ctrPickedTRepositiory.Update(ctrPickT, true);
+                        ctrPickedTRepository.Update(ctrPickT, true);
                         ctrPickT.LastUpdateBy = LastUpdateBy;
                         ctrPickT.LastUpdateUserName = LastUpdateUserName;
                         ctrPickT.LastUpdateDate = DateTime.Now;
@@ -1059,7 +1059,7 @@ JOIN CTR_HEADER_T h ON h.CTR_HEADER_ID = p.CTR_HEADER_ID
 JOIN CTR_DETAIL_T D ON D.CTR_DETAIL_ID = P.CTR_DETAIL_ID
 WHERE p.ITEM_CATEGORY = N'平版' and p.CTR_PICKED_ID  = @CTR_PICKED_ID");
                     string commandText = string.Format(query.ToString());
-                    commandText = string.Concat(commandText, " UNION ", commandText.Replace("CTR_PICKED_T", "CTR_PICKED_HT"));
+                    commandText = string.Concat(commandText, " UNION ", commandText.Replace("CTR_PICKED_T", "CTR_PICKED_HT").Replace("CTR_DETAIL_T", "CTR_DETAIL_HT"));
                     return mesContext.Database.SqlQuery<DetailModel.FlatDetailModel>(commandText, new SqlParameter("@CTR_PICKED_ID", CtrPickedId)).SingleOrDefault();
                 }
             }
@@ -1168,7 +1168,7 @@ WHERE d1.ITEM_CATEGORY = N'捲筒' and h1.CTR_HEADER_ID  = @CTR_HEADER_ID");
         {
             CTR_FILES_T cTR_FILES_T = new CTR_FILES_T();
             cTR_FILES_T.FileInstance = filebyte;
-            ctrFilesTRepositiory.Create(cTR_FILES_T, true);
+            ctrFilesTRepository.Create(cTR_FILES_T, true);
 
             CTR_FILEINFO_T cTR_FILEINFO_T = new CTR_FILEINFO_T();
             cTR_FILEINFO_T.CtrPickedId = id;
@@ -1179,7 +1179,7 @@ WHERE d1.ITEM_CATEGORY = N'捲筒' and h1.CTR_HEADER_ID  = @CTR_HEADER_ID");
             cTR_FILEINFO_T.Seq = 1;
             cTR_FILEINFO_T.CreatedBy = CreatedBy;
             cTR_FILEINFO_T.CreationDate = DateTime.Now;
-            ctrFileInfoTRepositiory.Create(cTR_FILEINFO_T);
+            ctrFileInfoTRepository.Create(cTR_FILEINFO_T);
 
         }
 
@@ -1194,7 +1194,7 @@ WHERE d1.ITEM_CATEGORY = N'捲筒' and h1.CTR_HEADER_ID  = @CTR_HEADER_ID");
         //    {
         //        CTR_FILES_T cTR_FILES_T = new CTR_FILES_T();
         //        cTR_FILES_T.FileInstance = filebyte;
-        //        ctrFilesTRepositiory.Create(cTR_FILES_T, true);
+        //        ctrFilesTRepository.Create(cTR_FILES_T, true);
         //    }
         //    catch (Exception e)
         //    {
@@ -1609,7 +1609,7 @@ and lt.SUBINVENTORY_CODE = @SUBINVENTORY_CODE
         {
             try
             {
-                var pick = ctrPickedTRepositiory.Get(x => x.CtrPickedId == PickId).SingleOrDefault();
+                var pick = ctrPickedTRepository.Get(x => x.CtrPickedId == PickId).SingleOrDefault();
                 return new ResultDataModel<CTR_PICKED_T>(true, "成功", pick);
             }
             catch (Exception e)

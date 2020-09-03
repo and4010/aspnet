@@ -23,13 +23,13 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
     {
         private ILogger logger = LogManager.GetCurrentClassLogger();
 
-        private readonly IRepository<TRF_HEADER_T> trfHeaderTRepositiory;
-        private readonly IRepository<TRF_DETAIL_T> trfDetailTRepositiory;
-        private readonly IRepository<TRF_DETAIL_HT> trfDetailHtRepositiory;
-        private readonly IRepository<TRF_INBOUND_PICKED_T> trfInboundPickedTRepositiory;
-        private readonly IRepository<TRF_INBOUND_PICKED_HT> trfInboundPickedHtRepositiory;
-        private readonly IRepository<TRF_OUTBOUND_PICKED_T> trfOutboundPickedTRepositiory;
-        private readonly IRepository<TRF_OUTBOUND_PICKED_HT> trfOutboundPickedHtRepositiory;
+        private readonly IRepository<TRF_HEADER_T> trfHeaderTRepository;
+        private readonly IRepository<TRF_DETAIL_T> trfDetailTRepository;
+        private readonly IRepository<TRF_DETAIL_HT> trfDetailHtRepository;
+        private readonly IRepository<TRF_INBOUND_PICKED_T> trfInboundPickedTRepository;
+        private readonly IRepository<TRF_INBOUND_PICKED_HT> trfInboundPickedHtRepository;
+        private readonly IRepository<TRF_OUTBOUND_PICKED_T> trfOutboundPickedTRepository;
+        private readonly IRepository<TRF_OUTBOUND_PICKED_HT> trfOutboundPickedHtRepository;
 
         public TransferType transferType = new TransferType();
         public IDetail pickSatus = new PickStatus();
@@ -38,13 +38,13 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
         public TransferUOW(DbContext context)
            : base(context)
         {
-            this.trfHeaderTRepositiory = new GenericRepository<TRF_HEADER_T>(this);
-            this.trfDetailTRepositiory = new GenericRepository<TRF_DETAIL_T>(this);
-            this.trfDetailHtRepositiory = new GenericRepository<TRF_DETAIL_HT>(this);
-            this.trfInboundPickedTRepositiory = new GenericRepository<TRF_INBOUND_PICKED_T>(this);
-            this.trfInboundPickedHtRepositiory = new GenericRepository<TRF_INBOUND_PICKED_HT>(this);
-            this.trfOutboundPickedTRepositiory = new GenericRepository<TRF_OUTBOUND_PICKED_T>(this);
-            this.trfOutboundPickedHtRepositiory = new GenericRepository<TRF_OUTBOUND_PICKED_HT>(this);
+            this.trfHeaderTRepository = new GenericRepository<TRF_HEADER_T>(this);
+            this.trfDetailTRepository = new GenericRepository<TRF_DETAIL_T>(this);
+            this.trfDetailHtRepository = new GenericRepository<TRF_DETAIL_HT>(this);
+            this.trfInboundPickedTRepository = new GenericRepository<TRF_INBOUND_PICKED_T>(this);
+            this.trfInboundPickedHtRepository = new GenericRepository<TRF_INBOUND_PICKED_HT>(this);
+            this.trfOutboundPickedTRepository = new GenericRepository<TRF_OUTBOUND_PICKED_T>(this);
+            this.trfOutboundPickedHtRepository = new GenericRepository<TRF_OUTBOUND_PICKED_HT>(this);
 
         }
 
@@ -184,7 +184,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
         /// <returns></returns>
         public LOCATOR_T GetLocatorForTransfer(long organizationId, string subinventoryCode, DateTime now)
         {
-            return locatorTRepositiory.GetAll().AsNoTracking().FirstOrDefault(x => x.OrganizationId == organizationId && x.SubinventoryCode == subinventoryCode &&
+            return locatorTRepository.GetAll().AsNoTracking().FirstOrDefault(x => x.OrganizationId == organizationId && x.SubinventoryCode == subinventoryCode &&
             x.ControlFlag != ControlFlag.Deleted && (x.LocatorDisableDate == null || x.LocatorDisableDate > now));
         }
 
@@ -233,7 +233,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
 
         public List<TRF_HEADER_T> GetTrfHeaderList(string transferCatalog, long outOrganizationId, string outSubinventoryCode, long inOrganizationId, string inSubinventoryCode)
         {
-            return trfHeaderTRepositiory.GetAll().AsNoTracking().Where(
+            return trfHeaderTRepository.GetAll().AsNoTracking().Where(
                    x => x.OrganizationId == outOrganizationId &&
                    x.TransferOrganizationId == inOrganizationId &&
                    x.TransferCatalog == transferCatalog &&
@@ -327,46 +327,46 @@ AND TRANSFER_SUBINVENTORY_CODE = @trfSubCode AND TRANSFER_ORGANIZATION_ID = @trf
 
         public List<TRF_DETAIL_T> GetTrfDetailList(long transferHeaderId, string itemNumber)
         {
-            return trfDetailTRepositiory.GetAll().AsNoTracking().Where(x =>
+            return trfDetailTRepository.GetAll().AsNoTracking().Where(x =>
             x.TransferHeaderId == transferHeaderId &&
             x.ItemNumber == itemNumber).ToList();
         }
 
         public TRF_DETAIL_T GetTrfDetail(long transferHeaderId, long transferDetailId)
         {
-            return trfDetailTRepositiory.GetAll().AsNoTracking().FirstOrDefault(x => x.TransferHeaderId == transferHeaderId && x.TransferDetailId == transferDetailId);
+            return trfDetailTRepository.GetAll().AsNoTracking().FirstOrDefault(x => x.TransferHeaderId == transferHeaderId && x.TransferDetailId == transferDetailId);
         }
 
 
 
         //public List<TRF_HEADER_T> GetTrfHeaderList(string shipmentNumber, string transferType)
         //{
-        //    return trfHeaderTRepositiory.GetAll().AsNoTracking().Where(x =>
+        //    return trfHeaderTRepository.GetAll().AsNoTracking().Where(x =>
         //    x.ShipmentNumber == shipmentNumber &&
         //    x.TransferType == transferType).ToList();
         //}
 
         public TRF_HEADER_T GetTrfHeader(string shipmentNumber, string transferType)
         {
-            return trfHeaderTRepositiory.GetAll().AsNoTracking().FirstOrDefault(x =>
+            return trfHeaderTRepository.GetAll().AsNoTracking().FirstOrDefault(x =>
             x.ShipmentNumber == shipmentNumber &&
             x.TransferType == transferType);
         }
 
         public TRF_HEADER_T GetTrfHeader(long transferHeaderId)
         {
-            return trfHeaderTRepositiory.GetAll().AsNoTracking().FirstOrDefault(x =>
+            return trfHeaderTRepository.GetAll().AsNoTracking().FirstOrDefault(x =>
             x.TransferHeaderId == transferHeaderId);
         }
 
         public List<TRF_INBOUND_PICKED_T> GetTrfInboundPickedList(List<long> transferPickedIdList)
         {
-            return trfInboundPickedTRepositiory.GetAll().AsNoTracking().Where(x => transferPickedIdList.Contains(x.TransferPickedId)).ToList();
+            return trfInboundPickedTRepository.GetAll().AsNoTracking().Where(x => transferPickedIdList.Contains(x.TransferPickedId)).ToList();
         }
 
         public List<TRF_INBOUND_PICKED_T> GetTrfInboundPickedList2(List<long> transferPickedIdList)
         {
-            return trfInboundPickedTRepositiory.GetAll().Where(x => transferPickedIdList.Contains(x.TransferPickedId)).ToList();
+            return trfInboundPickedTRepository.GetAll().Where(x => transferPickedIdList.Contains(x.TransferPickedId)).ToList();
         }
 
         /// <summary>
@@ -670,7 +670,7 @@ SELECT [TRANSFER_PICKED_ID] as ID
             if (shipmentNumber == DropDownListTypeValue.Add)
             {
                 shipmentNumber = GetShipmentNumber(outSubinventoryCode, inSubinventoryCode);
-                trfHeaderTRepositiory.Create(new TRF_HEADER_T
+                trfHeaderTRepository.Create(new TRF_HEADER_T
                 {
                     OrgId = outOrganization.OrgUnitId,
                     OrganizationId = outOrganizationId,
@@ -713,9 +713,9 @@ SELECT [TRANSFER_PICKED_ID] as ID
             //檢查捲號是否重複
             if (item.CatalogElemVal070 == ItemCategory.Roll)
             {
-                var pick = trfInboundPickedTRepositiory.GetAll().FirstOrDefault(x => x.LotNumber == lotNumber);
+                var pick = trfInboundPickedTRepository.GetAll().FirstOrDefault(x => x.LotNumber == lotNumber);
                 if (pick != null) throw new Exception("捲號不可重複");
-                var stock = stockTRepositiory.GetAll().FirstOrDefault(x => x.LotNumber == lotNumber); //待確認 捲號庫存搜尋方式
+                var stock = stockTRepository.GetAll().FirstOrDefault(x => x.LotNumber == lotNumber); //待確認 捲號庫存搜尋方式
                 if (stock != null) throw new Exception("此捲號" + lotNumber + "已入庫");
             }
 
@@ -789,7 +789,7 @@ SELECT [TRANSFER_PICKED_ID] as ID
                 LastUpdateDate = now
             };
 
-            trfDetailTRepositiory.Create(trfDeatil, true);
+            trfDetailTRepository.Create(trfDeatil, true);
 
             //var trfDeatil = GetTrfDetail(trfHeader.TransferHeaderId, item.InventoryItemId);
             //if (trfDeatil == null) throw new Exception("找不到此料號明細資料");
@@ -874,7 +874,7 @@ SELECT [TRANSFER_PICKED_ID] as ID
                     }
 
 
-                    trfInboundPickedTRepositiory.Create(new TRF_INBOUND_PICKED_T
+                    trfInboundPickedTRepository.Create(new TRF_INBOUND_PICKED_T
                     {
                         TransferDetailId = trfDeatil.TransferDetailId,
                         TransferHeaderId = trfHeader.TransferHeaderId,
@@ -945,7 +945,7 @@ SELECT [TRANSFER_PICKED_ID] as ID
                     }
 
 
-                    trfOutboundPickedTRepositiory.Create(new TRF_OUTBOUND_PICKED_T
+                    trfOutboundPickedTRepository.Create(new TRF_OUTBOUND_PICKED_T
                     {
                         TransferDetailId = trfDeatil.TransferDetailId,
                         TransferHeaderId = trfHeader.TransferHeaderId,
@@ -973,7 +973,7 @@ SELECT [TRANSFER_PICKED_ID] as ID
                 }
             }
 
-            trfInboundPickedTRepositiory.SaveChanges();
+            trfInboundPickedTRepository.SaveChanges();
             return new ResultDataModel<TRF_HEADER_T>(true, "新增明細成功", trfHeader);
         }
 
@@ -1047,7 +1047,7 @@ SELECT [TRANSFER_PICKED_ID] as ID
                     if (shipmentNumber == DropDownListTypeValue.Add)
                     {
                         shipmentNumber = GetShipmentNumber(outSubinventoryCode, inSubinventoryCode);
-                        trfHeaderTRepositiory.Create(new TRF_HEADER_T
+                        trfHeaderTRepository.Create(new TRF_HEADER_T
                         {
                             OrgId = outOrganization.OrgUnitId,
                             OrganizationId = outOrganizationId,
@@ -1156,9 +1156,9 @@ SELECT [TRANSFER_PICKED_ID] as ID
                         LastUpdateDate = now
                     };
 
-                    trfDetailTRepositiory.Create(trfDeatil, true);
+                    trfDetailTRepository.Create(trfDeatil, true);
                     trfDeatil.OutboundTransferDetailId = trfDeatil.TransferDetailId;
-                    trfDetailTRepositiory.Update(trfDeatil, true);
+                    trfDetailTRepository.Update(trfDeatil, true);
 
                     txn.Commit();
                     return new ResultDataModel<TRF_HEADER_T>(true, "新增明細成功", trfHeader);
@@ -1187,7 +1187,7 @@ SELECT [TRANSFER_PICKED_ID] as ID
                     if (detail == null) throw new Exception("找不到明細資料");
 
                     //檢查庫存
-                    var stock = stockTRepositiory.GetAll().FirstOrDefault(x => x.Barcode == barcode);
+                    var stock = stockTRepository.GetAll().FirstOrDefault(x => x.Barcode == barcode);
                     if (stock == null) throw new Exception("找不到庫存資料");
                     if (stock.StatusCode != StockStatusCode.InStock) throw new Exception("不在庫");
                     if (detail.InventoryItemId != stock.InventoryItemId) throw new Exception("料號不正確");
@@ -1208,7 +1208,7 @@ SELECT [TRANSFER_PICKED_ID] as ID
                     if (stock.PackingType != PackingType.Ream)
                     {
                         //包裝方式不為令包時 要檢查條碼重複輸入
-                        var pick = trfOutboundPickedTRepositiory.GetAll().AsNoTracking().FirstOrDefault(x => x.Barcode == barcode);
+                        var pick = trfOutboundPickedTRepository.GetAll().AsNoTracking().FirstOrDefault(x => x.Barcode == barcode);
                         if (pick != null)
                         {
 
@@ -1291,7 +1291,7 @@ SELECT [TRANSFER_PICKED_ID] as ID
                     }
 
                     var now = DateTime.Now;
-                    trfOutboundPickedTRepositiory.Create(new TRF_OUTBOUND_PICKED_T
+                    trfOutboundPickedTRepository.Create(new TRF_OUTBOUND_PICKED_T
                     {
                         TransferDetailId = transferDetailId,
                         TransferHeaderId = transferHeaderId,
@@ -1323,8 +1323,8 @@ SELECT [TRANSFER_PICKED_ID] as ID
                     var updaeStockResult = UpdateStock(stock, stkTxnT, ref pryQty, ref secQty, pickSatus, PickStatus.Picked, createUser, now, true);
                     if (!updaeStockResult.Success) throw new Exception(updaeStockResult.Msg);
 
-                    stockTRepositiory.SaveChanges();
-                    stkTxnTRepositiory.SaveChanges();
+                    stockTRepository.SaveChanges();
+                    stkTxnTRepository.SaveChanges();
 
                     txn.Commit();
                     return new ResultModel(true, "新增揀貨成功");
@@ -1342,7 +1342,7 @@ SELECT [TRANSFER_PICKED_ID] as ID
 
         public ResultModel WaitPrintToWaitInbound(List<long> transferPickedIdList, string userId, string userName)
         {
-            var pickList = trfInboundPickedTRepositiory.GetAll().Where(x => transferPickedIdList.Contains(x.TransferPickedId)).ToList();
+            var pickList = trfInboundPickedTRepository.GetAll().Where(x => transferPickedIdList.Contains(x.TransferPickedId)).ToList();
             if (pickList == null || pickList.Count == 0) return new ResultModel(false, "找不到揀貨資料");
 
             using (var txn = this.Context.Database.BeginTransaction())
@@ -1358,7 +1358,7 @@ SELECT [TRANSFER_PICKED_ID] as ID
                             UpdateInboundPickStatus(pick, InboundStatus.WaitInbound, userId, userName, now);
                         }
                     }
-                    trfInboundPickedTRepositiory.SaveChanges();
+                    trfInboundPickedTRepository.SaveChanges();
                     txn.Commit();
                     return new ResultModel(true, "待列印轉待入庫成功");
                 }
@@ -1373,7 +1373,7 @@ SELECT [TRANSFER_PICKED_ID] as ID
 
         public ResultModel ChangeToAlreadyInBound(long transferHeaderId, string barcode, string userId, string userName)
         {
-            var pick = trfInboundPickedTRepositiory.GetAll().FirstOrDefault(x => x.Barcode == barcode && x.TransferHeaderId == transferHeaderId);
+            var pick = trfInboundPickedTRepository.GetAll().FirstOrDefault(x => x.Barcode == barcode && x.TransferHeaderId == transferHeaderId);
             if (pick == null) return new ResultModel(false, "找不到揀貨資料");
             if (pick.Status == InboundStatus.WaitPrint) return new ResultModel(false, "請先列印條碼");
             if (pick.Status == InboundStatus.AlreadyInbound) return new ResultModel(false, "已經入庫");
@@ -1383,7 +1383,7 @@ SELECT [TRANSFER_PICKED_ID] as ID
                 try
                 {
                     UpdateInboundPickStatus(pick, InboundStatus.AlreadyInbound, userId, userName, DateTime.Now);
-                    trfInboundPickedTRepositiory.SaveChanges();
+                    trfInboundPickedTRepository.SaveChanges();
                     txn.Commit();
                     return new ResultModel(true, "待列印轉待入庫成功");
                 }
@@ -1412,12 +1412,12 @@ SELECT [TRANSFER_PICKED_ID] as ID
             pick.LastUpdateBy = userId;
             pick.LastUpdateUserName = userName;
             pick.LastUpdateDate = now;
-            trfInboundPickedTRepositiory.Update(pick);
+            trfInboundPickedTRepository.Update(pick);
         }
 
         public ResultModel UpdateInboundPickNote(List<long> transferPickedIdList, string note, string userId, string userName)
         {
-            var pickList = trfInboundPickedTRepositiory.GetAll().Where(x => transferPickedIdList.Contains(x.TransferPickedId)).ToList();
+            var pickList = trfInboundPickedTRepository.GetAll().Where(x => transferPickedIdList.Contains(x.TransferPickedId)).ToList();
             if (pickList == null || pickList.Count == 0) return new ResultModel(false, "找不到揀貨資料");
 
             using (var txn = this.Context.Database.BeginTransaction())
@@ -1431,10 +1431,10 @@ SELECT [TRANSFER_PICKED_ID] as ID
                         pick.LastUpdateBy = userId;
                         pick.LastUpdateUserName = userName;
                         pick.LastUpdateDate = now;
-                        trfInboundPickedTRepositiory.Update(pick);
+                        trfInboundPickedTRepository.Update(pick);
                     }
 
-                    trfInboundPickedTRepositiory.SaveChanges();
+                    trfInboundPickedTRepository.SaveChanges();
                     txn.Commit();
                     return new ResultModel(true, "更新入庫揀貨備註成功");
                 }
@@ -1449,7 +1449,7 @@ SELECT [TRANSFER_PICKED_ID] as ID
 
         public ResultModel DelInboundPickData(List<long> transferPickedIdList, string userId, string userName)
         {
-            var pickList = trfInboundPickedTRepositiory.GetAll().Where(x => transferPickedIdList.Contains(x.TransferPickedId)).ToList();
+            var pickList = trfInboundPickedTRepository.GetAll().Where(x => transferPickedIdList.Contains(x.TransferPickedId)).ToList();
             if (pickList == null || pickList.Count == 0) return new ResultModel(false, "找不到揀貨資料");
 
             using (var txn = this.Context.Database.BeginTransaction())
@@ -1480,23 +1480,23 @@ SELECT [TRANSFER_PICKED_ID] as ID
             var now = DateTime.Now;
             List<long> transferDetailIdList = pickList.GroupBy(x => x.TransferDetailId).Select(x => x.Key).ToList();
 
-            List<TRF_DETAIL_T> trfDetailList = trfDetailTRepositiory.GetAll().Where(x => transferDetailIdList.Contains(x.TransferDetailId)).ToList();
-            //List<TRF_DETAIL_T> trfDetailList = trfDetailTRepositiory.GetAll().Join(
-            //    trfInboundPickedTRepositiory.GetAll(),
+            List<TRF_DETAIL_T> trfDetailList = trfDetailTRepository.GetAll().Where(x => transferDetailIdList.Contains(x.TransferDetailId)).ToList();
+            //List<TRF_DETAIL_T> trfDetailList = trfDetailTRepository.GetAll().Join(
+            //    trfInboundPickedTRepository.GetAll(),
             //    d => d.TransferDetailId,
             //    p => p.TransferDetailId,
             //    (d, p) => d).Select(x => x).ToList();
             if (trfDetailList == null || trfDetailList.Count == 0) throw new Exception("找不到明細資料");
             foreach (TRF_INBOUND_PICKED_T pick in pickList)
             {
-                trfInboundPickedTRepositiory.Delete(pick);
-                //var remainPick = trfInboundPickedTRepositiory.GetAll().FirstOrDefault(x => x.TransferDetailId == pick.TransferDetailId);
-                //var detail = trfDetailTRepositiory.GetAll().FirstOrDefault(x => x.TransferDetailId == pick.TransferDetailId);
+                trfInboundPickedTRepository.Delete(pick);
+                //var remainPick = trfInboundPickedTRepository.GetAll().FirstOrDefault(x => x.TransferDetailId == pick.TransferDetailId);
+                //var detail = trfDetailTRepository.GetAll().FirstOrDefault(x => x.TransferDetailId == pick.TransferDetailId);
                 //if (detail == null) throw new Exception("找不到明細資料");
                 //if (remainPick == null)
                 //{
                 //    //此Deail已沒有關聯的Pick則刪除此Detail
-                //    trfDetailTRepositiory.Delete(detail);
+                //    trfDetailTRepository.Delete(detail);
                 //}
                 //else
                 //{
@@ -1513,16 +1513,16 @@ SELECT [TRANSFER_PICKED_ID] as ID
                 //    detail.LastUpdateBy = userId;
                 //    detail.LastUpdateUserName = userName;
                 //    detail.LastUpdateDate = now;
-                //    trfDetailTRepositiory.Update(detail);
+                //    trfDetailTRepository.Update(detail);
                 //}
             }
-            trfInboundPickedTRepositiory.SaveChanges();
+            trfInboundPickedTRepository.SaveChanges();
             foreach (TRF_DETAIL_T detail in trfDetailList)
             {
-                var tempPickList = trfInboundPickedTRepositiory.GetAll().Where(x => x.TransferDetailId == detail.TransferDetailId).ToList();
+                var tempPickList = trfInboundPickedTRepository.GetAll().Where(x => x.TransferDetailId == detail.TransferDetailId).ToList();
                 if (tempPickList == null || tempPickList.Count == 0)
                 {
-                    trfDetailTRepositiory.Delete(detail);
+                    trfDetailTRepository.Delete(detail);
                 }
                 else
                 {
@@ -1539,7 +1539,7 @@ SELECT [TRANSFER_PICKED_ID] as ID
                         detail.LastUpdateBy = userId;
                         detail.LastUpdateUserName = userName;
                         detail.LastUpdateDate = now;
-                        trfDetailTRepositiory.Update(detail);
+                        trfDetailTRepository.Update(detail);
                     }
                     else
                     {
@@ -1557,19 +1557,19 @@ SELECT [TRANSFER_PICKED_ID] as ID
                         detail.LastUpdateBy = userId;
                         detail.LastUpdateUserName = userName;
                         detail.LastUpdateDate = now;
-                        trfDetailTRepositiory.Update(detail);
+                        trfDetailTRepository.Update(detail);
                     }
 
                 }
             }
 
-            trfDetailTRepositiory.SaveChanges();
+            trfDetailTRepository.SaveChanges();
             //return new ResultModel(true, "刪除入庫揀貨資料成功");
         }
 
         public ResultModel UpdateOutboundPickNote(List<long> transferPickedIdList, string note, string userId, string userName)
         {
-            var pickList = trfOutboundPickedTRepositiory.GetAll().Where(x => transferPickedIdList.Contains(x.TransferPickedId)).ToList();
+            var pickList = trfOutboundPickedTRepository.GetAll().Where(x => transferPickedIdList.Contains(x.TransferPickedId)).ToList();
             if (pickList == null || pickList.Count == 0) return new ResultModel(false, "找不到揀貨資料");
 
             using (var txn = this.Context.Database.BeginTransaction())
@@ -1583,10 +1583,10 @@ SELECT [TRANSFER_PICKED_ID] as ID
                         pick.LastUpdateBy = userId;
                         pick.LastUpdateUserName = userName;
                         pick.LastUpdateDate = now;
-                        trfOutboundPickedTRepositiory.Update(pick);
+                        trfOutboundPickedTRepository.Update(pick);
                     }
 
-                    trfOutboundPickedTRepositiory.SaveChanges();
+                    trfOutboundPickedTRepository.SaveChanges();
                     txn.Commit();
                     return new ResultModel(true, "更新出庫揀貨備註成功");
                 }
@@ -1606,7 +1606,7 @@ SELECT [TRANSFER_PICKED_ID] as ID
                 try
                 {
                     var now = DateTime.Now;
-                    var pickList = trfOutboundPickedTRepositiory.GetAll().Where(x => transferPickedIdList.Contains(x.TransferPickedId)).ToList();
+                    var pickList = trfOutboundPickedTRepository.GetAll().Where(x => transferPickedIdList.Contains(x.TransferPickedId)).ToList();
                     if (pickList == null || pickList.Count == 0) throw new Exception("找不到揀貨資料");
                     if (pickList.Count != transferPickedIdList.Count) throw new Exception("找不到部分揀貨資料");
                     var header = GetTrfHeader(pickList[0].TransferHeaderId);
@@ -1614,18 +1614,18 @@ SELECT [TRANSFER_PICKED_ID] as ID
 
                     foreach (TRF_OUTBOUND_PICKED_T pick in pickList)
                     {
-                        var stock = stockTRepositiory.GetAll().FirstOrDefault(x => x.StockId == pick.StockId);
+                        var stock = stockTRepository.GetAll().FirstOrDefault(x => x.StockId == pick.StockId);
                         if (stock == null) throw new Exception("找不到庫存資料");
                         STK_TXN_T stkTxnT = CreateStockRecord(stock, header.TransferOrganizationId, header.TransferOrganizationCode, header.TransferSubinventoryCode, header.TransferLocatorId, CategoryCode.TransferOutbound, ActionCode.Deleted, header.ShipmentNumber);
                         decimal? pryQty = pick.PrimaryQuantity;
                         decimal? secQty = pick.SecondaryQuantity;
                         var updaeStockResult = UpdateStock(stock, stkTxnT, ref pryQty, ref secQty, pickSatus, PickStatus.Deleted, userId, now, true);
                         if (!updaeStockResult.Success) throw new Exception(updaeStockResult.Msg);
-                        trfOutboundPickedTRepositiory.Delete(pick);
+                        trfOutboundPickedTRepository.Delete(pick);
                     }
-                    stockTRepositiory.SaveChanges();
-                    stkTxnTRepositiory.SaveChanges();
-                    trfOutboundPickedTRepositiory.SaveChanges();
+                    stockTRepository.SaveChanges();
+                    stkTxnTRepository.SaveChanges();
+                    trfOutboundPickedTRepository.SaveChanges();
                     txn.Commit();
                     return new ResultModel(true, "刪除出庫揀貨資料成功");
                 }
@@ -1646,7 +1646,7 @@ SELECT [TRANSFER_PICKED_ID] as ID
                 try
                 {
                     var now = DateTime.Now;
-                    var detailList = trfDetailTRepositiory.GetAll().Where(x => transferDetailIdList.Contains(x.TransferDetailId)).ToList();
+                    var detailList = trfDetailTRepository.GetAll().Where(x => transferDetailIdList.Contains(x.TransferDetailId)).ToList();
                     if (detailList == null || detailList.Count == 0) throw new Exception("找不到明細資料");
                     if (detailList.Count != transferDetailIdList.Count) throw new Exception("找不到部分明細資料");
                     var header = GetTrfHeader(detailList[0].TransferHeaderId);
@@ -1654,12 +1654,12 @@ SELECT [TRANSFER_PICKED_ID] as ID
 
                     foreach (TRF_DETAIL_T detail in detailList)
                     {
-                        var pickList = trfOutboundPickedTRepositiory.GetAll().Where(x => x.TransferDetailId == detail.TransferDetailId).ToList();
+                        var pickList = trfOutboundPickedTRepository.GetAll().Where(x => x.TransferDetailId == detail.TransferDetailId).ToList();
                         if (pickList != null && pickList.Count > 0)
                         {
                             foreach (TRF_OUTBOUND_PICKED_T pick in pickList)
                             {
-                                var stock = stockTRepositiory.GetAll().FirstOrDefault(x => x.StockId == pick.StockId);
+                                var stock = stockTRepository.GetAll().FirstOrDefault(x => x.StockId == pick.StockId);
                                 if (stock == null) throw new Exception("找不到庫存資料");
                                 STK_TXN_T stkTxnT = CreateStockRecord(stock, header.TransferOrganizationId, header.TransferOrganizationCode, header.TransferSubinventoryCode, header.TransferLocatorId, CategoryCode.TransferOutbound, ActionCode.Deleted, header.ShipmentNumber);
                                 decimal? priQty = pick.PrimaryQuantity;
@@ -1667,15 +1667,15 @@ SELECT [TRANSFER_PICKED_ID] as ID
                                 var updaeStockResult = UpdateStock(stock, stkTxnT, ref priQty, ref secQty, pickSatus, PickStatus.Deleted, userId, now, true);
                                 if (!updaeStockResult.Success) throw new Exception(updaeStockResult.Msg);
 
-                                trfOutboundPickedTRepositiory.Delete(pick);
+                                trfOutboundPickedTRepository.Delete(pick);
                             }
                         }
-                        trfDetailTRepositiory.Delete(detail);
+                        trfDetailTRepository.Delete(detail);
                     }
-                    stockTRepositiory.SaveChanges();
-                    stkTxnTRepositiory.SaveChanges();
-                    trfOutboundPickedTRepositiory.SaveChanges();
-                    trfDetailTRepositiory.SaveChanges();
+                    stockTRepository.SaveChanges();
+                    stkTxnTRepository.SaveChanges();
+                    trfOutboundPickedTRepository.SaveChanges();
+                    trfDetailTRepository.SaveChanges();
                     txn.Commit();
                     return new ResultModel(true, "刪除出庫明細資料成功");
                 }
@@ -1774,7 +1774,7 @@ SELECT [TRANSFER_PICKED_ID] as ID
             {
                 try
                 {
-                    var pickList = trfInboundPickedTRepositiory.GetAll().Where(x => x.TransferHeaderId == transferHeaderId).ToList();
+                    var pickList = trfInboundPickedTRepository.GetAll().Where(x => x.TransferHeaderId == transferHeaderId).ToList();
                     if (pickList == null || pickList.Count == 0) throw new Exception("找不到揀貨資料");
 
                     if (checkStockStatus)
@@ -1784,11 +1784,11 @@ SELECT [TRANSFER_PICKED_ID] as ID
                     }
                     DateTime now = DateTime.Now;
 
-                    var header = trfHeaderTRepositiory.GetAll().FirstOrDefault(x => x.TransferHeaderId == transferHeaderId);
+                    var header = trfHeaderTRepository.GetAll().FirstOrDefault(x => x.TransferHeaderId == transferHeaderId);
                     if (header == null) throw new Exception("找不到出貨編號資料");
                     header.TransactionDate = now;
                     header.NumberStatus = NumberStatus.Saved;
-                    trfHeaderTRepositiory.SaveChanges();
+                    trfHeaderTRepository.SaveChanges();
 
 
 
@@ -1802,10 +1802,10 @@ SELECT [TRANSFER_PICKED_ID] as ID
                                 if (string.IsNullOrEmpty(pick.SplitFromBarcode))
                                 {
                                     //整版 非從拆板轉來 更新庫存位置
-                                    var stock = stockTRepositiory.GetAll().FirstOrDefault(x => x.StockId == pick.StockId);
+                                    var stock = stockTRepository.GetAll().FirstOrDefault(x => x.StockId == pick.StockId);
                                     if (stock == null) throw new Exception("找不到庫存資料");
 
-                                    //var detail = trfDetailTRepositiory.GetAll().AsNoTracking().FirstOrDefault(x => x.TransferDetailId == pick.TransferDetailId);
+                                    //var detail = trfDetailTRepository.GetAll().AsNoTracking().FirstOrDefault(x => x.TransferDetailId == pick.TransferDetailId);
                                     //if (detail == null) throw new Exception("找不到明細資料");
 
                                     stock.OrganizationId = (long)header.TransferOrganizationId;
@@ -1817,13 +1817,13 @@ SELECT [TRANSFER_PICKED_ID] as ID
                                     stock.StatusCode = StockStatusCode.InStock;
                                     stock.LastUpdateBy = userId;
                                     stock.LastUpdateDate = now;
-                                    stockTRepositiory.Update(stock, true);
+                                    stockTRepository.Update(stock, true);
 
                                     //產生異動紀錄
                                     var stkTxnT = CreateStockRecord(stock, header.TransferOrganizationId, header.TransferOrganizationCode, header.TransferSubinventoryCode,
                                     header.TransferLocatorId, CategoryCode.TransferInbound, ActionCode.InBoundSaveTransfer, header.ShipmentNumber,
                                     stock.PrimaryAvailableQty, 0, stock.PrimaryAvailableQty, stock.SecondaryAvailableQty, 0, stock.SecondaryAvailableQty, StockStatusCode.InStock, userId, now);
-                                    stkTxnTRepositiory.Create(stkTxnT);
+                                    stkTxnTRepository.Create(stkTxnT);
                                 }
                                 else
                                 {
@@ -1866,20 +1866,20 @@ SELECT [TRANSFER_PICKED_ID] as ID
                                     stock.CreationDate = now;
                                     stock.LastUpdateBy = "";
                                     stock.LastUpdateDate = null;
-                                    stockTRepositiory.Create(stock, true);
+                                    stockTRepository.Create(stock, true);
 
                                     //產生異動紀錄
                                     var stkTxnT = CreateStockRecord(stock, header.TransferOrganizationId, header.TransferOrganizationCode, header.TransferSubinventoryCode,
                                     header.TransferLocatorId, CategoryCode.TransferInbound, ActionCode.InBoundSaveTransfer, header.ShipmentNumber,
                                     0, stock.PrimaryAvailableQty, stock.PrimaryAvailableQty, 0, stock.SecondaryAvailableQty, stock.SecondaryAvailableQty, StockStatusCode.InStock, userId, now);
-                                    stkTxnTRepositiory.Create(stkTxnT);
+                                    stkTxnTRepository.Create(stkTxnT);
 
                                 }
                             }
                             else if (pick.PalletStatus == PalletStatusCode.Merge)
                             {
                                 //併版 更新主次數量
-                                var stock = stockTRepositiory.GetAll().FirstOrDefault(x => x.StockId == pick.StockId);
+                                var stock = stockTRepository.GetAll().FirstOrDefault(x => x.StockId == pick.StockId);
                                 if (stock == null) throw new Exception("找不到庫存資料");
 
                                 //產生異動紀錄
@@ -1915,8 +1915,8 @@ SELECT [TRANSFER_PICKED_ID] as ID
                                 stkTxnT.CreationDate = now;
                                 stkTxnT.LastUpdateBy = null;
                                 stkTxnT.LastUpdateDate = null;
-                                stockTRepositiory.Update(stock, true);
-                                stkTxnTRepositiory.Create(stkTxnT);
+                                stockTRepository.Update(stock, true);
+                                stkTxnTRepository.Create(stkTxnT);
                             }
                             else
                             {
@@ -1934,7 +1934,7 @@ SELECT [TRANSFER_PICKED_ID] as ID
                             if (pick.PalletStatus == PalletStatusCode.All)
                             {
                                 //整板 新增庫存
-                                var detail = trfDetailTRepositiory.GetAll().AsNoTracking().FirstOrDefault(x => x.TransferDetailId == pick.TransferDetailId);
+                                var detail = trfDetailTRepository.GetAll().AsNoTracking().FirstOrDefault(x => x.TransferDetailId == pick.TransferDetailId);
                                 if (detail == null) throw new Exception("找不到明細資料");
                                 var item = GetItemNumber(pick.InventoryItemId);
                                 if (item == null) throw new Exception("找不到料號資料");
@@ -1981,18 +1981,18 @@ SELECT [TRANSFER_PICKED_ID] as ID
                                 stock.CreationDate = now;
                                 stock.LastUpdateBy = "";
                                 stock.LastUpdateDate = null;
-                                stockTRepositiory.Create(stock, true);
+                                stockTRepository.Create(stock, true);
 
                                 //產生異動紀錄
                                 var stkTxnT = CreateStockRecord(stock, header.TransferOrganizationId, header.TransferOrganizationCode, header.TransferSubinventoryCode,
                                 header.TransferLocatorId, CategoryCode.TransferInbound, ActionCode.InBoundSaveTransfer, header.ShipmentNumber,
                                 0, stock.PrimaryAvailableQty, stock.PrimaryAvailableQty, 0, stock.SecondaryAvailableQty, stock.SecondaryAvailableQty, StockStatusCode.InStock, userId, now);
-                                stkTxnTRepositiory.Create(stkTxnT);
+                                stkTxnTRepository.Create(stkTxnT);
                             }
                             else if (pick.PalletStatus == PalletStatusCode.Merge)
                             {
                                 //併版 更新庫存主次數量
-                                var stock = stockTRepositiory.GetAll().FirstOrDefault(x => x.StockId == pick.StockId);
+                                var stock = stockTRepository.GetAll().FirstOrDefault(x => x.StockId == pick.StockId);
                                 if (stock == null) throw new Exception("找不到庫存資料");
 
                                 //產生異動紀錄
@@ -2028,8 +2028,8 @@ SELECT [TRANSFER_PICKED_ID] as ID
                                 stkTxnT.CreationDate = now;
                                 stkTxnT.LastUpdateBy = null;
                                 stkTxnT.LastUpdateDate = null;
-                                stockTRepositiory.Update(stock, true);
-                                stkTxnTRepositiory.Create(stkTxnT);
+                                stockTRepository.Update(stock, true);
+                                stkTxnTRepository.Create(stkTxnT);
                             }
                             else
                             {
@@ -2037,10 +2037,10 @@ SELECT [TRANSFER_PICKED_ID] as ID
                             }
                         }
 
-                        //    var stockList = trfDetailTRepositiory.GetAll().
+                        //    var stockList = trfDetailTRepository.GetAll().
                         //    Where(x => x.TransferHeaderId == transferHeaderId).
                         //    Join(
-                        //itemsTRepositiory.GetAll(),
+                        //itemsTRepository.GetAll(),
                         //d => d.InventoryItemId,
                         //i => i.InventoryItemId,
                         //(d, i) => new
@@ -2057,7 +2057,7 @@ SELECT [TRANSFER_PICKED_ID] as ID
                         //    Specification = i.CatalogElemVal050,
                         //    PackingType = d.PackingType,
                         //}).Join(
-                        //trfInboundPickedTRepositiory.GetAll(),
+                        //trfInboundPickedTRepository.GetAll(),
                         //di => di.TransferDetailId,
                         //p => p.TransferDetailId,
                         //(di, p) => new
@@ -2125,17 +2125,17 @@ SELECT [TRANSFER_PICKED_ID] as ID
                         //foreach (STOCK_T stock in stockList)
                         //{
                         //    //產生庫存資料
-                        //    stockTRepositiory.Create(stock, true);
+                        //    stockTRepository.Create(stock, true);
                         //    //產生庫存異動紀錄
 
 
                         //    //更新pick的STOCK_ID
-                        //    var pick = trfInboundPickedTRepositiory.GetAll().FirstOrDefault(x => x.Barcode == stock.Barcode && x.TransferHeaderId == transferHeaderId);
+                        //    var pick = trfInboundPickedTRepository.GetAll().FirstOrDefault(x => x.Barcode == stock.Barcode && x.TransferHeaderId == transferHeaderId);
                         //    if (pick == null) throw new Exception("找不到揀貨資料");
                         //    pick.StockId = stock.StockId;
-                        //    trfInboundPickedTRepositiory.Update(pick);
+                        //    trfInboundPickedTRepository.Update(pick);
                         //}
-                        //trfInboundPickedTRepositiory.SaveChanges();
+                        //trfInboundPickedTRepository.SaveChanges();
                     }
 
                     //複製入庫明細資料到入庫歷史明細
@@ -2277,7 +2277,7 @@ SELECT [TRANSFER_PICKED_ID]
                     }
 
 
-                    stkTxnTRepositiory.SaveChanges();
+                    stkTxnTRepository.SaveChanges();
                     txn.Commit();
                     return new ResultModel(true, "入庫存檔成功");
                 }
@@ -2306,7 +2306,7 @@ SELECT [TRANSFER_PICKED_ID]
             {
                 try
                 {
-                    var detail = trfDetailTRepositiory.GetAll().AsNoTracking().FirstOrDefault(x => x.TransferHeaderId == transferHeaderId);
+                    var detail = trfDetailTRepository.GetAll().AsNoTracking().FirstOrDefault(x => x.TransferHeaderId == transferHeaderId);
                     if (detail == null) return new ResultModel(true, "請輸入出庫明細");
 
                     //檢查出貨編號是否揀完
@@ -2325,30 +2325,30 @@ OR MIN(d.ROLL_REAM_QTY) <> COUNT(p.TRANSFER_DETAIL_ID)";
                     var list = this.Context.Database.SqlQuery<long>(cmd, new SqlParameter("@transferHeaderId", transferHeaderId)).ToList();
                     if (list.Count != 0) return new ResultModel(true, "此出貨編號尚未揀完");
 
-                    var pickList = trfOutboundPickedTRepositiory.GetAll().Where(x => x.TransferHeaderId == transferHeaderId).ToList();
+                    var pickList = trfOutboundPickedTRepository.GetAll().Where(x => x.TransferHeaderId == transferHeaderId).ToList();
                     if (pickList == null || pickList.Count == 0) throw new Exception("找不到揀貨資料");
 
                     DateTime now = DateTime.Now;
 
-                    var header = trfHeaderTRepositiory.GetAll().FirstOrDefault(x => x.TransferHeaderId == transferHeaderId);
+                    var header = trfHeaderTRepository.GetAll().FirstOrDefault(x => x.TransferHeaderId == transferHeaderId);
                     if (header == null) throw new Exception("找不到出貨編號資料");
                     header.TransactionDate = now;
                     header.NumberStatus = NumberStatus.Saved;
                     header.LastUpdateBy = userId;
                     header.LastUpdateDate = now;
                     header.LastUpdateUserName = userName;
-                    trfHeaderTRepositiory.SaveChanges();
+                    trfHeaderTRepository.SaveChanges();
 
                     foreach(TRF_OUTBOUND_PICKED_T pick in pickList)
                     {
-                        var stock = stockTRepositiory.GetAll().FirstOrDefault(x => x.StockId == pick.StockId);
+                        var stock = stockTRepository.GetAll().FirstOrDefault(x => x.StockId == pick.StockId);
                         if (stock == null) throw new Exception("找不到庫存資料");
                         STK_TXN_T stkTxnT =  CreateStockRecord(stock, header.TransferOrganizationId, header.TransferOrganizationCode, header.TransferSubinventoryCode, header.TransferLocatorId, CategoryCode.TransferOutbound, ActionCode.OutBoundSaveTransfer, header.ShipmentNumber);
                         var updateStockLockQtyResult = UpdateStockLockQty(stock, stkTxnT, -1 * pick.PrimaryQuantity, -1 * pick.SecondaryQuantity, pickSatus, PickStatus.Shipped, userId, now);
                         if (!updateStockLockQtyResult.Success) throw new Exception(updateStockLockQtyResult.Msg);
                     }
-                    stkTxnTRepositiory.SaveChanges();
-                    stockTRepositiory.SaveChanges();
+                    stkTxnTRepository.SaveChanges();
+                    stockTRepository.SaveChanges();
 
                     //複製出庫明細資料到入庫歷史明細
                     cmd = @"
@@ -2506,7 +2506,7 @@ SELECT [TRANSFER_PICKED_ID]
                 {
                     DateTime now = DateTime.Now;
 
-                    var header = trfHeaderTRepositiory.GetAll().FirstOrDefault(x => x.TransferHeaderId == transferHeaderId);
+                    var header = trfHeaderTRepository.GetAll().FirstOrDefault(x => x.TransferHeaderId == transferHeaderId);
                     if (header == null) throw new Exception("找不到出貨編號資料");
 
                     TRF_HEADER_T newHeader = new TRF_HEADER_T();
@@ -2536,7 +2536,7 @@ SELECT [TRANSFER_PICKED_ID]
                     newHeader.LastUpdateBy = header.LastUpdateBy;
                     newHeader.LastUpdateUserName = header.LastUpdateUserName;
                     newHeader.LastUpdateDate = header.LastUpdateDate;
-                    trfHeaderTRepositiory.Create(newHeader, true);
+                    trfHeaderTRepository.Create(newHeader, true);
 
 
                     //出庫歷史明細轉入庫明細
@@ -2663,7 +2663,7 @@ SELECT
                     }
 
                     //處理拆板
-                    var pickList = trfInboundPickedTRepositiory.GetAll().Where(x => x.TransferHeaderId == newHeader.TransferHeaderId && x.PalletStatus == PalletStatusCode.Split).ToList();
+                    var pickList = trfInboundPickedTRepository.GetAll().Where(x => x.TransferHeaderId == newHeader.TransferHeaderId && x.PalletStatus == PalletStatusCode.Split).ToList();
                     if (pickList != null && pickList.Count > 0)
                     {
                         var generateBarcodesResult = GenerateBarcodes((long)newHeader.TransferOrganizationId, newHeader.TransferSubinventoryCode, pickList.Count, userId);
@@ -2716,13 +2716,13 @@ SELECT
                             //stock.CreationDate = now;
                             //stock.LastUpdateBy = "";
                             //stock.LastUpdateDate = null;
-                            //stockTRepositiory.Create(stock, true);
+                            //stockTRepository.Create(stock, true);
 
                             ////產生異動紀錄
                             //var stkTxnT = CreateStockRecord(stock, header.TransferOrganizationId, header.TransferOrganizationCode, header.TransferSubinventoryCode,
                             //header.TransferLocatorId, CategoryCode.TransferInbound, ActionCode.InBoundSaveTransfer, header.ShipmentNumber,
                             //0, stock.PrimaryAvailableQty, stock.PrimaryAvailableQty, 0, stock.SecondaryAvailableQty, stock.SecondaryAvailableQty, StockStatusCode.InStock, userId, now);
-                            //stkTxnTRepositiory.Create(stkTxnT);
+                            //stkTxnTRepository.Create(stkTxnT);
 
                             pickList[i].SplitFromBarcode = pickList[i].Barcode;
                             pickList[i].Barcode = generateBarcodesResult.Data[i];
@@ -2732,9 +2732,9 @@ SELECT
                             pickList[i].PalletStatus = PalletStatusCode.All;
                             pickList[i].LastUpdateBy = userId;
                             pickList[i].LastUpdateUserName = userName;
-                            trfInboundPickedTRepositiory.Update(pickList[i]);
+                            trfInboundPickedTRepository.Update(pickList[i]);
                         }
-                        trfInboundPickedTRepositiory.SaveChanges();
+                        trfInboundPickedTRepository.SaveChanges();
                     }
 
                     txn.Commit();
@@ -2802,7 +2802,7 @@ SELECT
                     pick.LastUpdateBy = null;
                     pick.LastUpdateUserName = null;
                     pick.LastUpdateDate = null;
-                    trfInboundPickedTRepositiory.Create(pick, true);
+                    trfInboundPickedTRepository.Create(pick, true);
 
                     DelInboundPickData(waitMergeBarcodeDataList, userId, userName);
 
@@ -2826,7 +2826,7 @@ SELECT
             {
                 List<LabelModel> labelModelList = new List<LabelModel>();
                 if (transferPickedIdList == null || transferPickedIdList.Count == 0) return new ResultDataModel<List<LabelModel>>(false, "找不到揀貨資料", null);
-                var pickDataList = trfInboundPickedTRepositiory.GetAll().AsNoTracking().Where(x => transferPickedIdList.Contains(x.TransferPickedId)).ToList();
+                var pickDataList = trfInboundPickedTRepository.GetAll().AsNoTracking().Where(x => transferPickedIdList.Contains(x.TransferPickedId)).ToList();
                 if (pickDataList == null || pickDataList.Count == 0) return new ResultDataModel<List<LabelModel>>(false, "找不到揀貨資料", null);
                 if (pickDataList.Count != transferPickedIdList.Count) throw new Exception("找不到部分揀貨資料");
                 var header = GetTrfHeader(pickDataList[0].TransferHeaderId);
@@ -3039,7 +3039,7 @@ WHERE p.BARCODE = @Barcode
             {
                 List<LabelModel> labelModelList = new List<LabelModel>();
                 if (transferPickedIdList == null || transferPickedIdList.Count == 0) return new ResultDataModel<List<LabelModel>>(false, "找不到揀貨資料", null);
-                var pickDataList = trfOutboundPickedTRepositiory.GetAll().AsNoTracking().Where(x => transferPickedIdList.Contains(x.TransferPickedId)).ToList();
+                var pickDataList = trfOutboundPickedTRepository.GetAll().AsNoTracking().Where(x => transferPickedIdList.Contains(x.TransferPickedId)).ToList();
                 if (pickDataList == null || pickDataList.Count == 0) return new ResultDataModel<List<LabelModel>>(false, "找不到揀貨資料", null);
                 if (pickDataList.Count != transferPickedIdList.Count) throw new Exception("找不到部分揀貨資料");
                 var header = GetTrfHeader(pickDataList[0].TransferHeaderId);

@@ -168,16 +168,16 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             {
                 try
                 {
-                    var adm = this.appUserRepositiory.Get(x => x.UserName.CompareTo("adam") == 0).FirstOrDefault();
+                    var adm = this.appUserRepository.Get(x => x.UserName.CompareTo("adam") == 0).FirstOrDefault();
                     var userName = ExcelUtil.GetStringCellValue(j, userNameCell.ColumnIndex, sheet);
                     var subinvenotryCode = ExcelUtil.GetStringCellValue(j, subinventoryCell.ColumnIndex, sheet);
-                    var user = this.appUserRepositiory.Get(x => x.UserName.CompareTo(userName) == 0).FirstOrDefault();
-                    var subinventory = this.subinventoryRepositiory.Get(x => x.SubinventoryCode.CompareTo(subinvenotryCode) == 0).FirstOrDefault();
+                    var user = this.appUserRepository.Get(x => x.UserName.CompareTo(userName) == 0).FirstOrDefault();
+                    var subinventory = this.subinventoryRepository.Get(x => x.SubinventoryCode.CompareTo(subinvenotryCode) == 0).FirstOrDefault();
                     //搜尋未執行 SaveChanges 的資料
                     var userSubinventory = this.Context.ChangeTracker.Entries<USER_SUBINVENTORY_T>()
                         .Where(x => x.Entity.UserId == user.UserName && x.Entity.SubinventoryCode == subinventory.SubinventoryCode).FirstOrDefault();
                     //搜尋已執行 SaveChanges 的資料
-                    //var org = transactionTypeRepositiory.Get(x => x.TransactionTypeId == TransactionTypeId).FirstOrDefault();
+                    //var org = transactionTypeRepository.Get(x => x.TransactionTypeId == TransactionTypeId).FirstOrDefault();
                     if (userSubinventory == null || userSubinventory.Entity.UserId.Length == 0)
                     {
                         var now = DateTime.Now;
@@ -189,7 +189,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                         userSubinventoryT.CreationDate = now;
                         userSubinventoryT.LastUpdateBy = adm.Id;
                         userSubinventoryT.LastUpdateDate = now;
-                        userSubinventoryTRepositiory.Create(userSubinventoryT);
+                        userSubinventoryTRepository.Create(userSubinventoryT);
                     }
                 }
                 catch (Exception ex)
@@ -231,14 +231,14 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             {
                 try
                 {
-                    var adm = this.appUserRepositiory.Get(x => x.UserName.CompareTo("adam") == 0).FirstOrDefault();
+                    var adm = this.appUserRepository.Get(x => x.UserName.CompareTo("adam") == 0).FirstOrDefault();
                     var subinvenotryCode = ExcelUtil.GetStringCellValue(j, subinventoryCell.ColumnIndex, sheet);
-                    var subinventory = this.subinventoryRepositiory.Get(x => x.SubinventoryCode.CompareTo(subinvenotryCode) == 0).FirstOrDefault();
+                    var subinventory = this.subinventoryRepository.Get(x => x.SubinventoryCode.CompareTo(subinvenotryCode) == 0).FirstOrDefault();
                     //搜尋未執行 SaveChanges 的資料
                     var item = this.Context.ChangeTracker.Entries<BCD_MISC_T>()
                         .Where(x => x.Entity.SubinventoryCode == subinvenotryCode).FirstOrDefault();
                     //搜尋已執行 SaveChanges 的資料
-                    //var org = transactionTypeRepositiory.Get(x => x.TransactionTypeId == TransactionTypeId).FirstOrDefault();
+                    //var org = transactionTypeRepository.Get(x => x.TransactionTypeId == TransactionTypeId).FirstOrDefault();
                     if (item == null || item.Entity.SubinventoryCode.Length == 0)
                     {
                         var now = DateTime.Now;
@@ -251,7 +251,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                         bcdMisc.CreationDate = now;
                         bcdMisc.LastUpdateBy = adm.Id;
                         bcdMisc.LastUpdateDate = now;
-                        bcdMiscRepositiory.Create(bcdMisc);
+                        bcdMiscRepository.Create(bcdMisc);
                     }
                 }
                 catch (Exception ex)
@@ -509,7 +509,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                     //搜尋未執行 SaveChanges 的資料
                     var org = this.Context.ChangeTracker.Entries<ITEMS_T>().Where(x => x.Entity.InventoryItemId == id).FirstOrDefault();
                     //搜尋已執行 SaveChanges 的資料
-                    //var org = itemsTRepositiory.Get(x => x.InventoryItemId == id).FirstOrDefault();
+                    //var org = itemsTRepository.Get(x => x.InventoryItemId == id).FirstOrDefault();
                     if (org == null || org.Entity.InventoryItemId <= 0)
                     {
                         ITEMS_T iTEMS_T = new ITEMS_T();
@@ -547,7 +547,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                         iTEMS_T.CreationDate = ExcelUtil.GetDateTimeCellValue(j, CreationDate_cell.ColumnIndex, sheet, DateTime.Now);
                         iTEMS_T.LastUpdateBy = ExcelUtil.GetLongCellValue(j, LastUpdateBy_cell.ColumnIndex, sheet);
                         iTEMS_T.LastUpdateDate = ExcelUtil.GetDateTimeCellValue(j, LastUpdateDate_cell.ColumnIndex, sheet, DateTime.Now);
-                        itemsTRepositiory.Create(iTEMS_T);
+                        itemsTRepository.Create(iTEMS_T);
 
 
                         ORG_ITEMS_T oRG_ITEMS_T = new ORG_ITEMS_T();
@@ -555,13 +555,13 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                         //搜尋未執行 SaveChanges 的資料
                         var data = this.Context.ChangeTracker.Entries<ORGANIZATION_T>().Where(x => x.Entity.OrganizationCode == oCode).FirstOrDefault();
                         //搜尋已執行 SaveChanges 的資料
-                        //var o = organizationRepositiory.Get(x => x.OrganizationCode == ocode).FirstOrDefault();
+                        //var o = organizationRepository.Get(x => x.OrganizationCode == ocode).FirstOrDefault();
                         if (data != null)
                         {
                             var entity = data.Entity;
                             oRG_ITEMS_T.InventoryItemId = ExcelUtil.GetLongCellValue(j, InventoryItemId_cell.ColumnIndex, sheet);
                             oRG_ITEMS_T.OrganizationId = entity.OrganizationId;
-                            orgItemRepositityory.Create(oRG_ITEMS_T);
+                            orgItemRepository.Create(oRG_ITEMS_T);
                         }
                     }
                 }
@@ -642,7 +642,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                             orgUnitT.OrgId = orgUnitId;
                             orgUnitT.OrgName = ExcelUtil.GetStringCellValue(row.GetCell(orgName_cell.ColumnIndex));
                             orgUnitT.ControlFlag = "";
-                            orgUnitRepositiory.Create(orgUnitT);
+                            orgUnitRepository.Create(orgUnitT);
                         }
 
                         //搜尋未執行 SaveChanges 的資料
@@ -651,7 +651,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                             .Where(x => x.Entity.OrganizationId == id)
                             .FirstOrDefault();
                         //搜尋已執行 SaveChanges 的資料
-                        //var org = organizationRepositiory.Get(x => x.OrganizationID == id).FirstOrDefault();
+                        //var org = organizationRepository.Get(x => x.OrganizationID == id).FirstOrDefault();
                         if (org == null)
                         {
                             ORGANIZATION_T oRGANIZATION_T = new ORGANIZATION_T();
@@ -660,7 +660,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                             oRGANIZATION_T.OrganizationName = ExcelUtil.GetStringCellValue(row.GetCell(organizationName_cell.ColumnIndex)).Trim();
                             oRGANIZATION_T.OrgUnitId = orgUnitId;
                             oRGANIZATION_T.ControlFlag = "";
-                            organizationRepositiory.Create(oRGANIZATION_T);
+                            organizationRepository.Create(oRGANIZATION_T);
                         }
                     }
                     catch (Exception ex)
@@ -725,7 +725,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                     //搜尋未執行 SaveChanges 的資料
                     var org = this.Context.ChangeTracker.Entries<SUBINVENTORY_T>().Where(x => x.Entity.SubinventoryCode == subCode).FirstOrDefault();
                     //搜尋已執行 SaveChanges 的資料
-                    // var org = subinventoryRepositiory.Get(x => x.OrganizationID == id && x.SubinventoryCode == subCode).FirstOrDefault();
+                    // var org = subinventoryRepository.Get(x => x.OrganizationID == id && x.SubinventoryCode == subCode).FirstOrDefault();
                     if (org == null)
                     {
                         SUBINVENTORY_T sUBINVENTORY_T = new SUBINVENTORY_T();
@@ -735,7 +735,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                         sUBINVENTORY_T.OspFlag = ExcelUtil.GetStringCellValue(j, ospFlag_cell.ColumnIndex, sheet).Trim();
                         sUBINVENTORY_T.ControlFlag = "";
                         sUBINVENTORY_T.LocatorType = ExcelUtil.GetLongCellValue(j, LocatorType_cell.ColumnIndex, sheet);
-                        subinventoryRepositiory.Create(sUBINVENTORY_T);
+                        subinventoryRepository.Create(sUBINVENTORY_T);
                     }
                 }
                 catch (Exception ex)
@@ -855,7 +855,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                     //搜尋未執行 SaveChanges 的資料
                     var org = this.Context.ChangeTracker.Entries<LOCATOR_T>().Where(x => x.Entity.LocatorId == id).FirstOrDefault();
                     //搜尋已執行 SaveChanges 的資料
-                    //var org = locatorTRepositiory.Get(x => x.LocatorId == id).FirstOrDefault();
+                    //var org = locatorTRepository.Get(x => x.LocatorId == id).FirstOrDefault();
                     if (org == null || org.Entity.LocatorId <= 0)
                     {
                         LOCATOR_T lOCATOR_T = new LOCATOR_T();
@@ -874,7 +874,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                         lOCATOR_T.LocatorStatusCode = ExcelUtil.GetStringCellValue(j, LocatorStatusCode_cell.ColumnIndex, sheet).Trim();
                         lOCATOR_T.LocatorPickingOrder = ExcelUtil.GetLongOrNullCellValue(j, LocatorPickingOrder_cell.ColumnIndex, sheet);
                         lOCATOR_T.LocatorDisableDate = ExcelUtil.GetDateTimeOrNullCellValue(j, LocatorDisableDate_cell.ColumnIndex, sheet);
-                        locatorTRepositiory.Create(lOCATOR_T);
+                        locatorTRepository.Create(lOCATOR_T);
                     }
                 }
                 catch (Exception ex)
@@ -972,7 +972,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                     //搜尋未執行 SaveChanges 的資料
                     var org = this.Context.ChangeTracker.Entries<RELATED_T>().Where(x => x.Entity.InventoryItemId == id).FirstOrDefault();
                     //搜尋已執行 SaveChanges 的資料
-                    //var org = relatedTRepositiory.Get(x => x.InventoryItemId == id).FirstOrDefault();
+                    //var org = relatedTRepository.Get(x => x.InventoryItemId == id).FirstOrDefault();
                     if (org == null || org.Entity.InventoryItemId <= 0)
                     {
                         RELATED_T rELATED_T = new RELATED_T();
@@ -987,7 +987,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                         rELATED_T.LastUpdateBy = ExcelUtil.GetLongCellValue(j, LastUpdateBy_cell.ColumnIndex, sheet);
                         rELATED_T.LastUpdateDate = ExcelUtil.GetDateTimeCellValue(j, LastUpdateDate_cell.ColumnIndex, sheet);
                         rELATED_T.ControlFlag = "";
-                        relatedTRepositiory.Create(rELATED_T);
+                        relatedTRepository.Create(rELATED_T);
 
                     }
                 }
@@ -1105,7 +1105,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                 try
                 {
                     //var id = Int64.Parse(ExcelUtil.GetCellString(j, OrganizationId_cell.ColumnIndex, sheet).Trim());
-                    //var org = YszmpckqTRepositiory.Get(x => x.InventoryItemId == id);
+                    //var org = YszmpckqTRepository.Get(x => x.InventoryItemId == id);
                     //if (org == null || org.InventoryItemId <= 0)
                     //{
                     YSZMPCKQ_T ySZMPCKQ_T = new YSZMPCKQ_T();
@@ -1125,7 +1125,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                     ySZMPCKQ_T.LastUpdateBy = ExcelUtil.GetLongCellValue(j, LastUpdateBy_cell.ColumnIndex, sheet);
                     ySZMPCKQ_T.LastUpdateDate = ExcelUtil.GetDateTimeCellValue(j, LastUpdateDate_cell.ColumnIndex, sheet);
                     ySZMPCKQ_T.ControlFlag = "";
-                    yszmpckqTRepositiory.Create(ySZMPCKQ_T);
+                    yszmpckqTRepository.Create(ySZMPCKQ_T);
                     //}
                 }
                 catch (Exception ex)
@@ -1232,7 +1232,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                     //搜尋未執行 SaveChanges 的資料
                     var org = this.Context.ChangeTracker.Entries<MACHINE_PAPER_TYPE_T>().Where(x => x.Entity.MachineCode == MachineCode).FirstOrDefault();
                     //搜尋已執行 SaveChanges 的資料
-                    //var org = machinePaperTypeRepositiory.Get(x => x.MachineCode == MachineCode).FirstOrDefault();
+                    //var org = machinePaperTypeRepository.Get(x => x.MachineCode == MachineCode).FirstOrDefault();
                     if (org == null || string.IsNullOrEmpty(org.Entity.MachineCode))
                     {
                         MACHINE_PAPER_TYPE_T mACHINE_PAPER_TYPE_T = new MACHINE_PAPER_TYPE_T();
@@ -1250,7 +1250,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                         mACHINE_PAPER_TYPE_T.LastUpdateBy = ExcelUtil.GetLongCellValue(j, LastUpdateBy_cell.ColumnIndex, sheet);
                         mACHINE_PAPER_TYPE_T.LastUpdateDate = ExcelUtil.GetDateTimeCellValue(j, LastUpdateDate_cell.ColumnIndex, sheet);
                         mACHINE_PAPER_TYPE_T.ControlFlag = "";
-                        machinePaperTypeRepositiory.Create(mACHINE_PAPER_TYPE_T);
+                        machinePaperTypeRepository.Create(mACHINE_PAPER_TYPE_T);
                     }
                 }
                 catch (Exception ex)
@@ -1346,7 +1346,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                     //搜尋未執行 SaveChanges 的資料
                     var org = this.Context.ChangeTracker.Entries<TRANSACTION_TYPE_T>().Where(x => x.Entity.TransactionTypeId == TransactionTypeId).FirstOrDefault();
                     //搜尋已執行 SaveChanges 的資料
-                    //var org = transactionTypeRepositiory.Get(x => x.TransactionTypeId == TransactionTypeId).FirstOrDefault();
+                    //var org = transactionTypeRepository.Get(x => x.TransactionTypeId == TransactionTypeId).FirstOrDefault();
                     if (org == null || org.Entity.TransactionTypeId <= 0)
                     {
                         TRANSACTION_TYPE_T tRANSACTION_TYPE_T = new TRANSACTION_TYPE_T();
@@ -1362,7 +1362,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                         tRANSACTION_TYPE_T.LastUpdateBy = ExcelUtil.GetLongCellValue(j, LastUpdateBy_cell.ColumnIndex, sheet);
                         tRANSACTION_TYPE_T.LastUpdateDate = ExcelUtil.GetDateTimeCellValue(j, LastUpdateDate_cell.ColumnIndex, sheet);
                         tRANSACTION_TYPE_T.ControlFlag = "";
-                        transactionTypeRepositiory.Create(tRANSACTION_TYPE_T);
+                        transactionTypeRepository.Create(tRANSACTION_TYPE_T);
                     }
                 }
                 catch (Exception ex)
@@ -1398,12 +1398,12 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             {
                 try
                 {
-                    var adm = this.appUserRepositiory.Get(x => x.UserName.CompareTo("adam") == 0).FirstOrDefault();
+                    var adm = this.appUserRepository.Get(x => x.UserName.CompareTo("adam") == 0).FirstOrDefault();
                     var code = ExcelUtil.GetStringCellValue(j, codeCell.ColumnIndex, sheet);
                     var desc = ExcelUtil.GetStringCellValue(j, descCell.ColumnIndex, sheet);
                    
                     //搜尋已執行 SaveChanges 的資料
-                    //var org = transactionTypeRepositiory.Get(x => x.TransactionTypeId == TransactionTypeId).FirstOrDefault();
+                    //var org = transactionTypeRepository.Get(x => x.TransactionTypeId == TransactionTypeId).FirstOrDefault();
                     if (!string.IsNullOrEmpty(code) && !string.IsNullOrEmpty(desc))
                     {
                         var now = DateTime.Now;
@@ -1414,7 +1414,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                         stkReasonT.CreationDate = now;
                         stkReasonT.LastUpdateBy = adm.Id;
                         stkReasonT.LastUpdateDate = now;
-                        stkReasonTRepositiory.Create(stkReasonT);
+                        stkReasonTRepository.Create(stkReasonT);
                     }
                 }
                 catch (Exception ex)

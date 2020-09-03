@@ -20,14 +20,8 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
         private ILogger logger = LogManager.GetCurrentClassLogger();
 
 
-        /// <summary>
-        /// 令重包數
-        /// </summary>
-        private readonly IRepository<YSZMPCKQ_T> yszmpckqTRepositiory;
-
         public YszmpckqUOW(DbContext context) : base(context)
         {
-            this.yszmpckqTRepositiory = new GenericRepository<YSZMPCKQ_T>(this);
         }
 
         /// <summary>

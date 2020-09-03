@@ -20,16 +20,16 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
     {
         private ILogger logger = LogManager.GetCurrentClassLogger();
 
-        private readonly IRepository<TRF_MISCELLANEOUS_HEADER_T> trfMiscellaneousHeaderTRepositiory;
-        private readonly IRepository<TRF_MISCELLANEOUS_T> trfMiscellaneousTRepositiory;
-        private readonly IRepository<TRF_MISCELLANEOUS_HT> trfMiscellaneousHtRepositiory;
+        private readonly IRepository<TRF_MISCELLANEOUS_HEADER_T> trfMiscellaneousHeaderTRepository;
+        private readonly IRepository<TRF_MISCELLANEOUS_T> trfMiscellaneousTRepository;
+        private readonly IRepository<TRF_MISCELLANEOUS_HT> trfMiscellaneousHtRepository;
 
         public MiscellaneousUOW(DbContext context)
           : base(context)
         {
-            this.trfMiscellaneousHeaderTRepositiory = new GenericRepository<TRF_MISCELLANEOUS_HEADER_T>(this);
-            this.trfMiscellaneousTRepositiory = new GenericRepository<TRF_MISCELLANEOUS_T>(this);
-            this.trfMiscellaneousHtRepositiory = new GenericRepository<TRF_MISCELLANEOUS_HT>(this);
+            this.trfMiscellaneousHeaderTRepository = new GenericRepository<TRF_MISCELLANEOUS_HEADER_T>(this);
+            this.trfMiscellaneousTRepository = new GenericRepository<TRF_MISCELLANEOUS_T>(this);
+            this.trfMiscellaneousHtRepository = new GenericRepository<TRF_MISCELLANEOUS_HT>(this);
         }
 
         MiscellaneousType miscellaneousType = new MiscellaneousType();
@@ -185,7 +185,7 @@ SELECT [STOCK_ID] as ID
         //        {
         //            var now = DateTime.Now;
 
-        //            var header = trfMiscellaneousHeaderTRepositiory.GetAll().FirstOrDefault(x => x.TransactionTypeId == transactionTypeId &&
+        //            var header = trfMiscellaneousHeaderTRepository.GetAll().FirstOrDefault(x => x.TransactionTypeId == transactionTypeId &&
         //            x.OrganizationId == organizationId && x.SubinventoryCode == subinventoryCode && x.LocatorId == locatorId && x.NumberStatus == NumberStatus.NotSaved);
         //            if (header == null)
         //            {
@@ -233,15 +233,15 @@ SELECT [STOCK_ID] as ID
         //                    LastUpdateDate = null
         //                };
 
-        //                trfMiscellaneousHeaderTRepositiory.Create(header, true);
+        //                trfMiscellaneousHeaderTRepository.Create(header, true);
         //            }
 
-        //            var detail = trfMiscellaneousTRepositiory.GetAll().FirstOrDefault(x =>
+        //            var detail = trfMiscellaneousTRepository.GetAll().FirstOrDefault(x =>
         //            x.TransferMiscellaneousHeaderId == header.TransferMiscellaneousHeaderId &&
         //            x.StockId == stockId);
         //            if (detail != null) return new ResultModel(false, "已存在此條碼:" + detail.Barcode + "異動紀錄");
 
-        //            var stock = stockTRepositiory.GetAll().FirstOrDefault(x => x.StockId == stockId);
+        //            var stock = stockTRepository.GetAll().FirstOrDefault(x => x.StockId == stockId);
         //            if (stock == null) throw new Exception("找不到庫存資料");
 
         //            //處理異動量

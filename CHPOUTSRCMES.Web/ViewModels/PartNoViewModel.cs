@@ -16,11 +16,11 @@ namespace CHPOUTSRCMES.Web.ViewModels
        
         public PartNoModel partNoModel { set; get; }
 
-        public IEnumerable<SelectListItem> GetSpec(string spec)
+        public IEnumerable<SelectListItem> GetSpec()
         {
             using (var context = new MesContext())
             {
-                return new ItemNoUOW(context).GetCatalog_elem_val_050(spec);
+                return new ItemNoUOW(context).GetCatalog_elem_val_050();
             }
         }
 

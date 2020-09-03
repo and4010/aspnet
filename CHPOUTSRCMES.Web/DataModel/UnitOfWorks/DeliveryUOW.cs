@@ -25,12 +25,12 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
     {
         private ILogger logger = LogManager.GetCurrentClassLogger();
 
-        private readonly IRepository<DLV_ORG_T> dlvOrgTRepositiory;
-        private readonly IRepository<DLV_HEADER_T> dlvHeaderTRepositiory;
-        private readonly IRepository<DLV_DETAIL_T> dlvDetailTRepositiory;
-        private readonly IRepository<DLV_DETAIL_HT> dlvDetailHtRepositiory;
-        private readonly IRepository<DLV_PICKED_T> dlvPickedTRepositiory;
-        private readonly IRepository<DLV_PICKED_HT> dlvPickedHtRepositiory;
+        private readonly IRepository<DLV_ORG_T> dlvOrgTRepository;
+        private readonly IRepository<DLV_HEADER_T> dlvHeaderTRepository;
+        private readonly IRepository<DLV_DETAIL_T> dlvDetailTRepository;
+        private readonly IRepository<DLV_DETAIL_HT> dlvDetailHtRepository;
+        private readonly IRepository<DLV_PICKED_T> dlvPickedTRepository;
+        private readonly IRepository<DLV_PICKED_HT> dlvPickedHtRepository;
 
         /// <summary>
         /// 
@@ -39,12 +39,12 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
         public DeliveryUOW(DbContext context)
             : base(context)
         {
-            dlvOrgTRepositiory = new GenericRepository<DLV_ORG_T>(this);
-            dlvHeaderTRepositiory = new GenericRepository<DLV_HEADER_T>(this);
-            dlvDetailTRepositiory = new GenericRepository<DLV_DETAIL_T>(this);
-            dlvDetailHtRepositiory = new GenericRepository<DLV_DETAIL_HT>(this);
-            dlvPickedTRepositiory = new GenericRepository<DLV_PICKED_T>(this);
-            dlvPickedHtRepositiory = new GenericRepository<DLV_PICKED_HT>(this);
+            dlvOrgTRepository = new GenericRepository<DLV_ORG_T>(this);
+            dlvHeaderTRepository = new GenericRepository<DLV_HEADER_T>(this);
+            dlvDetailTRepository = new GenericRepository<DLV_DETAIL_T>(this);
+            dlvDetailHtRepository = new GenericRepository<DLV_DETAIL_HT>(this);
+            dlvPickedTRepository = new GenericRepository<DLV_PICKED_T>(this);
+            dlvPickedHtRepository = new GenericRepository<DLV_PICKED_HT>(this);
         }
         //private List<SelectListItem> deliveryStatusList = new List<SelectListItem>() 
         //{
@@ -92,7 +92,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             //var checkResult = CheckStock(barcode, qty, uom);
             if (!checkResult.Success) return new ResultModel(checkResult.Success, checkResult.Msg);
             var stock = checkResult.Data;
-            var detailData = dlvDetailTRepositiory.GetAll().AsNoTracking().FirstOrDefault(x => x.DlvDetailId == dlvDetailId);
+            var detailData = dlvDetailTRepository.GetAll().AsNoTracking().FirstOrDefault(x => x.DlvDetailId == dlvDetailId);
             if (detailData.OspBatchId == null && detailData.TmpItemId == null)
             {
                 if (stock.ItemNumber != detailData.ItemNumber)
@@ -110,7 +110,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             }
          
 
-            var pickData = dlvPickedTRepositiory.GetAll().AsNoTracking().Where(x => x.Barcode == barcode).ToList();
+            var pickData = dlvPickedTRepository.GetAll().AsNoTracking().Where(x => x.Barcode == barcode).ToList();
             if (pickData.Count > 0) return new ResultModel(false, "條碼重複輸入");
 
 
@@ -152,7 +152,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                         //轉換失敗 該如何處理??
                     }
                     //新增一筆PickDT
-                    dlvPickedTRepositiory.Create(new DLV_PICKED_T
+                    dlvPickedTRepository.Create(new DLV_PICKED_T
                     {
                         Stock_Id = stock.StockId,
                         LocatorId = stock.LocatorId,
@@ -182,9 +182,9 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                         PalletStatus = palletStatus
                     });
 
-                    stockTRepositiory.SaveChanges();
-                    stkTxnTRepositiory.SaveChanges();
-                    dlvPickedTRepositiory.SaveChanges();
+                    stockTRepository.SaveChanges();
+                    stkTxnTRepository.SaveChanges();
+                    dlvPickedTRepository.SaveChanges();
 
                     //更新Header狀態
                     var pickedResult = CheckPicked(dlvHeaderId);
@@ -198,12 +198,12 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                     {
                         data.DeliveryStatusCode = pickedResult.Msg;
                         data.DeliveryStatusName = deliveryStatusCode.GetDesc(pickedResult.Msg);
-                        dlvHeaderTRepositiory.Update(data);
+                        dlvHeaderTRepository.Update(data);
                         data.LastUpdateBy = addUser;
                         data.LastUpdateUserName = addUserName;
                         data.LastUpdateDate = addDate;
                     }
-                    dlvHeaderTRepositiory.SaveChanges();
+                    dlvHeaderTRepository.SaveChanges();
 
 
                     txn.Commit();
@@ -268,7 +268,7 @@ OR SUM(ISNULL(p.SECONDARY_QUANTITY, 0)) <> MIN(d.REQUESTED_SECONDARY_QUANTITY)";
         {
             if (pickedDataList == null || pickedDataList.Count == 0) return new ResultModel(false, "沒有揀貨資料");
             long dlvHeaderId = pickedDataList[0].DlvHeaderId;
-            var headerData = dlvHeaderTRepositiory.GetAll().AsNoTracking().Where(x => x.DlvHeaderId == dlvHeaderId).ToList();
+            var headerData = dlvHeaderTRepository.GetAll().AsNoTracking().Where(x => x.DlvHeaderId == dlvHeaderId).ToList();
             if (headerData.Count == 0) return new ResultModel(false, "無法取得交運單資料");
 
             using (var txn = this.Context.Database.BeginTransaction())
@@ -278,19 +278,19 @@ OR SUM(ISNULL(p.SECONDARY_QUANTITY, 0)) <> MIN(d.REQUESTED_SECONDARY_QUANTITY)";
                     var addDate = DateTime.Now;
                     foreach (DLV_PICKED_T data in pickedDataList)
                     {
-                        var stock = stockTRepositiory.GetAll().FirstOrDefault(x => x.StockId == data.Stock_Id);
+                        var stock = stockTRepository.GetAll().FirstOrDefault(x => x.StockId == data.Stock_Id);
                         if (stock == null) throw new Exception("找不到庫存資料");
                         STK_TXN_T stkTxnT = CreateStockRecord(stock, null, "", "", null, CategoryCode.Delivery, ActionCode.Deleted, headerData[0].DeliveryName);
                         decimal? priQty = data.PrimaryQuantity;
                         decimal? secQty = data.SecondaryQuantity;
                         var updaeStockResult = UpdateStock(stock, stkTxnT, ref priQty, ref secQty, pickSatus, PickStatus.Deleted, addUser, addDate, true);
                         if (!updaeStockResult.Success) throw new Exception(updaeStockResult.Msg);
-                        dlvPickedTRepositiory.Delete(data);
+                        dlvPickedTRepository.Delete(data);
                     }
 
-                    stockTRepositiory.SaveChanges();
-                    stkTxnTRepositiory.SaveChanges();
-                    dlvPickedTRepositiory.SaveChanges();
+                    stockTRepository.SaveChanges();
+                    stkTxnTRepository.SaveChanges();
+                    dlvPickedTRepository.SaveChanges();
 
                     //更新Header狀態
                     var pickedResult = CheckPicked(dlvHeaderId);
@@ -304,12 +304,12 @@ OR SUM(ISNULL(p.SECONDARY_QUANTITY, 0)) <> MIN(d.REQUESTED_SECONDARY_QUANTITY)";
                     {
                         data.DeliveryStatusCode = pickedResult.Msg;
                         data.DeliveryStatusName = deliveryStatusCode.GetDesc(pickedResult.Msg);
-                        dlvHeaderTRepositiory.Update(data);
+                        dlvHeaderTRepository.Update(data);
                         data.LastUpdateBy = addUser;
                         data.LastUpdateUserName = addUserName;
                         data.LastUpdateDate = addDate;
                     }
-                    dlvHeaderTRepositiory.SaveChanges();
+                    dlvHeaderTRepository.SaveChanges();
 
 
                     txn.Commit();
@@ -405,8 +405,8 @@ OR SUM(ISNULL(p.SECONDARY_QUANTITY, 0)) <> MIN(d.REQUESTED_SECONDARY_QUANTITY)";
             try
             {
                 #region 第一筆測試資料 平版 令包
-                //DliveryHeaderRepositiory.getContext().Configuration.AutoDetectChangesEnabled = false;
-                dlvHeaderTRepositiory.Create(new DLV_HEADER_T()
+                //DliveryHeaderRepository.getContext().Configuration.AutoDetectChangesEnabled = false;
+                dlvHeaderTRepository.Create(new DLV_HEADER_T()
                 {
                     OrgId = 1,
                     OrgName = "1",
@@ -447,9 +447,9 @@ OR SUM(ISNULL(p.SECONDARY_QUANTITY, 0)) <> MIN(d.REQUESTED_SECONDARY_QUANTITY)";
                 }, true);
 
 
-                //DliveryHeaderRepositiory.getContext().Configuration.AutoDetectChangesEnabled = true;
+                //DliveryHeaderRepository.getContext().Configuration.AutoDetectChangesEnabled = true;
 
-                dlvDetailTRepositiory.Create(new DLV_DETAIL_T()
+                dlvDetailTRepository.Create(new DLV_DETAIL_T()
                 {
                     DlvHeaderId = 1, 
                     ProcessCode = "XXIFP220",
@@ -494,7 +494,7 @@ OR SUM(ISNULL(p.SECONDARY_QUANTITY, 0)) <> MIN(d.REQUESTED_SECONDARY_QUANTITY)";
                 #endregion
 
                 #region 第二筆測試資料 捲筒
-                dlvHeaderTRepositiory.Create(new DLV_HEADER_T()
+                dlvHeaderTRepository.Create(new DLV_HEADER_T()
                 {
                     OrgId = 1,
                     OrgName = "1",
@@ -532,7 +532,7 @@ OR SUM(ISNULL(p.SECONDARY_QUANTITY, 0)) <> MIN(d.REQUESTED_SECONDARY_QUANTITY)";
                     LastUpdateDate = DateTime.Now,
                 }, true);
 
-                dlvDetailTRepositiory.Create(new DLV_DETAIL_T()
+                dlvDetailTRepository.Create(new DLV_DETAIL_T()
                 {
                     DlvHeaderId = 2,
                     ProcessCode = "XXIFP220",
@@ -578,7 +578,7 @@ OR SUM(ISNULL(p.SECONDARY_QUANTITY, 0)) <> MIN(d.REQUESTED_SECONDARY_QUANTITY)";
                 #endregion
 
                 #region 第三筆測試資料 平版 無令打件 代紙
-                dlvHeaderTRepositiory.Create(new DLV_HEADER_T()
+                dlvHeaderTRepository.Create(new DLV_HEADER_T()
                 {
                     OrgId = 1,
                     OrgName = "1",
@@ -616,7 +616,7 @@ OR SUM(ISNULL(p.SECONDARY_QUANTITY, 0)) <> MIN(d.REQUESTED_SECONDARY_QUANTITY)";
                     LastUpdateDate = DateTime.Now,
                 }, true);
 
-                dlvDetailTRepositiory.Create(new DLV_DETAIL_T()
+                dlvDetailTRepository.Create(new DLV_DETAIL_T()
                 {
                     DlvHeaderId = 3,
                     ProcessCode = "XXIFP220",
@@ -661,7 +661,7 @@ OR SUM(ISNULL(p.SECONDARY_QUANTITY, 0)) <> MIN(d.REQUESTED_SECONDARY_QUANTITY)";
                 #endregion
 
                 #region 第四筆測試資料 捲筒
-                dlvHeaderTRepositiory.Create(new DLV_HEADER_T()
+                dlvHeaderTRepository.Create(new DLV_HEADER_T()
                 {
                     OrgId = 1,
                     OrgName = "1",
@@ -699,7 +699,7 @@ OR SUM(ISNULL(p.SECONDARY_QUANTITY, 0)) <> MIN(d.REQUESTED_SECONDARY_QUANTITY)";
                     LastUpdateDate = DateTime.Now,
                 }, true);
 
-                dlvDetailTRepositiory.Create(new DLV_DETAIL_T()
+                dlvDetailTRepository.Create(new DLV_DETAIL_T()
                 {
                     DlvHeaderId = 4,
                     ProcessCode = "XXIFP220",
@@ -795,9 +795,9 @@ OR SUM(ISNULL(p.SECONDARY_QUANTITY, 0)) <> MIN(d.REQUESTED_SECONDARY_QUANTITY)";
             var tripNameList = new List<SelectListItem>();
             try
             {
-                var tempList = dlvHeaderTRepositiory
+                var tempList = dlvHeaderTRepository
                             .GetAll().AsNoTracking()
-                            .Join(userSubinventoryTRepositiory.GetAll(), x=>x.SubinventoryCode, y => y.SubinventoryCode, (x, y) => new { user = y.UserId, header = x })
+                            .Join(userSubinventoryTRepository.GetAll(), x=>x.SubinventoryCode, y => y.SubinventoryCode, (x, y) => new { user = y.UserId, header = x })
                             .Where(x=>x.user == userId)
                             .OrderByDescending(x => x.header.TripId)
                             .Take(1000)
@@ -919,7 +919,7 @@ JOIN USER_SUBINVENTORY_T s ON s.SUBINVENTORY_CODE = h.SUBINVENTORY_CODE";
         /// <returns></returns>
         public List<long> GetTripIdList(List<long> dlvHeaderIds)
         {
-            return dlvHeaderTRepositiory.GetAll().AsNoTracking().Where(x => dlvHeaderIds.Contains(x.DlvHeaderId)).GroupBy(x => x.TripId).Select(x => x.Key).ToList();
+            return dlvHeaderTRepository.GetAll().AsNoTracking().Where(x => dlvHeaderIds.Contains(x.DlvHeaderId)).GroupBy(x => x.TripId).Select(x => x.Key).ToList();
         }
 
         /// <summary>
@@ -929,7 +929,7 @@ JOIN USER_SUBINVENTORY_T s ON s.SUBINVENTORY_CODE = h.SUBINVENTORY_CODE";
         /// <returns></returns>
         public List<DLV_HEADER_T> GetDeliveryHeaderDataListFromTripId(List<long> tripIds)
         {
-            return dlvHeaderTRepositiory.GetAll().AsNoTracking().Where(x => tripIds.Contains(x.TripId)).ToList();
+            return dlvHeaderTRepository.GetAll().AsNoTracking().Where(x => tripIds.Contains(x.TripId)).ToList();
         }
 
         /// <summary>
@@ -939,7 +939,7 @@ JOIN USER_SUBINVENTORY_T s ON s.SUBINVENTORY_CODE = h.SUBINVENTORY_CODE";
         /// <returns></returns>
         public List<DLV_HEADER_T> GetDeliveryHeaderDataListFromHeaderId(long dlvHeaderId)
         {
-            return dlvHeaderTRepositiory.GetAll().AsNoTracking().Where(x => dlvHeaderId == x.DlvHeaderId).ToList();
+            return dlvHeaderTRepository.GetAll().AsNoTracking().Where(x => dlvHeaderId == x.DlvHeaderId).ToList();
         }
 
         /// <summary>
@@ -949,18 +949,18 @@ JOIN USER_SUBINVENTORY_T s ON s.SUBINVENTORY_CODE = h.SUBINVENTORY_CODE";
         /// <returns></returns>
         public List<DLV_DETAIL_T> GetDeliveryDetailDataListFromHeaderId(long dlvHeaderId)
         {
-            return dlvDetailTRepositiory.GetAll().AsNoTracking().Where(x => dlvHeaderId == x.DlvHeaderId).ToList();
+            return dlvDetailTRepository.GetAll().AsNoTracking().Where(x => dlvHeaderId == x.DlvHeaderId).ToList();
         }
 
 
         public List<DLV_PICKED_T> GetDeliveryPickDataListFromPickedId(long dlvPickedId)
         {
-            return dlvPickedTRepositiory.GetAll().AsNoTracking().Where(x => dlvPickedId == x.DlvPickedId).ToList();
+            return dlvPickedTRepository.GetAll().AsNoTracking().Where(x => dlvPickedId == x.DlvPickedId).ToList();
         }
 
         public List<DLV_PICKED_T> GetDeliveryPickDataListFromPickedId(List<long> dlvPickedId)
         {
-            return dlvPickedTRepositiory.GetAll().Where(x => dlvPickedId.Contains(x.DlvPickedId)).ToList();
+            return dlvPickedTRepository.GetAll().Where(x => dlvPickedId.Contains(x.DlvPickedId)).ToList();
         }
 
 
@@ -986,12 +986,12 @@ JOIN USER_SUBINVENTORY_T s ON s.SUBINVENTORY_CODE = h.SUBINVENTORY_CODE";
                         data.TransactionByUserNmae = userName;
                         data.DeliveryStatusCode = statusCode;
                         data.DeliveryStatusName = deliveryStatusCode.GetDesc(statusCode);
-                        dlvHeaderTRepositiory.Update(data);
+                        dlvHeaderTRepository.Update(data);
                         data.LastUpdateBy = userId;
                         data.LastUpdateUserName = userName;
                         data.LastUpdateDate = now;
                     }
-                    dlvHeaderTRepositiory.SaveChanges();
+                    dlvHeaderTRepository.SaveChanges();
                     txn.Commit();
                     return new ResultModel(true, "變更出貨申請成功");
                 }
@@ -1034,12 +1034,12 @@ JOIN USER_SUBINVENTORY_T s ON s.SUBINVENTORY_CODE = h.SUBINVENTORY_CODE";
                         data.LastUpdateBy = userId;
                         data.LastUpdateUserName = userName;
                         data.LastUpdateDate = now;
-                        dlvHeaderTRepositiory.Update(data);
+                        dlvHeaderTRepository.Update(data);
 
                         //更新庫存鎖定量
-                        var pick = dlvPickedTRepositiory.GetAll().AsNoTracking().FirstOrDefault(x => x.DlvHeaderId == data.DlvHeaderId);
+                        var pick = dlvPickedTRepository.GetAll().AsNoTracking().FirstOrDefault(x => x.DlvHeaderId == data.DlvHeaderId);
                         if (pick == null) throw new Exception("找不到揀貨資料");
-                        var stock = stockTRepositiory.GetAll().FirstOrDefault(x => x.StockId == pick.Stock_Id);
+                        var stock = stockTRepository.GetAll().FirstOrDefault(x => x.StockId == pick.Stock_Id);
                         if (stock == null) throw new Exception("找不到庫存資料");
                         STK_TXN_T stkTxnT = CreateStockRecord(stock, null, "", "", null, CategoryCode.Delivery, ActionCode.Shipped, data.DeliveryName);
                         var updateStockLockQtyResult = UpdateStockLockQty(stock, stkTxnT, -1 * pick.PrimaryQuantity, -1 * pick.SecondaryQuantity, pickSatus, PickStatus.Shipped, userId, now);
@@ -1220,9 +1220,9 @@ SELECT [DLV_PICKED_ID]
                         }
                     }
 
-                    dlvHeaderTRepositiory.SaveChanges();
-                    stockTRepositiory.SaveChanges();
-                    stkTxnTRepositiory.SaveChanges();
+                    dlvHeaderTRepository.SaveChanges();
+                    stockTRepository.SaveChanges();
+                    stkTxnTRepository.SaveChanges();
                     
 
                     txn.Commit();
@@ -1256,12 +1256,12 @@ SELECT [DLV_PICKED_ID]
                     {
                         data.DeliveryStatusCode = statusCode;
                         data.DeliveryStatusName = deliveryStatusCode.GetDesc(statusCode);
-                        dlvHeaderTRepositiory.Update(data);
+                        dlvHeaderTRepository.Update(data);
                         data.LastUpdateBy = userId;
                         data.LastUpdateUserName = userName;
                         data.LastUpdateDate = now;
                     }
-                    dlvHeaderTRepositiory.SaveChanges();
+                    dlvHeaderTRepository.SaveChanges();
                     txn.Commit();
                     return new ResultModel(true, "交運單狀態更新成功");
                 }
@@ -1285,7 +1285,7 @@ SELECT [DLV_PICKED_ID]
         {
             //List<TripHeaderDT> result = new List<TripHeaderDT>();
 
-            //dlvHeaderTRepositiory.GetAll().AsNoTracking().Where(x => data.TripDetailDTList.  .Contains(x.DlvHeaderId)).GroupBy(x => x.TripId).Select(x => x.Key).ToList();
+            //dlvHeaderTRepository.GetAll().AsNoTracking().Where(x => data.TripDetailDTList.  .Contains(x.DlvHeaderId)).GroupBy(x => x.TripId).Select(x => x.Key).ToList();
 
             using (var txn = this.Context.Database.BeginTransaction())
             {
@@ -1294,7 +1294,7 @@ SELECT [DLV_PICKED_ID]
                     DateTime now = DateTime.Now;
                     foreach (var selectData in selectDatas.TripDetailDTList)
                     {
-                        var updateDatas = dlvHeaderTRepositiory.GetAll().AsNoTracking().Where(x => x.TripId == selectData.TRIP_ID).ToList();
+                        var updateDatas = dlvHeaderTRepository.GetAll().AsNoTracking().Where(x => x.TripId == selectData.TRIP_ID).ToList();
                         if (updateDatas.Count == 0)
                         {
                             throw new Exception("無法取得航程號資料");
@@ -1306,10 +1306,10 @@ SELECT [DLV_PICKED_ID]
                             data.LastUpdateBy = userId;
                             data.LastUpdateUserName = userName;
                             data.LastUpdateDate = now;
-                            dlvHeaderTRepositiory.Update(data);
+                            dlvHeaderTRepository.Update(data);
                         }
                     }
-                    dlvHeaderTRepositiory.SaveChanges();
+                    dlvHeaderTRepository.SaveChanges();
                     txn.Commit();
                     return new ResultModel(true, "更新出貨核准日成功");
                 }
@@ -1631,12 +1631,12 @@ where DLV_HEADER_ID = @DLV_HEADER_ID"; ;
             {
                 List<LabelModel> labelModelList = new List<LabelModel>();
                 if (PICKED_IDs == null || PICKED_IDs.Count == 0) return new ResultDataModel<List<LabelModel>>(false, "找不到揀貨資料", null);
-                var pickDataList = dlvPickedTRepositiory.GetAll().AsNoTracking().Where(x => PICKED_IDs.Contains(x.DlvPickedId)).ToList();
+                var pickDataList = dlvPickedTRepository.GetAll().AsNoTracking().Where(x => PICKED_IDs.Contains(x.DlvPickedId)).ToList();
                 if (pickDataList == null || pickDataList.Count == 0) return new ResultDataModel<List<LabelModel>>(false, "找不到揀貨資料", null);
                 if (pickDataList.Count != PICKED_IDs.Count) throw new Exception("找不到部分揀貨資料");
                 foreach (DLV_PICKED_T pick in pickDataList)
                 {
-                    var detail = dlvDetailTRepositiory.GetAll().AsNoTracking().FirstOrDefault(x => x.DlvHeaderId == pick.DlvHeaderId && x.DlvDetailId == pick.DlvDetailId);
+                    var detail = dlvDetailTRepository.GetAll().AsNoTracking().FirstOrDefault(x => x.DlvHeaderId == pick.DlvHeaderId && x.DlvDetailId == pick.DlvDetailId);
                     if (detail == null) return new ResultDataModel<List<LabelModel>>(false, "找不到明細資料", null);
 
                     StringBuilder cmd = new StringBuilder(@"

@@ -31,73 +31,73 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
         /// <summary>
         /// 料號
         /// </summary>
-        public readonly IItemsTRepository itemsTRepositiory;
+        public readonly IItemsTRepository itemsTRepository;
         /// <summary>
         /// 組織料號
         /// </summary>
-        public readonly IRepository<ORG_ITEMS_T> orgItemRepositityory;
+        public readonly IRepository<ORG_ITEMS_T> orgItemRepository;
         /// <summary>
         /// 組織
         /// </summary>
-        public readonly IRepository<ORG_UNIT_T> orgUnitRepositiory;
+        public readonly IRepository<ORG_UNIT_T> orgUnitRepository;
         /// <summary>
         /// 組織
         /// </summary>
-        public readonly IRepository<ORGANIZATION_T> organizationRepositiory;
+        public readonly IRepository<ORGANIZATION_T> organizationRepository;
         /// <summary>
         /// 倉庫
         /// </summary>
-        public readonly IRepository<SUBINVENTORY_T> subinventoryRepositiory;
+        public readonly IRepository<SUBINVENTORY_T> subinventoryRepository;
         /// <summary>
         /// 儲位
         /// </summary>
-        public readonly IRepository<LOCATOR_T> locatorTRepositiory;
+        public readonly IRepository<LOCATOR_T> locatorTRepository;
         /// <summary>
         /// 餘切規格
         /// </summary>
-        public readonly IRepository<RELATED_T> relatedTRepositiory;
+        public readonly IRepository<RELATED_T> relatedTRepository;
         /// <summary>
         /// 令重包數
         /// </summary>
-        public readonly IRepository<YSZMPCKQ_T> yszmpckqTRepositiory;
+        public readonly IRepository<YSZMPCKQ_T> yszmpckqTRepository;
         /// <summary>
         /// 機台紙別
         /// </summary>
-        public readonly IRepository<MACHINE_PAPER_TYPE_T> machinePaperTypeRepositiory;
+        public readonly IRepository<MACHINE_PAPER_TYPE_T> machinePaperTypeRepository;
         /// <summary>
         /// 庫存交易類別
         /// </summary>
-        public readonly IRepository<TRANSACTION_TYPE_T> transactionTypeRepositiory;
+        public readonly IRepository<TRANSACTION_TYPE_T> transactionTypeRepository;
         /// <summary>
         /// 條碼設定類別
         /// </summary>
-        public readonly IRepository<BCD_MISC_T> bcdMiscRepositiory;
+        public readonly IRepository<BCD_MISC_T> bcdMiscRepository;
         /// <summary>
         /// 原因
         /// </summary>
-        public readonly IRepository<STK_REASON_T> stkReasonTRepositiory;
+        public readonly IRepository<STK_REASON_T> stkReasonTRepository;
         /// <summary>
         /// 庫存
         /// </summary>
-        public readonly IRepository<STOCK_T> stockTRepositiory;
+        public readonly IRepository<STOCK_T> stockTRepository;
         /// <summary>
         /// 庫存歷史
         /// </summary>
-        public readonly IRepository<STOCK_HT> stockHtRepositiory;
+        public readonly IRepository<STOCK_HT> stockHtRepository;
         /// <summary>
         /// 異動記錄
         /// </summary>
-        public readonly IRepository<STK_TXN_T> stkTxnTRepositiory;
+        public readonly IRepository<STK_TXN_T> stkTxnTRepository;
 
         /// <summary>
         /// 使用者
         /// </summary>
-        public readonly IRepository<AppUser> appUserRepositiory;
+        public readonly IRepository<AppUser> appUserRepository;
 
         /// <summary>
         /// 使用者
         /// </summary>
-        public readonly IRepository<USER_SUBINVENTORY_T> userSubinventoryTRepositiory;
+        public readonly IRepository<USER_SUBINVENTORY_T> userSubinventoryTRepository;
 
         public IUomConversion uomConversion;
 
@@ -111,23 +111,23 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
         /// <param name="context"></param>
         public MasterUOW(DbContext context) : base(context)
         {
-            this.orgUnitRepositiory = new GenericRepository<ORG_UNIT_T>(this);
-            this.itemsTRepositiory = new ItemsTRepository(this);
-            this.orgItemRepositityory = new GenericRepository<ORG_ITEMS_T>(this);
-            this.organizationRepositiory = new GenericRepository<ORGANIZATION_T>(this);
-            this.subinventoryRepositiory = new GenericRepository<SUBINVENTORY_T>(this);
-            this.locatorTRepositiory = new GenericRepository<LOCATOR_T>(this);
-            this.relatedTRepositiory = new GenericRepository<RELATED_T>(this);
-            this.yszmpckqTRepositiory = new GenericRepository<YSZMPCKQ_T>(this);
-            this.machinePaperTypeRepositiory = new GenericRepository<MACHINE_PAPER_TYPE_T>(this);
-            this.transactionTypeRepositiory = new GenericRepository<TRANSACTION_TYPE_T>(this);
-            this.bcdMiscRepositiory = new GenericRepository<BCD_MISC_T>(this);
-            this.stkReasonTRepositiory = new GenericRepository<STK_REASON_T>(this);
-            this.stockTRepositiory = new GenericRepository<STOCK_T>(this);
-            this.stockHtRepositiory = new GenericRepository<STOCK_HT>(this);
-            this.stkTxnTRepositiory = new GenericRepository<STK_TXN_T>(this);
-            this.appUserRepositiory = new GenericRepository<AppUser>(this);
-            this.userSubinventoryTRepositiory = new GenericRepository<USER_SUBINVENTORY_T>(this);
+            this.orgUnitRepository = new GenericRepository<ORG_UNIT_T>(this);
+            this.itemsTRepository = new ItemsTRepository(this);
+            this.orgItemRepository = new GenericRepository<ORG_ITEMS_T>(this);
+            this.organizationRepository = new GenericRepository<ORGANIZATION_T>(this);
+            this.subinventoryRepository = new GenericRepository<SUBINVENTORY_T>(this);
+            this.locatorTRepository = new GenericRepository<LOCATOR_T>(this);
+            this.relatedTRepository = new GenericRepository<RELATED_T>(this);
+            this.yszmpckqTRepository = new GenericRepository<YSZMPCKQ_T>(this);
+            this.machinePaperTypeRepository = new GenericRepository<MACHINE_PAPER_TYPE_T>(this);
+            this.transactionTypeRepository = new GenericRepository<TRANSACTION_TYPE_T>(this);
+            this.bcdMiscRepository = new GenericRepository<BCD_MISC_T>(this);
+            this.stkReasonTRepository = new GenericRepository<STK_REASON_T>(this);
+            this.stockTRepository = new GenericRepository<STOCK_T>(this);
+            this.stockHtRepository = new GenericRepository<STOCK_HT>(this);
+            this.stkTxnTRepository = new GenericRepository<STK_TXN_T>(this);
+            this.appUserRepository = new GenericRepository<AppUser>(this);
+            this.userSubinventoryTRepository = new GenericRepository<USER_SUBINVENTORY_T>(this);
             this.uomConversion = new UomConversion();
         }
 
@@ -377,7 +377,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
 
         public TRANSACTION_TYPE_T GetTransactionType(long transactionTypeId)
         {
-            return transactionTypeRepositiory.GetAll().AsNoTracking().FirstOrDefault(x => x.TransactionTypeId == transactionTypeId && x.ControlFlag != ControlFlag.Deleted);
+            return transactionTypeRepository.GetAll().AsNoTracking().FirstOrDefault(x => x.TransactionTypeId == transactionTypeId && x.ControlFlag != ControlFlag.Deleted);
         }
 
         #endregion
@@ -390,7 +390,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
         /// <returns></returns>
         public ResultDataModel<List<AppUser>> GetUserData(string UserName)
         {
-            var userDataList = appUserRepositiory.GetAll().AsNoTracking().Where(x => x.UserName == UserName).ToList();
+            var userDataList = appUserRepository.GetAll().AsNoTracking().Where(x => x.UserName == UserName).ToList();
             if (userDataList.Count == 0)
             {
                 return new ResultDataModel<List<AppUser>>(false, "找不到使用者資料", null);
@@ -408,7 +408,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
         ///// <returns></returns>
         //public ResultDataModel<List<long>> GetUserOrganizationIdList(string UserName)
         //{
-        //    var data = appUserRepositiory.GetAll().AsNoTracking().Where(x => x.UserName == UserName).Select(x => x.OrganizationId).ToList();
+        //    var data = appUserRepository.GetAll().AsNoTracking().Where(x => x.UserName == UserName).Select(x => x.OrganizationId).ToList();
         //    if (data.Count == 0)
         //    {
         //        return new ResultDataModel<List<long>>(false, "找不到使用者組織資料", null);
@@ -426,7 +426,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
         ///// <returns></returns>
         //public ResultDataModel<List<string>> GetUserSubinverotyCodeList(string UserName)
         //{
-        //    var data = appUserRepositiory.GetAll().AsNoTracking().Where(
+        //    var data = appUserRepository.GetAll().AsNoTracking().Where(
         //        x => x.UserName == UserName
         //    ).Select(x => x.SubinventoryCode).ToList();
         //    if (data.Count == 0)
@@ -523,7 +523,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
 
         public STOCK_T GetStock(string barcode)
         {
-            return stockTRepositiory.GetAll().AsNoTracking().FirstOrDefault(x => x.Barcode == barcode);
+            return stockTRepository.GetAll().AsNoTracking().FirstOrDefault(x => x.Barcode == barcode);
         }
 
         /// <summary>
@@ -564,7 +564,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
         /// <returns></returns>
         public ResultDataModel<STOCK_T> CheckStockQty(string barcode, decimal? qty)
         {
-            var stock = stockTRepositiory.GetAll().FirstOrDefault(x => x.Barcode == barcode);
+            var stock = stockTRepository.GetAll().FirstOrDefault(x => x.Barcode == barcode);
 
             if (stock == null)
             {
@@ -606,7 +606,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
 
 
             var stock = checkStockQtyResult.Data;
-            var subinventoryList = subinventoryRepositiory.GetAll().AsNoTracking().Where(x =>
+            var subinventoryList = subinventoryRepository.GetAll().AsNoTracking().Where(x =>
             x.OrganizationId == stock.OrganizationId &&
             x.SubinventoryCode == stock.SubinventoryCode).ToList();
 
@@ -617,7 +617,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
 
             if (subinventoryList[0].LocatorType == LocatorType.Used)
             {
-                locatorList = locatorTRepositiory.GetAll().AsNoTracking().Where(x =>
+                locatorList = locatorTRepository.GetAll().AsNoTracking().Where(x =>
                 x.OrganizationId == stock.OrganizationId &&
                 x.SubinventoryCode == stock.SubinventoryCode &&
                 x.LocatorId == stock.LocatorId).ToList();
@@ -635,7 +635,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
 
         public ResultDataModel<STOCK_T> CheckStock(string barcode, decimal primaryQty, decimal? secondaryQty)
         {
-            var stock = stockTRepositiory.GetAll().FirstOrDefault(x => x.Barcode == barcode);
+            var stock = stockTRepository.GetAll().FirstOrDefault(x => x.Barcode == barcode);
 
             if (stock == null)
             {
@@ -678,7 +678,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
         /// <returns></returns>
         public ResultDataModel<STOCK_T> CheckStock(string barcode, decimal qty, string uom)
         {
-            var stock = stockTRepositiory.GetAll().FirstOrDefault(x => x.Barcode == barcode);
+            var stock = stockTRepository.GetAll().FirstOrDefault(x => x.Barcode == barcode);
 
             if (uom.CompareTo(stock.PrimaryUomCode) == 0) //傳入的單位是否為主要單位
             {
@@ -703,7 +703,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
         /// <returns></returns>
         public ResultDataModel<STOCK_T> CheckStockForPrimaryQty(string barcode, decimal primaryQty)
         {
-            return CheckStockForPrimaryQty(stockTRepositiory.GetAll().AsNoTracking().FirstOrDefault(x => x.Barcode == barcode), primaryQty);
+            return CheckStockForPrimaryQty(stockTRepository.GetAll().AsNoTracking().FirstOrDefault(x => x.Barcode == barcode), primaryQty);
         }
 
         /// <summary>
@@ -739,7 +739,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
         /// <returns></returns>
         public ResultDataModel<STOCK_T> CheckStockForSecondaryQty(string barcode, decimal secondaryQty)
         {
-            return CheckStockForSecondaryQty(stockTRepositiory.GetAll().AsNoTracking().FirstOrDefault(x => x.Barcode == barcode), secondaryQty);
+            return CheckStockForSecondaryQty(stockTRepository.GetAll().AsNoTracking().FirstOrDefault(x => x.Barcode == barcode), secondaryQty);
         }
         /// <summary>
         /// 檢查庫存(副單位)
@@ -781,7 +781,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
         ///// <returns>更新後庫存</returns>
         //public ResultDataModel<STOCK_T> UpdateStock(string barcode, decimal qty, string uom, IDetail detail, string statusCode, string doc, bool lockQty = false)
         //{
-        //    var stock = stockTRepositiory.GetAll().FirstOrDefault(x => x.Barcode == barcode);
+        //    var stock = stockTRepository.GetAll().FirstOrDefault(x => x.Barcode == barcode);
         //    if (stock == null)
         //    {
         //        return new ResultDataModel<STOCK_T>(false, "查無庫存", null);
@@ -818,8 +818,8 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                 stkTxnT.LastUpdateDate = null;
                 stkTxnT.StatusCode = stock.StatusCode;
 
-                stockTRepositiory.Update(stock);
-                stkTxnTRepositiory.Create(stkTxnT);
+                stockTRepository.Update(stock);
+                stkTxnTRepository.Create(stkTxnT);
                 return new ResultDataModel<STOCK_T>(true, "庫存鎖定量更新成功", stock);
             }
             catch (Exception ex)
@@ -924,8 +924,8 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             stkTxnT.LastUpdateDate = null;
             stkTxnT.StatusCode = stock.StatusCode;
 
-            stockTRepositiory.Update(stock);
-            stkTxnTRepositiory.Create(stkTxnT);
+            stockTRepository.Update(stock);
+            stkTxnTRepository.Create(stkTxnT);
 
             return new ResultDataModel<STOCK_T>(true, "庫存更新成功", stock);
         }
@@ -1013,8 +1013,8 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
         //    stock.LastUpdateDate = addDate;
         //    stkTxnT.LastUpdateDate = stock.LastUpdateDate;
 
-        //    stockTRepositiory.Update(stock);
-        //    stkTxnTRepositiory.Update(stkTxnT);
+        //    stockTRepository.Update(stock);
+        //    stkTxnTRepository.Update(stkTxnT);
 
         //    return new ResultDataModel<STOCK_T>(true, "庫存更新成功", stock);
         //}
@@ -1103,7 +1103,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             {
                 #region 第一筆測試資料 平版 令包
 
-                stockTRepositiory.Create(new STOCK_T()
+                stockTRepository.Create(new STOCK_T()
                 {
                     OrganizationId = 265,
                     OrganizationCode = "FTY",
@@ -1142,7 +1142,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                 #endregion
 
                 #region 第二筆測試資料 平版 無令打件
-                stockTRepositiory.Create(new STOCK_T()
+                stockTRepository.Create(new STOCK_T()
                 {
                     OrganizationId = 265,
                     OrganizationCode = "FTY",
@@ -1181,7 +1181,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                 #endregion
 
                 #region 第三筆測試資料 捲筒
-                stockTRepositiory.Create(new STOCK_T()
+                stockTRepository.Create(new STOCK_T()
                 {
                     OrganizationId = 265,
                     OrganizationCode = "FTY",
@@ -1220,7 +1220,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                 #endregion
 
                 #region 捲筒
-                stockTRepositiory.Create(new STOCK_T()
+                stockTRepository.Create(new STOCK_T()
                 {
                     OrganizationId = 265,
                     OrganizationCode = "FTY",
@@ -1259,7 +1259,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                 #endregion
 
                 #region 平版 無令打件 代紙料號
-                stockTRepositiory.Create(new STOCK_T()
+                stockTRepository.Create(new STOCK_T()
                 {
                     OrganizationId = 265,
                     OrganizationCode = "FTY",
@@ -1309,13 +1309,13 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
         {
             try
             {
-                var userList = appUserRepositiory.GetAll().ToList();
+                var userList = appUserRepository.GetAll().ToList();
                 foreach (AppUser data in userList)
                 {
 
                     if (data.UserName == "adam")
                     {
-                        userSubinventoryTRepositiory.Create(new USER_SUBINVENTORY_T
+                        userSubinventoryTRepository.Create(new USER_SUBINVENTORY_T
                         {
                             UserId = data.Id,
                             SubinventoryCode = "SFG",
@@ -1325,7 +1325,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                             LastUpdateBy = "",
                             LastUpdateDate = null
                         }, true);
-                        userSubinventoryTRepositiory.Create(new USER_SUBINVENTORY_T
+                        userSubinventoryTRepository.Create(new USER_SUBINVENTORY_T
                         {
                             UserId = data.Id,
                             SubinventoryCode = "TB3",
@@ -1335,7 +1335,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                             LastUpdateBy = "",
                             LastUpdateDate = null
                         }, true);
-                        userSubinventoryTRepositiory.Create(new USER_SUBINVENTORY_T
+                        userSubinventoryTRepository.Create(new USER_SUBINVENTORY_T
                         {
                             UserId = data.Id,
                             SubinventoryCode = "HM",
@@ -1348,7 +1348,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                     }
                     else if (data.UserName == "tb2")
                     {
-                        userSubinventoryTRepositiory.Create(new USER_SUBINVENTORY_T
+                        userSubinventoryTRepository.Create(new USER_SUBINVENTORY_T
                         {
                             UserId = data.Id,
                             SubinventoryCode = "TB2",
@@ -1361,7 +1361,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                     }
                     else if (data.UserName == "chp")
                     {
-                        userSubinventoryTRepositiory.Create(new USER_SUBINVENTORY_T
+                        userSubinventoryTRepository.Create(new USER_SUBINVENTORY_T
                         {
                             UserId = data.Id,
                             SubinventoryCode = "SFG",
@@ -1371,7 +1371,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                             LastUpdateBy = "",
                             LastUpdateDate = null
                         }, true);
-                        userSubinventoryTRepositiory.Create(new USER_SUBINVENTORY_T
+                        userSubinventoryTRepository.Create(new USER_SUBINVENTORY_T
                         {
                             UserId = data.Id,
                             SubinventoryCode = "TB3",
@@ -1381,7 +1381,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                             LastUpdateBy = "",
                             LastUpdateDate = null
                         }, true);
-                        userSubinventoryTRepositiory.Create(new USER_SUBINVENTORY_T
+                        userSubinventoryTRepository.Create(new USER_SUBINVENTORY_T
                         {
                             UserId = data.Id,
                             SubinventoryCode = "HM",
@@ -1395,7 +1395,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                     }
                     else if (data.UserName == "tc1")
                     {
-                        userSubinventoryTRepositiory.Create(new USER_SUBINVENTORY_T
+                        userSubinventoryTRepository.Create(new USER_SUBINVENTORY_T
                         {
                             UserId = data.Id,
                             SubinventoryCode = "TC1",
@@ -1408,7 +1408,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                     }
                     else if (data.UserName == "tb3")
                     {
-                        //userSubinventoryTRepositiory.Create(new USER_SUBINVENTORY_T
+                        //userSubinventoryTRepository.Create(new USER_SUBINVENTORY_T
                         //{
                         //    UserId = data.Id,
                         //    SubinventoryCode = "SFG",
@@ -1418,7 +1418,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                         //    LastUpdateBy = "",
                         //    LastUpdateDate = null
                         //}, true);
-                        userSubinventoryTRepositiory.Create(new USER_SUBINVENTORY_T
+                        userSubinventoryTRepository.Create(new USER_SUBINVENTORY_T
                         {
                             UserId = data.Id,
                             SubinventoryCode = "TB3",
@@ -1428,7 +1428,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                             LastUpdateBy = "",
                             LastUpdateDate = null
                         }, true);
-                        //userSubinventoryTRepositiory.Create(new USER_SUBINVENTORY_T
+                        //userSubinventoryTRepository.Create(new USER_SUBINVENTORY_T
                         //{
                         //    UserId = data.Id,
                         //    SubinventoryCode = "HM",
@@ -1502,19 +1502,19 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                     {
                         if (ReasonEditor.Action == "edit")
                         {
-                            var ID = stkReasonTRepositiory.Get(r => r.ReasonCode == ReasonEditor.ReasonModel.Reason_code).SingleOrDefault();
+                            var ID = stkReasonTRepository.Get(r => r.ReasonCode == ReasonEditor.ReasonModel.Reason_code).SingleOrDefault();
 
                             if (ID != null)
                             {
                                 ID.ReasonDesc = ReasonEditor.ReasonModel.Reason_desc;
-                                stkReasonTRepositiory.Update(ID, true);
+                                stkReasonTRepository.Update(ID, true);
                                 return new ResultModel(true, "");
                             }
                         }
 
                         if (ReasonEditor.Action == "create")
                         {
-                            var d = stkReasonTRepositiory.Get(r => r.ReasonCode.ToString() == ReasonEditor.ReasonModel.Reason_code).SingleOrDefault();
+                            var d = stkReasonTRepository.Get(r => r.ReasonCode.ToString() == ReasonEditor.ReasonModel.Reason_code).SingleOrDefault();
                             if (d == null)
                             {
                                 STK_REASON_T sTK_REASON_T = new STK_REASON_T();
@@ -1522,7 +1522,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                                 sTK_REASON_T.ReasonDesc = ReasonEditor.ReasonModel.Reason_desc;
                                 sTK_REASON_T.CreatedBy = id;
                                 sTK_REASON_T.CreationDate = DateTime.Now;
-                                stkReasonTRepositiory.Create(sTK_REASON_T, true);
+                                stkReasonTRepository.Create(sTK_REASON_T, true);
                                 return new ResultModel(true, "");
                             }
                             else
@@ -1534,8 +1534,8 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
 
                         if (ReasonEditor.Action == "remove")
                         {
-                            var ID = stkReasonTRepositiory.Get(r => r.ReasonCode.ToString() == ReasonEditor.ReasonModel.Reason_code).SingleOrDefault();
-                            stkReasonTRepositiory.Delete(ID, true);
+                            var ID = stkReasonTRepository.Get(r => r.ReasonCode.ToString() == ReasonEditor.ReasonModel.Reason_code).SingleOrDefault();
+                            stkReasonTRepository.Delete(ID, true);
                             return new ResultModel(true, "");
                         }
                         return new ResultModel(false, "");
@@ -1560,7 +1560,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
         /// <returns></returns>
         public ORGANIZATION_T GetOrganization(long organizationId)
         {
-            return organizationRepositiory.GetAll().AsNoTracking().FirstOrDefault(x => x.OrganizationId == organizationId && x.ControlFlag != ControlFlag.Deleted);
+            return organizationRepository.GetAll().AsNoTracking().FirstOrDefault(x => x.OrganizationId == organizationId && x.ControlFlag != ControlFlag.Deleted);
         }
 
         #endregion
@@ -1741,7 +1741,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
         private List<SelectListItem> getReasonList()
         {
             var reasonList = new List<SelectListItem>();
-            var tempList = stkReasonTRepositiory
+            var tempList = stkReasonTRepository
                           .GetAll().AsNoTracking()
                           .Select(x => new SelectListItem()
                           {
@@ -1764,7 +1764,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             var organizationList = new List<SelectListItem>();
             try
             {
-                var tempList = organizationRepositiory
+                var tempList = organizationRepository
                             .GetAll().AsNoTracking()
                             .Where(x => x.ControlFlag != ControlFlag.Deleted)
                             .OrderBy(x => x.OrganizationCode)
@@ -1788,8 +1788,8 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
         /// <returns></returns>
         private List<SelectListItem> getOrganizationListForUserId(string userId)
         {
-            return userSubinventoryTRepositiory.GetAll().AsNoTracking()
-                .Join(organizationRepositiory.GetAll().AsNoTracking(),
+            return userSubinventoryTRepository.GetAll().AsNoTracking()
+                .Join(organizationRepository.GetAll().AsNoTracking(),
                 us => new { us.OrganizationId },
                 o => new { o.OrganizationId },
                 (us, o) => new
@@ -1833,7 +1833,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             var subinventoryList = new List<SelectListItem>();
             if (ORGANIZATION_ID == "*")
             {
-                var tempList = subinventoryRepositiory
+                var tempList = subinventoryRepository
                            .GetAll().AsNoTracking()
                            .Where(x =>
                            x.ControlFlag != ControlFlag.Deleted
@@ -1848,7 +1848,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             }
             else
             {
-                var tempList = subinventoryRepositiory
+                var tempList = subinventoryRepository
                            .GetAll().AsNoTracking()
                            .Where(x => x.OrganizationId == organizationId &&
                            x.ControlFlag != ControlFlag.Deleted
@@ -1873,8 +1873,8 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
         /// <returns></returns>
         private List<SelectListItem> getSubinventoryListForUserId(string userId)
         {
-            return userSubinventoryTRepositiory.GetAll().AsNoTracking()
-                .Join(subinventoryRepositiory.GetAll().AsNoTracking(),
+            return userSubinventoryTRepository.GetAll().AsNoTracking()
+                .Join(subinventoryRepository.GetAll().AsNoTracking(),
                 us => new { us.OrganizationId, us.SubinventoryCode },
                 s => new { s.OrganizationId, s.SubinventoryCode },
                 (us, s) => new
@@ -1922,8 +1922,8 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
 
             if (ORGANIZATION_ID == "*" && SUBINVENTORY_CODE == "全部")
             {
-                var tempList = locatorTRepositiory.GetAll().AsNoTracking()
-                          .Join(subinventoryRepositiory.GetAll().AsNoTracking(),
+                var tempList = locatorTRepository.GetAll().AsNoTracking()
+                          .Join(subinventoryRepository.GetAll().AsNoTracking(),
                           l => new { l.SubinventoryCode, l.OrganizationId },
                           s => new { s.SubinventoryCode, s.OrganizationId },
                           (l, s) => new
@@ -1950,8 +1950,8 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             }
             else if (ORGANIZATION_ID != "*" && SUBINVENTORY_CODE == "全部")
             {
-                var tempList = locatorTRepositiory.GetAll().AsNoTracking()
-                          .Join(subinventoryRepositiory.GetAll().AsNoTracking(),
+                var tempList = locatorTRepository.GetAll().AsNoTracking()
+                          .Join(subinventoryRepository.GetAll().AsNoTracking(),
                           l => new { l.SubinventoryCode, l.OrganizationId },
                           s => new { s.SubinventoryCode, s.OrganizationId },
                           (l, s) => new
@@ -1979,8 +1979,8 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             }
             else if (ORGANIZATION_ID == "*" && SUBINVENTORY_CODE != "全部")
             {
-                var tempList = locatorTRepositiory.GetAll().AsNoTracking()
-                          .Join(subinventoryRepositiory.GetAll().AsNoTracking(),
+                var tempList = locatorTRepository.GetAll().AsNoTracking()
+                          .Join(subinventoryRepository.GetAll().AsNoTracking(),
                           l => new { l.SubinventoryCode, l.OrganizationId },
                           s => new { s.SubinventoryCode, s.OrganizationId },
                           (l, s) => new
@@ -2008,8 +2008,8 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             }
             else
             {
-                var tempList = locatorTRepositiory.GetAll().AsNoTracking()
-                          .Join(subinventoryRepositiory.GetAll().AsNoTracking(),
+                var tempList = locatorTRepository.GetAll().AsNoTracking()
+                          .Join(subinventoryRepository.GetAll().AsNoTracking(),
                           l => new { l.SubinventoryCode, l.OrganizationId },
                           s => new { s.SubinventoryCode, s.OrganizationId },
                           (l, s) => new
@@ -2048,8 +2048,8 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
         /// <returns></returns>
         private List<SelectListItem> getLocatorListForUserId(string userId, string SUBINVENTORY_CODE)
         {
-            return userSubinventoryTRepositiory.GetAll().AsNoTracking()
-                .Join(locatorTRepositiory.GetAll().AsNoTracking(),
+            return userSubinventoryTRepository.GetAll().AsNoTracking()
+                .Join(locatorTRepository.GetAll().AsNoTracking(),
 
                 us => new { us.OrganizationId, us.SubinventoryCode },
                 l => new { l.OrganizationId, l.SubinventoryCode },
@@ -2084,7 +2084,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
         /// <returns></returns>
         public List<SUBINVENTORY_T> GetSubinventoryT(string subinventoryCode)
         {
-            return subinventoryRepositiory.GetAll().AsNoTracking().Where(x => x.SubinventoryCode == subinventoryCode).ToList();
+            return subinventoryRepository.GetAll().AsNoTracking().Where(x => x.SubinventoryCode == subinventoryCode).ToList();
         }
 
         public bool CompareOrganization(string outSubinventoryCode, string inSubinventoryCode)
@@ -2222,8 +2222,8 @@ on s.ORGANIZATION_ID = l.ORGANIZATION_ID and s.SUBINVENTORY_CODE = l.SUBINVENTOR
                 //    new SqlParameter("@SUBINVENTORY_CODE", SUBINVENTORY_CODE),
                 //    new SqlParameter("@LOCATOR_ID", locId)).ToList();
 
-                //var tempList = organizationRepositiory.GetAll().AsNoTracking()
-                //    .Join(subinventoryRepositiory.GetAll().AsNoTracking(),
+                //var tempList = organizationRepository.GetAll().AsNoTracking()
+                //    .Join(subinventoryRepository.GetAll().AsNoTracking(),
                 //    o => new { o.OrganizationId },
                 //    s => new { s.OrganizationId },
                 //    (o, s) => new
@@ -2236,7 +2236,7 @@ on s.ORGANIZATION_ID = l.ORGANIZATION_ID and s.SUBINVENTORY_CODE = l.SUBINVENTOR
                 //        s.OspFlag,
                 //        s.LocatorType
                 //    })
-                //    .Join(locatorTRepositiory.GetAll().AsNoTracking(),
+                //    .Join(locatorTRepository.GetAll().AsNoTracking(),
                 //    os => new { os.OrganizationId, os.SubinventoryCode },
                 //    l => new { l.OrganizationId, l.SubinventoryCode },
                 //    (os, l) => new {
@@ -2317,7 +2317,7 @@ on s.ORGANIZATION_ID = l.ORGANIZATION_ID and s.SUBINVENTORY_CODE = l.SUBINVENTOR
         /// <returns></returns>
         public List<AutoCompletedItem> GetAutoCompleteItemNumberList(string Prefix)
         {
-            return itemsTRepositiory.GetAll().AsNoTracking().Where(x =>
+            return itemsTRepository.GetAll().AsNoTracking().Where(x =>
             x.ItemNumber.Contains(Prefix) &&
             x.ControlFlag != ControlFlag.Deleted)
             .OrderBy(x => x.ItemNumber)
@@ -2335,8 +2335,8 @@ on s.ORGANIZATION_ID = l.ORGANIZATION_ID and s.SUBINVENTORY_CODE = l.SUBINVENTOR
         /// <returns></returns>
         public ITEMS_T GetItemNumber(string itemNumber)
         {
-            return itemsTRepositiory.GetAll().AsNoTracking().Join(
-                orgItemRepositityory.GetAll().AsNoTracking(),
+            return itemsTRepository.GetAll().AsNoTracking().Join(
+                orgItemRepository.GetAll().AsNoTracking(),
                 i => i.InventoryItemId,
                 oi => oi.InventoryItemId,
                 (i, oi) => i)
@@ -2350,8 +2350,8 @@ on s.ORGANIZATION_ID = l.ORGANIZATION_ID and s.SUBINVENTORY_CODE = l.SUBINVENTOR
         /// <returns></returns>
         public ITEMS_T GetItemNumber(long InventoryItemId)
         {
-            return itemsTRepositiory.GetAll().AsNoTracking().Join(
-                orgItemRepositityory.GetAll().AsNoTracking(),
+            return itemsTRepository.GetAll().AsNoTracking().Join(
+                orgItemRepository.GetAll().AsNoTracking(),
                 i => i.InventoryItemId,
                 oi => oi.InventoryItemId,
                 (i, oi) => i)
@@ -2365,8 +2365,8 @@ on s.ORGANIZATION_ID = l.ORGANIZATION_ID and s.SUBINVENTORY_CODE = l.SUBINVENTOR
         /// <returns></returns>
         public List<long> GetItemNumberOrganizationId(string itemNumber)
         {
-            return itemsTRepositiory.GetAll().AsNoTracking().
-                Join(orgItemRepositityory.GetAll().AsNoTracking(),
+            return itemsTRepository.GetAll().AsNoTracking().
+                Join(orgItemRepository.GetAll().AsNoTracking(),
                 i => new { i.InventoryItemId },
                 o => new { o.InventoryItemId },
                 (i, o) => new
@@ -2385,8 +2385,8 @@ on s.ORGANIZATION_ID = l.ORGANIZATION_ID and s.SUBINVENTORY_CODE = l.SUBINVENTOR
         /// <returns></returns>
         public List<long> GetItemNumberOrganizationId(long inventoryItemId)
         {
-            return itemsTRepositiory.GetAll().AsNoTracking().
-                Join(orgItemRepositityory.GetAll().AsNoTracking(),
+            return itemsTRepository.GetAll().AsNoTracking().
+                Join(orgItemRepository.GetAll().AsNoTracking(),
                 i => new { i.InventoryItemId },
                 o => new { o.InventoryItemId },
                 (i, o) => new
@@ -2417,7 +2417,7 @@ on s.ORGANIZATION_ID = l.ORGANIZATION_ID and s.SUBINVENTORY_CODE = l.SUBINVENTOR
             if (OrganizationId != "*")
             {
                 var id = Int32.Parse(OrganizationId);
-                var MachineCode = machinePaperTypeRepositiory.Get(x => x.ControlFlag != ControlFlag.Deleted && x.OrganizationId == id)
+                var MachineCode = machinePaperTypeRepository.Get(x => x.ControlFlag != ControlFlag.Deleted && x.OrganizationId == id)
                              .Select(x => new SelectListItem
                              {
                                  Text = x.MachineCode,
@@ -2427,7 +2427,7 @@ on s.ORGANIZATION_ID = l.ORGANIZATION_ID and s.SUBINVENTORY_CODE = l.SUBINVENTOR
             }
             else
             {
-                var MachineCode = machinePaperTypeRepositiory.Get(x => x.ControlFlag != ControlFlag.Deleted)
+                var MachineCode = machinePaperTypeRepository.Get(x => x.ControlFlag != ControlFlag.Deleted)
                            .Select(x => new SelectListItem
                            {
                                Text = x.MachineCode,
@@ -2500,7 +2500,7 @@ and usb.UserId = @UserId
             {
                 using (var mesContext = new MesContext())
                 {
-                    return yszmpckqTRepositiory.GetAll().AsNoTracking().FirstOrDefault(x => x.OrganizationId == organizationId &&
+                    return yszmpckqTRepository.GetAll().AsNoTracking().FirstOrDefault(x => x.OrganizationId == organizationId &&
                         x.OrganizationCode == organizationCode && x.OspSubinventory == ospSubinventory && x.Pstyp == pstyp);
                 }
             }

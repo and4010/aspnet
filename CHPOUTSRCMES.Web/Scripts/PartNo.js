@@ -1,35 +1,12 @@
 ﻿$(document).ready(function () {
     onclick();
     LoadTable();
-    init();
+    $("#Catalog_elem_val_050").combobox();
     $("#Organization_code").combobox();
     $("#Catalog_elem_val_020").combobox();
     $("#Catalog_elem_val_070").combobox();
 });
 
-function init() {
-    $("#Catalog_elem_val_050").autocomplete({
-        source: function (request, response) {
-            $.ajax({
-                url: "/PartNo/GetSpec",
-                type: "post",
-                dataType: "json",
-                data: {
-                    pspec : request.term
-                },
-                success: function (data) {
-                    response($.map(data.slice(0, 20), function (item) {
-                        return {
-                            label: item.Description, value: item.Value
-                        };
-                    }));
-                }
-
-            });
-
-        }
-    });
-}
 
 function LoadTable(Catalog_elem_val_050, Catalog_elem_val_020, Catalog_elem_val_070, OrganizationId) {
 

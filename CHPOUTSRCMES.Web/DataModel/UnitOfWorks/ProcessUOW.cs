@@ -31,35 +31,35 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
 
         private readonly IRepository<OSP_COTANGENT_T> OspCotangenTRepository;
         private readonly IRepository<OSP_COTANGENT_HT> OspCotangentHTRepository;
-        private readonly IRepository<OSP_DETAIL_IN_T> OspDetailInTRepositiory;
-        private readonly IRepository<OSP_DETAIL_IN_HT> OspDetailInHTRepositiory;
-        private readonly IRepository<OSP_DETAIL_OUT_T> OspDetailOutTRepositiory;
-        private readonly IRepository<OSP_DETAIL_OUT_HT> OspDetailOutHTRepositiory;
-        private readonly IRepository<OSP_HEADER_T> OspHeaderTRepositiory;
-        private readonly IRepository<OSP_ORG_T> OspOrgTRepositiory;
-        private readonly IRepository<OSP_PICKED_IN_T> OspPickedInTRepositiory;
-        private readonly IRepository<OSP_PICKED_IN_HT> OspPickedInHTRepositiory;
-        private readonly IRepository<OSP_PICKED_OUT_T> OspPickedOutTRepositiory;
-        private readonly IRepository<OSP_PICKED_OUT_HT> OspPickedOutHTRepositiory;
-        private readonly IRepository<OSP_YIELD_VARIANCE_T> OspYieldVarianceTRepositiory;
-        private readonly IRepository<OSP_YIELD_VARIANCE_HT> OspYieldVarianceHTRepositiory;
+        private readonly IRepository<OSP_DETAIL_IN_T> OspDetailInTRepository;
+        private readonly IRepository<OSP_DETAIL_IN_HT> OspDetailInHTRepository;
+        private readonly IRepository<OSP_DETAIL_OUT_T> OspDetailOutTRepository;
+        private readonly IRepository<OSP_DETAIL_OUT_HT> OspDetailOutHTRepository;
+        private readonly IRepository<OSP_HEADER_T> OspHeaderTRepository;
+        private readonly IRepository<OSP_ORG_T> OspOrgTRepository;
+        private readonly IRepository<OSP_PICKED_IN_T> OspPickedInTRepository;
+        private readonly IRepository<OSP_PICKED_IN_HT> OspPickedInHTRepository;
+        private readonly IRepository<OSP_PICKED_OUT_T> OspPickedOutTRepository;
+        private readonly IRepository<OSP_PICKED_OUT_HT> OspPickedOutHTRepository;
+        private readonly IRepository<OSP_YIELD_VARIANCE_T> OspYieldVarianceTRepository;
+        private readonly IRepository<OSP_YIELD_VARIANCE_HT> OspYieldVarianceHTRepository;
 
         public ProcessUOW(DbContext context) : base(context)
         {
             this.OspCotangenTRepository = new GenericRepository<OSP_COTANGENT_T>(this);
             this.OspCotangentHTRepository = new GenericRepository<OSP_COTANGENT_HT>(this);
-            this.OspDetailInTRepositiory = new GenericRepository<OSP_DETAIL_IN_T>(this);
-            this.OspDetailInHTRepositiory = new GenericRepository<OSP_DETAIL_IN_HT>(this);
-            this.OspDetailOutTRepositiory = new GenericRepository<OSP_DETAIL_OUT_T>(this);
-            this.OspDetailOutHTRepositiory = new GenericRepository<OSP_DETAIL_OUT_HT>(this);
-            this.OspHeaderTRepositiory = new GenericRepository<OSP_HEADER_T>(this);
-            this.OspOrgTRepositiory = new GenericRepository<OSP_ORG_T>(this);
-            this.OspPickedInTRepositiory = new GenericRepository<OSP_PICKED_IN_T>(this);
-            this.OspPickedInHTRepositiory = new GenericRepository<OSP_PICKED_IN_HT>(this);
-            this.OspPickedOutTRepositiory = new GenericRepository<OSP_PICKED_OUT_T>(this);
-            this.OspPickedOutHTRepositiory = new GenericRepository<OSP_PICKED_OUT_HT>(this);
-            this.OspYieldVarianceTRepositiory = new GenericRepository<OSP_YIELD_VARIANCE_T>(this);
-            this.OspYieldVarianceHTRepositiory = new GenericRepository<OSP_YIELD_VARIANCE_HT>(this);
+            this.OspDetailInTRepository = new GenericRepository<OSP_DETAIL_IN_T>(this);
+            this.OspDetailInHTRepository = new GenericRepository<OSP_DETAIL_IN_HT>(this);
+            this.OspDetailOutTRepository = new GenericRepository<OSP_DETAIL_OUT_T>(this);
+            this.OspDetailOutHTRepository = new GenericRepository<OSP_DETAIL_OUT_HT>(this);
+            this.OspHeaderTRepository = new GenericRepository<OSP_HEADER_T>(this);
+            this.OspOrgTRepository = new GenericRepository<OSP_ORG_T>(this);
+            this.OspPickedInTRepository = new GenericRepository<OSP_PICKED_IN_T>(this);
+            this.OspPickedInHTRepository = new GenericRepository<OSP_PICKED_IN_HT>(this);
+            this.OspPickedOutTRepository = new GenericRepository<OSP_PICKED_OUT_T>(this);
+            this.OspPickedOutHTRepository = new GenericRepository<OSP_PICKED_OUT_HT>(this);
+            this.OspYieldVarianceTRepository = new GenericRepository<OSP_YIELD_VARIANCE_T>(this);
+            this.OspYieldVarianceHTRepository = new GenericRepository<OSP_YIELD_VARIANCE_HT>(this);
 
 
         }
@@ -158,7 +158,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                 oSP.CreationDate = DateTime.Now;
                 oSP.LastUpdateBy = "1";
                 oSP.LastUpdateDate = DateTime.Now;
-                OspOrgTRepositiory.Create(oSP, true);
+                OspOrgTRepository.Create(oSP, true);
 
                 oSP.ProcessCode = "XXIFP219";
                 oSP.ServerCode = "123";
@@ -229,7 +229,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                 oSP.CreationDate = DateTime.Now;
                 oSP.LastUpdateBy = "1";
                 oSP.LastUpdateDate = DateTime.Now;
-                OspOrgTRepositiory.Create(oSP, true);
+                OspOrgTRepository.Create(oSP, true);
 
 
                 //代紙平張
@@ -305,7 +305,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                 oSP.CreationDate = DateTime.Now;
                 oSP.LastUpdateBy = "1";
                 oSP.LastUpdateDate = DateTime.Now;
-                OspOrgTRepositiory.Create(oSP, true);
+                OspOrgTRepository.Create(oSP, true);
 
 
                 oSP.ProcessCode = "XXIFP219";
@@ -379,7 +379,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                 oSP.CreationDate = DateTime.Now;
                 oSP.LastUpdateBy = "1";
                 oSP.LastUpdateDate = DateTime.Now;
-                OspOrgTRepositiory.Create(oSP, true);
+                OspOrgTRepository.Create(oSP, true);
 
                 //代紙平張
 
@@ -452,7 +452,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                 oSP.CreationDate = DateTime.Now;
                 oSP.LastUpdateBy = "1";
                 oSP.LastUpdateDate = DateTime.Now;
-                OspOrgTRepositiory.Create(oSP, true);
+                OspOrgTRepository.Create(oSP, true);
 
 
                 oSP.ProcessCode = "XXIFP219";
@@ -524,7 +524,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                 oSP.CreationDate = DateTime.Now;
                 oSP.LastUpdateBy = "1";
                 oSP.LastUpdateDate = DateTime.Now;
-                OspOrgTRepositiory.Create(oSP, true);
+                OspOrgTRepository.Create(oSP, true);
 
 
 
@@ -543,14 +543,14 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             OSP_HEADER_T OspHeaderT = new OSP_HEADER_T();
             OSP_DETAIL_IN_T OspDetailInT = new OSP_DETAIL_IN_T();
             OSP_DETAIL_OUT_T OspDetailOutT = new OSP_DETAIL_OUT_T();
-            var org = OspOrgTRepositiory.GetAll().AsNoTracking().ToList();
+            var org = OspOrgTRepository.GetAll().AsNoTracking().ToList();
 
             try
             {
                 for (int i = 0; org.Count() > i; i++)
                 {
                     var OspHeaderBatchNo = org[i].BatchNo;
-                    var batch = OspHeaderTRepositiory.GetAll().Where(x => x.BatchNo == OspHeaderBatchNo).SingleOrDefault();
+                    var batch = OspHeaderTRepository.GetAll().Where(x => x.BatchNo == OspHeaderBatchNo).SingleOrDefault();
                     if (batch == null)
                     {
                         OspHeaderT.PeBatchId = org[i].PeBatchId;
@@ -573,7 +573,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                         OspHeaderT.Modifications = 0;
                         OspHeaderT.CreatedBy = "SYS";
                         OspHeaderT.CreationDate = DateTime.Now;
-                        OspHeaderTRepositiory.Create(OspHeaderT, true);
+                        OspHeaderTRepository.Create(OspHeaderT, true);
                     }
                     else if (batch.BatchNo != org[i].BatchNo)
                     {
@@ -597,7 +597,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                         OspHeaderT.Modifications = 0;
                         OspHeaderT.CreatedBy = "SYS";
                         OspHeaderT.CreationDate = DateTime.Now;
-                        OspHeaderTRepositiory.Create(OspHeaderT, true);
+                        OspHeaderTRepository.Create(OspHeaderT, true);
                     }
 
 
@@ -660,7 +660,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                         OspDetailInT.CreationDate = org[i].CreationDate;
                         OspDetailInT.LastUpdateBy = org[i].LastUpdateBy;
                         OspDetailInT.LastUpdateDate = org[i].LastUpdateDate;
-                        OspDetailInTRepositiory.Create(OspDetailInT, true);
+                        OspDetailInTRepository.Create(OspDetailInT, true);
 
                     }
 
@@ -723,7 +723,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                         OspDetailOutT.CreationDate = org[i].CreationDate;
                         OspDetailOutT.LastUpdateBy = org[i].LastUpdateBy;
                         OspDetailOutT.LastUpdateDate = org[i].LastUpdateDate;
-                        OspDetailOutTRepositiory.Create(OspDetailOutT, true);
+                        OspDetailOutTRepository.Create(OspDetailOutT, true);
 
                     }
                 }
@@ -811,11 +811,11 @@ WHERE DI.OSP_HEADER_ID = @OSP_HEADER_ID");
         {
             try
             {
-                var header = OspHeaderTRepositiory.Get(x => x.OspHeaderId == OspHeaderId).SingleOrDefault();
+                var header = OspHeaderTRepository.Get(x => x.OspHeaderId == OspHeaderId).SingleOrDefault();
                 if (header != null)
                 {
                     header.Note = note;
-                    OspHeaderTRepositiory.Update(header, true);
+                    OspHeaderTRepository.Update(header, true);
                     return new ResultModel(true, "成功");
                 }
                 else
@@ -1014,9 +1014,9 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
                     var InvestDTListId = InvestDTList.InvestList[0];
                     if (InvestDTList.Action == "edit")
                     {
-                        var id = OspPickedInTRepositiory.Get(x => x.OspPickedInId == InvestDTListId.OspPickedInId).SingleOrDefault();
-                        var stock = stockTRepositiory.Get(x => x.StockId == id.StockId).SingleOrDefault();
-                        var header = OspHeaderTRepositiory.Get(x => x.OspHeaderId == id.OspHeaderId).SingleOrDefault();
+                        var id = OspPickedInTRepository.Get(x => x.OspPickedInId == InvestDTListId.OspPickedInId).SingleOrDefault();
+                        var stock = stockTRepository.Get(x => x.StockId == id.StockId).SingleOrDefault();
+                        var header = OspHeaderTRepository.Get(x => x.OspHeaderId == id.OspHeaderId).SingleOrDefault();
                         if (id != null)
                         {
                             id.HasRemaint = InvestDTListId.HasRemaint;
@@ -1024,7 +1024,7 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
                             id.LastUpdateBy = UserId;
                             id.LastUpdateUserName = UserName;
                             id.LastUpdateDate = DateTime.Now;
-                            OspPickedInTRepositiory.Update(id, true);
+                            OspPickedInTRepository.Update(id, true);
                             var aft = InvestDTListId.RemainingQuantity;
                             var chg = stock.PrimaryTransactionQty - InvestDTListId.RemainingQuantity;
                             if (stock.PrimaryTransactionQty >= aft)
@@ -1046,12 +1046,12 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
 
                     if (InvestDTList.Action == "remove")
                     {
-                        var id = OspPickedInTRepositiory.Get(x => x.OspPickedInId == InvestDTListId.OspPickedInId).SingleOrDefault();
-                        var stock = stockTRepositiory.Get(x => x.StockId == id.StockId).SingleOrDefault();
-                        var header = OspHeaderTRepositiory.Get(x => x.OspHeaderId == id.OspHeaderId).SingleOrDefault();
+                        var id = OspPickedInTRepository.Get(x => x.OspPickedInId == InvestDTListId.OspPickedInId).SingleOrDefault();
+                        var stock = stockTRepository.Get(x => x.StockId == id.StockId).SingleOrDefault();
+                        var header = OspHeaderTRepository.Get(x => x.OspHeaderId == id.OspHeaderId).SingleOrDefault();
                         if (id != null)
                         {
-                            OspPickedInTRepositiory.Delete(id, true);
+                            OspPickedInTRepository.Delete(id, true);
                             CheckStock(stock.StockId, UserId, stock.PrimaryTransactionQty, ActionCode.Picked);
                             StockRecord(id.StockId, stock.PrimaryTransactionQty, 0, 0, 0, CategoryCode.Process, ActionCode.Picked, header.BatchNo, UserId);
                             txn.Commit();
@@ -1084,14 +1084,14 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
         {
             try
             {
-                var header = OspHeaderTRepositiory.Get(x => x.OspHeaderId == OspHeaderId).SingleOrDefault();
+                var header = OspHeaderTRepository.Get(x => x.OspHeaderId == OspHeaderId).SingleOrDefault();
                 if (header != null)
                 {
                     header.CuttingDateFrom = Dialog_CuttingDateFrom;
                     header.CuttingDateTo = Dialog_CuttingDateTo;
                     header.MachineCode = Dialog_MachineNum == "*" ? "" : Dialog_MachineNum;
                     header.Status = BtnStatus;
-                    OspHeaderTRepositiory.Update(header, true);
+                    OspHeaderTRepository.Update(header, true);
                     return new ResultModel(true, "成功");
                 }
                 else
@@ -1117,7 +1117,7 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
         {
             try
             {
-                var batchno = OspHeaderTRepositiory.Get(x => x.OspHeaderId == OspHeaderId).SingleOrDefault();
+                var batchno = OspHeaderTRepository.Get(x => x.OspHeaderId == OspHeaderId).SingleOrDefault();
                 if (batchno == null)
                 {
                     return new ResultModel(false, "單號錯誤");
@@ -1287,11 +1287,11 @@ AND ST.BARCODE = @BARCODE");
                         return new ResultModel(false, "無條碼資料");
                     }
 
-                    var OspPickIn = OspPickedInTRepositiory.Get(x => x.Barcode == Barcode && x.OspDetailInId == OspDetailInId).SingleOrDefault();
+                    var OspPickIn = OspPickedInTRepository.Get(x => x.Barcode == Barcode && x.OspDetailInId == OspDetailInId).SingleOrDefault();
                     if (OspPickIn == null)
                     {
-                        var detailin = OspDetailInTRepositiory.Get(x => x.OspDetailInId == OspDetailInId).SingleOrDefault();
-                        var Header = OspHeaderTRepositiory.Get(x => x.OspHeaderId == detailin.OspHeaderId).SingleOrDefault();
+                        var detailin = OspDetailInTRepository.Get(x => x.OspDetailInId == OspDetailInId).SingleOrDefault();
+                        var Header = OspHeaderTRepository.Get(x => x.OspHeaderId == detailin.OspHeaderId).SingleOrDefault();
                         OSP_PICKED_IN_T oSP_PICKED_IN_T = new OSP_PICKED_IN_T();
                         oSP_PICKED_IN_T.OspDetailInId = OspDetailInId;
                         oSP_PICKED_IN_T.OspHeaderId = detailin == null ? 0 : detailin.OspHeaderId;
@@ -1313,7 +1313,7 @@ AND ST.BARCODE = @BARCODE");
                         oSP_PICKED_IN_T.CreatedBy = UserId;
                         oSP_PICKED_IN_T.CreatedUserName = UserName;
                         oSP_PICKED_IN_T.CreationDate = DateTime.Now;
-                        OspPickedInTRepositiory.Create(oSP_PICKED_IN_T, true);
+                        OspPickedInTRepository.Create(oSP_PICKED_IN_T, true);
                         var aft = Remaining_Weight == "" ? 0 : decimal.Parse(Remaining_Weight);
                         var chg = data.PrimaryAvailableQty - (Remaining_Weight == "" ? 0 : decimal.Parse(Remaining_Weight));
                         if (data.PrimaryAvailableQty >= aft)
@@ -1404,8 +1404,8 @@ AND ST.BARCODE = @BARCODE");
         public ResultModel InsertPickOut(string UserId, string UserName, string Production_Roll_Ream_Qty, string Production_Roll_Ream_Wt, string Cotangent, long OspDetailOutId)
         {
 
-            var detailout = OspDetailOutTRepositiory.Get(x => x.OspDetailOutId == OspDetailOutId).SingleOrDefault();
-            var header = OspHeaderTRepositiory.Get(x => x.OspHeaderId == detailout.OspHeaderId).SingleOrDefault();
+            var detailout = OspDetailOutTRepository.Get(x => x.OspDetailOutId == OspDetailOutId).SingleOrDefault();
+            var header = OspHeaderTRepository.Get(x => x.OspHeaderId == detailout.OspHeaderId).SingleOrDefault();
             if (detailout == null)
             {
                 return new ResultModel(false, "ID錯誤");
@@ -1415,8 +1415,8 @@ AND ST.BARCODE = @BARCODE");
 
             if (Cotangent == "1")
             {
-                var relate = OspDetailOutTRepositiory.Get().
-                    Join(relatedTRepositiory.GetAll(),
+                var relate = OspDetailOutTRepository.Get().
+                    Join(relatedTRepository.GetAll(),
                     s => s.InventoryItemId,
                     c => c.InventoryItemId,
                     (s, c) => new
@@ -1434,7 +1434,7 @@ AND ST.BARCODE = @BARCODE");
                     return new ResultModel(false, "無餘切資料");
                 }
                 //尋找餘切
-                var Relateitem = itemsTRepositiory.Get(x => x.InventoryItemId == relate.b.RelatedItemId).SingleOrDefault();
+                var Relateitem = itemsTRepository.Get(x => x.InventoryItemId == relate.b.RelatedItemId).SingleOrDefault();
 
 
                 ospCotanget.OspDetailOutId = OspDetailOutId;
@@ -1480,7 +1480,7 @@ AND ST.BARCODE = @BARCODE");
                 ospPickOut.CreatedBy = UserId;
                 ospPickOut.CreatedUserName = UserName;
                 ospPickOut.CreationDate = DateTime.Now;
-                OspPickedOutTRepositiory.Create(ospPickOut, true);
+                OspPickedOutTRepository.Create(ospPickOut, true);
             }
 
             return new ResultModel(true, "");
@@ -1516,8 +1516,8 @@ AND ST.BARCODE = @BARCODE");
             {
                 try
                 {
-                    var detailout = OspDetailOutTRepositiory.Get(x => x.OspDetailOutId == OspDetailOutId).SingleOrDefault();
-                    var header = OspHeaderTRepositiory.Get(x => x.OspHeaderId == detailout.OspHeaderId).SingleOrDefault();
+                    var detailout = OspDetailOutTRepository.Get(x => x.OspDetailOutId == OspDetailOutId).SingleOrDefault();
+                    var header = OspHeaderTRepository.Get(x => x.OspHeaderId == detailout.OspHeaderId).SingleOrDefault();
                     if (detailout == null)
                     {
                         return new ResultModel(false, "ID錯誤");
@@ -1545,7 +1545,7 @@ AND ST.BARCODE = @BARCODE");
                     ospPickOut.CreatedBy = UserId;
                     ospPickOut.CreatedUserName = UserName;
                     ospPickOut.CreationDate = DateTime.Now;
-                    OspPickedOutTRepositiory.Create(ospPickOut, true);
+                    OspPickedOutTRepository.Create(ospPickOut, true);
                     txn.Commit();
                     return new ResultModel(true, "");
                 }
@@ -1657,7 +1657,7 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
                     if (ProductionDTEditor.Action == "edit")
                     {
                         var OspPickedOutId = ProductionDTEditor.ProductionList[0].OspPickedOutId;
-                        var id = OspPickedOutTRepositiory.Get(r => r.OspPickedOutId == OspPickedOutId).SingleOrDefault();
+                        var id = OspPickedOutTRepository.Get(r => r.OspPickedOutId == OspPickedOutId).SingleOrDefault();
                         if (id != null)
                         {
                             id.SecondaryQuantity = ProductionDTEditor.ProductionList[0].SecondaryQuantity;
@@ -1665,7 +1665,7 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
                             id.LastUpdateBy = UserId;
                             id.LastUpdateUserName = UserName;
                             id.LastUpdateDate = DateTime.Now;
-                            OspPickedOutTRepositiory.Update(id, true);
+                            OspPickedOutTRepository.Update(id, true);
                             txn.Commit();
                             return new ResultModel(true, "");
                         }
@@ -1673,10 +1673,10 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
                     if (ProductionDTEditor.Action == "remove")
                     {
                         var OspPickedOutId = ProductionDTEditor.ProductionList[0].OspPickedOutId;
-                        var id = OspPickedOutTRepositiory.Get(r => r.OspPickedOutId == OspPickedOutId).SingleOrDefault();
+                        var id = OspPickedOutTRepository.Get(r => r.OspPickedOutId == OspPickedOutId).SingleOrDefault();
                         if (id != null)
                         {
-                            var PickedOut = OspPickedOutTRepositiory.GetAll().ToList();
+                            var PickedOut = OspPickedOutTRepository.GetAll().ToList();
                             if (PickedOut.Count == 1)
                             {
                                 var cotangent = OspCotangenTRepository.Get(x => x.OspCotangentId == id.OspCotangentId).SingleOrDefault();
@@ -1685,7 +1685,7 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
                                     OspCotangenTRepository.Delete(cotangent, true);
                                 }
                             }
-                            OspPickedOutTRepositiory.Delete(id, true);
+                            OspPickedOutTRepository.Delete(id, true);
                             txn.Commit();
                             return new ResultModel(true, "");
                         }
@@ -1716,14 +1716,14 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
                     if (ProductionDTEditor.Action == "edit")
                     {
                         var OspPickedOutId = ProductionDTEditor.ProductionList[0].OspPickedOutId;
-                        var id = OspPickedOutTRepositiory.Get(r => r.OspPickedOutId == OspPickedOutId).SingleOrDefault();
+                        var id = OspPickedOutTRepository.Get(r => r.OspPickedOutId == OspPickedOutId).SingleOrDefault();
                         if (id != null)
                         {
                             id.PrimaryQuantity = ProductionDTEditor.ProductionList[0].PrimaryQuantity;
                             id.LastUpdateBy = UserId;
                             id.LastUpdateUserName = UserName;
                             id.LastUpdateDate = DateTime.Now;
-                            OspPickedOutTRepositiory.Update(id, true);
+                            OspPickedOutTRepository.Update(id, true);
                             txn.Commit();
                             return new ResultModel(true, "");
                         }
@@ -1731,10 +1731,10 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
                     if (ProductionDTEditor.Action == "remove")
                     {
                         var OspPickedOutId = ProductionDTEditor.ProductionList[0].OspPickedOutId;
-                        var id = OspPickedOutTRepositiory.Get(r => r.OspPickedOutId == OspPickedOutId).SingleOrDefault();
+                        var id = OspPickedOutTRepository.Get(r => r.OspPickedOutId == OspPickedOutId).SingleOrDefault();
                         if (id != null)
                         {
-                            var PickedOut = OspPickedOutTRepositiory.GetAll().ToList();
+                            var PickedOut = OspPickedOutTRepository.GetAll().ToList();
                             if (PickedOut.Count == 1)
                             {
                                 var cotangent = OspCotangenTRepository.Get(x => x.OspCotangentId == id.OspCotangentId).SingleOrDefault();
@@ -1743,7 +1743,7 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
                                     OspCotangenTRepository.Delete(cotangent, true);
                                 }
                             }
-                            OspPickedOutTRepositiory.Delete(id, true);
+                            OspPickedOutTRepository.Delete(id, true);
                             txn.Commit();
                             return new ResultModel(true, "");
                         }
@@ -1794,7 +1794,7 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
                         var id = OspCotangenTRepository.Get(r => r.OspCotangentId == OspCotangentId).SingleOrDefault();
                         if (id != null)
                         {
-                            var osppick = OspPickedOutTRepositiory.Get(x => x.OspCotangentId == id.OspCotangentId).FirstOrDefault();
+                            var osppick = OspPickedOutTRepository.Get(x => x.OspCotangentId == id.OspCotangentId).FirstOrDefault();
                             osppick.Cotangent = "N";
                             osppick.OspCotangentId = null;
                             OspCotangenTRepository.Delete(id, true);
@@ -1824,7 +1824,7 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
         {
             try
             {
-                var ProductionId = OspPickedOutTRepositiory.Get(r => r.Barcode == Production_Barcode && r.OspDetailOutId == OspDetailOutId).SingleOrDefault();
+                var ProductionId = OspPickedOutTRepository.Get(r => r.Barcode == Production_Barcode && r.OspDetailOutId == OspDetailOutId).SingleOrDefault();
                 if (ProductionId != null)
                 {
 
@@ -1838,7 +1838,7 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
                         ProductionId.LastUpdateBy = UserId;
                         ProductionId.LastUpdateUserName = UserName;
                         ProductionId.LastUpdateDate = DateTime.Now;
-                        OspPickedOutTRepositiory.Update(ProductionId, true);
+                        OspPickedOutTRepository.Update(ProductionId, true);
                         return new ResultModel(true, "");
                     }
 
@@ -1914,10 +1914,10 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
         {
             try
             {
-                var PickIn = OspPickedInTRepositiory.Get(x => x.OspDetailInId == OspDetailInId).ToList();
-                var PickOut = OspPickedOutTRepositiory.Get(x => x.OspDetailOutId == OspDetailOutId).ToList();
-                var DetailIn = OspDetailInTRepositiory.Get(x => x.OspDetailInId == OspDetailInId).SingleOrDefault();
-                var DetailOut = OspDetailOutTRepositiory.Get(x => x.OspDetailOutId == OspDetailOutId).SingleOrDefault();
+                var PickIn = OspPickedInTRepository.Get(x => x.OspDetailInId == OspDetailInId).ToList();
+                var PickOut = OspPickedOutTRepository.Get(x => x.OspDetailOutId == OspDetailOutId).ToList();
+                var DetailIn = OspDetailInTRepository.Get(x => x.OspDetailInId == OspDetailInId).SingleOrDefault();
+                var DetailOut = OspDetailOutTRepository.Get(x => x.OspDetailOutId == OspDetailOutId).SingleOrDefault();
                 var Cotangent = OspCotangenTRepository.Get(x => x.OspDetailOutId == OspDetailOutId).SingleOrDefault();
                 var PickOutWeight = 0M;
                 var RemainWeight = 0M;
@@ -1955,7 +1955,7 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
                 var investWeight = DetailIn.PrimaryQuantity - RemainWeight;
                 var Totle = Math.Round(ProductWeight / investWeight, 2);
                 var rate = Math.Round((Totle * 100), 2);
-                var loss = OspYieldVarianceTRepositiory.Get(x => x.OspHeaderId == DetailOut.OspHeaderId).SingleOrDefault();
+                var loss = OspYieldVarianceTRepository.Get(x => x.OspHeaderId == DetailOut.OspHeaderId).SingleOrDefault();
                 if (loss == null)
                 {
                     OSP_YIELD_VARIANCE_T oSP_YIELD_VARIANCE_T = new OSP_YIELD_VARIANCE_T();
@@ -1969,7 +1969,7 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
                     oSP_YIELD_VARIANCE_T.CreatedBy = UserId;
                     oSP_YIELD_VARIANCE_T.CreatedUserName = UserName;
                     oSP_YIELD_VARIANCE_T.CreationDate = DateTime.Now;
-                    OspYieldVarianceTRepositiory.Create(oSP_YIELD_VARIANCE_T, true);
+                    OspYieldVarianceTRepository.Create(oSP_YIELD_VARIANCE_T, true);
                     return new ResultDataModel<OSP_YIELD_VARIANCE_T>(true, "成功", oSP_YIELD_VARIANCE_T);
                 }
                 else
@@ -1980,7 +1980,7 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
                     loss.LastUpdateBy = UserId;
                     loss.LastUpdateUserName = UserName;
                     loss.LastUpdateDate = DateTime.Now;
-                    OspYieldVarianceTRepositiory.Update(loss, true);
+                    OspYieldVarianceTRepository.Update(loss, true);
                     return new ResultDataModel<OSP_YIELD_VARIANCE_T>(true, "成功", loss);
                 }
 
@@ -2046,9 +2046,9 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
             {
                 try
                 {
-                    var header = OspHeaderTRepositiory.Get(x => x.OspHeaderId == OspHeaderId).SingleOrDefault();
-                    var DetailOut = OspDetailOutTRepositiory.Get(x => x.OspHeaderId == OspHeaderId).SingleOrDefault();
-                    var DetailIn = OspDetailInTRepositiory.Get(x => x.OspHeaderId == OspHeaderId).SingleOrDefault();
+                    var header = OspHeaderTRepository.Get(x => x.OspHeaderId == OspHeaderId).SingleOrDefault();
+                    var DetailOut = OspDetailOutTRepository.Get(x => x.OspHeaderId == OspHeaderId).SingleOrDefault();
+                    var DetailIn = OspDetailInTRepository.Get(x => x.OspHeaderId == OspHeaderId).SingleOrDefault();
 
                     if (header == null)
                     {
@@ -2060,7 +2060,7 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
                         header.Status = ProcessStatusCode.PendingBatch;
                         header.PeLastUpdateBy = UserId;
                         header.PeLastUpdateDate = DateTime.Now;
-                        OspHeaderTRepositiory.Update(header, true);
+                        OspHeaderTRepository.Update(header, true);
                     }
                     else if (header.Status == ProcessStatusCode.PendingBatch)
                     {
@@ -2068,7 +2068,7 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
                         header.PeLastUpdateBy = UserId;
                         header.PeLastUpdateDate = DateTime.Now;
                         header.Modifications = 1;
-                        OspHeaderTRepositiory.Update(header, true);
+                        OspHeaderTRepository.Update(header, true);
                         SaveStock(header.OspHeaderId, StockStatusCode.InStock);
                         PickInToHt(header.OspHeaderId);
                         PirckOutToHt(header.OspHeaderId);
@@ -2082,7 +2082,7 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
                         header.Status = ProcessStatusCode.CompletedBatch;
                         header.PeLastUpdateBy = UserId;
                         header.PeLastUpdateDate = DateTime.Now;
-                        OspHeaderTRepositiory.Update(header, true);
+                        OspHeaderTRepository.Update(header, true);
                         SaveStock(header.OspHeaderId, StockStatusCode.InStock);
                         PickInToHt(header.OspHeaderId);
                         PirckOutToHt(header.OspHeaderId);
@@ -2119,9 +2119,9 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
             {
                 try
                 {
-                    var header = OspHeaderTRepositiory.Get(x => x.OspHeaderId == OspHeaderId).SingleOrDefault();
-                    var DetailOut = OspDetailOutTRepositiory.Get(x => x.OspHeaderId == OspHeaderId).SingleOrDefault();
-                    var DetailIn = OspDetailInTRepositiory.Get(x => x.OspHeaderId == OspHeaderId).SingleOrDefault();
+                    var header = OspHeaderTRepository.Get(x => x.OspHeaderId == OspHeaderId).SingleOrDefault();
+                    var DetailOut = OspDetailOutTRepository.Get(x => x.OspHeaderId == OspHeaderId).SingleOrDefault();
+                    var DetailIn = OspDetailInTRepository.Get(x => x.OspHeaderId == OspHeaderId).SingleOrDefault();
 
                     if (header == null)
                     {
@@ -2131,7 +2131,7 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
                     header.Status = ProcessStatusCode.PendingBatch;
                     header.PeLastUpdateBy = UserId;
                     header.PeLastUpdateDate = DateTime.Now;
-                    OspHeaderTRepositiory.Update(header, true);
+                    OspHeaderTRepository.Update(header, true);
 
                     txn.Commit();
                     return new ResultModel(true, "");
@@ -2159,7 +2159,7 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
             {
                 try
                 {
-                    var batchno = OspHeaderTRepositiory.Get(x => x.OspHeaderId == OspHeaderId).SingleOrDefault();
+                    var batchno = OspHeaderTRepository.Get(x => x.OspHeaderId == OspHeaderId).SingleOrDefault();
                     if (batchno == null)
                     {
                         return new ResultModel(false, "單號錯誤");
@@ -2251,13 +2251,13 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
         /// <param name="StatusCode"></param>
         public void CheckStock(long StockId, string userid, decimal aft, string StatusCode)
         {
-            var stockid = stockTRepositiory.Get(x => x.StockId == StockId).SingleOrDefault();
+            var stockid = stockTRepository.Get(x => x.StockId == StockId).SingleOrDefault();
             stockid.PrimaryAvailableQty = aft;
             stockid.PrimaryLockedQty = stockid.PrimaryTransactionQty - aft;
             stockid.StatusCode = StatusCode;
             stockid.LastUpdateBy = userid;
             stockid.LastUpdateDate = DateTime.Now;
-            stockTRepositiory.Update(stockid, true);
+            stockTRepository.Update(stockid, true);
         }
 
         /// <summary>
@@ -2930,7 +2930,7 @@ AND OPO.OSP_PICKED_OUT_ID = @OSP_PICKED_OUT_ID
                 Value = "*",
             });
 
-            var batchNo = OspHeaderTRepositiory.GetAll().GroupBy(x => x.BatchNo)
+            var batchNo = OspHeaderTRepository.GetAll().GroupBy(x => x.BatchNo)
                   .Select(x => new SelectListItem
                   {
                       Text = x.Key,
@@ -2953,7 +2953,7 @@ AND OPO.OSP_PICKED_OUT_ID = @OSP_PICKED_OUT_ID
             {
                 using (var mesContext = new MesContext())
                 {
-                    var DetailOut = OspDetailOutTRepositiory.Get(x => x.OspDetailOutId == OspDetailOutId).SingleOrDefault();
+                    var DetailOut = OspDetailOutTRepository.Get(x => x.OspDetailOutId == OspDetailOutId).SingleOrDefault();
                     List<SelectListItem> locator = new List<SelectListItem>();
                     List<SqlParameter> sqlParameterList = new List<SqlParameter>();
                     StringBuilder query = new StringBuilder();
@@ -2994,7 +2994,7 @@ and SUBINVENTORY_CODE = @SUBINVENTORY_CODE");
             try
             {
                 List<SelectListItem> ManchineNum = new List<SelectListItem>();
-                var MachineCode = machinePaperTypeRepositiory.Get(x => x.ControlFlag != ControlFlag.Deleted && x.PaperType == PaperType)
+                var MachineCode = machinePaperTypeRepository.Get(x => x.ControlFlag != ControlFlag.Deleted && x.PaperType == PaperType)
                              .Select(x => new SelectListItem
                              {
                                  Text = x.MachineCode,
