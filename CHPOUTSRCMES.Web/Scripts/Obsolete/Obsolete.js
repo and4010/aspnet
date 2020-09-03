@@ -26,26 +26,6 @@ $(document).ready(function () {
         }
     }
 
-    function getOrganizationId() {
-        var id = $("#ddlSubinventory").val();
-        if (id == '請選擇') {
-            id = '0';
-        }
-        return id;
-    }
-
-    function getSubinventoryCode() {
-        return $("#ddlSubinventory option:selected").text();
-    }
-
-    function getLocatorId() {
-        if ($('#ddlLocatorArea').is(":visible")) {
-            return $("#ddlLocator").val();
-        } else {
-            return null;
-        }
-    }
-
     $("#btnSearchStock").click(function () {
         SearchStock();
     });

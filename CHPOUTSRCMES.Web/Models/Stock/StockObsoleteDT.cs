@@ -1,4 +1,5 @@
-﻿using CHPOUTSRCMES.Web.ViewModels;
+﻿using CHPOUTSRCMES.Web.DataModel.UnitOfWorks;
+using CHPOUTSRCMES.Web.ViewModels;
 using CHPOUTSRCMES.Web.ViewModels.Obsolete;
 using System;
 using System.Collections.Generic;
@@ -52,6 +53,16 @@ namespace CHPOUTSRCMES.Web.Models.Stock
             return query.ToList();
         }
 
+        public List<StockDT> SearchStock(ObsoleteUOW uow, long organizationId, string subinventoryCode, long? locatorId, string itemNumber)
+        {
+            return uow.GetStockTList(organizationId, subinventoryCode, locatorId, itemNumber);
+        }
+
+        public ResultModel CreateDetail(ObsoleteUOW uow, long transactionTypeId, long organizationId, string subinventoryCode, long? locatorId,
+      long stockId, decimal mQty, string note, string userId, string userName)
+        {
+            return uow.CreateDetail(transactionTypeId, organizationId, subinventoryCode, locatorId, stockId, mQty, note, userId, userName);
+        }
 
         public ResultModel AddTransactionDetail(long ID, decimal ObsoleteQty)
         {
