@@ -312,6 +312,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             public const string Purchase = "C2";
             public const string TransferInbound = "C3";
             public const string TransferOutbound = "C4";
+            public const string Miscellaneous = "C5";
             public string GetDesc(string category)
             {
                 switch (category)
@@ -326,6 +327,8 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                         return "庫存移轉-入庫";
                     case TransferOutbound:
                         return "庫存移轉-出庫";
+                    case Miscellaneous:
+                        return "雜項異動";
                     default:
                         return "";
                 }
@@ -348,8 +351,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             public const string Shipped = "A2";
             public const string Purchse = "A3";
 
-            public const string InBoundSaveTransfer = "A4";
-            public const string OutBoundSaveTransfer = "A5";
+            public const string StockTransfer = "A4";
 
             public string GetDesc(string category)
             {
@@ -363,10 +365,8 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                         return "已出貨";
                     case Purchse:
                         return "進貨";
-                    case InBoundSaveTransfer:
-                        return "庫存移轉-入庫存檔";
-                    case OutBoundSaveTransfer:
-                        return "庫存移轉-出庫存檔";
+                    case StockTransfer:
+                        return "庫存異動";
                     default:
                         return "";
                 }

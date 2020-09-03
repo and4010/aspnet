@@ -90,7 +90,7 @@ namespace CHPOUTSRCMES.Web.Controllers
             {
                 using (MiscellaneousUOW uow = new MiscellaneousUOW(context))
                 {
-
+                    
                     List<StockDT> model = miscellaneousData.SearchStock(uow,  organizationId,  subinventoryCode,   locatorId,  itemNumber,  primaryQty,  percentageError);
 
                     var totalCount = model.Count;
@@ -123,33 +123,58 @@ namespace CHPOUTSRCMES.Web.Controllers
         [HttpPost, ActionName("GetTransactionDetail")]
         public JsonResult GetTransactionDetail(DataTableAjaxPostViewModel data)
         {
-            List<StockMiscellaneousDT> model = miscellaneousData.GetModel();
 
-            var totalCount = model.Count;
-            string search = data.Search.Value;
-
-            if (!string.IsNullOrEmpty(search) && !string.IsNullOrWhiteSpace(search))
+            using (var context = new MesContext())
             {
-                // Apply search
-                model = model.Where(p => (p.ID.ToString().ToLower().Contains(search.ToLower()))
-                    || (!string.IsNullOrEmpty(p.SUBINVENTORY_CODE) && p.SUBINVENTORY_CODE.ToLower().Contains(search.ToLower()))
-                    || (!string.IsNullOrEmpty(p.SEGMENT3) && p.SEGMENT3.ToLower().Contains(search.ToLower()))
-                    || (!string.IsNullOrEmpty(p.ITEM_NO) && p.ITEM_NO.ToLower().Contains(search.ToLower()))
-                    || (!string.IsNullOrEmpty(p.BARCODE) && p.BARCODE.ToLower().Contains(search.ToLower()))
-                     || (p.PRIMARY_TRANSACTION_QTY.ToString().ToLower().Contains(search.ToLower()))
-                    || (p.PRIMARY_AVAILABLE_QTY.ToString().ToLower().Contains(search.ToLower()))
-                    || (!string.IsNullOrEmpty(p.PRIMARY_UOM_CODE) && p.PRIMARY_UOM_CODE.ToLower().Contains(search.ToLower()))
-                     || (p.SECONDARY_TRANSACTION_QTY.ToString().ToLower().Contains(search.ToLower()))
-                    || (p.SECONDARY_AVAILABLE_QTY.ToString().ToLower().Contains(search.ToLower()))
-                    || (!string.IsNullOrEmpty(p.SECONDARY_UOM_CODE) && p.SECONDARY_UOM_CODE.ToLower().Contains(search.ToLower()))
-                    || (!string.IsNullOrEmpty(p.NOTE) && p.NOTE.ToLower().Contains(search.ToLower()))
-                    ).ToList();
-            }
+                using (MiscellaneousUOW uow = new MiscellaneousUOW(context))
+                {
+                    var id = this.User.Identity.GetUserId();
+                    List<StockMiscellaneousDT> model = miscellaneousData.GetMiscellaneousData(uow, id);
 
-            var filteredCount = model.Count;
-            model = StockMiscellaneousDTOrder.Order(data.Order, model).ToList();
-            model = model.Skip(data.Start).Take(data.Length).ToList();
-            return Json(new { draw = data.Draw, recordsFiltered = filteredCount, recordsTotal = totalCount, data = model }, JsonRequestBehavior.AllowGet);
+                    var totalCount = model.Count;
+                    string search = data.Search.Value;
+
+                    if (!string.IsNullOrEmpty(search) && !string.IsNullOrWhiteSpace(search))
+                    {
+                        // Apply search
+                        model = model.Where(p => (p.SUB_ID.ToString().ToLower().Contains(search.ToLower()))
+                            || (!string.IsNullOrEmpty(p.SUBINVENTORY_CODE) && p.SUBINVENTORY_CODE.ToLower().Contains(search.ToLower()))
+                            || (!string.IsNullOrEmpty(p.SEGMENT3) && p.SEGMENT3.ToLower().Contains(search.ToLower()))
+                            || (!string.IsNullOrEmpty(p.ITEM_NO) && p.ITEM_NO.ToLower().Contains(search.ToLower()))
+                            || (!string.IsNullOrEmpty(p.BARCODE) && p.BARCODE.ToLower().Contains(search.ToLower()))
+                             || (p.PRIMARY_TRANSACTION_QTY.ToString().ToLower().Contains(search.ToLower()))
+                            || (p.PRIMARY_AVAILABLE_QTY.ToString().ToLower().Contains(search.ToLower()))
+                            || (!string.IsNullOrEmpty(p.PRIMARY_UOM_CODE) && p.PRIMARY_UOM_CODE.ToLower().Contains(search.ToLower()))
+                             || (p.SECONDARY_TRANSACTION_QTY.ToString().ToLower().Contains(search.ToLower()))
+                            || (p.SECONDARY_AVAILABLE_QTY.ToString().ToLower().Contains(search.ToLower()))
+                            || (!string.IsNullOrEmpty(p.SECONDARY_UOM_CODE) && p.SECONDARY_UOM_CODE.ToLower().Contains(search.ToLower()))
+                            || (!string.IsNullOrEmpty(p.NOTE) && p.NOTE.ToLower().Contains(search.ToLower()))
+                            ).ToList();
+                    }
+
+                    var filteredCount = model.Count;
+                    model = StockMiscellaneousDTOrder.Order(data.Order, model).ToList();
+                    model = model.Skip(data.Start).Take(data.Length).ToList();
+                    return Json(new { draw = data.Draw, recordsFiltered = filteredCount, recordsTotal = totalCount, data = model }, JsonRequestBehavior.AllowGet);
+                }
+            }
+        }
+
+        [HttpPost]
+        public ActionResult DetailEditor(StockMiscellaneousDTEditor detailEditor)
+        {
+            using (var context = new MesContext())
+            {
+                using (MiscellaneousUOW uow = new MiscellaneousUOW(context))
+                {
+                    //取得使用者ID
+                    var id = this.User.Identity.GetUserId();
+                    //取得使用者帳號
+                    var name = this.User.Identity.GetUserName();
+                    var result = miscellaneousData.DetailEditor(uow, detailEditor, id, name);
+                    return new JsonResult { Data = new { status = result.Success, result = result.Msg } };
+                }
+            }
         }
 
         [HttpPost]
@@ -160,10 +185,21 @@ namespace CHPOUTSRCMES.Web.Controllers
         }
 
         [HttpPost]
-        public ActionResult AddTransactionDetail(long ID, string Miscellaneous, decimal PrimaryQty, string Note)
+        public ActionResult AddTransactionDetail(long transactionTypeId, long organizationId, string subinventoryCode, long? locatorId,
+      long stockId, decimal mPrimaryQty, string note)
         {
-            ResultModel result = miscellaneousData.AddTransactionDetail(ID, Miscellaneous, PrimaryQty, Note);
-            return new JsonResult { Data = new { status = result.Success, result = result.Msg } };
+            using (var context = new MesContext())
+            {
+                using (MiscellaneousUOW uow = new MiscellaneousUOW(context))
+                {
+                    //取得使用者ID
+                    var id = this.User.Identity.GetUserId();
+                    //取得使用者帳號
+                    var name = this.User.Identity.GetUserName();
+                    ResultModel result =  miscellaneousData.CreateDetail(uow, transactionTypeId, organizationId, subinventoryCode, locatorId, stockId, mPrimaryQty, note, id, name);
+                    return new JsonResult { Data = new { status = result.Success, result = result.Msg } };
+                }
+            }
         }
 
         [HttpPost]
@@ -176,8 +212,18 @@ namespace CHPOUTSRCMES.Web.Controllers
           [HttpPost]
         public ActionResult SaveTransactionDetail()
         {
-            ResultModel result = miscellaneousData.SaveTransactionDetail();
-            return new JsonResult { Data = new { status = result.Success, result = result.Msg } };
+            using (var context = new MesContext())
+            {
+                using (MiscellaneousUOW uow = new MiscellaneousUOW(context))
+                {
+                    //取得使用者ID
+                    var id = this.User.Identity.GetUserId();
+                    //取得使用者帳號
+                    var name = this.User.Identity.GetUserName();
+                    ResultModel result = miscellaneousData.SaveTransactionDetail(uow, id, name);
+                    return new JsonResult { Data = new { status = result.Success, result = result.Msg } };
+                }
+            }
         }
         
 	}

@@ -12,7 +12,8 @@ namespace CHPOUTSRCMES.Web.Models.Stock
 {
     public class StockMiscellaneousDT
     {
-        public long ID { set; get; }
+        public long ID { set; get; } //TRANSFER_MISCELLANEOUS_ID
+        public long SUB_ID { set; get; }
         public long STOCK_ID { set; get; }
         public string SUBINVENTORY_CODE { set; get; }
         public string SEGMENT3 { set; get; }
@@ -72,6 +73,11 @@ namespace CHPOUTSRCMES.Web.Models.Stock
             return uow.GetStockTList(organizationId, subinventoryCode, locatorId, itemNumber, primaryQty, percentageError);
         }
 
+        public List<StockMiscellaneousDT> GetMiscellaneousData(MiscellaneousUOW uow, string userId)
+        {
+            return uow.GetStockMiscellaneousTList(userId);
+        }
+
         public List<StockMiscellaneousDT> GetModel()
         {
             var query = from data in model
@@ -79,6 +85,11 @@ namespace CHPOUTSRCMES.Web.Models.Stock
             return query.ToList();
         }
 
+        public ResultModel CreateDetail(MiscellaneousUOW uow, long transactionTypeId, long organizationId, string subinventoryCode, long? locatorId,
+      long stockId, decimal mPrimaryQty, string note, string userId, string userName)
+        {
+            return uow.CreateDetail(transactionTypeId, organizationId, subinventoryCode, locatorId, stockId, mPrimaryQty, note, userId, userName);
+        }
 
         public ResultModel AddTransactionDetail(long ID, string Miscellaneous, decimal PrimaryQty, string Note)
         {
@@ -104,8 +115,8 @@ namespace CHPOUTSRCMES.Web.Models.Stock
                 }
 
                 StockMiscellaneousDT addData = new StockMiscellaneousDT();
-                var highestId = model.Any() ? model.Select(x => x.ID).Max() : 0;
-                addData.ID = highestId + 1;
+                var highestId = model.Any() ? model.Select(x => x.SUB_ID).Max() : 0;
+                addData.SUB_ID = highestId + 1;
                 addData.STOCK_ID = stockData.ID;
                 addData.BARCODE = stockData.BARCODE;
                 addData.ITEM_NO = stockData.ITEM_NO;
@@ -135,23 +146,25 @@ namespace CHPOUTSRCMES.Web.Models.Stock
             return new ResultModel(true, "新增明細成功");
         }
 
-        public ResultModel SaveTransactionDetail()
+        public ResultModel SaveTransactionDetail(MiscellaneousUOW uow, string userId, string userName)
         {
-            foreach (StockMiscellaneousDT detailData in model)
-            {
-                foreach (StockDT stockData in StockData.source)
-                {
-                    if (detailData.STOCK_ID == stockData.ID && detailData.STATUS == "未異動存檔")
-                    {
-                        stockData.PRIMARY_AVAILABLE_QTY = detailData.PRIMARY_AVAILABLE_QTY;
-                        stockData.SECONDARY_AVAILABLE_QTY = detailData.SECONDARY_AVAILABLE_QTY;
-                        //stockData.NOTE = detailData.NOTE;
-                        detailData.STATUS = "已異動存檔";
-                    }
-                }
-            }
-            resetData();
-            return new ResultModel(true, "異動存檔成功");
+            return uow.SaveTransactionDetail(userId, userName);
+
+            //foreach (StockMiscellaneousDT detailData in model)
+            //{
+            //    foreach (StockDT stockData in StockData.source)
+            //    {
+            //        if (detailData.STOCK_ID == stockData.ID && detailData.STATUS == "未異動存檔")
+            //        {
+            //            stockData.PRIMARY_AVAILABLE_QTY = detailData.PRIMARY_AVAILABLE_QTY;
+            //            stockData.SECONDARY_AVAILABLE_QTY = detailData.SECONDARY_AVAILABLE_QTY;
+            //            //stockData.NOTE = detailData.NOTE;
+            //            detailData.STATUS = "已異動存檔";
+            //        }
+            //    }
+            //}
+            //resetData();
+            //return new ResultModel(true, "異動存檔成功");
         }
 
         public List<StockMiscellaneousDT> UpdateRemark(StockMiscellaneousDTEditor data)
@@ -162,7 +175,7 @@ namespace CHPOUTSRCMES.Web.Models.Stock
             {
                 foreach (var selectedData in data.StockMiscellaneousDTList)
                 {
-                    if (barcodeData.ID == selectedData.ID)
+                    if (barcodeData.SUB_ID == selectedData.SUB_ID)
                     {
                         barcodeData.NOTE = selectedData.NOTE;
                         result.Add(barcodeData);
@@ -178,7 +191,7 @@ namespace CHPOUTSRCMES.Web.Models.Stock
             {
                 return new ResultModel(false, "請選擇要刪除的異動明細");
             }
-            if (model.RemoveAll(x => IDs.Contains(x.ID)) > 0)
+            if (model.RemoveAll(x => IDs.Contains(x.SUB_ID)) > 0)
             {
                 return new ResultModel(true, "異動明細刪除成功");
             }
@@ -187,6 +200,25 @@ namespace CHPOUTSRCMES.Web.Models.Stock
                 return new ResultModel(false, "異動明細刪除失敗");
             }
 
+        }
+
+        public ResultModel DetailEditor(MiscellaneousUOW uow, StockMiscellaneousDTEditor editor, string userId, string userName)
+        {
+            if (editor.Action == "remove")
+            {
+                var ids = editor.StockMiscellaneousDTList.Select(x => x.ID).ToList();
+                return uow.DelDetailData(ids);
+            }
+            else if (editor.Action == "edit")
+            {
+                var ids = editor.StockMiscellaneousDTList.Select(x => x.ID).ToList();
+                string note = editor.StockMiscellaneousDTList[0].NOTE;
+                return uow.UpdateDetailNote(ids, note, userId, userName);
+            }
+            else
+            {
+                return new ResultModel(false, "無法識別作業項目");
+            }
         }
     }
 
@@ -214,7 +246,7 @@ namespace CHPOUTSRCMES.Web.Models.Stock
             {
                 default:
                 case 1:
-                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.ID) : models.OrderBy(x => x.ID);
+                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.SUB_ID) : models.OrderBy(x => x.SUB_ID);
                 case 2:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.SUBINVENTORY_CODE) : models.OrderBy(x => x.SUBINVENTORY_CODE);
                 case 3:
@@ -246,7 +278,7 @@ namespace CHPOUTSRCMES.Web.Models.Stock
             {
                 default:
                 case 1:
-                    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.ID) : models.ThenBy(x => x.ID);
+                    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.SUB_ID) : models.ThenBy(x => x.SUB_ID);
                 case 2:
                     return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.SUBINVENTORY_CODE) : models.ThenBy(x => x.SUBINVENTORY_CODE);
                 case 3:
