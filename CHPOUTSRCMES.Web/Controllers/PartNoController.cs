@@ -26,12 +26,12 @@ namespace CHPOUTSRCMES.Web.Controllers
 
 
         [HttpPost, ActionName("PartNoJson")]
-        public JsonResult PartNoJson(DataTableAjaxPostViewModel data,string Catalog_elem_val_050, string Catalog_elem_val_020,string Catalog_elem_val_070,string Organization_code)
+        public JsonResult PartNoJson(DataTableAjaxPostViewModel data,string Catalog_elem_val_050, string Catalog_elem_val_020,string Catalog_elem_val_070,string OrganizationId)
         {
             PartNoViewModel partNoViewModel = new PartNoViewModel();
-            List<PartNoModel> model = partNoViewModel.GetItemNo(data, Catalog_elem_val_050, Catalog_elem_val_020, Catalog_elem_val_070, Organization_code); 
+            var model = partNoViewModel.GetItemNo(data, Catalog_elem_val_050, Catalog_elem_val_020, Catalog_elem_val_070, OrganizationId); 
 
-            return Json(new { draw = data.Draw, recordsFiltered = model.Count, recordsTotal = model.Count, data = model }, JsonRequestBehavior.AllowGet);
+            return Json(new { draw = data.Draw, recordsFiltered = model.RecordFiltered, recordsTotal = model.RecordTotal, data = model.List }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]

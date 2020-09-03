@@ -179,7 +179,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Repositorys
 
         public IQueryable<TEntity> GetAll()
         {
-            return context.Set<TEntity>().AsQueryable();
+            return context.Set<TEntity>();
         }
 
 

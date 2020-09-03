@@ -3,6 +3,7 @@ using CHPOUTSRCMES.TASK.Models.Entity.Temp;
 using CHPOUTSRCMES.TASK.Models.UnitOfWork;
 using CHPOUTSRCMES.TASK.Models.Views;
 using CHPOUTSRCMES.TASK.Tasks;
+using CHPOUTSRCMES.Web.DataModel.Entity.Information;
 using NLog;
 using Oracle.ManagedDataAccess.Client;
 using System;
@@ -394,14 +395,14 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                                 else if (sqlItemLastUpdateDate.HasValue && sqlItemCount > 0 && oraItemCount < 1000)
                                 {
                                     //更新部分差異
-                                    var resultModel = await ImportItemPartially(sqlConn, trans, masterUOW, sqlItemLastUpdateDate.Value, "SP_ItemSync");
+                                    var resultModel = await ImportItemPartially(sqlConn, trans, masterUOW, sqlItemLastUpdateDate.Value, "SP_ItemSync", "SP_OrgItemSync");
 
                                     LogInfo($"[{tasker.Name}]-{tasker.Unit}-importItem-ImportItemPartially:{resultModel}");
                                 }
                                 else
                                 {
                                     //資料全部重抓
-                                    var resultModel = await ReimportItem(sqlConn, trans, masterUOW, "ITEMS_TMP_T", "SP_ItemSync");
+                                    var resultModel = await ReimportItem(sqlConn, trans, masterUOW, "ITEMS_TMP_T", "SP_ItemSync", "ORG_ITEMS_TMP_T", "SP_OrgItemSync");
                                     LogInfo($"[{tasker.Name}]-{tasker.Unit}-importItem-ReimportItem:{resultModel}");
                                 }
                                 trans.Commit();
@@ -443,7 +444,7 @@ namespace CHPOUTSRCMES.TASK.Models.Service
         /// <param name="tableName"></param>
         /// <param name="spName"></param>
         /// <returns></returns>
-        internal async Task<ResultModel> ReimportItem(SqlConnection sqlConn, SqlTransaction trans, MasterUOW masterUOW, string tableName, string spName)
+        internal async Task<ResultModel> ReimportItem(SqlConnection sqlConn, SqlTransaction trans, MasterUOW masterUOW, string tableName, string spName, string mapTableName, string mapSpName)
         {
             long dividedCount = 5000;
 
@@ -455,7 +456,9 @@ namespace CHPOUTSRCMES.TASK.Models.Service
 
             while (count < allCount)
             {
-                var list = (await masterUOW.GetItemRangeAsync(count, dividedCount))
+                var tmp = (await masterUOW.GetItemRangeAsync(count, dividedCount));
+
+                var list = tmp
                     .Select(x => new ITEMS_TMP_T()
                     {
                         INVENTORY_ITEM_ID = x.INVENTORY_ITEM_ID,
@@ -495,9 +498,35 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                     })
                     .ToList();
 
+                var orglist = tmp.GroupBy(x => x.ORGANIZATION_CODE).Select(x => x.Key).ToList();
+                var dicOrg = new Dictionary<string, long>();
+                foreach (string orgCode in orglist)
+                {
+                    using (var cmd = sqlConn.CreateCommand())
+                    {
+                        cmd.Transaction = trans;
+                        cmd.CommandText = "SELECT TOP 1 ORGANIZATION_ID FROM ORGANIZATION_T WHERE ORGANIZATION_CODE = @ORGANIZATION_CODE";
+                        cmd.Parameters.Add("@ORGANIZATION_CODE", orgCode);
+                        long id = Convert.ToInt64(cmd.ExecuteScalar());
+                        dicOrg.Add(orgCode, id);
+                    }
+                }
+                var maplist = tmp
+                    .Select(x => new ORG_ITEMS_TMP_T()
+                    {
+                        INVENTORY_ITEM_ID = x.INVENTORY_ITEM_ID,
+                        ORGANIZATION_ID = dicOrg.ContainsKey(x.ORGANIZATION_CODE) ? dicOrg[x.ORGANIZATION_CODE] : 0
+                    })
+                    .ToList();
+
                 count += dividedCount;
 
                 var model = bCopier.BulkCopy(list, tableName, spName, notDeleted, count >= allCount);
+
+                if (!model.Success)
+                    return model;
+
+                model = bCopier.BulkCopy(maplist, mapTableName, mapSpName, notDeleted, count >= allCount);
 
                 if (!model.Success)
                     return model;
@@ -517,10 +546,11 @@ namespace CHPOUTSRCMES.TASK.Models.Service
         /// <param name="lastUpdateDate"></param>
         /// <param name="spName"></param>
         /// <returns></returns>
-        internal async Task<ResultModel> ImportItemPartially(SqlConnection sqlConn, SqlTransaction trans, MasterUOW masterUOW, DateTime lastUpdateDate, string spName)
+        internal async Task<ResultModel> ImportItemPartially(SqlConnection sqlConn, SqlTransaction trans, MasterUOW masterUOW, DateTime lastUpdateDate, string spName, string mapSpName)
         {
             BulkCopier bCopier = new BulkCopier(sqlConn, trans);
-            var list = (await masterUOW.GetAllItemByLastUpdateDate(lastUpdateDate))
+            var tmp = (await masterUOW.GetAllItemByLastUpdateDate(lastUpdateDate));
+            var list = tmp
                     .Select(x => new ITEMS_TMP_T()
                     {
                         INVENTORY_ITEM_ID = x.INVENTORY_ITEM_ID,
@@ -560,7 +590,32 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                     })
                     .ToList();
 
-            return bCopier.Merge(list, spName, true);
+            var orglist = tmp.GroupBy(x => x.ORGANIZATION_CODE).Select(x => x.Key).ToList();
+            var dicOrg = new Dictionary<string, long>();
+            foreach (string orgCode in orglist)
+            {
+                using (var cmd = sqlConn.CreateCommand())
+                {
+                    cmd.Transaction = trans;
+                    cmd.CommandText = "SELECT TOP 1 ORGANIZATION_ID FROM ORGANIZATION_T WHERE ORGANIZATION_CODE = @ORGANIZATION_CODE";
+                    cmd.Parameters.Add("@ORGANIZATION_CODE", orgCode);
+                    long id = Convert.ToInt64(cmd.ExecuteScalar());
+                    dicOrg.Add(orgCode, id);
+                }
+            }
+            var maplist = tmp
+                .Select(x => new ORG_ITEMS_TMP_T()
+                {
+                    INVENTORY_ITEM_ID = x.INVENTORY_ITEM_ID,
+                    ORGANIZATION_ID = dicOrg.ContainsKey(x.ORGANIZATION_CODE) ? dicOrg[x.ORGANIZATION_CODE] : 0
+                })
+                .ToList();
+
+            var model = bCopier.Merge(list, spName, true);
+
+            if (!model.Success) return model;
+
+            return bCopier.Merge(maplist, mapSpName, true);
 
         }
 

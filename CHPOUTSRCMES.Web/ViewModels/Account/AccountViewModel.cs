@@ -68,10 +68,10 @@ namespace CHPOUTSRCMES.Web.ViewModels.Account
                 Id = 4,
                 RoleId = 4,
                 RoleName = "系統管理員",
-                Account = "adm",
+                Account = "adam",
                 Name = "華紙管理員",
                 Email = "123@kk.com.tw",
-                Password = "adm",
+                Password = "adam",
                 Status = "啟用",
                 Subinventory = SubinventoryDetail
             });

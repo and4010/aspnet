@@ -26,6 +26,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Temp
         /// 
         [StringLength(40)]
         [Required]
+        [Index(IsUnique = true)]
         [Column("ITEM_NUMBER")]
         public string ItemNumber { set; get; }
 

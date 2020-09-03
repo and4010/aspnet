@@ -1,6 +1,7 @@
 ﻿using CHPOUTSRCMES.Web.DataModel.Entity.Information;
 using CHPOUTSRCMES.Web.DataModel.Entity.Interfaces;
 using CHPOUTSRCMES.Web.DataModel.Entity.Repositorys;
+using CHPOUTSRCMES.Web.Models;
 using CHPOUTSRCMES.Web.Models.Information;
 using CHPOUTSRCMES.Web.Util;
 using CHPOUTSRCMES.Web.ViewModels;
@@ -13,19 +14,13 @@ using System.Linq;
 using System.Text;
 
 using System.Web.Mvc;
+using System.Web.UI.WebControls.Expressions;
 
 namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
 {
     public class ItemNoUOW : MasterUOW
     {
         private ILogger logger = LogManager.GetCurrentClassLogger();
-
-        private readonly IRepository<ITEMS_T> ItemTRepositityory;
-
-        /// <summary>
-        /// 組織料號
-        /// </summary>
-        private readonly IRepository<ORG_ITEMS_T> orgItemRepositityory;
 
         public ItemNoUOW(DbContext context) : base(context)
         {
@@ -40,7 +35,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             var SpecList = new List<SelectListItem>();
             try
             {
-                var tempList = ItemTRepositityory.GetAll()
+                var tempList = itemsTRepositiory.GetAll()
                     .AsNoTracking()
                     .Where(x => x.CatalogElemVal050.Contains(spec))
                     .GroupBy(x => x.CatalogElemVal050)
@@ -69,7 +64,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             var TypeList = new List<SelectListItem>();
             try
             {
-                var tempList = ItemTRepositityory.GetAll()
+                var tempList = itemsTRepositiory.GetAll()
                     .AsNoTracking()
                     .GroupBy(x => x.CatalogElemVal020)
                     .Take(count)
@@ -98,7 +93,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             var TypeList = new List<SelectListItem>();
             try
             {
-                var tempList = ItemTRepositityory.GetAll()
+                var tempList = itemsTRepositiory.GetAll()
                     .AsNoTracking()
                     .GroupBy(x => x.CatalogElemVal070)
                     .Take(count)
@@ -131,14 +126,13 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                 {
                     var tempList = db.OrgItemsTs
                         .Join(db.OrganizationTs, c => c.OrganizationId, d => d.OrganizationId,
-                        (c, d) => new { x = c, e = d })
-                        .GroupBy(x => x.e.OrganizationCode)
-                        .Take(count)
+                        (c, d) => d)
                         .AsNoTracking()
+                        .GroupBy(x => x.OrganizationCode)
                         .Select(s => new SelectListItem()
                         {
-                            Text = s.Key,
-                            Value = s.Key,
+                            Text = s.FirstOrDefault().OrganizationCode,
+                            Value = s.FirstOrDefault().OrganizationId.ToString(),
                         }).ToList();
                     OrgList.Add(new SelectListItem() { Text = "全部", Value = "*" });
                     OrgList.AddRange(tempList);
@@ -152,86 +146,131 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             return OrgList;
         }
 
-        public List<PartNoModel> GetItemNo(DataTableAjaxPostViewModel data, string Catalog_elem_val_050, string Catalog_elem_val_020, string Catalog_elem_val_070, string Organization_code)
+        public ResultPageModel<PartNoModel> GetItemNo(DataTableAjaxPostViewModel data, string Catalog_elem_val_050, string Catalog_elem_val_020, string Catalog_elem_val_070, string OrganizationId)
         {
-
+            ResultPageModel<PartNoModel> model = new ResultPageModel<PartNoModel>();
+            model.Draw = data.Draw;
+            long organId = 0; 
+            long.TryParse(OrganizationId, out organId);
             try
             {
-                using (var mesContext = new MesContext())
-                {
+                    var items = itemsTRepositiory.GetAll().Join(orgItemRepositityory.GetAll(), x => x.InventoryItemId, y => y.InventoryItemId, (x, y) => new { Item = x, OrganId = y.OrganizationId });
+                        
+                        
+
                     //var OrganizationId = String.IsNullOrEmpty(Organization_code) || Organization_code == "*" ? 0 : mesContext.OrganizationTs.Where(x => x.OrganizationCode == Organization_code).SingleOrDefault().OrganizationId;
-                    List<SqlParameter> sqlParameterList = new List<SqlParameter>();
-                    List<string> cond = new List<string>();
-                    StringBuilder query = new StringBuilder();
-                    query.Append(
-@"SELECT 
-t.[INVENTORY_ITEM_ID] AS Inventory_item_id,
-t.[ITEM_NUMBER] AS Item_number,
-t.[CATEGORY_CODE_INV] AS Category_code_inv,
-t.[CATEGORY_NAME_INV] AS Category_name_inv,
-t.[CATEGORY_CODE_COST] AS Category_code_cost,
-t.[CATEGORY_NAME_COST] AS Category_name_cost,
-t.[CATEGORY_CODE_CONTROL] AS Category_code_control,
-t.[CATEGORY_NAME_CONTROL] AS Category_name_control,
-t.[ITEM_DESC_ENG] AS Item_desc_eng,
-t.[ITEM_DESC_SCH] AS Item_desc_sch,
-t.[ITEM_DESC_TCH] AS Item_desc_tch,
-t.[PRIMARY_UOM_CODE] AS Primary_uom_code,
-t.[SECONDARY_UOM_CODE] AS Secondary_uom_code,
-t.[INVENTORY_ITEM_STATUS_CODE] AS Inventory_item_status_code,
-t.[ITEM_TYPE] AS Item_type,
-t.[CATALOG_ELEM_VAL_010] AS Catalog_elem_val_010,
-t.[CATALOG_ELEM_VAL_020] AS Catalog_elem_val_020,
-t.[CATALOG_ELEM_VAL_030] AS Catalog_elem_val_030,
-t.[CATALOG_ELEM_VAL_040] AS Catalog_elem_val_040,
-t.[CATALOG_ELEM_VAL_050] AS Catalog_elem_val_050,
-t.[CATALOG_ELEM_VAL_060] AS Catalog_elem_val_060,
-t.[CATALOG_ELEM_VAL_070] AS Catalog_elem_val_070,
-t.[CATALOG_ELEM_VAL_080] AS Catalog_elem_val_080,
-t.[CATALOG_ELEM_VAL_090] AS Catalog_elem_val_090,
-t.[CATALOG_ELEM_VAL_100] AS Catalog_elem_val_100,
-t.[CATALOG_ELEM_VAL_110] AS Catalog_elem_val_110,
-t.[CATALOG_ELEM_VAL_120] AS Catalog_elem_val_120,
-t.[CATALOG_ELEM_VAL_130] AS Catalog_elem_val_130,
-t.[CATALOG_ELEM_VAL_140] AS Catalog_elem_val_140,
-t.[CREATED_BY] AS Created_by,
-t.[CREATION_DATE] AS Creation_Date,
-t.[LAST_UPDATE_BY] AS LASt_Updated_by,
-t.[LAST_UPDATE_DATE] AS LASt_Update_Date 
-FROM [ITEMS_T] t
-LEFT JOIN ORG_ITEMS_T ot ON ot.INVENTORY_ITEM_ID = t.INVENTORY_ITEM_ID
-LEFT JOIN ORGANIZATION_T og ON og.ORGANIZATION_ID = ot.ORGANIZATION_ID");
+//                    List<SqlParameter> sqlParameterList = new List<SqlParameter>();
+//                    List<string> cond = new List<string>();
+//                    StringBuilder query = new StringBuilder();
+//                    query.Append(
+//@"SELECT 
+//t.[INVENTORY_ITEM_ID] AS Inventory_item_id,
+//t.[ITEM_NUMBER] AS Item_number,
+//t.[CATEGORY_CODE_INV] AS Category_code_inv,
+//t.[CATEGORY_NAME_INV] AS Category_name_inv,
+//t.[CATEGORY_CODE_COST] AS Category_code_cost,
+//t.[CATEGORY_NAME_COST] AS Category_name_cost,
+//t.[CATEGORY_CODE_CONTROL] AS Category_code_control,
+//t.[CATEGORY_NAME_CONTROL] AS Category_name_control,
+//t.[ITEM_DESC_ENG] AS Item_desc_eng,
+//t.[ITEM_DESC_SCH] AS Item_desc_sch,
+//t.[ITEM_DESC_TCH] AS Item_desc_tch,
+//t.[PRIMARY_UOM_CODE] AS Primary_uom_code,
+//t.[SECONDARY_UOM_CODE] AS Secondary_uom_code,
+//t.[INVENTORY_ITEM_STATUS_CODE] AS Inventory_item_status_code,
+//t.[ITEM_TYPE] AS Item_type,
+//t.[CATALOG_ELEM_VAL_010] AS Catalog_elem_val_010,
+//t.[CATALOG_ELEM_VAL_020] AS Catalog_elem_val_020,
+//t.[CATALOG_ELEM_VAL_030] AS Catalog_elem_val_030,
+//t.[CATALOG_ELEM_VAL_040] AS Catalog_elem_val_040,
+//t.[CATALOG_ELEM_VAL_050] AS Catalog_elem_val_050,
+//t.[CATALOG_ELEM_VAL_060] AS Catalog_elem_val_060,
+//t.[CATALOG_ELEM_VAL_070] AS Catalog_elem_val_070,
+//t.[CATALOG_ELEM_VAL_080] AS Catalog_elem_val_080,
+//t.[CATALOG_ELEM_VAL_090] AS Catalog_elem_val_090,
+//t.[CATALOG_ELEM_VAL_100] AS Catalog_elem_val_100,
+//t.[CATALOG_ELEM_VAL_110] AS Catalog_elem_val_110,
+//t.[CATALOG_ELEM_VAL_120] AS Catalog_elem_val_120,
+//t.[CATALOG_ELEM_VAL_130] AS Catalog_elem_val_130,
+//t.[CATALOG_ELEM_VAL_140] AS Catalog_elem_val_140,
+//t.[CREATED_BY] AS Created_by,
+//t.[CREATION_DATE] AS Creation_Date,
+//t.[LAST_UPDATE_BY] AS LASt_Updated_by,
+//t.[LAST_UPDATE_DATE] AS LASt_Update_Date 
+//FROM [ITEMS_T] t
+//LEFT JOIN ORG_ITEMS_T ot ON ot.INVENTORY_ITEM_ID = t.INVENTORY_ITEM_ID");
                     if (!string.IsNullOrEmpty(Catalog_elem_val_050)
                         && Catalog_elem_val_050.CompareTo("*") != 0)
                     {
-                        cond.Add("t.CATALOG_ELEM_VAL_050 = @CATALOG_ELEM_VAL_050");
-                        sqlParameterList.Add(new SqlParameter("@CATALOG_ELEM_VAL_050", Catalog_elem_val_050));
+                        items = items.Where(x => x.Item.CatalogElemVal050 == Catalog_elem_val_050);
+                        //cond.Add("t.CATALOG_ELEM_VAL_050 = @CATALOG_ELEM_VAL_050");
+                        //sqlParameterList.Add(new SqlParameter("@CATALOG_ELEM_VAL_050", Catalog_elem_val_050));
                     }
                     if (!string.IsNullOrEmpty(Catalog_elem_val_020)
                         && Catalog_elem_val_020.CompareTo("*") != 0)
                     {
-                        cond.Add("t.CATALOG_ELEM_VAL_020 = @CATALOG_ELEM_VAL_020");
-                        sqlParameterList.Add(new SqlParameter("@CATALOG_ELEM_VAL_020", Catalog_elem_val_020));
+                        items = items.Where(x => x.Item.CatalogElemVal020 == Catalog_elem_val_020);
+                        //cond.Add("t.CATALOG_ELEM_VAL_020 = @CATALOG_ELEM_VAL_020");
+                        //sqlParameterList.Add(new SqlParameter("@CATALOG_ELEM_VAL_020", Catalog_elem_val_020));
                     }
                     if (!string.IsNullOrEmpty(Catalog_elem_val_070)
                         && Catalog_elem_val_070.CompareTo("*") != 0)
                     {
-                        cond.Add("t.CATALOG_ELEM_VAL_070 = @CATALOG_ELEM_VAL_070");
-                        sqlParameterList.Add(new SqlParameter("@CATALOG_ELEM_VAL_070", Catalog_elem_val_070));
+                        items = items.Where(x => x.Item.CatalogElemVal070 == Catalog_elem_val_070);
+                        //cond.Add("t.CATALOG_ELEM_VAL_070 = @CATALOG_ELEM_VAL_070");
+                        //sqlParameterList.Add(new SqlParameter("@CATALOG_ELEM_VAL_070", Catalog_elem_val_070));
                     }
-                    if (!string.IsNullOrEmpty(Organization_code) 
-                        && Organization_code.CompareTo("*") != 0)
+                    if (organId > 0)
                     {
-                        cond.Add("og.ORGANIZATION_CODE = @ORGANIZATION_CODE");
-                        sqlParameterList.Add(new SqlParameter("@ORGANIZATION_CODE", Organization_code));
+                        items = items.Where(x => x.OrganId == organId);
+                        //cond.Add("ot.ORGANIZATION_ID = @ORGANIZATION_ID");
+                        //sqlParameterList.Add(new SqlParameter("@ORGANIZATION_ID", OrganizationId));
                     }
 
-                    string commandText = string.Format(query + "{0}{1}", cond.Count > 0 ? " where " : "", string.Join(" and ", cond.ToArray()));
+                    //string commandText = string.Format(query + "{0}{1}", cond.Count > 0 ? " where " : "", string.Join(" and ", cond.ToArray()));
 
-                    var list = sqlParameterList.Count > 0 ? mesContext.Database.SqlQuery<PartNoModel>(commandText, sqlParameterList.ToArray()).ToList() 
-                        : mesContext.Database.SqlQuery<PartNoModel>(commandText).ToList();
-                    
+                    //var rawQuery = sqlParameterList.Count > 0 ? mesContext.Database.SqlQuery<PartNoModel>(commandText, sqlParameterList.ToArray())
+                    //    : mesContext.Database.SqlQuery<PartNoModel>(commandText);
+                    var list = items.Select(x => new PartNoModel()
+                    {
+                        Catalog_elem_val_010 = x.Item.CatalogElemVal010,
+                        Catalog_elem_val_020 = x.Item.CatalogElemVal020,
+                        Catalog_elem_val_030 = x.Item.CatalogElemVal030,
+                        Catalog_elem_val_040 = x.Item.CatalogElemVal040,
+                        Catalog_elem_val_050 = x.Item.CatalogElemVal050,
+                        Catalog_elem_val_060 = x.Item.CatalogElemVal060,
+                        Catalog_elem_val_070 = x.Item.CatalogElemVal070,
+                        Catalog_elem_val_080 = x.Item.CatalogElemVal080,
+                        Catalog_elem_val_090 = x.Item.CatalogElemVal090,
+                        Catalog_elem_val_100 = x.Item.CatalogElemVal100,
+                        Catalog_elem_val_110 = x.Item.CatalogElemVal110,
+                        Catalog_elem_val_120 = x.Item.CatalogElemVal120,
+                        Catalog_elem_val_130 = x.Item.CatalogElemVal130,
+                        Catalog_elem_val_140 = x.Item.CatalogElemVal140,
+                        Inventory_item_id = x.Item.InventoryItemId,
+                        Item_number = x.Item.ItemNumber,
+                        Item_type = x.Item.ItemType,
+                        Item_desc_eng = x.Item.ItemDescEng,
+                        Item_desc_sch = x.Item.ItemDescSch,
+                        Item_desc_tch = x.Item.ItemDescTch, 
+                        Category_code_control = x.Item.CategoryCodeControl,
+                        Category_code_cost = x.Item.CategoryCodeCost,
+                        Category_code_inv = x.Item.CategoryCodeInv,
+                        Category_name_control = x.Item.CategoryNameControl,
+                        Category_name_cost = x.Item.CategoryNameCost,
+                        Category_name_inv = x.Item.CategoryNameInv,
+                        Primary_uom_code = x.Item.PrimaryUomCode,
+                        Secondary_uom_code = x.Item.SecondaryUomCode,
+                        Inventory_item_status_code = x.Item.InventoryItemStatusCode, 
+                        Created_by = x.Item.CreatedBy, 
+                        Creation_Date = x.Item.CreationDate, 
+                        Last_Updated_by = x.Item.LastUpdateBy,
+                        Last_Update_Date = x.Item.LastUpdateDate,
+                        Organization_code = x.OrganId,
+                        Id = 0
+                    });
 
+                    //model.RecordTotal = rawQuery.Count();
                     string search = data.Search.Value;
                     if (!string.IsNullOrEmpty(search) && !string.IsNullOrWhiteSpace(search))
                     {
@@ -261,23 +300,45 @@ LEFT JOIN ORGANIZATION_T og ON og.ORGANIZATION_ID = ot.ORGANIZATION_ID");
                             || (!string.IsNullOrEmpty(p.Creation_Date.ToString()) && p.Creation_Date.ToString().ToLower().Contains(search.ToLower()))
                             || (!string.IsNullOrEmpty(p.Last_Update_Date.ToString()) && p.Last_Update_Date.ToString().ToLower().Contains(search.ToLower()))
                             || (!string.IsNullOrEmpty(p.Last_Updated_by.ToString()) && p.Last_Updated_by.ToString().ToLower().Contains(search.ToLower()))
-                            ).ToList();
+                            );
                     }
+                    else {
+                     
+                    }
+                    model.RecordTotal = list.Count();
+                    model.RecordFiltered = list.Count();
 
-                    return Order(data.Order, list).Skip(data.Start).Take(data.Length).ToList();
+                    var records = Order(data.Order, list).Skip(data.Start).Take(data.Length).ToList();
 
-                }
+                    
+                    model.List = records;
+                    model.Success = true;
+                    model.Code = ResultModel.CODE_SUCCESS;
+                    model.Msg = "";
+                    
+                
             }
             catch (Exception e)
             {
                 logger.Error(LogUtilities.BuildExceptionMessage(e));
-                return new List<PartNoModel>();
+
+
+                model.RecordFiltered = 0;
+                model.RecordTotal = 0;
+                model.List = new List<PartNoModel>();
+                model.Code = -99;
+                model.Success = false;
+                model.Msg = e.Message;
+
+                
             }
+            return model;
+
         }
 
-        public static IOrderedEnumerable<PartNoModel> Order(List<Order> orders, IEnumerable<PartNoModel> models)
+        public static IOrderedQueryable<PartNoModel> Order(List<Order> orders, IQueryable<PartNoModel> models)
         {
-            IOrderedEnumerable<PartNoModel> orderedModel = null;
+            IOrderedQueryable<PartNoModel> orderedModel = null;
             if (orders.Count() > 0)
             {
                 orderedModel = OrderBy(orders[0].Column, orders[0].Dir, models);
@@ -291,7 +352,7 @@ LEFT JOIN ORGANIZATION_T og ON og.ORGANIZATION_ID = ot.ORGANIZATION_ID");
             return orderedModel;
         }
 
-        private static IOrderedEnumerable<PartNoModel> OrderBy(int column, string dir, IEnumerable<PartNoModel> models)
+        private static IOrderedQueryable<PartNoModel> OrderBy(int column, string dir, IQueryable<PartNoModel> models)
         {
             switch (column)
             {
@@ -341,7 +402,7 @@ LEFT JOIN ORGANIZATION_T og ON og.ORGANIZATION_ID = ot.ORGANIZATION_ID");
             }
         }
 
-        private static IOrderedEnumerable<PartNoModel> ThenBy(int column, string dir, IOrderedEnumerable<PartNoModel> models)
+        private static IOrderedQueryable<PartNoModel> ThenBy(int column, string dir, IOrderedQueryable<PartNoModel> models)
         {
             switch (column)
             {

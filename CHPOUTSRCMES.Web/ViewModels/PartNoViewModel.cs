@@ -48,11 +48,11 @@ namespace CHPOUTSRCMES.Web.ViewModels
             }
         }
 
-        public List<PartNoModel> GetItemNo(DataTableAjaxPostViewModel data, string Catalog_elem_val_050, string Catalog_elem_val_020, string Catalog_elem_val_070,string Organization_code)
+        public ResultPageModel<PartNoModel> GetItemNo(DataTableAjaxPostViewModel data, string Catalog_elem_val_050, string Catalog_elem_val_020, string Catalog_elem_val_070,string OrganizationId)
         {
             using (var context = new MesContext())
             {
-                return new ItemNoUOW(context).GetItemNo(data, Catalog_elem_val_050, Catalog_elem_val_020, Catalog_elem_val_070, Organization_code);
+                return new ItemNoUOW(context).GetItemNo(data, Catalog_elem_val_050, Catalog_elem_val_020, Catalog_elem_val_070, OrganizationId);
             }
         }
     }

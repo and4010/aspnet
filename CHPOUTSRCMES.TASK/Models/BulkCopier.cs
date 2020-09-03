@@ -1,4 +1,5 @@
 ﻿using CHPOUTSRCMES.TASK.Models.Entity.Temp;
+using CHPOUTSRCMES.Web.DataModel.Entity.Information;
 using NLog;
 using System;
 using System.Collections.Generic;
@@ -690,6 +691,7 @@ namespace CHPOUTSRCMES.TASK.Models.Entity
                 resultModel = DeleteTable(tableName);
 
                 if (!resultModel.Success) return resultModel;
+
             }
 
             stopWatch.Start();
@@ -811,6 +813,64 @@ namespace CHPOUTSRCMES.TASK.Models.Entity
                     bulkCopy.ColumnMappings.Add("CREATION_DATE", "CREATION_DATE");
                     bulkCopy.ColumnMappings.Add("LAST_UPDATE_BY", "LAST_UPDATE_BY");
                     bulkCopy.ColumnMappings.Add("LAST_UPDATE_DATE", "LAST_UPDATE_DATE");
+
+                    bulkCopy.WriteToServer(table);
+
+                    resultModel.Success = true;
+                    resultModel.Code = ResultModel.CODE_SUCCESS;
+                    resultModel.Msg = "";
+                }
+                catch (Exception ex)
+                {
+                    resultModel.Code = -2;
+                    resultModel.Success = false;
+                    resultModel.Msg = ex.Message;
+
+                }
+
+            }
+
+            stopWatch.Stop();
+            logger.Info($"BulkCopy:{tableName} BulkCopy TimeSpent:{stopWatch.ElapsedMilliseconds}ms {resultModel}");
+
+            return resultModel.Success && executeSp ? ExecuteSyncSp(spName) : resultModel;
+        }
+
+        public ResultModel BulkCopy(List<ORG_ITEMS_TMP_T> list, string tableName, string spName, bool deleteTable = true, bool executeSp = false)
+        {
+            var resultModel = new ResultModel();
+            var stopWatch = new Stopwatch();
+
+            if (deleteTable)
+            {
+                resultModel = DeleteTable(tableName);
+
+                if (!resultModel.Success) return resultModel;
+            }
+
+            stopWatch.Start();
+
+            DataTable table = new DataTable(tableName);
+            table.Columns.Add("INVENTORY_ITEM_ID", typeof(long));
+            table.Columns.Add("ORGANIZATION_ID", typeof(long));
+
+            foreach (var item in list)
+            {
+                var row = table.NewRow();
+                row["INVENTORY_ITEM_ID"] = item.INVENTORY_ITEM_ID;
+                row["ORGANIZATION_ID"] = item.ORGANIZATION_ID;
+
+                table.Rows.Add(row);
+            }
+
+            using (SqlBulkCopy bulkCopy = new SqlBulkCopy(connection, SqlBulkCopyOptions.KeepIdentity, transaction))
+            {
+                try
+                {
+                    bulkCopy.DestinationTableName = tableName;
+                    bulkCopy.BatchSize = 1000;
+                    bulkCopy.ColumnMappings.Add("INVENTORY_ITEM_ID", "INVENTORY_ITEM_ID");
+                    bulkCopy.ColumnMappings.Add("ORGANIZATION_ID", "ORGANIZATION_ID");
 
                     bulkCopy.WriteToServer(table);
 
@@ -1068,6 +1128,61 @@ WHEN NOT MATCHED THEN
             }
             stopWatch.Stop();
             logger.Info($"Merge:ITEMS_TMP_T TimeSpent:{stopWatch.ElapsedMilliseconds}ms {resultModel}");
+
+            return resultModel.Success && executeSp ? ExecuteSyncSp(spName) : resultModel;
+        }
+
+        public ResultModel Merge(List<ORG_ITEMS_TMP_T> list, string spName, bool executeSp = false)
+        {
+            var resultModel = new ResultModel();
+            var stopWatch = new Stopwatch();
+
+            using (var cmd = this.connection.CreateCommand())
+            {
+                cmd.Transaction = transaction;
+                cmd.CommandText =
+@"MERGE INTO ORG_ITEMS_TMP_T WITH (HOLDLOCK) AS A 
+USING ( VALUES ( 
+	@INVENTORY_ITEM_ID, @ORGANIZATION_ID
+)) AS B (
+    INVENTORY_ITEM_ID, ORGANIZATION_ID
+)
+ON A.INVENTORY_ITEM_ID = B.INVENTORY_ITEM_ID AND A.ORGANIZATION_ID = B.ORGANIZATION_ID
+WHEN MATCHED THEN
+	UPDATE SET 
+		A.INVENTORY_ITEM_ID = B.INVENTORY_ITEM_ID, A.ORGANIZATION_ID = B.ORGANIZATION_ID
+WHEN NOT MATCHED THEN 
+	INSERT (
+		INVENTORY_ITEM_ID, ORGANIZATION_ID
+	) VALUES (
+		INVENTORY_ITEM_ID, ORGANIZATION_ID
+	);";
+                cmd.Parameters.Add(new SqlParameter("@INVENTORY_ITEM_ID", SqlDbType.BigInt));
+                cmd.Parameters.Add(new SqlParameter("@ORGANIZATION_ID", SqlDbType.BigInt));
+                
+                try
+                {
+
+                    foreach (var item in list)
+                    {
+                        cmd.Parameters["@INVENTORY_ITEM_ID"].Value = item.INVENTORY_ITEM_ID;
+                        cmd.Parameters["@ORGANIZATION_ID"].Value = item.ORGANIZATION_ID;
+                        
+                        var affactCount = cmd.ExecuteNonQuery();
+                    }
+                    resultModel.Code = ResultModel.CODE_SUCCESS;
+                    resultModel.Success = true;
+                    resultModel.Msg = "";
+                }
+                catch (Exception ex)
+                {
+                    resultModel.Code = -2;
+                    resultModel.Success = false;
+                    resultModel.Msg = ex.Message;
+                }
+            }
+            stopWatch.Stop();
+            logger.Info($"Merge:ORG_ITEMS_TMP_T TimeSpent:{stopWatch.ElapsedMilliseconds}ms {resultModel}");
 
             return resultModel.Success && executeSp ? ExecuteSyncSp(spName) : resultModel;
         }

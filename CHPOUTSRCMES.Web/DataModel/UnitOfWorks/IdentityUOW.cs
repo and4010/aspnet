@@ -88,7 +88,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                     //產生條碼設定預設值
                     ImportBcdMisc(book);
                     ImportUserSubinventory(book);
-
+                    ImportReason(book);
                     //成功時，提交所有處理
                     txn.Commit();
                 }
@@ -168,7 +168,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             {
                 try
                 {
-                    var adm = this.appUserRepositiory.Get(x => x.UserName.CompareTo("adm") == 0).FirstOrDefault();
+                    var adm = this.appUserRepositiory.Get(x => x.UserName.CompareTo("adam") == 0).FirstOrDefault();
                     var userName = ExcelUtil.GetStringCellValue(j, userNameCell.ColumnIndex, sheet);
                     var subinvenotryCode = ExcelUtil.GetStringCellValue(j, subinventoryCell.ColumnIndex, sheet);
                     var user = this.appUserRepositiory.Get(x => x.UserName.CompareTo(userName) == 0).FirstOrDefault();
@@ -231,7 +231,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             {
                 try
                 {
-                    var adm = this.appUserRepositiory.Get(x => x.UserName.CompareTo("adm") == 0).FirstOrDefault();
+                    var adm = this.appUserRepositiory.Get(x => x.UserName.CompareTo("adam") == 0).FirstOrDefault();
                     var subinvenotryCode = ExcelUtil.GetStringCellValue(j, subinventoryCell.ColumnIndex, sheet);
                     var subinventory = this.subinventoryRepositiory.Get(x => x.SubinventoryCode.CompareTo(subinvenotryCode) == 0).FirstOrDefault();
                     //搜尋未執行 SaveChanges 的資料
@@ -1372,6 +1372,59 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             }
             this.SaveChanges();
         }
+
+        private void ImportReason(IWorkbook book)
+        {
+            ISheet sheet = FindSheet(book, "貨故原因");
+
+            if (sheet == null) return;
+
+            var noOfRow = sheet.LastRowNum;
+            ICell codeCell = null;
+            ICell descCell = null;
+
+            codeCell = ExcelUtil.FindCell("代碼", sheet);
+            if (codeCell == null)
+            {
+                throw new Exception("找不到代碼欄位");
+            }
+            descCell = ExcelUtil.FindCell("說明", sheet);
+            if (descCell == null)
+            {
+                throw new Exception("找不到說明欄位");
+            }
+
+            for (int j = codeCell.RowIndex + 1; j <= noOfRow; j++)
+            {
+                try
+                {
+                    var adm = this.appUserRepositiory.Get(x => x.UserName.CompareTo("adam") == 0).FirstOrDefault();
+                    var code = ExcelUtil.GetStringCellValue(j, codeCell.ColumnIndex, sheet);
+                    var desc = ExcelUtil.GetStringCellValue(j, descCell.ColumnIndex, sheet);
+                   
+                    //搜尋已執行 SaveChanges 的資料
+                    //var org = transactionTypeRepositiory.Get(x => x.TransactionTypeId == TransactionTypeId).FirstOrDefault();
+                    if (!string.IsNullOrEmpty(code) && !string.IsNullOrEmpty(desc))
+                    {
+                        var now = DateTime.Now;
+                        STK_REASON_T stkReasonT = new STK_REASON_T();
+                        stkReasonT.ReasonCode = code;
+                        stkReasonT.ReasonDesc = desc;
+                        stkReasonT.CreatedBy = adm.Id;
+                        stkReasonT.CreationDate = now;
+                        stkReasonT.LastUpdateBy = adm.Id;
+                        stkReasonT.LastUpdateDate = now;
+                        stkReasonTRepositiory.Create(stkReasonT);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    logger.Error(LogUtilities.BuildExceptionMessage(ex));
+                }
+            }
+            this.SaveChanges();
+        }
+
 
         public ISheet FindSheet(IWorkbook book, string name)
         {

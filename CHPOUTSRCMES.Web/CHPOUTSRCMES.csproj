@@ -391,6 +391,7 @@
     <Compile Include="Models\CHP_SUBINVENTORY_T\LOCATOR.cs" />
     <Compile Include="Models\CHP_SUBINVENTORY_T\ORGANIZATION.cs" />
     <Compile Include="Models\CHP_SUBINVENTORY_T\SUBINVENTORY.cs" />
+    <Compile Include="Models\ResultPageModel.cs" />
     <Compile Include="Models\Stock\StockInventoryDT.cs" />
     <Compile Include="Models\Stock\StockDT.cs" />
     <Compile Include="Models\StockInventory\StockInventoryModel.cs" />

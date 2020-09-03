@@ -1313,7 +1313,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                 foreach (AppUser data in userList)
                 {
 
-                    if (data.UserName == "adm")
+                    if (data.UserName == "adam")
                     {
                         userSubinventoryTRepositiory.Create(new USER_SUBINVENTORY_T
                         {

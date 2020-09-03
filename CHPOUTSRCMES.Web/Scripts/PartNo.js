@@ -31,7 +31,7 @@ function init() {
     });
 }
 
-function LoadTable(Catalog_elem_val_050, Catalog_elem_val_020, Catalog_elem_val_070, Organization_code) {
+function LoadTable(Catalog_elem_val_050, Catalog_elem_val_020, Catalog_elem_val_070, OrganizationId) {
 
     $('#PartNoTable').DataTable({
         "language": {
@@ -39,7 +39,6 @@ function LoadTable(Catalog_elem_val_050, Catalog_elem_val_020, Catalog_elem_val_
         },
         processing: true,
         serverSide: true,
-        scrollX: true,
         autoWidth: false,
         destroy:true,
         dom:
@@ -51,7 +50,7 @@ function LoadTable(Catalog_elem_val_050, Catalog_elem_val_020, Catalog_elem_val_
             "url": "/PartNo/PartNoJson",
             "type": "POST",
             "datatype": "json",
-            "data": { "Catalog_elem_val_050": Catalog_elem_val_050, "Catalog_elem_val_020" : Catalog_elem_val_020, "Catalog_elem_val_070" : Catalog_elem_val_070, "Organization_code" : Organization_code }
+            "data": { "Catalog_elem_val_050": Catalog_elem_val_050, "Catalog_elem_val_020": Catalog_elem_val_020, "Catalog_elem_val_070": Catalog_elem_val_070, "OrganizationId": OrganizationId }
         },
         buttons: [
             {
@@ -117,10 +116,10 @@ function onclick() {
         var Catalog_elem_val_050 = $("#Catalog_elem_val_050").val();
         var Catalog_elem_val_020 = $("#Catalog_elem_val_020").val();
         var Catalog_elem_val_070 = $("#Catalog_elem_val_070").val();
-        var Organization_code = $("#Organization_code").val();
+        var OrganizationId = $("#Organization_code").val();
 
 
-        LoadTable(Catalog_elem_val_050, Catalog_elem_val_020, Catalog_elem_val_070, Organization_code);
+        LoadTable(Catalog_elem_val_050, Catalog_elem_val_020, Catalog_elem_val_070, OrganizationId);
 
 
     });
