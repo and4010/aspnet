@@ -10,6 +10,8 @@ namespace CHPOUTSRCMES.Web.Models.Stock
     public class StockObsoleteDT
     {
         public long ID { set; get; }
+
+        public long SUB_ID { set; get; }
         public long STOCK_ID { set; get; }
         public string SUBINVENTORY_CODE { set; get; }
         public string SEGMENT3 { set; get; }
@@ -39,7 +41,7 @@ namespace CHPOUTSRCMES.Web.Models.Stock
         {
             ObsoleteViewModel viewModel = new ObsoleteViewModel();
             viewModel.Unit = "";
-            viewModel.Qty = null;
+            viewModel.Qty = "";
             return viewModel;
         }
 

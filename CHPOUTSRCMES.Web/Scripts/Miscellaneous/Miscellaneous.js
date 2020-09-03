@@ -45,9 +45,6 @@ $(document).ready(function () {
         return percentageError;
     }
 
-  
-
-
     $('#txtSearchQty').keydown(function (e) {
         if (e.keyCode == 13) {
             $('#txtPercentageError').focus().select();
@@ -188,7 +185,7 @@ $(document).ready(function () {
             //{ data: "LAST_UPDATE_DATE", name: "更新日期", autoWidth: true, visible: false }
         ],
 
-        order: [[11, 'desc']],
+        order: [[1, 'desc']],
         select: {
             style: 'single'
         },

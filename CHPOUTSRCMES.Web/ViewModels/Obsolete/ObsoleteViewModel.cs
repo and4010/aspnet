@@ -28,8 +28,7 @@ namespace CHPOUTSRCMES.Web.ViewModels.Obsolete
         [Display(Name = "單位")]
         public string Unit { set; get; }
 
-        [Required]
-        public decimal? Qty { set; get; }
+        public string Qty { set; get; }
         
     }
 }
