@@ -41,7 +41,7 @@ WHERE s.{IdField} IS NULL AND t.STATUS =0
         #region IDispose Region
         private bool disposed = false;
 
-        protected virtual void Dispose(bool disposing)
+        protected override void Dispose(bool disposing)
         {
             if (!this.disposed)
             {
@@ -53,7 +53,7 @@ WHERE s.{IdField} IS NULL AND t.STATUS =0
             this.disposed = true;
         }
 
-        public void Dispose()
+        public new void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);
