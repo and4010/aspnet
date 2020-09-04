@@ -293,7 +293,7 @@
     <Compile Include="DataModel\Entity\Process\OSP_PICKED_OUT_T.cs" />
     <Compile Include="DataModel\Entity\Process\OSP_YIELD_VARIANCE_HT.cs" />
     <Compile Include="DataModel\Entity\Process\OSP_YIELD_VARIANCE_T.cs" />
-    <Compile Include="DataModel\UnitOfWorks\InventoryUOW.cs" />
+    <Compile Include="DataModel\UnitOfWorks\StockInventoryUOW.cs" />
     <Compile Include="DataModel\UnitOfWorks\MiscellaneousUOW.cs" />
     <Compile Include="DataModel\UnitOfWorks\ObsoleteUOW.cs" />
     <Compile Include="DataModel\UnitOfWorks\ProcessUOW.cs" />

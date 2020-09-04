@@ -3,6 +3,39 @@ var LossDetailDT;
 var ProfitDetailDT;
 var editor;
 
+function getInventoryType() {
+    return $("#ddlProfit option:selected").text();
+}
+
+function getTransactionTypeId() {
+    var id = $("#ddlProfit").val();
+    if (id == '請選擇') {
+        id = '0';
+    }
+    return id;
+}
+
+function getOrganizationId() {
+    var id = $("#ddlSubinventory").val();
+    if (id == '請選擇') {
+        id = '0';
+    }
+    return id;
+}
+
+function getSubinventoryCode() {
+    return $("#ddlSubinventory option:selected").text();
+}
+
+function getLocatorId() {
+    if ($('#ddlLocatorArea').is(":visible")) {
+        return $("#ddlLocator").val();
+    } else {
+        return null;
+    }
+}
+
+
 function ProfitInit() {
     GetProfitTop();
     ProfitOnClick();
@@ -132,24 +165,26 @@ function ProfitLoadLossDetailDT() {
         serverSide: true,
         processing: true,
         orderMulti: true,
+        deferLoading: 0, //初始化DataTable時，不發出ajax
         //pageLength: 2,
         dom:
             "<'row'<'col-sm-2'l><'col-sm-7'B><'col-sm-3'f>>" +
             "<'row'<'col-sm-12'tr>>" +
             "<'row'<'col-sm-5'i><'col-sm-7'p>>",
         ajax: {
-            "url": "/StockInventory/GetLossDetailForProfit",
+            "url": "/StockInventory/GetTransactionDetailForLossHistory",
             "type": "POST",
             "datatype": "json",
             "data": function (d) {
-                d.SubinventoryCode = $('#ddlSubinventory').val();
-                d.Locator = $('#ddlLocator').val();
-                d.ItemNumber = $('#txtItemNumber').val();
+                d.organizationId = getOrganizationId();
+                d.subinventoryCode = getSubinventoryCode();
+                d.locatorId = getLocatorId();
+                d.itemNumber = $("#txtItemNumber").val();
             }
         },
         columns: [
             { data: null, defaultContent: '', className: 'select-checkbox', orderable: false, width: "40px" },
-            { data: "STOCK_ID", name: "項次", autoWidth: true },
+            { data: "SUB_ID", name: "項次", autoWidth: true },
             { data: "SUBINVENTORY_CODE", name: "倉庫", autoWidth: true },
             { data: "SEGMENT3", name: "儲位", autoWidth: true },
             { data: "ITEM_NO", name: "料號", autoWidth: true, className: "dt-body-left" },
@@ -183,10 +218,11 @@ function ProfitLoadLossDetailDT() {
             },
             { data: "SECONDARY_UOM_CODE", name: "次要單位", autoWidth: true },
             { data: "NOTE", name: "備註", autoWidth: true },
-            { data: "LAST_UPDATE_DATE", name: "更新日期", autoWidth: true, visible: false }
+            { data: "STOCK_ID", name: "STOCK_ID", autoWidth: true, visible: false }
+            //{ data: "LAST_UPDATE_DATE", name: "更新日期", autoWidth: true, visible: false }
         ],
 
-        order: [[13, 'desc']],
+        order: [[1, 'desc']],
         select: {
             style: 'single'
         },
@@ -206,6 +242,8 @@ function ProfitLoadLossDetailDT() {
         if (type === 'row') {
             var StockId = dt.rows(indexes).data().pluck('STOCK_ID')[0];
             $("#StockId").text(StockId);
+            var SUB_ID = dt.rows(indexes).data().pluck('SUB_ID')[0];
+            $("#SUB_ID").text(SUB_ID);
             var Subinventory = dt.rows(indexes).data().pluck('SUBINVENTORY_CODE')[0];
             $("#Subinventory").text(Subinventory);
             var Locator = dt.rows(indexes).data().pluck('SEGMENT3')[0];
@@ -252,6 +290,7 @@ function ProfitLoadLossDetailDT() {
     LossDetailDT.on('deselect', function (e, dt, type, indexes) {
         if (type === 'row') {
             $("#StockId").text("");
+            $("#SUB_ID").text("");
             $("#Subinventory").text("");
             $("#Locator").text("");
             $("#ItemNumber").text("");
@@ -271,7 +310,7 @@ function ProfitLoadProfitDetailDT() {
             "url": "/bower_components/datatables/language/zh-TW.json"
         },
         ajax: {
-            url: '/StockInventory/ProfitEditor',
+            url: '/StockInventory/DetailEditor',
             type: "POST",
             dataType: "json",
             contentType: 'application/json',
@@ -287,7 +326,9 @@ function ProfitLoadProfitDetailDT() {
                         'LOT_NUMBER': d.data[key]['LOT_NUMBER'],
                         'ITEM_NO': d.data[key]['ITEM_NO'],
                         'SEGMENT3': d.data[key]['SEGMENT3'],
-                        'SUBINVENTORY_CODE': d.data[key]['SUBINVENTORY_CODE']
+                        'SUBINVENTORY_CODE': d.data[key]['SUBINVENTORY_CODE'],
+                        'ORGANIZATION_ID': d.data[key]['ORGANIZATION_ID'],
+                        'LOCATOR_ID': d.data[key]['LOCATOR_ID']
                     }
                     StockInventoryDTList.push(StockInventoryDT);
                 });
@@ -297,10 +338,15 @@ function ProfitLoadProfitDetailDT() {
                     'StockInventoryDTList': StockInventoryDTList
                 }
                 return JSON.stringify(data);
+            },
+            success: function (data) {
+                if (data.status) {
+                    ProfitDetailDT.ajax.reload();
+                }
+                else {
+                    swal.fire(data.result);
+                }
             }
-            //success: function () {
-            //    LoadBody();
-            //}
         },
         table: "#ProfitDetailDT",
         formOptions: {
@@ -312,6 +358,10 @@ function ProfitLoadProfitDetailDT() {
         fields: [
             {
                 name: "ID"
+            },
+            {
+                label: "組織ID",
+                name: "ORGANIZATION_ID"
             },
             {
                 label: "倉庫",
@@ -348,35 +398,59 @@ function ProfitLoadProfitDetailDT() {
 
         ],
         i18n: {
+            //create: {
+            //    button: "新增",
+            //    title: "新增",
+            //    submit: "確定",
+            //    action: 'btn-primary'
+            //},
+            //remove: {
+            //    button: '刪除',
+            //    title: "刪除",
+            //    submit: "確定",
+            //    confirm: {
+            //        "_": "你確定要刪除這筆資料?",
+            //        "1": "你確定要刪除這筆資料?"
+            //    }
+            //},
+            //edit: {
+            //    button: '編輯',
+            //    title: "編輯",
+            //    submit: "確定",
+            //}
             create: {
                 button: "新增",
                 title: "新增",
                 submit: "確定",
                 action: 'btn-primary'
             },
+            edit: {
+                button: "編輯備註",
+                title: "編輯備註",
+                submit: "確定",
+                'className': 'btn-danger'
+            },
             remove: {
-                button: '刪除',
-                title: "刪除",
+                button: "刪除",
+                title: "確定要刪除??",
                 submit: "確定",
                 confirm: {
                     "_": "你確定要刪除這筆資料?",
-                    "1": "你確定要刪除這筆資料?"
+                    "1": "你確定要刪除這些資料?"
                 }
             },
-            edit: {
-                button: '編輯',
-                title: "編輯",
-                submit: "確定",
+            multi: {
+                "title": "多欄位異動",
+                "info": "請注意，您一次選擇多個不同的備註，此次異動將會變成同樣的備註！",
+                "restore": "取消更改",
+                "noMulti": "This input can be edited individually, but not part of a group."
             }
         }
     });
 
 
-    editor.hide(['ID', 'SUBINVENTORY_CODE', 'SEGMENT3', 'ITEM_NO', 'PRIMARY_TRANSACTION_QTY', 'LOT_NUMBER', 'LOCATOR_ID', 'SECONDARY_TRANSACTION_QTY']);
+    editor.hide(['ID','ORGANIZATION_ID', 'SUBINVENTORY_CODE', 'SEGMENT3', 'ITEM_NO', 'PRIMARY_TRANSACTION_QTY', 'LOT_NUMBER', 'LOCATOR_ID', 'SECONDARY_TRANSACTION_QTY']);
 
-    var SubinventoryCode = $('#ddlSubinventory').val();
-    var Locator = $('#ddlLocator').val();
-    var ItemNumber = $('#txtItemNumber').val();
 
     ProfitDetailDT = $('#ProfitDetailDT').DataTable({
         "language": {
@@ -392,10 +466,13 @@ function ProfitLoadProfitDetailDT() {
             "<'row'<'col-sm-12'tr>>" +
             "<'row'<'col-sm-5'i><'col-sm-7'p>>",
         ajax: {
-            "url": "/StockInventory/GetProfitDetail",
+            "url": "/StockInventory/GetTransactionDetail",
             "type": "POST",
             "datatype": "json",
-            "data": {},
+            "data": function (d) {
+                d.transactionTypeId = getTransactionTypeId();
+                d.fromHistoryData = false;
+            }
         },
         select: {
             style: 'multi',
@@ -413,15 +490,15 @@ function ProfitLoadProfitDetailDT() {
             ,
             {
                 extend: "selectNone",
-            }
-            ,
-            {
-                extend: "remove",
-                text: '刪除',
-                name: 'remove',
-                className: 'btn-danger',
-                editor: editor,
-            }
+            },
+            //,
+            //{
+            //    extend: "remove",
+            //    text: '刪除',
+            //    name: 'remove',
+            //    className: 'btn-danger',
+            //    editor: editor,
+            //}
             //,
             //{
             //    extend: 'edit',
@@ -430,7 +507,38 @@ function ProfitLoadProfitDetailDT() {
             //    className: 'btn-danger',
             //    editor: editor,
             //}
-            ,
+            {
+                    extend: "remove",
+                    text: '刪除',
+                    name: 'remove',
+                    className: 'btn-danger',
+                    editor: editor,
+                    init: function (api, node, config) {
+                        $(node).removeClass('btn-default')
+                    },
+                    action: function (e, dt, node, config) {
+                        var rows = ProfitDetailDT.rows({ selected: true }).indexes();
+
+                        if (rows.length === 0) {
+                            return;
+                        }
+
+                        editor.remove(rows, {
+                            title: '刪除',
+                            message: rows.length === 1 ?
+                                '你確定要刪除這筆資料?' :
+                                '請注意，您一次選擇多個不同的備註，此次異動將會變成同樣的備註！',
+                            buttons:
+                            {
+                                text: '刪除',
+                                className: 'btn-danger',
+                                action: function () {
+                                    this.submit();
+                                }
+                            }
+                        })
+                    }
+                },
             {
                 text: '<span class="glyphicon glyphicon-print"></span>&nbsp列印標籤',
                 //className: 'btn-default btn-sm',
@@ -439,36 +547,85 @@ function ProfitLoadProfitDetailDT() {
                 },
                 className: "btn-primary"
             }
-            ,
-            {
-                extend: 'edit',
-                text: '編輯備註',
-                className: 'btn-danger',
-                name: 'edit',
-                action: function (e, dt, node, config) {
-                    var count = dt.rows({ selected: true }).count();
-                    if (count == 0) {
-                        return;
+                ,
+
+                {
+                    text: '編輯備註',
+                    className: 'btn-danger',
+                    action: function (e, dt, node, config) {
+                        var count = dt.rows({ selected: true }).count();
+
+                        if (count == 0) {
+                            return;
+                        }
+
+                        editor.edit(ProfitDetailDT.rows({ selected: true }).indexes())
+                            .title('編輯備註')
+                            .buttons({
+                                text: '確定',
+                                action: function () {
+                                    this.submit();
+                                },
+                                className: 'btn-danger'
+                            });
+                        editor.hide(['ID', 'SUBINVENTORY_CODE', 'SEGMENT3', 'ITEM_NO', 'PRIMARY_TRANSACTION_QTY', 'LOT_NUMBER', 'LOCATOR_ID', 'SECONDARY_TRANSACTION_QTY']);
                     }
+                },
+            //{
+            //    extend: 'edit',
+            //    text: '編輯備註',
+            //    className: 'btn-danger',
+            //    name: 'edit',
+            //    editor: editor,
+            //    init: function (api, node, config) {
+            //        $(node).removeClass('btn-default')
+            //    },
+            //    action: function (e, dt, node, config) {
+            //        var rows = ProfitDetailDT.rows({ selected: true }).indexes();
 
-                    editor.edit({
-                        title: '編輯備註',
-                        buttons: '確定',
-                        action: function () {
-                            this.submit();
-                        },
-                        className: 'btn-danger'
-                    });
-                    editor.hide(['ID', 'SUBINVENTORY_CODE', 'SEGMENT3', 'ITEM_NO', 'PRIMARY_TRANSACTION_QTY', 'LOT_NUMBER', 'LOCATOR_ID', 'SECONDARY_TRANSACTION_QTY']);
+            //        if (rows.length === 0) {
+            //            return;
+            //        }
 
-                }
-            }
+            //        editor.edit(rows, {
+            //            title: '編輯備註',
+            //            message: rows.length === 1 ?
+            //                '你確定要刪除這筆資料?' :
+            //                '你確定要刪除這些資料?',
+            //            buttons:
+            //            {
+            //                text: '確定',
+            //                className: 'btn-danger',
+            //                action: function () {
+            //                    this.submit();
+            //                }
+            //            }
+            //        });
+            //        editor.hide(['ID', 'SUBINVENTORY_CODE', 'SEGMENT3', 'ITEM_NO', 'PRIMARY_TRANSACTION_QTY', 'LOT_NUMBER', 'LOCATOR_ID', 'SECONDARY_TRANSACTION_QTY']);
+
+            //        //var count = dt.rows({ selected: true }).count();
+            //        //if (count == 0) {
+            //        //    return;
+            //        //}
+
+            //        //editor.edit(rows,{
+            //        //    title: '編輯備註',
+            //        //    buttons: '確定',
+            //        //    action: function () {
+            //        //        this.submit();
+            //        //    },
+            //        //    className: 'btn-danger'
+            //        //});
+            //        //editor.hide(['ID', 'SUBINVENTORY_CODE', 'SEGMENT3', 'ITEM_NO', 'PRIMARY_TRANSACTION_QTY', 'LOT_NUMBER', 'LOCATOR_ID', 'SECONDARY_TRANSACTION_QTY']);
+
+            //    }
+            //}
             ]
         },
 
         columns: [
              { data: null, defaultContent: '', className: 'select-checkbox', orderable: false, width: "40px" },
-             { data: "STOCK_ID", name: "項次", autoWidth: true },
+             { data: "SUB_ID", name: "項次", autoWidth: true },
              { data: "SUBINVENTORY_CODE", name: "倉庫", autoWidth: true },
              { data: "SEGMENT3", name: "儲位", autoWidth: true },
              { data: "ITEM_NO", name: "料號", autoWidth: true, className: "dt-body-left" },
@@ -502,9 +659,9 @@ function ProfitLoadProfitDetailDT() {
              },
              { data: "SECONDARY_UOM_CODE", name: "次要單位", autoWidth: true },
              { data: "NOTE", name: "備註", autoWidth: true },
-             { data: "LAST_UPDATE_DATE", name: "更新日期", autoWidth: true, visible: false }
+             //{ data: "LAST_UPDATE_DATE", name: "更新日期", autoWidth: true, visible: false }
         ],
-
+        order: [[1, 'desc']]
     });
 
 
@@ -540,8 +697,9 @@ function ProfitOnClick() {
     $('#btnCreateBarcode').click(function (e) {
         e.preventDefault();
         var SEGMENT3 = $("#ddlLocator option:selected").text();
-        var SUBINVENTORY_CODE = $('#ddlSubinventory').val();
-        var LOCATOR_ID = $('#ddlLocator').val();
+        var SUBINVENTORY_CODE = getSubinventoryCode();
+        var ORGANIZATION_ID = getOrganizationId();
+        var LOCATOR_ID = getLocatorId();
         var ITEM_NO = $('#txtItemNumber').val();
 
         if (SUBINVENTORY_CODE == "請選擇") {
@@ -562,7 +720,7 @@ function ProfitOnClick() {
             return;
         }
 
-        CreateBarcode(SUBINVENTORY_CODE, SEGMENT3, ITEM_NO, LOCATOR_ID);
+        CreateBarcode(ORGANIZATION_ID, SUBINVENTORY_CODE, SEGMENT3, ITEM_NO, LOCATOR_ID);
 
         //editor.create({
         //    title: '新增條碼',
@@ -588,10 +746,10 @@ function ProfitOnClick() {
 
 }
 
-function CreateBarcode(SUBINVENTORY_CODE, SEGMENT3, ITEM_NO, LOCATOR_ID) {
+function CreateBarcode(ORGANIZATION_ID, SUBINVENTORY_CODE, SEGMENT3, ITEM_NO, LOCATOR_ID) {
     var ITEM_CATEGORY;
     if (LOCATOR_ID == "請選擇") {
-        LOCATOR_ID = 0;
+        LOCATOR_ID = null;
     }
     if (SEGMENT3 == "請選擇") {
         SEGMENT3 = "";
@@ -620,13 +778,14 @@ function CreateBarcode(SUBINVENTORY_CODE, SEGMENT3, ITEM_NO, LOCATOR_ID) {
             }
 
             editor.create({
-                title: '新增條碼',
+                title: '新增庫存',
                 buttons: '確定'
             });
             editor.hide(['ID']);
             if (ITEM_CATEGORY == "平版") {
                 editor.show(['SUBINVENTORY_CODE', 'SEGMENT3', 'SECONDARY_TRANSACTION_QTY', 'ITEM_NO']);
                 editor.disable(['PRIMARY_TRANSACTION_QTY', 'SUBINVENTORY_CODE', 'SEGMENT3', 'ITEM_NO']);
+                editor.field('ORGANIZATION_ID').val(ORGANIZATION_ID);
                 editor.field('SUBINVENTORY_CODE').val(SUBINVENTORY_CODE);
                 editor.field('SEGMENT3').val(SEGMENT3);
                 editor.field('LOCATOR_ID').val(LOCATOR_ID);
@@ -636,6 +795,7 @@ function CreateBarcode(SUBINVENTORY_CODE, SEGMENT3, ITEM_NO, LOCATOR_ID) {
                 editor.enable(['PRIMARY_TRANSACTION_QTY']);
                 editor.hide(['SECONDARY_TRANSACTION_QTY']);
                 editor.disable(['SUBINVENTORY_CODE', 'SEGMENT3', 'ITEM_NO', 'SECONDARY_TRANSACTION_QTY']);
+                editor.field('ORGANIZATION_ID').val(ORGANIZATION_ID);
                 editor.field('SUBINVENTORY_CODE').val(SUBINVENTORY_CODE);
                 editor.field('LOCATOR_ID').val(LOCATOR_ID);
                 editor.field('SEGMENT3').val(SEGMENT3);
@@ -673,16 +833,23 @@ function SearchLoss() {
 
 
 function AddProfitDetail() {
-    var ID = $('#StockId').text();
-    if (ID == "") {
-        swal.fire('請選擇料號');
+    var transactionTypeId = $('#ddlProfit').val();
+    if (transactionTypeId == "請選擇") {
+        swal.fire('請選擇盤點類別');
+        event.preventDefault();
+        return false;
+    }
+
+    var stockId = $('#StockId').text();
+    if (stockId == "") {
+        swal.fire('請選擇庫存');
         event.preventDefault();
         return false;
     }
 
 
-    var Qty = $('#txtQty').val();
-    if (Qty == "") {
+    var mQty = $('#txtQty').val();
+    if (mQty == "") {
         swal.fire('請輸入數量');
         event.preventDefault();
         return false;
@@ -691,11 +858,12 @@ function AddProfitDetail() {
 
 
     $.ajax({
-        url: "/StockInventory/AddProfitDetail",
+        url: "/StockInventory/AddTransactionDetail",
         type: "post",
         data: {
-            ID: ID,
-            Qty: Qty
+            transactionTypeId: transactionTypeId,
+            stockId: stockId,
+            mQty: mQty
         },
         success: function (data) {
             if (data.status) {
@@ -716,13 +884,12 @@ function AddProfitDetail() {
 }
 
 function SaveProfitDetail() {
-    var count = ProfitDetailDT.rows().count();
-    if (count == 0) {
-        swal.fire('請輸入異動明細');
+    var transactionTypeId = $('#ddlProfit').val();
+    if (transactionTypeId == "請選擇") {
+        swal.fire('請選擇雜項異動類別');
         event.preventDefault();
-        return;
+        return false;
     }
-
 
     swal.fire({
         title: "異動存檔",
@@ -735,9 +902,11 @@ function SaveProfitDetail() {
     }).then(function (result) {
         if (result.value) {
             $.ajax({
-                url: "/StockInventory/SaveProfitDetail",
+                url: "/StockInventory/SaveTransactionDetail",
                 type: "post",
-                data: {},
+                data: {
+                    transactionTypeId: transactionTypeId
+                },
                 success: function (data) {
                     if (data.status) {
                         swal.fire(data.result);

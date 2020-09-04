@@ -7,6 +7,7 @@
 </div>
 <div class="row row-std col-md-12">
     <input type="button" id="btnSearchLoss" value="查詢" class="btn btn-primary" />
+    <button class="btn btn-danger" type="button" id="btnCreateBarcode">新增庫存</button>
 </div>
 
 <div class="row row-std">
@@ -75,8 +76,9 @@
     <div class="row col-md-12 form-group">
 
         <div class="col-md-1 input-lg">
+            <span id="StockId" style="display: none;"></span>
             <label>項次</label>
-            <label id="StockId"></label>
+            <label id="SUB_ID"></label>
         </div>
 
         <div class="col-md-2 input-lg">
@@ -112,7 +114,6 @@
         </div>
         <label id="TransactionUnit"></label>
         <button class="btn btn-danger" type="button" id="btnAddRecord">新增明細</button>
-        <button class="btn btn-danger" type="button" id="btnCreateBarcode">新增條碼</button>
     </div>
 
     <div class="row row-std col-md-12">

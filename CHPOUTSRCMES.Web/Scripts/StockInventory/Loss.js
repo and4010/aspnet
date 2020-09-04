@@ -8,6 +8,14 @@ function getInventoryType() {
     return $("#ddlProfit option:selected").text();
 }
 
+function getTransactionTypeId() {
+    var id = $("#ddlProfit").val();
+    if (id == '請選擇') {
+        id = '0';
+    }
+    return id;
+}
+
 function getOrganizationId() {
     var id = $("#ddlSubinventory").val();
     if (id == '請選擇') {
@@ -323,7 +331,7 @@ function LossLoadLossDetailDT() {
             "url": "/bower_components/datatables/language/zh-TW.json"
         },
         ajax: {
-            url: '/StockInventory/LossEditor',
+            url: '/StockInventory/DetailEditor',
             type: "POST",
             dataType: "json",
             contentType: 'application/json',
@@ -347,10 +355,15 @@ function LossLoadLossDetailDT() {
                     'StockInventoryDTList': StockInventoryDTList
                 }
                 return JSON.stringify(data);
+            },
+            success: function (data) {
+                if (data.status) {
+                    LossDetailDT.ajax.reload();
+                }
+                else {
+                    swal.fire(data.result);
+                }
             }
-            //success: function () {
-            //    LoadBody();
-            //}
         },
         table: "#LossDetailDT",
         formOptions: {
@@ -390,25 +403,46 @@ function LossLoadLossDetailDT() {
 
         ],
         i18n: {
-            create: {
-                button: "新增",
-                title: "新增",
+            //create: {
+            //    button: "新增",
+            //    title: "新增",
+            //    submit: "確定",
+            //    action: 'btn-primary'
+            //},
+            //remove: {
+            //    button: '刪除',
+            //    title: "刪除",
+            //    submit: "確定",
+            //    confirm: {
+            //        "_": "你確定要刪除這筆資料?",
+            //        "1": "你確定要刪除這筆資料?"
+            //    }
+            //},
+            //edit: {
+            //    button: '編輯',
+            //    title: "編輯",
+            //    submit: "確定",
+            //}
+            edit: {
+                button: "編輯備註",
+                title: "編輯備註",
                 submit: "確定",
-                action: 'btn-primary'
+                'className': 'btn-danger'
             },
             remove: {
-                button: '刪除',
-                title: "刪除",
+                button: "刪除",
+                title: "確定要刪除??",
                 submit: "確定",
                 confirm: {
                     "_": "你確定要刪除這筆資料?",
-                    "1": "你確定要刪除這筆資料?"
+                    "1": "你確定要刪除這些資料?"
                 }
             },
-            edit: {
-                button: '編輯',
-                title: "編輯",
-                submit: "確定",
+            multi: {
+                "title": "多欄位異動",
+                "info": "請注意，您一次選擇多個不同的備註，此次異動將會變成同樣的備註！",
+                "restore": "取消更改",
+                "noMulti": "This input can be edited individually, but not part of a group."
             }
         }
     });
@@ -416,9 +450,6 @@ function LossLoadLossDetailDT() {
 
     editor.hide(['ID', 'SUBINVENTORY_CODE', 'SEGMENT3', 'ITEM_NO', 'PRIMARY_AVAILABLE_QTY', 'LOT_NUMBER'])
 
-    var SubinventoryCode = $('#ddlSubinventory').val();
-    var Locator = $('#ddlLocator').val();
-    var ItemNumber = $('#txtItemNumber').val();
 
     LossDetailDT = $('#LossDetailDT').DataTable({
         "language": {
@@ -434,10 +465,13 @@ function LossLoadLossDetailDT() {
             "<'row'<'col-sm-12'tr>>" +
             "<'row'<'col-sm-5'i><'col-sm-7'p>>",
         ajax: {
-            "url": "/StockInventory/GetLossDetailForLoss",
+            "url": "/StockInventory/GetTransactionDetail",
             "type": "POST",
             "datatype": "json",
-            "data": {},
+            "data": function (d) {
+                d.transactionTypeId = getTransactionTypeId();
+                d.fromHistoryData = false;
+            }
         },
         select: {
             style: 'multi',
@@ -456,22 +490,75 @@ function LossLoadLossDetailDT() {
             {
                 extend: "selectNone",
             }
-            ,
-            {
-                extend: "remove",
-                text: '刪除',
-                name: 'remove',
-                className: 'btn-danger',
-                editor: editor,
-            }
-            ,
-            {
-                extend: 'edit',
-                text: '編輯備註',
-                name: 'edit',
-                className: 'btn-danger',
-                editor: editor,
-            }
+                ,
+                {
+                    extend: "remove",
+                    text: '刪除',
+                    name: 'remove',
+                    className: 'btn-danger',
+                    editor: editor,
+                    init: function (api, node, config) {
+                        $(node).removeClass('btn-default')
+                    },
+                    action: function (e, dt, node, config) {
+                        var rows = LossDetailDT.rows({ selected: true }).indexes();
+
+                        if (rows.length === 0) {
+                            return;
+                        }
+
+                        editor.remove(rows, {
+                            title: '刪除',
+                            message: rows.length === 1 ?
+                                '你確定要刪除這筆資料?' :
+                                '你確定要刪除這些資料?',
+                            buttons:
+                            {
+                                text: '刪除',
+                                className: 'btn-danger',
+                                action: function () {
+                                    this.submit();
+                                }
+                            }
+                        })
+                    }
+                },
+                {
+                    text: '編輯備註',
+                    className: 'btn-danger',
+                    action: function (e, dt, node, config) {
+                        var count = dt.rows({ selected: true }).count();
+
+                        if (count == 0) {
+                            return;
+                        }
+
+                        editor.edit(LossDetailDT.rows({ selected: true }).indexes())
+                            .title('編輯備註')
+                            .buttons({
+                                text: '確定',
+                                action: function () {
+                                    this.submit();
+                                },
+                                className: 'btn-danger'
+                            });
+                    }
+                }
+            //{
+            //    extend: "remove",
+            //    text: '刪除',
+            //    name: 'remove',
+            //    className: 'btn-danger',
+            //    editor: editor,
+            //}
+            //,
+            //{
+            //    extend: 'edit',
+            //    text: '編輯備註',
+            //    name: 'edit',
+            //    className: 'btn-danger',
+            //    editor: editor,
+            //}
             ]
         },
 
@@ -512,7 +599,7 @@ function LossLoadLossDetailDT() {
         //],
         columns: [
              { data: null, defaultContent: '', className: 'select-checkbox', orderable: false, width: "40px" },
-             { data: "STOCK_ID", name: "項次", autoWidth: true },
+             { data: "SUB_ID", name: "項次", autoWidth: true },
              { data: "SUBINVENTORY_CODE", name: "倉庫", autoWidth: true },
              { data: "SEGMENT3", name: "儲位", autoWidth: true },
              { data: "ITEM_NO", name: "料號", autoWidth: true, className: "dt-body-left" },
@@ -545,10 +632,11 @@ function LossLoadLossDetailDT() {
                  }
              },
              { data: "SECONDARY_UOM_CODE", name: "次要單位", autoWidth: true },
-             { data: "NOTE", name: "備註", autoWidth: true },
-             { data: "LAST_UPDATE_DATE", name: "更新日期", autoWidth: true, visible: false }
+            { data: "NOTE", name: "備註", autoWidth: true },
+            { data: "STOCK_ID", name: "STOCK_ID", autoWidth: true, visible: false }
+             //{ data: "LAST_UPDATE_DATE", name: "更新日期", autoWidth: true, visible: false }
         ],
-
+        order: [[1, 'desc']]
     });
 
 
@@ -603,16 +691,23 @@ function clearText() {
 
 
 function AddLossDetail() {
-    var ID = $('#StockId').text();
-    if (ID == "") {
-        swal.fire('請選擇料號');
+    var transactionTypeId = $('#ddlProfit').val();
+    if (transactionTypeId == "請選擇") {
+        swal.fire('請選擇盤點類別');
+        event.preventDefault();
+        return false;
+    }
+
+    var stockId = $('#StockId').text();
+    if (stockId == "") {
+        swal.fire('請選擇庫存');
         event.preventDefault();
         return false;
     }
 
 
-    var Qty = $('#txtQty').val();
-    if (Qty == "") {
+    var mQty = $('#txtQty').val();
+    if (mQty == "") {
         swal.fire('請輸入數量');
         event.preventDefault();
         return false;
@@ -620,12 +715,14 @@ function AddLossDetail() {
 
 
 
+
     $.ajax({
-        url: "/StockInventory/AddLossDetail",
+        url: "/StockInventory/AddTransactionDetail",
         type: "post",
         data: {
-            ID: ID,
-            Qty: Qty
+            transactionTypeId: transactionTypeId,
+            stockId: stockId,
+            mQty: mQty
         },
         success: function (data) {
             if (data.status) {
@@ -646,11 +743,11 @@ function AddLossDetail() {
 }
 
 function SaveLossDetail() {
-    var count = LossDetailDT.rows().count();
-    if (count == 0) {
-        swal.fire('請輸入異動明細');
+    var transactionTypeId = $('#ddlProfit').val();
+    if (transactionTypeId == "請選擇") {
+        swal.fire('請選擇雜項異動類別');
         event.preventDefault();
-        return;
+        return false;
     }
 
     swal.fire({
@@ -664,9 +761,11 @@ function SaveLossDetail() {
     }).then(function (result) {
         if (result.value) {
             $.ajax({
-                url: "/StockInventory/SaveLossDetail",
+                url: "/StockInventory/SaveTransactionDetail",
                 type: "post",
-                data: {},
+                data: {
+                    transactionTypeId: transactionTypeId
+                },
                 success: function (data) {
                     if (data.status) {
                         swal.fire(data.result);

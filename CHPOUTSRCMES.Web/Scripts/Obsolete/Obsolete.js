@@ -406,9 +406,9 @@ $(document).ready(function () {
 
 
     function AddTransactionDetail() {
-        var ID = $('#StockId').text();
-        if (ID == "") {
-            swal.fire('請選擇料號');
+        var stockId = $('#StockId').text();
+        if (stockId == "") {
+            swal.fire('請選擇庫存');
             event.preventDefault();
             return false;
         }
@@ -426,10 +426,7 @@ $(document).ready(function () {
             url: "/Obsolete/AddTransactionDetail",
             type: "post",
             data: {
-                organizationId: getOrganizationId(),
-                subinventoryCode: getSubinventoryCode(),
-                locatorId: getLocatorId(),
-                stockId: $("#StockId").text(),
+                stockId: stockId,
                 mQty: ObsoleteQty
             },
             success: function (data) {

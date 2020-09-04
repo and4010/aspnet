@@ -213,6 +213,8 @@ $(document).ready(function () {
         if (type === 'row') {
             var StockId = dt.rows(indexes).data().pluck('ID')[0];
             $("#StockId").text(StockId);
+            var ORGANIZATION_ID = dt.rows(indexes).data().pluck('ORGANIZATION_ID')[0];
+            $("#ORGANIZATION_ID").text(ORGANIZATION_ID);
             var SUB_ID = dt.rows(indexes).data().pluck('SUB_ID')[0];
             $("#SUB_ID").text(SUB_ID);
             var Subinventory = dt.rows(indexes).data().pluck('SUBINVENTORY_CODE')[0];
@@ -256,6 +258,7 @@ $(document).ready(function () {
     StockDT.on('deselect', function (e, dt, type, indexes) {
         if (type === 'row') {
             $("#StockId").text("");
+            $("#ORGANIZATION_ID").text("");
             $("#SUB_ID").text("");
             $("#Subinventory").text("");
             $("#Locator").text("");
@@ -554,9 +557,9 @@ $(document).ready(function () {
     }
 
     function AddTransactionDetail() {
-        var ID = $('#StockId').text();
-        if (ID == "") {
-            swal.fire('請選擇料號');
+        var stockId = $('#StockId').text();
+        if (stockId == "") {
+            swal.fire('請選擇庫存');
             event.preventDefault();
             return false;
         }
@@ -568,8 +571,8 @@ $(document).ready(function () {
             return false;
         }
 
-        var Miscellaneous = $('#ddlMiscellaneous').val();
-        if (Miscellaneous == "請選擇") {
+        var transactionTypeId = $('#ddlMiscellaneous').val();
+        if (transactionTypeId == "請選擇") {
             swal.fire('請選擇雜項異動類別');
             event.preventDefault();
             return false;
@@ -587,17 +590,10 @@ $(document).ready(function () {
             url: "/Miscellaneous/AddTransactionDetail",
             type: "post",
             data: {
-                transactionTypeId: Miscellaneous,
-                organizationId: getOrganizationId(),
-                subinventoryCode: getSubinventoryCode(),
-                locatorId: getLocatorId(),
-                stockId: $("#StockId").text(),
+                transactionTypeId: transactionTypeId,
+                stockId: stockId,
                 mPrimaryQty: PrimaryQty,
                 note: Note
-                //ID: ID,
-                //PrimaryQty: PrimaryQty,
-                //Miscellaneous: Miscellaneous,
-                //Note: Note
             },
             success: function (data) {
                 if (data.status) {
@@ -652,18 +648,11 @@ $(document).ready(function () {
     }
 
     function SaveTransactionDetail() {
-        var Miscellaneous = $('#ddlMiscellaneous').val();
-        if (Miscellaneous == "請選擇") {
+        var transactionTypeId = $('#ddlMiscellaneous').val();
+        if (transactionTypeId == "請選擇") {
             swal.fire('請選擇雜項異動類別');
             event.preventDefault();
             return false;
-        }
-
-        var count = TransactionDetailDT.rows().count();
-        if (count == 0) {
-            swal.fire('請輸入異動明細');
-            event.preventDefault();
-            return;
         }
 
         swal.fire({
@@ -680,7 +669,7 @@ $(document).ready(function () {
                     url: "/Miscellaneous/SaveTransactionDetail",
                     type: "post",
                     data: {
-                        transactionTypeId: Miscellaneous
+                        transactionTypeId: transactionTypeId
                     },
                     success: function (data) {
                         if (data.status) {

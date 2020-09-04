@@ -91,7 +91,7 @@ SELECT [STOCK_ID] as ID
 ";
 
                     var pOrg = SqlParamHelper.GetBigInt("@organizationId", organizationId);
-                    var pSub = SqlParamHelper.R.SubinventoryCode("@subinventory", subinventoryCode);
+                    var pSub = SqlParamHelper.R.SubinventoryCode("@subinventoryCode", subinventoryCode);
                     var pLoc = SqlParamHelper.GetBigInt("@locatorId", (long)locatorId);
                     var pItemNo = SqlParamHelper.R.ItemNo("@itemNumber", itemNumber);
 
@@ -105,14 +105,20 @@ SELECT [STOCK_ID] as ID
             }
         }
 
-        public ResultModel CreateDetail(long organizationId, string subinventoryCode, long? locatorId,
-    long stockId, decimal mQty, string userId, string userName)
+        public ResultModel CreateDetail(long stockId, decimal mQty, string userId, string userName)
         {
             using (var txn = this.Context.Database.BeginTransaction())
             {
                 try
                 {
                     var now = DateTime.Now;
+
+                    var stock = stockTRepositiory.GetAll().FirstOrDefault(x => x.StockId == stockId);
+                    if (stock == null) throw new Exception("找不到庫存資料");
+
+                    var organizationId = stock.OrganizationId;
+                    var subinventoryCode = stock.SubinventoryCode;
+                    long? locatorId = stock.LocatorId;
 
                     var header = trfObsoleteHeaderTRepositiory.GetAll().FirstOrDefault(x =>
                     x.OrganizationId == organizationId && x.SubinventoryCode == subinventoryCode && x.LocatorId == locatorId && x.NumberStatus == NumberStatus.NotSaved);
@@ -121,7 +127,7 @@ SELECT [STOCK_ID] as ID
                     {
                            //產生header資料
                            var organization = GetOrganization(organizationId);
-                        if (organization == null) throw new Exception("找不到出庫組織資料");
+                        if (organization == null) throw new Exception("找不到庫存組織資料");
 
                         var transactionType = GetTransactionType(TransactionTypeId.Chp26Out);
                         if (transactionType == null) throw new Exception("找不到庫存交易類別資料");
@@ -131,9 +137,9 @@ SELECT [STOCK_ID] as ID
                         if (locatorId != null)
                         {
                             var outLocator = GetLocatorForTransfer(organizationId, subinventoryCode, now);
-                            if (outLocator == null) throw new Exception("找不到出庫儲位資料");
+                            if (outLocator == null) throw new Exception("找不到庫存儲位資料");
                             locatorCode = outLocator.LocatorSegments;
-                            segment3 = outLocator.LocatorSegments;
+                            segment3 = outLocator.Segment3;
                         }
 
                         header = new TRF_OBSOLETE_HEADER_T()
@@ -172,8 +178,7 @@ SELECT [STOCK_ID] as ID
                     x.StockId == stockId);
                     if (detail != null) return new ResultModel(false, "已存在此條碼:" + detail.Barcode + "異動紀錄");
 
-                    var stock = stockTRepositiory.GetAll().FirstOrDefault(x => x.StockId == stockId);
-                    if (stock == null) throw new Exception("找不到庫存資料");
+                   
 
                     //處理異動量
                     mQty = -1 * Math.Abs(mQty);
@@ -386,7 +391,8 @@ SELECT m.TRANSFER_OBSOLETE_ID AS ID
                     UserId = u.UserId
                 })
                 .Where(x => x.UserId == userId)
-                .Select(x => x.HeaderId).ToList();
+                .GroupBy(x => new { x.HeaderId })
+                .Select(x => x.Key.HeaderId).ToList();
 
                     if (headerIdList == null || headerIdList.Count == 0) return new ResultModel(false, "沒有可存檔的資料");
 

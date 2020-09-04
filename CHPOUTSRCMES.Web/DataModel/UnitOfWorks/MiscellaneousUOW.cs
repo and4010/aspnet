@@ -167,7 +167,7 @@ SELECT [STOCK_ID] as ID
 ";
 
                     var pOrg = SqlParamHelper.GetBigInt("@organizationId", organizationId);
-                    var pSub = SqlParamHelper.R.SubinventoryCode("@subinventory", subinventoryCode);
+                    var pSub = SqlParamHelper.R.SubinventoryCode("@subinventoryCode", subinventoryCode);
                     var pLoc = SqlParamHelper.GetBigInt("@locatorId", (long)locatorId);
                     var pMinQty = SqlParamHelper.GetDecimal("@minQty", minQty);
                     var pMaxQty = SqlParamHelper.GetDecimal("@maxQty", maxQty);
@@ -220,14 +220,20 @@ SELECT m.TRANSFER_MISCELLANEOUS_ID AS ID
         }
 
 
-        public ResultModel CreateDetail(long transactionTypeId, long organizationId, string subinventoryCode, long? locatorId,
-      long stockId, decimal mPrimaryQty, string note, string userId, string userName)
+        public ResultModel CreateDetail(long transactionTypeId, long stockId, decimal mPrimaryQty, string note, string userId, string userName)
         {
             using (var txn = this.Context.Database.BeginTransaction())
             {
                 try
                 {
                     var now = DateTime.Now;
+
+                    var stock = stockTRepositiory.GetAll().FirstOrDefault(x => x.StockId == stockId);
+                    if (stock == null) throw new Exception("找不到庫存資料");
+
+                    var organizationId = stock.OrganizationId;
+                    var subinventoryCode = stock.SubinventoryCode;
+                    long? locatorId = stock.LocatorId;
 
                     var header = trfMiscellaneousHeaderTRepositiory.GetAll().FirstOrDefault(x => x.TransactionTypeId == transactionTypeId &&
                     x.OrganizationId == organizationId && x.SubinventoryCode == subinventoryCode && x.LocatorId == locatorId && x.NumberStatus == NumberStatus.NotSaved);
@@ -236,7 +242,7 @@ SELECT m.TRANSFER_MISCELLANEOUS_ID AS ID
                     {
                         //產生header資料
                         var organization = GetOrganization(organizationId);
-                        if (organization == null) throw new Exception("找不到出庫組織資料");
+                        if (organization == null) throw new Exception("找不到庫存組織資料");
 
                         var transactionType = GetTransactionType(transactionTypeId);
                         if (transactionType == null) throw new Exception("找不到庫存交易類別資料");
@@ -246,9 +252,9 @@ SELECT m.TRANSFER_MISCELLANEOUS_ID AS ID
                         if (locatorId != null)
                         {
                             var outLocator = GetLocatorForTransfer(organizationId, subinventoryCode, now);
-                            if (outLocator == null) throw new Exception("找不到出庫儲位資料");
+                            if (outLocator == null) throw new Exception("找不到庫存儲位資料");
                             locatorCode = outLocator.LocatorSegments;
-                            segment3 = outLocator.LocatorSegments;
+                            segment3 = outLocator.Segment3;
                         }
 
                         header = new TRF_MISCELLANEOUS_HEADER_T()
@@ -287,8 +293,6 @@ SELECT m.TRANSFER_MISCELLANEOUS_ID AS ID
                     x.StockId == stockId);
                     if (detail != null) return new ResultModel(false, "已存在此條碼:" + detail.Barcode + "異動紀錄");
 
-                    var stock = stockTRepositiory.GetAll().FirstOrDefault(x => x.StockId == stockId);
-                    if (stock == null) throw new Exception("找不到庫存資料");
 
                     //處理異動量
                     mPrimaryQty = Math.Abs(mPrimaryQty); //轉為正數
@@ -478,7 +482,8 @@ SELECT m.TRANSFER_MISCELLANEOUS_ID AS ID
                     UserId = u.UserId
                 })
                 .Where(x => x.UserId == userId && x.TransactionTypeId == transactionTypeId)
-                .Select(x => x.HeaderId).ToList();
+                .GroupBy(x => new { x.HeaderId })
+                .Select(x => x.Key.HeaderId).ToList();
 
                     if (headerIdList == null || headerIdList.Count == 0) return new ResultModel(false, "沒有可存檔的資料");
 

@@ -85,10 +85,10 @@ namespace CHPOUTSRCMES.Web.Models.Stock
             return query.ToList();
         }
 
-        public ResultModel CreateDetail(MiscellaneousUOW uow, long transactionTypeId, long organizationId, string subinventoryCode, long? locatorId,
+        public ResultModel CreateDetail(MiscellaneousUOW uow, long transactionTypeId,
       long stockId, decimal mPrimaryQty, string note, string userId, string userName)
         {
-            return uow.CreateDetail(transactionTypeId, organizationId, subinventoryCode, locatorId, stockId, mPrimaryQty, note, userId, userName);
+            return uow.CreateDetail(transactionTypeId, stockId, mPrimaryQty, note, userId, userName);
         }
 
         public ResultModel AddTransactionDetail(long ID, string Miscellaneous, decimal PrimaryQty, string Note)

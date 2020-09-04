@@ -58,10 +58,9 @@ namespace CHPOUTSRCMES.Web.Models.Stock
             return uow.GetStockTList(organizationId, subinventoryCode, locatorId, itemNumber);
         }
 
-        public ResultModel CreateDetail(ObsoleteUOW uow, long organizationId, string subinventoryCode, long? locatorId,
-      long stockId, decimal mQty, string userId, string userName)
+        public ResultModel CreateDetail(ObsoleteUOW uow, long stockId, decimal mQty, string userId, string userName)
         {
-            return uow.CreateDetail(organizationId, subinventoryCode, locatorId, stockId, mQty, userId, userName);
+            return uow.CreateDetail( stockId, mQty, userId, userName);
         }
 
         public List<StockObsoleteDT> GetObsoleteData(ObsoleteUOW uow, string userId)

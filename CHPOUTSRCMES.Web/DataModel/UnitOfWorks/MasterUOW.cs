@@ -489,7 +489,10 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             /// 已出貨
             /// </summary>
             public const string Shipped = "S2";
-
+            /// <summary>
+            /// 庫存異動至沒庫存
+            /// </summary>
+            public const string TransferNoneInStock = "S3";
 
             public string GetDesc(string statusCode)
             {
@@ -501,6 +504,8 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                         return "出貨已揀";
                     case Shipped:
                         return "已出貨";
+                    case TransferNoneInStock:
+                        return "庫存異動至沒庫存";
                     default:
                         return "";
                 }
