@@ -33,7 +33,10 @@
             this.功能表ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.單位換算ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.主檔ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.tsl_Version = new System.Windows.Forms.ToolStripStatusLabel();
             this.menuStrip1.SuspendLayout();
+            this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -65,22 +68,41 @@
             // 單位換算ToolStripMenuItem
             // 
             this.單位換算ToolStripMenuItem.Name = "單位換算ToolStripMenuItem";
-            this.單位換算ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.單位換算ToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
             this.單位換算ToolStripMenuItem.Text = "單位換算";
             this.單位換算ToolStripMenuItem.Click += new System.EventHandler(this.單位換算ToolStripMenuItem_Click);
             // 
             // 主檔ToolStripMenuItem
             // 
             this.主檔ToolStripMenuItem.Name = "主檔ToolStripMenuItem";
-            this.主檔ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.主檔ToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
             this.主檔ToolStripMenuItem.Text = "主檔";
             this.主檔ToolStripMenuItem.Click += new System.EventHandler(this.主檔ToolStripMenuItem_Click);
+            // 
+            // statusStrip1
+            // 
+            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsl_Version});
+            this.statusStrip1.Location = new System.Drawing.Point(0, 428);
+            this.statusStrip1.Name = "statusStrip1";
+            this.statusStrip1.Size = new System.Drawing.Size(800, 22);
+            this.statusStrip1.TabIndex = 3;
+            this.statusStrip1.Text = "statusStrip1";
+            // 
+            // tsl_Version
+            // 
+            this.tsl_Version.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.tsl_Version.Name = "tsl_Version";
+            this.tsl_Version.Size = new System.Drawing.Size(128, 17);
+            this.tsl_Version.Text = "toolStripStatusLabel1";
+            this.tsl_Version.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.menuStrip1);
             this.IsMdiContainer = true;
             this.MainMenuStrip = this.menuStrip1;
@@ -88,6 +110,8 @@
             this.Text = "MES 轉檔程式";
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
+            this.statusStrip1.ResumeLayout(false);
+            this.statusStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -99,6 +123,8 @@
         private System.Windows.Forms.ToolStripMenuItem 功能表ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 單位換算ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 主檔ToolStripMenuItem;
+        private System.Windows.Forms.StatusStrip statusStrip1;
+        private System.Windows.Forms.ToolStripStatusLabel tsl_Version;
     }
 }
 

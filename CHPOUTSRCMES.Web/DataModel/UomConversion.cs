@@ -46,7 +46,7 @@ namespace CHPOUTSRCMES.Web.DataModel
 
 
                 var data = connection.Query<decimal>(
-                    "SELECT ROUND(TPMC_ADMIN.UOM_CONVERSION(:ITEM_ID, :FROM_QTY, :FROM_UOM, :TO_UOM), :ROUND) QUANTITY FROM DUAL", parameters
+                    "SELECT ROUND(YFY_DIS_PKG_UTIL.UOM_CONVERSION(:ITEM_ID, :FROM_QTY, :FROM_UOM, :TO_UOM), :ROUND) QUANTITY FROM DUAL", parameters
                     ).SingleOrDefault();
 
                 model.Data = data;

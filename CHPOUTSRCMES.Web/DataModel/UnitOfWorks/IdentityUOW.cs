@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Web;
-using CHPOUTSRCMES.Web.DataModel.Entity;
+﻿using CHPOUTSRCMES.Web.DataModel.Entity;
 using CHPOUTSRCMES.Web.DataModel.Entity.Information;
 using CHPOUTSRCMES.Web.DataModel.Managers;
 using CHPOUTSRCMES.Web.Models;
@@ -15,6 +9,9 @@ using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.Owin.Security;
 using NLog;
 using NPOI.SS.UserModel;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
 {

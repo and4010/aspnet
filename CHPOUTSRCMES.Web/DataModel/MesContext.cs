@@ -16,6 +16,7 @@ using System.Data;
 using CHPOUTSRCMES.Web.DataModel.Entity.Temp;
 using CHPOUTSRCMES.Web.DataModel.Entity.Process;
 using CHPOUTSRCMES.Web.DataModel.Entiy.Transfer;
+using CHPOUTSRCMES.Web.DataModel.Entity.Miscellaneous;
 
 namespace CHPOUTSRCMES.Web.DataModel
 {
@@ -218,6 +219,10 @@ namespace CHPOUTSRCMES.Web.DataModel
         /// 入庫揀貨
         /// </summary>
         public DbSet<CTR_PICKED_T> CTR_PICKED_Ts { set; get; }
+        /// <summary>
+        /// 入庫SOA
+        /// </summary>
+        public DbSet<CTR_SOA_T> CTR_SOA_Ts { set; get; }
 
         #endregion 入庫
 
@@ -339,6 +344,14 @@ namespace CHPOUTSRCMES.Web.DataModel
         public DbSet<TRF_OUTBOUND_PICKED_T> TRF_OUTBOUND_PICKED_Ts { set; get; }
 
         public DbSet<TRF_OUTBOUND_PICKED_HT> TRF_OUTBOUND_PICKED_HTs { set; get; }
+        #endregion
+
+        #region 雜項異動
+        public DbSet<TRF_MISCELLANEOUS_HEADER_T> TRF_MISCELLANEOUS_HEADER_Ts { set; get; }
+
+        public DbSet<TRF_MISCELLANEOUS_T> TRF_MISCELLANEOUS_Ts { set; get; }
+
+        public DbSet<TRF_MISCELLANEOUS_HT> TRF_MISCELLANEOUS_HTs { set; get; }
         #endregion
     }
 }

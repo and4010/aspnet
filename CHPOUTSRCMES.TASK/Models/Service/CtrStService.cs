@@ -268,10 +268,32 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                 {
                     token.ThrowIfCancellationRequested();
                 }
+                using var sqlConn = new SqlConnection(MesConnStr);
+                using var ctrStUow = new CtrStUOW(sqlConn);
+                var list = await ctrStUow.GetHeaderListForUpload();
+                if (list == null || list.Count() == 0)
+                {
+                    LogInfo($"[{tasker.Name}]-{tasker.Unit}-ExportCtrStRv-無可轉入資料");
+                    return;
+                }
 
-                using var ctrStUow = new CtrStUOW(new SqlConnection(MesConnStr));
+                for (int i = 0; i < list.Count(); i++)
+                {
+                    using var transaction = sqlConn.BeginTransaction();
+                    try
+                    {
 
 
+
+                        transaction.Commit();
+
+                    }
+                    catch (Exception ex)
+                    {
+                        LogError($"[{tasker.Name}]-{tasker.Unit}-ExportCtrStRv-錯誤-{ex.Message}-{ex.StackTrace}");
+                        transaction.Rollback();
+                    }
+                }
             }
             catch (OperationCanceledException)
             {

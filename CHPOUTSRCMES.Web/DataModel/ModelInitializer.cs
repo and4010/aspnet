@@ -9,7 +9,7 @@ using System.IO;
 
 namespace CHPOUTSRCMES.Web.DataModel
 {
-    public class ModelInitializer : DropCreateDatabaseIfModelChanges<MesContext>
+    internal class ModelInitializer : CreateDatabaseIfNotExists<MesContext>
     {
 
         private static Logger logger = LogManager.GetCurrentClassLogger();
