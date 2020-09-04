@@ -28,6 +28,16 @@ namespace CHPOUTSRCMES.TASK.Models.Repository.MsSql
 
         #endregion
 
+        public async Task<List<CTR_HEADER_T>> GetUploadList(IDbTransaction transaction = null)
+        {
+            return (await Connection.QueryAsync<CTR_HEADER_T>(
+$@"SELECT t.* FROM {tableName} t 
+LEFT JOIN CTR_SOA_T s ON s.{IdField} = t.{IdField}
+WHERE s.{IdField} IS NULL AND t.STATUS =0
+", transaction: transaction)).ToList();
+        }
+
+
         #region IDispose Region
         private bool disposed = false;
 

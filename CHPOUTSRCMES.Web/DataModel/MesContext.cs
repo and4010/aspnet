@@ -219,6 +219,10 @@ namespace CHPOUTSRCMES.Web.DataModel
         /// 入庫揀貨
         /// </summary>
         public DbSet<CTR_PICKED_T> CTR_PICKED_Ts { set; get; }
+        /// <summary>
+        /// 入庫SOA
+        /// </summary>
+        public DbSet<CTR_SOA_T> CTR_SOA_Ts { set; get; }
 
         #endregion 入庫
 

@@ -191,7 +191,7 @@ namespace CHPOUTSRCMES.TASK
 
         internal void AddMasterTasker()
         {
-            AddTasker(new Tasker("主檔轉檔程序", 1, (tasker, token) => {
+            AddTasker(new Tasker("主檔轉檔程序", 25, (tasker, token) => {
                 MasterService service = new MasterService(MesConnStr, ErpConnStr);
                 //組織倉庫儲位
                 var taskSubinventory = service.importSubinventory(tasker, token);
@@ -219,7 +219,7 @@ namespace CHPOUTSRCMES.TASK
         /// </summary>
         internal void AddCtrStTasker()
         {
-            AddTasker(new Tasker("進櫃轉檔程序", 1, (tasker, token) => {
+            AddTasker(new Tasker("進櫃轉檔程序", 5, (tasker, token) => {
                 CtrStService service = new CtrStService(MesConnStr, ErpConnStr);
                 var task = service.ImportCtrSt(tasker, token);
                 var rvTask = task.ContinueWith(subTask => service.ExportCtrStRv(tasker, token), TaskContinuationOptions.OnlyOnRanToCompletion);
@@ -233,7 +233,7 @@ namespace CHPOUTSRCMES.TASK
         /// </summary>
         internal void AddDlvStTasker()
         {
-            AddTasker(new Tasker("出貨轉檔程序", 1, (tasker, token) => {
+            AddTasker(new Tasker("出貨轉檔程序", 5, (tasker, token) => {
                 DlvStService service = new DlvStService(MesConnStr, ErpConnStr);
                 var task = service.ImportDlvSt(tasker, token);
                 var rvTask = task.ContinueWith(subTask => service.ExportDlvStRv(tasker, token), TaskContinuationOptions.OnlyOnRanToCompletion);
@@ -247,7 +247,7 @@ namespace CHPOUTSRCMES.TASK
         /// </summary>
         internal void AddOspStTasker()
         {
-            AddTasker(new Tasker("加工轉檔程序", 1, (tasker, token) => {
+            AddTasker(new Tasker("加工轉檔程序", 5, (tasker, token) => {
                 OspStService service = new OspStService(MesConnStr, ErpConnStr);
                 var task = service.ImportOspSt(tasker, token);
                 var rvStage1Task = task.ContinueWith(subTask => service.ExportOspStRv(tasker, token), TaskContinuationOptions.OnlyOnRanToCompletion);

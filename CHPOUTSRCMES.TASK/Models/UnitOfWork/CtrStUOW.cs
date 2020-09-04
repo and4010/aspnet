@@ -52,6 +52,11 @@ namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
             return (await CtrHeaderRepository.GetAsync(headerId, transaction));
         }
 
+        public async Task<List<CTR_HEADER_T>> GetHeaderListForUpload(IDbTransaction transaction = null)
+        {
+            return (await CtrHeaderRepository.GetUploadList(transaction));
+        }
+
         public async Task<ResultDataModel<CTR_PICKED_T>> SaveCtrPicked(CTR_PICKED_T ctrPicked, IDbTransaction transaction = null)
         {
             ResultDataModel<CTR_PICKED_T> model;
@@ -156,6 +161,11 @@ namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
                 resultModel.Msg = ex.Message;
             }
             return resultModel;
+        }
+
+        public async Task<ResultModel> ContainerStUpload()
+        {
+            return new ResultModel(false, "");
         }
     }
 }

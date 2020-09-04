@@ -256,6 +256,7 @@
     <Compile Include="DataModel\Entity\Miscellaneous\TRF_MISCELLANEOUS_HEADER_T.cs" />
     <Compile Include="DataModel\Entity\Miscellaneous\TRF_MISCELLANEOUS_HT.cs" />
     <Compile Include="DataModel\Entity\Miscellaneous\TRF_MISCELLANEOUS_T.cs" />
+    <Compile Include="DataModel\Entity\Purchase\CTR_SOA_T.cs" />
     <Compile Include="DataModel\Entity\Temp\ORG_UNIT_T.cs" />
     <Compile Include="DataModel\Entity\Transfer\TRF_DETAIL_HT.cs" />
     <Compile Include="DataModel\Entity\Transfer\TRF_DETAIL_T.cs" />
@@ -356,6 +357,11 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Jsons\Requests\AutoCompletedItem.cs" />
+    <Compile Include="Migrations\202009040355264_add_table_CTR_SOA_T.cs" />
+    <Compile Include="Migrations\202009040355264_add_table_CTR_SOA_T.Designer.cs">
+      <DependentUpon>202009040355264_add_table_CTR_SOA_T.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Delivery\bDeliveryDetail.cs" />
     <Compile Include="Models\Delivery\DeliveryDetail.cs" />
     <Compile Include="Models\Delivery\DeliveryHeader.cs" />
@@ -1426,6 +1432,7 @@
     <Content Include="Data\SQLScript\107_SP_YszmpckqSync.sql" />
     <Content Include="Data\SQLScript\108_SP_RelatedSync.sql" />
     <Content Include="Data\SQLScript\109_SP_ItemSync.sql" />
+    <Content Include="Data\SQLScript\109_SP_OrgItemSync.sql" />
     <Content Include="Data\SQLScript\114_SP_P219_OspStCreateNew.sql" />
     <Content Include="Data\SQLScript\113_SP_P220_DlvStCreateNew.sql" />
     <Content Include="Data\SQLScript\201_XXIF_CHP_CONTROL_ST.sql" />
@@ -2044,6 +2051,11 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\202009040355264_add_table_CTR_SOA_T.resx">
+      <DependentUpon>202009040355264_add_table_CTR_SOA_T.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

@@ -20,7 +20,7 @@ namespace CHPOUTSRCMES.TASK.Models.Repository.Oracle
         {
             string cmd = 
 $@"SELECT * FROM ( 
-SELECT A.*, ROWNUM rnum FROM TPMC_ADMIN.XXCINV_MES_ITEMS_FTY_V A 
+SELECT A.*, ROWNUM rnum FROM {tableName} A 
 WHERE ROWNUM <= {(skip + take)}
 ORDER BY A.INVENTORY_ITEM_ID
 ) B WHERE rnum > {skip}";
@@ -32,7 +32,7 @@ ORDER BY A.INVENTORY_ITEM_ID
         public async Task<DateTime> GetLastUpdateDateAsync()
         {
             string cmd =
-$@"SELECT MAX(LAST_UPDATE_DATE) FROM XXCINV_MES_ITEMS_FTY_V";
+$@"SELECT MAX(LAST_UPDATE_DATE) FROM {tableName}";
 
             return await Connection.QuerySingleOrDefaultAsync<DateTime>(cmd);
 
