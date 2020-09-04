@@ -366,15 +366,15 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                                 cTR_PICKED_T.Barcode = barcode.Data[i];
                                 cTR_PICKED_T.InventoryItemId = ctrDetail[j].d.InventoryItemId;
                                 cTR_PICKED_T.ShipItemNumber = PaperRollModel[i].Item_No;
-                                cTR_PICKED_T.PaperType = PaperRollModel[i].PaperType;
-                                cTR_PICKED_T.BasicWeight = PaperRollModel[i].BaseWeight;
+                                cTR_PICKED_T.PaperType = ctrDetail[j].d.PaperType;
+                                cTR_PICKED_T.BasicWeight = ctrDetail[j].d.BasicWeight;
                                 cTR_PICKED_T.ReamWeight = ctrDetail[j].d.ReamWeight;
                                 cTR_PICKED_T.RollReamWt = ctrDetail[j].d.RollReamWt;
-                                cTR_PICKED_T.Specification = PaperRollModel[i].Specification;
+                                cTR_PICKED_T.Specification = ctrDetail[j].d.Specification;
                                 cTR_PICKED_T.PackingType = ctrDetail[j].d.PackingType;
                                 cTR_PICKED_T.ShipMtQty = ctrDetail[j].d.ShipMtQty ?? 0;
-                                cTR_PICKED_T.TransactionQuantity = PaperRollModel[i].PrimanyQuantity;
-                                cTR_PICKED_T.TransactionUom = PaperRollModel[i].PrimaryUom;
+                                cTR_PICKED_T.TransactionQuantity = ConvertTxnQty(ctrDetail[j].d.InventoryItemId, PaperRollModel[i].PrimanyQuantity, PaperRollModel[i].PrimaryUom, ctrDetail[j].d.TransactionUom);
+                                cTR_PICKED_T.TransactionUom = ctrDetail[j].d.TransactionUom;
                                 cTR_PICKED_T.PrimaryQuantity = PaperRollModel[i].PrimanyQuantity;
                                 cTR_PICKED_T.PrimaryUom = PaperRollModel[i].PrimaryUom;
                                 cTR_PICKED_T.SecondaryQuantity = ctrDetail[j].d.SecondaryQuantity;
@@ -407,6 +407,20 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             }
         }
 
+
+        private decimal ConvertTxnQty(long itemId, decimal pryQty, string pryUom, string txnUom)
+        {
+            if (pryUom.CompareTo(txnUom) == 0)
+            {
+                return pryQty;
+            }
+            
+            var model = uomConversion.Convert(itemId, pryQty, pryUom, txnUom);
+            if (!model.Success)
+                throw new Exception(model.Msg);
+
+            return model.Data;
+        }
         /// <summary>
         /// 刪除excel資料
         /// </summary>
