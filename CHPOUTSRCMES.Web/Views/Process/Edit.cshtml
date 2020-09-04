@@ -16,194 +16,204 @@
 @Html.HiddenFor(model => model.CHP_PROCESS_T.OspHeaderId, new { id = "OspHeaderId" })
 
 <div class="row">
-
-
-    <div class="row col-md-12">
-        @*工單號*@
-        <div class="form-group col col-md-1 text-right">
-            @Html.LabelFor(model => model.CHP_PROCESS_T.BatchNo)
-        </div>
-
-        <div class="form-group col col-md-2 ">
-            @Html.DisplayFor(model => model.CHP_PROCESS_T.BatchNo)
-        </div>
-
-        @* 生產料號 *@
-        <div class="form-group col-md-1 text-right">
-            @Html.LabelFor(model => model.CHP_PROCESS_T.SelectedInventoryItemNumber)
-        </div>
-
-        <div class="form-group col-md-2">
-            @Html.DisplayFor(model => model.CHP_PROCESS_T.SelectedInventoryItemNumber)
-        </div>
-
-        @*需求日*@
-        <div class="form-group col col-md-1 text-right">
-            @Html.LabelFor(model => model.CHP_PROCESS_T.DueDate)
-        </div>
-
-        <div class="form-group col col-md-2">
-            @Html.DisplayFor(model => model.CHP_PROCESS_T.DueDate)
-        </div>
-
-    </div>
-
-    <div class="row col-md-12">
-
-        @*裁切日*@
-        <div class="form-group col col-md-1 text-right">
-            @Html.LabelFor(model => model.CHP_PROCESS_T.CuttingDateFrom)
-        </div>
-
-        <div class="form-group col col-md-2">
-            @Html.DisplayFor(model => model.CHP_PROCESS_T.CuttingDateFrom)
-        </div>
-
-        @*裁切日*@
-        <div class="form-group col col-md-1 text-right">
-            @Html.LabelFor(model => model.CHP_PROCESS_T.CuttingDateTo)
-        </div>
-
-        <div class="form-group col col-md-2">
-            @Html.DisplayFor(model => model.CHP_PROCESS_T.CuttingDateTo)
-        </div>
-
-    </div>
-
-
-    <div class="row col-md-12">
-
-
-        @*客戶名稱*@
-        <div class="form-group col col-md-1 text-right">
-            @Html.LabelFor(model => model.CHP_PROCESS_T.CustomerName)
-        </div>
-
-        <div class="form-group col col-md-2">
-            @Html.DisplayFor(model => model.CHP_PROCESS_T.CustomerName)
-        </div>
-
-        @* 訂單編號 *@
-        <div class="form-group col col-md-1 text-right">
-            @Html.LabelFor(model => model.CHP_PROCESS_T.OrderNumber)
-        </div>
-
-        <div class="form-group col col-md-2">
-            @Html.DisplayFor(model => model.CHP_PROCESS_T.OrderNumber)
-        </div>
-
-        @* 紙別 *@
-        <div class="form-group col col-md-1 text-right">
-            @Html.LabelFor(model => model.CHP_PROCESS_T.PaperType)
-        </div>
-
-        <div class="form-group col col-md-1">
-            @Html.DisplayFor(model => model.CHP_PROCESS_T.PaperType)
-        </div>
-    </div>
-
-    <div class="row col-md-12">
-
-        @* 基重 *@
-        <div class="form-group col-md-1 text-right">
-            @Html.LabelFor(model => model.CHP_PROCESS_T.BasicWeight)
-        </div>
-
-        <div class="form-group col-md-2">
-            @Html.DisplayFor(model => model.CHP_PROCESS_T.BasicWeight)
-        </div>
-
-        @* 規格 *@
-        <div class="form-group col col-md-1 text-right">
-            @Html.LabelFor(model => model.CHP_PROCESS_T.Specification)
-        </div>
-
-        <div class="form-group col col-md-2">
-            @Html.DisplayFor(model => model.CHP_PROCESS_T.Specification)
-        </div>
-
-        @* 絲向 *@
-        <div class="form-group col col-md-1 text-right">
-            @Html.LabelFor(model => model.CHP_PROCESS_T.GrainDirection)
-        </div>
-
-        <div class="form-group col col-md-2">
-            @Html.DisplayFor(model => model.CHP_PROCESS_T.GrainDirection)
-        </div>
-
-
-    </div>
-
-
-    <div class="row col-md-12">
-
-        @* 重量 *@
-        <div class="form-group col col-md-1 text-right">
-            @Html.LabelFor(model => model.CHP_PROCESS_T.PrimaryQuantity)
-        </div>
-
-        <div class="form-group col col-md-2">
-            @Html.DisplayFor(model => model.CHP_PROCESS_T.PrimaryQuantity)
-        </div>
-
-        @* 令數 *@
-        <div class="form-group col col-md-1 text-right">
-            @Html.LabelFor(model => model.CHP_PROCESS_T.ReamWt)
-        </div>
-
-        <div class="form-group col col-md-2">
-            @Html.DisplayFor(model => model.CHP_PROCESS_T.ReamWt)
-        </div>
-
-        @* 包裝方式 *@
-        <div class="form-group col col-md-1 text-right">
-            @Html.LabelFor(model => model.CHP_PROCESS_T.PackingType)
-        </div>
-
-        <div class="form-group col col-md-2">
-            @Html.DisplayFor(model => model.CHP_PROCESS_T.PackingType)
-        </div>
-
-      
-
-
-    </div>
-
-    <div class="row col-md-12">
-        @* 損失 *@
-        <div class="form-group col col-md-1 text-right">
-            @Html.LabelFor(model => model.YieldVariance.LossWeight)
-        </div>
-
-        <div class="form-group col col-md-2">
-            @Html.DisplayFor(model => model.YieldVariance.LossWeight)
-        </div>
-    </div>
-
-
-    <br />
-
-    <div class="row col-md-12">
-
-
-        <div class="col-md-12">
-            @Html.LabelFor(model => model.CHP_PROCESS_T.Note)
-        </div>
-        <div class="form-group col-md-12">
-            <textarea style="width:1000px;height:200px;" class="form-control col-md-4" rows="3" id="textarea">@Html.DisplayFor(model =>model.CHP_PROCESS_T.Note)</textarea>
-        </div>
-
-    </div>
-
-    @*<div class="row col-md-12">
-        @Html.DisplayFor(model => model.CHP_PROCESS_T.Created_by)
-    </div>
-    <div class="row col-md-12">
-        @Html.DisplayFor(model => model.CHP_PROCESS_T.Creation_date)
-    </div>*@
-
     <div class="col-md-12">
-        <button class="btn btn-danger" id="BtnSave">存檔</button>
+        <div class="box box-success">
+            <div class="box-body">
+
+                <div class="row col-md-12">
+                    @*工單號*@
+                    <div class="form-group col col-md-1 text-right">
+                        @Html.LabelFor(model => model.CHP_PROCESS_T.BatchNo)
+                    </div>
+
+                    <div class="form-group col col-md-2 ">
+                        @Html.DisplayFor(model => model.CHP_PROCESS_T.BatchNo)
+                    </div>
+
+                    @* 生產料號 *@
+                    <div class="form-group col-md-1 text-right">
+                        @Html.LabelFor(model => model.CHP_PROCESS_T.SelectedInventoryItemNumber)
+                    </div>
+
+                    <div class="form-group col-md-2">
+                        @Html.DisplayFor(model => model.CHP_PROCESS_T.SelectedInventoryItemNumber)
+                    </div>
+
+                    @*需求日*@
+                    <div class="form-group col col-md-1 text-right">
+                        @Html.LabelFor(model => model.CHP_PROCESS_T.DueDate)
+                    </div>
+
+                    <div class="form-group col col-md-2">
+                        @Html.DisplayFor(model => model.CHP_PROCESS_T.DueDate)
+                    </div>
+
+                </div>
+
+                <div class="row col-md-12">
+
+                    @*裁切日*@
+                    <div class="form-group col col-md-1 text-right">
+                        @Html.LabelFor(model => model.CHP_PROCESS_T.CuttingDateFrom)
+                    </div>
+
+                    <div class="form-group col col-md-2">
+                        @Html.DisplayFor(model => model.CHP_PROCESS_T.CuttingDateFrom)
+                    </div>
+
+                    @*裁切日*@
+                    <div class="form-group col col-md-1 text-right">
+                        @Html.LabelFor(model => model.CHP_PROCESS_T.CuttingDateTo)
+                    </div>
+
+                    <div class="form-group col col-md-2">
+                        @Html.DisplayFor(model => model.CHP_PROCESS_T.CuttingDateTo)
+                    </div>
+
+                </div>
+
+
+                <div class="row col-md-12">
+
+
+                    @*客戶名稱*@
+                    <div class="form-group col col-md-1 text-right">
+                        @Html.LabelFor(model => model.CHP_PROCESS_T.CustomerName)
+                    </div>
+
+                    <div class="form-group col col-md-2">
+                        @Html.DisplayFor(model => model.CHP_PROCESS_T.CustomerName)
+                    </div>
+
+                    @* 訂單編號 *@
+                    <div class="form-group col col-md-1 text-right">
+                        @Html.LabelFor(model => model.CHP_PROCESS_T.OrderNumber)
+                    </div>
+
+                    <div class="form-group col col-md-2">
+                        @Html.DisplayFor(model => model.CHP_PROCESS_T.OrderNumber)
+                    </div>
+
+                    @* 紙別 *@
+                    <div class="form-group col col-md-1 text-right">
+                        @Html.LabelFor(model => model.CHP_PROCESS_T.PaperType)
+                    </div>
+
+                    <div class="form-group col col-md-1">
+                        @Html.DisplayFor(model => model.CHP_PROCESS_T.PaperType)
+                    </div>
+                </div>
+
+                <div class="row col-md-12">
+
+                    @* 基重 *@
+                    <div class="form-group col-md-1 text-right">
+                        @Html.LabelFor(model => model.CHP_PROCESS_T.BasicWeight)
+                    </div>
+
+                    <div class="form-group col-md-2">
+                        @Html.DisplayFor(model => model.CHP_PROCESS_T.BasicWeight)
+                    </div>
+
+                    @* 規格 *@
+                    <div class="form-group col col-md-1 text-right">
+                        @Html.LabelFor(model => model.CHP_PROCESS_T.Specification)
+                    </div>
+
+                    <div class="form-group col col-md-2">
+                        @Html.DisplayFor(model => model.CHP_PROCESS_T.Specification)
+                    </div>
+
+                    @* 絲向 *@
+                    <div class="form-group col col-md-1 text-right">
+                        @Html.LabelFor(model => model.CHP_PROCESS_T.GrainDirection)
+                    </div>
+
+                    <div class="form-group col col-md-2">
+                        @Html.DisplayFor(model => model.CHP_PROCESS_T.GrainDirection)
+                    </div>
+
+
+                </div>
+
+
+                <div class="row col-md-12">
+
+                    @* 重量 *@
+                    <div class="form-group col col-md-1 text-right">
+                        @Html.LabelFor(model => model.CHP_PROCESS_T.PrimaryQuantity)
+                    </div>
+
+                    <div class="form-group col col-md-2">
+                        @Html.DisplayFor(model => model.CHP_PROCESS_T.PrimaryQuantity)
+                    </div>
+
+                    @* 令數 *@
+                    <div class="form-group col col-md-1 text-right">
+                        @Html.LabelFor(model => model.CHP_PROCESS_T.ReamWt)
+                    </div>
+
+                    <div class="form-group col col-md-2">
+                        @Html.DisplayFor(model => model.CHP_PROCESS_T.ReamWt)
+                    </div>
+
+                    @* 包裝方式 *@
+                    <div class="form-group col col-md-1 text-right">
+                        @Html.LabelFor(model => model.CHP_PROCESS_T.PackingType)
+                    </div>
+
+                    <div class="form-group col col-md-2">
+                        @Html.DisplayFor(model => model.CHP_PROCESS_T.PackingType)
+                    </div>
+
+                </div>
+
+                <div class="row col-md-12">
+                    @* 損失 *@
+                    <div class="form-group col col-md-1 text-right">
+                        @Html.LabelFor(model => model.YieldVariance.LossWeight)
+                    </div>
+
+                    <div class="form-group col col-md-2">
+                        @Html.DisplayFor(model => model.YieldVariance.LossWeight)
+                    </div>
+                </div>
+
+
+
+
+                <div class="row col-md-12">
+                    <div class="col-md-12">
+                        @Html.LabelFor(model => model.CHP_PROCESS_T.Note)
+                    </div>
+                    <div class="form-group col-md-12">
+                        <textarea style="width:1000px;height:200px;" class="form-control col-md-4" rows="3" id="textarea">@Html.DisplayFor(model =>model.CHP_PROCESS_T.Note)</textarea>
+                    </div>
+
+                </div>
+
+
+
+
+
+
+            </div>
+
+
+
+
+
+            <div class="box-footer">
+
+                <div class="col-md-12">
+                    <button class="btn btn-danger" id="BtnSave">存檔</button>
+                </div>
+            </div>
+
+        </div>
     </div>
+
+
+
 
 </div>
