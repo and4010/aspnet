@@ -17,6 +17,8 @@ using CHPOUTSRCMES.Web.DataModel.Entity.Temp;
 using CHPOUTSRCMES.Web.DataModel.Entity.Process;
 using CHPOUTSRCMES.Web.DataModel.Entiy.Transfer;
 using CHPOUTSRCMES.Web.DataModel.Entity.Miscellaneous;
+using CHPOUTSRCMES.Web.DataModel.Entity.Obsolete;
+using CHPOUTSRCMES.Web.DataModel.Entity.Inventory;
 
 namespace CHPOUTSRCMES.Web.DataModel
 {
@@ -352,6 +354,24 @@ namespace CHPOUTSRCMES.Web.DataModel
         public DbSet<TRF_MISCELLANEOUS_T> TRF_MISCELLANEOUS_Ts { set; get; }
 
         public DbSet<TRF_MISCELLANEOUS_HT> TRF_MISCELLANEOUS_HTs { set; get; }
+        #endregion
+
+        #region 存貨報廢
+        public DbSet<TRF_OBSOLETE_HEADER_T> TRF_OBSOLETE_HEADER_Ts { set; get; }
+
+        public DbSet<TRF_OBSOLETE_T> TRF_OBSOLETE_Ts { set; get; }
+
+        public DbSet<TRF_OBSOLETE_HT> TRF_OBSOLETE_HTs { set; get; }
+
+        #endregion
+
+        #region 盤點
+        public DbSet<TRF_INVENTORY_HEADER_T> TRF_INVENTORY_HEADER_Ts { set; get; }
+
+        public DbSet<TRF_INVENTORY_T> TRF_INVENTORY_Ts { set; get; }
+
+        public DbSet<TRF_INVENTORY_HT> TRF_INVENTORY_HTs { set; get; }
+
         #endregion
     }
 }

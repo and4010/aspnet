@@ -313,6 +313,10 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             public const string TransferInbound = "C3";
             public const string TransferOutbound = "C4";
             public const string Miscellaneous = "C5";
+            public const string Obsolete = "C6";
+            public const string Inventory = "C7";
+
+
             public string GetDesc(string category)
             {
                 switch (category)
@@ -329,6 +333,10 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                         return "庫存移轉-出庫";
                     case Miscellaneous:
                         return "雜項異動";
+                    case Obsolete:
+                        return "存貨報廢";
+                    case Inventory:
+                        return "盤點";
                     default:
                         return "";
                 }
@@ -481,7 +489,10 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             /// 已出貨
             /// </summary>
             public const string Shipped = "S2";
-
+            /// <summary>
+            /// 庫存異動至沒庫存
+            /// </summary>
+            public const string TransferNoneInStock = "S3";
 
             public string GetDesc(string statusCode)
             {
@@ -493,6 +504,8 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                         return "出貨已揀";
                     case Shipped:
                         return "已出貨";
+                    case TransferNoneInStock:
+                        return "庫存異動至沒庫存";
                     default:
                         return "";
                 }

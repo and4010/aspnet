@@ -8,13 +8,18 @@ using System.Web.UI.WebControls;
 using System.Web.Mvc;
 using System.Text;
 using CHPOUTSRCMES.Web.Models.Information;
+using CHPOUTSRCMES.Web.DataModel.UnitOfWorks;
 
 namespace CHPOUTSRCMES.Web.Models.Stock
 {
     public class StockInventoryDT
     {
         public long ID { set; get; }
+
+        public long SUB_ID { set; get; }
         public long STOCK_ID { set; get; }
+
+        public long ORGANIZATION_ID { set; get; }
         public string SUBINVENTORY_CODE { set; get; }
         public long LOCATOR_ID { set; get; }
         public string SEGMENT3 { set; get; }
@@ -50,26 +55,63 @@ namespace CHPOUTSRCMES.Web.Models.Stock
             lossModel = new List<StockInventoryDT>();
         }
 
-        public StockInventoryViewModel GetStockInvetoryViewModel()
+        public StockInventoryViewModel GetStockInvetoryViewModel(StockInventoryUOW uow)
         {
             StockInventoryViewModel viewModel = new StockInventoryViewModel();
-
-
-            viewModel.SelectedTransactionType = "請選擇";
-            List<ListItem> transactionTypeList = new List<ListItem>();
-            transactionTypeList.Add(new ListItem("請選擇", "請選擇"));
-            transactionTypeList.Add(new ListItem("盤盈", "盤盈"));
-            transactionTypeList.Add(new ListItem("盤虧", "盤虧"));
-
-            viewModel.TransactionTypeItems = transactionTypeList.Select(i => new SelectListItem() { Text = i.Text, Value = i.Value });
-
-            //viewModel.SearchQty = null;
-            //viewModel.PercentageError = null;
-            //viewModel.Qty = null;
-
-
+            viewModel.TransactionTypeItems = uow.GetInventoryTypeDropDownList();
             return viewModel;
         }
+
+        public List<StockDT> SearchStock(StockInventoryUOW uow, long organizationId, string subinventoryCode, long? locatorId, string itemNumber)
+        {
+            return uow.GetStockTList(organizationId, subinventoryCode, locatorId, itemNumber);
+        }
+
+        public List<StockInventoryDT> GetsLossStockInventoryHistoryData(StockInventoryUOW uow, long organizationId, string subinventoryCode, long? locatorId, string itemNumber, string userId)
+        {
+            return uow.GetsLossStockInventoryHtList(organizationId, subinventoryCode, locatorId, itemNumber, userId);
+        }
+
+        public List<StockInventoryDT> GetsStockInventoryData(StockInventoryUOW uow, string userId, long transactionTypeId, bool fromHistoryData)
+        {
+            return uow.GetStockInventoryTList(userId, transactionTypeId, fromHistoryData);
+        }
+
+        public ResultModel CreateDetail(StockInventoryUOW uow, long transactionTypeId, long stockId, decimal mQty, string userId, string userName)
+        {
+            return uow.CreateDetail(transactionTypeId, stockId, mQty, userId, userName);
+        }
+
+        public ResultModel SaveTransactionDetail(StockInventoryUOW uow, long transactionTypeId, string userId, string userName)
+        {
+            return uow.SaveTransactionDetail(transactionTypeId, userId, userName);
+        }
+
+        public ResultModel DetailEditor(StockInventoryUOW uow, StockInventoryDTEditor editor, string userId, string userName)
+        {
+            if (editor.Action == "remove")
+            {
+                var ids = editor.StockInventoryDTList.Select(x => x.ID).ToList();
+                return uow.DelDetailData(ids);
+            }
+            else if (editor.Action == "edit")
+            {
+                var ids = editor.StockInventoryDTList.Select(x => x.ID).ToList();
+                string note = editor.StockInventoryDTList[0].NOTE;
+                return uow.UpdateDetailNote(ids, note, userId, userName);
+            }
+            else if (editor.Action == "create")
+            {
+                if (editor.StockInventoryDTList == null || editor.StockInventoryDTList.Count == 0) return new ResultModel(false, "沒有資料可新增明細");
+                return uow.CreateDetailForNoStock(editor.StockInventoryDTList[0], userId, userName);
+            }
+            else
+            {
+                return new ResultModel(false, "無法識別作業項目");
+            }
+        }
+
+        #region 舊
 
         public List<StockInventoryDT> GetProfitModel()
         {
@@ -441,6 +483,8 @@ namespace CHPOUTSRCMES.Web.Models.Stock
 
             return query.ToList();
         }
+
+        #endregion
 
     }
 

@@ -6,36 +6,28 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
 
-namespace CHPOUTSRCMES.Web.DataModel.Entity.Miscellaneous
+namespace CHPOUTSRCMES.Web.DataModel.Entity.Obsolete
 {
-    [Table("TRF_MISCELLANEOUS_HT")]
-    public class TRF_MISCELLANEOUS_HT
+    [Table("TRF_OBSOLETE_T")]
+    public class TRF_OBSOLETE_T
     {
         /// <summary>
-        /// 庫存異動歷史雜項ID
+        /// 庫存異動存貨報廢ID
         /// </summary>
         /// 
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
         [Required]
-        [Column("TRANSFER_MISCELLANEOUS_HIS_ID")]
-        public long TransferMiscellaneousHisId { set; get; }
+        [Column("TRANSFER_OBSOLETE_ID")]
+        public long TransferObsoleteId { set; get; }
 
         /// <summary>
-        /// 庫存異動雜項ID
+        /// 庫存異動存貨報廢擋頭ID
         /// </summary>
         /// 
         [Required]
-        [Column("TRANSFER_MISCELLANEOUS_ID")]
-        public long TransferMiscellaneousId { set; get; }
-
-        /// <summary>
-        /// 庫存移轉雜項擋頭ID
-        /// </summary>
-        /// 
-        [Required]
-        [Column("TRANSFER_MISCELLANEOUS_HEADER_ID")]
-        public long TransferMiscellaneousHeaderId { set; get; }
+        [Column("TRANSFER_OBSOLETE_HEADER_ID")]
+        public long TransferObsoleteHeaderId { set; get; }
 
         /// <summary>
         /// 料號ID

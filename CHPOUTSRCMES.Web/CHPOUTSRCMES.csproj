@@ -280,10 +280,16 @@
     <Compile Include="Controllers\YszmpckqController.cs" />
     <Compile Include="DataAnnotation\Precision.cs" />
     <Compile Include="DataModel\Entity\Information\ORG_UNIT_T.cs" />
+    <Compile Include="DataModel\Entity\Inventory\TRF_INVENTORY_HT.cs" />
+    <Compile Include="DataModel\Entity\Inventory\TRF_INVENTORY_HEADER_T.cs" />
+    <Compile Include="DataModel\Entity\Inventory\TRF_INVENTORY_T.cs" />
     <Compile Include="DataModel\Entity\Miscellaneous\TRF_MISCELLANEOUS_HEADER_T.cs" />
     <Compile Include="DataModel\Entity\Miscellaneous\TRF_MISCELLANEOUS_HT.cs" />
     <Compile Include="DataModel\Entity\Miscellaneous\TRF_MISCELLANEOUS_T.cs" />
     <Compile Include="DataModel\Entity\Purchase\CTR_SOA_T.cs" />
+    <Compile Include="DataModel\Entity\Obsolete\TRF_OBSOLETE_HEADER_T.cs" />
+    <Compile Include="DataModel\Entity\Obsolete\TRF_OBSOLETE_HT.cs" />
+    <Compile Include="DataModel\Entity\Obsolete\TRF_OBSOLETE_T.cs" />
     <Compile Include="DataModel\Entity\Temp\ORG_UNIT_T.cs" />
     <Compile Include="DataModel\Entity\Transfer\TRF_DETAIL_HT.cs" />
     <Compile Include="DataModel\Entity\Transfer\TRF_DETAIL_T.cs" />
@@ -315,7 +321,9 @@
     <Compile Include="DataModel\Entity\Process\OSP_PICKED_OUT_T.cs" />
     <Compile Include="DataModel\Entity\Process\OSP_YIELD_VARIANCE_HT.cs" />
     <Compile Include="DataModel\Entity\Process\OSP_YIELD_VARIANCE_T.cs" />
+    <Compile Include="DataModel\UnitOfWorks\StockInventoryUOW.cs" />
     <Compile Include="DataModel\UnitOfWorks\MiscellaneousUOW.cs" />
+    <Compile Include="DataModel\UnitOfWorks\ObsoleteUOW.cs" />
     <Compile Include="DataModel\UnitOfWorks\ProcessUOW.cs" />
     <Compile Include="DataModel\UnitOfWorks\ItemNoUOW.cs" />
     <Compile Include="DataModel\UnitOfWorks\MaincheTypeUOW.cs" />
@@ -387,6 +395,10 @@
     <Compile Include="Migrations\202009040355264_add_table_CTR_SOA_T.cs" />
     <Compile Include="Migrations\202009040355264_add_table_CTR_SOA_T.Designer.cs">
       <DependentUpon>202009040355264_add_table_CTR_SOA_T.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202009041034406_addfewTables.cs" />
+    <Compile Include="Migrations\202009041034406_addfewTables.Designer.cs">
+      <DependentUpon>202009041034406_addfewTables.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Delivery\bDeliveryDetail.cs" />
@@ -2097,6 +2109,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\202009040355264_add_table_CTR_SOA_T.resx">
       <DependentUpon>202009040355264_add_table_CTR_SOA_T.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202009041034406_addfewTables.resx">
+      <DependentUpon>202009041034406_addfewTables.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

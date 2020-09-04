@@ -6,6 +6,25 @@ $(document).ready(function () {
 
     GetTop();
 
+    function getOrganizationId() {
+        var id = $("#ddlSubinventory").val();
+        if (id == '請選擇') {
+            id = '0';
+        }
+        return id;
+    }
+
+    function getSubinventoryCode() {
+        return $("#ddlSubinventory option:selected").text();
+    }
+
+    function getLocatorId() {
+        if ($('#ddlLocatorArea').is(":visible")) {
+            return $("#ddlLocator").val();
+        } else {
+            return null;
+        }
+    }
 
     $("#btnSearchStock").click(function () {
         SearchStock();
@@ -34,6 +53,7 @@ $(document).ready(function () {
         serverSide: true,
         processing: true,
         orderMulti: true,
+        deferLoading: 0, //初始化DataTable時，不發出ajax
         //pageLength: 2,
         dom:
             "<'row'<'col-sm-2'l><'col-sm-7'B><'col-sm-3'f>>" +
@@ -44,14 +64,15 @@ $(document).ready(function () {
             "type": "POST",
             "datatype": "json",
             "data": function (d) {
-                d.SubinventoryCode = $("#ddlSubinventory").val();
-                d.Locator = $("#ddlLocator").val();
-                d.ItemNumber = $("#txtItemNumber").val();
+                d.organizationId = getOrganizationId();
+                d.subinventoryCode = getSubinventoryCode();
+                d.locatorId = getLocatorId();
+                d.itemNumber = $("#txtItemNumber").val();
             }
         },
         columns: [
             { data: null, defaultContent: '', className: 'select-checkbox', orderable: false, width: "40px" },
-            { data: "ID", name: "項次", autoWidth: true },
+            { data: "SUB_ID", name: "項次", autoWidth: true },
             { data: "SUBINVENTORY_CODE", name: "倉庫", autoWidth: true },
             { data: "SEGMENT3", name: "儲位", autoWidth: true },
             { data: "ITEM_NO", name: "料號", autoWidth: true, className: "dt-body-left" },
@@ -72,10 +93,11 @@ $(document).ready(function () {
             },
             { data: "SECONDARY_UOM_CODE", name: "次要單位", autoWidth: true },
             { data: "NOTE", name: "備註", autoWidth: true },
-            { data: "LAST_UPDATE_DATE", name: "更新日期", autoWidth: true, visible: false }
+            { data: "ID", name: "STOCK_ID", autoWidth: true, visible: false }
+            //{ data: "LAST_UPDATE_DATE", name: "更新日期", autoWidth: true, visible: false }
         ],
 
-        order: [[11, 'desc']],
+        order: [[1, 'desc']],
         select: {
             style: 'single'
         },
@@ -95,6 +117,8 @@ $(document).ready(function () {
         if (type === 'row') {
             var StockId = dt.rows(indexes).data().pluck('ID')[0];
             $("#StockId").text(StockId);
+            var SUB_ID = dt.rows(indexes).data().pluck('SUB_ID')[0];
+            $("#SUB_ID").text(SUB_ID);
             var Subinventory = dt.rows(indexes).data().pluck('SUBINVENTORY_CODE')[0];
             $("#Subinventory").text(Subinventory);
             var Locator = dt.rows(indexes).data().pluck('SEGMENT3')[0];
@@ -137,6 +161,7 @@ $(document).ready(function () {
     StockDT.on('deselect', function (e, dt, type, indexes) {
         if (type === 'row') {
             $("#StockId").text("");
+            $("#SUB_ID").text("");
             $("#Subinventory").text("");
             $("#Locator").text("");
             $("#ItemNumber").text("");
@@ -154,7 +179,7 @@ $(document).ready(function () {
             "url": "/bower_components/datatables/language/zh-TW.json"
         },
         ajax: {
-            url: '/Obsolete/UpdateRemark',
+            url: '/Obsolete/DetailEditor',
             "type": "POST",
             "dataType": "json",
             contentType: 'application/json',
@@ -176,17 +201,23 @@ $(document).ready(function () {
                     'action': d.action,
                     'StockObsoleteDTList': StockObsoleteDTList
                 }
-
-
                 return JSON.stringify(data);
             },
+            success: function (data) {
+                if (data.status) {
+                    TransactionDetailDT.ajax.reload();
+                }
+                else {
+                    swal.fire(data.result);
+                }
+            }
         },
         table: "#TransactionDetailDT",
         idSrc: 'ID',
         fields: [
             {
                 label: "備註:",
-                name: "REMARK",
+                name: "NOTE",
                 type: 'text'
             }
         ],
@@ -197,7 +228,15 @@ $(document).ready(function () {
                 submit: "確定",
                 'className': 'btn-danger'
             },
-
+            remove: {
+                button: "刪除",
+                title: "確定要刪除??",
+                submit: "確定",
+                confirm: {
+                    "_": "你確定要刪除這筆資料?",
+                    "1": "你確定要刪除這些資料?"
+                }
+            },
             multi: {
                 "title": "多欄位異動",
                 "info": "請注意，您一次選擇多個不同的備註，此次異動將會變成同樣的備註！",
@@ -230,7 +269,7 @@ $(document).ready(function () {
         },
         columns: [
             { data: null, defaultContent: '', className: 'select-checkbox', orderable: false, width: "40px" },
-            { data: "STOCK_ID", name: "項次", autoWidth: true },
+            { data: "SUB_ID", name: "項次", autoWidth: true },
             { data: "SUBINVENTORY_CODE", name: "倉庫", autoWidth: true },
             { data: "SEGMENT3", name: "儲位", autoWidth: true },
             { data: "ITEM_NO", name: "料號", autoWidth: true, className: "dt-body-left" },
@@ -264,10 +303,11 @@ $(document).ready(function () {
             },
             { data: "SECONDARY_UOM_CODE", name: "次要單位", autoWidth: true },
             { data: "NOTE", name: "備註", autoWidth: true },
-            { data: "LAST_UPDATE_DATE", name: "更新日期", autoWidth: true, visible: false }
+            { data: "STOCK_ID", name: "STOCK_ID", autoWidth: true, visible: false }
+            //{ data: "LAST_UPDATE_DATE", name: "更新日期", autoWidth: true, visible: false }
         ],
 
-        order: [[13, 'desc']],
+        order: [[1, 'desc']],
         select: {
             style: 'multi'
         },
@@ -280,32 +320,64 @@ $(document).ready(function () {
             buttons: [
                 'selectAll',
                 'selectNone',
-                 {
-                     text: '刪除',
-                     className: 'btn-danger',
-                     action: function () {
-                         var selectedData = TransactionDetailDT.rows('.selected').data();
-                         if (selectedData.length == 0) {
-                             swal.fire("請選擇要刪除的項目");
-                             return;
-                         }
+                {
+                    extend: "remove",
+                    text: '刪除',
+                    name: 'remove',
+                    className: 'btn-danger',
+                    editor: editor,
+                    init: function (api, node, config) {
+                        $(node).removeClass('btn-default')
+                    },
+                    action: function (e, dt, node, config) {
+                        var rows = TransactionDetailDT.rows({ selected: true }).indexes();
 
-                         swal.fire({
-                             title: "異動明細刪除",
-                             text: "確定刪除嗎?",
-                             type: "warning",
-                             showCancelButton: true,
-                             confirmButtonColor: "#DD6B55",
-                             confirmButtonText: "確定",
-                             cancelButtonText: "取消"
-                         }).then(function (result) {
-                             if (result.value) {
-                                 DelTransactionDetail(selectedData);
-                             }
-                         });
+                        if (rows.length === 0) {
+                            return;
+                        }
 
-                     }
-                 },
+                        editor.remove(rows, {
+                            title: '刪除',
+                            message: rows.length === 1 ?
+                                '你確定要刪除這筆資料?' :
+                                '你確定要刪除這些資料?',
+                            buttons:
+                            {
+                                text: '刪除',
+                                className: 'btn-danger',
+                                action: function () {
+                                    this.submit();
+                                }
+                            }
+                        })
+                    }
+                },
+                 //{
+                 //    text: '刪除',
+                 //    className: 'btn-danger',
+                 //    action: function () {
+                 //        var selectedData = TransactionDetailDT.rows('.selected').data();
+                 //        if (selectedData.length == 0) {
+                 //            swal.fire("請選擇要刪除的項目");
+                 //            return;
+                 //        }
+
+                 //        swal.fire({
+                 //            title: "異動明細刪除",
+                 //            text: "確定刪除嗎?",
+                 //            type: "warning",
+                 //            showCancelButton: true,
+                 //            confirmButtonColor: "#DD6B55",
+                 //            confirmButtonText: "確定",
+                 //            cancelButtonText: "取消"
+                 //        }).then(function (result) {
+                 //            if (result.value) {
+                 //                DelTransactionDetail(selectedData);
+                 //            }
+                 //        });
+
+                 //    }
+                 //},
                 {
                     text: '編輯備註',
                     className: 'btn-danger',
@@ -334,9 +406,9 @@ $(document).ready(function () {
 
 
     function AddTransactionDetail() {
-        var ID = $('#StockId').text();
-        if (ID == "") {
-            swal.fire('請選擇料號');
+        var stockId = $('#StockId').text();
+        if (stockId == "") {
+            swal.fire('請選擇庫存');
             event.preventDefault();
             return false;
         }
@@ -354,8 +426,8 @@ $(document).ready(function () {
             url: "/Obsolete/AddTransactionDetail",
             type: "post",
             data: {
-                ID: ID,
-                ObsoleteQty: ObsoleteQty
+                stockId: stockId,
+                mQty: ObsoleteQty
             },
             success: function (data) {
                 if (data.status) {

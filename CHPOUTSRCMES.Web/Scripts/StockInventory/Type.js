@@ -6,30 +6,30 @@
 function init() {
     $('#ddlProfit').change(function () {
 
-        var TransactionType = $("#ddlProfit").val();
-        if (TransactionType == "請選擇") {
+        var inventoryType = $("#ddlProfit").val();
+        if (inventoryType == "請選擇") {
             $('#Content').empty();
             return;
         }
-        select(TransactionType);
+        select(inventoryType);
     });
 }
 
-function select(TransactionType) {
+function select(inventoryType) {
     $.ajax({
         url: "/StockInventory/GetContent",
         type: "GET",
         dataType: 'html',
         data: {
-            TransactionType: TransactionType
+            inventoryType: inventoryType
         },
         success: function (data) {
             $('#Content').empty();
             $('#Content').html(data);
-            if (TransactionType == "盤盈") {
-                ProfitInit();
+            if (inventoryType == "356") {
+                ProfitInit(); //盤盈
             } else {
-                LossInit();
+                LossInit(); //盤虧
             }
         },
         error: function () {

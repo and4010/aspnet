@@ -333,10 +333,13 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                 try
                 {
                     var ctrpick = ctrPickedTRepository.Get(x => x.ItemCategory == "捲筒").ToList();
-                    if (ctrpick.Count == PaperRollModel.Count)
+                    if (ctrpick.Count > 0)
                     {
-                        return new ResultModel(false, "資料已存在無法匯入");
+                        var m = DeleteExcel(CtrHeaderId);
+                        if (!m.Success) return m;
+                        //return new ResultModel(false, "資料已存在無法匯入");
                     }
+                    
 
 
                     var ctrDetail = ctrDetailTRepository.GetAll().Join(
@@ -431,11 +434,10 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
 
             try
             {
-                using (var mesContext = new MesContext())
-                {
-                    StringBuilder query = new StringBuilder();
-                    query.Append(
-                    @"DELETE p
+
+                StringBuilder query = new StringBuilder();
+                query.Append(
+                @"DELETE p
 FROM CTR_PICKED_T p
 INNER JOIN CTR_HEADER_T h
 INNER JOIN CTR_DETAIL_T d
@@ -443,9 +445,9 @@ ON h.CTR_HEADER_ID = d.CTR_HEADER_ID
 ON d.CTR_DETAIL_ID = p.CTR_DETAIL_ID
 where h.CTR_HEADER_ID = @CTR_HEADER_ID
 and d.ITEM_CATEGORY = N'捲筒'");
-                    mesContext.Database.ExecuteSqlCommand(query.ToString(), new SqlParameter("@CTR_HEADER_ID", CtrHeaderId));
-                    return new ResultModel(true, "捲筒刪除成功");
-                }
+                this.Context.Database.ExecuteSqlCommand(query.ToString(), new SqlParameter("@CTR_HEADER_ID", CtrHeaderId));
+                return new ResultModel(true, "捲筒刪除成功");
+
 
             }
             catch (Exception e)
@@ -635,8 +637,6 @@ and d.ITEM_CATEGORY = N'捲筒'");
         {
             try
             {
-                using (var mesContext = new MesContext())
-                {
                     StringBuilder query = new StringBuilder();
                     query.Append(
                     @"SELECT 
@@ -660,8 +660,8 @@ JOIN CTR_HEADER_T h ON h.CTR_HEADER_ID = d.CTR_HEADER_ID
 WHERE d.ITEM_CATEGORY = N'平版' and h.CTR_HEADER_ID = @CTR_HEADER_ID");
                     string commandText = string.Format(query.ToString());
                     commandText = string.Concat(commandText, " UNION ", commandText.Replace("CTR_DETAIL_T", "CTR_DETAIL_HT"));
-                    return mesContext.Database.SqlQuery<DetailModel.FlatModel>(commandText, new SqlParameter("@CTR_HEADER_ID", CtrHeaderId)).ToList();
-                }
+                    return this.Context.Database.SqlQuery<DetailModel.FlatModel>(commandText, new SqlParameter("@CTR_HEADER_ID", CtrHeaderId)).ToList();
+                
             }
             catch (Exception e)
             {
@@ -679,8 +679,6 @@ WHERE d.ITEM_CATEGORY = N'平版' and h.CTR_HEADER_ID = @CTR_HEADER_ID");
         {
             try
             {
-                using (var mesContext = new MesContext())
-                {
                     StringBuilder query = new StringBuilder();
                     query.Append(
                     @"SELECT 
@@ -702,8 +700,8 @@ JOIN CTR_HEADER_T h ON h.CTR_HEADER_ID = d.CTR_HEADER_ID
 WHERE d.ITEM_CATEGORY = N'捲筒' and h.CTR_HEADER_ID = @CTR_HEADER_ID");
                     string commandText = string.Format(query.ToString());
                     commandText = string.Concat(commandText, " UNION ", commandText.Replace("CTR_DETAIL_T", "CTR_DETAIL_HT"));
-                    return mesContext.Database.SqlQuery<DetailModel.RollModel>(commandText, new SqlParameter("@CTR_HEADER_ID", CtrHeaderId)).ToList();
-                }
+                    return Context.Database.SqlQuery<DetailModel.RollModel>(commandText, new SqlParameter("@CTR_HEADER_ID", CtrHeaderId)).ToList();
+                
             }
             catch (Exception e)
             {
@@ -721,11 +719,9 @@ WHERE d.ITEM_CATEGORY = N'捲筒' and h.CTR_HEADER_ID = @CTR_HEADER_ID");
         {
             try
             {
-                using (var mesContext = new MesContext())
-                {
-                    StringBuilder query = new StringBuilder();
-                    query.Append(
-                    @"SELECT 
+                StringBuilder query = new StringBuilder();
+                query.Append(
+                @"SELECT 
 ROW_NUMBER() OVER(ORDER BY p.CTR_DETAIL_ID ) AS SubId,
 p.CTR_PICKED_ID as Id,
 h.SUBINVENTORY as Subinventory, 
@@ -747,10 +743,10 @@ p.NOTE as Remark
 FROM CTR_PICKED_T p
 LEFT JOIN CTR_HEADER_T h ON h.CTR_HEADER_ID = p.CTR_HEADER_ID
 WHERE p.ITEM_CATEGORY = N'捲筒' and h.CTR_HEADER_ID = @CTR_HEADER_ID");
-                    string commandText = string.Format(query.ToString());
-                    commandText = string.Concat(commandText, " UNION ", commandText.Replace("CTR_PICKED_T", "CTR_PICKED_HT"));
-                    return mesContext.Database.SqlQuery<DetailModel.RollDetailModel>(commandText, new SqlParameter("@CTR_HEADER_ID", CtrHeaderId)).ToList();
-                }
+                string commandText = string.Format(query.ToString());
+                commandText = string.Concat(commandText, " UNION ", commandText.Replace("CTR_PICKED_T", "CTR_PICKED_HT"));
+                return Context.Database.SqlQuery<DetailModel.RollDetailModel>(commandText, new SqlParameter("@CTR_HEADER_ID", CtrHeaderId)).ToList();
+
             }
             catch (Exception e)
             {
@@ -768,8 +764,6 @@ WHERE p.ITEM_CATEGORY = N'捲筒' and h.CTR_HEADER_ID = @CTR_HEADER_ID");
         {
             try
             {
-                using (var mesContext = new MesContext())
-                {
                     StringBuilder query = new StringBuilder();
                     query.Append(
                     @"SELECT 
@@ -791,8 +785,8 @@ JOIN CTR_HEADER_T h ON h.CTR_HEADER_ID = p.CTR_HEADER_ID
 WHERE p.ITEM_CATEGORY = N'平版' and h.CTR_HEADER_ID = @CTR_HEADER_ID");
                     string commandText = string.Format(query.ToString());
                     commandText = string.Concat(commandText, " UNION ", commandText.Replace("CTR_PICKED_T", "CTR_PICKED_HT"));
-                    return mesContext.Database.SqlQuery<DetailModel.FlatDetailModel>(commandText, new SqlParameter("@CTR_HEADER_ID", CtrHeaderId)).ToList();
-                }
+                    return Context.Database.SqlQuery<DetailModel.FlatDetailModel>(commandText, new SqlParameter("@CTR_HEADER_ID", CtrHeaderId)).ToList();
+                
             }
             catch (Exception e)
             {
@@ -810,11 +804,9 @@ WHERE p.ITEM_CATEGORY = N'平版' and h.CTR_HEADER_ID = @CTR_HEADER_ID");
         {
             try
             {
-                using (var mesContext = new MesContext())
-                {
-                    StringBuilder query = new StringBuilder();
-                    query.Append(
-                    @"SELECT 
+                StringBuilder query = new StringBuilder();
+                query.Append(
+                @"SELECT 
 ROW_NUMBER() OVER(ORDER BY p.CTR_DETAIL_ID ) AS SubId,
 p.CTR_PICKED_ID as Id,
 h.SUBINVENTORY as Subinventory, 
@@ -838,10 +830,10 @@ p.LAST_UPDATE_USER_NAME as CreatedUserName
 FROM dbo.CTR_PICKED_T p
 LEFT JOIN dbo.CTR_HEADER_T h ON h.CTR_HEADER_ID = p.CTR_HEADER_ID
 WHERE p.ITEM_CATEGORY = N'捲筒' and p.CTR_PICKED_ID  = @CTR_PICKED_ID");
-                    string commandText = string.Format(query.ToString());
-                    commandText = string.Concat(commandText, " UNION ", commandText.Replace("CTR_PICKED_T", "CTR_PICKED_HT").Replace("CTR_DETAIL_T", "CTR_DETAIL_HT"));
-                    return mesContext.Database.SqlQuery<DetailModel.RollDetailModel>(commandText, new SqlParameter("@CTR_PICKED_ID", CTR_PICKED_ID)).SingleOrDefault();
-                }
+                string commandText = string.Format(query.ToString());
+                commandText = string.Concat(commandText, " UNION ", commandText.Replace("CTR_PICKED_T", "CTR_PICKED_HT").Replace("CTR_DETAIL_T", "CTR_DETAIL_HT"));
+                return Context.Database.SqlQuery<DetailModel.RollDetailModel>(commandText, new SqlParameter("@CTR_PICKED_ID", CTR_PICKED_ID)).SingleOrDefault();
+
             }
             catch (Exception e)
             {
@@ -1048,11 +1040,9 @@ WHERE p.ITEM_CATEGORY = N'捲筒' and p.CTR_PICKED_ID  = @CTR_PICKED_ID");
         {
             try
             {
-                using (var mesContext = new MesContext())
-                {
-                    StringBuilder query = new StringBuilder();
-                    query.Append(
-                    @"SELECT 
+                StringBuilder query = new StringBuilder();
+                query.Append(
+                @"SELECT 
 ROW_NUMBER() OVER(ORDER BY p.CTR_DETAIL_ID ) AS SubId,
 p.CTR_PICKED_ID as Id,
 h.SUBINVENTORY as Subinventory, 
@@ -1072,10 +1062,9 @@ FROM CTR_PICKED_T p
 JOIN CTR_HEADER_T h ON h.CTR_HEADER_ID = p.CTR_HEADER_ID
 JOIN CTR_DETAIL_T D ON D.CTR_DETAIL_ID = P.CTR_DETAIL_ID
 WHERE p.ITEM_CATEGORY = N'平版' and p.CTR_PICKED_ID  = @CTR_PICKED_ID");
-                    string commandText = string.Format(query.ToString());
-                    commandText = string.Concat(commandText, " UNION ", commandText.Replace("CTR_PICKED_T", "CTR_PICKED_HT").Replace("CTR_DETAIL_T", "CTR_DETAIL_HT"));
-                    return mesContext.Database.SqlQuery<DetailModel.FlatDetailModel>(commandText, new SqlParameter("@CTR_PICKED_ID", CtrPickedId)).SingleOrDefault();
-                }
+                string commandText = string.Format(query.ToString());
+                commandText = string.Concat(commandText, " UNION ", commandText.Replace("CTR_PICKED_T", "CTR_PICKED_HT").Replace("CTR_DETAIL_T", "CTR_DETAIL_HT"));
+                return Context.Database.SqlQuery<DetailModel.FlatDetailModel>(commandText, new SqlParameter("@CTR_PICKED_ID", CtrPickedId)).SingleOrDefault();
             }
             catch (Exception e)
             {
@@ -1093,11 +1082,9 @@ WHERE p.ITEM_CATEGORY = N'平版' and p.CTR_PICKED_ID  = @CTR_PICKED_ID");
         {
             try
             {
-                using (var mesContext = new MesContext())
-                {
-                    StringBuilder query = new StringBuilder();
-                    query.Append(
-                    @"SELECT 
+                StringBuilder query = new StringBuilder();
+                query.Append(
+                @"SELECT 
 (SELECT 
 sum(d1.ROLL_REAM_QTY)- 
 count(p.CTR_PICKED_ID)
@@ -1107,8 +1094,8 @@ WHERE p.ITEM_CATEGORY = N'平版' and h2.CTR_HEADER_ID  = @CTR_HEADER_ID and p.S
 FROM CTR_DETAIL_T d1
 JOIN CTR_HEADER_T h1 ON h1.CTR_HEADER_ID = d1.CTR_HEADER_ID
 WHERE d1.ITEM_CATEGORY = N'平版' and h1.CTR_HEADER_ID  = @CTR_HEADER_ID");
-                    return mesContext.Database.SqlQuery<decimal>(query.ToString(), new SqlParameter("@CTR_HEADER_ID", CtrHeaderId)).SingleOrDefault();
-                }
+                return Context.Database.SqlQuery<decimal>(query.ToString(), new SqlParameter("@CTR_HEADER_ID", CtrHeaderId)).SingleOrDefault();
+
 
             }
             catch (Exception e)
@@ -1127,11 +1114,9 @@ WHERE d1.ITEM_CATEGORY = N'平版' and h1.CTR_HEADER_ID  = @CTR_HEADER_ID");
         {
             try
             {
-                using (var mesContext = new MesContext())
-                {
-                    StringBuilder query = new StringBuilder();
-                    query.Append(
-                    @"SELECT 
+                StringBuilder query = new StringBuilder();
+                query.Append(
+                @"SELECT 
 (SELECT 
 sum(d1.ROLL_REAM_QTY)- 
 count(p.CTR_PICKED_ID)
@@ -1141,8 +1126,8 @@ WHERE p.ITEM_CATEGORY = N'捲筒' and h2.CTR_HEADER_ID  = @CTR_HEADER_ID and p.S
 FROM CTR_DETAIL_T d1
 JOIN CTR_HEADER_T h1 ON h1.CTR_HEADER_ID = d1.CTR_HEADER_ID
 WHERE d1.ITEM_CATEGORY = N'捲筒' and h1.CTR_HEADER_ID  = @CTR_HEADER_ID");
-                    return mesContext.Database.SqlQuery<decimal>(query.ToString(), new SqlParameter("@CTR_HEADER_ID", CtrHeaderId)).SingleOrDefault();
-                }
+                return Context.Database.SqlQuery<decimal>(query.ToString(), new SqlParameter("@CTR_HEADER_ID", CtrHeaderId)).SingleOrDefault();
+
 
             }
             catch (Exception e)
@@ -1265,25 +1250,25 @@ WHERE d1.ITEM_CATEGORY = N'捲筒' and h1.CTR_HEADER_ID  = @CTR_HEADER_ID");
         /// <returns></returns>
         public List<string> GetPhoto(long id)
         {
-            using (var db = new MesContext())
-            {
-                var ctrPhoto = db.CTR_FILES_Ts.Join(
-                   db.CTR_FILEINFO_Ts,               //要Join的資料表
-                   c => c.CtrFileId,    //c代表db.CTR_FILEINFO_Ts(c可以自己定義名稱)，這邊放主要資料表要串聯的key
-                   d => d.CtrFileId,  //d代表db.CTR_FILES_Ts(cd可以自己定義名稱)，這邊放次資料表要串聯的key
-                   (c, d) => new         //將兩個自定義名稱用小括胡包起來，接著透過 『=>』 可以自己選擇要取用要用資料 
+            var db = (MesContext)Context;
+
+            var ctrPhoto = db.CTR_FILES_Ts.Join(
+               db.CTR_FILEINFO_Ts,               //要Join的資料表
+               c => c.CtrFileId,    //c代表db.CTR_FILEINFO_Ts(c可以自己定義名稱)，這邊放主要資料表要串聯的key
+               d => d.CtrFileId,  //d代表db.CTR_FILES_Ts(cd可以自己定義名稱)，這邊放次資料表要串聯的key
+               (c, d) => new         //將兩個自定義名稱用小括胡包起來，接著透過 『=>』 可以自己選擇要取用要用資料 
                    {
-                       x = c.FileInstance,
-                       e = d.CtrPickedId
-                   }
-                   ).Where(x => x.e == id).ToList();
-                List<string> vs = new List<string>();
-                for (int i = 0; i < ctrPhoto.Count; i++)
-                {
-                    vs.Add(Convert.ToBase64String(ctrPhoto[i].x));
-                }
-                return vs;
+                   x = c.FileInstance,
+                   e = d.CtrPickedId
+               }
+               ).Where(x => x.e == id).ToList();
+            List<string> vs = new List<string>();
+            for (int i = 0; i < ctrPhoto.Count; i++)
+            {
+                vs.Add(Convert.ToBase64String(ctrPhoto[i].x));
             }
+            return vs;
+
         }
 
         /// <summary>
@@ -1563,8 +1548,6 @@ AND pt.CTR_PICKED_ID = @CTR_PICKED_ID
         {
             try
             {
-                using (var mesContext = new MesContext())
-                {
                     StringBuilder quId = new StringBuilder();
                     quId.Append(
 @"
@@ -1574,7 +1557,7 @@ FROM [CTR_PICKED_T] pt
 join CTR_HEADER_T h on h.CTR_HEADER_ID = pt.CTR_HEADER_ID
 where pt.CTR_PICKED_ID = @CTR_PICKED_ID
 ");
-                    var SUBINVENTORY_CODE = mesContext.Database.SqlQuery<string>(quId.ToString(), new SqlParameter("@CTR_PICKED_ID", PickId)).SingleOrDefault();
+                    var SUBINVENTORY_CODE = Context.Database.SqlQuery<string>(quId.ToString(), new SqlParameter("@CTR_PICKED_ID", PickId)).SingleOrDefault();
 
 
                     List<SelectListItem> Locatorlist = new List<SelectListItem>();
@@ -1597,15 +1580,15 @@ and lt.SUBINVENTORY_CODE = @SUBINVENTORY_CODE
                     string commandText = string.Format(query + "{0}{1}", cond.Count > 0 ? " where " : "", string.Join(" and ", cond.ToArray()));
                     if (sqlParameterList.Count > 0)
                     {
-                        Locatorlist.AddRange(mesContext.Database.SqlQuery<SelectListItem>(commandText, sqlParameterList.ToArray()).ToList());
+                        Locatorlist.AddRange(Context.Database.SqlQuery<SelectListItem>(commandText, sqlParameterList.ToArray()).ToList());
                     }
                     else
                     {
-                        Locatorlist.AddRange(mesContext.Database.SqlQuery<SelectListItem>(commandText).ToList());
+                        Locatorlist.AddRange(Context.Database.SqlQuery<SelectListItem>(commandText).ToList());
                     }
 
                     return Locatorlist;
-                }
+                
             }
             catch (Exception e)
             {

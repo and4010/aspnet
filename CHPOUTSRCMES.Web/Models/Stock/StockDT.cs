@@ -12,7 +12,7 @@ namespace CHPOUTSRCMES.Web.Models.Stock
 {
     public class StockDT
     {
-        public long ID { set; get; }
+        public long ID { set; get; } //STOCK_ID
 
         public long SUB_ID { set; get; }
         public long ORGANIZATION_ID { set; get; }

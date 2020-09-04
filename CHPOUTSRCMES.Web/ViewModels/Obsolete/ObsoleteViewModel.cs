@@ -11,7 +11,7 @@ namespace CHPOUTSRCMES.Web.ViewModels.Obsolete
     {
 
         [Display(Name = "項次")]
-        public string StockId { set; get; }
+        public string SUB_ID { set; get; }
 
         [Display(Name = "倉庫")]
         public string Subinventory { set; get; }
@@ -28,8 +28,7 @@ namespace CHPOUTSRCMES.Web.ViewModels.Obsolete
         [Display(Name = "單位")]
         public string Unit { set; get; }
 
-        [Required]
-        public decimal? Qty { set; get; }
+        public string Qty { set; get; }
         
     }
 }

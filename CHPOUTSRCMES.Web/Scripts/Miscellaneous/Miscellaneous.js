@@ -9,6 +9,14 @@ $(document).ready(function () {
         return $("#ddlMiscellaneous option:selected").text();
     }
 
+    function getTransactionTypeId() {
+        var id = $("#ddlMiscellaneous").val();
+        if (id == '請選擇') {
+            id = '0';
+        }
+        return id;
+    }
+
     function getOrganizationId() {
         var id = $("#ddlSubinventory").val();
         if (id == '請選擇') {
@@ -44,9 +52,6 @@ $(document).ready(function () {
         }
         return percentageError;
     }
-
-  
-
 
     $('#txtSearchQty').keydown(function (e) {
         if (e.keyCode == 13) {
@@ -96,7 +101,7 @@ $(document).ready(function () {
         } else {
             $("#qtyType").html("數量");
         }
-
+        TransactionDetailDT.ajax.reload();
         //var Miscellaneous = $("#ddlMiscellaneous").val();
         //if (Miscellaneous == "請選擇") {
         //    $('#Content').empty();
@@ -188,7 +193,7 @@ $(document).ready(function () {
             //{ data: "LAST_UPDATE_DATE", name: "更新日期", autoWidth: true, visible: false }
         ],
 
-        order: [[11, 'desc']],
+        order: [[1, 'desc']],
         select: {
             style: 'single'
         },
@@ -208,6 +213,8 @@ $(document).ready(function () {
         if (type === 'row') {
             var StockId = dt.rows(indexes).data().pluck('ID')[0];
             $("#StockId").text(StockId);
+            var ORGANIZATION_ID = dt.rows(indexes).data().pluck('ORGANIZATION_ID')[0];
+            $("#ORGANIZATION_ID").text(ORGANIZATION_ID);
             var SUB_ID = dt.rows(indexes).data().pluck('SUB_ID')[0];
             $("#SUB_ID").text(SUB_ID);
             var Subinventory = dt.rows(indexes).data().pluck('SUBINVENTORY_CODE')[0];
@@ -251,6 +258,7 @@ $(document).ready(function () {
     StockDT.on('deselect', function (e, dt, type, indexes) {
         if (type === 'row') {
             $("#StockId").text("");
+            $("#ORGANIZATION_ID").text("");
             $("#SUB_ID").text("");
             $("#Subinventory").text("");
             $("#Locator").text("");
@@ -355,7 +363,9 @@ $(document).ready(function () {
             "url": "/Miscellaneous/GetTransactionDetail",
             "type": "POST",
             "datatype": "json",
-            "data": {}
+            "data": function (d) {
+                d.transactionTypeId = getTransactionTypeId();
+            }
         },
         columns: [
             { data: null, defaultContent: '', className: 'select-checkbox', orderable: false, width: "40px" },
@@ -547,9 +557,9 @@ $(document).ready(function () {
     }
 
     function AddTransactionDetail() {
-        var ID = $('#StockId').text();
-        if (ID == "") {
-            swal.fire('請選擇料號');
+        var stockId = $('#StockId').text();
+        if (stockId == "") {
+            swal.fire('請選擇庫存');
             event.preventDefault();
             return false;
         }
@@ -561,8 +571,8 @@ $(document).ready(function () {
             return false;
         }
 
-        var Miscellaneous = $('#ddlMiscellaneous').val();
-        if (Miscellaneous == "請選擇") {
+        var transactionTypeId = $('#ddlMiscellaneous').val();
+        if (transactionTypeId == "請選擇") {
             swal.fire('請選擇雜項異動類別');
             event.preventDefault();
             return false;
@@ -580,17 +590,10 @@ $(document).ready(function () {
             url: "/Miscellaneous/AddTransactionDetail",
             type: "post",
             data: {
-                transactionTypeId: Miscellaneous,
-                organizationId: getOrganizationId(),
-                subinventoryCode: getSubinventoryCode(),
-                locatorId: getLocatorId(),
-                stockId: $("#StockId").text(),
+                transactionTypeId: transactionTypeId,
+                stockId: stockId,
                 mPrimaryQty: PrimaryQty,
                 note: Note
-                //ID: ID,
-                //PrimaryQty: PrimaryQty,
-                //Miscellaneous: Miscellaneous,
-                //Note: Note
             },
             success: function (data) {
                 if (data.status) {
@@ -645,11 +648,11 @@ $(document).ready(function () {
     }
 
     function SaveTransactionDetail() {
-        var count = TransactionDetailDT.rows().count();
-        if (count == 0) {
-            swal.fire('請輸入異動明細');
+        var transactionTypeId = $('#ddlMiscellaneous').val();
+        if (transactionTypeId == "請選擇") {
+            swal.fire('請選擇雜項異動類別');
             event.preventDefault();
-            return;
+            return false;
         }
 
         swal.fire({
@@ -665,7 +668,9 @@ $(document).ready(function () {
                 $.ajax({
                     url: "/Miscellaneous/SaveTransactionDetail",
                     type: "post",
-                    data: {},
+                    data: {
+                        transactionTypeId: transactionTypeId
+                    },
                     success: function (data) {
                         if (data.status) {
                             TransactionDetailDT.ajax.reload();

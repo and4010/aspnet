@@ -99,7 +99,7 @@ namespace CHPOUTSRCMES.Web.Controllers
                     if (!string.IsNullOrEmpty(search) && !string.IsNullOrWhiteSpace(search))
                     {
                         // Apply search   
-                        model = model.Where(p => (p.ID.ToString().ToLower().Contains(search.ToLower()))
+                        model = model.Where(p => (p.SUB_ID.ToString().ToLower().Contains(search.ToLower()))
                             || (!string.IsNullOrEmpty(p.SUBINVENTORY_CODE) && p.SUBINVENTORY_CODE.ToLower().Contains(search.ToLower()))
                             || (!string.IsNullOrEmpty(p.SEGMENT3) && p.SEGMENT3.ToLower().Contains(search.ToLower()))
                             || (!string.IsNullOrEmpty(p.ITEM_NO) && p.ITEM_NO.ToLower().Contains(search.ToLower()))
@@ -121,7 +121,7 @@ namespace CHPOUTSRCMES.Web.Controllers
         }
 
         [HttpPost, ActionName("GetTransactionDetail")]
-        public JsonResult GetTransactionDetail(DataTableAjaxPostViewModel data)
+        public JsonResult GetTransactionDetail(DataTableAjaxPostViewModel data, long transactionTypeId)
         {
 
             using (var context = new MesContext())
@@ -129,7 +129,7 @@ namespace CHPOUTSRCMES.Web.Controllers
                 using (MiscellaneousUOW uow = new MiscellaneousUOW(context))
                 {
                     var id = this.User.Identity.GetUserId();
-                    List<StockMiscellaneousDT> model = miscellaneousData.GetMiscellaneousData(uow, id);
+                    List<StockMiscellaneousDT> model = miscellaneousData.GetMiscellaneousData(uow, id, transactionTypeId);
 
                     var totalCount = model.Count;
                     string search = data.Search.Value;
@@ -185,7 +185,7 @@ namespace CHPOUTSRCMES.Web.Controllers
         }
 
         [HttpPost]
-        public ActionResult AddTransactionDetail(long transactionTypeId, long organizationId, string subinventoryCode, long? locatorId,
+        public ActionResult AddTransactionDetail(long transactionTypeId,
       long stockId, decimal mPrimaryQty, string note)
         {
             using (var context = new MesContext())
@@ -196,7 +196,7 @@ namespace CHPOUTSRCMES.Web.Controllers
                     var id = this.User.Identity.GetUserId();
                     //取得使用者帳號
                     var name = this.User.Identity.GetUserName();
-                    ResultModel result =  miscellaneousData.CreateDetail(uow, transactionTypeId, organizationId, subinventoryCode, locatorId, stockId, mPrimaryQty, note, id, name);
+                    ResultModel result =  miscellaneousData.CreateDetail(uow, transactionTypeId, stockId, mPrimaryQty, note, id, name);
                     return new JsonResult { Data = new { status = result.Success, result = result.Msg } };
                 }
             }
@@ -210,7 +210,7 @@ namespace CHPOUTSRCMES.Web.Controllers
         }
 
           [HttpPost]
-        public ActionResult SaveTransactionDetail()
+        public ActionResult SaveTransactionDetail(long transactionTypeId)
         {
             using (var context = new MesContext())
             {
@@ -220,7 +220,7 @@ namespace CHPOUTSRCMES.Web.Controllers
                     var id = this.User.Identity.GetUserId();
                     //取得使用者帳號
                     var name = this.User.Identity.GetUserName();
-                    ResultModel result = miscellaneousData.SaveTransactionDetail(uow, id, name);
+                    ResultModel result = miscellaneousData.SaveTransactionDetail(uow, transactionTypeId, id, name);
                     return new JsonResult { Data = new { status = result.Success, result = result.Msg } };
                 }
             }

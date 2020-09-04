@@ -4,12 +4,9 @@ using System.Data.Entity;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
-using System.Web.Mvc;
-using CHPOUTSRCMES.Web.DataModel.Entity;
 using CHPOUTSRCMES.Web.DataModel.Entity.Interfaces;
-using CHPOUTSRCMES.Web.DataModel.Entity.Miscellaneous;
+using CHPOUTSRCMES.Web.DataModel.Entity.Obsolete;
 using CHPOUTSRCMES.Web.DataModel.Entity.Repositorys;
-using CHPOUTSRCMES.Web.DataModel.Interfaces;
 using CHPOUTSRCMES.Web.Models;
 using CHPOUTSRCMES.Web.Models.Stock;
 using CHPOUTSRCMES.Web.Util;
@@ -17,95 +14,28 @@ using NLog;
 
 namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
 {
-    public class MiscellaneousUOW : TransferUOW
+    public class ObsoleteUOW : TransferUOW
     {
+
         private ILogger logger = LogManager.GetCurrentClassLogger();
 
-        private readonly IRepository<TRF_MISCELLANEOUS_HEADER_T> trfMiscellaneousHeaderTRepository;
-        private readonly IRepository<TRF_MISCELLANEOUS_T> trfMiscellaneousTRepository;
-        private readonly IRepository<TRF_MISCELLANEOUS_HT> trfMiscellaneousHtRepository;
+        private readonly IRepository<TRF_OBSOLETE_HEADER_T> trfObsoleteHeaderTRepository;
+        private readonly IRepository<TRF_OBSOLETE_T> trfObsoleteTRepository;
+        private readonly IRepository<TRF_OBSOLETE_HT> trfObsoleteHtRepository;
 
-        public MiscellaneousUOW(DbContext context)
-          : base(context)
+        public ObsoleteUOW(DbContext context)
+        : base(context)
         {
-            this.trfMiscellaneousHeaderTRepository = new GenericRepository<TRF_MISCELLANEOUS_HEADER_T>(this);
-            this.trfMiscellaneousTRepository = new GenericRepository<TRF_MISCELLANEOUS_T>(this);
-            this.trfMiscellaneousHtRepository = new GenericRepository<TRF_MISCELLANEOUS_HT>(this);
+            this.trfObsoleteHeaderTRepository = new GenericRepository<TRF_OBSOLETE_HEADER_T>(this);
+            this.trfObsoleteTRepository = new GenericRepository<TRF_OBSOLETE_T>(this);
+            this.trfObsoleteHtRepository = new GenericRepository<TRF_OBSOLETE_HT>(this);
         }
 
-        MiscellaneousType miscellaneousType = new MiscellaneousType();
 
-        /// <summary>
-        /// 雜項異動類別
-        /// </summary>
-        public class MiscellaneousType
-        {
-            /// <summary>
-            /// 雜收
-            /// </summary>
-            public const long Receive = TransactionTypeId.Chp37In;
-            /// <summary>
-            /// 雜發
-            /// </summary>
-            public const long Send = TransactionTypeId.Chp37Out;
-
-            public string GetDesc(long type)
-            {
-                switch (type)
-                {
-                    case Receive:
-                        return "雜收";
-                    case Send:
-                        return "雜發";
-                    default:
-                        return "";
-                }
-            }
-        }
-
-        #region 雜項異動類別下拉選單
-
-        /// <summary>
-        /// 取得雜項異動類別下拉選單
-        /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
-        public List<SelectListItem> GetMiscellaneousTypeDropDownList()
-        {
-            var transferTypeList = createDropDownList(DropDownListType.Choice);
-            transferTypeList.AddRange(getMiscellaneousTypeList());
-            return transferTypeList;
-        }
-
-        private List<SelectListItem> getMiscellaneousTypeList()
-        {
-            var miscellaneousTypeList = new List<SelectListItem>();
-            try
-            {
-                miscellaneousTypeList.Add(new SelectListItem() { Text = miscellaneousType.GetDesc(MiscellaneousType.Send), Value = MiscellaneousType.Send.ToString() });
-                miscellaneousTypeList.Add(new SelectListItem() { Text = miscellaneousType.GetDesc(MiscellaneousType.Receive), Value = MiscellaneousType.Receive.ToString() });
-
-                var a = miscellaneousTypeList.Select(x => new SelectListItem() { Text = x.Text, Value = x.Value }).Where(x => x.Value == "1");
-            }
-            catch (Exception ex)
-            {
-                logger.Error(LogUtilities.BuildExceptionMessage(ex));
-            }
-            return miscellaneousTypeList;
-        }
-
-        #endregion
-
-
-        public List<StockDT> GetStockTList(long organizationId, string subinventoryCode, long? locatorId, string itemNumber, decimal primaryQty, decimal percentageError)
+        public List<StockDT> GetStockTList(long organizationId, string subinventoryCode, long? locatorId, string itemNumber)
         {
             try
             {
-                percentageError = percentageError * 0.01m;
-                decimal errorQty = primaryQty * percentageError;
-                decimal maxQty = primaryQty + errorQty;
-                decimal minQty = primaryQty - errorQty;
-
                 if (locatorId == null)
                 {
                     string cmd = @"
@@ -125,18 +55,14 @@ SELECT [STOCK_ID] as ID
   FROM [STOCK_T] s
   WHERE s.ORGANIZATION_ID = @organizationId 
   AND s.SUBINVENTORY_CODE = @subinventoryCode
-  AND s.PRIMARY_AVAILABLE_QTY >= @minQty
-  AND s.PRIMARY_AVAILABLE_QTY <= @maxQty
   AND s.ITEM_NUMBER = @itemNumber
 ";
 
                     var pOrg = SqlParamHelper.GetBigInt("@organizationId", organizationId);
                     var pSub = SqlParamHelper.R.SubinventoryCode("@subinventoryCode", subinventoryCode);
-                    var pMinQty = SqlParamHelper.GetDecimal("@minQty", minQty);
-                    var pMaxQty = SqlParamHelper.GetDecimal("@maxQty", maxQty);
                     var pItemNo = SqlParamHelper.R.ItemNo("@itemNumber", itemNumber);
 
-                    return this.Context.Database.SqlQuery<StockDT>(cmd, pOrg, pSub, pMinQty, pMaxQty, pItemNo).ToList();
+                    return this.Context.Database.SqlQuery<StockDT>(cmd, pOrg, pSub, pItemNo).ToList();
                 }
                 else
                 {
@@ -161,19 +87,15 @@ SELECT [STOCK_ID] as ID
   WHERE s.ORGANIZATION_ID = @organizationId 
   AND s.SUBINVENTORY_CODE = @subinventoryCode 
   AND s.LOCATOR_ID = @locatorId 
-  AND s.PRIMARY_AVAILABLE_QTY >= @minQty
-  AND s.PRIMARY_AVAILABLE_QTY <= @maxQty
   AND s.ITEM_NUMBER = @itemNumber
 ";
 
                     var pOrg = SqlParamHelper.GetBigInt("@organizationId", organizationId);
                     var pSub = SqlParamHelper.R.SubinventoryCode("@subinventoryCode", subinventoryCode);
                     var pLoc = SqlParamHelper.GetBigInt("@locatorId", (long)locatorId);
-                    var pMinQty = SqlParamHelper.GetDecimal("@minQty", minQty);
-                    var pMaxQty = SqlParamHelper.GetDecimal("@maxQty", maxQty);
                     var pItemNo = SqlParamHelper.R.ItemNo("@itemNumber", itemNumber);
 
-                    return this.Context.Database.SqlQuery<StockDT>(cmd, pOrg, pSub, pLoc, pMinQty, pMaxQty, pItemNo).ToList();
+                    return this.Context.Database.SqlQuery<StockDT>(cmd, pOrg, pSub, pLoc, pItemNo).ToList();
                 }
             }
             catch (Exception ex)
@@ -183,44 +105,7 @@ SELECT [STOCK_ID] as ID
             }
         }
 
-        public List<StockMiscellaneousDT> GetStockMiscellaneousTList(string userId, long transactionTypeId)
-        {
-            try
-            {
-                string cmd = @"
-SELECT m.TRANSFER_MISCELLANEOUS_ID AS ID
-      ,m.[STOCK_ID] AS STOCK_ID
-	  ,ROW_NUMBER() OVER(ORDER BY [STOCK_ID]) AS SUB_ID
-      ,h.[SUBINVENTORY_CODE] AS SUBINVENTORY_CODE
-	  ,h.[SEGMENT3] AS SEGMENT3
-      ,m.[ITEM_NUMBER] AS ITEM_NO
-      ,m.[BARCODE] AS BARCODE
-      ,m.[PRIMARY_UOM] AS PRIMARY_UOM_CODE
-      ,m.TRANSFER_PRIMARY_QUANTITY AS PRIMARY_TRANSACTION_QTY
-	  ,m.AFTER_PRIMARY_QUANTITY AS PRIMARY_AVAILABLE_QTY
-      ,m.SECONDARY_UOM AS SECONDARY_UOM_CODE
-      ,m.TRANSFER_SECONDARY_QUANTITY AS SECONDARY_TRANSACTION_QTY
-	  ,m.AFTER_SECONDARY_QUANTITY AS SECONDARY_AVAILABLE_QTY
-      ,[NOTE] AS NOTE
-  FROM TRF_MISCELLANEOUS_HEADER_T h
-  INNER JOIN TRF_MISCELLANEOUS_T m on h.TRANSFER_MISCELLANEOUS_HEADER_ID = m.TRANSFER_MISCELLANEOUS_HEADER_ID 
-  INNER JOIN USER_SUBINVENTORY_T u on h.ORGANIZATION_ID = u.ORGANIZATION_ID AND h.SUBINVENTORY_CODE = u.SUBINVENTORY_CODE
-  WHERE u.UserId = @userId AND h.TRANSACTION_TYPE_ID = @transactionTypeId
-";
-                var pUserId = SqlParamHelper.GetNVarChar("@userId", userId);
-                var pTypeId = SqlParamHelper.GetBigInt("@transactionTypeId", transactionTypeId);
-
-                return this.Context.Database.SqlQuery<StockMiscellaneousDT>(cmd, pUserId, pTypeId).ToList();
-            }
-            catch (Exception ex)
-            {
-                logger.Error(LogUtilities.BuildExceptionMessage(ex));
-                return new List<StockMiscellaneousDT>();
-            }
-        }
-
-
-        public ResultModel CreateDetail(long transactionTypeId, long stockId, decimal mPrimaryQty, string note, string userId, string userName)
+        public ResultModel CreateDetail(long stockId, decimal mQty, string userId, string userName)
         {
             using (var txn = this.Context.Database.BeginTransaction())
             {
@@ -235,16 +120,16 @@ SELECT m.TRANSFER_MISCELLANEOUS_ID AS ID
                     var subinventoryCode = stock.SubinventoryCode;
                     long? locatorId = stock.LocatorId;
 
-                    var header = trfMiscellaneousHeaderTRepository.GetAll().FirstOrDefault(x => x.TransactionTypeId == transactionTypeId &&
+                    var header = trfObsoleteHeaderTRepository.GetAll().FirstOrDefault(x =>
                     x.OrganizationId == organizationId && x.SubinventoryCode == subinventoryCode && x.LocatorId == locatorId && x.NumberStatus == NumberStatus.NotSaved);
 
                     if (header == null)
                     {
-                        //產生header資料
-                        var organization = GetOrganization(organizationId);
+                           //產生header資料
+                           var organization = GetOrganization(organizationId);
                         if (organization == null) throw new Exception("找不到庫存組織資料");
 
-                        var transactionType = GetTransactionType(transactionTypeId);
+                        var transactionType = GetTransactionType(TransactionTypeId.Chp26Out);
                         if (transactionType == null) throw new Exception("找不到庫存交易類別資料");
 
                         string locatorCode = null;
@@ -257,7 +142,7 @@ SELECT m.TRANSFER_MISCELLANEOUS_ID AS ID
                             segment3 = outLocator.Segment3;
                         }
 
-                        header = new TRF_MISCELLANEOUS_HEADER_T()
+                        header = new TRF_OBSOLETE_HEADER_T()
                         {
                             OrgId = organization.OrgUnitId,
                             OrganizationId = organizationId,
@@ -269,7 +154,7 @@ SELECT m.TRANSFER_MISCELLANEOUS_ID AS ID
                             Segment3 = segment3,
                             NumberStatus = NumberStatus.NotSaved,
                             TransactionDate = now,
-                            TransactionTypeId = transactionTypeId,
+                            TransactionTypeId = TransactionTypeId.Chp26Out,
                             TransactionTypeName = transactionType.TransactionTypeName,
                             TransferOrgId = null,
                             TransferOrganizationId = null,
@@ -285,52 +170,42 @@ SELECT m.TRANSFER_MISCELLANEOUS_ID AS ID
                             LastUpdateDate = null
                         };
 
-                        trfMiscellaneousHeaderTRepository.Create(header, true);
+                        trfObsoleteHeaderTRepository.Create(header, true);
                     }
 
-                    var detail = trfMiscellaneousTRepository.GetAll().FirstOrDefault(x =>
-                    x.TransferMiscellaneousHeaderId == header.TransferMiscellaneousHeaderId &&
+                    var detail = trfObsoleteTRepository.GetAll().FirstOrDefault(x =>
+                    x.TransferObsoleteHeaderId == header.TransferObsoleteHeaderId &&
                     x.StockId == stockId);
                     if (detail != null) return new ResultModel(false, "已存在此條碼:" + detail.Barcode + "異動紀錄");
 
+                   
 
                     //處理異動量
-                    mPrimaryQty = Math.Abs(mPrimaryQty); //轉為正數
-                    if (mPrimaryQty > 1) return new ResultModel(false, " 超過最大數量限制1" + stock.PrimaryUomCode);
-
-                    if (transactionTypeId == TransactionTypeId.Chp37Out)
-                    {
-                        mPrimaryQty = -1 * mPrimaryQty;
-                    }
-                    else if (transactionTypeId == TransactionTypeId.Chp37In)
-                    {
-                        //雜收為正數不用處理
-                    }
-                    else
-                    {
-                        throw new Exception("異動型態Id錯誤");
-                    }
+                    mQty = -1 * Math.Abs(mQty);
 
                     //計算異動後的數量
                     decimal aftPryQty = 0; //主單位異動後數量
                     decimal? aftSecQty = null; //次單位異動後數量
+                    decimal mPrimaryQty = 0; //主單位異動量
                     decimal? mSecondaryQty = null; //次單位異動量
                     if (stock.ItemCategory == ItemCategory.Flat)
                     {
-                        aftPryQty = stock.PrimaryAvailableQty + mPrimaryQty;
-                        if (aftPryQty < 0) return new ResultModel(false, "超過庫存數量:" + stock.PrimaryAvailableQty + stock.PrimaryUomCode);
-                        var uomConversionResult = uomConversion.Convert(stock.InventoryItemId, aftPryQty, stock.PrimaryUomCode, stock.SecondaryUomCode); //主單位數量轉次單位數量
+                        mSecondaryQty = mQty;
+                        aftSecQty = (stock.SecondaryAvailableQty == null ? 0 : stock.SecondaryAvailableQty) + mQty;
+                        if (aftSecQty < 0) return new ResultModel(false, "超過庫存數量:" + stock.SecondaryAvailableQty + stock.SecondaryUomCode);
+                        var uomConversionResult = uomConversion.Convert(stock.InventoryItemId, (decimal)aftSecQty, stock.SecondaryUomCode, stock.PrimaryUomCode); //主單位數量轉次單位數量
                         if (!uomConversionResult.Success) throw new Exception(uomConversionResult.Msg);
-                        aftSecQty = uomConversionResult.Data;
+                        aftPryQty = uomConversionResult.Data;
 
-                        //轉換次單位異動量
-                        var uomConversionResult2 = uomConversion.Convert(stock.InventoryItemId, mPrimaryQty, stock.PrimaryUomCode, stock.SecondaryUomCode);
+                        //轉換主單位異動量
+                        var uomConversionResult2 = uomConversion.Convert(stock.InventoryItemId, (decimal)mSecondaryQty, stock.SecondaryUomCode, stock.PrimaryUomCode);
                         if (!uomConversionResult2.Success) throw new Exception(uomConversionResult.Msg);
-                        mSecondaryQty = uomConversionResult2.Data;
+                        mPrimaryQty = uomConversionResult2.Data;
                     }
                     else if (stock.ItemCategory == ItemCategory.Roll)
                     {
-                        aftPryQty = stock.PrimaryAvailableQty + mPrimaryQty;
+                        mPrimaryQty = mQty;
+                        aftPryQty = stock.PrimaryAvailableQty + mQty;
                         if (aftPryQty < 0) return new ResultModel(false, "超過庫存數量:" + stock.PrimaryAvailableQty + stock.PrimaryUomCode);
                         aftSecQty = null;
                         mSecondaryQty = null;
@@ -341,9 +216,9 @@ SELECT m.TRANSFER_MISCELLANEOUS_ID AS ID
                     }
 
                     //產生雜項異動明細
-                    detail = new TRF_MISCELLANEOUS_T()
+                    detail = new TRF_OBSOLETE_T()
                     {
-                        TransferMiscellaneousHeaderId = header.TransferMiscellaneousHeaderId,
+                        TransferObsoleteHeaderId = header.TransferObsoleteHeaderId,
                         InventoryItemId = stock.InventoryItemId,
                         ItemNumber = stock.ItemNumber,
                         ItemDescription = stock.ItemDescription,
@@ -359,7 +234,7 @@ SELECT m.TRANSFER_MISCELLANEOUS_ID AS ID
                         AfterSecondaryQuantity = aftSecQty,
                         LotNumber = stock.LotNumber,
                         LotQuantity = null,
-                        Note = note,
+                        Note = null,
                         CreatedBy = userId,
                         CreatedUserName = userName,
                         CreationDate = now,
@@ -367,7 +242,7 @@ SELECT m.TRANSFER_MISCELLANEOUS_ID AS ID
                         LastUpdateUserName = null,
                         LastUpdateDate = null
                     };
-                    trfMiscellaneousTRepository.Create(detail, true);
+                    trfObsoleteTRepository.Create(detail, true);
 
                     txn.Commit();
                     return new ResultModel(true, "新增明細成功");
@@ -383,38 +258,74 @@ SELECT m.TRANSFER_MISCELLANEOUS_ID AS ID
         }
 
 
+        public List<StockObsoleteDT> GetStockObsoleteTList(string userId)
+        {
+            try
+            {
+                string cmd = @"
+SELECT m.TRANSFER_OBSOLETE_ID AS ID
+      ,m.[STOCK_ID] AS STOCK_ID
+	  ,ROW_NUMBER() OVER(ORDER BY [STOCK_ID]) AS SUB_ID
+      ,h.[SUBINVENTORY_CODE] AS SUBINVENTORY_CODE
+	  ,h.[SEGMENT3] AS SEGMENT3
+      ,m.[ITEM_NUMBER] AS ITEM_NO
+      ,m.[BARCODE] AS BARCODE
+      ,m.[PRIMARY_UOM] AS PRIMARY_UOM_CODE
+      ,m.TRANSFER_PRIMARY_QUANTITY AS PRIMARY_TRANSACTION_QTY
+	  ,m.AFTER_PRIMARY_QUANTITY AS PRIMARY_AVAILABLE_QTY
+      ,m.SECONDARY_UOM AS SECONDARY_UOM_CODE
+      ,m.TRANSFER_SECONDARY_QUANTITY AS SECONDARY_TRANSACTION_QTY
+	  ,m.AFTER_SECONDARY_QUANTITY AS SECONDARY_AVAILABLE_QTY
+      ,[NOTE] AS NOTE
+  FROM TRF_OBSOLETE_HEADER_T h
+  INNER JOIN TRF_OBSOLETE_T m on h.TRANSFER_OBSOLETE_HEADER_ID = m.TRANSFER_OBSOLETE_HEADER_ID 
+  INNER JOIN USER_SUBINVENTORY_T u on h.ORGANIZATION_ID = u.ORGANIZATION_ID AND h.SUBINVENTORY_CODE = u.SUBINVENTORY_CODE
+  WHERE u.UserId = @userId
+";
+                var pUserId = SqlParamHelper.GetNVarChar("@userId", userId);
+
+                return this.Context.Database.SqlQuery<StockObsoleteDT>(cmd, pUserId).ToList();
+            }
+            catch (Exception ex)
+            {
+                logger.Error(LogUtilities.BuildExceptionMessage(ex));
+                return new List<StockObsoleteDT>();
+            }
+        }
+
+
         public ResultModel DelDetailData(List<long> ids)
         {
             using (var txn = this.Context.Database.BeginTransaction())
             {
                 try
                 {
-                    var list = trfMiscellaneousTRepository.GetAll().Where(x => ids.Contains(x.TransferMiscellaneousId)).ToList();
+                    var list = trfObsoleteTRepository.GetAll().Where(x => ids.Contains(x.TransferObsoleteId)).ToList();
                     if (list == null || list.Count == 0) return new ResultModel(false, "找不到明細資料");
                     if (list.Count != ids.Count) throw new Exception("找不到部分明細資料");
 
-                    foreach (TRF_MISCELLANEOUS_T data in list)
+                    foreach (TRF_OBSOLETE_T data in list)
                     {
-                        var headerId = data.TransferMiscellaneousHeaderId;
-                        trfMiscellaneousTRepository.Delete(data, true);
-                        var detailList = trfMiscellaneousTRepository.GetAll().FirstOrDefault(x => x.TransferMiscellaneousHeaderId == headerId);
+                        var headerId = data.TransferObsoleteHeaderId;
+                        trfObsoleteTRepository.Delete(data, true);
+                        var detailList = trfObsoleteTRepository.GetAll().FirstOrDefault(x => x.TransferObsoleteHeaderId == headerId);
                         if (detailList == null)
                         {
-                            var header = trfMiscellaneousHeaderTRepository.GetAll().FirstOrDefault(x => x.TransferMiscellaneousHeaderId == headerId);
+                            var header = trfObsoleteHeaderTRepository.GetAll().FirstOrDefault(x => x.TransferObsoleteHeaderId == headerId);
                             if (header == null) throw new Exception("找不到檔頭資料");
-                            trfMiscellaneousHeaderTRepository.Delete(header);
+                            trfObsoleteHeaderTRepository.Delete(header);
                         }
                     }
-                    trfMiscellaneousHeaderTRepository.SaveChanges();
+                    trfObsoleteHeaderTRepository.SaveChanges();
 
                     txn.Commit();
-                    return new ResultModel(true, "刪除雜項異動明細成功");
+                    return new ResultModel(true, "刪除存貨報廢明細成功");
                 }
                 catch (Exception ex)
                 {
                     logger.Error(LogUtilities.BuildExceptionMessage(ex));
                     txn.Rollback();
-                    return new ResultModel(false, "刪除雜項異動明細失敗:" + ex.Message);
+                    return new ResultModel(false, "刪除存貨報廢明細失敗:" + ex.Message);
                 }
             }
         }
@@ -425,34 +336,34 @@ SELECT m.TRANSFER_MISCELLANEOUS_ID AS ID
             {
                 try
                 {
-                    var list = trfMiscellaneousTRepository.GetAll().Where(x => ids.Contains(x.TransferMiscellaneousId)).ToList();
+                    var list = trfObsoleteTRepository.GetAll().Where(x => ids.Contains(x.TransferObsoleteId)).ToList();
                     if (list == null || list.Count == 0) return new ResultModel(false, "找不到明細資料");
                     if (list.Count != ids.Count) throw new Exception("找不到部分明細資料");
 
                     var now = DateTime.Now;
-                    foreach (TRF_MISCELLANEOUS_T data in list)
+                    foreach (TRF_OBSOLETE_T data in list)
                     {
                         data.Note = note;
                         data.LastUpdateBy = userId;
                         data.LastUpdateUserName = userName;
                         data.LastUpdateDate = now;
-                        trfMiscellaneousTRepository.Update(data);
+                        trfObsoleteTRepository.Update(data);
                     }
 
-                    trfMiscellaneousTRepository.SaveChanges();
+                    trfObsoleteTRepository.SaveChanges();
                     txn.Commit();
-                    return new ResultModel(true, "更新雜項異動備註成功");
+                    return new ResultModel(true, "更新存貨報廢備註成功");
                 }
                 catch (Exception ex)
                 {
                     logger.Error(LogUtilities.BuildExceptionMessage(ex));
                     txn.Rollback();
-                    return new ResultModel(false, "更新雜項異動備註失敗:" + ex.Message);
+                    return new ResultModel(false, "更新存貨報廢備註失敗:" + ex.Message);
                 }
             }
         }
 
-        public ResultModel SaveTransactionDetail(long transactionTypeId, string userId, string userName)
+        public ResultModel SaveTransactionDetail(string userId, string userName)
         {
             using (var txn = this.Context.Database.BeginTransaction())
             {
@@ -460,14 +371,13 @@ SELECT m.TRANSFER_MISCELLANEOUS_ID AS ID
                 {
                     var now = DateTime.Now;
 
-                    var headerIdList = trfMiscellaneousHeaderTRepository.GetAll().AsNoTracking().Join(
-                        trfMiscellaneousTRepository.GetAll().AsNoTracking(),
-                        h => new { h.TransferMiscellaneousHeaderId },
-                        d => new { d.TransferMiscellaneousHeaderId },
+                    var headerIdList = trfObsoleteHeaderTRepository.GetAll().AsNoTracking().Join(
+                        trfObsoleteTRepository.GetAll().AsNoTracking(),
+                        h => new { h.TransferObsoleteHeaderId },
+                        d => new { d.TransferObsoleteHeaderId },
                         (h, d) => new
                         {
-                            HeaderId = h.TransferMiscellaneousHeaderId,
-                            TransactionTypeId = h.TransactionTypeId,
+                            HeaderId = h.TransferObsoleteHeaderId,
                             OrganizationId = h.OrganizationId,
                             SubinventoryCode = h.SubinventoryCode
                         })
@@ -478,10 +388,9 @@ SELECT m.TRANSFER_MISCELLANEOUS_ID AS ID
                 (h, u) => new
                 {
                     HeaderId = h.HeaderId,
-                    TransactionTypeId = h.TransactionTypeId,
                     UserId = u.UserId
                 })
-                .Where(x => x.UserId == userId && x.TransactionTypeId == transactionTypeId)
+                .Where(x => x.UserId == userId)
                 .GroupBy(x => new { x.HeaderId })
                 .Select(x => x.Key.HeaderId).ToList();
 
@@ -489,16 +398,16 @@ SELECT m.TRANSFER_MISCELLANEOUS_ID AS ID
 
                     foreach (long headerId in headerIdList)
                     {
-                        var header = trfMiscellaneousHeaderTRepository.GetAll().FirstOrDefault(x => x.TransferMiscellaneousHeaderId == headerId);
+                        var header = trfObsoleteHeaderTRepository.GetAll().FirstOrDefault(x => x.TransferObsoleteHeaderId == headerId);
                         if (header == null) throw new Exception("找不到檔頭資料");
                         header.NumberStatus = NumberStatus.Saved;
                         header.TransactionDate = now;
                         header.LastUpdateBy = userId;
                         header.LastUpdateDate = now;
                         header.LastUpdateUserName = userName;
-                        trfMiscellaneousHeaderTRepository.Update(header);
+                        trfObsoleteHeaderTRepository.Update(header);
 
-                        var detailList = trfMiscellaneousTRepository.GetAll().Where(x => x.TransferMiscellaneousHeaderId == header.TransferMiscellaneousHeaderId).ToList();
+                        var detailList = trfObsoleteTRepository.GetAll().Where(x => x.TransferObsoleteHeaderId == header.TransferObsoleteHeaderId).ToList();
                         if (detailList == null || detailList.Count == 0) throw new Exception("找不到明細資料");
 
                         foreach (var detail in detailList)
@@ -511,23 +420,23 @@ SELECT m.TRANSFER_MISCELLANEOUS_ID AS ID
                             stock.LastUpdateBy = userId;
                             stock.LastUpdateDate = now;
                             stockTRepository.Update(stock);
-                            
+
                             //產生異動紀錄
                             var stkTxnT = CreateStockRecord(stock, null, null, null,
-                            null, CategoryCode.Miscellaneous, ActionCode.StockTransfer, header.ShipmentNumber,
-                            detail.OriginalPrimaryQuantity,detail.TransferPrimaryQuantity, detail.AfterPrimaryQuantity, detail.OriginalSecondaryQuantity, 
+                            null, CategoryCode.Obsolete, ActionCode.StockTransfer, header.ShipmentNumber,
+                            detail.OriginalPrimaryQuantity, detail.TransferPrimaryQuantity, detail.AfterPrimaryQuantity, detail.OriginalSecondaryQuantity,
                             detail.TransferSecondaryQuantity, detail.AfterSecondaryQuantity, StockStatusCode.InStock, userId, now);
                             stkTxnTRepository.Create(stkTxnT);
                         }
 
-                      
+
 
                         //複製明細資料到歷史明細
                         string cmd = @"
-INSERT INTO [TRF_MISCELLANEOUS_HT]
+INSERT INTO [TRF_OBSOLETE_HT]
 (
-	[TRANSFER_MISCELLANEOUS_ID]
-      ,[TRANSFER_MISCELLANEOUS_HEADER_ID]
+	[TRANSFER_OBSOLETE_ID]
+      ,[TRANSFER_OBSOLETE_HEADER_ID]
       ,[INVENTORY_ITEM_ID]
       ,[ITEM_NUMBER]
       ,[ITEM_DESCRIPTION]
@@ -551,8 +460,8 @@ INSERT INTO [TRF_MISCELLANEOUS_HT]
       ,[LAST_UPDATE_USER_NAME]
       ,[LAST_UPDATE_DATE]
 )
-SELECT [TRANSFER_MISCELLANEOUS_ID]
-      ,[TRANSFER_MISCELLANEOUS_HEADER_ID]
+SELECT [TRANSFER_OBSOLETE_ID]
+      ,[TRANSFER_OBSOLETE_HEADER_ID]
       ,[INVENTORY_ITEM_ID]
       ,[ITEM_NUMBER]
       ,[ITEM_DESCRIPTION]
@@ -575,42 +484,44 @@ SELECT [TRANSFER_MISCELLANEOUS_ID]
       ,[LAST_UPDATE_BY]
       ,[LAST_UPDATE_USER_NAME]
       ,[LAST_UPDATE_DATE]
-  FROM [TRF_MISCELLANEOUS_T]
-  WHERE [TRANSFER_MISCELLANEOUS_HEADER_ID] = @TRANSFER_MISCELLANEOUS_HEADER_ID";
-                        if (this.Context.Database.ExecuteSqlCommand(cmd, new SqlParameter("@TRANSFER_MISCELLANEOUS_HEADER_ID", header.TransferMiscellaneousHeaderId)) <= 0)
+  FROM [TRF_OBSOLETE_T]
+  WHERE [TRANSFER_OBSOLETE_HEADER_ID] = @TRANSFER_OBSOLETE_HEADER_ID";
+                        if (this.Context.Database.ExecuteSqlCommand(cmd, new SqlParameter("@TRANSFER_OBSOLETE_HEADER_ID", header.TransferObsoleteHeaderId)) <= 0)
                         {
-                            throw new Exception("複製雜項異動明細資料到雜項異動歷史明細失敗");
+                            throw new Exception("複製存貨報廢明細資料到存貨報廢歷史明細失敗");
                         }
 
                         //刪除明細資料
                         cmd = @"
-  DELETE FROM [TRF_MISCELLANEOUS_T]
-  WHERE [TRANSFER_MISCELLANEOUS_HEADER_ID] = @TRANSFER_MISCELLANEOUS_HEADER_ID";
-                        if (this.Context.Database.ExecuteSqlCommand(cmd, new SqlParameter("@TRANSFER_MISCELLANEOUS_HEADER_ID", header.TransferMiscellaneousHeaderId)) <= 0)
+  DELETE FROM [TRF_OBSOLETE_T]
+  WHERE [TRANSFER_OBSOLETE_HEADER_ID] = @TRANSFER_OBSOLETE_HEADER_ID";
+                        if (this.Context.Database.ExecuteSqlCommand(cmd, new SqlParameter("@TRANSFER_OBSOLETE_HEADER_ID", header.TransferObsoleteHeaderId)) <= 0)
                         {
-                            throw new Exception("刪除雜項異動明細資料失敗");
+                            throw new Exception("刪除存貨報廢明細資料失敗");
                         }
                     }
 
-                    trfMiscellaneousHeaderTRepository.SaveChanges();
-                    stockTRepository.SaveChanges();
-                    stkTxnTRepository.SaveChanges();
-
+                    //trfObsoleteHeaderTRepository.SaveChanges();
+                    //stockTRepository.SaveChanges();
+                    //stkTxnTRepository.SaveChanges();
+                    this.SaveChanges();
                     txn.Commit();
 
-                    return new ResultModel(true, "雜項異動存檔成功");
+                    return new ResultModel(true, "存貨報廢存檔成功");
 
                 }
                 catch (Exception ex)
                 {
                     logger.Error(LogUtilities.BuildExceptionMessage(ex));
                     txn.Rollback();
-                    return new ResultModel(false, "雜項異動存檔失敗:" + ex.Message);
+                    return new ResultModel(false, "存貨報廢存檔失敗:" + ex.Message);
                 }
 
 
 
             }
         }
+
+
     }
 }
