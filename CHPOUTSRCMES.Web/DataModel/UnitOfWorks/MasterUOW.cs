@@ -128,7 +128,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             this.stkTxnTRepository = new GenericRepository<STK_TXN_T>(this);
             this.appUserRepository = new GenericRepository<AppUser>(this);
             this.userSubinventoryTRepository = new GenericRepository<USER_SUBINVENTORY_T>(this);
-            this.uomConversion = new UomConversion();
+            this.uomConversion = new FakeUomConversion(); //待改回UomConversion
         }
 
 

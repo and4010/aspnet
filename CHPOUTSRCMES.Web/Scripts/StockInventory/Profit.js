@@ -73,7 +73,7 @@ function ProfitTopInit() {
 
     $('#ddlSubinventory').change(function () {
 
-        var SUBINVENTORY_CODE = $("#ddlSubinventory").val();
+        var SUBINVENTORY_CODE = $("#ddlSubinventory option:selected").text();
         $.ajax({
             url: "/StockTransaction/GetLocatorListForUserId",
             type: "post",
@@ -539,15 +539,54 @@ function ProfitLoadProfitDetailDT() {
                         })
                     }
                 },
-            {
-                text: '<span class="glyphicon glyphicon-print"></span>&nbsp列印標籤',
-                //className: 'btn-default btn-sm',
-                action: function (e) {
-                    PrintLable(ProfitDetailDT, "/Home/GetLabels3", "5");
+                {
+                    text: '<span class="glyphicon glyphicon-print"></span>&nbsp列印標籤',
+                    //className: 'btn-default btn-sm',
+                    action: function (e) {
+                        var data = ProfitDetailDT.rows('.selected').data();
+                        if (data.length == 0) {
+                            return false;
+                        }
+                        PrintLable(ProfitDetailDT, "/StockInventory/PrintProfitLabel", "13");
+                        
+                        //var transferPickedIdList = [];
+                        //for (var i = 0; i < data.length; i++) {
+                        //    transferPickedIdList.push(data[i].ID);
+                        //}
+                        //PrintLable(ProfitDetailDT, "/StockTransaction/PrintInboundLabel", "12");
+                        //if (barcode.length > 0) {
+                        //    swal.fire({
+                        //        title: "注意",
+                        //        html: "以下為併板後的條碼，請更換庫存棧板上的舊條碼。<br>" + barcode.join('<br>'),
+                        //        type: "warning",
+                        //        confirmButtonColor: "#DD6B55",
+                        //        confirmButtonText: "確定",
+                        //    }).then(function (result) {
+                        //        if (result.value) {
+                        //            PrintLable(ProfitDetailDT, "/StockTransaction/PrintInboundLabel", "12");
+                        //        }
+                        //    });
+                        //} else {
+                        //    printInboundLabel(transferPickedIdList)
+                        //}
+                    },
+                    className: "btn-primary",
+                    //enabled: false,
+                    init: function (api, node, config) {
+                        $(node).removeClass('btn-default')
+                    }
                 },
-                className: "btn-primary"
-            }
-                ,
+
+
+            //{
+            //    text: '<span class="glyphicon glyphicon-print"></span>&nbsp列印標籤',
+            //    //className: 'btn-default btn-sm',
+            //    action: function (e) {
+            //        PrintLable(ProfitDetailDT, "/Home/GetLabels3", "5");
+            //    },
+            //    className: "btn-primary"
+            //}
+            //    ,
 
                 {
                     text: '編輯備註',
@@ -658,7 +697,8 @@ function ProfitLoadProfitDetailDT() {
                  }
              },
              { data: "SECONDARY_UOM_CODE", name: "次要單位", autoWidth: true },
-             { data: "NOTE", name: "備註", autoWidth: true },
+            { data: "NOTE", name: "備註", autoWidth: true },
+            { data: "ID", name: "TRANSFER_INVENTORY_ID", autoWidth: true, visible: false  },
              //{ data: "LAST_UPDATE_DATE", name: "更新日期", autoWidth: true, visible: false }
         ],
         order: [[1, 'desc']]

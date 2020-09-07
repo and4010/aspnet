@@ -111,6 +111,12 @@ namespace CHPOUTSRCMES.Web.Models.Stock
             }
         }
 
+        public ActionResult PrintProfitLabel(StockInventoryUOW uow, List<long> trfInventoryIdList, string userName)
+        {
+            var resultData = uow.GetProfitLabels(trfInventoryIdList, userName);
+            return uow.PrintLable(resultData.Data);
+        }
+
         #region 舊
 
         public List<StockInventoryDT> GetProfitModel()

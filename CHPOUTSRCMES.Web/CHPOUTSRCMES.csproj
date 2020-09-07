@@ -392,15 +392,6 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Jsons\Requests\AutoCompletedItem.cs" />
-    <Compile Include="Migrations\202009040355264_add_table_CTR_SOA_T.cs" />
-    <Compile Include="Migrations\202009040355264_add_table_CTR_SOA_T.Designer.cs">
-      <DependentUpon>202009040355264_add_table_CTR_SOA_T.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202009041034406_addfewTables.cs" />
-    <Compile Include="Migrations\202009041034406_addfewTables.Designer.cs">
-      <DependentUpon>202009041034406_addfewTables.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Delivery\bDeliveryDetail.cs" />
     <Compile Include="Models\Delivery\DeliveryDetail.cs" />
     <Compile Include="Models\Delivery\DeliveryHeader.cs" />
@@ -2105,14 +2096,6 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Migrations\202009040355264_add_table_CTR_SOA_T.resx">
-      <DependentUpon>202009040355264_add_table_CTR_SOA_T.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202009041034406_addfewTables.resx">
-      <DependentUpon>202009041034406_addfewTables.cs</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

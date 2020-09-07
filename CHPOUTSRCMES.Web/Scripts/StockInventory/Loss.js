@@ -74,7 +74,7 @@ function LossTopInit() {
 
     $('#ddlSubinventory').change(function () {
 
-        var SUBINVENTORY_CODE = $("#ddlSubinventory").val();
+        var SUBINVENTORY_CODE = $("#ddlSubinventory option:selected").text();
         $.ajax({
             url: "/StockTransaction/GetLocatorListForUserId",
             type: "post",
@@ -492,35 +492,48 @@ function LossLoadLossDetailDT() {
             }
                 ,
                 {
-                    extend: "remove",
+                    //extend: "remove",
                     text: '刪除',
-                    name: 'remove',
+                    //name: 'remove',
                     className: 'btn-danger',
-                    editor: editor,
+                    //editor: editor,
                     init: function (api, node, config) {
                         $(node).removeClass('btn-default')
                     },
                     action: function (e, dt, node, config) {
-                        var rows = LossDetailDT.rows({ selected: true }).indexes();
+                        var count = dt.rows({ selected: true }).count();
 
-                        if (rows.length === 0) {
+                        if (count == 0) {
                             return;
                         }
 
-                        editor.remove(rows, {
-                            title: '刪除',
-                            message: rows.length === 1 ?
+                        editor.remove(LossDetailDT.rows({ selected: true }).indexes())
+                            .title('刪除')
+                            .message(count === 1 ?
                                 '你確定要刪除這筆資料?' :
-                                '你確定要刪除這些資料?',
-                            buttons:
-                            {
+                                '你確定要刪除這些資料?')
+                            .buttons({
                                 text: '刪除',
-                                className: 'btn-danger',
                                 action: function () {
                                     this.submit();
-                                }
-                            }
-                        })
+                                },
+                                className: 'btn-danger'
+                            });
+
+                        //editor.remove(rows, {
+                        //    title: '刪除',
+                        //    message: rows.length === 1 ?
+                        //        '你確定要刪除這筆資料?' :
+                        //        '你確定要刪除這些資料?',
+                        //    buttons:
+                        //    {
+                        //        text: '刪除',
+                        //        className: 'btn-danger',
+                        //        action: function () {
+                        //            this.submit();
+                        //        }
+                        //    }
+                        //});
                     }
                 },
                 {
