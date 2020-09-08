@@ -28,6 +28,18 @@ namespace CHPOUTSRCMES.TASK.Models.Repository.MsSql
 
         #endregion
 
+        public async Task<List<long>> GetUploadList(IDbTransaction transaction = null)
+        {
+            return (await Connection.QueryAsync<long>(
+$@"
+SELECT H.TRIP_ID FROM DLV_HEADER_T H
+LEFT JOIN DLV_SOA_T S ON S.TRIP_ID = H.TRIP_ID
+WHERE S.TRIP_ID IS NULL 
+GROUP BY H.TRIP_ID
+HAVING MIN(H.DELIVERY_STATUS_CODE) = 'DH5'
+", transaction: transaction)).ToList();
+        }
+
         #region IDispose Region
         private bool disposed = false;
 

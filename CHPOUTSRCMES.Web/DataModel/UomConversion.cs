@@ -44,10 +44,13 @@ namespace CHPOUTSRCMES.Web.DataModel
                 parameters.Add(":TO_UOM", toUom);
                 parameters.Add(":ROUND", round);
 
-
-                var data = connection.Query<decimal>(
-                    "SELECT ROUND(YFY_DIS_PKG_UTIL.UOM_CONVERSION(:ITEM_ID, :FROM_QTY, :FROM_UOM, :TO_UOM), :ROUND) QUANTITY FROM DUAL", parameters
-                    ).SingleOrDefault();
+                string cmd =
+#if DEBUG
+                    "SELECT ROUND(TPMC_ADMIN.UOM_CONVERSION(:ITEM_ID, :FROM_QTY, :FROM_UOM, :TO_UOM), :ROUND) QUANTITY FROM DUAL";
+#else
+                    "SELECT ROUND(YFY_DIS_PKG_UTIL.UOM_CONVERSION(:ITEM_ID, :FROM_QTY, :FROM_UOM, :TO_UOM), :ROUND) QUANTITY FROM DUAL";
+#endif
+                var data = connection.Query<decimal>(cmd, parameters).SingleOrDefault();
 
                 model.Data = data;
                 model.Success = true;

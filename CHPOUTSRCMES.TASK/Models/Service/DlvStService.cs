@@ -127,8 +127,36 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                     token.ThrowIfCancellationRequested();
                 }
 
-                using var ctrStUow = new CtrStUOW(new SqlConnection(MesConnStr));
+                using var sqlConn = new SqlConnection(MesConnStr);
+                using var dlvStUow = new DlvStUOW(sqlConn);
+                var list = await dlvStUow.GetTripList();
+                if (list == null || list.Count() == 0)
+                {
+                    LogInfo($"[{tasker.Name}]-{tasker.Unit}-ExportDlvStRv-無可轉出資料");
+                    return;
+                }
 
+                for (int i = 0; i < list.Count(); i++)
+                {
+                    using var transaction = sqlConn.BeginTransaction();
+                    try
+                    {
+                        var model = await dlvStUow.DeliveryStUpload(list[i], transaction);
+                        LogInfo($"[{tasker.Name}]-{tasker.Unit}-ExportDlvStRv (TRIP_ID:{list[i]})-{model}");
+
+                        if (!model.Success)
+                        {
+                            throw new Exception(model.Msg);
+                        }
+                        transaction.Commit();
+
+                    }
+                    catch (Exception ex)
+                    {
+                        LogError($"[{tasker.Name}]-{tasker.Unit}-ExportDlvStRv-錯誤-{ex.Message}-{ex.StackTrace}");
+                        transaction.Rollback();
+                    }
+                }
 
             }
             catch (OperationCanceledException)

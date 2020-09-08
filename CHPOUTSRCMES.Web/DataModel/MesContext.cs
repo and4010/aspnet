@@ -253,6 +253,10 @@ namespace CHPOUTSRCMES.Web.DataModel
         /// 出貨歷史揀貨
         /// </summary>
         public DbSet<DLV_PICKED_HT> DLV_PICKED_HTs { set; get; }
+        /// <summary>
+        /// 出庫SOA
+        /// </summary>
+        public DbSet<DLV_SOA_T> DLV_SOA_Ts { set; get; }
 
         #endregion 出貨
 

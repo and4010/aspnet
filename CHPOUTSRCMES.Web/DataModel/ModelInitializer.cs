@@ -57,7 +57,7 @@ namespace CHPOUTSRCMES.Web.DataModel
                                .BaseDirectory
                                .Replace("\\bin", string.Empty) + "Data\\Excel";
 
-            string initialFile = baseDir + "\\ERP_20200807.xlsx";
+            string initialFile = baseDir + "\\MES_20200903.xlsx";
 
             if (!string.IsNullOrEmpty(initialFile) && File.Exists(initialFile))
             {

@@ -1,12 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
 using CHPOUTSRCMES.Web.DataModel;
+using CHPOUTSRCMES.Web.DataModel.UnitOfWorks;
 using NLog;
+using NPOI.HSSF.UserModel;
+using NPOI.SS.UserModel;
+using NPOI.XSSF.UserModel;
 
 namespace CHPOUTSRCMES.Web
 {
@@ -22,15 +27,10 @@ namespace CHPOUTSRCMES.Web
 
             using (MesContext mesContext = new MesContext())
             {
+                //readFromXls(mesContext);
             }
-
-            using (UomConversion uomConversion = new UomConversion())
-            {
-                var model = uomConversion.Convert(1, 1, "KG", "MT");
-                logger.Info(model.ToString());
-            }
-
-                logger.Info("Info");
+            
+            logger.Info("Info");
             logger.Warn("Warn");
             logger.Debug("Debug");
             logger.Error("Error");
@@ -62,6 +62,35 @@ namespace CHPOUTSRCMES.Web
             IController errorsController = new CHPOUTSRCMES.Web.Controllers.ErrorsController();
             var rc = new RequestContext(new HttpContextWrapper(Context), routeData);
             errorsController.Execute(rc);
+        }
+
+        internal static void readFromXls(MesContext context)
+        {
+            var baseDir = AppDomain.CurrentDomain
+                               .BaseDirectory
+                               .Replace("\\bin", string.Empty) + "Data\\Excel";
+
+            string initialFile = baseDir + "\\MES_20200903.xlsx";
+
+            if (!string.IsNullOrEmpty(initialFile) && File.Exists(initialFile))
+            {
+                using (FileStream fs = new FileStream(initialFile, FileMode.Open))
+                {
+                    IWorkbook workbook = null;
+                    if (fs.Length > 0 && initialFile.Substring(initialFile.LastIndexOf(".")).Equals(".xls"))
+                    {
+                        //把xls文件中的数据写入wk中
+                        workbook = new HSSFWorkbook(fs);
+                    }
+                    else
+                    {
+                        //把xlsx文件中的数据写入wk中
+                        workbook = new XSSFWorkbook(fs);
+                    }
+
+                    new IdentityUOW(context).ImportUserMisc(workbook);
+                }
+            }
         }
     }
 }

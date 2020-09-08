@@ -196,7 +196,7 @@ namespace CHPOUTSRCMES.Web.Migrations
                         LAST_UPDATE_DATE = c.DateTime(),
                     })
                 .PrimaryKey(t => t.TRANSFER_OBSOLETE_ID);
-            
+
         }
         
         public override void Down()

@@ -530,54 +530,57 @@ and d.ITEM_CATEGORY = N'捲筒'");
 
             for (int i = 0; i < header.Count; i++)
             {
-                if (header[i].Status == Int64.Parse(PurchaseStatusCode.PurchaseHeaderPending))
+                string headerStatus = header[i].Status.ToString();
+                switch(headerStatus)
                 {
-                    fullCalendarEventModel.Add(new FullCalendarEventModel()
-                    {
-                        id = header[i].CtrHeaderId,
-                        title = header[i].Subinventory + "\n" + header[i].ContainerNo + " 待入庫",
-                        start = ConvertDateTime.ConverYYYY(header[i].MvContainerDate),
-                        end = ConvertDateTime.ConverYYYY(header[i].MvContainerDate),
-                        allDay = false,
-                        url = objUrlHelper.Action("Detail", "Purchase", new
+                    case PurchaseStatusCode.PurchaseHeaderPending:
+                        fullCalendarEventModel.Add(new FullCalendarEventModel()
                         {
-                            CtrHeaderId = header[i].CtrHeaderId
-                        }),
-                        Status = header[i].Status
-                    });
-                }
-                if (header[i].Status == Int64.Parse(PurchaseStatusCode.PurchaseHeaderCancel))
-                {
-                    fullCalendarEventModel.Add(new FullCalendarEventModel()
-                    {
-                        id = header[i].CtrHeaderId,
-                        title = header[i].Subinventory + "\n" + header[i].ContainerNo + "取消",
-                        start = ConvertDateTime.ConverYYYY(header[i].MvContainerDate),
-                        end = ConvertDateTime.ConverYYYY(header[i].MvContainerDate),
-                        allDay = false,
-                        url = "",
-                        Status = header[i].Status,
-                        color = "#E60000"
-                    });
-                }
-                if (header[i].Status == Int64.Parse(PurchaseStatusCode.PurchaseHeaderAlready))
-                {
-                    fullCalendarEventModel.Add(new FullCalendarEventModel()
-                    {
-                        id = header[i].CtrHeaderId,
-                        title = header[i].Subinventory + "\n" + header[i].ContainerNo + "已入庫",
-                        start = ConvertDateTime.ConverYYYY(header[i].MvContainerDate),
-                        end = ConvertDateTime.ConverYYYY(header[i].MvContainerDate),
-                        allDay = false,
-                        url = objUrlHelper.Action("Detail", "Purchase", new
+                            id = header[i].CtrHeaderId,
+                            title = header[i].Subinventory + "\n" + header[i].ContainerNo + " 待入庫",
+                            start = ConvertDateTime.ConverYYYY(header[i].MvContainerDate),
+                            end = ConvertDateTime.ConverYYYY(header[i].MvContainerDate),
+                            allDay = false,
+                            url = objUrlHelper.Action("Detail", "Purchase", new
+                            {
+                                CtrHeaderId = header[i].CtrHeaderId
+                            }),
+                            Status = header[i].Status
+                        });
+                        break;
+                    case PurchaseStatusCode.PurchaseHeaderCancel:
+                        fullCalendarEventModel.Add(new FullCalendarEventModel()
                         {
-                            CtrHeaderId = header[i].CtrHeaderId
-                        }),
-                        Status = header[i].Status,
-                    });
+                            id = header[i].CtrHeaderId,
+                            title = header[i].Subinventory + "\n" + header[i].ContainerNo + "取消",
+                            start = ConvertDateTime.ConverYYYY(header[i].MvContainerDate),
+                            end = ConvertDateTime.ConverYYYY(header[i].MvContainerDate),
+                            allDay = false,
+                            url = "",
+                            Status = header[i].Status,
+                            color = "#E60000"
+                        });
+                        break;
+                    case PurchaseStatusCode.PurchaseHeaderAlready:
+                        fullCalendarEventModel.Add(new FullCalendarEventModel()
+                        {
+                            id = header[i].CtrHeaderId,
+                            title = header[i].Subinventory + "\n" + header[i].ContainerNo + "已入庫",
+                            start = ConvertDateTime.ConverYYYY(header[i].MvContainerDate),
+                            end = ConvertDateTime.ConverYYYY(header[i].MvContainerDate),
+                            allDay = false,
+                            url = objUrlHelper.Action("Detail", "Purchase", new
+                            {
+                                CtrHeaderId = header[i].CtrHeaderId
+                            }),
+                            Status = header[i].Status,
+                        });
+                        break;
+                    default:
+                        break;
                 }
-
             }
+
             return fullCalendarEventModel;
         }
 
@@ -1376,7 +1379,7 @@ P.INVENTORY_ITEM_ID,P.SHIP_ITEM_NUMBER,IT.ITEM_DESC_TCH,P.ITEM_CATEGORY,P.PAPER_
 P.BASIC_WEIGHT,ISNULL(P.REAM_WEIGHT, '') ,P.ROLL_REAM_WT,P.SPECIFICATION,P.PACKING_TYPE,
 '',P.LOT_NUMBER,P.BARCODE,P.PRIMARY_UOM,P.PRIMARY_QUANTITY,
 P.PRIMARY_QUANTITY,0,P.SECONDARY_UOM,P.SECONDARY_QUANTITY,P.SECONDARY_QUANTITY,
-0,P.REASON_CODE,P.REASON_DESC,P.NOTE,P.STATUS,
+0,P.REASON_CODE,P.REASON_DESC,P.NOTE,@STATUS_CODE,
 P.CREATED_BY,GETDATE(),null,null
 FROM CTR_PICKED_T P
 left join CTR_HEADER_T H on H.CTR_HEADER_ID = P.CTR_HEADER_ID
@@ -1391,7 +1394,9 @@ JOIN CTR_DETAIL_T D on D.CTR_DETAIL_ID = P.CTR_DETAIL_ID
 JOIN CTR_HEADER_T H on H.CTR_HEADER_ID = P.CTR_HEADER_ID
 WHERE P.CTR_HEADER_ID = @CTR_HEADER_ID
 ");
-            Context.Database.ExecuteSqlCommand(query.ToString(), new SqlParameter("@CTR_HEADER_ID", CTR_HEADER_ID));
+            Context.Database.ExecuteSqlCommand(query.ToString()
+                , new SqlParameter("@CTR_HEADER_ID", CTR_HEADER_ID)
+                , new SqlParameter("@STATUS_CODE", StockStatusCode.InStock));
         }
 
 

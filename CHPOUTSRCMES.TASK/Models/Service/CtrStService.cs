@@ -252,6 +252,7 @@ namespace CHPOUTSRCMES.TASK.Models.Service
 
             }
         }
+        
         /// <summary>
         /// SOA進櫃入庫 資料上傳
         /// </summary>
@@ -273,7 +274,7 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                 var list = await ctrStUow.GetHeaderListForUpload();
                 if (list == null || list.Count() == 0)
                 {
-                    LogInfo($"[{tasker.Name}]-{tasker.Unit}-ExportCtrStRv-無可轉入資料");
+                    LogInfo($"[{tasker.Name}]-{tasker.Unit}-ExportCtrStRv-無可轉出資料");
                     return;
                 }
 
@@ -282,11 +283,15 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                     using var transaction = sqlConn.BeginTransaction();
                     try
                     {
-
-
-
+                        var model = await ctrStUow.ContainerStUpload(list[i].CTR_HEADER_ID, transaction);
+                        LogInfo($"[{tasker.Name}]-{tasker.Unit}-ExportCtrStRv (CTR_HEADER_ID:{list[i].CTR_HEADER_ID})-{model}");
+                        
+                        if (!model.Success)
+                        {
+                            throw new Exception(model.Msg);
+                        }
                         transaction.Commit();
-
+                        
                     }
                     catch (Exception ex)
                     {

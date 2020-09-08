@@ -1222,7 +1222,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                     PrimaryUomCode = "KG",
                     SecondaryTransactionQty = null,
                     SecondaryAvailableQty = null,
-                    SecondaryUomCode = "",
+                    SecondaryUomCode = null,
                     Note = "",
                     CreatedBy = "1",
                     CreationDate = DateTime.Now,
@@ -1261,7 +1261,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                     PrimaryUomCode = "KG",
                     SecondaryTransactionQty = null,
                     SecondaryAvailableQty = null,
-                    SecondaryUomCode = "",
+                    SecondaryUomCode = null,
                     Note = "",
                     CreatedBy = "1",
                     CreationDate = DateTime.Now,
@@ -1578,9 +1578,6 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
 
         #endregion
 
-        
-
-
         #region 條碼
 
         /// <summary>
@@ -1704,10 +1701,6 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             return subinventoryList;
         }
 
-
-
-
-
         /// <summary>
         /// 取得儲位下拉式選單內容
         /// </summary>
@@ -1747,6 +1740,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             reasonList.AddRange(getReasonList());
             return reasonList;
         }
+        
         /// <summary>
         /// 取得原因SelectListItem
         /// </summary>

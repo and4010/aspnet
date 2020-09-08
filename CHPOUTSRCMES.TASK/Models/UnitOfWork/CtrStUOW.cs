@@ -163,9 +163,33 @@ namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
             return resultModel;
         }
 
-        public async Task<ResultModel> ContainerStUpload()
+        public async Task<ResultModel> ContainerStUpload(long ctrHeaderId, IDbTransaction transaction = null)
         {
-            return new ResultModel(false, "");
+            var resultModel = new ResultModel();
+
+            try
+            {
+                var p = new DynamicParameters();
+                p.Add(name: "@ctrHeaderId", value: ctrHeaderId, dbType: DbType.Int64, direction: ParameterDirection.Input, size: 20);
+                p.Add(name: "@code", dbType: DbType.Int32, direction: ParameterDirection.Output);
+                p.Add(name: "@message", dbType: DbType.String, direction: ParameterDirection.Output, size: 500);
+                p.Add(name: "@user", value: "SYS", dbType: DbType.String, direction: ParameterDirection.Input, size: 128);
+
+                Context.Execute(sql: "SP_P218_CtrStUpload", param: p, transaction: transaction, commandType: CommandType.StoredProcedure);
+                resultModel = new ResultModel(p.Get<int>("@code"), p.Get<string>("@message"));
+
+                if (!resultModel.Success)
+                {
+                    return resultModel;
+                }
+            }
+            catch (Exception ex)
+            {
+                resultModel.Code = -99;
+                resultModel.Success = false;
+                resultModel.Msg = ex.Message;
+            }
+            return resultModel;
         }
     }
 }

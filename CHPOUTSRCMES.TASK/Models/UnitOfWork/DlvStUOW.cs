@@ -39,6 +39,11 @@ namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
             return (await DlvHeaderRepository.GetAsync(headerId, transaction));
         }
 
+        public async Task<List<long>> GetTripList(IDbTransaction transaction = null)
+        {
+            return (await DlvHeaderRepository.GetUploadList(transaction));
+        }
+
         public async Task<ResultModel> DeliveryStReceive(XXIF_CHP_CONTROL_ST controlStage, IDbTransaction transaction = null)
         {
             var resultModel = new ResultModel();
@@ -67,6 +72,36 @@ namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
                 resultModel.Success = false;
                 resultModel.Msg = ex.Message;
             }
+            return resultModel;
+        }
+
+        public async Task<ResultModel> DeliveryStUpload(long TripId, IDbTransaction transaction = null)
+        {
+            var resultModel = new ResultModel();
+
+            try
+            {
+                var p = new DynamicParameters();
+                p.Add(name: "@tripId", value: TripId, dbType: DbType.Int64, direction: ParameterDirection.Input, size: 20);
+                p.Add(name: "@code", dbType: DbType.Int32, direction: ParameterDirection.Output);
+                p.Add(name: "@message", dbType: DbType.String, direction: ParameterDirection.Output, size: 500);
+                p.Add(name: "@user", value: "SYS", dbType: DbType.String, direction: ParameterDirection.Input, size: 128);
+
+                Context.Execute(sql: "SP_P221_DlvStUpload", param: p, transaction: transaction, commandType: CommandType.StoredProcedure);
+                resultModel = new ResultModel(p.Get<int>("@code"), p.Get<string>("@message"));
+
+                if (!resultModel.Success)
+                {
+                    return resultModel;
+                }
+            }
+            catch (Exception ex)
+            {
+                resultModel.Code = -99;
+                resultModel.Success = false;
+                resultModel.Msg = ex.Message;
+            }
+
             return resultModel;
         }
 

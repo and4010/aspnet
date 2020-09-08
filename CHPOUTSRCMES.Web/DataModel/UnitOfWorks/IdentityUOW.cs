@@ -62,6 +62,33 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
 
 
         #region 測試資料產生
+
+        public void ImportUserMisc(IWorkbook book)
+        {//大量寫入資料時，請關閉AutoDetectChangesEnabled 功能來提高效能
+            this.Context.Configuration.AutoDetectChangesEnabled = false;
+            //高度相關作業資料處理時，請使用 交易來 確保資料完整性
+            using (var txn = this.Context.Database.BeginTransaction())
+            {
+                try
+                {
+                    ImportUser(book);
+                    //產生條碼設定預設值
+                    ImportBcdMisc(book);
+                    ImportUserSubinventory(book);
+                    ImportReason(book);
+                    //成功時，提交所有處理
+                    txn.Commit();
+                }
+                catch (Exception ex)
+                {
+                    logger.Error(LogUtilities.BuildExceptionMessage(ex));
+                    //失敗，取消所有處理動作
+                    txn.Rollback();
+                }
+            }
+            this.Context.Configuration.AutoDetectChangesEnabled = true;
+
+        }
         
         public void Import(IWorkbook book)
         {
@@ -131,10 +158,15 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                     user.DisplayName = ExcelUtil.GetStringCellValue(row.GetCell(3)).Trim();
                     user.Email = ExcelUtil.GetStringCellValue(row.GetCell(4)).Trim();
                     user.EmailConfirmed = false;
-                    var result = userManager.Create(user, password);
-                    if (result.Succeeded)
+
+                    var appUser = userManager.FindByName(user.UserName);
+                    if (appUser == null)
                     {
-                        userManager.AddToRole(user.Id, rolename);
+                        var result = userManager.Create(user, password);
+                        if (result.Succeeded)
+                        {
+                            userManager.AddToRole(user.Id, rolename);
+                        }
                     }
                 }
             }
@@ -165,17 +197,22 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             {
                 try
                 {
-                    var adm = this.appUserRepository.Get(x => x.UserName.CompareTo("adam") == 0).FirstOrDefault();
+                    var adm = this.appUserRepository.Get(x => x.UserName.CompareTo("adm") == 0).FirstOrDefault();
                     var userName = ExcelUtil.GetStringCellValue(j, userNameCell.ColumnIndex, sheet);
                     var subinvenotryCode = ExcelUtil.GetStringCellValue(j, subinventoryCell.ColumnIndex, sheet);
                     var user = this.appUserRepository.Get(x => x.UserName.CompareTo(userName) == 0).FirstOrDefault();
                     var subinventory = this.subinventoryRepository.Get(x => x.SubinventoryCode.CompareTo(subinvenotryCode) == 0).FirstOrDefault();
                     //搜尋未執行 SaveChanges 的資料
                     var userSubinventory = this.Context.ChangeTracker.Entries<USER_SUBINVENTORY_T>()
-                        .Where(x => x.Entity.UserId == user.UserName && x.Entity.SubinventoryCode == subinventory.SubinventoryCode).FirstOrDefault();
+                        .Where(x => x.Entity.UserId == user.Id && x.Entity.SubinventoryCode == subinventory.SubinventoryCode).FirstOrDefault();
+                    
+                    var userSubinventory1 = userSubinventoryTRepository.Get(x => x.UserId == user.Id && x.SubinventoryCode == subinvenotryCode).FirstOrDefault();
+                    
+
                     //搜尋已執行 SaveChanges 的資料
                     //var org = transactionTypeRepository.Get(x => x.TransactionTypeId == TransactionTypeId).FirstOrDefault();
-                    if (userSubinventory == null || userSubinventory.Entity.UserId.Length == 0)
+                    if ((userSubinventory == null || userSubinventory.Entity.UserId.Length == 0) 
+                        && (userSubinventory1 == null || userSubinventory1.UserId.Length == 0))
                     {
                         var now = DateTime.Now;
                         USER_SUBINVENTORY_T userSubinventoryT = new USER_SUBINVENTORY_T();
@@ -228,15 +265,18 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             {
                 try
                 {
-                    var adm = this.appUserRepository.Get(x => x.UserName.CompareTo("adam") == 0).FirstOrDefault();
+                    var adm = this.appUserRepository.Get(x => x.UserName.CompareTo("adm") == 0).FirstOrDefault();
                     var subinvenotryCode = ExcelUtil.GetStringCellValue(j, subinventoryCell.ColumnIndex, sheet);
                     var subinventory = this.subinventoryRepository.Get(x => x.SubinventoryCode.CompareTo(subinvenotryCode) == 0).FirstOrDefault();
                     //搜尋未執行 SaveChanges 的資料
                     var item = this.Context.ChangeTracker.Entries<BCD_MISC_T>()
                         .Where(x => x.Entity.SubinventoryCode == subinvenotryCode).FirstOrDefault();
+
+                    var item1 = bcdMiscRepository.Get(x => x.SubinventoryCode == subinvenotryCode).FirstOrDefault();
                     //搜尋已執行 SaveChanges 的資料
                     //var org = transactionTypeRepository.Get(x => x.TransactionTypeId == TransactionTypeId).FirstOrDefault();
-                    if (item == null || item.Entity.SubinventoryCode.Length == 0)
+                    if ((item == null || item.Entity.SubinventoryCode.Length == 0) 
+                        && (item1 == null || item1.SubinventoryCode.Length == 0))
                     {
                         var now = DateTime.Now;
                         BCD_MISC_T bcdMisc = new BCD_MISC_T();
@@ -1395,13 +1435,15 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             {
                 try
                 {
-                    var adm = this.appUserRepository.Get(x => x.UserName.CompareTo("adam") == 0).FirstOrDefault();
+                    var adm = this.appUserRepository.Get(x => x.UserName.CompareTo("adm") == 0).FirstOrDefault();
                     var code = ExcelUtil.GetStringCellValue(j, codeCell.ColumnIndex, sheet);
                     var desc = ExcelUtil.GetStringCellValue(j, descCell.ColumnIndex, sheet);
-                   
+
+                    var reason = stkReasonTRepository.Get(x => x.ReasonCode == code).FirstOrDefault();
+
                     //搜尋已執行 SaveChanges 的資料
                     //var org = transactionTypeRepository.Get(x => x.TransactionTypeId == TransactionTypeId).FirstOrDefault();
-                    if (!string.IsNullOrEmpty(code) && !string.IsNullOrEmpty(desc))
+                    if (reason == null && string.IsNullOrEmpty(reason.ReasonCode) && !string.IsNullOrEmpty(code) && !string.IsNullOrEmpty(desc))
                     {
                         var now = DateTime.Now;
                         STK_REASON_T stkReasonT = new STK_REASON_T();

@@ -279,6 +279,7 @@
     <Compile Include="Controllers\TransferController.cs" />
     <Compile Include="Controllers\YszmpckqController.cs" />
     <Compile Include="DataAnnotation\Precision.cs" />
+    <Compile Include="DataModel\Entity\Delivery\DLV_SOA_T.cs" />
     <Compile Include="DataModel\Entity\Information\ORG_UNIT_T.cs" />
     <Compile Include="DataModel\Entity\Inventory\TRF_INVENTORY_HT.cs" />
     <Compile Include="DataModel\Entity\Inventory\TRF_INVENTORY_HEADER_T.cs" />
@@ -399,6 +400,10 @@
     <Compile Include="Migrations\202009041034406_addfewTables.cs" />
     <Compile Include="Migrations\202009041034406_addfewTables.Designer.cs">
       <DependentUpon>202009041034406_addfewTables.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202009070735192_add_dlv_soa_t.cs" />
+    <Compile Include="Migrations\202009070735192_add_dlv_soa_t.Designer.cs">
+      <DependentUpon>202009070735192_add_dlv_soa_t.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Delivery\bDeliveryDetail.cs" />
@@ -1473,8 +1478,10 @@
     <Content Include="Data\SQLScript\108_SP_RelatedSync.sql" />
     <Content Include="Data\SQLScript\109_SP_ItemSync.sql" />
     <Content Include="Data\SQLScript\109_SP_OrgItemSync.sql" />
+    <Content Include="Data\SQLScript\115_SP_P218_CtrStUpload.sql" />
     <Content Include="Data\SQLScript\114_SP_P219_OspStCreateNew.sql" />
     <Content Include="Data\SQLScript\113_SP_P220_DlvStCreateNew.sql" />
+    <Content Include="Data\SQLScript\116_SP_P221_DlvStUpload.sql" />
     <Content Include="Data\SQLScript\201_XXIF_CHP_CONTROL_ST.sql" />
     <Content Include="Data\SQLScript\202_XXIF_CHP_P217_CONTAINER_ST.sql" />
     <Content Include="Data\SQLScript\203_XXIF_CHP_P218_CONTAINER_RV_ST.sql" />
@@ -1925,6 +1932,7 @@
     <Content Include="bower_components\theme-login\fonts\Roboto\Roboto-MediumItalic.ttf" />
     <Content Include="bower_components\theme-login\fonts\Roboto\Roboto-Thin.ttf" />
     <Content Include="bower_components\theme-login\fonts\Roboto\Roboto-ThinItalic.ttf" />
+    <Content Include="Data\Excel\MES_20200903.xlsx" />
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>
@@ -2112,6 +2120,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202009041034406_addfewTables.resx">
       <DependentUpon>202009041034406_addfewTables.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202009070735192_add_dlv_soa_t.resx">
+      <DependentUpon>202009070735192_add_dlv_soa_t.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
