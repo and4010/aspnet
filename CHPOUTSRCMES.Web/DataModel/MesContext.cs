@@ -19,6 +19,7 @@ using CHPOUTSRCMES.Web.DataModel.Entiy.Transfer;
 using CHPOUTSRCMES.Web.DataModel.Entity.Miscellaneous;
 using CHPOUTSRCMES.Web.DataModel.Entity.Obsolete;
 using CHPOUTSRCMES.Web.DataModel.Entity.Inventory;
+using CHPOUTSRCMES.Web.DataModel.Entity.Transfer;
 
 namespace CHPOUTSRCMES.Web.DataModel
 {
@@ -346,6 +347,18 @@ namespace CHPOUTSRCMES.Web.DataModel
         public DbSet<TRF_OUTBOUND_PICKED_T> TRF_OUTBOUND_PICKED_Ts { set; get; }
 
         public DbSet<TRF_OUTBOUND_PICKED_HT> TRF_OUTBOUND_PICKED_HTs { set; get; }
+        #endregion
+
+        #region 庫存移轉-貨故
+        public DbSet<TRF_REASON_HEADER_T> TRF_REASON_HEADER_Ts { set; get; }
+
+        public DbSet<TRF_REASON_T> TRF_REASON_Ts { set; get; }
+
+        public DbSet<TRF_REASON_HT> TRF_REASON_HTs { set; get; }
+
+        public DbSet<TRF_FILEINFO_T> TRF_FILEINFO_Ts { set; get; }
+
+        public DbSet<TRF_FILES_T> TRF_FILES_Ts { set; get; }
         #endregion
 
         #region 雜項異動

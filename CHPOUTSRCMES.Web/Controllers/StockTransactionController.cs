@@ -310,44 +310,41 @@ namespace CHPOUTSRCMES.Web.Controllers
         }
 
         [HttpPost, ActionName("SearchStock")]
-        public JsonResult SearchStock(DataTableAjaxPostViewModel data, string SubinventoryCode, string Locator, string ItemNumber)
+        public JsonResult SearchStock(DataTableAjaxPostViewModel data, long organizationId, string subinventoryCode, long? locatorId, string itemNumber)
         {
-            long locatorId;
-            try
+            using (var context = new MesContext())
             {
-                locatorId = Convert.ToInt64(Locator);
+                using (TransferUOW uow = new TransferUOW(context))
+                {
+
+                    List<StockDT> model = stockTransferData.SearchStock(uow, organizationId, subinventoryCode, locatorId, itemNumber);
+
+                    var totalCount = model.Count;
+                    string search = data.Search.Value;
+
+                    if (!string.IsNullOrEmpty(search) && !string.IsNullOrWhiteSpace(search))
+                    {
+                        // Apply search   
+                        model = model.Where(p => (p.SUB_ID.ToString().ToLower().Contains(search.ToLower()))
+                            || (!string.IsNullOrEmpty(p.SUBINVENTORY_CODE) && p.SUBINVENTORY_CODE.ToLower().Contains(search.ToLower()))
+                            || (!string.IsNullOrEmpty(p.SEGMENT3) && p.SEGMENT3.ToLower().Contains(search.ToLower()))
+                            || (!string.IsNullOrEmpty(p.ITEM_NO) && p.ITEM_NO.ToLower().Contains(search.ToLower()))
+                            || (!string.IsNullOrEmpty(p.BARCODE) && p.BARCODE.ToLower().Contains(search.ToLower()))
+                            || (p.PRIMARY_AVAILABLE_QTY.ToString().ToLower().Contains(search.ToLower()))
+                            || (!string.IsNullOrEmpty(p.PRIMARY_UOM_CODE) && p.PRIMARY_UOM_CODE.ToLower().Contains(search.ToLower()))
+                            || (p.SECONDARY_AVAILABLE_QTY.ToString().ToLower().Contains(search.ToLower()))
+                            || (!string.IsNullOrEmpty(p.SECONDARY_UOM_CODE) && p.SECONDARY_UOM_CODE.ToLower().Contains(search.ToLower()))
+                            || (!string.IsNullOrEmpty(p.REASON_DESC) && p.REASON_DESC.ToLower().Contains(search.ToLower()))
+                            || (!string.IsNullOrEmpty(p.NOTE) && p.NOTE.ToLower().Contains(search.ToLower()))
+                            ).ToList();
+                    }
+
+                    var filteredCount = model.Count;
+                    model = StockDTOrder.Order(data.Order, model).ToList();
+                    model = model.Skip(data.Start).Take(data.Length).ToList();
+                    return Json(new { draw = data.Draw, recordsFiltered = filteredCount, recordsTotal = totalCount, data = model }, JsonRequestBehavior.AllowGet);
+                }
             }
-            catch
-            {
-                locatorId = 0;
-            }
-
-            List<StockDT> model = StockData.GetModel(SubinventoryCode, locatorId, ItemNumber);
-
-            var totalCount = model.Count;
-            string search = data.Search.Value;
-
-            if (!string.IsNullOrEmpty(search) && !string.IsNullOrWhiteSpace(search))
-            {
-                // Apply search   
-                model = model.Where(p => (p.ID.ToString().ToLower().Contains(search.ToLower()))
-                    || (!string.IsNullOrEmpty(p.SUBINVENTORY_CODE) && p.SUBINVENTORY_CODE.ToLower().Contains(search.ToLower()))
-                    || (!string.IsNullOrEmpty(p.SEGMENT3) && p.SEGMENT3.ToLower().Contains(search.ToLower()))
-                    || (!string.IsNullOrEmpty(p.ITEM_NO) && p.ITEM_NO.ToLower().Contains(search.ToLower()))
-                    || (!string.IsNullOrEmpty(p.BARCODE) && p.BARCODE.ToLower().Contains(search.ToLower()))
-                    || (p.PRIMARY_AVAILABLE_QTY.ToString().ToLower().Contains(search.ToLower()))
-                    || (!string.IsNullOrEmpty(p.PRIMARY_UOM_CODE) && p.PRIMARY_UOM_CODE.ToLower().Contains(search.ToLower()))
-                    || (p.SECONDARY_AVAILABLE_QTY.ToString().ToLower().Contains(search.ToLower()))
-                    || (!string.IsNullOrEmpty(p.SECONDARY_UOM_CODE) && p.SECONDARY_UOM_CODE.ToLower().Contains(search.ToLower()))
-                    || (!string.IsNullOrEmpty(p.REASON_DESC) && p.REASON_DESC.ToLower().Contains(search.ToLower()))
-                    || (!string.IsNullOrEmpty(p.NOTE) && p.NOTE.ToLower().Contains(search.ToLower()))
-                    ).ToList();
-            }
-
-            var filteredCount = model.Count;
-            model = StockDTOrder.Order(data.Order, model).ToList();
-            model = model.Skip(data.Start).Take(data.Length).ToList();
-            return Json(new { draw = data.Draw, recordsFiltered = filteredCount, recordsTotal = totalCount, data = model }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost, ActionName("GetOutboundStockTransferDT")]
@@ -845,19 +842,25 @@ namespace CHPOUTSRCMES.Web.Controllers
         }
 
         [HttpPost, ActionName("SaveReason")]
-        public JsonResult SaveReason(long ID, string REASON_CODE, string REASON_DESC, string Locator, string NOTE)
+        public JsonResult SaveReason(FormCollection formCollection)
         {
-            long locatorId;
-            try
+            using (var context = new MesContext())
             {
-                locatorId = Convert.ToInt64(Locator);
+                using (TransferUOW uow = new TransferUOW(context))
+                {
+                    //取得使用者ID
+                    var id = this.User.Identity.GetUserId();
+                    //取得使用者帳號
+                    var name = this.User.Identity.GetUserName();
+                    var files = Request.Files;
+                 
+                    ResultModel result = stockTransferData.SaveReason(files, Int64.Parse(formCollection["stockId"]),
+                        formCollection["reasonCode"],
+                        formCollection["transferLocatorId"] == null ? default(long?) : Int64.Parse(formCollection["stockId"]),
+                        formCollection["note"], id, name);
+                    return new JsonResult { Data = new { status = result.Success, result = result.Msg } };
+                }
             }
-            catch
-            {
-                locatorId = 0;
-            }
-            ResultModel result = StockData.SaveReason(ID, REASON_CODE, REASON_DESC, locatorId, NOTE, stockTransferData.orgData);
-            return new JsonResult { Data = new { status = result.Success, result = result.Msg } };
         }
 
 

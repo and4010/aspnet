@@ -183,32 +183,16 @@ SELECT [STOCK_ID] as ID
                     //處理異動量
                     mQty = -1 * Math.Abs(mQty);
 
-                    //計算異動後的數量
-                    decimal aftPryQty = 0; //主單位異動後數量
-                    decimal? aftSecQty = null; //次單位異動後數量
-                    decimal mPrimaryQty = 0; //主單位異動量
-                    decimal? mSecondaryQty = null; //次單位異動量
+
                     if (stock.ItemCategory == ItemCategory.Flat)
                     {
-                        mSecondaryQty = mQty;
-                        aftSecQty = (stock.SecondaryAvailableQty == null ? 0 : stock.SecondaryAvailableQty) + mQty;
+                        decimal aftSecQty = (stock.SecondaryAvailableQty == null ? 0 : (decimal)stock.SecondaryAvailableQty) + mQty;
                         if (aftSecQty < 0) return new ResultModel(false, "超過庫存數量:" + stock.SecondaryAvailableQty + stock.SecondaryUomCode);
-                        var uomConversionResult = uomConversion.Convert(stock.InventoryItemId, (decimal)aftSecQty, stock.SecondaryUomCode, stock.PrimaryUomCode); //主單位數量轉次單位數量
-                        if (!uomConversionResult.Success) throw new Exception(uomConversionResult.Msg);
-                        aftPryQty = uomConversionResult.Data;
-
-                        //轉換主單位異動量
-                        var uomConversionResult2 = uomConversion.Convert(stock.InventoryItemId, (decimal)mSecondaryQty, stock.SecondaryUomCode, stock.PrimaryUomCode);
-                        if (!uomConversionResult2.Success) throw new Exception(uomConversionResult.Msg);
-                        mPrimaryQty = uomConversionResult2.Data;
                     }
                     else if (stock.ItemCategory == ItemCategory.Roll)
                     {
-                        mPrimaryQty = mQty;
-                        aftPryQty = stock.PrimaryAvailableQty + mQty;
+                        decimal aftPryQty = stock.PrimaryAvailableQty + mQty;
                         if (aftPryQty < 0) return new ResultModel(false, "超過庫存數量:" + stock.PrimaryAvailableQty + stock.PrimaryUomCode);
-                        aftSecQty = null;
-                        mSecondaryQty = null;
                     }
                     else
                     {
@@ -225,13 +209,13 @@ SELECT [STOCK_ID] as ID
                         Barcode = stock.Barcode,
                         StockId = stockId,
                         PrimaryUom = stock.PrimaryUomCode,
-                        TransferPrimaryQuantity = mPrimaryQty,
-                        OriginalPrimaryQuantity = stock.PrimaryAvailableQty,
-                        AfterPrimaryQuantity = aftPryQty,
+                        TransferPrimaryQuantity = stock.ItemCategory == ItemCategory.Roll ? mQty : 0,
+                        OriginalPrimaryQuantity = 0,
+                        AfterPrimaryQuantity = 0,
                         SecondaryUom = stock.SecondaryUomCode,
-                        TransferSecondaryQuantity = mSecondaryQty,
-                        OriginalSecondaryQuantity = stock.SecondaryAvailableQty,
-                        AfterSecondaryQuantity = aftSecQty,
+                        TransferSecondaryQuantity = stock.ItemCategory == ItemCategory.Flat ? mQty : default(decimal?),
+                        OriginalSecondaryQuantity = null,
+                        AfterSecondaryQuantity = null,
                         LotNumber = stock.LotNumber,
                         LotQuantity = null,
                         Note = null,
@@ -265,7 +249,7 @@ SELECT [STOCK_ID] as ID
                 string cmd = @"
 SELECT m.TRANSFER_OBSOLETE_ID AS ID
       ,m.[STOCK_ID] AS STOCK_ID
-	  ,ROW_NUMBER() OVER(ORDER BY [STOCK_ID]) AS SUB_ID
+	  ,ROW_NUMBER() OVER(ORDER BY [TRANSFER_OBSOLETE_ID]) AS SUB_ID
       ,h.[SUBINVENTORY_CODE] AS SUBINVENTORY_CODE
 	  ,h.[SEGMENT3] AS SEGMENT3
       ,m.[ITEM_NUMBER] AS ITEM_NO

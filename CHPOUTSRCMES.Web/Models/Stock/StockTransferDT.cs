@@ -1507,6 +1507,18 @@ namespace CHPOUTSRCMES.Web.Models.Stock
         }
 
         #endregion
+
+
+        public List<StockDT> SearchStock(TransferUOW uow, long organizationId, string subinventoryCode, long? locatorId, string itemNumber)
+        {
+            return uow.GetStockTList(organizationId, subinventoryCode, locatorId, itemNumber);
+        }
+
+        public ResultModel SaveReason(HttpFileCollectionBase File, long stockId, string reasonCode, long? transferLocatorId, string note, string userId, string userName)
+        {
+            return new ResultModel(true, "貨故存檔成功");
+        }
+
     }
 
 
