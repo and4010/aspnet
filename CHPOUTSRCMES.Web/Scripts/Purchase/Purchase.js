@@ -149,7 +149,13 @@ $(document).ready(function () {
     });
 
 
+    $('#BtnPaperRollReport').onclick(function () {
+        window.open("/Purchas/Report/");
+    });
 
+    $('#BtnFlatReport').onclick(function () {
+        window.open("/Purchas/Report/");
+    });
 });
 
 
