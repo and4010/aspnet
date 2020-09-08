@@ -2096,6 +2096,7 @@
     <Folder Include="App_Data\" />
     <Folder Include="bower_components\theme\" />
     <Folder Include="Jsons\Responses\" />
+    <Folder Include="Views\ScriptManagerControl\" />
     <Folder Include="Views\Stock\" />
     <Folder Include="Views\Transfer\" />
   </ItemGroup>

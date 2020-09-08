@@ -16,7 +16,7 @@ using System.Drawing;
 using Image = System.Drawing.Image;
 using System.Web.UI.WebControls;
 using Microsoft.AspNet.Identity;
-using CHPOUTSRCMES.Web.ViewModels.Process;
+using Microsoft.Reporting.WebForms;
 
 namespace CHPOUTSRCMES.Web.Controllers
 {
@@ -627,6 +627,29 @@ namespace CHPOUTSRCMES.Web.Controllers
             PurchaseViewModel ViewModel = new PurchaseViewModel();
             var resultDataModel = ViewModel.SetSpinnerValue(PickId);
             return Json(new { resultDataModel }, JsonRequestBehavior.AllowGet);
+        }
+
+
+        public ActionResult Report(string HeaderId)
+        {
+            List<ReportParameter> paramList = new List<ReportParameter>();
+            paramList.Add(new ReportParameter("@HeaderId", HeaderId, false));
+
+            var report = new ReportViewer();
+            //report.ProcessingMode = ProcessingMode.Remote;
+            //report.SizeToReportContent = true;
+            //report.BorderStyle = BorderStyle.Solid;
+            //report.BorderWidth = 1;
+            //report.BackColor = Color.LightGray;
+            //report.ServerReport.ReportPath = "測試";
+            //report.ServerReport.ReportServerUrl = new Uri("http://yfyrs001.yfy.corp/reports/");
+            //report.ServerReport.SetParameters(paramList);
+            report.ProcessingMode = ProcessingMode.Local;
+            LocalReport localReport = report.LocalReport;
+            localReport.ReportPath = "Flat.rdlc";
+            report.LocalReport.Refresh();
+
+            return View();
         }
     }
 }
