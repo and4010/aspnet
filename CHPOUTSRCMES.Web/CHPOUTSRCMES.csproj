@@ -398,10 +398,16 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Jsons\Requests\AutoCompletedItem.cs" />
+    <Compile Include="Migrations\202009041034406_addfewTables.cs" />
     <Compile Include="Migrations\202009070735192_add_dlv_soa_t.cs" />
     <Compile Include="Migrations\202009070735192_add_dlv_soa_t.Designer.cs">
       <DependentUpon>202009070735192_add_dlv_soa_t.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202009090210025_merge_branch_pon.cs" />
+    <Compile Include="Migrations\202009090210025_merge_branch_pon.Designer.cs">
+      <DependentUpon>202009090210025_merge_branch_pon.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Delivery\bDeliveryDetail.cs" />
     <Compile Include="Models\Delivery\DeliveryDetail.cs" />
     <Compile Include="Models\Delivery\DeliveryHeader.cs" />
@@ -2111,9 +2117,14 @@
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
-    </EmbeddedResource>
+  <ItemGroup>
     <EmbeddedResource Include="Migrations\202009070735192_add_dlv_soa_t.resx">
       <DependentUpon>202009070735192_add_dlv_soa_t.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202009090210025_merge_branch_pon.resx">
+      <DependentUpon>202009090210025_merge_branch_pon.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
