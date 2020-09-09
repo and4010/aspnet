@@ -149,12 +149,12 @@ $(document).ready(function () {
     });
 
 
-    $('#BtnPaperRollReport').onclick(function () {
-        window.open("/Purchas/Report/");
+    $('#BtnPaperRollReport').click(function () {
+        window.open("/Purchase/Report/" + $("#CtrHeaderId").val());
     });
 
-    $('#BtnFlatReport').onclick(function () {
-        window.open("/Purchas/Report/");
+    $('#BtnFlatReport').click(function () {
+        window.open("/Purchase/Report/" + $("#CtrHeaderId").val());
     });
 });
 
