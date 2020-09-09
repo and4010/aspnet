@@ -2093,6 +2093,7 @@
     <Content Include="Views\StockInventory\_ProfitPartial.cshtml" />
     <Content Include="Views\StockTransaction\_MergeBarcodePartial.cshtml" />
     <Content Include="Views\Shared\_Layout2.cshtml" />
+    <Content Include="Views\Purchase\Report.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
