@@ -1,75 +1,79 @@
-﻿using CHPOUTSRCMES.DataAnnotation;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
 
-namespace CHPOUTSRCMES.Web.DataModel.Entity.Delivery
+namespace CHPOUTSRCMES.Web.DataModel.Entity.Transfer
 {
-    [Table("DLV_PICKED_HT")]
-    public class DLV_PICKED_HT
+
+    [Table("TRF_REASON_HEADER_T")]
+    public class TRF_REASON_HEADER_T
     {
         /// <summary>
-        /// 出庫揀貨歷史ID
+        /// 庫存移轉貨故檔頭ID
         /// </summary>
         /// 
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
         [Required]
-        [Column("DLV_PICKED_HIS_ID")]
-        public long DlvPickedHisId { set; get; }
+        [Column("TRANSFER_REASON_HEADER_ID")]
+        public long TransferReasonHeaderId { set; get; }
+
 
         /// <summary>
-        /// 出庫揀貨ID
+        /// 作業單元ID(OU)
         /// </summary>
         /// 
         [Required]
-        [Column("DLV_PICKED_ID")]
-        public long DlvPickedId { set; get; }
+        [Column("ORG_ID")]
+        public long OrgId { set; get; }
 
-        // <summary>
-        /// 出庫明細ID
+
+        ///// <summary>
+        ///// 作業單元(OU)
+        ///// </summary>
+        ///// 
+        //[StringLength(240)]
+        //[Required(AllowEmptyStrings = true)]
+        //[Column("ORG_NAME")]
+        //public string OrgName { set; get; }
+
+        /// <summary>
+        /// 庫存組織ID
         /// </summary>
         /// 
         [Required]
-        [Column("DLV_DETAIL_ID")]
-        public long DlvDetailId { set; get; }
+        [Column("ORGANIZATION_ID")]
+        public long OrganizationId { set; get; }
+
 
         /// <summary>
-        /// 出庫檔頭ID
+        /// 庫存組織
         /// </summary>
         /// 
+        [StringLength(3)]
         [Required]
-        [Column("DLV_HEADER_ID")]
-        public long Dlv_Header_Id { set; get; }
+        [Column("ORGANIZATION_CODE")]
+        public string OrganizationCode { set; get; }
 
         /// <summary>
-        /// 庫存ID
+        /// 出貨編號 Guid
         /// </summary>
         /// 
+        [StringLength(128)]
+        [Column("SHIPMENT_NUMBER")]
+        public string ShipmentNumber { set; get; }
+
+        /// <summary>
+        /// 出庫倉庫
+        /// </summary>
+        /// 
+        [StringLength(20)]
         [Required]
-        [Column("STOCK_ID")]
-        public long Stock_Id { set; get; }
-
-        /// <summary>
-        /// 狀態
-        /// </summary>
-        /// 
-        [Required(AllowEmptyStrings = true)]
-        [StringLength(10)]
-        [Column("STATUS")]
-        public string Status { set; get; }
-
-        /// <summary>
-        /// 棧板狀態
-        /// </summary>
-        /// 
-        [Required]
-        [StringLength(10)]
-        [Column("PALLET_STATUS")]
-        public string PalletStatus { set; get; }
+        [Column("SUBINVENTORY_CODE")]
+        public string SubinventoryCode { set; get; }
 
         /// <summary>
         /// 出貨儲位ID
@@ -82,129 +86,113 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Delivery
         /// 出貨儲位
         /// </summary>
         /// 
-        [StringLength(30)]
+        [StringLength(163)]
         [Column("LOCATOR_CODE")]
         public string LocatorCode { set; get; }
 
         /// <summary>
-        /// 料號ID
-        /// </summary>
-        /// 
-        [Required]
-        [Column("INVENTORY_ITEM_ID")]
-        public long InventoryItemId { set; get; }
-
-        /// <summary>
-        /// 料號
+        /// 儲位第三節段
         /// </summary>
         /// 
         [StringLength(40)]
+        [Column("SEGMENT3")]
+        public string Segment3 { set; get; }
+
+        /// <summary>
+        /// 出貨編號狀態
+        /// </summary>
+        /// 
+        [StringLength(10)]
         [Required]
-        [Column("ITEM_NUMBER")]
-        public string Item_Number { set; get; }
+        [Column("NUMBER_STATUS")]
+        public string NumberStatus { set; get; }
 
         /// <summary>
-        /// 料號名稱
+        /// 交易日期
         /// </summary>
         /// 
-        //[StringLength(240)]
-        //[Required]
-        //[Column("ITEM_DESCRIPTION")]
-        //public string Item_Description { set; get; }
-
-        /// <summary>
-        /// 包裝方式
-        /// </summary>
-        /// 
-        [StringLength(30)]
-        [Column("PACKING_TYPE")]
-        public string PackingType { set; get; }
-
-        /// <summary>
-        /// 令重
-        /// </summary>
-        /// 
-        [StringLength(30)]
+        [DataType(DataType.Date)]
         [Required]
-        [Column("REAM_WEIGHT")]
-        public string ReamWeight { set; get; }
+        [Column("TRANSACTION_DATE")]
+        public DateTime TransactionDate { set; get; }
 
         /// <summary>
-        /// 條碼號
+        /// 異動型態ID
         /// </summary>
         /// 
-        [StringLength(20)]
+        [Column("TRANSACTION_TYPE_ID")]
         [Required]
-        [Column("BARCODE")]
-        public string Barcode { set; get; }
+        public long TransactionTypeId { set; get; }
 
         /// <summary>
-        /// 交易數量
-        /// </summary>
-        /// 
-        [Required]
-        [Column("TRANSACTION_QUANTITY")]
-        [Precision(30, 10)]
-        public decimal TransactionQuantity { set; get; }
-
-        /// <summary>
-        /// 交易單位
-        /// </summary>
-        /// 
-        [Required]
-        [StringLength(3)]
-        [Column("TRANSACTION_UOM")]
-        public string TransactionUom { set; get; }
-
-        /// <summary>
-        /// 主要數量
-        /// </summary>
-        /// 
-        [Required]
-        [Column("PRIMARY_QUANTITY")]
-        [Precision(30, 10)]
-        public decimal PrimaryQuantity { set; get; }
-
-        /// <summary>
-        /// 主要單位
-        /// </summary>
-        /// 
-        [Required]
-        [StringLength(3)]
-        [Column("PRIMARY_UOM")]
-        public string PrimaryUom { set; get; }
-
-        /// <summary>
-        /// 次要數量
-        /// </summary>
-        /// 
-        [Column("SECONDARY_QUANTITY")]
-        [Precision(30, 10)]
-        public decimal? SecondaryQuantity { set; get; }
-
-        /// <summary>
-        /// 次要單位
-        /// </summary>
-        /// 
-        [StringLength(3)]
-        [Column("SECONDARY_UOM")]
-        public string SecondaryUom { set; get; }
-
-        /// <summary>
-        /// 捲號
+        /// 異動型態
         /// </summary>
         /// 
         [StringLength(80)]
-        [Column("LOT_NUMBER")]
-        public string LotNumber { set; get; }
+        [Required]
+        [Column("TRANSACTION_TYPE_NAME")]
+        public string TransactionTypeName { set; get; }
 
         /// <summary>
-        /// 理論重(KG)
+        /// 目標作業單元ID(OU)
         /// </summary>
         /// 
-        [Column("LOT_QUANTITY")]
-        [Precision(30, 10)]
-        public decimal? LotQuantity { set; get; }
+        [Column("TRANSFER_ORG_ID")]
+        public long? TransferOrgId { set; get; }
+
+        /// <summary>
+        /// 目標作業單元(OU)
+        /// </summary>
+        /// 
+        //[StringLength(240)]
+        //[Column("TRANSFER_ORG_NAME")]
+        //public string TransferOrgName { set; get; }
+
+        /// <summary>
+        /// 目標庫存組織ID
+        /// </summary>
+        /// 
+        [Column("TRANSFER_ORGANIZATION_ID")]
+        public long? TransferOrganizationId { set; get; }
+
+        /// <summary>
+        /// 目標庫存組織
+        /// </summary>
+        /// 
+        [StringLength(3)]
+        [Column("TRANSFER_ORGANIZATION_CODE")]
+        public string TransferOrganizationCode { set; get; }
+
+        /// <summary>
+        /// 目標倉庫
+        /// </summary>
+        /// 
+        [StringLength(20)]
+        [Column("TRANSFER_SUBINVENTORY_CODE")]
+        public string TransferSubinventoryCode { set; get; }
+
+        /// <summary>
+        /// 目標儲位ID
+        /// </summary>
+        /// 
+        [Column("TRANSFER_LOCATOR_ID")]
+        public long? TransferLocatorId { set; get; }
+
+        /// <summary>
+        /// 目標儲位
+        /// </summary>
+        /// 
+        [StringLength(30)]
+        [Column("TRANSFER_LOCATOR_CODE")]
+        public string TransferLocatorCode { set; get; }
+
+        
+        /// <summary>
+        /// 是否傳給ERP
+        /// </summary>
+        [StringLength(10)]
+        [Column("TO_ERP")]
+        public string ToErp { set; get; }
 
         /// <summary>
         /// 建立人員
@@ -256,5 +244,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Delivery
         [DataType(DataType.Date)]
         [Column("LAST_UPDATE_DATE")]
         public DateTime? LastUpdateDate { set; get; }
+
+
     }
 }

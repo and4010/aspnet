@@ -5,7 +5,7 @@
 <div id="Top">
 </div>
 <div class="row row-std col-md-12">
-    <input type="button" id="btnSearch" value="查詢" class="btn btn-primary" />
+    <input type="button" id="btnSearchStock" value="查詢" class="btn btn-primary" />
 </div>
 
 
@@ -68,11 +68,12 @@
     <h4 class="page-header">貨故編輯</h4>
 </div>
 <div class="row form-group" ">
+    <span id="StockId" style="display: none;"></span>
     <div class="form-inline col-md-1 text-right">
         <label>項次</label>
     </div>
     <div class="form-inline col-md-1">
-        <label id="TransferReasonId"></label>
+        <label id="SUB_ID"></label>
     </div>
     <div class="form-inline col-md-1 text-right">
         <label>倉庫</label>
@@ -109,13 +110,13 @@
         @Html.DropDownListFor(model => model.Reason, Model.ReasonItems, new { @class = "form-control input-sm", id = "Reason" })
     </div>
 
-    <div id="LocatorArea" style=" display: none;">
+    <div id="TransferLocatorArea" style=" display: none;">
         <div class="form-inline col col-md-1 text-right">
             <label>儲位</label>
         </div>
 
         <div class="form-inline col col-md-1">
-            @Html.DropDownListFor(model => model.Locator, Model.LocatorItems, new { @class = "form-control input-sm", id = "Locator" })
+            @Html.DropDownListFor(model => model.Locator, Model.LocatorItems, new { @class = "form-control input-sm", id = "TransferLocator" })
         </div>
     </div>
 </div>

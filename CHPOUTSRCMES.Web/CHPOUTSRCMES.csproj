@@ -294,6 +294,8 @@
     <Compile Include="DataModel\Entity\Temp\ORG_UNIT_T.cs" />
     <Compile Include="DataModel\Entity\Transfer\TRF_DETAIL_HT.cs" />
     <Compile Include="DataModel\Entity\Transfer\TRF_DETAIL_T.cs" />
+    <Compile Include="DataModel\Entity\Transfer\TRF_FILEINFO_T.cs" />
+    <Compile Include="DataModel\Entity\Transfer\TRF_FILES_T.cs" />
     <Compile Include="DataModel\Entity\Transfer\TRF_HEADER_T.cs" />
     <Compile Include="DataModel\Entity\Transfer\TRF_INBOUND_PICKED_HT.cs" />
     <Compile Include="DataModel\Entity\Transfer\TRF_INBOUND_PICKED_T.cs" />
@@ -322,6 +324,9 @@
     <Compile Include="DataModel\Entity\Process\OSP_PICKED_OUT_T.cs" />
     <Compile Include="DataModel\Entity\Process\OSP_YIELD_VARIANCE_HT.cs" />
     <Compile Include="DataModel\Entity\Process\OSP_YIELD_VARIANCE_T.cs" />
+    <Compile Include="DataModel\Entity\Transfer\TRF_REASON_HEADER_T.cs" />
+    <Compile Include="DataModel\Entity\Transfer\TRF_REASON_HT.cs" />
+    <Compile Include="DataModel\Entity\Transfer\TRF_REASON_T.cs" />
     <Compile Include="DataModel\UnitOfWorks\StockInventoryUOW.cs" />
     <Compile Include="DataModel\UnitOfWorks\MiscellaneousUOW.cs" />
     <Compile Include="DataModel\UnitOfWorks\ObsoleteUOW.cs" />
@@ -393,19 +398,10 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Jsons\Requests\AutoCompletedItem.cs" />
-    <Compile Include="Migrations\202009040355264_add_table_CTR_SOA_T.cs" />
-    <Compile Include="Migrations\202009040355264_add_table_CTR_SOA_T.Designer.cs">
-      <DependentUpon>202009040355264_add_table_CTR_SOA_T.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202009041034406_addfewTables.cs" />
-    <Compile Include="Migrations\202009041034406_addfewTables.Designer.cs">
-      <DependentUpon>202009041034406_addfewTables.cs</DependentUpon>
-    </Compile>
     <Compile Include="Migrations\202009070735192_add_dlv_soa_t.cs" />
     <Compile Include="Migrations\202009070735192_add_dlv_soa_t.Designer.cs">
       <DependentUpon>202009070735192_add_dlv_soa_t.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Delivery\bDeliveryDetail.cs" />
     <Compile Include="Models\Delivery\DeliveryDetail.cs" />
     <Compile Include="Models\Delivery\DeliveryHeader.cs" />
@@ -2115,17 +2111,9 @@
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Migrations\202009040355264_add_table_CTR_SOA_T.resx">
-      <DependentUpon>202009040355264_add_table_CTR_SOA_T.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202009041034406_addfewTables.resx">
-      <DependentUpon>202009041034406_addfewTables.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202009070735192_add_dlv_soa_t.resx">
       <DependentUpon>202009070735192_add_dlv_soa_t.cs</DependentUpon>
-    </EmbeddedResource>
-  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

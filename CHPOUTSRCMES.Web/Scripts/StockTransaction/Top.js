@@ -33,7 +33,7 @@ function TopInit() {
 
     $('#ddlSubinventory').change(function () {
 
-        var SUBINVENTORY_CODE = $("#ddlSubinventory").val();
+        var SUBINVENTORY_CODE = $("#ddlSubinventory option:selected").text();
         $.ajax({
             url: "/StockTransaction/GetLocatorListForUserId",
             type: "post",

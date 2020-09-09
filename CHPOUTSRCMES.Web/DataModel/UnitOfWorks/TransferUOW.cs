@@ -10,6 +10,7 @@ using CHPOUTSRCMES.Web.DataModel.Entity;
 using CHPOUTSRCMES.Web.DataModel.Entity.Information;
 using CHPOUTSRCMES.Web.DataModel.Entity.Interfaces;
 using CHPOUTSRCMES.Web.DataModel.Entity.Repositorys;
+using CHPOUTSRCMES.Web.DataModel.Entity.Transfer;
 using CHPOUTSRCMES.Web.DataModel.Entiy.Transfer;
 using CHPOUTSRCMES.Web.DataModel.Interfaces;
 using CHPOUTSRCMES.Web.Models;
@@ -30,6 +31,11 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
         private readonly IRepository<TRF_INBOUND_PICKED_HT> trfInboundPickedHtRepository;
         private readonly IRepository<TRF_OUTBOUND_PICKED_T> trfOutboundPickedTRepository;
         private readonly IRepository<TRF_OUTBOUND_PICKED_HT> trfOutboundPickedHtRepository;
+        private readonly IRepository<TRF_REASON_HEADER_T> trfReasonHeaderTRepository;
+        private readonly IRepository<TRF_REASON_T> trfReasonTRepository;
+        private readonly IRepository<TRF_REASON_HT> trfReasonHtRepository;
+        private readonly IRepository<TRF_FILEINFO_T> trfFileInfoTRepository;
+        private readonly IRepository<TRF_FILES_T> trfFilesTRepository;
 
         public TransferType transferType = new TransferType();
         public IDetail pickSatus = new PickStatus();
@@ -45,7 +51,11 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             this.trfInboundPickedHtRepository = new GenericRepository<TRF_INBOUND_PICKED_HT>(this);
             this.trfOutboundPickedTRepository = new GenericRepository<TRF_OUTBOUND_PICKED_T>(this);
             this.trfOutboundPickedHtRepository = new GenericRepository<TRF_OUTBOUND_PICKED_HT>(this);
-
+            this.trfReasonHeaderTRepository = new GenericRepository<TRF_REASON_HEADER_T>(this);
+            this.trfReasonTRepository = new GenericRepository<TRF_REASON_T>(this);
+            this.trfReasonHtRepository = new GenericRepository<TRF_REASON_HT>(this);
+            this.trfFileInfoTRepository = new GenericRepository<TRF_FILEINFO_T>(this);
+            this.trfFilesTRepository = new GenericRepository<TRF_FILES_T>(this);
         }
 
         /// <summary>
@@ -106,6 +116,21 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             public const string No = "0";
             /// <summary>
             /// 對方是MES
+            /// </summary>
+            public const string Yes = "1";
+        }
+
+        /// <summary>
+        /// 此筆資料使否傳給ERP
+        /// </summary>
+        public class ToErp
+        {
+            /// <summary>
+            /// 否; 一般入庫
+            /// </summary>
+            public const string No = "0";
+            /// <summary>
+            /// 是; 庫存異動
             /// </summary>
             public const string Yes = "1";
         }
@@ -2686,6 +2711,307 @@ SELECT
             }
         }
 
+
+        #region 貨故
+
+        public List<StockDT> GetStockTList(long organizationId, string subinventoryCode, long? locatorId, string itemNumber)
+        {
+            try
+            {
+                if (locatorId == null)
+                {
+                    string cmd = @"
+SELECT [STOCK_ID] as ID
+	  ,ROW_NUMBER() OVER(ORDER BY [STOCK_ID]) AS SUB_ID
+      ,s.[ORGANIZATION_ID] AS ORGANIZATION_ID
+	  ,'' AS SEGMENT3
+      ,s.[SUBINVENTORY_CODE] AS SUBINVENTORY_CODE
+      ,[ITEM_NUMBER] AS ITEM_NO
+      ,[BARCODE] AS BARCODE
+      ,[PRIMARY_UOM_CODE] AS PRIMARY_UOM_CODE
+      ,[PRIMARY_AVAILABLE_QTY] AS PRIMARY_AVAILABLE_QTY
+      ,[SECONDARY_UOM_CODE] AS SECONDARY_UOM_CODE
+      ,ISNULL([SECONDARY_AVAILABLE_QTY],0) AS SECONDARY_AVAILABLE_QTY
+      ,[NOTE] AS NOTE
+      ,[STATUS_CODE] AS STATUS_CODE
+      ,[REASON_DESC] AS REASON_DESC
+  FROM [STOCK_T] s
+  WHERE s.ORGANIZATION_ID = @organizationId 
+  AND s.SUBINVENTORY_CODE = @subinventoryCode
+  AND s.ITEM_NUMBER = @itemNumber
+";
+
+                    var pOrg = SqlParamHelper.GetBigInt("@organizationId", organizationId);
+                    var pSub = SqlParamHelper.R.SubinventoryCode("@subinventoryCode", subinventoryCode);
+                    var pItemNo = SqlParamHelper.R.ItemNo("@itemNumber", itemNumber);
+
+                    return this.Context.Database.SqlQuery<StockDT>(cmd, pOrg, pSub, pItemNo).ToList();
+                }
+                else
+                {
+                    string cmd = @"
+SELECT [STOCK_ID] as ID
+	  ,ROW_NUMBER() OVER(ORDER BY [STOCK_ID]) AS SUB_ID
+      ,s.[ORGANIZATION_ID] AS ORGANIZATION_ID
+	  ,l.SEGMENT3 AS SEGMENT3
+      ,s.[SUBINVENTORY_CODE]  AS SUBINVENTORY_CODE
+      ,[ITEM_NUMBER] AS ITEM_NO
+      ,[BARCODE] AS BARCODE
+      ,[PRIMARY_UOM_CODE] AS PRIMARY_UOM_CODE
+      ,[PRIMARY_AVAILABLE_QTY] AS PRIMARY_AVAILABLE_QTY
+      ,[SECONDARY_UOM_CODE] AS SECONDARY_UOM_CODE
+      ,ISNULL([SECONDARY_AVAILABLE_QTY],0) AS SECONDARY_AVAILABLE_QTY
+      ,[NOTE] AS NOTE
+      ,[STATUS_CODE] AS STATUS_CODE
+      ,[REASON_DESC] AS REASON_DESC
+      ,s.[LOCATOR_ID] AS LOCATOR_ID
+  FROM [STOCK_T] s
+  LEFT JOIN [LOCATOR_T] l on s.ORGANIZATION_ID = l.ORGANIZATION_ID 
+  AND s.SUBINVENTORY_CODE = l.SUBINVENTORY_CODE 
+  AND s.LOCATOR_ID = l.LOCATOR_ID
+  WHERE s.ORGANIZATION_ID = @organizationId 
+  AND s.SUBINVENTORY_CODE = @subinventoryCode 
+  AND s.LOCATOR_ID = @locatorId 
+  AND s.ITEM_NUMBER = @itemNumber
+";
+
+                    var pOrg = SqlParamHelper.GetBigInt("@organizationId", organizationId);
+                    var pSub = SqlParamHelper.R.SubinventoryCode("@subinventoryCode", subinventoryCode);
+                    var pLoc = SqlParamHelper.GetBigInt("@locatorId", (long)locatorId);
+                    var pItemNo = SqlParamHelper.R.ItemNo("@itemNumber", itemNumber);
+
+                    return this.Context.Database.SqlQuery<StockDT>(cmd, pOrg, pSub, pLoc, pItemNo).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(LogUtilities.BuildExceptionMessage(ex));
+                return new List<StockDT>();
+            }
+        }
+
+        public ResultModel SaveReason(HttpFileCollectionBase File, long stockId, string reasonCode, long? transferLocatorId, string note, string userId, string userName)
+        {
+            using (var txn = this.Context.Database.BeginTransaction())
+            {
+                try
+                {
+                    var now = DateTime.Now;
+
+
+                    var trfLocator = locatorTRepository.GetAll().AsNoTracking().FirstOrDefault(x => x.LocatorId == transferLocatorId);
+                    if (trfLocator == null) throw new Exception("找不到目標儲位資料");
+
+                    var stock = stockTRepository.GetAll().FirstOrDefault(x => x.StockId == stockId);
+                    if (stock == null) throw new Exception("找不到庫存資料");
+
+                    var locator = locatorTRepository.GetAll().AsNoTracking().FirstOrDefault(x => x.LocatorId == stock.LocatorId);
+                    if (locator == null) throw new Exception("找不到儲位資料");
+
+                    var organization = GetOrganization(stock.OrganizationId);
+                    if (organization == null) throw new Exception("找不到組織資料");
+
+                    var trfOrganization = GetOrganization(trfLocator.OrganizationId);
+                    if (trfOrganization == null) throw new Exception("找不到目標組織資料");
+
+                    var reason = stkReasonTRepository.GetAll().AsNoTracking().FirstOrDefault(x => x.ReasonCode == reasonCode);
+                    if (reason == null) throw new Exception("找不到貨故資料");
+
+                    long transactionTypeId;
+                    var transferCatalog = GetTransferCatalog(stock.OrganizationId, trfLocator.OrganizationId);
+                    if (transferCatalog == TransferCatalog.OrgTransfer)
+                    {
+                        throw new Exception("貨故不可為組織間移轉");
+                        //transactionTypeId = TransferUOW.TransactionTypeId.IntransitShipment;
+                    }
+                    else
+                    {
+                        transactionTypeId = TransferUOW.TransactionTypeId.Chp30;
+                    }
+
+                    var transactionType = GetTransactionType(transactionTypeId);
+                    if (trfOrganization == null) throw new Exception("找不到庫存交易類別資料");
+
+
+                    TRF_REASON_HEADER_T header = new TRF_REASON_HEADER_T
+                    {
+                        OrgId = organization.OrgUnitId,
+                        OrganizationId = stock.OrganizationId,
+                        OrganizationCode = stock.OrganizationCode,
+                        ShipmentNumber = GetShipmentNumberGuid(),
+                        SubinventoryCode = stock.SubinventoryCode,
+                        LocatorId = stock.LocatorId,
+                        LocatorCode = stock.LocatorSegments,
+                        Segment3 = locator.Segment3,
+                        TransactionDate = now,
+                        TransactionTypeId = transactionTypeId,
+                        TransactionTypeName = transactionType.TransactionTypeName,
+                        TransferOrgId = trfOrganization.OrgUnitId,
+                        TransferOrganizationId = trfLocator.OrganizationId,
+                        TransferOrganizationCode = trfOrganization.OrganizationCode,
+                        TransferSubinventoryCode = trfLocator.SubinventoryCode,
+                        TransferLocatorId = transferLocatorId,
+                        TransferLocatorCode = trfLocator.LocatorSegments,
+                        NumberStatus = NumberStatus.Saved,
+                        ToErp = ToErp.Yes,
+                        CreatedBy = userId,
+                        CreatedUserName = userName,
+                        CreationDate = now,
+                        LastUpdateBy = null,
+                        LastUpdateUserName = null,
+                        LastUpdateDate = null
+                    };
+                    trfReasonHeaderTRepository.Create(header, true);
+
+                    TRF_REASON_T detail = new TRF_REASON_T
+                    {
+                        TransferReasonHeaderId = header.TransferReasonHeaderId,
+                        InventoryItemId = stock.InventoryItemId,
+                        ItemNumber = stock.ItemNumber,
+                        ItemDescription = stock.ItemDescription,
+                        Barcode = stock.Barcode,
+                        StockId = stockId,
+                        PrimaryUom = stock.PrimaryUomCode,
+                        PrimaryQuantity = stock.PrimaryAvailableQty,
+                        SecondaryUom = stock.SecondaryUomCode,
+                        SecondaryQuantity = stock.SecondaryAvailableQty,
+                        LotNumber = stock.LotNumber,
+                        LotQuantity = null,
+                        ReasonCode = reasonCode,
+                        ReasonDesc = reason.ReasonDesc,
+                        Note = note,
+                        CreatedBy = userId,
+                        CreatedUserName = userName,
+                        CreationDate = now,
+                        LastUpdateBy = null,
+                        LastUpdateUserName = null,
+                        LastUpdateDate = null,
+                    };
+                    trfReasonTRepository.Create(detail, true);
+
+                    if (File != null || File.Count != 0)
+                    {
+                        foreach (string i in File)
+                        {
+                            HttpPostedFileBase hpf = File[i] as HttpPostedFileBase;
+                            var filebyte = VaryQualityLevel(hpf);
+                            TRF_FILES_T tRF_FILES_T = new TRF_FILES_T();
+                            tRF_FILES_T.FileInstance = filebyte;
+                            trfFilesTRepository.Create(tRF_FILES_T, true);
+
+                            TRF_FILEINFO_T tRF_FILEINFO_T = new TRF_FILEINFO_T();
+                            tRF_FILEINFO_T.TransferReasonHeaderId = header.TransferReasonHeaderId;
+                            tRF_FILEINFO_T.TransferReasonId = detail.TransferReasonId;
+                            tRF_FILEINFO_T.TrfFileId = tRF_FILES_T.TrfFileId;
+                            tRF_FILEINFO_T.FileType = hpf.ContentType;
+                            tRF_FILEINFO_T.FileName = hpf.FileName;
+                            tRF_FILEINFO_T.Size = filebyte.Length;
+                            tRF_FILEINFO_T.Seq = 1;
+                            tRF_FILEINFO_T.CreatedBy = userId;
+                            tRF_FILEINFO_T.CreatedUserName = userName;
+                            tRF_FILEINFO_T.CreationDate = DateTime.Now;
+                            trfFileInfoTRepository.Create(tRF_FILEINFO_T);
+
+                        }
+                    }
+
+                    //更新庫存
+                    stock.OrganizationId = trfLocator.OrganizationId;
+                    stock.OrganizationCode = trfOrganization.OrganizationCode;
+                    stock.SubinventoryCode = trfLocator.SubinventoryCode;
+                    stock.LocatorId = transferLocatorId;
+                    stock.LocatorSegments = trfLocator.LocatorSegments;
+                    stock.ReasonCode = reasonCode;
+                    stock.ReasonDesc = reason.ReasonDesc;
+                    stock.StatusCode = StockStatusCode.InStock;
+                    stock.LastUpdateBy = userId;
+                    stock.LastUpdateDate = now;
+                    stockTRepository.Update(stock);
+
+                    STK_TXN_T stkTxnT = CreateStockRecord(stock, trfLocator.OrganizationId, trfOrganization.OrganizationCode, trfLocator.SubinventoryCode, transferLocatorId, CategoryCode.TransferReason, ActionCode.StockTransfer, header.ShipmentNumber);
+                    stkTxnTRepository.Create(stkTxnT);
+
+                    
+                    //複製貨故明細資料到貨故歷史明細
+                    string cmd = @"
+INSERT INTO TRF_REASON_HT
+(
+      [TRANSFER_REASON_ID]
+      ,[TRANSFER_REASON_HEADER_ID]
+      ,[INVENTORY_ITEM_ID]
+      ,[ITEM_NUMBER]
+      ,[ITEM_DESCRIPTION]
+      ,[BARCODE]
+      ,[STOCK_ID]
+      ,[PRIMARY_UOM]
+      ,[PRIMARY_QUANTITY]
+      ,[SECONDARY_UOM]
+      ,[SECONDARY_QUANTITY]
+      ,[LOT_NUMBER]
+      ,[LOT_QUANTITY]
+      ,[REASON_CODE]
+      ,[REASON_DESC]
+      ,[NOTE]
+      ,[CREATED_BY]
+      ,[CREATED_USER_NAME]
+      ,[CREATION_DATE]
+      ,[LAST_UPDATE_BY]
+      ,[LAST_UPDATE_USER_NAME]
+      ,[LAST_UPDATE_DATE]
+)
+SELECT [TRANSFER_REASON_ID]
+      ,[TRANSFER_REASON_HEADER_ID]
+      ,[INVENTORY_ITEM_ID]
+      ,[ITEM_NUMBER]
+      ,[ITEM_DESCRIPTION]
+      ,[BARCODE]
+      ,[STOCK_ID]
+      ,[PRIMARY_UOM]
+      ,[PRIMARY_QUANTITY]
+      ,[SECONDARY_UOM]
+      ,[SECONDARY_QUANTITY]
+      ,[LOT_NUMBER]
+      ,[LOT_QUANTITY]
+      ,[REASON_CODE]
+      ,[REASON_DESC]
+      ,[NOTE]
+      ,[CREATED_BY]
+      ,[CREATED_USER_NAME]
+      ,[CREATION_DATE]
+      ,[LAST_UPDATE_BY]
+      ,[LAST_UPDATE_USER_NAME]
+      ,[LAST_UPDATE_DATE]
+  FROM [TRF_REASON_T]
+  WHERE [TRANSFER_REASON_HEADER_ID] = @TRANSFER_REASON_HEADER_ID
+";
+                    if (this.Context.Database.ExecuteSqlCommand(cmd, new SqlParameter("@TRANSFER_REASON_HEADER_ID", header.TransferReasonHeaderId)) <= 0)
+                    {
+                        throw new Exception("複製貨故明細資料到貨故歷史明細失敗");
+                    }
+
+                    //刪除貨故明細資料
+                    cmd = @"
+  DELETE FROM [TRF_REASON_T]
+  WHERE TRANSFER_REASON_HEADER_ID = @TRANSFER_REASON_HEADER_ID";
+                    if (this.Context.Database.ExecuteSqlCommand(cmd, new SqlParameter("@TRANSFER_REASON_HEADER_ID", header.TransferReasonHeaderId)) <= 0)
+                    {
+                        throw new Exception("刪除貨故明細資料失敗");
+                    }
+
+                    this.SaveChanges();
+                    txn.Commit();
+                    return new ResultModel(true, "貨故存檔成功");
+                }
+                catch (Exception ex)
+                {
+                    logger.Error(LogUtilities.BuildExceptionMessage(ex));
+                    txn.Rollback();
+                    return new ResultModel(false, "貨故存檔失敗:" + ex.Message);
+                }
+            }
+        }
+
+        #endregion
 
         #region 標籤
         public ResultDataModel<List<LabelModel>> GetInboundLabels(List<long> transferPickedIdList, string userName)

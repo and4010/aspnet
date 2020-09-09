@@ -6,85 +6,37 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
 
-namespace CHPOUTSRCMES.Web.DataModel.Entity.Delivery
+namespace CHPOUTSRCMES.Web.DataModel.Entity.Transfer
 {
-    [Table("DLV_PICKED_HT")]
-    public class DLV_PICKED_HT
+
+    [Table("TRF_REASON_HT")]
+    public class TRF_REASON_HT
     {
         /// <summary>
-        /// 出庫揀貨歷史ID
+        /// 庫存移轉歷史貨故ID
         /// </summary>
         /// 
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
         [Required]
-        [Column("DLV_PICKED_HIS_ID")]
-        public long DlvPickedHisId { set; get; }
+        [Column("TRANSFER_REASON_HIS_ID")]
+        public long TransferReasonHisId { set; get; }
 
         /// <summary>
-        /// 出庫揀貨ID
+        /// 庫存移轉貨故ID
         /// </summary>
         /// 
         [Required]
-        [Column("DLV_PICKED_ID")]
-        public long DlvPickedId { set; get; }
+        [Column("TRANSFER_REASON_ID")]
+        public long TransferReasonId { set; get; }
 
-        // <summary>
-        /// 出庫明細ID
+        /// <summary>
+        /// 庫存移轉貨故擋頭ID
         /// </summary>
         /// 
         [Required]
-        [Column("DLV_DETAIL_ID")]
-        public long DlvDetailId { set; get; }
-
-        /// <summary>
-        /// 出庫檔頭ID
-        /// </summary>
-        /// 
-        [Required]
-        [Column("DLV_HEADER_ID")]
-        public long Dlv_Header_Id { set; get; }
-
-        /// <summary>
-        /// 庫存ID
-        /// </summary>
-        /// 
-        [Required]
-        [Column("STOCK_ID")]
-        public long Stock_Id { set; get; }
-
-        /// <summary>
-        /// 狀態
-        /// </summary>
-        /// 
-        [Required(AllowEmptyStrings = true)]
-        [StringLength(10)]
-        [Column("STATUS")]
-        public string Status { set; get; }
-
-        /// <summary>
-        /// 棧板狀態
-        /// </summary>
-        /// 
-        [Required]
-        [StringLength(10)]
-        [Column("PALLET_STATUS")]
-        public string PalletStatus { set; get; }
-
-        /// <summary>
-        /// 出貨儲位ID
-        /// </summary>
-        /// 
-        [Column("LOCATOR_ID")]
-        public long? LocatorId { set; get; }
-
-        /// <summary>
-        /// 出貨儲位
-        /// </summary>
-        /// 
-        [StringLength(30)]
-        [Column("LOCATOR_CODE")]
-        public string LocatorCode { set; get; }
+        [Column("TRANSFER_REASON_HEADER_ID")]
+        public long TransferReasonHeaderId { set; get; }
 
         /// <summary>
         /// 料號ID
@@ -101,33 +53,16 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Delivery
         [StringLength(40)]
         [Required]
         [Column("ITEM_NUMBER")]
-        public string Item_Number { set; get; }
+        public string ItemNumber { set; get; }
 
         /// <summary>
         /// 料號名稱
         /// </summary>
         /// 
-        //[StringLength(240)]
-        //[Required]
-        //[Column("ITEM_DESCRIPTION")]
-        //public string Item_Description { set; get; }
-
-        /// <summary>
-        /// 包裝方式
-        /// </summary>
-        /// 
-        [StringLength(30)]
-        [Column("PACKING_TYPE")]
-        public string PackingType { set; get; }
-
-        /// <summary>
-        /// 令重
-        /// </summary>
-        /// 
-        [StringLength(30)]
+        [StringLength(240)]
         [Required]
-        [Column("REAM_WEIGHT")]
-        public string ReamWeight { set; get; }
+        [Column("ITEM_DESCRIPTION")]
+        public string ItemDescription { set; get; }
 
         /// <summary>
         /// 條碼號
@@ -139,31 +74,12 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Delivery
         public string Barcode { set; get; }
 
         /// <summary>
-        /// 交易數量
+        /// 庫存ID
         /// </summary>
         /// 
         [Required]
-        [Column("TRANSACTION_QUANTITY")]
-        [Precision(30, 10)]
-        public decimal TransactionQuantity { set; get; }
-
-        /// <summary>
-        /// 交易單位
-        /// </summary>
-        /// 
-        [Required]
-        [StringLength(3)]
-        [Column("TRANSACTION_UOM")]
-        public string TransactionUom { set; get; }
-
-        /// <summary>
-        /// 主要數量
-        /// </summary>
-        /// 
-        [Required]
-        [Column("PRIMARY_QUANTITY")]
-        [Precision(30, 10)]
-        public decimal PrimaryQuantity { set; get; }
+        [Column("STOCK_ID")]
+        public long StockId { set; get; }
 
         /// <summary>
         /// 主要單位
@@ -175,12 +91,13 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Delivery
         public string PrimaryUom { set; get; }
 
         /// <summary>
-        /// 次要數量
+        /// 主要數量
         /// </summary>
         /// 
-        [Column("SECONDARY_QUANTITY")]
+        [Required]
+        [Column("PRIMARY_QUANTITY")]
         [Precision(30, 10)]
-        public decimal? SecondaryQuantity { set; get; }
+        public decimal PrimaryQuantity { set; get; }
 
         /// <summary>
         /// 次要單位
@@ -189,6 +106,14 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Delivery
         [StringLength(3)]
         [Column("SECONDARY_UOM")]
         public string SecondaryUom { set; get; }
+
+        /// <summary>
+        /// 次要數量
+        /// </summary>
+        /// 
+        [Column("SECONDARY_QUANTITY")]
+        [Precision(30, 10)]
+        public decimal? SecondaryQuantity { set; get; }
 
         /// <summary>
         /// 捲號
@@ -205,6 +130,28 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Delivery
         [Column("LOT_QUANTITY")]
         [Precision(30, 10)]
         public decimal? LotQuantity { set; get; }
+
+        /// <summary>
+        /// 貨故原因ID
+        /// </summary>
+        [StringLength(10)]
+        [Column("REASON_CODE")]
+        public string ReasonCode { set; get; }
+
+        /// <summary>
+        /// 貨故原因說明
+        /// </summary>
+        [StringLength(50)]
+        [Column("REASON_DESC")]
+        public string ReasonDesc { set; get; }
+
+        /// <summary>
+        /// 備註
+        /// </summary>
+        /// 
+        [StringLength(240)]
+        [Column("NOTE")]
+        public string Note { set; get; }
 
         /// <summary>
         /// 建立人員

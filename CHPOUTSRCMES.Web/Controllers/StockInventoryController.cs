@@ -340,6 +340,20 @@ namespace CHPOUTSRCMES.Web.Controllers
             }
         }
 
+        [HttpPost]
+        public ActionResult PrintProfitLabel(List<long> ID)
+        {
+            using (var context = new MesContext())
+            {
+                using (StockInventoryUOW uow = new StockInventoryUOW(context))
+                {
+                    //取得使用者帳號
+                    var name = this.User.Identity.GetUserName();
+                    return stockInventoryData.PrintProfitLabel(uow, ID, name);
+                }
+            }
+        }
+
 
         [HttpPost, ActionName("GetLossDetailForLoss")]
         public JsonResult GetLossDetailForProfit(DataTableAjaxPostViewModel data)
