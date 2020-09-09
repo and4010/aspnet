@@ -2299,7 +2299,7 @@ on s.ORGANIZATION_ID = l.ORGANIZATION_ID and s.SUBINVENTORY_CODE = l.SUBINVENTOR
         /// </summary>
         /// <param name="labels">標籤內容</param>
         /// <returns></returns>
-        public ActionResult PrintLable(List<LabelModel> labels)
+        public ActionResult PrintLabel(List<LabelModel> labels)
         {
             Util.PdfLableUtil pdf = new PdfLableUtil();
             var result = pdf.GeneratePdfLabels2(labels);

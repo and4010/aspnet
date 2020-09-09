@@ -469,7 +469,7 @@ namespace CHPOUTSRCMES.Web.ViewModels.Process
             using (var context = new MesContext())
             {
                 var label = new ProcessUOW(context).RePrintLabel(stockIds, userName, ItemCategory);
-                return new MasterUOW(context).PrintLable(label.Data);
+                return new MasterUOW(context).PrintLabel(label.Data);
             }
         }
 
@@ -495,7 +495,7 @@ namespace CHPOUTSRCMES.Web.ViewModels.Process
                     labels.AddRange(label.Data);
                 }
 
-                return new MasterUOW(context).PrintLable(labels);
+                return new MasterUOW(context).PrintLabel(labels);
             }
         }
 
@@ -511,7 +511,7 @@ namespace CHPOUTSRCMES.Web.ViewModels.Process
             {
                 List<LabelModel> labels = new List<LabelModel>();
                 var label = new ProcessUOW(context).GePaperRollerProductLabels(OspPickedOutId, userName);
-                return new MasterUOW(context).PrintLable(label.Data);
+                return new MasterUOW(context).PrintLabel(label.Data);
             }
         }
 

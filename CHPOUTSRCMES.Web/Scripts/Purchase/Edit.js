@@ -2,7 +2,7 @@
     $(":file").filestyle({ buttonText: "選擇照片" });
     click();
     photoView();
-    getServicePhoto();
+    getPhotoList();
     SetSpinnerValue();
 });
 
@@ -125,7 +125,7 @@ function FlatSave() {
 function getServicePhoto() {
     var id = $("#Id").val();
     $.ajax({
-        "url": "/Purchase/GetPhoto",
+        "url": "/Purchase/GetPhotos",
         "type": "POST",
         "datatype": "json",
         "data": { id: id },
@@ -145,6 +145,53 @@ function getServicePhoto() {
         },
     });
 }
+
+function getPhotoList() {
+    var id = $("#Id").val();
+    $.ajax({
+        "url": "/Purchase/GetPhotoList",
+        "type": "POST",
+        "datatype": "json",
+        "data": { id: id },
+        success: function (data) {
+            if (data.Code == 0) {
+                for (var i = 0; i < data.Result.length; i++) {
+                    getPhotoById(data.Result[i], i == data.Result.length - 1);
+                }
+            } else {
+                swal.fire(data.Msg);
+            }
+        },
+        error: function (data) {
+            swal.fire(data);
+        },
+    });
+}
+
+function getPhotoById(id, final) {
+
+    $.ajax({
+        "url": "/Purchase/GetPhoto",
+        "type": "POST",
+        "datatype": "json",
+        "data": { id: id },
+        success: function (data) {
+            if (data.Code == 0) {
+                imgSrc.push("data:image/jpeg;base64," + data.Result);
+            }
+            else {
+                swal.fire(data.Msg);
+            }
+
+            if (final) AddNewContent($('#saveBox'));
+        },
+        error: function (data) {
+            if (final) AddNewContent($('#saveBox'));
+            swal.fire(data);
+        },
+    });
+}
+
 
 function SetSpinnerValue() {
     var PickId = $("#Id").val();

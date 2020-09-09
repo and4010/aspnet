@@ -1,10 +1,10 @@
 ﻿
+
 /* 左邊補0 */
 function padLeft(str, len) {
     str = '' + str;
     return str.length >= len ? str : new Array(len - str.length + 1).join("0") + str;
 }
-
 
 
 $(document).ready(function () {
@@ -16,14 +16,15 @@ $(document).ready(function () {
 
 
     var calendar = new FullCalendar.Calendar(calendarEl, {
+        themeSystem: 'bootstrap',
         locale: 'zh-tw',
         timezone: "Asia/Taipei",
-        plugins: ['interaction', 'dayGrid'],
-        header: {
-            left: 'prevYear,prev,next,nextYear today, myCustomButton',
-            center: 'title',
-            right: 'dayGridMonth,dayGridWeek,dayGridDay'
-        },
+        plugins: ['dayGrid', 'moment', 'bootstrap'],
+        //header: {
+        //    left: 'prevYear,prev,next,nextYear today, myCustomButton',
+        //    center: 'title',
+        //    right: 'dayGridMonth,dayGridWeek,dayGridDay'
+        //},
         header: false,
         buttonText: {
             today: '今天',
@@ -32,33 +33,9 @@ $(document).ready(function () {
             day: '當日'
         },
         color: '#05ABBD',
-        //defaultDate: '2019-08-12',
         navLinks: false, // can click day/week names to navigate views
-      //  editable: true,
-        //eventLimit: true, // allow "more" link when too many events
-        //events: '/Purchase/GetEvents',
-        //events: {
-        //    url: '/Purchase/GetEvents',
-        //    method: 'POST',
-        //    extraParams: {
-        //        custom_param1: 'something',
-        //        custom_param2: 'somethingelse'
-        //    },
-        //    failure: function() {
-        //        alert('there was an error while fetching events!');
-        //    },
-        //    color: 'yellow',   // a non-ajax option
-        //    textColor: 'black' // a non-ajax option
-        //},
-        customButtons: {
-            myCustomButton: {
-                text: 'custom!',
-                click: function () {
-                    calendar.gotoDate("0099-08-08");
-                    //alert('clicked the custom button!');
-                }
-            }
-        },
+        displayEventTime: false
+
     });
 
     calendar.render();

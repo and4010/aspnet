@@ -1365,13 +1365,13 @@ namespace CHPOUTSRCMES.Web.Models.Stock
         public ActionResult PrintInboundLabel(TransferUOW uow, List<long> transferPickedIdList, string userName)
         {
             var resultData = uow.GetInboundLabels(transferPickedIdList, userName);
-            return uow.PrintLable(resultData.Data);
+            return uow.PrintLabel(resultData.Data);
         }
 
         public ActionResult PrintOutboundLabel(TransferUOW uow, List<long> transferPickedIdList, string userName)
         {
             var resultData = uow.GetOutboundLabels(transferPickedIdList, userName);
-            return uow.PrintLable(resultData.Data);
+            return uow.PrintLabel(resultData.Data);
         }
 
         public ResultModel WaitPrintToWaitInbound(TransferUOW uow, List<long> transferPickedIdList, string userId, string userName)

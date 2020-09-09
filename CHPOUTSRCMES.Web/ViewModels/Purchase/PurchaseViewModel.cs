@@ -47,22 +47,6 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
         public DetailModel.RollDetailModel RollDetailModel { set; get; }
         public DetailModel.FlatDetailModel FlatDetailModel { set; get; }
 
-        /// <summary>
-        /// 已入庫
-        /// </summary>
-        public const string PurchaseHeaderAlready = "0";
-
-        /// <summary>
-        /// 待入庫
-        /// </summary>
-        public const string PurchaseHeaderPending = "1";
-
-        /// <summary>
-        /// 取消
-        /// </summary>
-        public const string PurchaseHeaderCancel = "2";
-
-
         public List<FullCalendarEventModel> GetFullCalendarModel(string Subinventory)
         {
             using (var context = new MesContext())
@@ -71,11 +55,11 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
             }
         }
 
-        public CTR_HEADER_T GetDetail(long CtrHeaderId)
+        public CTR_HEADER_T GetHeader(long CtrHeaderId)
         {
             using (var context = new MesContext())
             {
-                return new PurchaseUOW(context).GetDetail(CtrHeaderId);
+                return new PurchaseUOW(context).GetHeader(CtrHeaderId);
             }
         }
 
@@ -340,11 +324,29 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
             }
         }
 
-        public List<string> GetPhoto(long id)
+        public List<string> GetPhotos(long id)
         {
             using (var context = new MesContext())
             {
                 return new PurchaseUOW(context).GetPhoto(id);
+            }
+
+        }
+
+        public List<long> GetPhotoList(long id)
+        {
+            using (var context = new MesContext())
+            {
+                return new PurchaseUOW(context).GetPhotoList(id);
+            }
+
+        }
+
+        public string GetPhoto(long id)
+        {
+            using (var context = new MesContext())
+            {
+                return new PurchaseUOW(context).GetPhotoByInfoId(id);
             }
 
         }
@@ -446,7 +448,7 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
         {
             using (var context = new MesContext())
             {
-                return new PurchaseUOW(context).GetLocator(PickId);
+                return new PurchaseUOW(context).GetLocators(PickId);
             }
 
         }
@@ -473,11 +475,11 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
         /// <returns></returns>
         public ActionResult PritFlatLabel(List<long> PICKED_IDs, string userName,string Status)
         {
-            using (var context = new MesContext())
-            {
-              var label = new PurchaseUOW(context).GetFlatLabels(PICKED_IDs, userName, Status);
-              return new MasterUOW(context).PrintLable(label.Data);
-            }
+            using var context = new MesContext();
+            using var uow = new PurchaseUOW(context);
+            var label = uow.GetFlatLabels(PICKED_IDs, userName, Status);
+
+            return uow.PrintLabel(label.Data);
         }
 
         /// <summary>
@@ -489,11 +491,11 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
         /// <returns></returns>
         public ActionResult PritPaperRollLabel(List<long> PICKED_IDs, string userName, string Status)
         {
-            using (var context = new MesContext())
-            {
-                var label = new PurchaseUOW(context).GetPaperRollLabels(PICKED_IDs, userName, Status);
-                return new MasterUOW(context).PrintLable(label.Data);
-            }
+            using var context = new MesContext();
+            using var uow = new PurchaseUOW(context);
+            var label = uow.GetPaperRollLabels(PICKED_IDs, userName, Status);
+
+            return uow.PrintLabel(label.Data);
         }
 
         public ResultDataModel<CTR_PICKED_T> SetSpinnerValue(long PickId)

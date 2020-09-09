@@ -28,19 +28,8 @@ $(document).ready(function () {
             return false;
         }
         var CtrHeaderId = $('#CtrHeaderId').val();
-        var CreateDate = $('#CreateDate').val();
-        $.ajax({
-            url: '/Purchase/RollEditParameter/',
-            type: "POST",
-            data: { CtrPickedId: CtrPickedId, CtrHeaderId: CtrHeaderId, CreateDate: CreateDate },
-            success: function (data) {
-                window.location.href = "RollEdit?CtrPickedId=" + CtrPickedId + "&CtrHeaderId=" + CtrHeaderId; 
-            },
-            error: function() {
-                swal("失敗")
-            }
+        window.location.href = "/Purchase/RollEdit?CtrPickedId=" + CtrPickedId + "&CtrHeaderId=" + CtrHeaderId; 
 
-        })
     })
 
     //紙捲表身檢視事件
@@ -52,19 +41,9 @@ $(document).ready(function () {
             return false;
         }
         var CtrHeaderId = $('#CtrHeaderId').val();
-        var CreateDate = $('#CreateDate').val();
-        $.ajax({
-            url: '/Purchase/RollViewParameter/',
-            type: "POST",
-            data: { CtrPickedId: CtrPickedId, CtrHeaderId: CtrHeaderId },
-            success: function (data) {
-                window.location.href = "RollView?CtrPickedId=" + CtrPickedId + "&CtrHeaderId=" + CtrHeaderId; 
-            },
-            error: function () {
-                swal("失敗")
-            }
+  
+        window.location.href = "/Purchase/RollView?CtrPickedId=" + CtrPickedId + "&CtrHeaderId=" + CtrHeaderId; 
 
-        })
     })
 
 
@@ -76,19 +55,8 @@ $(document).ready(function () {
             return false;
         }
         var CtrHeaderId = $('#CtrHeaderId').val();
-        $.ajax({
-            url: '/Purchase/FlatEditParameter/',
-            type: "POST",
-            data: { CtrPickedId: CtrPickedId, CtrHeaderId: CtrHeaderId },
-            success: function (data) {
-                window.location.href = "FlatEdit?CtrPickedId=" + CtrPickedId + "&CtrHeaderId=" + CtrHeaderId; 
-            },
-            error: function () {
+        window.location.href = "/Purchase/FlatEdit?CtrPickedId=" + CtrPickedId + "&CtrHeaderId=" + CtrHeaderId; 
 
-                swal.fire("失敗");
-            }
-
-        })
     })
     //平張表身檢視事件
     $('#FlatdataTablesBody tbody').on('click', '#btnView', function (e) {
@@ -99,19 +67,7 @@ $(document).ready(function () {
             return false;
         }
         var CtrHeaderId = $('#CtrHeaderId').val();
-        $.ajax({
-            url: '/Purchase/FlatViewParameter/',
-            type: "POST",
-            data: { CtrPickedId: CtrPickedId, CtrHeaderId: CtrHeaderId },
-            success: function (data) {
-                window.location.href = "FlatView?CtrPickedId=" + CtrPickedId + "&CtrHeaderId=" + CtrHeaderId; 
-            },
-            error: function () {
-
-                $.swal("失敗")
-            }
-
-        })
+        window.location.href = "/Purchase/FlatView?CtrPickedId=" + CtrPickedId + "&CtrHeaderId=" + CtrHeaderId; 
 
     });
 
@@ -167,7 +123,7 @@ function PaperNavsNumber() {
         url: '/Purchase/PaperNumber',
         type: 'POST',
         datatype: 'json',
-        data: { CtrHeaderId: CtrHeaderId },
+        data: { id: CtrHeaderId },
         success: function (data) {
             $('#PaperRollSpan').text(data.PaperTotle);
         },
@@ -184,7 +140,7 @@ function FlatNavsNumber() {
         url: '/Purchase/FlatNumber',
         type: 'POST',
         datatype: 'json',
-        data: { CtrHeaderId: CtrHeaderId },
+        data: { id: CtrHeaderId },
         success: function (data) {
             $('#FlatSpan').text(data.FlatTotle);
         },
@@ -379,7 +335,7 @@ function init(status) {
             url: '/Purchase/ReturnIndex',
             type: 'POST',
             datatype: 'json',
-            data: { CtrHeaderId: CtrHeaderId},
+            data: { id: CtrHeaderId},
             success: function (data) {
                 if (data.resultModel.Success) {
                     window.location.href = '/Purchase/Index';
@@ -413,7 +369,7 @@ function InsertPaperRollBarcode(barcode, CtrHeaderId) {
         "url": "/Purchase/RollSaveBarcode",
         "type": "POST",
         "datatype": "json",
-        "data": { barcode: barcode, CtrHeaderId: CtrHeaderId},
+        "data": { barcode: barcode, id: CtrHeaderId},
         success: function (data) {
             if (data.resultModel.Success) {
               
@@ -433,7 +389,7 @@ function InsertFlatBarocde(barcode, CtrHeaderId) {
         "url": "/Purchase/FlatSaveBarcode",
         "type": "POST",
         "datatype": "json",
-        "data": { barcode: barcode, CtrHeaderId: CtrHeaderId},
+        "data": { barcode: barcode, id: CtrHeaderId},
         success: function (data) {
             if (data.resultModel.Success) {
               
@@ -522,7 +478,7 @@ function ImportPaperRoll() {
     var formData = new FormData();
     if (fileInput.length > 0) {
         formData.append("file", fileInput[0]);
-        formData.append("CtrHeaderId", CtrHeaderId);
+        formData.append("id", CtrHeaderId);
     }
     $.ajax({
         "url": "/Purchase/UploadFileRoll",
@@ -660,7 +616,7 @@ function LoadPaperRollHeard() {
             "url": "/Purchase/RollHeader",
             "type": "POST",
             "datatype": "json",
-            "data": { CtrHeaderId: CtrHeaderId }
+            "data": { id: CtrHeaderId }
         },
         columns: [
             { data: "Id", "name": "項次", "autoWidth": true, "className": "dt-body-center", visible: false },
@@ -710,7 +666,7 @@ function LoadFlatHeader() {
             "url": "/Purchase/FlatHeader",
             "type": "POST",
             "datatype": "json",
-            "data": { CtrHeaderId: CtrHeaderId},
+            "data": { id: CtrHeaderId},
         },
         columns: [
             { data: "Id", "name": "項次", "autoWidth": true, "className": "dt-body-center", visible: false },
@@ -776,7 +732,7 @@ function PaperRolldataTablesBody() {
             "url": "/Purchase/RollBody",
             "type": "POST",
             "datatype": "json",
-            "data": {  CtrHeaderId: CtrHeaderId }
+            "data": {  id: CtrHeaderId }
         },
         columns: [
             {
@@ -863,7 +819,7 @@ function FlatdataTablesBody() {
             "url": "/Purchase/FlatBody",
             "type": "POST",
             "datatype": "json",
-            "data": {  CtrHeaderId: CtrHeaderId }
+            "data": { id: CtrHeaderId }
         },
         columns: [
             {

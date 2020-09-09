@@ -13,6 +13,7 @@ using CHPOUTSRCMES.Web.DataModel.Entity;
 using CHPOUTSRCMES.Web.DataModel.Entity.Interfaces;
 using CHPOUTSRCMES.Web.DataModel.Entity.Purchase;
 using CHPOUTSRCMES.Web.DataModel.Entity.Repositorys;
+using CHPOUTSRCMES.Web.DataModel.Interfaces;
 using CHPOUTSRCMES.Web.Models;
 using CHPOUTSRCMES.Web.Models.Purchase;
 using CHPOUTSRCMES.Web.Util;
@@ -230,7 +231,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                         ctrheaderT.OrganizationId = org[i].OrganizationId;
                         ctrheaderT.OrganizationCode = org[i].OrganizationCode;
                         ctrheaderT.Subinventory = org[i].Subinventory;
-                        ctrheaderT.Status = Int64.Parse(PurchaseStatusCode.PurchaseHeaderPending);
+                        ctrheaderT.Status = PurchaseStatusCode.GetCode(PurchaseStatusCode.Pending);
                         ctrheaderT.CreatedBy = org[i].CreatedBy.ToString();
                         ctrheaderT.CreatedUserName = org[i].CreatedBy.ToString();
                         ctrheaderT.CreationDate = org[i].CreationDate;
@@ -248,7 +249,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                         ctrheaderT.OrganizationId = org[i].OrganizationId;
                         ctrheaderT.OrganizationCode = org[i].OrganizationCode;
                         ctrheaderT.Subinventory = org[i].Subinventory;
-                        ctrheaderT.Status = Int64.Parse(PurchaseStatusCode.PurchaseHeaderPending);
+                        ctrheaderT.Status = PurchaseStatusCode.GetCode(PurchaseStatusCode.Pending);
                         ctrheaderT.CreatedBy = org[i].CreatedBy.ToString();
                         ctrheaderT.CreatedUserName = org[i].CreatedBy.ToString();
                         ctrheaderT.CreationDate = org[i].CreationDate;
@@ -304,7 +305,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
 
         }
 
-        public CTR_HEADER_T GetDetail(long CtrHeaderId)
+        public CTR_HEADER_T GetHeader(long CtrHeaderId)
         {
             try
             {
@@ -339,7 +340,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                         if (!m.Success) return m;
                         //return new ResultModel(false, "資料已存在無法匯入");
                     }
-                    
+
 
 
                     var ctrDetail = ctrDetailTRepository.GetAll().Join(
@@ -385,7 +386,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                                 cTR_PICKED_T.LotNumber = PaperRollModel[i].LotNumber;
                                 cTR_PICKED_T.TheoryWeight = PaperRollModel[i].TheoreticalWeight;
                                 cTR_PICKED_T.ItemCategory = ctrDetail[j].d.ItemCategory;
-                                cTR_PICKED_T.Status = "待入庫";
+                                cTR_PICKED_T.Status = PickingStatusCode.NOT_PRINTED;
                                 cTR_PICKED_T.ReasonCode = "";
                                 cTR_PICKED_T.ReasonDesc = "";
                                 cTR_PICKED_T.Note = "";
@@ -417,7 +418,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             {
                 return pryQty;
             }
-            
+
             var model = uomConversion.Convert(itemId, pryQty, pryUom, txnUom);
             if (!model.Success)
                 throw new Exception(model.Msg);
@@ -498,7 +499,7 @@ and d.ITEM_CATEGORY = N'捲筒'");
                         cTR_PICKED_T.LotNumber = "";
                         cTR_PICKED_T.TheoryWeight = "";
                         cTR_PICKED_T.ItemCategory = ctrDetail[i].ItemCategory;
-                        cTR_PICKED_T.Status = "待入庫";
+                        cTR_PICKED_T.Status = PickingStatusCode.NOT_PRINTED;
                         cTR_PICKED_T.ReasonCode = "";
                         cTR_PICKED_T.ReasonDesc = "";
                         cTR_PICKED_T.Note = "";
@@ -531,47 +532,49 @@ and d.ITEM_CATEGORY = N'捲筒'");
             for (int i = 0; i < header.Count; i++)
             {
                 string headerStatus = header[i].Status.ToString();
-                switch(headerStatus)
+                var startTime = ConvertDateTime.ConverYYYY(header[i].MvContainerDate);
+                switch (headerStatus)
                 {
-                    case PurchaseStatusCode.PurchaseHeaderPending:
+                    case PurchaseStatusCode.Pending:
+                        
                         fullCalendarEventModel.Add(new FullCalendarEventModel()
                         {
                             id = header[i].CtrHeaderId,
-                            title = header[i].Subinventory + "\n" + header[i].ContainerNo + " 待入庫",
-                            start = ConvertDateTime.ConverYYYY(header[i].MvContainerDate),
-                            end = ConvertDateTime.ConverYYYY(header[i].MvContainerDate),
+                            title = $" {header[i].MvContainerDate:HH:mm}  {header[i].Subinventory} \n {header[i].ContainerNo} 待入庫",
+                            start = startTime,
+                            end = startTime,
                             allDay = false,
                             url = objUrlHelper.Action("Detail", "Purchase", new
                             {
-                                CtrHeaderId = header[i].CtrHeaderId
+                                Id = header[i].CtrHeaderId
                             }),
                             Status = header[i].Status
                         });
                         break;
-                    case PurchaseStatusCode.PurchaseHeaderCancel:
+                    case PurchaseStatusCode.Cancel:
                         fullCalendarEventModel.Add(new FullCalendarEventModel()
                         {
                             id = header[i].CtrHeaderId,
-                            title = header[i].Subinventory + "\n" + header[i].ContainerNo + "取消",
-                            start = ConvertDateTime.ConverYYYY(header[i].MvContainerDate),
-                            end = ConvertDateTime.ConverYYYY(header[i].MvContainerDate),
+                            title = $" {header[i].MvContainerDate:HH:mm}  {header[i].Subinventory} \n {header[i].ContainerNo} 取消",
+                            start = startTime,
+                            end = startTime,
                             allDay = false,
                             url = "",
                             Status = header[i].Status,
                             color = "#E60000"
                         });
                         break;
-                    case PurchaseStatusCode.PurchaseHeaderAlready:
+                    case PurchaseStatusCode.Already:
                         fullCalendarEventModel.Add(new FullCalendarEventModel()
                         {
                             id = header[i].CtrHeaderId,
-                            title = header[i].Subinventory + "\n" + header[i].ContainerNo + "已入庫",
-                            start = ConvertDateTime.ConverYYYY(header[i].MvContainerDate),
-                            end = ConvertDateTime.ConverYYYY(header[i].MvContainerDate),
+                            title = $" {header[i].MvContainerDate:HH:mm}  {header[i].Subinventory} \n {header[i].ContainerNo} 已入庫",
+                            start = startTime,
+                            end = startTime,
                             allDay = false,
                             url = objUrlHelper.Action("Detail", "Purchase", new
                             {
-                                CtrHeaderId = header[i].CtrHeaderId
+                                Id = header[i].CtrHeaderId
                             }),
                             Status = header[i].Status,
                         });
@@ -596,39 +599,40 @@ and d.ITEM_CATEGORY = N'捲筒'");
                 try
                 {
 
-                    var pick = ctrPickedTRepository.Get(x => x.CtrHeaderId == CtrHeaderId && x.Status == "待入庫").ToList();
-                    if (pick.Count > 0)
+                    var pick = ctrPickedTRepository.Get(x => x.CtrHeaderId == CtrHeaderId && x.Status != PickingStatusCode.ALREADY).Count();
+                    if (pick > 0)
                     {
                         return new ResultModel(false, "有條碼尚未入庫");
                     }
-                    var header = ctrHeaderTRepository.Get(x => x.CtrHeaderId == CtrHeaderId).ToList();
+                    var header = ctrHeaderTRepository.Get(x => x.CtrHeaderId == CtrHeaderId).FirstOrDefault();
                     if (header != null)
                     {
-                        for (int i = 0; i < header.Count; i++)
-                        {
-                            header[i].Status = 0;
-                            ctrHeaderTRepository.Update(header[i], true);
-                            ConvertStock(header[i].CtrHeaderId);
-                            StockRecord(header[i].CtrHeaderId);
-                            PickToPickHT(header[i].CtrHeaderId);
-                            PickTDelete(header[i].CtrHeaderId);
-                            DetailToDetailHT(header[i].CtrHeaderId);
-                        }
+                        //for (int i = 0; i < header.Count; i++)
+                        //{
+                        header.Status = PurchaseStatusCode.GetCode(PurchaseStatusCode.Already);
+                        ctrHeaderTRepository.Update(header, true);
+                        ConvertStock(header.CtrHeaderId);
+                        StockRecord(header.CtrHeaderId);
+                        PickToPickHT(header.CtrHeaderId);
+                        PickTDelete(header.CtrHeaderId);
+                        DetailToDetailHT(header.CtrHeaderId);
+                        //}
                         txn.Commit();
                         return new ResultModel(true, "成功"); ;
-                    }
-                    else
-                    {
-                        return new ResultModel(false, "失敗"); ;
                     }
                 }
                 catch (Exception e)
                 {
-                    txn.Rollback();
+
                     logger.Error(e.Message);
                     return new ResultModel(false, e.Message.ToString());
                 }
+                finally
+                {
+                    txn.Rollback();
+                }
             }
+            return new ResultModel(false, "失敗");
         }
 
         /// <summary>
@@ -640,9 +644,9 @@ and d.ITEM_CATEGORY = N'捲筒'");
         {
             try
             {
-                    StringBuilder query = new StringBuilder();
-                    query.Append(
-                    @"SELECT 
+                StringBuilder query = new StringBuilder();
+                query.Append(
+                @"SELECT 
 ROW_NUMBER() OVER(ORDER BY d.CTR_DETAIL_ID ) AS SubId,
 Cast(d.CTR_HEADER_ID AS bigint) as Id,
 h.SUBINVENTORY AS Subinventory, 
@@ -661,10 +665,10 @@ d.PRIMARY_UOM AS DeliveryUom
 FROM CTR_DETAIL_T d
 JOIN CTR_HEADER_T h ON h.CTR_HEADER_ID = d.CTR_HEADER_ID
 WHERE d.ITEM_CATEGORY = N'平版' and h.CTR_HEADER_ID = @CTR_HEADER_ID");
-                    string commandText = string.Format(query.ToString());
-                    commandText = string.Concat(commandText, " UNION ", commandText.Replace("CTR_DETAIL_T", "CTR_DETAIL_HT"));
-                    return this.Context.Database.SqlQuery<DetailModel.FlatModel>(commandText, new SqlParameter("@CTR_HEADER_ID", CtrHeaderId)).ToList();
-                
+                string commandText = string.Format(query.ToString());
+                commandText = string.Concat(commandText, " UNION ", commandText.Replace("CTR_DETAIL_T", "CTR_DETAIL_HT"));
+                return this.Context.Database.SqlQuery<DetailModel.FlatModel>(commandText, new SqlParameter("@CTR_HEADER_ID", CtrHeaderId)).ToList();
+
             }
             catch (Exception e)
             {
@@ -682,9 +686,9 @@ WHERE d.ITEM_CATEGORY = N'平版' and h.CTR_HEADER_ID = @CTR_HEADER_ID");
         {
             try
             {
-                    StringBuilder query = new StringBuilder();
-                    query.Append(
-                    @"SELECT 
+                StringBuilder query = new StringBuilder();
+                query.Append(
+                @"SELECT 
 ROW_NUMBER() OVER(ORDER BY d.CTR_DETAIL_ID ) AS SubId,
 Cast(d.CTR_HEADER_ID AS bigint) as Id,
 h.SUBINVENTORY AS Subinventory, 
@@ -701,10 +705,10 @@ d.PRIMARY_UOM AS PrimaryUom
 FROM CTR_DETAIL_T d
 JOIN CTR_HEADER_T h ON h.CTR_HEADER_ID = d.CTR_HEADER_ID
 WHERE d.ITEM_CATEGORY = N'捲筒' and h.CTR_HEADER_ID = @CTR_HEADER_ID");
-                    string commandText = string.Format(query.ToString());
-                    commandText = string.Concat(commandText, " UNION ", commandText.Replace("CTR_DETAIL_T", "CTR_DETAIL_HT"));
-                    return Context.Database.SqlQuery<DetailModel.RollModel>(commandText, new SqlParameter("@CTR_HEADER_ID", CtrHeaderId)).ToList();
-                
+                string commandText = string.Format(query.ToString());
+                commandText = string.Concat(commandText, " UNION ", commandText.Replace("CTR_DETAIL_T", "CTR_DETAIL_HT"));
+                return Context.Database.SqlQuery<DetailModel.RollModel>(commandText, new SqlParameter("@CTR_HEADER_ID", CtrHeaderId)).ToList();
+
             }
             catch (Exception e)
             {
@@ -767,9 +771,9 @@ WHERE p.ITEM_CATEGORY = N'捲筒' and h.CTR_HEADER_ID = @CTR_HEADER_ID");
         {
             try
             {
-                    StringBuilder query = new StringBuilder();
-                    query.Append(
-                    @"SELECT 
+                StringBuilder query = new StringBuilder();
+                query.Append(
+                @"SELECT 
 ROW_NUMBER() OVER(ORDER BY p.CTR_DETAIL_ID ) AS SubId,
 p.CTR_PICKED_ID as Id,
 h.SUBINVENTORY as Subinventory, 
@@ -786,10 +790,10 @@ p.NOTE as Remark
 FROM CTR_PICKED_T p
 JOIN CTR_HEADER_T h ON h.CTR_HEADER_ID = p.CTR_HEADER_ID
 WHERE p.ITEM_CATEGORY = N'平版' and h.CTR_HEADER_ID = @CTR_HEADER_ID");
-                    string commandText = string.Format(query.ToString());
-                    commandText = string.Concat(commandText, " UNION ", commandText.Replace("CTR_PICKED_T", "CTR_PICKED_HT"));
-                    return Context.Database.SqlQuery<DetailModel.FlatDetailModel>(commandText, new SqlParameter("@CTR_HEADER_ID", CtrHeaderId)).ToList();
-                
+                string commandText = string.Format(query.ToString());
+                commandText = string.Concat(commandText, " UNION ", commandText.Replace("CTR_PICKED_T", "CTR_PICKED_HT"));
+                return Context.Database.SqlQuery<DetailModel.FlatDetailModel>(commandText, new SqlParameter("@CTR_HEADER_ID", CtrHeaderId)).ToList();
+
             }
             catch (Exception e)
             {
@@ -860,10 +864,9 @@ WHERE p.ITEM_CATEGORY = N'捲筒' and p.CTR_PICKED_ID  = @CTR_PICKED_ID");
                 {
                     if (File != null || File.Count != 0)
                     {
-                        foreach (string i in File)
+                        foreach (HttpPostedFileBase i in File)
                         {
-                            HttpPostedFileBase hpf = File[i] as HttpPostedFileBase;
-                            SaveCtrFileInfoT(VaryQualityLevel(hpf), hpf, id, LastUpdateBy);
+                            SaveCtrFileInfoT(VaryQualityLevel(i), i.FileName, i.ContentType, id, LastUpdateBy);
                         }
                     }
                     var ctrPickT = ctrPickedTRepository.Get(x => x.CtrPickedId == id).SingleOrDefault();
@@ -905,48 +908,58 @@ WHERE p.ITEM_CATEGORY = N'捲筒' and p.CTR_PICKED_ID  = @CTR_PICKED_ID");
         /// <param name="Reason"></param>
         /// <param name="Locator"></param>
         /// <param name="Remark"></param>
-        public ResultModel FlatEdit(HttpFileCollectionBase File, long id, string Reason, string Locator, string Remark, string LastUpdateBy, string LastUpdateUserName)
+        public ResultModel FlatEdit(HttpFileCollectionBase Files, long id, string Reason, string Locator, string Remark, string LastUpdateBy, string LastUpdateUserName)
         {
-            using (var mes = this.Context.Database.BeginTransaction())
+            using var transaction = this.Context.Database.BeginTransaction();
+            try
             {
-                try
+                var ctrPickT = ctrPickedTRepository.Get(x => x.CtrPickedId == id).SingleOrDefault();
+
+                if (ctrPickT == null)
                 {
-                    if (File != null || File.Count != 0)
+                    throw new Exception("揀貨資料不存在!!");
+                }
+
+                if (Files != null || Files.Count > 0)
+                {
+                    foreach (HttpPostedFileBase i in Files)
                     {
-                        foreach (string i in File)
-                        {
-                            HttpPostedFileBase hpf = File[i] as HttpPostedFileBase;
-                            SaveCtrFileInfoT(VaryQualityLevel(hpf), hpf, id, LastUpdateBy);
-                        }
+                        
+                        SaveCtrFileInfoT(VaryQualityLevel(i), i.FileName, i.ContentType, ctrPickT.CtrPickedId, LastUpdateBy);
                     }
-                    var ctrPickT = ctrPickedTRepository.Get(x => x.CtrPickedId == id).SingleOrDefault();
-                    if (Reason != "請選擇")
+                }
+
+                if (Reason != "請選擇")
+                {
+                    var reason = stkReasonTRepository.Get(x => x.ReasonCode == Reason).SingleOrDefault();
+                    if (reason != null)
                     {
-                        var reason = stkReasonTRepository.Get(x => x.ReasonCode == Reason).SingleOrDefault();
                         ctrPickT.ReasonDesc = reason.ReasonDesc;
                         ctrPickT.ReasonCode = reason.ReasonCode;
                     }
-                    if (Locator != "null")
-                    {
-                        var LocatorId = Int32.Parse(Locator);
-                        var Id = locatorTRepository.Get(x => x.LocatorId == LocatorId).SingleOrDefault();
-                        ctrPickT.LocatorId = Id.LocatorId;
-                        ctrPickT.LocatorCode = Id.LocatorSegments;
-                    }
-                    ctrPickT.Note = Remark;
-                    ctrPickT.LastUpdateBy = LastUpdateBy;
-                    ctrPickT.LastUpdateUserName = LastUpdateUserName;
-                    ctrPickT.LastUpdateDate = DateTime.Now;
-                    ctrPickedTRepository.Update(ctrPickT, true);
-                    mes.Commit();
-                    return new ResultModel(true, "");
                 }
-                catch (Exception e)
+
+                if (Locator != "null")
                 {
-                    mes.Rollback();
-                    logger.Error(e.Message);
-                    return new ResultModel(false, e.Message);
+                    var locatorId = Int32.Parse(Locator);
+                    var locator = locatorTRepository.Get(x => x.LocatorId == locatorId).SingleOrDefault();
+                    ctrPickT.LocatorId = locator.LocatorId;
+                    ctrPickT.LocatorCode = locator.LocatorSegments;
                 }
+
+                ctrPickT.Note = Remark;
+                ctrPickT.LastUpdateBy = LastUpdateBy;
+                ctrPickT.LastUpdateUserName = LastUpdateUserName;
+                ctrPickT.LastUpdateDate = DateTime.Now;
+                ctrPickedTRepository.Update(ctrPickT, true);
+                transaction.Commit();
+                return new ResultModel(true, "");
+            }
+            catch (Exception e)
+            {
+                transaction.Rollback();
+                logger.Error(e.Message);
+                return new ResultModel(false, e.Message);
             }
 
 
@@ -966,21 +979,24 @@ WHERE p.ITEM_CATEGORY = N'捲筒' and p.CTR_PICKED_ID  = @CTR_PICKED_ID");
                     var ctrPickT = ctrPickedTRepository.Get(x => x.Barcode == Barcode && x.ItemCategory == "捲筒" && x.CtrHeaderId == CtrHeaderId).SingleOrDefault();
                     if (ctrPickT == null)
                     {
-                        return new ResultModel(false, "此無條碼");
+                        return new ResultModel(false, "此無條碼!!");
                     }
-                    if (ctrPickT.Status == "已入庫")
+
+                    switch (ctrPickT.Status)
                     {
-                        return new ResultModel(false, "條碼已入庫");
-                    }
-                    else
-                    {
-                        ctrPickT.Status = "已入庫";
-                        ctrPickT.LastUpdateBy = LastUpdateBy;
-                        ctrPickT.LastUpdateUserName = LastUpdateUserName;
-                        ctrPickT.LastUpdateDate = DateTime.Now;
-                        ctrPickedTRepository.Update(ctrPickT, true);
-                        txn.Commit();
-                        return new ResultModel(true, "");
+                        case PickingStatusCode.ALREADY:
+                            return new ResultModel(false, $"條碼{ctrPickT.Barcode}-已入庫!!");
+                        case PickingStatusCode.NOT_PRINTED:
+                            return new ResultModel(false, $"條碼{ctrPickT.Barcode}-未列印標籤!!");
+                        case PickingStatusCode.PENDING:
+                        default:
+                            ctrPickT.Status = PickingStatusCode.ALREADY;
+                            ctrPickT.LastUpdateBy = LastUpdateBy;
+                            ctrPickT.LastUpdateUserName = LastUpdateUserName;
+                            ctrPickT.LastUpdateDate = DateTime.Now;
+                            ctrPickedTRepository.Update(ctrPickT, true);
+                            txn.Commit();
+                            return new ResultModel(true, "");
                     }
 
                 }
@@ -1009,21 +1025,22 @@ WHERE p.ITEM_CATEGORY = N'捲筒' and p.CTR_PICKED_ID  = @CTR_PICKED_ID");
                     {
                         return new ResultModel(false, "此無條碼");
                     }
-                    if (ctrPickT.Status == "已入庫")
+                    switch (ctrPickT.Status)
                     {
-                        return new ResultModel(false, "條碼已入庫");
+                        case PickingStatusCode.ALREADY:
+                            return new ResultModel(false, $"條碼{ctrPickT.Barcode}-已入庫!!");
+                        case PickingStatusCode.NOT_PRINTED:
+                            return new ResultModel(false, $"條碼{ctrPickT.Barcode}-未列印標籤!!");
+                        case PickingStatusCode.PENDING:
+                        default:
+                            ctrPickT.Status = PickingStatusCode.ALREADY;
+                            ctrPickedTRepository.Update(ctrPickT, true);
+                            ctrPickT.LastUpdateBy = LastUpdateBy;
+                            ctrPickT.LastUpdateUserName = LastUpdateUserName;
+                            ctrPickT.LastUpdateDate = DateTime.Now;
+                            txn.Commit();
+                            return new ResultModel(true, "");
                     }
-                    else
-                    {
-                        ctrPickT.Status = "已入庫";
-                        ctrPickedTRepository.Update(ctrPickT, true);
-                        ctrPickT.LastUpdateBy = LastUpdateBy;
-                        ctrPickT.LastUpdateUserName = LastUpdateUserName;
-                        ctrPickT.LastUpdateDate = DateTime.Now;
-                        txn.Commit();
-                        return new ResultModel(true, "");
-                    }
-
                 }
                 catch (Exception e)
                 {
@@ -1087,13 +1104,13 @@ WHERE p.ITEM_CATEGORY = N'平版' and p.CTR_PICKED_ID  = @CTR_PICKED_ID");
             {
                 StringBuilder query = new StringBuilder();
                 query.Append(
-                @"SELECT 
+                $@"SELECT 
 (SELECT 
 sum(d1.ROLL_REAM_QTY)- 
 count(p.CTR_PICKED_ID)
 FROM CTR_PICKED_T p
 JOIN CTR_HEADER_T h2 ON h2.CTR_HEADER_ID = p.CTR_HEADER_ID
-WHERE p.ITEM_CATEGORY = N'平版' and h2.CTR_HEADER_ID  = @CTR_HEADER_ID and p.STATUS = N'已入庫')
+WHERE p.ITEM_CATEGORY = N'平版' and h2.CTR_HEADER_ID  = @CTR_HEADER_ID and p.STATUS = N'{PickingStatusCode.ALREADY}')
 FROM CTR_DETAIL_T d1
 JOIN CTR_HEADER_T h1 ON h1.CTR_HEADER_ID = d1.CTR_HEADER_ID
 WHERE d1.ITEM_CATEGORY = N'平版' and h1.CTR_HEADER_ID  = @CTR_HEADER_ID");
@@ -1119,13 +1136,13 @@ WHERE d1.ITEM_CATEGORY = N'平版' and h1.CTR_HEADER_ID  = @CTR_HEADER_ID");
             {
                 StringBuilder query = new StringBuilder();
                 query.Append(
-                @"SELECT 
+                $@"SELECT 
 (SELECT 
 sum(d1.ROLL_REAM_QTY)- 
 count(p.CTR_PICKED_ID)
 FROM CTR_PICKED_T p
 JOIN CTR_HEADER_T h2 ON h2.CTR_HEADER_ID = p.CTR_HEADER_ID
-WHERE p.ITEM_CATEGORY = N'捲筒' and h2.CTR_HEADER_ID  = @CTR_HEADER_ID and p.STATUS = N'已入庫')
+WHERE p.ITEM_CATEGORY = N'捲筒' and h2.CTR_HEADER_ID  = @CTR_HEADER_ID and p.STATUS = N'{PickingStatusCode.ALREADY}')
 FROM CTR_DETAIL_T d1
 JOIN CTR_HEADER_T h1 ON h1.CTR_HEADER_ID = d1.CTR_HEADER_ID
 WHERE d1.ITEM_CATEGORY = N'捲筒' and h1.CTR_HEADER_ID  = @CTR_HEADER_ID");
@@ -1166,7 +1183,7 @@ WHERE d1.ITEM_CATEGORY = N'捲筒' and h1.CTR_HEADER_ID  = @CTR_HEADER_ID");
         /// </summary>
         /// <param name="filebyte"></param>
         /// <param name="file"></param>
-        public void SaveCtrFileInfoT(byte[] filebyte, HttpPostedFileBase file, long id, string CreatedBy)
+        public void SaveCtrFileInfoT(byte[] filebyte, string filename, string fileType, long id, string CreatedBy)
         {
             CTR_FILES_T cTR_FILES_T = new CTR_FILES_T();
             cTR_FILES_T.FileInstance = filebyte;
@@ -1175,8 +1192,8 @@ WHERE d1.ITEM_CATEGORY = N'捲筒' and h1.CTR_HEADER_ID  = @CTR_HEADER_ID");
             CTR_FILEINFO_T cTR_FILEINFO_T = new CTR_FILEINFO_T();
             cTR_FILEINFO_T.CtrPickedId = id;
             cTR_FILEINFO_T.CtrFileId = cTR_FILES_T.CtrFileId;
-            cTR_FILEINFO_T.FileType = file.ContentType;
-            cTR_FILEINFO_T.FileName = file.FileName;
+            cTR_FILEINFO_T.FileType = fileType;
+            cTR_FILEINFO_T.FileName = filename;
             cTR_FILEINFO_T.Size = filebyte.Length;
             cTR_FILEINFO_T.Seq = 1;
             cTR_FILEINFO_T.CreatedBy = CreatedBy;
@@ -1260,7 +1277,7 @@ WHERE d1.ITEM_CATEGORY = N'捲筒' and h1.CTR_HEADER_ID  = @CTR_HEADER_ID");
                c => c.CtrFileId,    //c代表db.CTR_FILEINFO_Ts(c可以自己定義名稱)，這邊放主要資料表要串聯的key
                d => d.CtrFileId,  //d代表db.CTR_FILES_Ts(cd可以自己定義名稱)，這邊放次資料表要串聯的key
                (c, d) => new         //將兩個自定義名稱用小括胡包起來，接著透過 『=>』 可以自己選擇要取用要用資料 
-                   {
+               {
                    x = c.FileInstance,
                    e = d.CtrPickedId
                }
@@ -1274,11 +1291,41 @@ WHERE d1.ITEM_CATEGORY = N'捲筒' and h1.CTR_HEADER_ID  = @CTR_HEADER_ID");
 
         }
 
+
+        public List<long> GetPhotoList(long pickedId)
+        {
+            return ctrFileInfoTRepository.GetAll()
+                .AsNoTracking()
+                .Where(x => x.CtrPickedId == pickedId)
+                .Select(x=>x.CtrFileinfoId)
+                .ToList();
+        }
+
+        public string GetPhotoByInfoId(long infoId)
+        {
+            var db = (MesContext)Context;
+
+            var ctrPhoto = db.CTR_FILES_Ts.Join(
+               db.CTR_FILEINFO_Ts,               //要Join的資料表
+               c => c.CtrFileId,    //c代表db.CTR_FILEINFO_Ts(c可以自己定義名稱)，這邊放主要資料表要串聯的key
+               d => d.CtrFileId,  //d代表db.CTR_FILES_Ts(cd可以自己定義名稱)，這邊放次資料表要串聯的key
+               (c, d) => new         //將兩個自定義名稱用小括胡包起來，接著透過 『=>』 可以自己選擇要取用要用資料 
+               {
+                   x = c.FileInstance,
+                   e = d.CtrFileinfoId
+               }
+               ).Where(x => x.e == infoId).FirstOrDefault();
+
+
+            return ctrPhoto != null ? Convert.ToBase64String(ctrPhoto.x) : null;
+        }
+
+
         /// <summary>
         /// 入庫檢貨轉歷史檢貨
         /// </summary>
         /// <param name="CTR_HEADER_ID"></param>
-        public void PickToPickHT(long CTR_HEADER_ID)
+        public int PickToPickHT(long CTR_HEADER_ID)
         {
 
             StringBuilder query = new StringBuilder();
@@ -1300,27 +1347,26 @@ SELECT [CTR_PICKED_ID],[CTR_HEADER_ID],[CTR_DETAIL_ID],[STOCK_ID],[LOCATOR_ID]
            ,[CREATED_USER_NAME],[CREATION_DATE],[LAST_UPDATE_BY],[LAST_UPDATE_DATE],[LAST_UPDATE_USER_NAME]
 FROM CTR_PICKED_T p
 where p.CTR_HEADER_ID = @CTR_HEADER_ID");
-            Context.Database.ExecuteSqlCommand(query.ToString(), new SqlParameter("@CTR_HEADER_ID", CTR_HEADER_ID));
+            return Context.Database.ExecuteSqlCommand(query.ToString(), new SqlParameter("@CTR_HEADER_ID", CTR_HEADER_ID));
         }
 
         /// <summary>
         /// 入庫檢貨刪除
         /// </summary>
         /// <param name="CTR_HEADER_ID"></param>
-        public void PickTDelete(long CTR_HEADER_ID)
+        public int PickTDelete(long CTR_HEADER_ID)
         {
             StringBuilder query = new StringBuilder();
             query.Append(
-            @"delete CTR_PICKED_T 
-where CTR_HEADER_ID = @CTR_HEADER_ID");
-            Context.Database.ExecuteSqlCommand(query.ToString(), new SqlParameter("@CTR_HEADER_ID", CTR_HEADER_ID));
+            @"DELETE CTR_PICKED_T WHERE CTR_HEADER_ID = @CTR_HEADER_ID");
+            return Context.Database.ExecuteSqlCommand(query.ToString(), new SqlParameter("@CTR_HEADER_ID", CTR_HEADER_ID));
         }
 
         /// <summary>
         /// 存檔入庫明細轉歷史明細
         /// </summary>
         /// <param name="CTR_HEADER_ID"></param>
-        public void DetailToDetailHT(long CTR_HEADER_ID)
+        public int DetailToDetailHT(long CTR_HEADER_ID)
         {
 
             StringBuilder query = new StringBuilder();
@@ -1351,7 +1397,7 @@ SELECT [CTR_DETAIL_ID],[CTR_HEADER_ID],[PROCESS_CODE],[SERVER_CODE],
 FROM CTR_DETAIL_T D
 where D.CTR_HEADER_ID = @CTR_HEADER_ID
 delete CTR_DETAIL_T where CTR_HEADER_ID = @CTR_HEADER_ID");
-            Context.Database.ExecuteSqlCommand(query.ToString(), new SqlParameter("@CTR_HEADER_ID", CTR_HEADER_ID));
+            return Context.Database.ExecuteSqlCommand(query.ToString(), new SqlParameter("@CTR_HEADER_ID", CTR_HEADER_ID));
 
 
         }
@@ -1360,7 +1406,7 @@ delete CTR_DETAIL_T where CTR_HEADER_ID = @CTR_HEADER_ID");
         /// 轉入庫存
         /// </summary>
         /// <param name="CTR_HEADER_ID"></param>
-        public void ConvertStock(long CTR_HEADER_ID)
+        public int ConvertStock(long CTR_HEADER_ID)
         {
             StringBuilder query = new StringBuilder();
             query.Append(
@@ -1394,7 +1440,7 @@ JOIN CTR_DETAIL_T D on D.CTR_DETAIL_ID = P.CTR_DETAIL_ID
 JOIN CTR_HEADER_T H on H.CTR_HEADER_ID = P.CTR_HEADER_ID
 WHERE P.CTR_HEADER_ID = @CTR_HEADER_ID
 ");
-            Context.Database.ExecuteSqlCommand(query.ToString()
+            return Context.Database.ExecuteSqlCommand(query.ToString()
                 , new SqlParameter("@CTR_HEADER_ID", CTR_HEADER_ID)
                 , new SqlParameter("@STATUS_CODE", StockStatusCode.InStock));
         }
@@ -1404,11 +1450,11 @@ WHERE P.CTR_HEADER_ID = @CTR_HEADER_ID
         /// 庫存異動紀錄
         /// </summary>
         /// <param name="CTR_HEADER_ID"></param>
-        public void StockRecord(long CTR_HEADER_ID)
+        public int StockRecord(long CTR_HEADER_ID)
         {
             StringBuilder query = new StringBuilder();
             query.Append(
-            @"INSERT INTO [dbo].[STK_TXN_T]
+@"INSERT INTO [dbo].[STK_TXN_T]
            ([STOCK_ID],[ORGANIZATION_ID] ,[ORGANIZATION_CODE],[SUBINVENTORY_CODE]
            ,[LOCATOR_ID],[DST_ORGANIZATION_ID]  ,[DST_ORGANIZATION_CODE],[DST_SUBINVENTORY_CODE] ,[DST_LOCATOR_ID]
            ,[INVENTORY_ITEM_ID],[ITEM_NUMBER],[ITEM_DESCRIPTION] ,[ITEM_CATEGORY] ,[LOT_NUMBER]
@@ -1428,7 +1474,7 @@ JOIN CTR_PICKED_T P ON P.STOCK_ID = T.STOCK_ID
 JOIN CTR_HEADER_T H on H.CTR_HEADER_ID = P.CTR_HEADER_ID
 JOIN CTR_DETAIL_T D on D.CTR_HEADER_ID = H.CTR_HEADER_ID
 WHERE D.CTR_HEADER_ID = @CTR_HEADER_ID");
-            Context.Database.ExecuteSqlCommand(query.ToString(), new SqlParameter("@CTR_HEADER_ID", CTR_HEADER_ID));
+            return Context.Database.ExecuteSqlCommand(query.ToString(), new SqlParameter("@CTR_HEADER_ID", CTR_HEADER_ID));
         }
 
         /// <summary>
@@ -1448,9 +1494,13 @@ WHERE D.CTR_HEADER_ID = @CTR_HEADER_ID");
                 for (int i = 0; i < PICKED_IDs.Count; i++)
                 {
                     List<SqlParameter> sqlParameterList = new List<SqlParameter>();
-                    StringBuilder cmd = new StringBuilder(
-@"
-SELECT 
+                    StringBuilder cmd = new StringBuilder();
+                    cmd.AppendLine(
+@"UPDATE CTR_PICKED_T SET STATUS =@TO_STATUS 
+WHERE STATUS=@FROM_STATUS AND CTR_PICKED_ID = @CTR_PICKED_ID");
+
+                    string picked =
+@"SELECT 
 CAST(PT.BARCODE AS nvarchar) AS Barocde,
 @userName as PrintBy,
 CAST(tt.ITEM_DESC_TCH AS nvarchar) AS BarocdeName, 
@@ -1464,12 +1514,18 @@ FROM [CTR_PICKED_T] PT
 join CTR_HEADER_T CT ON CT.CTR_HEADER_ID = PT.CTR_HEADER_ID
 join ITEMS_T tt on tt.INVENTORY_ITEM_ID = PT.INVENTORY_ITEM_ID
 WHERE PT.ITEM_CATEGORY = N'平版'
-AND pt.CTR_PICKED_ID = @CTR_PICKED_ID
-");
+AND pt.CTR_PICKED_ID = @CTR_PICKED_ID";
+
+                    cmd.AppendLine(picked);
+                    cmd.AppendLine(picked.Replace("CTR_PICKED_T", "CTR_PICKED_HT"));
+
+
+                    string commandText = cmd.ToString();
                     sqlParameterList.Add(new SqlParameter("@userName", userName));
                     sqlParameterList.Add(new SqlParameter("@CTR_PICKED_ID", PICKED_IDs[i]));
-                    string commandText = string.Format(cmd.ToString());
-                    commandText = string.Concat(commandText, " UNION ", commandText.Replace("CTR_PICKED_T", "CTR_PICKED_HT"));
+                    sqlParameterList.Add(new SqlParameter("@TO_STATUS", PickingStatusCode.PENDING));
+                    sqlParameterList.Add(new SqlParameter("@FROM_STATUS", PickingStatusCode.NOT_PRINTED));
+
                     var labelModel = this.Context.Database.SqlQuery<LabelModel>(commandText, sqlParameterList.ToArray()).SingleOrDefault();
                     if (labelModel == null) return new ResultDataModel<List<LabelModel>>(false, "找不到標籤資料", null);
                     labelModelList.Add(labelModel);
@@ -1503,8 +1559,10 @@ AND pt.CTR_PICKED_ID = @CTR_PICKED_ID
                 for (int i = 0; i < PICKED_IDs.Count; i++)
                 {
                     List<SqlParameter> sqlParameterList = new List<SqlParameter>();
-                    StringBuilder cmd = new StringBuilder(
-@"
+                    StringBuilder cmd = new StringBuilder();
+                    cmd.AppendLine(@"UPDATE CTR_PICKED_T SET STATUS =@TO_STATUS 
+WHERE STATUS=@FROM_STATUS AND CTR_PICKED_ID = @CTR_PICKED_ID");
+                    string picked = @"
 SELECT 
 CAST(PT.BARCODE AS nvarchar) AS Barocde,
 @userName as PrintBy,
@@ -1520,11 +1578,18 @@ join CTR_HEADER_T CT ON CT.CTR_HEADER_ID = PT.CTR_HEADER_ID
 join ITEMS_T tt on tt.INVENTORY_ITEM_ID = PT.INVENTORY_ITEM_ID
 WHERE PT.ITEM_CATEGORY = N'捲筒'
 AND pt.CTR_PICKED_ID = @CTR_PICKED_ID
-");
+";
+                    cmd.AppendLine(picked);
+                    cmd.AppendLine(picked.Replace("CTR_PICKED_T", "CTR_PICKED_HT"));
+
+
+                    string commandText = cmd.ToString();
                     sqlParameterList.Add(new SqlParameter("@userName", userName));
                     sqlParameterList.Add(new SqlParameter("@CTR_PICKED_ID", PICKED_IDs[i]));
-                    string commandText = string.Format(cmd.ToString());
-                    commandText = string.Concat(commandText, " UNION ", commandText.Replace("CTR_PICKED_T", "CTR_PICKED_HT"));
+                    sqlParameterList.Add(new SqlParameter("@TO_STATUS", PickingStatusCode.PENDING));
+                    sqlParameterList.Add(new SqlParameter("@FROM_STATUS", PickingStatusCode.NOT_PRINTED));
+
+
                     var labelModel = this.Context.Database.SqlQuery<LabelModel>(commandText, sqlParameterList.ToArray()).SingleOrDefault();
                     if (labelModel == null) return new ResultDataModel<List<LabelModel>>(false, "找不到標籤資料", null);
                     labelModelList.Add(labelModel);
@@ -1549,51 +1614,40 @@ AND pt.CTR_PICKED_ID = @CTR_PICKED_ID
         /// <param name="UserId"></param>
         /// <param name="PickId"></param>
         /// <returns></returns>
-        public List<SelectListItem> GetLocator(long PickId)
+        public List<SelectListItem> GetLocators(long PickId)
         {
             try
             {
-                    StringBuilder quId = new StringBuilder();
-                    quId.Append(
-@"
-SELECT 
-h.SUBINVENTORY
-FROM [CTR_PICKED_T] pt
-join CTR_HEADER_T h on h.CTR_HEADER_ID = pt.CTR_HEADER_ID
-where pt.CTR_PICKED_ID = @CTR_PICKED_ID
-");
-                    var SUBINVENTORY_CODE = Context.Database.SqlQuery<string>(quId.ToString(), new SqlParameter("@CTR_PICKED_ID", PickId)).SingleOrDefault();
-
-
-                    List<SelectListItem> Locatorlist = new List<SelectListItem>();
-                    List<SqlParameter> sqlParameterList = new List<SqlParameter>();
-                    List<string> cond = new List<string>();
-                    StringBuilder query = new StringBuilder();
-                    query.Append(
+                List<SelectListItem> Locatorlist = new List<SelectListItem>();
+                List<SqlParameter> sqlParameterList = new List<SqlParameter>();
+                StringBuilder query = new StringBuilder();
+                query.Append(
 @"
 SELECT
-CAST ([LOCATOR_ID] AS varchar)as Value,
-[SEGMENT3] as Text
+CAST (lt.[LOCATOR_ID] AS VARCHAR)AS Value,
+lt.[SEGMENT2] + '.' + lt.[SEGMENT3] AS Text
 FROM [LOCATOR_T] lt
-join SUBINVENTORY_T st on st.SUBINVENTORY_CODE = lt.SUBINVENTORY_CODE
-where lt.CONTROL_FLAG <> 'D'
-and st.LOCATOR_TYPE = '2'
-and lt.LOCATOR_DISABLE_DATE >= GETDATE() OR lt.LOCATOR_DISABLE_DATE is null
-and lt.SUBINVENTORY_CODE = @SUBINVENTORY_CODE
+JOIN SUBINVENTORY_T st ON st.ORGANIZATION_ID = lt.ORGANIZATION_ID AND st.SUBINVENTORY_CODE = lt.SUBINVENTORY_CODE
+JOIN CTR_HEADER_T h ON h.SUBINVENTORY = st.SUBINVENTORY_CODE AND h.ORGANIZATION_ID = st.ORGANIZATION_ID
+JOIN CTR_PICKED_T pt ON pt.CTR_HEADER_ID = h.CTR_HEADER_ID
+WHERE pt.CTR_PICKED_ID = @CTR_PICKED_ID
+AND lt.CONTROL_FLAG <> 'D'
+AND st.LOCATOR_TYPE = '2'
+AND (lt.LOCATOR_DISABLE_DATE >= GETDATE() OR lt.LOCATOR_DISABLE_DATE is null)
 ");
-                    sqlParameterList.Add(new SqlParameter("@SUBINVENTORY_CODE", SUBINVENTORY_CODE));
-                    string commandText = string.Format(query + "{0}{1}", cond.Count > 0 ? " where " : "", string.Join(" and ", cond.ToArray()));
-                    if (sqlParameterList.Count > 0)
-                    {
-                        Locatorlist.AddRange(Context.Database.SqlQuery<SelectListItem>(commandText, sqlParameterList.ToArray()).ToList());
-                    }
-                    else
-                    {
-                        Locatorlist.AddRange(Context.Database.SqlQuery<SelectListItem>(commandText).ToList());
-                    }
+                sqlParameterList.Add(new SqlParameter("@CTR_PICKED_ID", PickId));
+                string commandText = query.ToString();
+                if (sqlParameterList.Count > 0)
+                {
+                    Locatorlist.AddRange(Context.Database.SqlQuery<SelectListItem>(commandText, sqlParameterList.ToArray()).ToList());
+                }
+                else
+                {
+                    Locatorlist.AddRange(Context.Database.SqlQuery<SelectListItem>(commandText).ToList());
+                }
 
-                    return Locatorlist;
-                
+                return Locatorlist;
+
             }
             catch (Exception e)
             {
@@ -1622,24 +1676,63 @@ and lt.SUBINVENTORY_CODE = @SUBINVENTORY_CODE
         }
 
 
-        public class PurchaseStatusCode
+        public class PurchaseStatusCode : IStatus
         {
             /// <summary>
             /// 已入庫
             /// </summary>
-            public const string PurchaseHeaderAlready = "0";
+            public const string Already = "0";
 
             /// <summary>
             /// 待入庫
             /// </summary>
-            public const string PurchaseHeaderPending = "1";
+            public const string Pending = "1";
 
             /// <summary>
             /// 取消
             /// </summary>
-            public const string PurchaseHeaderCancel = "2";
+            public const string Cancel = "2";
+
+
+            public static long GetCode(string statusCode)
+            {
+                return long.Parse(statusCode);
+            }
+
+            public string GetDesc(string statusCode)
+            {
+                var desc = "";
+                switch (statusCode)
+                {
+                    case Already:
+                        desc = "已入庫";
+                        break;
+                    case Cancel:
+                        desc = "取消";
+                        break;
+                    case Pending:
+                        desc = "待入庫";
+                        break;
+                }
+                return desc;
+            }
         }
 
+
+        public class PickingStatusCode : IStatus
+        {
+            public const string ALREADY = "已入庫";
+
+            public const string PENDING = "待入庫";
+
+            public const string NOT_PRINTED = "未印";
+
+            public string GetDesc(string statusCode)
+            {
+                return statusCode;
+
+            }
+        }
     }
 
 

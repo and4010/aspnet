@@ -1104,7 +1104,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
         public ActionResult PritLabel(DeliveryUOW uow, List<long> PICKED_IDs, string userName)
         {
             var resultData = uow.GetLabels(PICKED_IDs, userName);
-            return uow.PrintLable(resultData.Data);
+            return uow.PrintLabel(resultData.Data);
         }
     }
 

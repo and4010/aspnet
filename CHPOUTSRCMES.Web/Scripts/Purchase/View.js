@@ -1,6 +1,6 @@
 ﻿$(document).ready(function () {
     click();
-    getServicePhoto();
+    getPhotoList();
 });
 
 var VimgSrc = []; //圖片路徑
@@ -40,7 +40,7 @@ function closePicture(obj) {
 function getServicePhoto() {
     var id = $("#Id").val();
     $.ajax({
-        "url": "/Purchase/GetPhoto",
+        "url": "/Purchase/GetPhotos",
         "type": "POST",
         "datatype": "json",
         "data": { id: id },
@@ -54,6 +54,51 @@ function getServicePhoto() {
                 }
             }
 
+        },
+        error: function (data) {
+            swal.fire(data);
+        },
+    });
+}
+
+
+function getPhotoList() {
+    var id = $("#Id").val();
+    $.ajax({
+        "url": "/Purchase/GetPhotoList",
+        "type": "POST",
+        "datatype": "json",
+        "data": { id: id },
+        success: function (data) {
+            if (data.Code == 0) {
+                for (var i = 0; i < data.Result.length; i++) {
+                    getPhotoById(data.Result[i]);
+                }
+            } else {
+                swal.fire(data.Msg);
+            }
+        },
+        error: function (data) {
+            swal.fire(data);
+        },
+    });
+}
+
+function getPhotoById(id) {
+
+    $.ajax({
+        "url": "/Purchase/GetPhoto",
+        "type": "POST",
+        "datatype": "json",
+        "data": { id: id },
+        success: function (data) {
+            if (data.Code == 0) {
+                imgSrc.push("data:image/jpeg;base64," + data.Result);
+                AddNewContent($('#saveBox'));
+            }
+            else {
+                swal.fire(data.Msg);
+            }
         },
         error: function (data) {
             swal.fire(data);
