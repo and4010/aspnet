@@ -1514,9 +1514,9 @@ namespace CHPOUTSRCMES.Web.Models.Stock
             return uow.GetStockTList(organizationId, subinventoryCode, locatorId, itemNumber);
         }
 
-        public ResultModel SaveReason(HttpFileCollectionBase File, long stockId, string reasonCode, long? transferLocatorId, string note, string userId, string userName)
+        public ResultModel SaveReason(TransferUOW uow, HttpFileCollectionBase file, long stockId, string reasonCode, long? transferLocatorId, string note, string userId, string userName)
         {
-            return new ResultModel(true, "貨故存檔成功");
+            return uow.SaveReason(file, stockId, reasonCode, transferLocatorId, note, userId, userName);
         }
 
     }

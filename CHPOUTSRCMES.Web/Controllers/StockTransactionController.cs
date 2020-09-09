@@ -854,7 +854,7 @@ namespace CHPOUTSRCMES.Web.Controllers
                     var name = this.User.Identity.GetUserName();
                     var files = Request.Files;
                  
-                    ResultModel result = stockTransferData.SaveReason(files, Int64.Parse(formCollection["stockId"]),
+                    ResultModel result = stockTransferData.SaveReason(uow, files, Int64.Parse(formCollection["stockId"]),
                         formCollection["reasonCode"],
                         formCollection["transferLocatorId"] == null ? default(long?) : Int64.Parse(formCollection["stockId"]),
                         formCollection["note"], id, name);

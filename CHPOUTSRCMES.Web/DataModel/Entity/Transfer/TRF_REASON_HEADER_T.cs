@@ -90,22 +90,22 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Transfer
         [Column("LOCATOR_CODE")]
         public string LocatorCode { set; get; }
 
-        ///// <summary>
-        ///// 儲位第三節段
-        ///// </summary>
-        ///// 
-        //[StringLength(40)]
-        //[Column("SEGMENT3")]
-        //public string Segment3 { set; get; }
+        /// <summary>
+        /// 儲位第三節段
+        /// </summary>
+        /// 
+        [StringLength(40)]
+        [Column("SEGMENT3")]
+        public string Segment3 { set; get; }
 
-        ///// <summary>
-        ///// 出貨編號狀態
-        ///// </summary>
-        ///// 
-        //[StringLength(10)]
-        //[Required]
-        //[Column("NUMBER_STATUS")]
-        //public string NumberStatus { set; get; }
+        /// <summary>
+        /// 出貨編號狀態
+        /// </summary>
+        /// 
+        [StringLength(10)]
+        [Required]
+        [Column("NUMBER_STATUS")]
+        public string NumberStatus { set; get; }
 
         /// <summary>
         /// 交易日期

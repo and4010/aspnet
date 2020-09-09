@@ -2803,7 +2803,10 @@ SELECT [STOCK_ID] as ID
                     if (trfLocator == null) throw new Exception("找不到目標儲位資料");
 
                     var stock = stockTRepository.GetAll().FirstOrDefault(x => x.StockId == stockId);
-                    if (stock == null) throw new Exception("找不到目標儲位資料");
+                    if (stock == null) throw new Exception("找不到庫存資料");
+
+                    var locator = locatorTRepository.GetAll().AsNoTracking().FirstOrDefault(x => x.LocatorId == stock.LocatorId);
+                    if (locator == null) throw new Exception("找不到儲位資料");
 
                     var organization = GetOrganization(stock.OrganizationId);
                     if (organization == null) throw new Exception("找不到組織資料");
@@ -2839,6 +2842,7 @@ SELECT [STOCK_ID] as ID
                         SubinventoryCode = stock.SubinventoryCode,
                         LocatorId = stock.LocatorId,
                         LocatorCode = stock.LocatorSegments,
+                        Segment3 = locator.Segment3,
                         TransactionDate = now,
                         TransactionTypeId = transactionTypeId,
                         TransactionTypeName = transactionType.TransactionTypeName,
@@ -2848,6 +2852,7 @@ SELECT [STOCK_ID] as ID
                         TransferSubinventoryCode = trfLocator.SubinventoryCode,
                         TransferLocatorId = transferLocatorId,
                         TransferLocatorCode = trfLocator.LocatorSegments,
+                        NumberStatus = NumberStatus.Saved,
                         ToErp = ToErp.Yes,
                         CreatedBy = userId,
                         CreatedUserName = userName,
@@ -2911,10 +2916,91 @@ SELECT [STOCK_ID] as ID
                     }
 
                     //更新庫存
+                    stock.OrganizationId = trfLocator.OrganizationId;
+                    stock.OrganizationCode = trfOrganization.OrganizationCode;
+                    stock.SubinventoryCode = trfLocator.SubinventoryCode;
+                    stock.LocatorId = transferLocatorId;
+                    stock.LocatorSegments = trfLocator.LocatorSegments;
+                    stock.ReasonCode = reasonCode;
+                    stock.ReasonDesc = reason.ReasonDesc;
+                    stock.StatusCode = StockStatusCode.InStock;
+                    stock.LastUpdateBy = userId;
+                    stock.LastUpdateDate = now;
+                    stockTRepository.Update(stock);
 
-                    //搬移到歷史
+                    STK_TXN_T stkTxnT = CreateStockRecord(stock, trfLocator.OrganizationId, trfOrganization.OrganizationCode, trfLocator.SubinventoryCode, transferLocatorId, CategoryCode.TransferReason, ActionCode.StockTransfer, header.ShipmentNumber);
+                    stkTxnTRepository.Create(stkTxnT);
 
-                    //刪除原本的
+                    
+                    //複製貨故明細資料到貨故歷史明細
+                    string cmd = @"
+INSERT INTO TRF_REASON_HT
+(
+      [TRANSFER_REASON_ID]
+      ,[TRANSFER_REASON_HEADER_ID]
+      ,[INVENTORY_ITEM_ID]
+      ,[ITEM_NUMBER]
+      ,[ITEM_DESCRIPTION]
+      ,[BARCODE]
+      ,[STOCK_ID]
+      ,[PRIMARY_UOM]
+      ,[PRIMARY_QUANTITY]
+      ,[SECONDARY_UOM]
+      ,[SECONDARY_QUANTITY]
+      ,[LOT_NUMBER]
+      ,[LOT_QUANTITY]
+      ,[REASON_CODE]
+      ,[REASON_DESC]
+      ,[NOTE]
+      ,[CREATED_BY]
+      ,[CREATED_USER_NAME]
+      ,[CREATION_DATE]
+      ,[LAST_UPDATE_BY]
+      ,[LAST_UPDATE_USER_NAME]
+      ,[LAST_UPDATE_DATE]
+)
+SELECT [TRANSFER_REASON_ID]
+      ,[TRANSFER_REASON_HEADER_ID]
+      ,[INVENTORY_ITEM_ID]
+      ,[ITEM_NUMBER]
+      ,[ITEM_DESCRIPTION]
+      ,[BARCODE]
+      ,[STOCK_ID]
+      ,[PRIMARY_UOM]
+      ,[PRIMARY_QUANTITY]
+      ,[SECONDARY_UOM]
+      ,[SECONDARY_QUANTITY]
+      ,[LOT_NUMBER]
+      ,[LOT_QUANTITY]
+      ,[REASON_CODE]
+      ,[REASON_DESC]
+      ,[NOTE]
+      ,[CREATED_BY]
+      ,[CREATED_USER_NAME]
+      ,[CREATION_DATE]
+      ,[LAST_UPDATE_BY]
+      ,[LAST_UPDATE_USER_NAME]
+      ,[LAST_UPDATE_DATE]
+  FROM [TRF_REASON_T]
+  WHERE [TRANSFER_REASON_HEADER_ID] = @TRANSFER_REASON_HEADER_ID
+";
+                    if (this.Context.Database.ExecuteSqlCommand(cmd, new SqlParameter("@TRANSFER_REASON_HEADER_ID", header.TransferReasonHeaderId)) <= 0)
+                    {
+                        throw new Exception("複製貨故明細資料到貨故歷史明細失敗");
+                    }
+
+                    //刪除貨故明細資料
+                    cmd = @"
+  DELETE FROM [TRF_REASON_T]
+  WHERE TRANSFER_REASON_HEADER_ID = @TRANSFER_REASON_HEADER_ID";
+                    if (this.Context.Database.ExecuteSqlCommand(cmd, new SqlParameter("@TRANSFER_REASON_HEADER_ID", header.TransferReasonHeaderId)) <= 0)
+                    {
+                        throw new Exception("刪除貨故明細資料失敗");
+                    }
+
+                    this.SaveChanges();
+                    txn.Commit();
+                    return new ResultModel(true, "貨故存檔成功");
                 }
                 catch (Exception ex)
                 {
@@ -2922,7 +3008,6 @@ SELECT [STOCK_ID] as ID
                     txn.Rollback();
                     return new ResultModel(false, "貨故存檔失敗:" + ex.Message);
                 }
-                return new ResultModel(true, "貨故存檔成功");
             }
         }
 

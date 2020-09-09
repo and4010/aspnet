@@ -130,7 +130,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             this.stkTxnTRepository = new GenericRepository<STK_TXN_T>(this);
             this.appUserRepository = new GenericRepository<AppUser>(this);
             this.userSubinventoryTRepository = new GenericRepository<USER_SUBINVENTORY_T>(this);
-            this.uomConversion = new FakeUomConversion(); //待改回UomConversion
+            this.uomConversion = new UomConversion();
         }
 
 
@@ -317,6 +317,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             public const string Miscellaneous = "C5";
             public const string Obsolete = "C6";
             public const string Inventory = "C7";
+            public const string TransferReason = "C8";
 
 
             public string GetDesc(string category)
@@ -339,6 +340,8 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                         return "存貨報廢";
                     case Inventory:
                         return "盤點";
+                    case TransferReason:
+                        return "庫存移轉-貨故";
                     default:
                         return "";
                 }
