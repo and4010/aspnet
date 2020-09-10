@@ -96,7 +96,7 @@ $(document).ready(function () {
         //calendar.gotoDate(date);
     });
 
-    $(".btn-group").on('click', '#btn-refresh', function () {
+    $("#btn-refresh").on('click', function () {
 
         //showPdf(1);
         //winPrintDialogBox();

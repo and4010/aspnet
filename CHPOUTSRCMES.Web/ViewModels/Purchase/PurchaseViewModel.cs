@@ -15,6 +15,7 @@ using System.Web.Services.Protocols;
 using Microsoft.Graph;
 using NLog;
 using CHPOUTSRCMES.Web.DataModel.Entity.Purchase;
+using Microsoft.Reporting.WebForms;
 
 namespace CHPOUTSRCMES.Web.ViewModels.Purchase
 {
@@ -503,6 +504,22 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
             using (var context = new MesContext())
             {
                 return new PurchaseUOW(context).SetSpinnerValue(PickId);
+            }
+        }
+
+        public void PurchaseFlatReceipt(ref ReportDataSource Header, ref ReportDataSource Detail, ref ReportDataSource Reason, string CtrHeaderId,string ITEM_CATEGORY)
+        {
+            using (var context = new MesContext())
+            {
+                new MasterUOW(context).PurchaseFlatReceipt(ref Header, ref Detail, ref Reason, CtrHeaderId, ITEM_CATEGORY);
+            }
+        }
+
+        public void PurchasePaperRollerReceipt(ref ReportDataSource Header, ref ReportDataSource Detail, ref ReportDataSource Reason, string CtrHeaderId, string ITEM_CATEGORY)
+        {
+            using (var context = new MesContext())
+            {
+                new MasterUOW(context).PurchasePaperRollerReceipt(ref Header, ref Detail, ref Reason, CtrHeaderId, ITEM_CATEGORY);
             }
         }
 

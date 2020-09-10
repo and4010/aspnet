@@ -1,4 +1,6 @@
-﻿using CHPOUTSRCMES.Web.Models;
+﻿using CHPOUTSRCMES.Web.DataModel;
+using CHPOUTSRCMES.Web.DataModel.UnitOfWorks;
+using CHPOUTSRCMES.Web.Models;
 using CHPOUTSRCMES.Web.Models.Delivery;
 using CHPOUTSRCMES.Web.Models.Stock;
 using CHPOUTSRCMES.Web.Util;
@@ -6,18 +8,25 @@ using CHPOUTSRCMES.Web.ViewModels.Account;
 using CHPOUTSRCMES.Web.ViewModels.Inventory;
 using CHPOUTSRCMES.Web.ViewModels.Process;
 using CHPOUTSRCMES.Web.ViewModels.Purchase;
+using Microsoft.Reporting.WebForms;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.UI.WebControls;
 
 namespace CHPOUTSRCMES.Web.Controllers
 {
     [Authorize]
     public class HomeController : Controller
     {
+        public const string Flat = "平版";
+
+        public const string PaperRoller = "捲筒";
+
         StockTransferBarcodeData stockTransferBarcodeData = new StockTransferBarcodeData();
         public ActionResult Index()
         {
@@ -212,5 +221,82 @@ namespace CHPOUTSRCMES.Web.Controllers
             //HttpContext.Current.Response.Write();
             Response.End();
         }
+
+
+        public ActionResult LocalReport(string CtrHeaderId, string ItemCategory)
+        {
+            using (var context = new MesContext())
+            {
+                using (MasterUOW uow = new MasterUOW(context))
+                {
+                    List<ReportParameter> paramList = new List<ReportParameter>();
+                    paramList.Add(new ReportParameter("CTR_HEADER_ID", CtrHeaderId, false));
+                    paramList.Add(new ReportParameter("ITEM_CATEGORY", ItemCategory, false));
+                    var report = new ReportViewer();
+
+                    // Set the processing mode for the ReportViewer to Local  
+                    report.ProcessingMode = ProcessingMode.Local;
+                    report.BackColor = Color.LightGray;
+                    report.SizeToReportContent = true;
+                    report.BorderWidth = 1;
+                    report.BorderStyle = BorderStyle.Solid;
+                    LocalReport localReport = report.LocalReport;
+                    if(ItemCategory == Flat)
+                    {
+                        localReport.ReportPath = "Report/PurchaseFlat.rdlc";
+                    }
+                    else
+                    {
+                        localReport.ReportPath = "Report/PurchasePaperRoll.rdlc";
+                    }
+                   
+                    ReportDataSource Header = new ReportDataSource();
+                    ReportDataSource Detail = new ReportDataSource();
+                    ReportDataSource Reason = new ReportDataSource();
+                    uow.PurchaseFlatReceipt(ref Header, ref Detail, ref Reason, CtrHeaderId, ItemCategory);
+                    localReport.DataSources.Add(Header);
+                    localReport.DataSources.Add(Detail);
+                    localReport.DataSources.Add(Reason);
+                    // Set the report parameters for the report  
+                    localReport.SetParameters(paramList);
+
+                    report.LocalReport.Refresh();
+
+                    ViewBag.ReportViewer = report;
+                }
+            }
+          
+            return View("Report");
+        }
+
+
+        public ActionResult RemoteReport(string CtrHeaderId, string ItemCategory)
+        {
+            List<ReportParameter> paramList = new List<ReportParameter>();
+            paramList.Add(new ReportParameter("CTR_HEADER_ID", CtrHeaderId, false));
+            paramList.Add(new ReportParameter("ITEM_CATEGORY", ItemCategory, false));
+            var report = new ReportViewer();
+            report.ProcessingMode = ProcessingMode.Remote;
+            report.SizeToReportContent = true;
+            report.BorderStyle = BorderStyle.Solid;
+            report.BorderWidth = 1;
+            report.BackColor = Color.LightGray;
+            if (ItemCategory == Flat)
+            {
+                report.ServerReport.ReportPath = "/開發區/CHPOUSMES/Flat.dlc";
+            }
+            else
+            {
+                report.ServerReport.ReportPath = "/開發區/CHPOUSMES/PaperRoll.dlc";
+            }
+            report.ServerReport.ReportServerUrl = new Uri("http://yfyrs001.yfy.corp/reports/");
+            report.ServerReport.SetParameters(paramList);
+            report.LocalReport.Refresh();
+            ViewBag.ReportViewer = report;
+            return View("Report");
+        }
+
+
+
     }
 }

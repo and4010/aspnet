@@ -18,6 +18,9 @@ using System.Web.UI.WebControls;
 using Microsoft.AspNet.Identity;
 using Microsoft.Reporting.WebForms;
 using System.Configuration;
+using System.Data;
+using System.Data.SqlClient;
+using System.Text;
 
 namespace CHPOUTSRCMES.Web.Controllers
 {
@@ -367,7 +370,6 @@ namespace CHPOUTSRCMES.Web.Controllers
                     {
                         //file.SaveAs(Path.Combine(filelocation, file.FileName));
                         ExcelImportRoll(file, ref detail, ref result, long.Parse(formCollection["id"]));
-                        ExcelImportRoll(file, ref detail, ref result, long.Parse(formCollection["id"]));
                     }
                     catch (Exception e)
                     {
@@ -620,25 +622,10 @@ namespace CHPOUTSRCMES.Web.Controllers
             return Json(new { resultDataModel }, JsonRequestBehavior.AllowGet);
         }
 
-
-        public ActionResult Report(string HeaderId)
-        {
-            List<ReportParameter> paramList = new List<ReportParameter>();
-            paramList.Add(new ReportParameter("@HeaderId", HeaderId, false));
-
-            var report = new ReportViewer();
-            report.ProcessingMode = ProcessingMode.Remote;
-            report.SizeToReportContent = true;
-            report.BorderStyle = BorderStyle.Solid;
-            report.BorderWidth = 1;
-            report.BackColor = Color.LightGray;
-            report.ServerReport.ReportPath = "/開發區/CHPOUSMES/PaperRoll.dlc";
-            report.ServerReport.ReportServerUrl = new Uri("http://yfyrs001.yfy.corp/reports/");
-            report.ServerReport.SetParameters(paramList);
-            ViewBag.ReportViewer = report;
+        
 
 
-            return View();
-        }
+
+
     }
 }
