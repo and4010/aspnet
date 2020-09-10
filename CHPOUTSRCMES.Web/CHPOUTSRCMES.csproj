@@ -1941,6 +1941,8 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="Properties\PublishProfiles\Pon.pubxml" />
+    <Content Include="Report\PurchaseFlat.rdlc" />
+    <Content Include="Report\PurchasePaperRoll.rdlc" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\Delivery\DetailViewHeader.js" />
     <Content Include="Scripts\Delivery\FlatEdit.js" />
@@ -2096,7 +2098,7 @@
     <Content Include="Views\StockInventory\_ProfitPartial.cshtml" />
     <Content Include="Views\StockTransaction\_MergeBarcodePartial.cshtml" />
     <Content Include="Views\Shared\_Layout2.cshtml" />
-    <Content Include="Views\Purchase\Report.cshtml" />
+    <Content Include="Views\Home\Report.cshtml" />
     <Content Include="Views\Stock\Query.cshtml" />
   </ItemGroup>
   <ItemGroup>

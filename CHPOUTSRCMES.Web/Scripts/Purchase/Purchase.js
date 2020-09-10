@@ -106,11 +106,29 @@ $(document).ready(function () {
 
 
     $('#BtnPaperRollReport').click(function () {
-        window.open("/Purchase/Report/" + $("#CtrHeaderId").val());
+        if (Status == 0) {
+            swal.fire("已入庫無法列印");
+            return;
+        }
+        if ($('#PaperRolldataTablesBody').DataTable().data().length == "0") {
+            swal.fire("無資料無法列印");
+            return;
+        }
+        var CtrHeaderId = $("#CtrHeaderId").val()
+        window.open("/Home/LocalReport/?CtrHeaderId=" + CtrHeaderId + "&ItemCategory=" +"捲筒");
     });
 
     $('#BtnFlatReport').click(function () {
-        window.open("/Purchase/Report/" + $("#CtrHeaderId").val());
+        if (Status == 0) {
+            swal.fire("已入庫無法列印");
+            return;
+        }
+        if ($('#FlatdataTablesBody').DataTable().data().length == "0") {
+            swal.fire("無資料無法列印");
+            return;
+        }
+        var CtrHeaderId = $("#CtrHeaderId").val()
+        window.open("/Home/LocalReport/?CtrHeaderId=" + CtrHeaderId + "&ItemCategory=" + "平版");
     });
 });
 

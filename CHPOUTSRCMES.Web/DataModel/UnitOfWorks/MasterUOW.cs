@@ -23,6 +23,8 @@ using System.Text;
 using CHPOUTSRCMES.Web.Jsons.Requests;
 using System.Web;
 using System.Drawing.Imaging;
+using System.Data;
+using Microsoft.Reporting.WebForms;
 
 namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
 {
@@ -2617,6 +2619,112 @@ and usb.UserId = @UserId
             }
             return codec;
 
+        }
+
+
+        public void PurchaseFlatReceipt(ref ReportDataSource Header, ref ReportDataSource Detail, ref ReportDataSource Reason, string CtrHeaderId, string ItemCategory)
+        {
+            try
+            {
+                DataSet dataset = new DataSet("Flat");
+                GetHeaderReceipt(ref dataset, CtrHeaderId);
+                Header.Name = "Header";
+                Header.Value = dataset.Tables["Header"];
+
+                DataSet deatail = new DataSet("Flat");
+                GetDetailReceipt(ref deatail, CtrHeaderId, ItemCategory);
+                Detail.Name = "Detail";
+                Detail.Value = deatail.Tables["Detail"];
+
+                DataSet reason = new DataSet("Flat");
+                GetReasonReceipt(ref reason);
+                Reason.Name = "Reason";
+                Reason.Value = reason.Tables["Reason"];
+            }
+            catch (Exception e)
+            {
+                logger.Error(LogUtilities.BuildExceptionMessage(e));
+            }
+        }
+
+        public void PurchasePaperRollerReceipt(ref ReportDataSource Header, ref ReportDataSource Detail, ref ReportDataSource Reason, string CtrHeaderId, string ItemCategory)
+        {
+            try
+            {
+                DataSet dataset = new DataSet("Flat");
+                GetHeaderReceipt(ref dataset, CtrHeaderId);
+                Header.Name = "Header";
+                Header.Value = dataset.Tables["Header"];
+
+                DataSet deatail = new DataSet("Flat");
+                GetDetailReceipt(ref deatail, CtrHeaderId, ItemCategory);
+                Detail.Name = "Detail";
+                Detail.Value = deatail.Tables["Detail"];
+
+                DataSet reason = new DataSet("Flat");
+                GetReasonReceipt(ref reason);
+                Reason.Name = "Reason";
+                Reason.Value = reason.Tables["Reason"];
+            }
+            catch (Exception e)
+            {
+                logger.Error(LogUtilities.BuildExceptionMessage(e));
+            }
+        }
+
+        public void GetHeaderReceipt(ref DataSet dsSalesOrder, string CTR_HEADER_ID)
+        {
+            string Header = "SELECT CONTAINER_NO,MV_CONTAINER_DATE,P.PAPER_TYPE FROM CTR_HEADER_T H JOIN CTR_PICKED_T P ON P.CTR_HEADER_ID = H.CTR_HEADER_ID where H.CTR_HEADER_ID = @CTR_HEADER_ID GROUP BY P.PAPER_TYPE,MV_CONTAINER_DATE,CONTAINER_NO";
+            SqlConnection connection = new SqlConnection("Data Source=192.168.0.1;Initial Catalog=CHPOUTSRCMES;User Id=sa;Password=B10TECH@;");
+            SqlCommand command = new SqlCommand(Header, connection);
+            command.Parameters.Add(new SqlParameter("CTR_HEADER_ID", CTR_HEADER_ID));
+            SqlDataAdapter salesOrderAdapter = new SqlDataAdapter(command);
+
+            salesOrderAdapter.Fill(dsSalesOrder, "Header");
+        }
+
+        public void GetDetailReceipt(ref DataSet Detail, string CTR_HEADER_ID, string ITEM_CATEGORY)
+        {
+            StringBuilder query = new StringBuilder();
+            query.Append(
+@"SELECT 
+ROW_NUMBER() OVER(ORDER BY p.CTR_DETAIL_ID ) AS SubId,
+P.ITEM_CATEGORY,
+P.PAPER_TYPE,
+P.BASIC_WEIGHT,
+P.SPECIFICATION,
+P.LOT_NUMBER,
+P.PRIMARY_QUANTITY,
+P.PACKING_TYPE,
+P.REAM_WEIGHT
+FROM CTR_PICKED_T P
+JOIN CTR_HEADER_T H ON H.CTR_HEADER_ID = P.CTR_HEADER_ID
+JOIN CTR_DETAIL_T D ON D.CTR_DETAIL_ID = P.CTR_DETAIL_ID
+WHERE H.CTR_HEADER_ID = @CTR_HEADER_ID
+and p.ITEM_CATEGORY = @ITEM_CATEGORY");
+            string commandText = string.Format(query.ToString());
+            SqlConnection connection = new SqlConnection("Data Source=192.168.0.1;Initial Catalog=CHPOUTSRCMES;User Id=sa;Password=B10TECH@;");
+            SqlCommand command = new SqlCommand(commandText, connection);
+            command.Parameters.Add(new SqlParameter("CTR_HEADER_ID", CTR_HEADER_ID));
+            command.Parameters.Add(new SqlParameter("ITEM_CATEGORY", ITEM_CATEGORY));
+            SqlDataAdapter salesOrderAdapter = new SqlDataAdapter(command);
+
+            salesOrderAdapter.Fill(Detail, "Detail");
+        }
+
+        public void GetReasonReceipt(ref DataSet Reason)
+        {
+            StringBuilder query = new StringBuilder();
+            query.Append(
+            @"SELECT 
+REASON_CODE+'-'+REASON_DESC
+FROM STK_REASON_T");
+            string commandText = string.Format(query.ToString());
+            SqlConnection connection = new SqlConnection("Data Source=192.168.0.1;Initial Catalog=CHPOUTSRCMES;User Id=sa;Password=B10TECH@;");
+            SqlCommand command = new SqlCommand(commandText, connection);
+            SqlDataAdapter salesOrderAdapter = new SqlDataAdapter(command);
+
+            salesOrderAdapter.Fill(Reason, "Reason");
         }
     }
 }

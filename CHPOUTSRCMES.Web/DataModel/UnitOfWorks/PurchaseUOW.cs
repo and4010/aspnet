@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.Entity;
 using System.Data.SqlClient;
 using System.Drawing;
@@ -18,6 +19,7 @@ using CHPOUTSRCMES.Web.Models;
 using CHPOUTSRCMES.Web.Models.Purchase;
 using CHPOUTSRCMES.Web.Util;
 using DataTables;
+using Microsoft.Reporting.WebForms;
 using NLog;
 
 namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
@@ -1684,7 +1686,6 @@ AND (lt.LOCATOR_DISABLE_DATE >= GETDATE() OR lt.LOCATOR_DISABLE_DATE is null)
                 return new ResultDataModel<CTR_PICKED_T>(false, "取得原因失敗:" + e.Message, null);
             }
         }
-
 
         public class PurchaseStatusCode : IStatus
         {
