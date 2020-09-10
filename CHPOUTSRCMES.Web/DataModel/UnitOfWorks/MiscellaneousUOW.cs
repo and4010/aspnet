@@ -299,7 +299,7 @@ SELECT m.TRANSFER_MISCELLANEOUS_ID AS ID
                         string segment3 = null;
                         if (locatorId != null)
                         {
-                            var outLocator = GetLocatorForTransfer(organizationId, subinventoryCode, now);
+                            var outLocator = GetLocatorForTransfer((long)locatorId, now);
                             if (outLocator == null) throw new Exception("找不到庫存儲位資料");
                             locatorCode = outLocator.LocatorSegments;
                             segment3 = outLocator.Segment3;

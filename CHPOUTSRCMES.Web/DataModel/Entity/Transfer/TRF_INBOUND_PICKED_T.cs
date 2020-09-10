@@ -94,6 +94,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Transfer
         /// 次要數量
         /// </summary>
         /// 
+        [DisplayFormat(DataFormatString = "{0:0.##########}", ApplyFormatInEditMode = true)]
         [Column("SECONDARY_QUANTITY")]
         [Precision(30, 10)]
         public decimal? SecondaryQuantity { set; get; }

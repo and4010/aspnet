@@ -301,7 +301,7 @@ $(document).ready(function () {
             //{ data: "PALLET_STATUS", name: "棧板狀態", autoWidth: true, visible: false }
         ],
 
-        order: [[10, 'desc']],
+        order: [[1, 'desc']],
         select: {
             style: 'multi',
             //blurable: true,
@@ -451,7 +451,12 @@ $(document).ready(function () {
     //    FlatBarcodeDataTablesBody.button(2).disable(selectedRows === 0);
     //});
 
-    
+    //$("#txtSECONDARY_QUANTITY").on("keypress keyup blur", function (event) {
+    //    //$(this).val($(this).val().replace(/[^\d].+/, ""));
+    //    //if (((event.which < 48 && event.which != 46) || event.which > 57)) {
+    //    //    event.preventDefault();
+    //    //}
+    //});
 
     $("#SECONDARY_QUANTITY").hide();
     $("#txtSECONDARY_QUANTITY").val("");
@@ -551,25 +556,49 @@ $(document).ready(function () {
         }
 
         var BARCODE = $('#txtBARCODE').val();
-        var SECONDARY_QUANTITY = $('#txtSECONDARY_QUANTITY').val();
-        if (!SECONDARY_QUANTITY) {
-            SECONDARY_QUANTITY = null;
+        if (!BARCODE) {
+            swal.fire('請輸入條碼');
+            event.preventDefault();
+            return false;
         }
+
+        var SECONDARY_QUANTITY = null;
+        if ($('#txtSECONDARY_QUANTITY').is(":visible")) {
+            SECONDARY_QUANTITY = $('#txtSECONDARY_QUANTITY').val();
+            if (!SECONDARY_QUANTITY) {
+                swal.fire('請輸入令數');
+                event.preventDefault();
+                return false;
+            }
+        }
+
+       
+
         $('#txtBARCODE').attr('disabled', true);
 
+        var viewModel = {
+            DLV_HEADER_ID: $("#DlvHeaderId").text(),
+            DLV_DETAIL_ID: $("#DLV_DETAIL_ID").text(),
+            DELIVERY_NAME: $("#DELIVERY_NAME").text(),
+            BARCODE: BARCODE,
+            SECONDARY_QUANTITY: SECONDARY_QUANTITY,
+        };
+        viewModel.__RequestVerificationToken = $('input[name=__RequestVerificationToken]').val();
         $.ajax({
             url: "/Delivery/InputFlatEditBarcode",
             type: "post",
-            data: {
-                'BARCODE': BARCODE,
-                'SECONDARY_QUANTITY': SECONDARY_QUANTITY,
-                DlvHeaderId: $("#DlvHeaderId").text(),
-                DLV_DETAIL_ID: $("#DLV_DETAIL_ID").text(),
-                DELIVERY_NAME: $("#DELIVERY_NAME").text()
-            },
+            data: viewModel,
+            dataType: 'json',
+            //data: {
+            //    'BARCODE': BARCODE,
+            //    'SECONDARY_QUANTITY': SECONDARY_QUANTITY,
+            //    DlvHeaderId: $("#DlvHeaderId").text(),
+            //    DLV_DETAIL_ID: $("#DLV_DETAIL_ID").text(),
+            //    DELIVERY_NAME: $("#DELIVERY_NAME").text()
+            //},
             success: function (data) {
                 if (data.status) {
-                    FlatBarcodeDataTablesBody.ajax.reload();
+                    FlatBarcodeDataTablesBody.ajax.reload(null, false);
                     FlatDataTablesBody.ajax.reload(null, false);
                     UpdateDeliveryDetailViewHeader();
 

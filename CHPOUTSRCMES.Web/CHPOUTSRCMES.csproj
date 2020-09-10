@@ -46,6 +46,10 @@
     <LangVersion>preview</LangVersion>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="System.Core">
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Dapper, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Dapper.2.0.35\lib\net461\Dapper.dll</HintPath>
     </Reference>
@@ -458,6 +462,7 @@
     <Compile Include="SqlServerTypes\Loader.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="Util\ConvertDateTime.cs" />
+    <Compile Include="Util\ConvertEx.cs" />
     <Compile Include="Util\ExcelImport.cs" />
     <Compile Include="Util\ExcelUtil.cs" />
     <Compile Include="Util\LogUtilities.cs" />

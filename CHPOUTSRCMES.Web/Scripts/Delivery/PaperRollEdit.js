@@ -331,7 +331,7 @@ $(document).ready(function () {
             { data: "PICKED_ID", name: "PICKED_ID", autoWidth: true, visible: false }
         ],
 
-        "order": [[6, 'desc']],
+        "order": [[1, 'desc']],
         select: {
             style: 'multi',
             //blurable: true,
@@ -445,11 +445,11 @@ $(document).ready(function () {
                                 confirmButtonText: "確定",
                             }).then(function (result) {
                                 if (result.value) {
-                                    PrintLable(PaperRollBarcodeDataTablesBody, "/Delivery/PrintLabel", "11");
+                                    PrintLable(PaperRollBarcodeDataTablesBody, "/Delivery/PrintLabel", "7");
                                 }
                             });
                         } else {
-                            PrintLable(PaperRollBarcodeDataTablesBody, "/Delivery/PrintLabel", "11");
+                            PrintLable(PaperRollBarcodeDataTablesBody, "/Delivery/PrintLabel", "7");
                         }
                     },
                     className: "btn-primary",
@@ -499,13 +499,21 @@ $(document).ready(function () {
             return false;
         }
 
+        var BARCODE = $('#txtBARCODE').val();
+        if (!BARCODE) {
+            swal.fire('請輸入條碼');
+            event.preventDefault();
+            return false;
+        }
+
+
         $('#txtBARCODE').attr('disabled', true);
 
         $.ajax({
             url: "/Delivery/InputRollEditBarcode",
             type: "post",
             data: {
-                BARCODE: $('#txtBARCODE').val(),
+                BARCODE: BARCODE,
                 DlvHeaderId: $("#DlvHeaderId").text(),
                 DLV_DETAIL_ID: $("#DLV_DETAIL_ID").text(),
                 DELIVERY_NAME: $("#DELIVERY_NAME").text()

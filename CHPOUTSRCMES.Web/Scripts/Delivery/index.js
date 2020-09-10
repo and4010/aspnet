@@ -195,6 +195,7 @@ $(document).ready(function () {
             success: function (data) {
                 if (data.status) {
                     TripDataTablesBody.ajax.reload(null, false);
+                    swal.fire(data.result);
                 }
                 else {
                     swal.fire(data.result);

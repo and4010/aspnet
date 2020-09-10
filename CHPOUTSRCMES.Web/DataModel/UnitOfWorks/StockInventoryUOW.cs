@@ -200,7 +200,7 @@ SELECT [STOCK_ID] as ID
                         string segment3 = null;
                         if (locatorId != null)
                         {
-                            var outLocator = GetLocatorForTransfer(organizationId, subinventoryCode, now);
+                            var outLocator = GetLocatorForTransfer((long)locatorId, now);
                             if (outLocator == null) throw new Exception("找不到庫存儲位資料");
                             locatorCode = outLocator.LocatorSegments;
                             segment3 = outLocator.Segment3;
@@ -1079,9 +1079,14 @@ SELECT [TRANSFER_INVENTORY_ID]
                     if (string.IsNullOrEmpty(stockInventoryDT.ITEM_NO)) throw new Exception("沒有料號");
                     if (stockInventoryDT.ORGANIZATION_ID == 0) throw new Exception("沒有組織ID");
                     if (string.IsNullOrEmpty(stockInventoryDT.SUBINVENTORY_CODE)) throw new Exception("沒有倉庫");
-                    if (stockInventoryDT.LOCATOR_ID > 0)
+
+                    string locatorSegments = null;
+                    if (stockInventoryDT.LOCATOR_ID > 0) //判斷是否有儲位
                     {
                         if (string.IsNullOrEmpty(stockInventoryDT.SEGMENT3)) throw new Exception("沒有儲位第三節段");
+                        var locator = GetLocatorForTransfer(stockInventoryDT.LOCATOR_ID, now);
+                        if (locator == null) throw new Exception("找不到儲位資料");
+                        locatorSegments = locator.LocatorSegments;
                     }
 
 
@@ -1099,8 +1104,9 @@ SELECT [TRANSFER_INVENTORY_ID]
 
                     var organization = GetOrganization(stockInventoryDT.ORGANIZATION_ID);
                     if (organization == null) throw new Exception("找不到組織資料");
-                    var locator = GetLocatorForTransfer(stockInventoryDT.ORGANIZATION_ID, stockInventoryDT.SUBINVENTORY_CODE, now);
-                    if (locator == null) throw new Exception("找不到儲位資料");
+
+                   
+                   
                     //產生條碼清單
                     var generateBarcodesResult = GenerateBarcodes(stockInventoryDT.ORGANIZATION_ID, stockInventoryDT.SUBINVENTORY_CODE, 1, userId);
                     if (!generateBarcodesResult.Success) throw new Exception(generateBarcodesResult.Msg);
@@ -1151,9 +1157,9 @@ SELECT [TRANSFER_INVENTORY_ID]
                             OrganizationCode = organization.OrganizationCode,
                             ShipmentNumber = GetShipmentNumberGuid(),
                             SubinventoryCode = stockInventoryDT.SUBINVENTORY_CODE,
-                            LocatorId = stockInventoryDT.LOCATOR_ID,
-                            LocatorCode = locator.LocatorSegments,
-                            Segment3 = stockInventoryDT.SEGMENT3,
+                            LocatorId = stockInventoryDT.LOCATOR_ID == 0 ? default(long?) : stockInventoryDT.LOCATOR_ID,
+                            LocatorCode = locatorSegments,
+                            Segment3 = stockInventoryDT.SEGMENT3 == "" ? null : stockInventoryDT.SEGMENT3,
                             NumberStatus = NumberStatus.NotSaved,
                             TransactionDate = now,
                             TransactionTypeId = TransactionTypeId.Chp16In,

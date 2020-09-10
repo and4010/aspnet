@@ -13,6 +13,7 @@ using CHPOUTSRCMES.Web.DataModel.Entity.Delivery;
 using static CHPOUTSRCMES.Web.DataModel.UnitOfWorks.DeliveryUOW;
 using System.Security.Claims;
 using NLog;
+using CHPOUTSRCMES.Web.Util;
 
 namespace CHPOUTSRCMES.Web.Models.Delivery
 {
@@ -1005,9 +1006,19 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
 
         }
 
-        public ResultModel AddPickDT(DeliveryUOW uow, long dlvHeaderId, long dlvDetailId, string deliveryName, string barcode, decimal? qty, string addUser, string addUserName)
+        public ResultModel AddPickDT(DeliveryUOW uow, long dlvHeaderId, long dlvDetailId, string deliveryName, string barcode, string qty, string addUser, string addUserName)
         {
-            return uow.AddPickDT(dlvHeaderId, dlvDetailId, deliveryName, barcode, qty, addUser, addUserName);
+            if (qty != null)
+            {
+                var result = ConvertEx.StringToDecimal(qty);
+                if (!result.Success) return new ResultModel(false, "令數須為數字");
+                return uow.AddPickDT(dlvHeaderId, dlvDetailId, deliveryName, barcode, result.Data, addUser, addUserName);
+            }
+            else
+            {
+                return uow.AddPickDT(dlvHeaderId, dlvDetailId, deliveryName, barcode, null, addUser, addUserName);
+            }
+           
             //var addResult = uow.AddPickDT(dlvHeaderId, dlvDetailId, deliveryName, barcode, qty, addUser, addUserName, status);
             //if (!addResult.Success)
             //{

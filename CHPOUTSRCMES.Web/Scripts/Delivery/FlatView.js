@@ -91,11 +91,11 @@
          { data: "SECONDARY_QUANTITY", name: "次要數量", autoWidth: true, className: "dt-body-right" },
          { data: "SECONDARY_UOM", name: "次要單位", autoWidth: true },
          //{ data: "REMARK", name: "備註", autoWidth: true, className: "dt-body-left" },
-         { data: "LAST_UPDATE_DATE", name: "更新日期", autoWidth: true, visible: false },
+         //{ data: "LAST_UPDATE_DATE", name: "更新日期", autoWidth: true, visible: false },
          
         ],
 
-        order: [[9, 'desc']],
+        order: [[0, 'desc']],
         
 
     });

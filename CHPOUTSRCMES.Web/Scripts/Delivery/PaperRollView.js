@@ -83,10 +83,10 @@
          { data: "PRIMARY_QUANTITY", name: "主要數量", autoWidth: true, className: "dt-body-right" },
          { data: "PRIMARY_UOM", name: "主要單位", autoWidth: true },
          //{ data: "REMARK", name: "備註", autoWidth: true, className: "dt-body-left" },
-         { data: "LAST_UPDATE_DATE", name: "更新日期", autoWidth: true, visible: false },
+         //{ data: "LAST_UPDATE_DATE", name: "更新日期", autoWidth: true, visible: false },
         ],
 
-        "order": [[5, 'desc']],
+        "order": [[0, 'desc']],
        
 
     });

@@ -175,12 +175,13 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                         CreatedBy = addUser,
                         CreatedUserName = addUserName,
                         CreationDate = addDate,
-                        LastUpdateBy = addUser,
-                        LastUpdateUserName = addUserName,
-                        LastUpdateDate = addDate,
+                        LastUpdateBy = null,
+                        LastUpdateUserName = null,
+                        LastUpdateDate = null,
                         Status = status,
                         PalletStatus = palletStatus
                     });
+
 
                     stockTRepository.SaveChanges();
                     stkTxnTRepository.SaveChanges();
@@ -986,10 +987,10 @@ JOIN USER_SUBINVENTORY_T s ON s.SUBINVENTORY_CODE = h.SUBINVENTORY_CODE";
                         data.TransactionByUserNmae = userName;
                         data.DeliveryStatusCode = statusCode;
                         data.DeliveryStatusName = deliveryStatusCode.GetDesc(statusCode);
-                        dlvHeaderTRepository.Update(data);
                         data.LastUpdateBy = userId;
                         data.LastUpdateUserName = userName;
                         data.LastUpdateDate = now;
+                        dlvHeaderTRepository.Update(data);
                     }
                     dlvHeaderTRepository.SaveChanges();
                     txn.Commit();
@@ -1036,16 +1037,20 @@ JOIN USER_SUBINVENTORY_T s ON s.SUBINVENTORY_CODE = h.SUBINVENTORY_CODE";
                         data.LastUpdateDate = now;
                         dlvHeaderTRepository.Update(data);
 
-                        //更新庫存鎖定量
-                        var pick = dlvPickedTRepository.GetAll().AsNoTracking().FirstOrDefault(x => x.DlvHeaderId == data.DlvHeaderId);
-                        if (pick == null) throw new Exception("找不到揀貨資料");
-                        var stock = stockTRepository.GetAll().FirstOrDefault(x => x.StockId == pick.Stock_Id);
-                        if (stock == null) throw new Exception("找不到庫存資料");
-                        STK_TXN_T stkTxnT = CreateStockRecord(stock, null, "", "", null, CategoryCode.Delivery, ActionCode.Shipped, data.DeliveryName);
-                        var updateStockLockQtyResult = UpdateStockLockQty(stock, stkTxnT, -1 * pick.PrimaryQuantity, -1 * pick.SecondaryQuantity, pickSatus, PickStatus.Shipped, userId, now);
-                        if (!updateStockLockQtyResult.Success) throw new Exception(updateStockLockQtyResult.Msg);
+                        
+                        var pickList = dlvPickedTRepository.GetAll().AsNoTracking().Where(x => x.DlvHeaderId == data.DlvHeaderId).ToList();
+                        if (pickList == null || pickList.Count == 0) throw new Exception("找不到揀貨資料");
 
-
+                        foreach(DLV_PICKED_T pick in pickList)
+                        {
+                            //更新庫存鎖定量
+                            var stock = stockTRepository.GetAll().FirstOrDefault(x => x.StockId == pick.Stock_Id);
+                            if (stock == null) throw new Exception("找不到庫存資料");
+                            STK_TXN_T stkTxnT = CreateStockRecord(stock, null, "", "", null, CategoryCode.Delivery, ActionCode.Shipped, data.DeliveryName);
+                            var updateStockLockQtyResult = UpdateStockLockQty(stock, stkTxnT, -1 * pick.PrimaryQuantity, -1 * pick.SecondaryQuantity, pickSatus, PickStatus.Shipped, userId, now);
+                            if (!updateStockLockQtyResult.Success) throw new Exception(updateStockLockQtyResult.Msg);
+                        }
+                        
                         //複製出貨明細資料到出貨歷史明細
                         string cmd = @"
 INSERT INTO [DLV_DETAIL_HT]
@@ -1220,10 +1225,11 @@ SELECT [DLV_PICKED_ID]
                         }
                     }
 
-                    dlvHeaderTRepository.SaveChanges();
-                    stockTRepository.SaveChanges();
-                    stkTxnTRepository.SaveChanges();
-                    
+                    this.SaveChanges();
+                    //dlvHeaderTRepository.SaveChanges();
+                    //stockTRepository.SaveChanges();
+                    //stkTxnTRepository.SaveChanges();
+
 
                     txn.Commit();
                     return new ResultModel(true, "出貨核准成功");
@@ -1236,6 +1242,50 @@ SELECT [DLV_PICKED_ID]
                 }
             }
         }
+
+        //public ResultModel CancelTrip(List<DLV_HEADER_T> updateDatas, string userId, string userName)
+        //{
+        //    if (updateDatas == null || updateDatas.Count == 0) return new ResultModel(false, "沒有交運單資料");
+        //    using (var txn = this.Context.Database.BeginTransaction())
+        //    {
+        //        try
+        //        {
+        //            foreach (DLV_HEADER_T data in updateDatas)
+        //            {
+        //                //更新出貨檔頭
+        //                data.AuthorizeBy = userId;
+        //                data.AuthorizeByUserName = userName;
+        //                data.AuthorizeDate = authorizeDate;
+        //                data.DeliveryStatusCode = DeliveryStatusCode.Shipped;
+        //                data.DeliveryStatusName = deliveryStatusName;
+        //                data.LastUpdateBy = userId;
+        //                data.LastUpdateUserName = userName;
+        //                data.LastUpdateDate = now;
+        //                dlvHeaderTRepository.Update(data);
+
+
+        //                var pickList = dlvPickedTRepository.GetAll().AsNoTracking().Where(x => x.DlvHeaderId == data.DlvHeaderId).ToList();
+        //                if (pickList == null || pickList.Count == 0) throw new Exception("找不到揀貨資料");
+
+        //                foreach (DLV_PICKED_T pick in pickList)
+        //                {
+        //                    //更新庫存鎖定量
+        //                    var stock = stockTRepository.GetAll().FirstOrDefault(x => x.StockId == pick.Stock_Id);
+        //                    if (stock == null) throw new Exception("找不到庫存資料");
+        //                    STK_TXN_T stkTxnT = CreateStockRecord(stock, null, "", "", null, CategoryCode.Delivery, ActionCode.Shipped, data.DeliveryName);
+        //                    var updateStockLockQtyResult = UpdateStockLockQty(stock, stkTxnT, -1 * pick.PrimaryQuantity, -1 * pick.SecondaryQuantity, pickSatus, PickStatus.Shipped, userId, now);
+        //                    if (!updateStockLockQtyResult.Success) throw new Exception(updateStockLockQtyResult.Msg);
+        //                }
+        //            }
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            logger.Error(LogUtilities.BuildExceptionMessage(ex));
+        //            txn.Rollback();
+        //            return new ResultModel(false, "取消航程號失敗:" + ex.Message);
+        //        }
+        //    }
+        //}
 
         /// <summary>
         /// 更新交運單狀態
@@ -1432,7 +1482,7 @@ GROUP BY d.DLV_DETAIL_ID";
                 cmd = @"
 select
 DLV_PICKED_ID as PICKED_ID,
-ROW_NUMBER() OVER(ORDER BY DLV_DETAIL_ID) AS SUB_ID,
+ROW_NUMBER() OVER(ORDER BY DLV_PICKED_ID) AS SUB_ID,
 DLV_HEADER_ID as DlvHeaderId,
 DLV_DETAIL_ID as PaperRollEditDT_ID,
 PALLET_STATUS,
@@ -1448,7 +1498,7 @@ where DLV_HEADER_ID = @DLV_HEADER_ID";
                 cmd = @"
 select
 DLV_PICKED_ID as PICKED_ID,
-ROW_NUMBER() OVER(ORDER BY DLV_DETAIL_ID) AS SUB_ID,
+ROW_NUMBER() OVER(ORDER BY DLV_PICKED_ID) AS SUB_ID,
 DLV_HEADER_ID as DlvHeaderId,
 DLV_DETAIL_ID as PaperRollEditDT_ID,
 PALLET_STATUS,
@@ -1581,7 +1631,7 @@ GROUP BY d.DLV_DETAIL_ID";
                 cmd = @"
 select 
 DLV_PICKED_ID as PICKED_ID,
-ROW_NUMBER() OVER(ORDER BY DLV_DETAIL_ID) AS SUB_ID,
+ROW_NUMBER() OVER(ORDER BY DLV_PICKED_ID) AS SUB_ID,
 DLV_HEADER_ID as DlvHeaderId,
 DLV_DETAIL_ID as FlatEditDT_ID,
 PALLET_STATUS,
@@ -1602,7 +1652,7 @@ where DLV_HEADER_ID = @DLV_HEADER_ID"; ;
                 cmd = @"
 select 
 DLV_PICKED_ID as PICKED_ID,
-ROW_NUMBER() OVER(ORDER BY DLV_DETAIL_ID) AS SUB_ID,
+ROW_NUMBER() OVER(ORDER BY DLV_PICKED_ID) AS SUB_ID,
 DLV_HEADER_ID as DlvHeaderId,
 DLV_DETAIL_ID as FlatEditDT_ID,
 PALLET_STATUS,

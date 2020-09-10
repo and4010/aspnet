@@ -10,6 +10,9 @@ namespace CHPOUTSRCMES.Web.ViewModels.Delivery
 {
     public class FlatEditViewModel
     {
+        public long DLV_HEADER_ID { get; set; }
+        public long DLV_DETAIL_ID { get; set; }
+
         [Display(Name = "交運單號")]
         public string DELIVERY_NAME { get; set; }
 
@@ -58,6 +61,8 @@ namespace CHPOUTSRCMES.Web.ViewModels.Delivery
         [Display(Name = "包裝方式")]
         public string PACKING_TYPE { set; get; }
 
+
+        //[Range(0.0, 1.0, ErrorMessage = "需輸入{0}有效數字{1}-{2}")]
         [Display(Name = "令數")] //次要數量
         public string SECONDARY_QUANTITY { get; set; }
 
