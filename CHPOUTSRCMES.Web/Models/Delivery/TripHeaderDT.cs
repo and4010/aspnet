@@ -921,15 +921,8 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
 
             }
 
-            ResultModel result = uow.UpdateDeliveryStatus(updateDatas, DeliveryUOW.DeliveryStatusCode.Canceled, userId, userName);
-            if (result.Success)
-            {
-                return new ResultModel(true, "取消航程號成功");
-            }
-            else
-            {
-                return result;
-            }
+            return uow.CancelTrip(updateDatas, userId, userName);
+            
 
 
             //var query = from tripDetail in source
