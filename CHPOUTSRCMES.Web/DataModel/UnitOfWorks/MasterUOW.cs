@@ -2060,33 +2060,38 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
         /// <returns></returns>
         private List<SelectListItem> getLocatorListForUserId(string userId, string SUBINVENTORY_CODE)
         {
-            return userSubinventoryTRepository.GetAll().AsNoTracking()
-                .Join(locatorTRepository.GetAll().AsNoTracking(),
 
-                us => new { us.OrganizationId, us.SubinventoryCode },
-                l => new { l.OrganizationId, l.SubinventoryCode },
-                (us, l) => new
-                {
-                    UserId = us.UserId,
-                    OrganizationId = us.OrganizationId,
-                    SubinventoryCode = us.SubinventoryCode,
-                    Segment3 = l.Segment3,
-                    LocatorId = l.LocatorId,
-                    LocatorControlFlag = l.ControlFlag,
-                    LocatorDisableDate = l.LocatorDisableDate
-                })
+            var tmp = userSubinventoryTRepository.GetAll().AsNoTracking()
+                .Join(locatorTRepository.GetAll().AsNoTracking(),
+                    us => new { us.OrganizationId, us.SubinventoryCode },
+                    l => new { l.OrganizationId, l.SubinventoryCode },
+                    (us, l) => new
+                    {
+                        UserId = us.UserId,
+                        OrganizationId = us.OrganizationId,
+                        SubinventoryCode = us.SubinventoryCode,
+                        Segment3 = l.Segment3,
+                        LocatorId = l.LocatorId,
+                        LocatorControlFlag = l.ControlFlag,
+                        LocatorDisableDate = l.LocatorDisableDate
+                    })
                 .Where(x =>
-                x.UserId == userId &&
-                x.SubinventoryCode == SUBINVENTORY_CODE &&
-               x.LocatorControlFlag != ControlFlag.Deleted &&
-                x.LocatorDisableDate == null || x.LocatorDisableDate > DateTime.Now
-                )
-                 .OrderBy(x => x.Segment3)
-                          .Select(x => new SelectListItem()
-                          {
-                              Text = x.Segment3,
-                              Value = x.LocatorId.ToString()
-                          }).ToList();
+                    x.UserId == userId
+                    && x.LocatorControlFlag != ControlFlag.Deleted
+                    && (x.LocatorDisableDate == null || x.LocatorDisableDate > DateTime.Now)
+                    );
+
+            if (!string.IsNullOrEmpty(SUBINVENTORY_CODE))
+            {
+                tmp = tmp.Where(x => x.SubinventoryCode == SUBINVENTORY_CODE);
+            }
+
+            return tmp.OrderBy(x => x.Segment3)
+                     .Select(x => new SelectListItem()
+                     {
+                         Text = x.Segment3,
+                         Value = x.LocatorId.ToString()
+                     }).ToList();
         }
 
         /// <summary>

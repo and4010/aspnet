@@ -26,13 +26,14 @@ namespace CHPOUTSRCMES.Web.Controllers
             var model = new QueryViewModel();
             model.SubinvenotoryList = QueryViewModel.getSubinvenotoryList(this.User.Identity.GetUserId());
             model.ItemCategoryList = QueryViewModel.getItemCategoryList(this.User.Identity.GetUserId());
+            model.locatorList = QueryViewModel.getLocatorList(this.User.Identity.GetUserId(), "");
             model.Fields = new StockQueryModel();
             return View(model);
         }
 
         [HttpPost]
         public JsonResult StockQuery(DataTableAjaxPostViewModel data, 
-            string subinventory, long locatorId, string itemCategory, string itemNo)
+            string subinventory, string locatorId, string itemCategory, string itemNo)
         {
 
             var models = StockQueryModel.getModels(data, subinventory, locatorId, itemCategory, itemNo);

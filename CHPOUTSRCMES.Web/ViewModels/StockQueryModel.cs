@@ -49,7 +49,7 @@ namespace CHPOUTSRCMES.Web.ViewModels
         public decimal? SecondarySumQty { set; get; }
 
         public static List<StockQueryModel> getModels(DataTableAjaxPostViewModel data,
-            string subinventory, long locatorId, string itemCategory, string itemNo)
+            string subinventory, string locator, string itemCategory, string itemNo)
         {
 
             using var mesContext = new CHPOUTSRCMES.Web.DataModel.MesContext();
@@ -57,6 +57,8 @@ namespace CHPOUTSRCMES.Web.ViewModels
             using var masterUow = new CHPOUTSRCMES.Web.DataModel.UnitOfWorks.MasterUOW(mesContext);
             try
             {
+                var locatorId = long.Parse(locator);
+
 
 
                 var list = masterUow.stockTRepository.GetAll().AsNoTracking();
@@ -78,7 +80,7 @@ namespace CHPOUTSRCMES.Web.ViewModels
 
                 if (!string.IsNullOrEmpty(itemNo) && itemNo.CompareTo("全部") != 0)
                 {
-                    list = list.Where(x => x.ItemNumber.Contains(itemNo));
+                    list = list.Where(x => x.ItemNumber == itemNo);
                 }
 
                 var models = list.GroupBy(x => new { x.SubinventoryCode, x.LocatorId, x.InventoryItemId })

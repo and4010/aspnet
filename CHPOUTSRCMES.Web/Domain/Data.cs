@@ -16,8 +16,8 @@ namespace CHPOUTSRCMES.Web.Domain
             menu.Add(new Navbar { Id = 3, nameOption = "出貨", controller = "Delivery", action = "Index", imageClass = "fa fa-calendar-minus-o", status = true, isParent = false, parentId = 0 });
             //menu.Add(new Navbar { Id = 4, nameOption = "盤點", controller = "Inventory", action = "Index", status = true, isParent = false, parentId = 0 });
 
-            //menu.Add(new Navbar { Id = 8, nameOption = "庫存", status = false, isParent = true, parentId = 0 });
-            //menu.Add(new Navbar { Id = 9, nameOption = "查詢", controller = "Home", action = "Buttons", status = false, isParent = false, parentId = 8 });
+            menu.Add(new Navbar { Id = 8, nameOption = "庫存", imageClass = "fa fa-table", status = true, isParent = true, parentId = 0 });
+            menu.Add(new Navbar { Id = 9, nameOption = "查詢", controller = "Stock", action = "Query", status = true, isParent = false, parentId = 8 });
             //menu.Add(new Navbar { Id = 11, nameOption = "異動記錄", controller = "Home", action = "Typography", status = false, isParent = false, parentId = 8 });
 
             //menu.Add(new Navbar { Id = 12, nameOption = "報表", status = false, isParent = true, parentId = 0 });
