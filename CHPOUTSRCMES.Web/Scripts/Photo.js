@@ -9,7 +9,7 @@ function addNewContent(obj) {
     for (var a = 0; a < imgSrc.length; a++) {
         var oldBox = $(obj).html();
         //$(obj).html(oldBox + '<div class="imgContainer"><img title=' + imgName[a] + ' alt=' + imgName[a] + ' src=' + imgSrc[a] + ' onclick="imgDisplay(this)"></div>');
-        $(obj).html(oldBox + '<div class="imgContainer col-md-2"><img title=' + imgName[a] + ' alt=' + imgName[a] + ' src=' + imgSrc[a] + ' onclick="imgDisplay(this)"><p onclick="removeImg(this,' + a + ')" class="imgDelete">删除</p></div>');
+        $(obj).html(oldBox + '<div class="col col-md-1 imgContainer"><img title=' + imgName[a] + ' alt=' + imgName[a] + ' src=' + imgSrc[a] + ' onclick="imgDisplay(this)"><p onclick="removeImg(this,' + a + ')" class="imgDelete">删除</p></div>');
     }
 }
 
@@ -18,7 +18,7 @@ function AddNewContent(obj) {
 
     for (var a = 0; a < imgSrc.length; a++) {
         var oldBox = $(obj).html();
-        $(obj).html(oldBox + '<div class="imgContainer col-md-2"><img title=' + imgName[a] + ' alt=' + imgName[a] + ' src=' + imgSrc[a] + ' onclick="imgDisplay(this)"></div>');
+        $(obj).html(oldBox + '<div class="col col-md-1 imgContainer"><img title=' + imgName[a] + ' alt=' + imgName[a] + ' src=' + imgSrc[a] + ' onclick="imgDisplay(this)"></div>');
     };
 }
 

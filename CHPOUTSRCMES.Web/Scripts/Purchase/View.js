@@ -15,14 +15,6 @@ function click() {
 
 
 
-//點擊預覽&&圖片放大
-function addContent(obj) {
-    $(imgBox).html("");
-    for (var a = 0; a < VimgSrc.length; a++) {
-        var oldBox = $(obj).html();
-        $(obj).html(oldBox + '<div class="imgContainer"><img title=' + VimgName[a] + ' alt=' + VimgName[a] + ' src=' + VimgSrc[a] + ' onclick="imgDisplay(this)"></div>');
-    };
-}
 
 
 //圖片放大
@@ -72,7 +64,7 @@ function getPhotoList() {
         success: function (data) {
             if (data.Code == 0) {
                 for (var i = 0; i < data.Result.length; i++) {
-                    getPhotoById(data.Result[i]);
+                    getPhotoById(data.Result[i], i == data.Result.length - 1);
                 }
             } else {
                 swal.fire(data.Msg);
@@ -84,7 +76,7 @@ function getPhotoList() {
     });
 }
 
-function getPhotoById(id) {
+function getPhotoById(id, final) {
 
     $.ajax({
         "url": "/Purchase/GetPhoto",
@@ -93,15 +85,27 @@ function getPhotoById(id) {
         "data": { id: id },
         success: function (data) {
             if (data.Code == 0) {
-                imgSrc.push("data:image/jpeg;base64," + data.Result);
-                AddNewContent($('#saveBox'));
+                VimgSrc.push("data:image/jpeg;base64," + data.Result);
             }
             else {
                 swal.fire(data.Msg);
             }
+
+            if (final) addContent($('#saveBox'));
         },
         error: function (data) {
+            if (final) addContent($('#saveBox'));
             swal.fire(data);
         },
     });
+}
+
+
+//點擊預覽&&圖片放大
+function addContent(obj) {
+    $(obj).html("");
+    for (var a = 0; a < VimgSrc.length; a++) {
+        var oldBox = $(obj).html();
+        $(obj).html(oldBox + '<div class="col col-md-6 imgContainer"><img title=' + VimgName[a] + ' alt=' + VimgName[a] + ' src=' + VimgSrc[a] + ' onclick="imgDisplay(this)"></div>');
+    };
 }

@@ -7,25 +7,22 @@
 @section scripts {
     <script src="~/Scripts/Errors/General.js"></script>
 }
-
-<div class="row">
-
-    <div class="col">
-        <div class="form-group">
-            @Html.LabelFor(model => model.Error.Message, new { @class = "input-lg" })
-            @Html.DisplayTextFor(model => model.Error.Message)
+<div class="row row-std center">
+    <div class="col col-md-8 col-md-offset-2">
+        <div class="box box-danger" style="min-height:500px;">
+            <div class="box-header with-border">
+                <h1 class="fa fa-caret-right"><i></i>@Html.LabelFor(model => model.Error.Message)</h1>
+            </div>
+            <div class="box-body">
+                <div class="col col-md-12 text-center text-align-center">
+                    @Html.DisplayTextFor(model => model.Error.Message)
+                </div>
+                
+            </div>
         </div>
     </div>
 </div>
 
-<div class="row">
-    <div class="col">
-        <div class="btn-group">
-            <button id="btnPrevious" class="btn btn-success btn-lg">上一頁</button>
-        </div>
 
-    </div>
-
-</div>
 
 

@@ -24,6 +24,7 @@
     IEnumerable<SelectListItem> ReasonItems = (IEnumerable<SelectListItem>)ViewBag.ReasonItems;
 
 }
+
 <div class="row row-std">
     <div class="col col-md-12">
         <div class="box box-success">
@@ -84,17 +85,19 @@
 
             </div>
             <div class="box-footer">
-                <div class="col-md-12">
-                    <label class="col-md-1 text-right">異常原因</label>
-                    <div class="col-md-2 form-inline">
-                        @Html.DropDownListFor(model => model.Detail, ReasonItems, new { @class = "form-control", id = "select-reason" })
+                <div class="row row-std">
+                    <div class="col-md-3">
+                        <label class="col-md-6 text-right">異常原因</label>
+                        <div class="col-md-6 form-inline">
+                            @Html.DropDownListFor(model => model.Detail, ReasonItems, new { @class = "form-control", id = "select-reason" })
+                        </div>
                     </div>
-                </div>
 
-                <div class="col-md-12">
-                    <label class="col-md-1 text-right">儲位</label>
-                    <div class="col-md-1 form-inline">
-                        @Html.DropDownListFor(model => model.Locator, LocatorItems, new { @class = "form-control", id = "select-Locator" })
+                    <div class="col-md-3">
+                        <label class="col-md-6 text-right">儲位</label>
+                        <div class="col-md-6 form-inline">
+                            @Html.DropDownListFor(model => model.Locator, LocatorItems, new { @class = "form-control", id = "select-Locator" })
+                        </div>
                     </div>
                 </div>
             </div>
@@ -124,10 +127,12 @@
             <div class="box-body">
                 <form class="col col-md-12">
                     <div class="form-inline">
-                        <input type="file" class="filestyle" id="fileinput" name="file" accept="image/*" data-icon="true" required data-buttonText="選擇照片" multiple>
+                        <input type="file" class="filestyle col-md-10" id="fileinput" name="file" accept="image/*" data-icon="true" required data-buttonText="選擇照片" multiple data-size="lg">
                     </div>
                 </form>
-                <div class="col col-md-12" id="imgBox" />
+                <div class="col col-md-12">
+                    <div class="row row-std" id="imgBox"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -136,16 +141,18 @@
     <div class="col col-md-12">
         <div class="box box-success">
             <div class="box-header">
-                <h4 class="fa fa-caret-right"><i></i>已上傳</h4>
+                <h4 class="fa fa-caret-right"><i></i>已上傳的照片</h4>
             </div>
             <div class="box-body">
-                <div class="col col-md-12" id="saveBox" />
+                <div class="col col-md-12">
+                    <div class="row row-std" id="saveBox"></div>
+                </div>
             </div>
         </div>
     </div>
 </div>
 <div class="row row-std">
     <div class="col col-md-12">
-        <button class="btn btn-danger" id="BtnFlatSave">存檔</button>
+        <button class="btn btn-danger btn-lg" id="BtnFlatSave">存檔</button>
     </div>
 </div>

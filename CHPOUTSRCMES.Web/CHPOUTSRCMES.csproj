@@ -478,6 +478,8 @@
     <Compile Include="ViewModels\Obsolete\ObsoleteViewModel.cs" />
     <Compile Include="ViewModels\OrgSubinventoryViewModel.cs" />
     <Compile Include="ViewModels\OspRelatedViewModel.cs" />
+    <Compile Include="ViewModels\QueryViewModel.cs" />
+    <Compile Include="ViewModels\StockQueryModel.cs" />
     <Compile Include="ViewModels\PartNoViewModel.cs" />
     <Compile Include="ViewModels\Process\ProcessViewModel.cs" />
     <Compile Include="ViewModels\Purchase\PurchaseViewModel.cs" />
@@ -1964,6 +1966,7 @@
     <Content Include="Scripts\Obsolete\Obsolete.js" />
     <Content Include="Scripts\OrgSubinventory.js" />
     <Content Include="Scripts\OspRelated.js" />
+    <Content Include="Scripts\StockQuery.js" />
     <Content Include="Scripts\PartNo.js" />
     <Content Include="Scripts\Photo.js" />
     <Content Include="Scripts\Process\Edit.js" />
@@ -2094,13 +2097,13 @@
     <Content Include="Views\StockTransaction\_MergeBarcodePartial.cshtml" />
     <Content Include="Views\Shared\_Layout2.cshtml" />
     <Content Include="Views\Purchase\Report.cshtml" />
+    <Content Include="Views\Stock\Query.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="bower_components\theme\" />
     <Folder Include="Jsons\Responses\" />
     <Folder Include="Views\ScriptManagerControl\" />
-    <Folder Include="Views\Stock\" />
     <Folder Include="Views\Transfer\" />
   </ItemGroup>
   <ItemGroup>

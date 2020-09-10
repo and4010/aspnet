@@ -104,11 +104,14 @@
                     </h4>
 
                     <div class="row col-md-12">
-                        <div class="col-md-12">
+                        <div class="col-md-12" style="min-height:60px;">
                             @Html.DisplayFor(model => model.RollDetailModel.Reason) @Html.DisplayFor(model => model.RollDetailModel.Remark)
                         </div>
-                        <div class="col-md-12">
-                            @Html.DisplayFor(model => model.RollDetailModel.CreatedUserName) @Html.DisplayFor(model => model.RollDetailModel.CreationDate)
+                        <div class="col-md-3">
+                            人員：@Html.DisplayFor(model => model.RollDetailModel.CreatedUserName) 
+                        </div>
+                        <div class="col-md-3">
+                            時間：@Html.DisplayFor(model => model.RollDetailModel.CreationDate)
                         </div>
                     </div>
 
@@ -120,7 +123,7 @@
                         <label> 照片</label>
                     </h4>
 
-                    <div class="col-md-5" id="imgBox">
+                    <div class="col-md-12" id="saveBox">
 
                     </div>
 

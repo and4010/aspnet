@@ -367,7 +367,7 @@ namespace CHPOUTSRCMES.Web.Controllers
                     {
                         //file.SaveAs(Path.Combine(filelocation, file.FileName));
                         ExcelImportRoll(file, ref detail, ref result, long.Parse(formCollection["id"]));
-                        ExcelImportRoll(file, ref detail, ref result, long.Parse(formCollection["id"]));
+                        //ExcelImportRoll(file, ref detail, ref result, long.Parse(formCollection["id"]));
                     }
                     catch (Exception e)
                     {

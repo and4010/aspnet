@@ -623,14 +623,11 @@ and d.ITEM_CATEGORY = N'捲筒'");
                 }
                 catch (Exception e)
                 {
-
+                    
                     logger.Error(e.Message);
                     return new ResultModel(false, e.Message.ToString());
                 }
-                finally
-                {
-                    txn.Rollback();
-                }
+                txn.Rollback();
             }
             return new ResultModel(false, "失敗");
         }
@@ -856,45 +853,58 @@ WHERE p.ITEM_CATEGORY = N'捲筒' and p.CTR_PICKED_ID  = @CTR_PICKED_ID");
         /// <param name="Reason"></param>
         /// <param name="Locator"></param>
         /// <param name="Remark"></param>
-        public ResultModel PaperRollEdit(HttpFileCollectionBase File, long id, string Reason, string Locator, string Remark, string LastUpdateBy, string LastUpdateUserName)
+        public ResultModel PaperRollEdit(HttpFileCollectionBase Files, long id, string Reason, string Locator, string Remark, string LastUpdateBy, string LastUpdateUserName)
         {
-            using (var mes = this.Context.Database.BeginTransaction())
+            using (var transaction = this.Context.Database.BeginTransaction())
             {
                 try
                 {
-                    if (File != null || File.Count != 0)
+                    var ctrPickT = ctrPickedTRepository.Get(x => x.CtrPickedId == id).SingleOrDefault();
+
+                    if (ctrPickT == null)
                     {
-                        foreach (HttpPostedFileBase i in File)
+                        throw new Exception("揀貨資料不存在!!");
+                    }
+
+                    if (Files != null || Files.Count > 0)
+                    {
+                        foreach (string i in Files)
                         {
-                            SaveCtrFileInfoT(VaryQualityLevel(i), i.FileName, i.ContentType, id, LastUpdateBy);
+                            HttpPostedFileBase file = Files[i];
+                            SaveCtrFileInfoT(VaryQualityLevel(file), file.FileName, file.ContentType, ctrPickT.CtrPickedId, LastUpdateBy);
                         }
                     }
-                    var ctrPickT = ctrPickedTRepository.Get(x => x.CtrPickedId == id).SingleOrDefault();
+
                     if (Reason != "請選擇")
                     {
                         var reason = stkReasonTRepository.Get(x => x.ReasonCode == Reason).SingleOrDefault();
-                        ctrPickT.ReasonDesc = reason.ReasonDesc;
-                        ctrPickT.ReasonCode = reason.ReasonCode;
+                        if (reason != null)
+                        {
+                            ctrPickT.ReasonDesc = reason.ReasonDesc;
+                            ctrPickT.ReasonCode = reason.ReasonCode;
+                        }
                     }
+
                     if (Locator != "null")
                     {
-                        var LocatorId = Int32.Parse(Locator);
-                        var Id = locatorTRepository.Get(x => x.LocatorId == LocatorId).SingleOrDefault();
-                        ctrPickT.LocatorId = Id.LocatorId;
-                        ctrPickT.LocatorCode = Id.LocatorSegments;
+                        var locatorId = Int32.Parse(Locator);
+                        var locator = locatorTRepository.Get(x => x.LocatorId == locatorId).SingleOrDefault();
+                        ctrPickT.LocatorId = locator.LocatorId;
+                        ctrPickT.LocatorCode = locator.LocatorSegments;
                     }
+
                     ctrPickT.Note = Remark;
                     ctrPickT.LastUpdateBy = LastUpdateBy;
                     ctrPickT.LastUpdateUserName = LastUpdateUserName;
                     ctrPickT.LastUpdateDate = DateTime.Now;
                     ctrPickedTRepository.Update(ctrPickT, true);
-                    mes.Commit();
+                    transaction.Commit();
                     return new ResultModel(true, "");
                 }
 
                 catch (Exception e)
                 {
-                    mes.Rollback();
+                    transaction.Rollback();
                     logger.Error(e.Message);
                     return new ResultModel(false, e.Message);
                 }
@@ -922,10 +932,10 @@ WHERE p.ITEM_CATEGORY = N'捲筒' and p.CTR_PICKED_ID  = @CTR_PICKED_ID");
 
                 if (Files != null || Files.Count > 0)
                 {
-                    foreach (HttpPostedFileBase i in Files)
+                    foreach (string i in Files)
                     {
-                        
-                        SaveCtrFileInfoT(VaryQualityLevel(i), i.FileName, i.ContentType, ctrPickT.CtrPickedId, LastUpdateBy);
+                        HttpPostedFileBase file = Files[i];
+                        SaveCtrFileInfoT(VaryQualityLevel(file), file.FileName, file.ContentType, ctrPickT.CtrPickedId, LastUpdateBy);
                     }
                 }
 

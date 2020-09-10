@@ -87,11 +87,14 @@
                     </h4>
 
                     <div class="col-md-12">
-                        <div class="col-md-12">
+                        <div class="col-md-12" style="min-height:60px;">
                             @Html.DisplayFor(model => model.FlatDetailModel.Reason) @Html.DisplayFor(model => model.FlatDetailModel.Remark)
                         </div>
-                        <div class="col-md-12">
-                            @Html.DisplayFor(model => model.FlatDetailModel.CreatedUserName) @Html.DisplayFor(model => model.FlatDetailModel.CreationDate)
+                        <div class="col-md-3">
+                            人員：@Html.DisplayFor(model => model.FlatDetailModel.CreatedUserName)
+                        </div>
+                        <div class="col-md-3">
+                            時間：@Html.DisplayFor(model => model.FlatDetailModel.CreationDate)
                         </div>
                     </div>
 
