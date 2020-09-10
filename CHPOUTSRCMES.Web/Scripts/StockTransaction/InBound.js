@@ -1198,7 +1198,7 @@
             },
             success: function (data) {
                 if (data.status) {
-                    InBoundBarcodeDataTablesBody.ajax.reload();
+                    InBoundBarcodeDataTablesBody.ajax.reload(null, false);
                     PrintLable(InBoundBarcodeDataTablesBody, "/StockTransaction/PrintInboundLabel", "12");
                 } else {
                     swal.fire(data.result);
@@ -1372,7 +1372,7 @@
             },
             success: function (data) {
                 if (data.status) {
-                    InBoundBarcodeDataTablesBody.ajax.reload();
+                    InBoundBarcodeDataTablesBody.ajax.reload(null, false);
                     $('#txtBARCODE').focus().select();
                 } else {
                     swal.fire(data.result);

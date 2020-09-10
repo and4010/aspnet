@@ -133,33 +133,34 @@
     </div>
 </div>
 
+<form id ="photo_form">
+    <div class="row form-group">
 
-<div class="row form-group">
-
-    <div class="form-inline col col-md-1 text-right">
-        <label>照片上傳</label>
-    </div>
-
-    <div class="form-inline col-md-5">
-        <input type="file" class="filestyle" id="fileinput" name="file" accept="image/*" data-icon="true" required data-buttonText="選擇照片" multiple>
-    </div>
-
-    <div class="col-md-6">
-
-        @*<div class="col-md-6" id="SaveImg">
-                <img class="col-md-6" id="SaveImg" onclick="imgDisplay(this)" src="" alt="" />
-            </div>*@
-        <div class="col-md-6" id="imgBox">
-            <img class="col-md-6" id="img" onclick="imgDisplay(this)"
-                 src="" alt="" />
+        <div class="form-inline col col-md-1 text-right">
+            <label>照片上傳</label>
         </div>
+
+        <div class="form-inline col-md-5">
+            <input type="file" class="filestyle" id="fileinput" name="file" accept="image/*" data-icon="true" required data-buttonText="選擇照片" multiple>
+        </div>
+
+        <div class="col-md-6">
+
+            @*<div class="col-md-6" id="SaveImg">
+                    <img class="col-md-6" id="SaveImg" onclick="imgDisplay(this)" src="" alt="" />
+                </div>*@
+            <div class="col-md-6" id="imgBox">
+                <img class="col-md-6" id="img" onclick="imgDisplay(this)"
+                     src="" alt="" />
+            </div>
+        </div>
+
     </div>
+    </form>
 
-</div>
+    <div class="row col-md-1">
+        <div>
+            <button class="btn btn-danger" type="button" id="BtnSave">異動存檔</button>
+        </div>
 
-<div class="row col-md-1">
-    <div>
-        <button class="btn btn-danger" type="button" id="BtnSave">異動存檔</button>
     </div>
-
-</div>

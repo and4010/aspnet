@@ -21,7 +21,7 @@ namespace CHPOUTSRCMES.Web.Controllers
     public class DeliveryController : Controller
     {
         TripHeaderData tripHeaderData = new TripHeaderData();
-        
+
 
         //
         // GET: /Delivery/
@@ -68,7 +68,7 @@ namespace CHPOUTSRCMES.Web.Controllers
                     if (!string.IsNullOrEmpty(search) && !string.IsNullOrWhiteSpace(search))
                     {
                         // Apply search   
-                        model = model.Where(p =>  p.SUB_ID.ToString().ToLower().Contains(search.ToLower())
+                        model = model.Where(p => p.SUB_ID.ToString().ToLower().Contains(search.ToLower())
                             || (!string.IsNullOrEmpty(p.FREIGHT_TERMS_NAME) && p.FREIGHT_TERMS_NAME.ToLower().Contains(search.ToLower()))
                             || (!string.IsNullOrEmpty(p.DELIVERY_NAME) && p.DELIVERY_NAME.ToLower().Contains(search.ToLower()))
                             || (!string.IsNullOrEmpty(p.CUSTOMER_NAME) && p.CUSTOMER_NAME.ToLower().Contains(search.ToLower()))
@@ -255,7 +255,7 @@ namespace CHPOUTSRCMES.Web.Controllers
                     {
                         // Apply search   
                         model = model.Where(p => p.SUB_ID.ToString().ToLower().Contains(search.ToLower())
-                            ||  (!string.IsNullOrEmpty(p.ITEM_NUMBER) && p.ITEM_NUMBER.ToLower().Contains(search.ToLower()))
+                            || (!string.IsNullOrEmpty(p.ITEM_NUMBER) && p.ITEM_NUMBER.ToLower().Contains(search.ToLower()))
                             || (!string.IsNullOrEmpty(p.BARCODE) && p.BARCODE.ToLower().Contains(search.ToLower()))
                             || p.PRIMARY_QUANTITY.ToString().ToLower().Contains(search.ToLower())
                             || p.PRIMARY_UOM.ToString().ToLower().Contains(search.ToLower())
@@ -414,7 +414,7 @@ namespace CHPOUTSRCMES.Web.Controllers
         [HttpPost, ActionName("GetFlatEdit")]
         public JsonResult GetFlatEdit(DataTableAjaxPostViewModel data, long DlvHeaderId, string DELIVERY_STATUS_NAME)
         {
-            
+
             //if (FlatEditData.getModel(DELIVERY_NAME, TRIP_NAME).Count == 0)
             //{
             //    FlatEditData.addDefault();
@@ -431,7 +431,7 @@ namespace CHPOUTSRCMES.Web.Controllers
                     {
                         // Apply search   
                         model = model.Where(p => p.SUB_ID.ToString().ToLower().Contains(search.ToLower())
-                            ||  (!string.IsNullOrEmpty(p.ORDER_NUMBER.ToString()) && p.ORDER_NUMBER.ToString().ToLower().Contains(search.ToLower()))
+                            || (!string.IsNullOrEmpty(p.ORDER_NUMBER.ToString()) && p.ORDER_NUMBER.ToString().ToLower().Contains(search.ToLower()))
                             || (!string.IsNullOrEmpty(p.ORDER_SHIP_NUMBER) && p.ORDER_SHIP_NUMBER.ToLower().Contains(search.ToLower()))
                             || (!string.IsNullOrEmpty(p.OSP_BATCH_NO) && p.OSP_BATCH_NO.ToLower().Contains(search.ToLower()))
                             || (!string.IsNullOrEmpty(p.ITEM_NUMBER) && p.ITEM_NUMBER.ToLower().Contains(search.ToLower()))
@@ -470,7 +470,7 @@ namespace CHPOUTSRCMES.Web.Controllers
                     {
                         // Apply search   
                         model = model.Where(p => p.SUB_ID.ToString().ToLower().Contains(search.ToLower())
-                            ||  (!string.IsNullOrEmpty(p.BARCODE) && p.BARCODE.ToLower().Contains(search.ToLower()))
+                            || (!string.IsNullOrEmpty(p.BARCODE) && p.BARCODE.ToLower().Contains(search.ToLower()))
                             || (!string.IsNullOrEmpty(p.ITEM_NUMBER) && p.ITEM_NUMBER.ToLower().Contains(search.ToLower()))
                             || (!string.IsNullOrEmpty(p.REAM_WEIGHT) && p.REAM_WEIGHT.ToLower().Contains(search.ToLower()))
                             || (!string.IsNullOrEmpty(p.PACKING_TYPE) && p.PACKING_TYPE.ToLower().Contains(search.ToLower()))
@@ -489,84 +489,30 @@ namespace CHPOUTSRCMES.Web.Controllers
             }
         }
 
+        [ValidateAntiForgeryToken]
         [HttpPost, ActionName("InputFlatEditBarcode")]
-        public ActionResult InputFlatEditBarcode(string BARCODE, decimal? SECONDARY_QUANTITY, long DlvHeaderId, long DLV_DETAIL_ID, string DELIVERY_NAME)
+        //public ActionResult InputFlatEditBarcode(string BARCODE, decimal? SECONDARY_QUANTITY, long DlvHeaderId, long DLV_DETAIL_ID, string DELIVERY_NAME)
+        public ActionResult InputFlatEditBarcode(FlatEditViewModel model)
         {
+            if (!ModelState.IsValid)
+            {
+                
+            }
             using (var context = new MesContext())
             {
                 using (DeliveryUOW uow = new DeliveryUOW(context))
                 {
-                    
+
                     //取得使用者ID
                     var id = this.User.Identity.GetUserId();
                     //取得使用者帳號
                     var name = this.User.Identity.GetUserName();
-                    var result = tripHeaderData.AddPickDT(uow, DlvHeaderId, DLV_DETAIL_ID, DELIVERY_NAME, BARCODE, SECONDARY_QUANTITY, id, name);
+                    //var result = tripHeaderData.AddPickDT(uow, DlvHeaderId, DLV_DETAIL_ID, DELIVERY_NAME, BARCODE, SECONDARY_QUANTITY, id, name);
+                    var result = tripHeaderData.AddPickDT(uow, model.DLV_HEADER_ID, model.DLV_DETAIL_ID, model.DELIVERY_NAME, model.BARCODE, model.SECONDARY_QUANTITY, id, name);
                     return new JsonResult { Data = new { status = result.Success, result = result.Msg } };
                 }
             }
 
-            //        //搜尋條碼資料
-
-            //        if (FlatEditBarcodeData.checkBarcodeExist(BARCODE))
-            //{
-            //    return new JsonResult { Data = new { status = false, result = "條碼重複輸入" } };
-            //}
-            //string ITEM_DESCRIPTION = "";
-            //if (BARCODE == "P2005060001")//平張令包
-            //{
-            //    if (SECONDARY_QUANTITY == null)
-            //    {
-            //        ITEM_DESCRIPTION = "4A003A01000310K266K";
-            //        if (!FlatEditData.checkBarcodeItemDesc(DLV_DETAIL_ID, ITEM_DESCRIPTION))
-            //        {
-            //            return new JsonResult { Data = new { status = false, result = "此條碼不符合已選擇的料號" } };
-            //        }
-            //        return new JsonResult { Data = new { status = true, result = "令包" } };
-            //    }
-            //    else
-            //    {
-            //        //儲存條碼資料
-            //        FlatEditBarcodeData.addBarcode123((decimal)SECONDARY_QUANTITY);
-            //        FlatEditData.updateF001((decimal)SECONDARY_QUANTITY);
-            //        //FlatEditBarcodeData.add(BARCODE, (decimal)SECONDARY_QUANTITY, PACKING_TYPE);
-            //        TripHeaderData.ChangeDeliveryStatus(DlvHeaderId, FlatEditData.checkDeliveryPickComplete(DlvHeaderId));
-            //        return new JsonResult { Data = new { status = true, result = "令包_條碼儲存成功" } };
-            //    }
-            //}
-            //else if (BARCODE == "P2005060002") //平張打件
-            //{
-            //    ITEM_DESCRIPTION = "4AB23P00699350K250K";
-            //    if (!FlatEditData.checkBarcodeItemDesc(DLV_DETAIL_ID, ITEM_DESCRIPTION))
-            //    {
-            //        return new JsonResult { Data = new { status = false, result = "此條碼不符合已選擇的料號" } };
-            //    }
-            //    //儲存條碼資料
-            //    FlatEditBarcodeData.addBarcode456();
-            //    FlatEditData.updateF002();
-            //    //FlatEditBarcodeData.add(BARCODE, 9, PACKING_TYPE);
-            //    TripHeaderData.ChangeDeliveryStatus(DlvHeaderId, FlatEditData.checkDeliveryPickComplete(DlvHeaderId));
-            //    return new JsonResult { Data = new { status = true, result = "無令打件_條碼儲存成功" } };
-            //}
-            //else if (BARCODE == "P2005060003") //平張打件
-            //{
-            //    ITEM_DESCRIPTION = "4DM00P03000297K476K";
-            //    if (!FlatEditData.checkBarcodeItemDesc(DLV_DETAIL_ID, ITEM_DESCRIPTION))
-            //    {
-            //        return new JsonResult { Data = new { status = false, result = "此條碼不符合已選擇的料號" } };
-            //    }
-            //    //儲存條碼資料
-            //    FlatEditBarcodeData.addBarcode130();
-            //    FlatEditData.updateF003();
-            //    //FlatEditBarcodeData.add(BARCODE, 9, PACKING_TYPE);
-            //    TripHeaderData.ChangeDeliveryStatus(DlvHeaderId, FlatEditData.checkDeliveryPickComplete(DlvHeaderId));
-            //    return new JsonResult { Data = new { status = true, result = "無令打件_條碼儲存成功" } };
-            //}
-            //else
-            //{
-            //    //找不到條碼資料
-            //    return new JsonResult { Data = new { status = false, result = "找不到條碼資料" } };
-            //}
         }
 
         [HttpPost, ActionName("DeleteFlatEditBarcode")]
@@ -818,7 +764,7 @@ namespace CHPOUTSRCMES.Web.Controllers
                 using (DeliveryUOW uow = new DeliveryUOW(context))
                 {
                     TripHeaderData tripHeaderData = new TripHeaderData();
-                    DeliveryDetailViewHeader viewModel = tripHeaderData.GetDeliveryDetailViewHeader(uow ,Convert.ToInt32(DlvHeaderId));
+                    DeliveryDetailViewHeader viewModel = tripHeaderData.GetDeliveryDetailViewHeader(uow, Convert.ToInt32(DlvHeaderId));
                     return PartialView("_DeliveryPartial", viewModel);
                 }
             }

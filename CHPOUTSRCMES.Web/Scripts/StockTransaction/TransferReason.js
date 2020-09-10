@@ -232,6 +232,8 @@ function SaveReason(StockId, ReasonCode, TransferLocatorId, Note) {
             if (data.status) {
                 TransferReasonTable.ajax.reload();
                 clearText();
+                clearContent('#imgBox'); //清除預覽圖片
+                $('#photo_form').trigger("reset"); //清除圖片檔名
                 swal.fire(data.result);
             } else {
                 swal.fire(data.result);

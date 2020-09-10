@@ -856,7 +856,7 @@ namespace CHPOUTSRCMES.Web.Controllers
                  
                     ResultModel result = stockTransferData.SaveReason(uow, files, Int64.Parse(formCollection["stockId"]),
                         formCollection["reasonCode"],
-                        formCollection["transferLocatorId"] == null ? default(long?) : Int64.Parse(formCollection["stockId"]),
+                        formCollection["transferLocatorId"] == null ? default(long?) : Int64.Parse(formCollection["transferLocatorId"]),
                         formCollection["note"], id, name);
                     return new JsonResult { Data = new { status = result.Success, result = result.Msg } };
                 }

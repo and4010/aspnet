@@ -192,14 +192,13 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
         /// <summary>
         /// 取得儲位資料 給庫存異動用
         /// </summary>
-        /// <param name="organizationId"></param>
-        /// <param name="subinventoryCode"></param>
+        /// <param name="locatorId"></param>
         /// <param name="now"></param>
         /// <returns></returns>
-        public LOCATOR_T GetLocatorForTransfer(long organizationId, string subinventoryCode, DateTime now)
+        public LOCATOR_T GetLocatorForTransfer(long locatorId, DateTime now)
         {
-            return locatorTRepository.GetAll().AsNoTracking().FirstOrDefault(x => x.OrganizationId == organizationId && x.SubinventoryCode == subinventoryCode &&
-            x.ControlFlag != ControlFlag.Deleted && (x.LocatorDisableDate == null || x.LocatorDisableDate > now));
+            return locatorTRepository.GetAll().AsNoTracking().FirstOrDefault(x => x.LocatorId == locatorId &&
+          x.ControlFlag != ControlFlag.Deleted && (x.LocatorDisableDate == null || x.LocatorDisableDate > now));
         }
 
         #endregion
@@ -360,7 +359,7 @@ AND TRANSFER_SUBINVENTORY_CODE = @trfSubCode AND TRANSFER_ORGANIZATION_ID = @trf
             {
                 cmd = @"
 SELECT [TRANSFER_PICKED_ID] as ID
-	  ,ROW_NUMBER() OVER(ORDER BY p.[TRANSFER_DETAIL_ID]) as SUB_ID
+	  ,ROW_NUMBER() OVER(ORDER BY p.[TRANSFER_PICKED_ID]) as SUB_ID
       ,p.[TRANSFER_DETAIL_ID] as TransferDetailId
       ,p.[TRANSFER_HEADER_ID] as TransferHeaderId
       ,p.[ITEM_NUMBER]
@@ -383,7 +382,7 @@ SELECT [TRANSFER_PICKED_ID] as ID
             {
                 cmd = @"
 SELECT [TRANSFER_PICKED_ID] as ID
-	  ,ROW_NUMBER() OVER(ORDER BY p.[TRANSFER_DETAIL_ID]) as SUB_ID
+	  ,ROW_NUMBER() OVER(ORDER BY p.[TRANSFER_PICKED_ID]) as SUB_ID
       ,p.[TRANSFER_DETAIL_ID] as TransferDetailId
       ,p.[TRANSFER_HEADER_ID] as TransferHeaderId
       ,p.[ITEM_NUMBER]
@@ -464,7 +463,7 @@ SELECT d.[TRANSFER_DETAIL_ID] AS ID
             {
                 cmd = @"
 SELECT [TRANSFER_PICKED_ID] as ID
-	  ,ROW_NUMBER() OVER(ORDER BY p.[TRANSFER_DETAIL_ID]) as SUB_ID
+	  ,ROW_NUMBER() OVER(ORDER BY p.[TRANSFER_PICKED_ID]) as SUB_ID
       ,p.[ITEM_NUMBER]
       ,[BARCODE]
       ,[PRIMARY_QUANTITY]
@@ -482,7 +481,7 @@ SELECT [TRANSFER_PICKED_ID] as ID
             {
                 cmd = @"
 SELECT [TRANSFER_PICKED_ID] as ID
-	  ,ROW_NUMBER() OVER(ORDER BY p.[TRANSFER_DETAIL_ID]) as SUB_ID
+	  ,ROW_NUMBER() OVER(ORDER BY p.[TRANSFER_PICKED_ID]) as SUB_ID
       ,p.[ITEM_NUMBER]
       ,[BARCODE]
       ,[PRIMARY_QUANTITY]
@@ -618,7 +617,7 @@ SELECT [TRANSFER_PICKED_ID] as ID
             string outLocatorSegment3 = "";
             if (outLocatorId != null)
             {
-                var outLocator = GetLocatorForTransfer(outOrganizationId, outSubinventoryCode, now);
+                var outLocator = GetLocatorForTransfer((long)outLocatorId, now);
                 if (outLocator == null) throw new Exception("找不到出庫儲位資料");
                 locatorCode = outLocator.LocatorSegments;
                 outLocatorSegment3 = outLocator.Segment3;
@@ -631,7 +630,7 @@ SELECT [TRANSFER_PICKED_ID] as ID
             string inLocatorSegment3 = "";
             if (inLocatorId != null)
             {
-                var inLocator = GetLocatorForTransfer(inOrganizationId, inSubinventoryCode, now);
+                var inLocator = GetLocatorForTransfer((long)inLocatorId, now);
                 if (inLocator == null) throw new Exception("找不到出庫儲位資料");
                 transferLocatorCode = inLocator.LocatorSegments;
                 inLocatorSegment3 = inLocator.Segment3;
@@ -674,14 +673,33 @@ SELECT [TRANSFER_PICKED_ID] as ID
                 }, true);
             }
 
+          
+
             var trfHeader = GetTrfHeader(shipmentNumber, TransferType.InBound);
             if (trfHeader == null) throw new Exception("找不到出貨編號資料");
-            if (trfHeader.OrganizationId != outOrganizationId) throw new Exception("出庫組織比對錯誤，請選擇此出庫倉庫" + outSubinventoryCode);
-            if (trfHeader.SubinventoryCode != outSubinventoryCode) throw new Exception("出庫倉庫比對錯誤，請選擇此出庫倉庫" + outSubinventoryCode);
-            if (trfHeader.LocatorId != outLocatorId) throw new Exception("出庫儲位比對錯誤，請選擇此出庫儲位" + outLocatorSegment3);
-            if (trfHeader.TransferOrganizationId != inOrganizationId) throw new Exception("入庫組織比對錯誤，請選擇此入庫倉庫" + inSubinventoryCode);
-            if (trfHeader.TransferSubinventoryCode != inSubinventoryCode) throw new Exception("入庫倉庫比對錯誤，請選擇此入庫倉庫" + inSubinventoryCode);
-            if (trfHeader.TransferLocatorId != inLocatorId) throw new Exception("入庫儲位比對錯誤，請選擇此入庫儲位" + inLocatorSegment3);
+            
+            string headeroutOutLocatorSegment3 = "";
+            if (trfHeader.LocatorId != null)
+            {
+                var headerOutLocator = GetLocatorForTransfer((long)trfHeader.LocatorId, now);
+                if (headerOutLocator == null) throw new Exception("找不到出庫儲位資料");
+                headeroutOutLocatorSegment3 = headerOutLocator.Segment3;
+            }
+
+            string headeroutInLocatorSegment3 = "";
+            if (trfHeader.TransferLocatorId != null)
+            {
+                var headerInLocator = GetLocatorForTransfer((long)trfHeader.TransferLocatorId, now);
+                if (headerInLocator == null) throw new Exception("找不到入庫儲位資料");
+                headeroutInLocatorSegment3 = headerInLocator.Segment3;
+            }
+
+            if (trfHeader.OrganizationId != outOrganizationId) throw new Exception("出庫組織比對錯誤，請選擇此出庫倉庫" + trfHeader.SubinventoryCode);
+            if (trfHeader.SubinventoryCode != outSubinventoryCode) throw new Exception("出庫倉庫比對錯誤，請選擇此出庫倉庫" + trfHeader.SubinventoryCode);
+            if (trfHeader.LocatorId != outLocatorId) throw new Exception("出庫儲位比對錯誤，請選擇此出庫儲位" + headeroutOutLocatorSegment3);
+            if (trfHeader.TransferOrganizationId != inOrganizationId) throw new Exception("入庫組織比對錯誤，請選擇此入庫倉庫" + trfHeader.TransferSubinventoryCode);
+            if (trfHeader.TransferSubinventoryCode != inSubinventoryCode) throw new Exception("入庫倉庫比對錯誤，請選擇此入庫倉庫" + trfHeader.TransferSubinventoryCode);
+            if (trfHeader.TransferLocatorId != inLocatorId) throw new Exception("入庫儲位比對錯誤，請選擇此入庫儲位" + headeroutInLocatorSegment3);
 
             //檢查捲號是否重複
             if (item.CatalogElemVal070 == ItemCategory.Roll)
@@ -912,7 +930,7 @@ SELECT [TRANSFER_PICKED_ID] as ID
                     string outLocatorSegment3 = "";
                     if (outLocatorId != null)
                     {
-                        var outLocator = GetLocatorForTransfer(outOrganizationId, outSubinventoryCode, now);
+                        var outLocator = GetLocatorForTransfer((long)outLocatorId, now);
                         if (outLocator == null) throw new Exception("找不到出庫儲位資料");
                         locatorCode = outLocator.LocatorSegments;
                         outLocatorSegment3 = outLocator.Segment3;
@@ -925,7 +943,7 @@ SELECT [TRANSFER_PICKED_ID] as ID
                     string inLocatorSegment3 = "";
                     if (inLocatorId != null)
                     {
-                        var inLocator = GetLocatorForTransfer(inOrganizationId, inSubinventoryCode, now);
+                        var inLocator = GetLocatorForTransfer((long)inLocatorId, now);
                         if (inLocator == null) throw new Exception("找不到出庫儲位資料");
                         transferLocatorCode = inLocator.LocatorSegments;
                         inLocatorSegment3 = inLocator.Segment3;
@@ -970,12 +988,29 @@ SELECT [TRANSFER_PICKED_ID] as ID
 
                     var trfHeader = GetTrfHeader(shipmentNumber, TransferType.Outbound);
                     if (trfHeader == null) throw new Exception("找不到出貨編號資料");
-                    if (trfHeader.OrganizationId != outOrganizationId) throw new Exception("出庫組織比對錯誤，請選擇此出庫倉庫" + outSubinventoryCode);
-                    if (trfHeader.SubinventoryCode != outSubinventoryCode) throw new Exception("出庫倉庫比對錯誤，請選擇此出庫倉庫" + outSubinventoryCode);
-                    if (trfHeader.LocatorId != outLocatorId) throw new Exception("出庫儲位比對錯誤，請選擇此出庫儲位" + outLocatorSegment3);
-                    if (trfHeader.TransferOrganizationId != inOrganizationId) throw new Exception("入庫組織比對錯誤，請選擇此入庫倉庫" + inSubinventoryCode);
-                    if (trfHeader.TransferSubinventoryCode != inSubinventoryCode) throw new Exception("入庫倉庫比對錯誤，請選擇此入庫倉庫" + inSubinventoryCode);
-                    if (trfHeader.TransferLocatorId != inLocatorId) throw new Exception("入庫儲位比對錯誤，請選擇此入庫儲位" + inLocatorSegment3);
+
+                    string headeroutOutLocatorSegment3 = "";
+                    if (trfHeader.LocatorId != null)
+                    {
+                        var headerOutLocator = GetLocatorForTransfer((long)trfHeader.LocatorId, now);
+                        if (headerOutLocator == null) throw new Exception("找不到出庫儲位資料");
+                        headeroutOutLocatorSegment3 = headerOutLocator.Segment3;
+                    }
+
+                    string headeroutInLocatorSegment3 = "";
+                    if (trfHeader.TransferLocatorId != null)
+                    {
+                        var headerInLocator = GetLocatorForTransfer((long)trfHeader.TransferLocatorId, now);
+                        if (headerInLocator == null) throw new Exception("找不到入庫儲位資料");
+                        headeroutInLocatorSegment3 = headerInLocator.Segment3;
+                    }
+
+                    if (trfHeader.OrganizationId != outOrganizationId) throw new Exception("出庫組織比對錯誤，請選擇此出庫倉庫" + trfHeader.SubinventoryCode);
+                    if (trfHeader.SubinventoryCode != outSubinventoryCode) throw new Exception("出庫倉庫比對錯誤，請選擇此出庫倉庫" + trfHeader.SubinventoryCode);
+                    if (trfHeader.LocatorId != outLocatorId) throw new Exception("出庫儲位比對錯誤，請選擇此出庫儲位" + headeroutOutLocatorSegment3);
+                    if (trfHeader.TransferOrganizationId != inOrganizationId) throw new Exception("入庫組織比對錯誤，請選擇此入庫倉庫" + trfHeader.TransferSubinventoryCode);
+                    if (trfHeader.TransferSubinventoryCode != inSubinventoryCode) throw new Exception("入庫倉庫比對錯誤，請選擇此入庫倉庫" + trfHeader.TransferSubinventoryCode);
+                    if (trfHeader.TransferLocatorId != inLocatorId) throw new Exception("入庫儲位比對錯誤，請選擇此入庫儲位" + headeroutInLocatorSegment3);
 
                     //計算每件令數
                     decimal rollReamWt = 0;
@@ -2928,7 +2963,9 @@ SELECT [STOCK_ID] as ID
                     stock.LastUpdateDate = now;
                     stockTRepository.Update(stock);
 
-                    STK_TXN_T stkTxnT = CreateStockRecord(stock, trfLocator.OrganizationId, trfOrganization.OrganizationCode, trfLocator.SubinventoryCode, transferLocatorId, CategoryCode.TransferReason, ActionCode.StockTransfer, header.ShipmentNumber);
+                    var stkTxnT = CreateStockRecord(stock, trfLocator.OrganizationId, trfOrganization.OrganizationCode, trfLocator.SubinventoryCode,
+                        transferLocatorId, CategoryCode.TransferReason, ActionCode.StockTransfer, header.ShipmentNumber,
+                                  stock.PrimaryAvailableQty, 0, stock.PrimaryAvailableQty, stock.SecondaryAvailableQty, 0, stock.SecondaryAvailableQty, StockStatusCode.InStock, userId, now);
                     stkTxnTRepository.Create(stkTxnT);
 
                     

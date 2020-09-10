@@ -13,6 +13,11 @@ function addNewContent(obj) {
     }
 }
 
+//清空所有預覽圖
+function clearContent(obj) {
+    $(obj).html("");
+}
+
 //點擊預覽&&圖片放大不含刪除
 function AddNewContent(obj) {
 
