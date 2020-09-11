@@ -124,7 +124,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity
         /// </summary>
         /// 
         [StringLength(30)]
-        [Required]
         [Column("REAM_WEIGHT")]
         public string ReamWeight { set; get; }
 

@@ -314,7 +314,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Process
         /// 紙別
         /// </summary>
         /// 
-        [StringLength(4)]
+        [StringLength(30)]
         [Column("PAPER_TYPE")]
         public string PaperType { set; get; }
 

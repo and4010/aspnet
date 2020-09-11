@@ -52,7 +52,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Purchase
         /// 儲位
         /// </summary>
         /// 
-        [StringLength(30)]
+        [StringLength(163)]
         [Column("LOCATOR_CODE")]
         public string LocatorCode { set; get; }
 
@@ -60,7 +60,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Purchase
         /// 條碼
         /// </summary>
         /// 
-        [StringLength(40)]
+        [StringLength(20)]
         [Required]
         [Column("BARCODE")]
         public string Barcode { set; get; }
@@ -197,7 +197,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Purchase
         /// 
         [StringLength(80)]
         [Column("LOT_NUMBER")]
-        [Required(AllowEmptyStrings = true)]
         public string LotNumber { set; get; }
 
         /// <summary>
@@ -267,6 +266,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Purchase
         /// </summary>
         /// 
         [Required]
+        [StringLength(128)]
         [Column("CREATED_USER_NAME")]
         public string CreatedUserName { set; get; }
 
@@ -301,6 +301,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Purchase
         /// 更新人員名稱
         /// </summary>
         /// 
+        [StringLength(128)]
         [Column("LAST_UPDATE_USER_NAME")]
         public string LastUpdateUserName { set; get; }
     }
