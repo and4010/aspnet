@@ -356,7 +356,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Delivery
         /// 出貨儲位
         /// </summary>
         /// 
-        [StringLength(30)]
+        [StringLength(163)]
         [Column("LOCATOR_CODE")]
         public string LOCATOR_CODE { set; get; }
 

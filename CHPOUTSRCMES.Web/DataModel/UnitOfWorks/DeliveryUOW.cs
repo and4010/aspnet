@@ -305,10 +305,10 @@ OR SUM(ISNULL(p.SECONDARY_QUANTITY, 0)) <> MIN(d.REQUESTED_SECONDARY_QUANTITY)";
                     {
                         data.DeliveryStatusCode = pickedResult.Msg;
                         data.DeliveryStatusName = deliveryStatusCode.GetDesc(pickedResult.Msg);
-                        dlvHeaderTRepository.Update(data);
                         data.LastUpdateBy = addUser;
                         data.LastUpdateUserName = addUserName;
                         data.LastUpdateDate = addDate;
+                        dlvHeaderTRepository.Update(data);
                     }
                     dlvHeaderTRepository.SaveChanges();
 
@@ -1243,49 +1243,75 @@ SELECT [DLV_PICKED_ID]
             }
         }
 
-        //public ResultModel CancelTrip(List<DLV_HEADER_T> updateDatas, string userId, string userName)
-        //{
-        //    if (updateDatas == null || updateDatas.Count == 0) return new ResultModel(false, "沒有交運單資料");
-        //    using (var txn = this.Context.Database.BeginTransaction())
-        //    {
-        //        try
-        //        {
-        //            foreach (DLV_HEADER_T data in updateDatas)
-        //            {
-        //                //更新出貨檔頭
-        //                data.AuthorizeBy = userId;
-        //                data.AuthorizeByUserName = userName;
-        //                data.AuthorizeDate = authorizeDate;
-        //                data.DeliveryStatusCode = DeliveryStatusCode.Shipped;
-        //                data.DeliveryStatusName = deliveryStatusName;
-        //                data.LastUpdateBy = userId;
-        //                data.LastUpdateUserName = userName;
-        //                data.LastUpdateDate = now;
-        //                dlvHeaderTRepository.Update(data);
+        public ResultModel CancelTrip(List<DLV_HEADER_T> updateDatas, string userId, string userName)
+        {
+            if (updateDatas == null || updateDatas.Count == 0) return new ResultModel(false, "沒有交運單資料");
+            using (var txn = this.Context.Database.BeginTransaction())
+            {
+                try
+                {
+                    var now = DateTime.Now;
+                    foreach (DLV_HEADER_T header in updateDatas)
+                    {
+                        //更新出貨檔頭
+                        header.DeliveryStatusCode = DeliveryStatusCode.Canceled;
+                        header.DeliveryStatusName = deliveryStatusCode.GetDesc(DeliveryStatusCode.Canceled);
+                        header.LastUpdateBy = userId;
+                        header.LastUpdateUserName = userName;
+                        header.LastUpdateDate = now;
+                        dlvHeaderTRepository.Update(header);
 
+                        var pickList = dlvPickedTRepository.GetAll().Where(x => x.DlvHeaderId == header.DlvHeaderId).ToList();
+                        //if (pickList == null || pickList.Count == 0) throw new Exception("找不到揀貨資料");
+                        if (pickList != null && pickList.Count > 0)
+                        {
+                            foreach (DLV_PICKED_T pick in pickList)
+                            {
+                                //還原庫存
+                                var stock = stockTRepository.GetAll().FirstOrDefault(x => x.StockId == pick.Stock_Id);
+                                if (stock == null) throw new Exception("找不到庫存資料");
 
-        //                var pickList = dlvPickedTRepository.GetAll().AsNoTracking().Where(x => x.DlvHeaderId == data.DlvHeaderId).ToList();
-        //                if (pickList == null || pickList.Count == 0) throw new Exception("找不到揀貨資料");
+                                STK_TXN_T stkTxnT = CreateStockRecord(stock, null, "", "", null, CategoryCode.Delivery, ActionCode.Deleted, header.DeliveryName);
+                                decimal? priQty = pick.PrimaryQuantity;
+                                decimal? secQty = pick.SecondaryQuantity;
+                                var updaeStockResult = UpdateStock(stock, stkTxnT, ref priQty, ref secQty, pickSatus, PickStatus.Deleted, userId, now, true);
+                                if (!updaeStockResult.Success) throw new Exception(updaeStockResult.Msg);
+                                dlvPickedTRepository.Delete(pick);
 
-        //                foreach (DLV_PICKED_T pick in pickList)
-        //                {
-        //                    //更新庫存鎖定量
-        //                    var stock = stockTRepository.GetAll().FirstOrDefault(x => x.StockId == pick.Stock_Id);
-        //                    if (stock == null) throw new Exception("找不到庫存資料");
-        //                    STK_TXN_T stkTxnT = CreateStockRecord(stock, null, "", "", null, CategoryCode.Delivery, ActionCode.Shipped, data.DeliveryName);
-        //                    var updateStockLockQtyResult = UpdateStockLockQty(stock, stkTxnT, -1 * pick.PrimaryQuantity, -1 * pick.SecondaryQuantity, pickSatus, PickStatus.Shipped, userId, now);
-        //                    if (!updateStockLockQtyResult.Success) throw new Exception(updateStockLockQtyResult.Msg);
-        //                }
-        //            }
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            logger.Error(LogUtilities.BuildExceptionMessage(ex));
-        //            txn.Rollback();
-        //            return new ResultModel(false, "取消航程號失敗:" + ex.Message);
-        //        }
-        //    }
-        //}
+                                //decimal pryBefQty = stock.PrimaryAvailableQty;
+                                //decimal? secBefQty = stock.SecondaryAvailableQty;
+                                //stock.PrimaryAvailableQty = stock.PrimaryAvailableQty + pick.PrimaryQuantity;
+                                //stock.PrimaryLockedQty = stock.PrimaryLockedQty - pick.PrimaryQuantity;
+                                //stock.SecondaryAvailableQty = stock.SecondaryAvailableQty + pick.SecondaryQuantity;
+                                //stock.SecondaryLockedQty = stock.SecondaryAvailableQty - pick.SecondaryQuantity;
+                                //stock.StatusCode = StockStatusCode.InStock;
+                                //stock.LastUpdateBy = userId;
+                                //stock.LastUpdateDate = now;
+
+                                //STK_TXN_T stkTxnT = CreateStockRecord(stock, null, "", "", null, CategoryCode.Delivery, ActionCode.Deleted, data.DeliveryName,
+                                //    pryBefQty, pick.PrimaryQuantity, stock.PrimaryAvailableQty, secBefQty, pick.SecondaryQuantity, stock.SecondaryAvailableQty,
+                                //    StockStatusCode.InStock, userId, now);
+
+                                //stockTRepository.Update(stock);
+                                //stkTxnTRepository.Create(stkTxnT);
+
+                                //dlvPickedTRepository.Delete(pick);
+                            }
+                        }
+                    }
+
+                    this.SaveChanges();
+                    txn.Commit();
+                    return new ResultModel(true, "取消航程號成功");
+                }
+                catch (Exception ex)
+                {
+                    logger.Error(LogUtilities.BuildExceptionMessage(ex));
+                    txn.Rollback();
+                    return new ResultModel(false, "取消航程號失敗:" + ex.Message);
+                }
+            }
+        }
 
         /// <summary>
         /// 更新交運單狀態
@@ -1306,10 +1332,10 @@ SELECT [DLV_PICKED_ID]
                     {
                         data.DeliveryStatusCode = statusCode;
                         data.DeliveryStatusName = deliveryStatusCode.GetDesc(statusCode);
-                        dlvHeaderTRepository.Update(data);
                         data.LastUpdateBy = userId;
                         data.LastUpdateUserName = userName;
                         data.LastUpdateDate = now;
+                        dlvHeaderTRepository.Update(data);
                     }
                     dlvHeaderTRepository.SaveChanges();
                     txn.Commit();

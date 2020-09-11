@@ -75,7 +75,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Delivery
         /// 出貨儲位
         /// </summary>
         /// 
-        [StringLength(30)]
+        [StringLength(163)]
         [Column("LOCATOR_CODE")]
         public string LocatorCode { set; get; }
 
@@ -118,7 +118,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Delivery
         /// </summary>
         /// 
         [StringLength(30)]
-        [Required]
         [Column("REAM_WEIGHT")]
         public string ReamWeight { set; get; }
 

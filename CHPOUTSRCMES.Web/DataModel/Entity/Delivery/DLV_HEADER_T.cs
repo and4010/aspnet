@@ -34,7 +34,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Delivery
         /// </summary>
         /// 
         [StringLength(240)]
-        [Required(AllowEmptyStrings=true)]
+        [Required]
         [Column("ORG_NAME")]
         public string OrgName { set; get; }
 
