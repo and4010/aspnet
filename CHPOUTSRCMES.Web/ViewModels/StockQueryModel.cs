@@ -10,6 +10,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.UI.WebControls;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.Ajax.Utilities;
 
 namespace CHPOUTSRCMES.Web.ViewModels
 {
@@ -49,7 +50,7 @@ namespace CHPOUTSRCMES.Web.ViewModels
         public decimal? SecondarySumQty { set; get; }
 
         public static List<StockQueryModel> getModels(DataTableAjaxPostViewModel data,
-            string subinventory, string locator, string itemCategory, string itemNo)
+            string subinventory, string locator, string itemCategory, string itemNo, string userId)
         {
 
             using var mesContext = new CHPOUTSRCMES.Web.DataModel.MesContext();
@@ -57,13 +58,17 @@ namespace CHPOUTSRCMES.Web.ViewModels
             using var masterUow = new CHPOUTSRCMES.Web.DataModel.UnitOfWorks.MasterUOW(mesContext);
             try
             {
-                var locatorId = long.Parse(locator);
+                if (!long.TryParse(locator, out long locatorId))
+                {
+                    locatorId = 0;
+                }
 
+                var list = masterUow.stockTRepository.GetAll().AsNoTracking()
+                    .Join(masterUow.userSubinventoryTRepository.GetAll().AsNoTracking(), x => x.SubinventoryCode, y => y.SubinventoryCode, (x, y) => new { user = y, stock = x })
+                    .Where(x => x.user.UserId == userId)
+                    .Select(x => x.stock);
 
-
-                var list = masterUow.stockTRepository.GetAll().AsNoTracking();
-
-                if (!string.IsNullOrEmpty(subinventory) && subinventory.CompareTo("全部") != 0)
+                if (!string.IsNullOrEmpty(subinventory) && subinventory.CompareTo("*") != 0)
                 {
                     list = list.Where(x => x.SubinventoryCode == subinventory);
                 }
@@ -73,12 +78,12 @@ namespace CHPOUTSRCMES.Web.ViewModels
                     list = list.Where(x => x.LocatorId == locatorId);
                 }
 
-                if (!string.IsNullOrEmpty(itemCategory) && itemCategory.CompareTo("全部") != 0)
+                if (!string.IsNullOrEmpty(itemCategory) && itemCategory.CompareTo("*") != 0)
                 {
                     list = list.Where(x => x.ItemCategory == itemCategory);
                 }
 
-                if (!string.IsNullOrEmpty(itemNo) && itemNo.CompareTo("全部") != 0)
+                if (!string.IsNullOrEmpty(itemNo) && itemNo.CompareTo("*") != 0)
                 {
                     list = list.Where(x => x.ItemNumber == itemNo);
                 }
@@ -98,7 +103,7 @@ namespace CHPOUTSRCMES.Web.ViewModels
                         SecondaryAvailableQty = x.Sum(y => y.SecondaryAvailableQty) + x.Sum(y => y.SecondaryLockedQty)
                     });
                 //var count = models.Count();
-                return models.Skip(data.Start).Take(data.Length).ToList();
+                return models.OrderBy(x=> new { x.SubinventoryCode, x.LocatorSegments, x.InventoryItemId}).Skip(data.Start).Take(data.Length).ToList();
             }
             catch (Exception ex)
             {

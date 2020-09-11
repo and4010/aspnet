@@ -2,19 +2,46 @@
    
     $('#btnSearch').click(function () {
 
-        var subinventory = $("#SubinvenotoryCode").val();
-        var locatorId = $("#LocatorId").val();
-        var itemCategory = $("#ItemCategory").val();
+        var subinventory = $("#SubinvenotoryCode option:selected").val(); 
+        var locatorId = $("#LocatorId option:selected").val();
+        var itemCategory = $("#ItemCategory option:selected").val();
         var itemNo = $("#ItemNumber").val();
 
-        LoadTable(subinventory, locatorId, itemCategory, itemNo);
+        loadTable(subinventory, locatorId, itemCategory, itemNo);
 
     });
 
+    $('#SubinvenotoryCode').on('change', function (e) {
+        var valueSelected = this.value;
+        loadLocator(valueSelected, $('#LocatorId'));
+    });
+
+    $(".ItemNumber").autocomplete({
+        source: function (request, response) {
+            $.ajax({
+                url: "/Stock/GetItemNumbers",
+                type: "POST",
+                dataType: "json",
+                data: {
+                    'Prefix': request.term,
+                    'itemNo': $("#ItemNumber").val(),
+                    '__RequestVerificationToken': $('input[name=__RequestVerificationToken]').val()
+                },
+                success: function (data) {
+                    response($.map(data, function (item) {
+                        return { label: item.Value + " " + item.Description, value: item.Value };
+                    }))
+                }
+            })
+        },
+        messages: {
+            noResults: "", results: ""
+        }
+    });
 });
 
 
-function LoadTable(subinventory, locatorId, itemCategory, itemNo) {
+function loadTable(subinventory, locatorId, itemCategory, itemNo) {
 
     $('#QueryTable').DataTable({
         "language": {
@@ -37,7 +64,8 @@ function LoadTable(subinventory, locatorId, itemCategory, itemNo) {
                 'subinventory': subinventory,
                 'locatorId': locatorId,
                 'itemCategory': itemCategory,
-                'itemNo': item
+                'itemNo': itemNo,
+                '__RequestVerificationToken': $('input[name=__RequestVerificationToken]').val()
             }
         },
         buttons: [
@@ -48,14 +76,16 @@ function LoadTable(subinventory, locatorId, itemCategory, itemNo) {
         ],
         columns: [
             { data: "SubinventoryCode", "name": "倉庫", "autoWidth": true, "className": "dt-body-center"},
-            { data: "LocatorId", "name": "儲位ID", "autoWidth": true, "className": "dt-body-center"},
+            { data: "LocatorId", "name": "儲位ID", "autoWidth": true, "className": "dt-body-center", "visible": false },
             { data: "LocatorSegments", "name": "儲位", "autoWidth": true, "className": "dt-body-center"},
-            { data: "InventoryItemId", "name": "料號ID", "autoWidth": true, "className": "dt-body-center"},
+            { data: "InventoryItemId", "name": "料號ID", "autoWidth": true, "className": "dt-body-center", "visible": false },
             { data: "ItemNumber", "name": "料號", "autoWidth": true, "className": "dt-body-center"},
             { data: "PrimaryAvailableQty", "name": "主單位可用量", "autoWidth": true, "className": "dt-body-right"},
-            { data: "PrimarySumQty", "name": "主單位合計量", "autoWidth": true, "className": "dt-body-right"},
             { data: "PrimaryUomCode", "name": "主要單位", "autoWidth": true, "className": "dt-body-center" },
             { data: "SecondaryAvailableQty", "name": "次單位可用量", "autoWidth": true, "className": "dt-body-right" },
+            { data: "SecondaryUomCode", "name": "次要單位", "autoWidth": true, "className": "dt-body-center" },
+            { data: "PrimarySumQty", "name": "主單位合計量", "autoWidth": true, "className": "dt-body-right" },
+            { data: "PrimaryUomCode", "name": "主要單位", "autoWidth": true, "className": "dt-body-center" },
             { data: "SecondarySumQty", "name": "次單位合計量", "autoWidth": true, "className": "dt-body-right"},
             { data: "SecondaryUomCode", "name": "次要單位", "autoWidth": true, "className": "dt-body-center"}
         ]
@@ -63,3 +93,27 @@ function LoadTable(subinventory, locatorId, itemCategory, itemNo) {
     });
 }
 
+function loadLocator(subinventory, option) {
+    var data = {
+        'subinventory': subinventory,
+        '__RequestVerificationToken' : $('input[name=__RequestVerificationToken]').val()
+    };
+    
+    $.ajax({
+        url: '/Stock/GetLocators',
+        type: 'POST',
+        data: data,
+        dataType: 'json',
+        success: function (data) {
+            option.empty();
+            if (data != null) {
+                $.each(data, function (i, item) {
+                    element.append($('<option></option>').val(item.Value).text(item.Text));
+                });
+            }
+        },
+        error: function () {
+            alert('無法取得儲位清單');
+        }
+    });
+}

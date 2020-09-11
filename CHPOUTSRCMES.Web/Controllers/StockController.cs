@@ -32,13 +32,35 @@ namespace CHPOUTSRCMES.Web.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public JsonResult StockQuery(DataTableAjaxPostViewModel data, 
             string subinventory, string locatorId, string itemCategory, string itemNo)
         {
 
-            var models = StockQueryModel.getModels(data, subinventory, locatorId, itemCategory, itemNo);
+            var userId = this.User.Identity.GetUserId();
+            var models = StockQueryModel.getModels(data, subinventory, locatorId, itemCategory, itemNo, userId);
 
             return Json(new { draw = data.Draw, recordsFiltered = models.Count, recordsTotal = models.Count, data = models }, JsonRequestBehavior.AllowGet);
         }
-	}
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public JsonResult GetLocators(string subinventory)
+        {
+
+            var items = QueryViewModel.getLocatorList(this.User.Identity.GetUserId(), subinventory);
+
+            return this.Json(items, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public JsonResult GetItemNumbers(string itemNo)
+        {
+
+            var items = QueryViewModel.getItemNumbers(itemNo);
+
+            return this.Json(items, JsonRequestBehavior.AllowGet);
+        }
+    }
 }

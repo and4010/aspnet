@@ -2334,17 +2334,19 @@ on s.ORGANIZATION_ID = l.ORGANIZATION_ID and s.SUBINVENTORY_CODE = l.SUBINVENTOR
         /// </summary>
         /// <param name="Prefix"></param>
         /// <returns></returns>
-        public List<AutoCompletedItem> GetAutoCompleteItemNumberList(string Prefix)
+        public List<AutoCompletedItem> GetAutoCompleteItemNumberList(string Prefix, int count = 30)
         {
             return itemsTRepository.GetAll().AsNoTracking().Where(x =>
             x.ItemNumber.Contains(Prefix) &&
             x.ControlFlag != ControlFlag.Deleted)
-            .OrderBy(x => x.ItemNumber)
-            .Select(x => new AutoCompletedItem
-            {
-                Description = x.ItemNumber,
-                Value = x.ItemNumber
-            }).ToList();
+                .Take(count)
+                .OrderBy(x => x.ItemNumber)
+                .Select(x => new AutoCompletedItem
+                {
+                    Description = x.ItemDescTch, 
+                    Value = x.ItemNumber
+                })
+                .ToList();
         }
 
         /// <summary>

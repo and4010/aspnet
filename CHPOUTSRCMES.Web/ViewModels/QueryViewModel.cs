@@ -9,6 +9,7 @@ using System.Data.Entity;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.UI.WebControls;
+using CHPOUTSRCMES.Web.Jsons.Requests;
 
 namespace CHPOUTSRCMES.Web.ViewModels
 {
@@ -32,7 +33,7 @@ namespace CHPOUTSRCMES.Web.ViewModels
             using var masterUow = new CHPOUTSRCMES.Web.DataModel.UnitOfWorks.MasterUOW(mesContext);
             try
             {
-                return masterUow.GetSubinventory(userId, "");
+                return masterUow.GetSubinventoryDropDownListForUserId(userId, MasterUOW.DropDownListType.All);
             }
             catch (Exception ex)
             {
@@ -83,6 +84,25 @@ namespace CHPOUTSRCMES.Web.ViewModels
 
             return new List<SelectListItem>();
         }
+
+        public static IEnumerable<AutoCompletedItem> getItemNumbers(string itemNo)
+        {
+
+            using var mesContext = new CHPOUTSRCMES.Web.DataModel.MesContext();
+
+            using var masterUow = new CHPOUTSRCMES.Web.DataModel.UnitOfWorks.MasterUOW(mesContext);
+            try
+            {
+                return masterUow.GetAutoCompleteItemNumberList(itemNo);
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            return new List<AutoCompletedItem>();
+        }
+
 
     }
 }
