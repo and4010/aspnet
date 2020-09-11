@@ -411,6 +411,10 @@
     <Compile Include="Migrations\202009090210025_merge_branch_pon.Designer.cs">
       <DependentUpon>202009090210025_merge_branch_pon.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202009110549472_fixTable.cs" />
+    <Compile Include="Migrations\202009110549472_fixTable.Designer.cs">
+      <DependentUpon>202009110549472_fixTable.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Delivery\bDeliveryDetail.cs" />
     <Compile Include="Models\Delivery\DeliveryDetail.cs" />
@@ -2134,6 +2138,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202009090210025_merge_branch_pon.resx">
       <DependentUpon>202009090210025_merge_branch_pon.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202009110549472_fixTable.resx">
+      <DependentUpon>202009110549472_fixTable.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
