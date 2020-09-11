@@ -181,7 +181,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Obsolete
         /// 目標儲位
         /// </summary>
         /// 
-        [StringLength(30)]
+        [StringLength(163)]
         [Column("TRANSFER_LOCATOR_CODE")]
         public string TransferLocatorCode { set; get; }
 
