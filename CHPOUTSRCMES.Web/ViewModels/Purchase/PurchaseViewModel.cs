@@ -507,19 +507,11 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
             }
         }
 
-        public void PurchaseFlatReceipt(ref ReportDataSource Header, ref ReportDataSource Detail, ref ReportDataSource Reason, string CtrHeaderId,string ITEM_CATEGORY)
+        public void PurchaseReceipt(ref ReportDataSource Header, ref ReportDataSource Detail, ref ReportDataSource Reason, string CtrHeaderId,string ITEM_CATEGORY)
         {
             using (var context = new MesContext())
             {
-                new MasterUOW(context).PurchaseFlatReceipt(ref Header, ref Detail, ref Reason, CtrHeaderId, ITEM_CATEGORY);
-            }
-        }
-
-        public void PurchasePaperRollerReceipt(ref ReportDataSource Header, ref ReportDataSource Detail, ref ReportDataSource Reason, string CtrHeaderId, string ITEM_CATEGORY)
-        {
-            using (var context = new MesContext())
-            {
-                new MasterUOW(context).PurchasePaperRollerReceipt(ref Header, ref Detail, ref Reason, CtrHeaderId, ITEM_CATEGORY);
+                new PurchaseUOW(context).PurchaseReceipt(ref Header, ref Detail, ref Reason, CtrHeaderId, ITEM_CATEGORY);
             }
         }
 

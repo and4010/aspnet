@@ -21,6 +21,7 @@ using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.Text;
+using CHPOUTSRCMES.Web.ActionFilter;
 
 namespace CHPOUTSRCMES.Web.Controllers
 {
@@ -47,12 +48,11 @@ namespace CHPOUTSRCMES.Web.Controllers
             return View(model);
         }
 
-       
+        [NoCache]
         public JsonResult GetEvents(string id)
         {
             ///清除cache fullcalendar才能在執行
-            HttpContext.Response.Cache.SetCacheability(HttpCacheability.NoCache);
-            HttpContext.Response.Cache.AppendCacheExtension("no-store, must-revalidate");
+            
             PurchaseViewModel purchaseViewModel = new PurchaseViewModel();
             var fullcalendar = purchaseViewModel.GetFullCalendarModel(id);
             return Json(fullcalendar.ToArray(), JsonRequestBehavior.AllowGet);

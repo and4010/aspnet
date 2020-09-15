@@ -174,6 +174,16 @@ function onclick() {
         PrintLableParameter(PaperRollInvestDataTables, "/Process/RePrintLabel", "2", Status);
     });
 
+    //列印入庫單
+    $('#BtnPurchase').click(function () {
+        var table = $('#PaperRollProductionDataTables').DataTable();
+        if (table.data().length == 0) {
+            swal.fire("產出無資料，請先輸入資料。");
+            return;
+        }
+        var OspHeaderId = $('#OspHeaderId').val();
+        window.open("/Home/OspStock/?OspHeaderId=" + OspHeaderId);
+    });
 
     //列印成品標籤紙捲
     $('#BtnLabel').click(function () {

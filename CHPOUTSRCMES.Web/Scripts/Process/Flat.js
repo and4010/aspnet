@@ -170,6 +170,16 @@ function onBtnClick() {
 
     });
 
+    //列印入庫單
+    $('#BtnPurchase').click(function () {
+        var table = $('#FlatProductionDataTables').DataTable();
+        if (table.data().length == 0) {
+            swal.fire("產出無資料，請先輸入資料。");
+            return;
+        }
+        var OspHeaderId = $('#OspHeaderId').val();
+        window.open("/Home/OspStock/?OspHeaderId=" + OspHeaderId);
+    });
 
     //投出驗證單號
     $('#BtnProcess_Production_Batch_no').click(function (e) {

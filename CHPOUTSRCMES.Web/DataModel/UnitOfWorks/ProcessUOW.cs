@@ -9,9 +9,11 @@ using CHPOUTSRCMES.Web.Models.Process;
 using CHPOUTSRCMES.Web.Util;
 using Microsoft.Ajax.Utilities;
 using Microsoft.Graph;
+using Microsoft.Reporting.WebForms;
 using NLog;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.Entity;
 using System.Data.SqlClient;
 using System.Linq;
@@ -20,6 +22,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading;
 using System.Web;
+using System.Web.Configuration;
 using System.Web.Mvc;
 
 namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
@@ -3157,5 +3160,172 @@ and SUBINVENTORY_CODE = @SUBINVENTORY_CODE");
                 }
             }
         }
+
+
+        /// <summary>
+        /// 領料單
+        /// </summary>
+        /// <param name="Header"></param>
+        /// <param name="OspHeaderId"></param>
+        public void OspMaterial(ref ReportDataSource Header, string OspHeaderId)
+        {
+
+            using (SqlConnection connection = new SqlConnection(WebConfigurationManager.ConnectionStrings["MesContext"].ConnectionString.ToString()))
+            {
+                try
+                {
+                    connection.Open();
+
+                    if (!long.TryParse(OspHeaderId, out long ospHeaderId))
+                    {
+                        throw new ArgumentException("HEADER ID ERROR");
+                    }
+
+                    DataSet dataset = new DataSet("OSP");
+                    string Header1 = "SELECT * from OspCutMaterial(@OSP_HEADER_ID)";
+                    SqlCommand command = new SqlCommand(Header1, connection);
+                    command.Parameters.Add(new SqlParameter("@OSP_HEADER_ID", ospHeaderId) { DbType = DbType.Int64 });
+                    SqlDataAdapter salesOrderAdapter = new SqlDataAdapter(command);
+                    salesOrderAdapter.Fill(dataset, "DataSet1");
+                    Header.Name = "DataSet1";
+                    Header.Value = dataset.Tables["DataSet1"];
+
+                    connection.Close();
+                }
+                catch (Exception e)
+                {
+                    logger.Error(LogUtilities.BuildExceptionMessage(e));
+                }
+            }
+
+        }
+
+
+        /// <summary>
+        /// 外場P裁切單
+        /// </summary>
+        /// <param name="Detail"></param>
+        /// <param name="LabelKnife"></param>
+        /// <param name="LabelDesc"></param>
+        /// <param name="LabelSize"></param>
+        /// <param name="OspHeaderId"></param>
+        public void OspCutReceiptReport(ref ReportDataSource Detail, ref ReportDataSource LabelKnife, ref ReportDataSource LabelDesc, ref ReportDataSource LabelSize, string OspHeaderId)
+        {
+
+            using (SqlConnection connection = new SqlConnection(WebConfigurationManager.ConnectionStrings["MesContext"].ConnectionString.ToString()))
+            {
+                try
+                {
+                    connection.Open();
+                    if (!long.TryParse(OspHeaderId, out long ospHeaderId))
+                    {
+                        throw new ArgumentException("HEADER ID ERROR");
+                    }
+
+                    var osp = OspDetailOutTRepository.Get(x => x.OspHeaderId == ospHeaderId).FirstOrDefault();
+
+                    DataSet dataset = new DataSet("Receipt");
+                    GetDetail(connection, ref dataset, ospHeaderId);
+                    Detail.Name = "DataSet1";
+                    Detail.Value = dataset.Tables["DataSet1"];
+
+
+                    GetLabelKnife(connection, ref dataset, osp.Specification);
+                    LabelKnife.Name = "LabelKnife";
+                    LabelKnife.Value = dataset.Tables["LabelKnife"];
+
+
+                    GetLabelDesc(connection, ref dataset,osp.PackingType);
+                    LabelDesc.Name = "LabelDesc";
+                    LabelDesc.Value = dataset.Tables["LabelDesc"];
+
+                    GetLabelSize(connection, ref dataset,osp.Specification);
+                    LabelSize.Name = "LabelSize";
+                    LabelSize.Value = dataset.Tables["LabelSize"];
+
+                    
+                    connection.Close();
+                }
+                catch (Exception e)
+                {
+                    logger.Error(LogUtilities.BuildExceptionMessage(e));
+                }
+            }
+
+        }
+
+
+        public void GetDetail(SqlConnection connection, ref DataSet dsDetail, long ospHeaderId)
+        {
+            string Header = "SELECT * FROM dbo.OspOutSourcCut(@OSP_HEADER_ID)";
+            SqlCommand command = new SqlCommand(Header, connection);
+            command.Parameters.Add(new SqlParameter("@OSP_HEADER_ID", ospHeaderId) { DbType = DbType.Int64 });
+            SqlDataAdapter salesOrderAdapter = new SqlDataAdapter(command);
+            salesOrderAdapter.Fill(dsDetail, "DataSet1");
+        }
+
+        public void GetLabelKnife(SqlConnection connection, ref DataSet LabelKnife, string spec)
+        {
+            string Header = "SELECT dbo.OspLabelKnife(@SPECIFICATION) AS Knife";
+            SqlCommand command = new SqlCommand(Header, connection);
+            command.Parameters.Add(new SqlParameter("@SPECIFICATION", spec));
+            SqlDataAdapter salesOrderAdapter = new SqlDataAdapter(command);
+            salesOrderAdapter.Fill(LabelKnife, "LabelKnife");
+        }
+
+        public void GetLabelDesc(SqlConnection connection, ref DataSet LabelDesc, string packingType)
+        {
+            string Header = "select dbo.ConvertOspLabelDesc(@packingType) as LabelDesc";
+            SqlCommand command = new SqlCommand(Header, connection);
+            command.Parameters.Add(new SqlParameter("@packingType", packingType));
+            SqlDataAdapter salesOrderAdapter = new SqlDataAdapter(command);
+            salesOrderAdapter.Fill(LabelDesc, "LabelDesc");
+        }
+
+        public void GetLabelSize(SqlConnection connection, ref DataSet LabelSize, string spec)
+        {
+            string Header = "select dbo.CheckOspLabelSize(@SPECIFICATION) as LabelSize";
+            SqlCommand command = new SqlCommand(Header, connection);
+            command.Parameters.Add(new SqlParameter("@SPECIFICATION", spec));
+            SqlDataAdapter salesOrderAdapter = new SqlDataAdapter(command);
+            salesOrderAdapter.Fill(LabelSize, "LabelSize");
+        }
+
+
+        /// <summary>
+        /// 成品入庫
+        /// </summary>
+        /// <param name="stock"></param>
+        /// <param name="OspHeaderId"></param>
+        public void  OspStock(ref ReportDataSource stock, string OspHeaderId)
+        {
+            using (SqlConnection connection = new SqlConnection(WebConfigurationManager.ConnectionStrings["MesContext"].ConnectionString.ToString()))
+            {
+                try
+                {
+                    connection.Open();
+                    if (!long.TryParse(OspHeaderId, out long ospHeaderId))
+                    {
+                        throw new ArgumentException("HEADER ID ERROR");
+                    }
+                    DataSet dataset = new DataSet("stock");
+                    string Header1 = "select * from OspCutStock(@OSP_HEADER_ID)";
+                    SqlCommand command = new SqlCommand(Header1, connection);
+                    command.Parameters.Add(new SqlParameter("@OSP_HEADER_ID", ospHeaderId) { DbType = DbType.Int64 });
+                    SqlDataAdapter salesOrderAdapter = new SqlDataAdapter(command);
+                    salesOrderAdapter.Fill(dataset, "DataSet1");
+                    stock.Name = "DataSet1";
+                    stock.Value = dataset.Tables["DataSet1"];
+
+                    connection.Close();
+                }
+                catch (Exception e)
+                {
+                    logger.Error(LogUtilities.BuildExceptionMessage(e));
+                }
+            }
+        }
+
+
     }
 }

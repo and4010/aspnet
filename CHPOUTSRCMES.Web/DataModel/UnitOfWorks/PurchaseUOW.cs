@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Web;
+using System.Web.Configuration;
 using System.Web.Mvc;
 using CHPOUTSRCMES.Web.DataModel.Entity;
 using CHPOUTSRCMES.Web.DataModel.Entity.Interfaces;
@@ -1743,6 +1744,72 @@ AND (lt.LOCATOR_DISABLE_DATE >= GETDATE() OR lt.LOCATOR_DISABLE_DATE is null)
                 return statusCode;
 
             }
+        }
+
+
+        public void PurchaseReceipt(ref ReportDataSource Header, ref ReportDataSource Detail, ref ReportDataSource Reason, string CtrHeaderId, string ItemCategory)
+        {
+
+            using (SqlConnection connection = new SqlConnection(WebConfigurationManager.ConnectionStrings["MesContext"].ConnectionString.ToString()))
+            {
+                try
+                {
+                    connection.Open();
+                    if (!long.TryParse(CtrHeaderId, out long ctrHeaderId))
+                    {
+                        throw new ArgumentException("HEADER ID ERROR");
+                    }
+
+                    DataSet dataset = new DataSet("Flat");
+                    GetHeaderReceipt(connection, ref dataset, ctrHeaderId);
+                    Header.Name = "Header";
+                    Header.Value = dataset.Tables["Header"];
+
+
+                    GetDetailReceipt(connection, ref dataset, ctrHeaderId, ItemCategory);
+                    Detail.Name = "Detail";
+                    Detail.Value = dataset.Tables["Detail"];
+
+
+                    GetReasonReceipt(connection, ref dataset);
+                    Reason.Name = "Reason";
+                    Reason.Value = dataset.Tables["Reason"];
+                    connection.Close();
+                }
+                catch (Exception e)
+                {
+                    logger.Error(LogUtilities.BuildExceptionMessage(e));
+                }
+            }
+
+        }
+
+        public void GetHeaderReceipt(SqlConnection connection, ref DataSet dsSalesOrder, long CTR_HEADER_ID)
+        {
+            string Header = "SELECT * FROM dbo.PurchaseHeadaer(@CTR_HEADER_ID)";
+            SqlCommand command = new SqlCommand(Header, connection);
+            command.Parameters.Add(new SqlParameter("@CTR_HEADER_ID", CTR_HEADER_ID) { DbType = DbType.Int64 });
+            SqlDataAdapter salesOrderAdapter = new SqlDataAdapter(command);
+            salesOrderAdapter.Fill(dsSalesOrder, "Header");
+        }
+
+        public void GetDetailReceipt(SqlConnection connection, ref DataSet Detail, long CTR_HEADER_ID, string ITEM_CATEGORY)
+        {
+            string Detail1 = "SELECT * FROM dbo.PurchaseDetail(@CTR_HEADER_ID,@ITEM_CATEGORY)";
+            SqlCommand command = new SqlCommand(Detail1, connection);
+            command.Parameters.Add(new SqlParameter("@CTR_HEADER_ID", CTR_HEADER_ID) { DbType = DbType.Int64 });
+            command.Parameters.Add(new SqlParameter("@ITEM_CATEGORY", ITEM_CATEGORY));
+            SqlDataAdapter salesOrderAdapter = new SqlDataAdapter(command);
+            salesOrderAdapter.Fill(Detail, "Detail");
+        }
+
+        public void GetReasonReceipt(SqlConnection connection, ref DataSet Reason)
+        {
+            string reason = "SELECT * FROM dbo.PurchaseReason()";
+            SqlCommand command = new SqlCommand(reason, connection);
+            SqlDataAdapter salesOrderAdapter = new SqlDataAdapter(command);
+            salesOrderAdapter.Fill(Reason, "Reason");
+
         }
     }
 

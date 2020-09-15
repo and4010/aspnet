@@ -115,7 +115,7 @@ $(document).ready(function () {
             return;
         }
         var CtrHeaderId = $("#CtrHeaderId").val()
-        window.open("/Home/LocalReport/?CtrHeaderId=" + CtrHeaderId + "&ItemCategory=" +"捲筒");
+        window.open("/Home/CtrReport/?CtrHeaderId=" + CtrHeaderId + "&ItemCategory=" +"捲筒");
     });
 
     $('#BtnFlatReport').click(function () {
@@ -128,7 +128,7 @@ $(document).ready(function () {
             return;
         }
         var CtrHeaderId = $("#CtrHeaderId").val()
-        window.open("/Home/LocalReport/?CtrHeaderId=" + CtrHeaderId + "&ItemCategory=" + "平版");
+        window.open("/Home/CtrReport/?CtrHeaderId=" + CtrHeaderId + "&ItemCategory=" + "平版");
     });
 });
 

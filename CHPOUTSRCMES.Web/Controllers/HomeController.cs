@@ -221,13 +221,20 @@ namespace CHPOUTSRCMES.Web.Controllers
             //HttpContext.Current.Response.Write();
             Response.End();
         }
-
+        public ActionResult CtrReport(string CtrHeaderId, string ItemCategory)
+        {
+#if DEBUG
+            return LocalReport(CtrHeaderId, ItemCategory);
+#else
+            return RemoteReport(CtrHeaderId, ItemCategory);
+#endif
+        }
 
         public ActionResult LocalReport(string CtrHeaderId, string ItemCategory)
         {
             using (var context = new MesContext())
             {
-                using (MasterUOW uow = new MasterUOW(context))
+                using (PurchaseUOW uow = new PurchaseUOW(context))
                 {
                     List<ReportParameter> paramList = new List<ReportParameter>();
                     paramList.Add(new ReportParameter("CTR_HEADER_ID", CtrHeaderId, false));
@@ -253,7 +260,7 @@ namespace CHPOUTSRCMES.Web.Controllers
                     ReportDataSource Header = new ReportDataSource();
                     ReportDataSource Detail = new ReportDataSource();
                     ReportDataSource Reason = new ReportDataSource();
-                    uow.PurchaseFlatReceipt(ref Header, ref Detail, ref Reason, CtrHeaderId, ItemCategory);
+                    uow.PurchaseReceipt(ref Header, ref Detail, ref Reason, CtrHeaderId, ItemCategory);
                     localReport.DataSources.Add(Header);
                     localReport.DataSources.Add(Detail);
                     localReport.DataSources.Add(Reason);
@@ -297,6 +304,217 @@ namespace CHPOUTSRCMES.Web.Controllers
         }
 
 
+
+        /// <summary>
+        /// 領料單
+        /// </summary>
+        /// <param name="OspHeaderId"></param>
+        /// <returns></returns>
+        public ActionResult OspReport(string OspHeaderId)
+        {
+#if DEBUG
+            return OspLocalReport(OspHeaderId);
+#else
+            return OspRemoteReport(OspHeaderId);
+#endif
+        }
+
+        public ActionResult OspLocalReport(string OspHeaderId)
+        {
+            using (var context = new MesContext())
+            {
+                using (ProcessUOW uow = new ProcessUOW(context))
+                {
+                    List<ReportParameter> paramList = new List<ReportParameter>();
+                    paramList.Add(new ReportParameter("OSP_HEADER_ID", OspHeaderId,false));
+                    var report = new ReportViewer();
+
+                    // Set the processing mode for the ReportViewer to Local  
+                    report.ProcessingMode = ProcessingMode.Local;
+                    report.BackColor = Color.LightGray;
+                    report.SizeToReportContent = true;
+                    report.BorderWidth = 1;
+                    report.BorderStyle = BorderStyle.Solid;
+                    LocalReport localReport = report.LocalReport;
+                    localReport.ReportPath = "Report/ProcessCutMaterial.rdlc";
+
+                    ReportDataSource CutMaterial = new ReportDataSource();
+                    uow.OspMaterial(ref CutMaterial, OspHeaderId);
+                    localReport.DataSources.Add(CutMaterial);
+                    // Set the report parameters for the report  
+                    localReport.SetParameters(paramList);
+
+                    report.LocalReport.Refresh();
+
+                    ViewBag.ReportViewer = report;
+                }
+            }
+
+            return View("Report");
+        }
+
+        public ActionResult OspRemoteReport(string OspHeaderId)
+        {
+            List<ReportParameter> paramList = new List<ReportParameter>();
+            paramList.Add(new ReportParameter("OSP_HEADER_ID", OspHeaderId, false));
+            var report = new ReportViewer();
+            report.ProcessingMode = ProcessingMode.Remote;
+            report.SizeToReportContent = true;
+            report.BorderStyle = BorderStyle.Solid;
+            report.BorderWidth = 1;
+            report.BackColor = Color.LightGray;
+            report.ServerReport.ReportPath = "/開發區/CHPOUSMES/ProcessCutMaterial.rdl";
+            report.ServerReport.ReportServerUrl = new Uri("http://yfyrs001.yfy.corp/reports/");
+            report.ServerReport.SetParameters(paramList);
+            report.LocalReport.Refresh();
+            ViewBag.ReportViewer = report;
+            return View("Report");
+        }
+
+
+
+        /// <summary>
+        /// 裁切單
+        /// </summary>
+        /// <param name="OspHeaderId"></param>
+        /// <returns></returns>
+
+        public ActionResult OspCutReceiptReport(string OspHeaderId)
+        {
+#if DEBUG
+            return OspLocalCutReceiptReport(OspHeaderId);
+#else
+            return OspRemoteCutReceiptReport(OspHeaderId);
+#endif
+        }
+
+        public ActionResult OspLocalCutReceiptReport(string OspHeaderId)
+        {
+            using (var context = new MesContext())
+            {
+                using (ProcessUOW uow = new ProcessUOW(context))
+                {
+                    List<ReportParameter> paramList = new List<ReportParameter>();
+                    paramList.Add(new ReportParameter("OSP_HEADER_ID", OspHeaderId, false));
+                    paramList.Add(new ReportParameter("SPECIFICATION", OspHeaderId, false));
+                    paramList.Add(new ReportParameter("packingType", OspHeaderId, false));
+                    var report = new ReportViewer();
+
+                    // Set the processing mode for the ReportViewer to Local  
+                    report.ProcessingMode = ProcessingMode.Local;
+                    report.BackColor = Color.LightGray;
+                    report.SizeToReportContent = true;
+                    report.BorderWidth = 1;
+                    report.BorderStyle = BorderStyle.Solid;
+                    LocalReport localReport = report.LocalReport;
+                    localReport.ReportPath = "Report/ProcessCutReceipt.rdlc";
+
+
+                    ReportDataSource dsDetail = new ReportDataSource();
+                    ReportDataSource LabelKnife = new ReportDataSource();
+                    ReportDataSource LabelDesc = new ReportDataSource();
+                    ReportDataSource LabelSize = new ReportDataSource();
+                    uow.OspCutReceiptReport(ref dsDetail, ref LabelKnife, ref LabelDesc, ref LabelSize, OspHeaderId);
+                    localReport.DataSources.Add(dsDetail);
+                    localReport.DataSources.Add(LabelKnife);
+                    localReport.DataSources.Add(LabelDesc);
+                    localReport.DataSources.Add(LabelSize);
+                    // Set the report parameters for the report  
+                    localReport.SetParameters(paramList);
+
+                    report.LocalReport.Refresh();
+
+                    ViewBag.ReportViewer = report;
+                }
+            }
+
+            return View("Report");
+        }
+
+        public ActionResult OspRemoteCutReceiptReport(string OspHeaderId)
+        {
+            List<ReportParameter> paramList = new List<ReportParameter>();
+            paramList.Add(new ReportParameter("OSP_HEADER_ID", OspHeaderId, false));
+            var report = new ReportViewer();
+            report.ProcessingMode = ProcessingMode.Remote;
+            report.SizeToReportContent = true;
+            report.BorderStyle = BorderStyle.Solid;
+            report.BorderWidth = 1;
+            report.BackColor = Color.LightGray;
+            report.ServerReport.ReportPath = "/開發區/CHPOUSMES/ProcessCutReceipt.rdl";
+            report.ServerReport.ReportServerUrl = new Uri("http://yfyrs001.yfy.corp/reports/");
+            report.ServerReport.SetParameters(paramList);
+            report.LocalReport.Refresh();
+            ViewBag.ReportViewer = report;
+            return View("Report");
+        }
+
+
+        /// <summary>
+        /// 成品入庫
+        /// </summary>
+        /// <param name="OspHeaderId"></param>
+        /// <returns></returns>
+        public ActionResult OspStock(string OspHeaderId)
+        {
+#if DEBUG
+            return OspLocalStockReport(OspHeaderId);
+#else
+            return OspRemoteStockReport(OspHeaderId);
+#endif
+        }
+
+        public ActionResult OspLocalStockReport(string OspHeaderId)
+        {
+            using (var context = new MesContext())
+            {
+                using (ProcessUOW uow = new ProcessUOW(context))
+                {
+                    List<ReportParameter> paramList = new List<ReportParameter>();
+                    paramList.Add(new ReportParameter("OSP_HEADER_ID", OspHeaderId, false));
+                    var report = new ReportViewer();
+
+                    // Set the processing mode for the ReportViewer to Local  
+                    report.ProcessingMode = ProcessingMode.Local;
+                    report.BackColor = Color.LightGray;
+                    report.SizeToReportContent = true;
+                    report.BorderWidth = 1;
+                    report.BorderStyle = BorderStyle.Solid;
+                    LocalReport localReport = report.LocalReport;
+                    localReport.ReportPath = "Report/CutStock.rdlc";
+
+                    ReportDataSource stock = new ReportDataSource();
+                    uow.OspStock(ref stock, OspHeaderId);
+                    localReport.DataSources.Add(stock);
+                    // Set the report parameters for the report  
+                    localReport.SetParameters(paramList);
+
+                    report.LocalReport.Refresh();
+
+                    ViewBag.ReportViewer = report;
+                }
+            }
+
+            return View("Report");
+        }
+
+        public ActionResult OspRemoteStockReport(string OspHeaderId)
+        {
+            List<ReportParameter> paramList = new List<ReportParameter>();
+            paramList.Add(new ReportParameter("OSP_HEADER_ID", OspHeaderId, false));
+            var report = new ReportViewer();
+            report.ProcessingMode = ProcessingMode.Remote;
+            report.SizeToReportContent = true;
+            report.BorderStyle = BorderStyle.Solid;
+            report.BorderWidth = 1;
+            report.BackColor = Color.LightGray;
+            report.ServerReport.ReportPath = "/開發區/CHPOUSMES/CutStock.rdl";
+            report.ServerReport.ReportServerUrl = new Uri("http://yfyrs001.yfy.corp/reports/");
+            report.ServerReport.SetParameters(paramList);
+            report.LocalReport.Refresh();
+            ViewBag.ReportViewer = report;
+            return View("Report");
+        }
 
     }
 }
