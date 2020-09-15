@@ -1,17 +1,13 @@
-﻿using CHPOUTSRCMES.Web.DataModel;
-using CHPOUTSRCMES.Web.DataModel.UnitOfWorks;
-using CHPOUTSRCMES.Web.Models;
-using CHPOUTSRCMES.Web.Models.Information;
+﻿using CHPOUTSRCMES.Web.DataModel.UnitOfWorks;
+using CHPOUTSRCMES.Web.Jsons.Requests;
+using CHPOUTSRCMES.Web.Models.StockQuery;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Data.Entity;
-using System.Web;
 using System.Web.Mvc;
 using System.Web.UI.WebControls;
-using CHPOUTSRCMES.Web.Jsons.Requests;
 
-namespace CHPOUTSRCMES.Web.ViewModels
+namespace CHPOUTSRCMES.Web.ViewModels.StockQuery
 {
     public class QueryViewModel
     {

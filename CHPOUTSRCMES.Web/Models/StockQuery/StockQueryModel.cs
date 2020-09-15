@@ -1,18 +1,14 @@
 ﻿using CHPOUTSRCMES.Web.DataModel;
 using CHPOUTSRCMES.Web.DataModel.UnitOfWorks;
-using CHPOUTSRCMES.Web.Models;
-using CHPOUTSRCMES.Web.Models.Information;
+using CHPOUTSRCMES.Web.ViewModels;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Data.Entity;
-using System.Web;
-using System.Web.Mvc;
-using System.Web.UI.WebControls;
 using System.ComponentModel.DataAnnotations;
-using Microsoft.Ajax.Utilities;
+using System.Data.Entity;
+using System.Linq;
+using System.Web.UI.WebControls;
 
-namespace CHPOUTSRCMES.Web.ViewModels
+namespace CHPOUTSRCMES.Web.Models.StockQuery
 {
     public class StockQueryModel
     {
@@ -30,6 +26,9 @@ namespace CHPOUTSRCMES.Web.ViewModels
 
         [Display(Name = "料號")]
         public string ItemNumber { set; get; }
+
+        [Display(Name = "捲筒/平版")]
+        public string ItemCategory { set; get; }
 
         [Display(Name = "主單位")]
         public string PrimaryUomCode { set; get; }
@@ -53,9 +52,9 @@ namespace CHPOUTSRCMES.Web.ViewModels
             string subinventory, string locator, string itemCategory, string itemNo, string userId)
         {
 
-            using var mesContext = new CHPOUTSRCMES.Web.DataModel.MesContext();
+            using var mesContext = new MesContext();
 
-            using var masterUow = new CHPOUTSRCMES.Web.DataModel.UnitOfWorks.MasterUOW(mesContext);
+            using var masterUow = new MasterUOW(mesContext);
             try
             {
                 if (!long.TryParse(locator, out long locatorId))
@@ -65,7 +64,7 @@ namespace CHPOUTSRCMES.Web.ViewModels
 
                 var list = masterUow.stockTRepository.GetAll().AsNoTracking()
                     .Join(masterUow.userSubinventoryTRepository.GetAll().AsNoTracking(), x => x.SubinventoryCode, y => y.SubinventoryCode, (x, y) => new { user = y, stock = x })
-                    .Where(x => x.user.UserId == userId)
+                    .Where(x => x.user.UserId == userId && x.stock.StatusCode == MasterUOW.StockStatusCode.InStock)
                     .Select(x => x.stock);
 
                 if (!string.IsNullOrEmpty(subinventory) && subinventory.CompareTo("*") != 0)
@@ -96,11 +95,13 @@ namespace CHPOUTSRCMES.Web.ViewModels
                         LocatorSegments = x.FirstOrDefault().LocatorSegments,
                         InventoryItemId = x.FirstOrDefault().InventoryItemId,
                         ItemNumber = x.FirstOrDefault().ItemNumber,
+                        ItemCategory = x.FirstOrDefault().ItemCategory,
                         PrimaryUomCode = x.FirstOrDefault().PrimaryUomCode,
                         PrimaryAvailableQty = x.Sum(y => y.PrimaryAvailableQty),
                         PrimarySumQty = x.Sum(y => y.PrimaryAvailableQty) + (x.Sum(x => x.PrimaryLockedQty) ?? 0),
                         SecondaryUomCode = x.FirstOrDefault().SecondaryUomCode,
-                        SecondaryAvailableQty = x.Sum(y => y.SecondaryAvailableQty) + x.Sum(y => y.SecondaryLockedQty)
+                        SecondaryAvailableQty = x.Sum(y => y.SecondaryAvailableQty),
+                        SecondarySumQty = x.Sum(y => y.SecondaryAvailableQty) + x.Sum(y => y.SecondaryLockedQty)
                     });
                 //var count = models.Count();
                 return models.OrderBy(x=> new { x.SubinventoryCode, x.LocatorSegments, x.InventoryItemId}).Skip(data.Start).Take(data.Length).ToList();

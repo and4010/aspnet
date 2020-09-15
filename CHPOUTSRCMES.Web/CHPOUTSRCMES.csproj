@@ -487,8 +487,10 @@
     <Compile Include="ViewModels\Obsolete\ObsoleteViewModel.cs" />
     <Compile Include="ViewModels\OrgSubinventoryViewModel.cs" />
     <Compile Include="ViewModels\OspRelatedViewModel.cs" />
-    <Compile Include="ViewModels\QueryViewModel.cs" />
-    <Compile Include="ViewModels\StockQueryModel.cs" />
+    <Compile Include="ViewModels\StockQuery\QueryDetailViewModel.cs" />
+    <Compile Include="ViewModels\StockQuery\QueryViewModel.cs" />
+    <Compile Include="Models\StockQuery\StockDetailQueryModel.cs" />
+    <Compile Include="Models\StockQuery\StockQueryModel.cs" />
     <Compile Include="ViewModels\PartNoViewModel.cs" />
     <Compile Include="ViewModels\Process\ProcessViewModel.cs" />
     <Compile Include="ViewModels\Purchase\PurchaseViewModel.cs" />
@@ -1495,6 +1497,7 @@
     <Content Include="Data\SQLScript\114_SP_P219_OspStCreateNew.sql" />
     <Content Include="Data\SQLScript\113_SP_P220_DlvStCreateNew.sql" />
     <Content Include="Data\SQLScript\116_SP_P221_DlvStUpload.sql" />
+    <Content Include="Data\SQLScript\117_SP_DlvTripCancel.sql" />
     <Content Include="Data\SQLScript\201_XXIF_CHP_CONTROL_ST.sql" />
     <Content Include="Data\SQLScript\202_XXIF_CHP_P217_CONTAINER_ST.sql" />
     <Content Include="Data\SQLScript\203_XXIF_CHP_P218_CONTAINER_RV_ST.sql" />
@@ -1977,6 +1980,7 @@
     <Content Include="Scripts\Obsolete\Obsolete.js" />
     <Content Include="Scripts\OrgSubinventory.js" />
     <Content Include="Scripts\OspRelated.js" />
+    <Content Include="Scripts\StockQueryDetail.js" />
     <Content Include="Scripts\StockQuery.js" />
     <Content Include="Scripts\PartNo.js" />
     <Content Include="Scripts\Photo.js" />
@@ -2109,6 +2113,7 @@
     <Content Include="Views\Shared\_Layout2.cshtml" />
     <Content Include="Views\Home\Report.cshtml" />
     <Content Include="Views\Stock\Query.cshtml" />
+    <Content Include="Views\Stock\Detail.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

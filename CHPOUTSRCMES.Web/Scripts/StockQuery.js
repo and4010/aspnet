@@ -38,6 +38,15 @@
             noResults: "", results: ""
         }
     });
+    $('#QueryTable tbody').on('click', '.available-query', function () {
+        var data = $('#QueryTable').DataTable().row($(this).parents('tr')).data();
+
+        var subinventoryCode = data['SubinventoryCode'];
+        var locatorId = data['LocatorId'];
+        var itemId = data['InventoryItemId'];
+
+        window.open("/Stock/Detail/" + subinventoryCode + "/" + locatorId + "/" + itemId);
+    });
 });
 
 
@@ -79,15 +88,36 @@ function loadTable(subinventory, locatorId, itemCategory, itemNo) {
             { data: "LocatorId", "name": "儲位ID", "autoWidth": true, "className": "dt-body-center", "visible": false },
             { data: "LocatorSegments", "name": "儲位", "autoWidth": true, "className": "dt-body-center"},
             { data: "InventoryItemId", "name": "料號ID", "autoWidth": true, "className": "dt-body-center", "visible": false },
-            { data: "ItemNumber", "name": "料號", "autoWidth": true, "className": "dt-body-center"},
-            { data: "PrimaryAvailableQty", "name": "主單位可用量", "autoWidth": true, "className": "dt-body-right"},
-            { data: "PrimaryUomCode", "name": "主要單位", "autoWidth": true, "className": "dt-body-center" },
-            { data: "SecondaryAvailableQty", "name": "次單位可用量", "autoWidth": true, "className": "dt-body-right" },
-            { data: "SecondaryUomCode", "name": "次要單位", "autoWidth": true, "className": "dt-body-center" },
+            { data: "ItemNumber", "name": "料號", "autoWidth": true, "className": "dt-body-center" },
+            { data: "ItemCategory", "name": "捲筒/平版", "autoWidth": true, "className": "dt-body-center" },
+            {
+                data: "PrimaryAvailableQty", "name": "主單位可用量", "autoWidth": true, "className": "dt-body-right", "mRender": function (data, type, full) {
+
+                    if (data == null || data == 0) {
+                        return "";
+                    }
+
+                    return '<a href="' + '/Stock/Detail/' + full["SubinventoryCode"] + '/' + full["LocatorId"] + '/' + full["InventoryItemId"] + '" class="available-query">'
+                        + data + '</a>';
+                }
+            },
+            { data: "PrimaryUomCode", "name": "主要單位", "autoWidth": true, "className": "dt-body-center", "visible": false   },
+            {
+                data: "SecondaryAvailableQty", "name": "次單位可用量", "autoWidth": true, "className": "dt-body-right", "mRender": function (data, type, full) {
+
+                    if (data == null || data == 0) {
+                        return "";
+                    }
+
+                    return '<a href="' + '/Stock/Detail/' + full["SubinventoryCode"] + '/' + full["LocatorId"] + '/' + full["InventoryItemId"] + '" class="available-query">'
+                        + data + '</a>';
+                }
+            },
+            { data: "SecondaryUomCode", "name": "次要單位", "autoWidth": true, "className": "dt-body-center", "visible": false  },
             { data: "PrimarySumQty", "name": "主單位合計量", "autoWidth": true, "className": "dt-body-right" },
-            { data: "PrimaryUomCode", "name": "主要單位", "autoWidth": true, "className": "dt-body-center" },
-            { data: "SecondarySumQty", "name": "次單位合計量", "autoWidth": true, "className": "dt-body-right"},
-            { data: "SecondaryUomCode", "name": "次要單位", "autoWidth": true, "className": "dt-body-center"}
+            { data: "PrimaryUomCode", "name": "主要單位", "autoWidth": true, "className": "dt-body-center", "visible": false },
+            { data: "SecondarySumQty", "name": "次單位合計量", "autoWidth": true, "className": "dt-body-right" },
+            { data: "SecondaryUomCode", "name": "次要單位", "autoWidth": true, "className": "dt-body-center", "visible": false}
         ]
 
     });
@@ -108,7 +138,7 @@ function loadLocator(subinventory, option) {
             option.empty();
             if (data != null) {
                 $.each(data, function (i, item) {
-                    element.append($('<option></option>').val(item.Value).text(item.Text));
+                    option.append($('<option></option>').val(item.Value).text(item.Text));
                 });
             }
         },

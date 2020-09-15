@@ -1906,7 +1906,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                .Select(x => new SelectListItem()
                {
                    Text = x.SubinventoryCode,
-                   Value = x.OrganizationId.ToString()
+                   Value = x.SubinventoryCode
                }).ToList();
         }
 
@@ -1944,6 +1944,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                           {
                               OrganizationId = l.OrganizationId,
                               SubinventoryCode = l.SubinventoryCode,
+                              Segment2 = l.Segment2,
                               Segment3 = l.Segment3,
                               LocatorType = s.LocatorType,
                               LocatorId = l.LocatorId,
@@ -1957,7 +1958,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                           .OrderBy(x => x.Segment3)
                           .Select(x => new SelectListItem()
                           {
-                              Text = x.Segment3,
+                              Text = x.Segment2 + "." + x.Segment3,
                               Value = x.LocatorId.ToString()
                           });
                 locatorList.AddRange(tempList);
@@ -1972,6 +1973,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                           {
                               OrganizationId = l.OrganizationId,
                               SubinventoryCode = l.SubinventoryCode,
+                              Segment2 = l.Segment2,
                               Segment3 = l.Segment3,
                               LocatorType = s.LocatorType,
                               LocatorId = l.LocatorId,
@@ -1986,7 +1988,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                           .OrderBy(x => x.Segment3)
                           .Select(x => new SelectListItem()
                           {
-                              Text = x.Segment3,
+                              Text = x.Segment2 + "." + x.Segment3,
                               Value = x.LocatorId.ToString()
                           });
                 locatorList.AddRange(tempList);
@@ -2001,6 +2003,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                           {
                               OrganizationId = l.OrganizationId,
                               SubinventoryCode = l.SubinventoryCode,
+                              Segment2 = l.Segment2,
                               Segment3 = l.Segment3,
                               LocatorType = s.LocatorType,
                               LocatorId = l.LocatorId,
@@ -2015,7 +2018,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                           .OrderBy(x => x.Segment3)
                           .Select(x => new SelectListItem()
                           {
-                              Text = x.Segment3,
+                              Text = x.Segment2 + "." + x.Segment3,
                               Value = x.LocatorId.ToString()
                           });
                 locatorList.AddRange(tempList);
@@ -2030,6 +2033,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                           {
                               OrganizationId = l.OrganizationId,
                               SubinventoryCode = l.SubinventoryCode,
+                              Segment2 = l.Segment2,
                               Segment3 = l.Segment3,
                               LocatorType = s.LocatorType,
                               LocatorId = l.LocatorId,
@@ -2045,7 +2049,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                           .OrderBy(x => x.Segment3)
                           .Select(x => new SelectListItem()
                           {
-                              Text = x.Segment3,
+                              Text = x.Segment2 + "." + x.Segment3,
                               Value = x.LocatorId.ToString()
                           });
                 locatorList.AddRange(tempList);
@@ -2072,6 +2076,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                         UserId = us.UserId,
                         OrganizationId = us.OrganizationId,
                         SubinventoryCode = us.SubinventoryCode,
+                        Segment2 = l.Segment2,
                         Segment3 = l.Segment3,
                         LocatorId = l.LocatorId,
                         LocatorControlFlag = l.ControlFlag,
@@ -2091,7 +2096,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             return tmp.OrderBy(x => x.Segment3)
                      .Select(x => new SelectListItem()
                      {
-                         Text = x.Segment3,
+                         Text = x.Segment2 + "." + x.Segment3,
                          Value = x.LocatorId.ToString()
                      }).ToList();
         }
@@ -2304,6 +2309,69 @@ on s.ORGANIZATION_ID = l.ORGANIZATION_ID and s.SUBINVENTORY_CODE = l.SUBINVENTOR
                 return new List<OrgSubinventoryDT>();
             }
             //return result;
+        }
+
+
+        public ResultDataModel<List<LabelModel>> GetStockLabels(List<long> stockIdList, string userId)
+        {
+            try
+            {
+
+                List<LabelModel> labelModelList = new List<LabelModel>();
+                if (stockIdList == null || stockIdList.Count == 0)
+                {
+                    return new ResultDataModel<List<LabelModel>>(false, "找不到揀貨資料", null);
+                }
+
+                List<SqlParameter> sqlParameterList = new List<SqlParameter>();
+                StringBuilder cmd = new StringBuilder();
+                cmd.AppendLine(
+@"SELECT 
+CAST(T.BARCODE AS nvarchar) AS Barocde,
+U.DisplayName as PrintBy,
+CAST(I.ITEM_DESC_TCH AS nvarchar) AS BarocdeName, 
+CAST(T.PAPER_TYPE AS nvarchar) AS PapaerType,
+CAST(T.BASIC_WEIGHT AS nvarchar) AS BasicWeight,
+CAST(T.SPECIFICATION AS nvarchar) AS Specification,
+CASE ITEM_CATEGORY 
+WHEN '捲筒' THEN CAST(FORMAT(T.PRIMARY_AVAILABLE_QTY,'0.##########') AS nvarchar) 
+ELSE  CAST(FORMAT(T.SECONDARY_AVAILABLE_QTY,'0.##########') AS nvarchar) 
+END AS Qty,
+CASE ITEM_CATEGORY 
+WHEN '捲筒' THEN CAST(T.PRIMARY_UOM_CODE AS nvarchar) 
+ELSE  CAST(T.SECONDARY_UOM_CODE AS nvarchar) 
+END AS Unit
+FROM STOCK_T T
+JOIN ITEMS_T I on I.INVENTORY_ITEM_ID = T.INVENTORY_ITEM_ID
+JOIN USER_T U ON U.Id = @userId 
+WHERE T.STOCK_ID IN");
+
+
+                var stockCondition = string.Join(",", stockIdList);
+                //stockCondition = stockCondition.Length > 0 ? stockCondition.Substring(0, stockCondition.Length - 1) : stockCondition;
+
+                cmd.AppendFormat(" ({0}) ", stockCondition);
+
+
+                string commandText = cmd.ToString();
+                sqlParameterList.Add(new SqlParameter("@userId", userId));
+
+                var list = Context.Database.SqlQuery<LabelModel>(commandText, sqlParameterList.ToArray()).ToList();
+                if (list == null || list.Count() == 0)
+                {
+                    return new ResultDataModel<List<LabelModel>>(false, "找不到標籤資料", null);
+                }
+
+                labelModelList.AddRange(list);
+
+                return new ResultDataModel<List<LabelModel>>(true, "取得標籤資料成功", labelModelList);
+
+            }
+            catch (Exception ex)
+            {
+                logger.Error(LogUtilities.BuildExceptionMessage(ex));
+                return new ResultDataModel<List<LabelModel>>(false, "取得標籤資料失敗:" + ex.Message, null);
+            }
         }
 
         /// <summary>
