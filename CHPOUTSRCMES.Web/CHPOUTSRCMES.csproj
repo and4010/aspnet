@@ -285,12 +285,18 @@
     <Compile Include="DataAnnotation\Precision.cs" />
     <Compile Include="DataModel\Entity\Delivery\DLV_SOA_T.cs" />
     <Compile Include="DataModel\Entity\Information\ORG_UNIT_T.cs" />
+    <Compile Include="DataModel\Entity\Inventory\TRF_INVENTORY_SOA_T.cs" />
     <Compile Include="DataModel\Entity\Inventory\TRF_INVENTORY_HT.cs" />
     <Compile Include="DataModel\Entity\Inventory\TRF_INVENTORY_HEADER_T.cs" />
     <Compile Include="DataModel\Entity\Inventory\TRF_INVENTORY_T.cs" />
+    <Compile Include="DataModel\Entity\Miscellaneous\TRF_MISCELLANEOUS_SOA_T.cs" />
     <Compile Include="DataModel\Entity\Miscellaneous\TRF_MISCELLANEOUS_HEADER_T.cs" />
     <Compile Include="DataModel\Entity\Miscellaneous\TRF_MISCELLANEOUS_HT.cs" />
     <Compile Include="DataModel\Entity\Miscellaneous\TRF_MISCELLANEOUS_T.cs" />
+    <Compile Include="DataModel\Entity\Obsolete\TRF_OBSOLETE_SOA_T.cs" />
+    <Compile Include="DataModel\Entity\Process\OSP_SOA_S3_T.cs" />
+    <Compile Include="DataModel\Entity\Process\OSP_SOA_S2_T.cs" />
+    <Compile Include="DataModel\Entity\Process\OSP_SOA_S1_T.cs" />
     <Compile Include="DataModel\Entity\Purchase\CTR_SOA_T.cs" />
     <Compile Include="DataModel\Entity\Obsolete\TRF_OBSOLETE_HEADER_T.cs" />
     <Compile Include="DataModel\Entity\Obsolete\TRF_OBSOLETE_HT.cs" />
@@ -300,6 +306,8 @@
     <Compile Include="DataModel\Entity\Transfer\TRF_DETAIL_T.cs" />
     <Compile Include="DataModel\Entity\Transfer\TRF_FILEINFO_T.cs" />
     <Compile Include="DataModel\Entity\Transfer\TRF_FILES_T.cs" />
+    <Compile Include="DataModel\Entity\Transfer\TRF_REASON_SOA_T.cs" />
+    <Compile Include="DataModel\Entity\Transfer\TRF_SOA_T.cs" />
     <Compile Include="DataModel\Entity\Transfer\TRF_HEADER_T.cs" />
     <Compile Include="DataModel\Entity\Transfer\TRF_INBOUND_PICKED_HT.cs" />
     <Compile Include="DataModel\Entity\Transfer\TRF_INBOUND_PICKED_T.cs" />

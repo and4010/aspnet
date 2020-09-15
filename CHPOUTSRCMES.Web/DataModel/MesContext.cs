@@ -335,6 +335,21 @@ namespace CHPOUTSRCMES.Web.DataModel
         /// </summary>
         public DbSet<OSP_YIELD_VARIANCE_HT> OspYieldVarinceHTs { set; get; }
 
+        /// <summary>
+        /// 加工SOA 第一階段上傳
+        /// </summary>
+        public DbSet<OSP_SOA_S1_T> OspSoaS1T { set; get; }
+
+        /// <summary>
+        /// 加工SOA 第二階段上傳
+        /// </summary>
+        public DbSet<OSP_SOA_S2_T> OspSoaS2T { set; get; }
+
+        /// <summary>
+        /// 加工SOA 第三階段上傳
+        /// </summary>
+        public DbSet<OSP_SOA_S3_T> OspSoaS3T { set; get; }
+
         #endregion
 
         #region 庫存移轉
@@ -351,6 +366,8 @@ namespace CHPOUTSRCMES.Web.DataModel
         public DbSet<TRF_OUTBOUND_PICKED_T> TRF_OUTBOUND_PICKED_Ts { set; get; }
 
         public DbSet<TRF_OUTBOUND_PICKED_HT> TRF_OUTBOUND_PICKED_HTs { set; get; }
+
+        public DbSet<TRF_SOA_T> TRF_SOA_Ts { set; get; }
         #endregion
 
         #region 庫存移轉-貨故
@@ -363,6 +380,8 @@ namespace CHPOUTSRCMES.Web.DataModel
         public DbSet<TRF_FILEINFO_T> TRF_FILEINFO_Ts { set; get; }
 
         public DbSet<TRF_FILES_T> TRF_FILES_Ts { set; get; }
+
+        public DbSet<TRF_REASON_SOA_T> TRF_REASON_SOA_Ts { set; get; }
         #endregion
 
         #region 雜項異動
@@ -371,6 +390,8 @@ namespace CHPOUTSRCMES.Web.DataModel
         public DbSet<TRF_MISCELLANEOUS_T> TRF_MISCELLANEOUS_Ts { set; get; }
 
         public DbSet<TRF_MISCELLANEOUS_HT> TRF_MISCELLANEOUS_HTs { set; get; }
+
+        public DbSet<TRF_MISCELLANEOUS_SOA_T> TRF_MISCELLANEOUS_SOA_Ts { set; get; }
         #endregion
 
         #region 存貨報廢
@@ -380,6 +401,8 @@ namespace CHPOUTSRCMES.Web.DataModel
 
         public DbSet<TRF_OBSOLETE_HT> TRF_OBSOLETE_HTs { set; get; }
 
+        public DbSet<TRF_OBSOLETE_SOA_T> TRF_OBSOLETE_SOA_Ts { set; get; }
+
         #endregion
 
         #region 盤點
@@ -388,6 +411,8 @@ namespace CHPOUTSRCMES.Web.DataModel
         public DbSet<TRF_INVENTORY_T> TRF_INVENTORY_Ts { set; get; }
 
         public DbSet<TRF_INVENTORY_HT> TRF_INVENTORY_HTs { set; get; }
+
+        public DbSet<TRF_INVENTORY_SOA_T> TRF_INVENTORY_SOA_Ts { set; get; }
 
         #endregion
     }

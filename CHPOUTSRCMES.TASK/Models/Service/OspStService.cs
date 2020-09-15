@@ -116,7 +116,7 @@ namespace CHPOUTSRCMES.TASK.Models.Service
         /// <param name="tasker"></param>
         /// <param name="token"></param>
         /// <returns></returns>
-        internal async Task ExportOspStRv(Tasker tasker, CancellationToken token)
+        internal async Task ExportOspStRvStage1(Tasker tasker, CancellationToken token)
         {
             LogInfo($"[{tasker.Name}]-{tasker.Unit}-ExportOspStRv-開始");
 
@@ -127,7 +127,73 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                     token.ThrowIfCancellationRequested();
                 }
 
-                using var ctrStUow = new CtrStUOW(new SqlConnection(MesConnStr));
+                using var ospStUow = new OspStUOW(new SqlConnection(MesConnStr));
+
+
+            }
+            catch (OperationCanceledException)
+            {
+                LogInfo($"[{tasker.Name}]-{tasker.Unit}-ExportOspStRv-使用者取消");
+            }
+            catch (Exception ex)
+            {
+                LogError($"[{tasker.Name}]-{tasker.Unit}-ExportOspStRv-錯誤-{ex.Message}-{ex.StackTrace}");
+            }
+
+            LogInfo($"[{tasker.Name}]-{tasker.Unit}-ExportOspStRv-結束");
+        }
+
+        /// <summary>
+        /// SOA出貨 資料上傳
+        /// </summary>
+        /// <param name="tasker"></param>
+        /// <param name="token"></param>
+        /// <returns></returns>
+        internal async Task ExportOspStRvStage2(Tasker tasker, CancellationToken token)
+        {
+            LogInfo($"[{tasker.Name}]-{tasker.Unit}-ExportOspStRv-開始");
+
+            try
+            {
+                if (token.IsCancellationRequested)
+                {
+                    token.ThrowIfCancellationRequested();
+                }
+
+                using var ospStUow = new OspStUOW(new SqlConnection(MesConnStr));
+
+
+            }
+            catch (OperationCanceledException)
+            {
+                LogInfo($"[{tasker.Name}]-{tasker.Unit}-ExportOspStRv-使用者取消");
+            }
+            catch (Exception ex)
+            {
+                LogError($"[{tasker.Name}]-{tasker.Unit}-ExportOspStRv-錯誤-{ex.Message}-{ex.StackTrace}");
+            }
+
+            LogInfo($"[{tasker.Name}]-{tasker.Unit}-ExportOspStRv-結束");
+        }
+
+        /// <summary>
+        /// SOA出貨 資料上傳
+        /// </summary>
+        /// <param name="tasker"></param>
+        /// <param name="token"></param>
+        /// <returns></returns>
+        internal async Task ExportOspStRvStage3(Tasker tasker, CancellationToken token)
+        {
+            LogInfo($"[{tasker.Name}]-{tasker.Unit}-ExportOspStRv-開始");
+
+            try
+            {
+                if (token.IsCancellationRequested)
+                {
+                    token.ThrowIfCancellationRequested();
+                }
+
+                using var ospStUOW = new OspStUOW(new SqlConnection(MesConnStr));
 
 
             }
