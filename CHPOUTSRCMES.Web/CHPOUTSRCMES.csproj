@@ -258,6 +258,7 @@
     <Reference Include="netstandard" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ActionFilter\NoCacheAttribute.cs" />
     <Compile Include="App_Start\AuthConfig.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
@@ -1481,6 +1482,16 @@
     <Content Include="Data\SQLScript\002_SP_SaveOspDetailOut.sql" />
     <Content Include="Data\SQLScript\003_SP_ProcessSaveStkTxn.sql" />
     <Content Include="Data\SQLScript\004_SaveCotangentStock.sql" />
+    <Content Include="Data\SQLScript\005_ConvertOspLabelDesc.sql" />
+    <Content Include="Data\SQLScript\006_CheckOspLabelSpec.sql" />
+    <Content Include="Data\SQLScript\007_CheckOspLabelSize.sql" />
+    <Content Include="Data\SQLScript\008_OspLabelKnife.sql" />
+    <Content Include="Data\SQLScript\009_OspOutSourcCut.sql" />
+    <Content Include="Data\SQLScript\010_OspCutMaterial.sql" />
+    <Content Include="Data\SQLScript\011_PurchaseHeadaer.sql" />
+    <Content Include="Data\SQLScript\012_PurchaseDetail.sql" />
+    <Content Include="Data\SQLScript\013_PurchaseReason.sql" />
+    <Content Include="Data\SQLScript\014_OspCutStock.sql" />
     <Content Include="Data\SQLScript\101_SP_OrgUnitSync.sql" />
     <Content Include="Data\SQLScript\102_SP_OrganizationSync.sql" />
     <Content Include="Data\SQLScript\103_SP_SubinventorySync.sql" />
@@ -1950,8 +1961,11 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="Properties\PublishProfiles\Pon.pubxml" />
+    <Content Include="Report\CutStock.rdlc" />
     <Content Include="Report\PurchaseFlat.rdlc" />
     <Content Include="Report\PurchasePaperRoll.rdlc" />
+    <Content Include="Report\ProcessCutMaterial.rdlc" />
+    <Content Include="Report\ProcessCutReceipt.rdlc" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\Delivery\DetailViewHeader.js" />
     <Content Include="Scripts\Delivery\FlatEdit.js" />

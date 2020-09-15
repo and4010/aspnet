@@ -10,56 +10,28 @@
         <Prompt>指定資料來源 DataSource1 的使用者名稱和密碼:</Prompt>
       </ConnectionProperties>
       <rd:SecurityType>DataBase</rd:SecurityType>
-      <rd:DataSourceID>6fd91657-881b-4133-8eba-cf767ca84fad</rd:DataSourceID>
+      <rd:DataSourceID>a73254df-1465-4c8a-a121-f581888f19f3</rd:DataSourceID>
     </DataSource>
   </DataSources>
   <DataSets>
-    <DataSet Name="Header">
+    <DataSet Name="DataSet1">
       <Query>
         <DataSourceName>DataSource1</DataSourceName>
         <QueryParameters>
-          <QueryParameter Name="@CTR_HEADER_ID">
-            <Value>=Parameters!CTR_HEADER_ID.Value</Value>
+          <QueryParameter Name="@OSP_HEADER_ID">
+            <Value>=Parameters!OSP_HEADER_ID.Value</Value>
           </QueryParameter>
         </QueryParameters>
-        <CommandText>SELECT * FROM PurchaseHeadaer(@CTR_HEADER_ID)</CommandText>
+        <CommandText>select * from OspCutStock(@OSP_HEADER_ID)</CommandText>
       </Query>
       <Fields>
-        <Field Name="CONTAINER_NO">
-          <DataField>CONTAINER_NO</DataField>
+        <Field Name="BATCH_NO">
+          <DataField>BATCH_NO</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
-        <Field Name="MV_CONTAINER_DATE">
-          <DataField>MV_CONTAINER_DATE</DataField>
+        <Field Name="CUTTING_DATE_TO">
+          <DataField>CUTTING_DATE_TO</DataField>
           <rd:TypeName>System.DateTime</rd:TypeName>
-        </Field>
-        <Field Name="PAPER_TYPE">
-          <DataField>PAPER_TYPE</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-      </Fields>
-    </DataSet>
-    <DataSet Name="Detail">
-      <Query>
-        <DataSourceName>DataSource1</DataSourceName>
-        <QueryParameters>
-          <QueryParameter Name="@CTR_HEADER_ID">
-            <Value>=Parameters!CTR_HEADER_ID.Value</Value>
-          </QueryParameter>
-          <QueryParameter Name="@ITEM_CATEGORY">
-            <Value>=Parameters!ITEM_CATEGORY.Value</Value>
-          </QueryParameter>
-        </QueryParameters>
-        <CommandText>SELECT * FROM PurchaseDetail(@CTR_HEADER_ID,@ITEM_CATEGORY)</CommandText>
-      </Query>
-      <Fields>
-        <Field Name="SubId">
-          <DataField>SubId</DataField>
-          <rd:TypeName>System.Int64</rd:TypeName>
-        </Field>
-        <Field Name="ITEM_CATEGORY">
-          <DataField>ITEM_CATEGORY</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
         </Field>
         <Field Name="PAPER_TYPE">
           <DataField>PAPER_TYPE</DataField>
@@ -73,35 +45,25 @@
           <DataField>SPECIFICATION</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
-        <Field Name="LOT_NUMBER">
-          <DataField>LOT_NUMBER</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
+        <Field Name="SECONDARY_QUANTITY">
+          <DataField>SECONDARY_QUANTITY</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
         </Field>
         <Field Name="PACKING_TYPE">
           <DataField>PACKING_TYPE</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
-        <Field Name="PRIMARY_QUANTITY">
-          <DataField>PRIMARY_QUANTITY</DataField>
+        <Field Name="SubId">
+          <DataField>SubId</DataField>
+          <rd:TypeName>System.Int64</rd:TypeName>
+        </Field>
+        <Field Name="Count">
+          <DataField>Count</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="Summ">
+          <DataField>Sum</DataField>
           <rd:TypeName>System.Decimal</rd:TypeName>
-        </Field>
-        <Field Name="REAM_WEIGHT">
-          <DataField>REAM_WEIGHT</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-      </Fields>
-    </DataSet>
-    <DataSet Name="Reason">
-      <Query>
-        <DataSourceName>DataSource1</DataSourceName>
-        <CommandType>StoredProcedure</CommandType>
-        <CommandText>PurchaseReason</CommandText>
-        <rd:UseGenericDesigner>true</rd:UseGenericDesigner>
-      </Query>
-      <Fields>
-        <Field Name="ReasonId">
-          <DataField />
-          <rd:TypeName>System.String</rd:TypeName>
         </Field>
       </Fields>
     </DataSet>
@@ -117,7 +79,7 @@
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>貨櫃平張入庫單</Value>
+                    <Value>裁切成品入庫單</Value>
                     <Style>
                       <FontFamily>Segoe UI Light</FontFamily>
                       <FontSize>28pt</FontSize>
@@ -131,9 +93,9 @@
             </Paragraphs>
             <rd:WatermarkTextbox>Title</rd:WatermarkTextbox>
             <rd:DefaultName>ReportTitle</rd:DefaultName>
-            <Top>0.3175mm</Top>
-            <Height>14.50799mm</Height>
-            <Width>19cm</Width>
+            <Top>0mm</Top>
+            <Height>10.84792mm</Height>
+            <Width>184.38078mm</Width>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -144,47 +106,28 @@
               <PaddingBottom>2pt</PaddingBottom>
             </Style>
           </Textbox>
-          <Textbox Name="Textbox47">
+          <Textbox Name="Textbox1">
             <CanGrow>true</CanGrow>
             <KeepTogether>true</KeepTogether>
             <Paragraphs>
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>進櫃時間　</Value>
+                    <Value>工單號碼　</Value>
                     <Style />
                   </TextRun>
                   <TextRun>
-                    <Value>=First(Fields!MV_CONTAINER_DATE.Value, "Header")</Value>
-                    <Style>
-                      <Format>f</Format>
-                    </Style>
-                  </TextRun>
-                  <TextRun>
-                    <Value xml:space="preserve">　　</Value>
-                    <Style />
-                  </TextRun>
-                  <TextRun>
-                    <Value>="櫃號  " + First(Fields!CONTAINER_NO.Value, "Header")</Value>
-                    <Style />
-                  </TextRun>
-                  <TextRun>
-                    <Value xml:space="preserve">　　</Value>
-                    <Style />
-                  </TextRun>
-                  <TextRun>
-                    <Value>="紙別  " + First(Fields!PAPER_TYPE.Value, "Header")</Value>
+                    <Value>=Fields!BATCH_NO.Value</Value>
                     <Style />
                   </TextRun>
                 </TextRuns>
                 <Style />
               </Paragraph>
             </Paragraphs>
-            <rd:DefaultName>Textbox47</rd:DefaultName>
-            <Top>16.2366mm</Top>
-            <Left>0.00001mm</Left>
-            <Height>8.73125mm</Height>
-            <Width>133.99388mm</Width>
+            <rd:DefaultName>Textbox1</rd:DefaultName>
+            <Top>1.19062cm</Top>
+            <Height>0.55245cm</Height>
+            <Width>6.06672cm</Width>
             <ZIndex>1</ZIndex>
             <Style>
               <Border>
@@ -196,25 +139,28 @@
               <PaddingBottom>2pt</PaddingBottom>
             </Style>
           </Textbox>
-          <Textbox Name="Textbox50">
+          <Textbox Name="Textbox2">
             <CanGrow>true</CanGrow>
             <KeepTogether>true</KeepTogether>
             <Paragraphs>
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>請將損傷深度概測並標註</Value>
+                    <Value>列印日期  </Value>
+                    <Style />
+                  </TextRun>
+                  <TextRun>
+                    <Value>=Globals!ExecutionTime</Value>
                     <Style />
                   </TextRun>
                 </TextRuns>
                 <Style />
               </Paragraph>
             </Paragraphs>
-            <rd:DefaultName>Textbox50</rd:DefaultName>
-            <Top>42.55383mm</Top>
-            <Left>0.00001mm</Left>
-            <Height>6.26458mm</Height>
-            <Width>62.88433mm</Width>
+            <rd:DefaultName>Textbox2</rd:DefaultName>
+            <Top>1.9371cm</Top>
+            <Height>0.66174cm</Height>
+            <Width>6.06672cm</Width>
             <ZIndex>2</ZIndex>
             <Style>
               <Border>
@@ -226,49 +172,29 @@
               <PaddingBottom>2pt</PaddingBottom>
             </Style>
           </Textbox>
-          <Textbox Name="Textbox51">
+          <Textbox Name="Textbox3">
             <CanGrow>true</CanGrow>
             <KeepTogether>true</KeepTogether>
             <Paragraphs>
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>="基重  " + First(Fields!BASIC_WEIGHT.Value, "Detail")</Value>
+                    <Value>生產日期   </Value>
                     <Style />
                   </TextRun>
                   <TextRun>
-                    <Value xml:space="preserve">　　</Value>
-                    <Style />
-                  </TextRun>
-                  <TextRun>
-                    <Value>="寬幅  " + First(Fields!SPECIFICATION.Value, "Detail")</Value>
-                    <Style />
-                  </TextRun>
-                  <TextRun>
-                    <Value xml:space="preserve">　　</Value>
-                    <Style />
-                  </TextRun>
-                  <TextRun>
-                    <Value>="數量(版)  " + First(Fields!REAM_WEIGHT.Value, "Detail")</Value>
-                    <Style />
-                  </TextRun>
-                  <TextRun>
-                    <Value xml:space="preserve">　　</Value>
-                    <Style />
-                  </TextRun>
-                  <TextRun>
-                    <Value>="包裝方式  " + First(Fields!PACKING_TYPE.Value, "Detail")</Value>
+                    <Value>=Fields!CUTTING_DATE_TO.Value</Value>
                     <Style />
                   </TextRun>
                 </TextRuns>
                 <Style />
               </Paragraph>
             </Paragraphs>
-            <rd:DefaultName>Textbox51</rd:DefaultName>
-            <Top>64.30612mm</Top>
-            <Left>0mm</Left>
-            <Height>5.55625mm</Height>
-            <Width>130.72735mm</Width>
+            <rd:DefaultName>Textbox3</rd:DefaultName>
+            <Top>2.73995cm</Top>
+            <Left>0.02328cm</Left>
+            <Height>0.70528cm</Height>
+            <Width>6.04344cm</Width>
             <ZIndex>3</ZIndex>
             <Style>
               <Border>
@@ -280,111 +206,73 @@
               <PaddingBottom>2pt</PaddingBottom>
             </Style>
           </Textbox>
-          <Tablix Name="Tablix10">
-            <TablixBody>
-              <TablixColumns>
-                <TablixColumn>
-                  <Width>36.426mm</Width>
-                </TablixColumn>
-              </TablixColumns>
-              <TablixRows>
-                <TablixRow>
-                  <Height>12.66548mm</Height>
-                  <TablixCells>
-                    <TablixCell>
-                      <CellContents>
-                        <Textbox Name="ReasonId">
-                          <CanGrow>true</CanGrow>
-                          <KeepTogether>true</KeepTogether>
-                          <Paragraphs>
-                            <Paragraph>
-                              <TextRuns>
-                                <TextRun>
-                                  <Value>=Fields!ReasonId.Value</Value>
-                                  <Style>
-                                    <FontFamily>Arial</FontFamily>
-                                  </Style>
-                                </TextRun>
-                              </TextRuns>
-                              <Style />
-                            </Paragraph>
-                          </Paragraphs>
-                          <rd:DefaultName>ReasonId</rd:DefaultName>
-                          <Style>
-                            <Border>
-                              <Style>None</Style>
-                            </Border>
-                            <PaddingLeft>2pt</PaddingLeft>
-                            <PaddingRight>2pt</PaddingRight>
-                            <PaddingTop>2pt</PaddingTop>
-                            <PaddingBottom>2pt</PaddingBottom>
-                          </Style>
-                        </Textbox>
-                      </CellContents>
-                    </TablixCell>
-                  </TablixCells>
-                </TablixRow>
-              </TablixRows>
-            </TablixBody>
-            <TablixColumnHierarchy>
-              <TablixMembers>
-                <TablixMember>
-                  <Group Name="ReasonId">
-                    <GroupExpressions>
-                      <GroupExpression>=Fields!ReasonId.Value</GroupExpression>
-                    </GroupExpressions>
-                  </Group>
-                  <SortExpressions>
-                    <SortExpression>
-                      <Value>=Fields!ReasonId.Value</Value>
-                    </SortExpression>
-                  </SortExpressions>
-                </TablixMember>
-              </TablixMembers>
-            </TablixColumnHierarchy>
-            <TablixRowHierarchy>
-              <TablixMembers>
-                <TablixMember />
-              </TablixMembers>
-            </TablixRowHierarchy>
-            <DataSetName>Reason</DataSetName>
-            <Top>49.87675mm</Top>
-            <Left>0mm</Left>
-            <Height>12.66548mm</Height>
-            <Width>36.426mm</Width>
+          <Textbox Name="Textbox10">
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>基重　</Value>
+                    <Style />
+                  </TextRun>
+                  <TextRun>
+                    <Value>=Fields!BASIC_WEIGHT.Value</Value>
+                    <Style />
+                  </TextRun>
+                  <TextRun>
+                    <Value xml:space="preserve">　　</Value>
+                    <Style />
+                  </TextRun>
+                </TextRuns>
+                <Style />
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>Textbox10</rd:DefaultName>
+            <Top>3.62162cm</Top>
+            <Left>0.02328cm</Left>
+            <Height>0.55562cm</Height>
+            <Width>4.19136cm</Width>
             <ZIndex>4</ZIndex>
             <Style>
               <Border>
                 <Style>None</Style>
               </Border>
+              <PaddingLeft>2pt</PaddingLeft>
+              <PaddingRight>2pt</PaddingRight>
+              <PaddingTop>2pt</PaddingTop>
+              <PaddingBottom>2pt</PaddingBottom>
             </Style>
-          </Tablix>
-          <Tablix Name="Tablix11">
+          </Textbox>
+          <Tablix Name="Tablix2">
             <TablixBody>
               <TablixColumns>
                 <TablixColumn>
-                  <Width>15.45759mm</Width>
+                  <Width>1.28425cm</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>115.26976mm</Width>
+                  <Width>10.413cm</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>29.23246mm</Width>
+                  <Width>1.51659cm</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>17.04509mm</Width>
+                  <Width>3.08226cm</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>12.9951mm</Width>
+                  <Width>1.41654cm</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>0.70216cm</Width>
                 </TablixColumn>
               </TablixColumns>
               <TablixRows>
                 <TablixRow>
-                  <Height>8.70302mm</Height>
+                  <Height>0.83344cm</Height>
                   <TablixCells>
                     <TablixCell>
                       <CellContents>
-                        <Textbox Name="Textbox107">
+                        <Textbox Name="Textbox11">
                           <CanGrow>true</CanGrow>
                           <KeepTogether>true</KeepTogether>
                           <Paragraphs>
@@ -392,76 +280,6 @@
                               <TextRuns>
                                 <TextRun>
                                   <Value>No.</Value>
-                                  <Style>
-                                    <FontFamily>Arial</FontFamily>
-                                  </Style>
-                                </TextRun>
-                              </TextRuns>
-                              <Style>
-                                <TextAlign>Center</TextAlign>
-                              </Style>
-                            </Paragraph>
-                          </Paragraphs>
-                          <rd:DefaultName>Textbox107</rd:DefaultName>
-                          <Style>
-                            <Border>
-                              <Color>LightGrey</Color>
-                              <Style>Solid</Style>
-                            </Border>
-                            <VerticalAlign>Middle</VerticalAlign>
-                            <PaddingLeft>2pt</PaddingLeft>
-                            <PaddingRight>2pt</PaddingRight>
-                            <PaddingTop>2pt</PaddingTop>
-                            <PaddingBottom>2pt</PaddingBottom>
-                          </Style>
-                        </Textbox>
-                      </CellContents>
-                    </TablixCell>
-                    <TablixCell>
-                      <CellContents>
-                        <Textbox Name="Textbox101">
-                          <CanGrow>true</CanGrow>
-                          <KeepTogether>true</KeepTogether>
-                          <Paragraphs>
-                            <Paragraph>
-                              <TextRuns>
-                                <TextRun>
-                                  <Value>平張標籤</Value>
-                                  <Style>
-                                    <FontFamily>Arial</FontFamily>
-                                  </Style>
-                                </TextRun>
-                              </TextRuns>
-                              <Style>
-                                <TextAlign>Center</TextAlign>
-                              </Style>
-                            </Paragraph>
-                          </Paragraphs>
-                          <rd:DefaultName>Textbox101</rd:DefaultName>
-                          <Style>
-                            <Border>
-                              <Color>LightGrey</Color>
-                              <Style>Solid</Style>
-                            </Border>
-                            <VerticalAlign>Middle</VerticalAlign>
-                            <PaddingLeft>2pt</PaddingLeft>
-                            <PaddingRight>2pt</PaddingRight>
-                            <PaddingTop>2pt</PaddingTop>
-                            <PaddingBottom>2pt</PaddingBottom>
-                          </Style>
-                        </Textbox>
-                      </CellContents>
-                    </TablixCell>
-                    <TablixCell>
-                      <CellContents>
-                        <Textbox Name="Textbox97">
-                          <CanGrow>true</CanGrow>
-                          <KeepTogether>true</KeepTogether>
-                          <Paragraphs>
-                            <Paragraph>
-                              <TextRuns>
-                                <TextRun>
-                                  <Value>備註</Value>
                                   <Style />
                                 </TextRun>
                               </TextRuns>
@@ -470,7 +288,7 @@
                               </Style>
                             </Paragraph>
                           </Paragraphs>
-                          <rd:DefaultName>Textbox97</rd:DefaultName>
+                          <rd:DefaultName>Textbox11</rd:DefaultName>
                           <Style>
                             <Border>
                               <Color>LightGrey</Color>
@@ -487,7 +305,112 @@
                     </TablixCell>
                     <TablixCell>
                       <CellContents>
-                        <Textbox Name="Textbox99">
+                        <Textbox Name="Textbox21">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>標籤</Value>
+                                  <Style>
+                                    <FontFamily>Arial</FontFamily>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox21</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <VerticalAlign>Middle</VerticalAlign>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox19">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>令數</Value>
+                                  <Style>
+                                    <FontFamily>Arial</FontFamily>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox19</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <VerticalAlign>Middle</VerticalAlign>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox17">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>備註</Value>
+                                  <Style>
+                                    <FontFamily>Arial</FontFamily>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox17</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <VerticalAlign>Middle</VerticalAlign>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox13">
                           <CanGrow>true</CanGrow>
                           <KeepTogether>true</KeepTogether>
                           <Paragraphs>
@@ -503,7 +426,7 @@
                               </Style>
                             </Paragraph>
                           </Paragraphs>
-                          <rd:DefaultName>Textbox99</rd:DefaultName>
+                          <rd:DefaultName>Textbox13</rd:DefaultName>
                           <Style>
                             <Border>
                               <Color>LightGrey</Color>
@@ -520,17 +443,15 @@
                     </TablixCell>
                     <TablixCell>
                       <CellContents>
-                        <Textbox Name="Textbox103">
+                        <Textbox Name="Textbox15">
                           <CanGrow>true</CanGrow>
                           <KeepTogether>true</KeepTogether>
                           <Paragraphs>
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>ｖ</Value>
-                                  <Style>
-                                    <FontFamily>Arial</FontFamily>
-                                  </Style>
+                                  <Value>Ｖ</Value>
+                                  <Style />
                                 </TextRun>
                               </TextRuns>
                               <Style>
@@ -538,7 +459,7 @@
                               </Style>
                             </Paragraph>
                           </Paragraphs>
-                          <rd:DefaultName>Textbox103</rd:DefaultName>
+                          <rd:DefaultName>Textbox15</rd:DefaultName>
                           <Style>
                             <Border>
                               <Color>LightGrey</Color>
@@ -556,7 +477,7 @@
                   </TablixCells>
                 </TablixRow>
                 <TablixRow>
-                  <Height>29.34052mm</Height>
+                  <Height>2.79136cm</Height>
                   <TablixCells>
                     <TablixCell>
                       <CellContents>
@@ -568,9 +489,7 @@
                               <TextRuns>
                                 <TextRun>
                                   <Value>=Fields!SubId.Value</Value>
-                                  <Style>
-                                    <FontFamily>Arial</FontFamily>
-                                  </Style>
+                                  <Style />
                                 </TextRun>
                               </TextRuns>
                               <Style>
@@ -595,7 +514,7 @@
                     </TablixCell>
                     <TablixCell>
                       <CellContents>
-                        <Textbox Name="Textbox102">
+                        <Textbox Name="Textbox22">
                           <CanGrow>true</CanGrow>
                           <KeepTogether>true</KeepTogether>
                           <Paragraphs>
@@ -608,15 +527,18 @@
                                   </Style>
                                 </TextRun>
                               </TextRuns>
-                              <Style />
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
                             </Paragraph>
                           </Paragraphs>
-                          <rd:DefaultName>Textbox102</rd:DefaultName>
+                          <rd:DefaultName>Textbox22</rd:DefaultName>
                           <Style>
                             <Border>
                               <Color>LightGrey</Color>
                               <Style>Solid</Style>
                             </Border>
+                            <VerticalAlign>Middle</VerticalAlign>
                             <PaddingLeft>2pt</PaddingLeft>
                             <PaddingRight>2pt</PaddingRight>
                             <PaddingTop>2pt</PaddingTop>
@@ -627,26 +549,32 @@
                     </TablixCell>
                     <TablixCell>
                       <CellContents>
-                        <Textbox Name="Textbox98">
+                        <Textbox Name="SECONDARY_QUANTITY">
                           <CanGrow>true</CanGrow>
                           <KeepTogether>true</KeepTogether>
                           <Paragraphs>
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value />
-                                  <Style />
+                                  <Value>=Fields!SECONDARY_QUANTITY.Value</Value>
+                                  <Style>
+                                    <FontFamily>Arial</FontFamily>
+                                    <Format>0.00;(0.00)</Format>
+                                  </Style>
                                 </TextRun>
                               </TextRuns>
-                              <Style />
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
                             </Paragraph>
                           </Paragraphs>
-                          <rd:DefaultName>Textbox98</rd:DefaultName>
+                          <rd:DefaultName>SECONDARY_QUANTITY</rd:DefaultName>
                           <Style>
                             <Border>
                               <Color>LightGrey</Color>
                               <Style>Solid</Style>
                             </Border>
+                            <VerticalAlign>Middle</VerticalAlign>
                             <PaddingLeft>2pt</PaddingLeft>
                             <PaddingRight>2pt</PaddingRight>
                             <PaddingTop>2pt</PaddingTop>
@@ -657,37 +585,7 @@
                     </TablixCell>
                     <TablixCell>
                       <CellContents>
-                        <Textbox Name="Textbox100">
-                          <CanGrow>true</CanGrow>
-                          <KeepTogether>true</KeepTogether>
-                          <Paragraphs>
-                            <Paragraph>
-                              <TextRuns>
-                                <TextRun>
-                                  <Value />
-                                  <Style />
-                                </TextRun>
-                              </TextRuns>
-                              <Style />
-                            </Paragraph>
-                          </Paragraphs>
-                          <rd:DefaultName>Textbox100</rd:DefaultName>
-                          <Style>
-                            <Border>
-                              <Color>LightGrey</Color>
-                              <Style>Solid</Style>
-                            </Border>
-                            <PaddingLeft>2pt</PaddingLeft>
-                            <PaddingRight>2pt</PaddingRight>
-                            <PaddingTop>2pt</PaddingTop>
-                            <PaddingBottom>2pt</PaddingBottom>
-                          </Style>
-                        </Textbox>
-                      </CellContents>
-                    </TablixCell>
-                    <TablixCell>
-                      <CellContents>
-                        <Textbox Name="Textbox104">
+                        <Textbox Name="Textbox18">
                           <CanGrow>true</CanGrow>
                           <KeepTogether>true</KeepTogether>
                           <Paragraphs>
@@ -700,15 +598,84 @@
                                   </Style>
                                 </TextRun>
                               </TextRuns>
-                              <Style />
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
                             </Paragraph>
                           </Paragraphs>
-                          <rd:DefaultName>Textbox104</rd:DefaultName>
+                          <rd:DefaultName>Textbox18</rd:DefaultName>
                           <Style>
                             <Border>
                               <Color>LightGrey</Color>
                               <Style>Solid</Style>
                             </Border>
+                            <VerticalAlign>Middle</VerticalAlign>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox14">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value />
+                                  <Style />
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox14</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <VerticalAlign>Middle</VerticalAlign>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox16">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value />
+                                  <Style />
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox16</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <VerticalAlign>Middle</VerticalAlign>
                             <PaddingLeft>2pt</PaddingLeft>
                             <PaddingRight>2pt</PaddingRight>
                             <PaddingTop>2pt</PaddingTop>
@@ -728,25 +695,24 @@
                 <TablixMember />
                 <TablixMember />
                 <TablixMember />
+                <TablixMember />
               </TablixMembers>
             </TablixColumnHierarchy>
             <TablixRowHierarchy>
               <TablixMembers>
                 <TablixMember>
                   <KeepWithGroup>After</KeepWithGroup>
-                  <RepeatOnNewPage>true</RepeatOnNewPage>
                 </TablixMember>
                 <TablixMember>
                   <Group Name="詳細資料" />
                 </TablixMember>
               </TablixMembers>
             </TablixRowHierarchy>
-            <RepeatColumnHeaders>true</RepeatColumnHeaders>
-            <DataSetName>Detail</DataSetName>
-            <Top>71.62626mm</Top>
-            <Left>0mm</Left>
-            <Height>38.04354mm</Height>
-            <Width>190mm</Width>
+            <DataSetName>DataSet1</DataSetName>
+            <Top>4.35363cm</Top>
+            <Left>0.02328cm</Left>
+            <Height>3.6248cm</Height>
+            <Width>18.4148cm</Width>
             <ZIndex>5</ZIndex>
             <Style>
               <Border>
@@ -754,40 +720,67 @@
               </Border>
             </Style>
           </Tablix>
-          <Image Name="Image1">
-            <Source>Database</Source>
-            <Value>=code.MakeBarcodeImage(First(Fields!CONTAINER_NO.Value, "Header"))</Value>
-            <MIMEType>image/png</MIMEType>
-            <Sizing>FitProportional</Sizing>
-            <Top>2.90724cm</Top>
-            <Height>1.00542cm</Height>
-            <Width>6.28843cm</Width>
-            <ZIndex>6</ZIndex>
-            <Style>
-              <Border>
-                <Style>None</Style>
-              </Border>
-            </Style>
-          </Image>
-          <Textbox Name="Textbox1">
+          <Textbox Name="Textbox4">
             <CanGrow>true</CanGrow>
             <KeepTogether>true</KeepTogether>
             <Paragraphs>
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>核准人簽名</Value>
+                    <Value>紙別　</Value>
+                    <Style />
+                  </TextRun>
+                  <TextRun>
+                    <Value>=Fields!PAPER_TYPE.Value</Value>
                     <Style />
                   </TextRun>
                 </TextRuns>
                 <Style />
               </Paragraph>
             </Paragraphs>
-            <rd:DefaultName>Textbox1</rd:DefaultName>
-            <Top>11.27689cm</Top>
-            <Left>13.07274cm</Left>
-            <Height>0.6126cm</Height>
-            <Width>2.65755cm</Width>
+            <rd:DefaultName>Textbox4</rd:DefaultName>
+            <Top>1.2259cm</Top>
+            <Left>13.23711cm</Left>
+            <Height>0.76729cm</Height>
+            <Width>5.20097cm</Width>
+            <ZIndex>6</ZIndex>
+            <Style>
+              <Border>
+                <Style>None</Style>
+              </Border>
+              <PaddingLeft>2pt</PaddingLeft>
+              <PaddingRight>2pt</PaddingRight>
+              <PaddingTop>2pt</PaddingTop>
+              <PaddingBottom>2pt</PaddingBottom>
+            </Style>
+          </Textbox>
+          <Textbox Name="Sum">
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>合計　</Value>
+                    <Style>
+                      <Format>0.00;(0.00)</Format>
+                    </Style>
+                  </TextRun>
+                  <TextRun>
+                    <Value>=Fields!Summ.Value</Value>
+                    <Style>
+                      <Format>0.00;(0.00)</Format>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style />
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>Sum</rd:DefaultName>
+            <Top>8.24274cm</Top>
+            <Left>10.71065cm</Left>
+            <Height>0.66146cm</Height>
+            <Width>2.52646cm</Width>
             <ZIndex>7</ZIndex>
             <Style>
               <Border>
@@ -799,47 +792,182 @@
               <PaddingBottom>2pt</PaddingBottom>
             </Style>
           </Textbox>
+          <Textbox Name="Textbox7">
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>核對人簽名</Value>
+                    <Style />
+                  </TextRun>
+                </TextRuns>
+                <Style />
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>Textbox7</rd:DefaultName>
+            <Top>9.01003cm</Top>
+            <Left>10.95458cm</Left>
+            <Height>0.61172cm</Height>
+            <Width>2.28253cm</Width>
+            <ZIndex>8</ZIndex>
+            <Style>
+              <Border>
+                <Style>None</Style>
+              </Border>
+              <PaddingLeft>2pt</PaddingLeft>
+              <PaddingRight>2pt</PaddingRight>
+              <PaddingTop>2pt</PaddingTop>
+              <PaddingBottom>2pt</PaddingBottom>
+            </Style>
+          </Textbox>
+          <Textbox Name="Textbox12">
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>包裝方式　</Value>
+                    <Style />
+                  </TextRun>
+                  <TextRun>
+                    <Value>=Fields!PACKING_TYPE.Value</Value>
+                    <Style />
+                  </TextRun>
+                </TextRuns>
+                <Style />
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>Textbox12</rd:DefaultName>
+            <Top>3.57724cm</Top>
+            <Left>13.92804cm</Left>
+            <Height>0.6cm</Height>
+            <Width>4.51004cm</Width>
+            <ZIndex>9</ZIndex>
+            <Style>
+              <Border>
+                <Style>None</Style>
+              </Border>
+              <PaddingLeft>2pt</PaddingLeft>
+              <PaddingRight>2pt</PaddingRight>
+              <PaddingTop>2pt</PaddingTop>
+              <PaddingBottom>2pt</PaddingBottom>
+            </Style>
+          </Textbox>
+          <Textbox Name="Textbox20">
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>數量　</Value>
+                    <Style />
+                  </TextRun>
+                  <TextRun>
+                    <Value>=Fields!Count.Value</Value>
+                    <Style />
+                  </TextRun>
+                </TextRuns>
+                <Style />
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>Textbox20</rd:DefaultName>
+            <Top>3.58606cm</Top>
+            <Left>9.83316cm</Left>
+            <Height>0.59118cm</Height>
+            <Width>3.91849cm</Width>
+            <ZIndex>10</ZIndex>
+            <Style>
+              <Border>
+                <Style>None</Style>
+              </Border>
+              <PaddingLeft>2pt</PaddingLeft>
+              <PaddingRight>2pt</PaddingRight>
+              <PaddingTop>2pt</PaddingTop>
+              <PaddingBottom>2pt</PaddingBottom>
+            </Style>
+          </Textbox>
+          <Textbox Name="Textbox23">
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>規格　</Value>
+                    <Style />
+                  </TextRun>
+                  <TextRun>
+                    <Value>=Fields!SPECIFICATION.Value</Value>
+                    <Style />
+                  </TextRun>
+                  <TextRun>
+                    <Value xml:space="preserve">　　</Value>
+                    <Style />
+                  </TextRun>
+                </TextRuns>
+                <Style />
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>Textbox23</rd:DefaultName>
+            <Top>3.58634cm</Top>
+            <Left>4.70641cm</Left>
+            <Height>0.5909cm</Height>
+            <Width>4.95037cm</Width>
+            <ZIndex>11</ZIndex>
+            <Style>
+              <Border>
+                <Style>None</Style>
+              </Border>
+              <PaddingLeft>2pt</PaddingLeft>
+              <PaddingRight>2pt</PaddingRight>
+              <PaddingTop>2pt</PaddingTop>
+              <PaddingBottom>2pt</PaddingBottom>
+            </Style>
+          </Textbox>
         </ReportItems>
-        <Height>118.89493mm</Height>
+        <Height>97.27575mm</Height>
         <Style>
           <Border>
             <Style>None</Style>
           </Border>
         </Style>
       </Body>
-      <Width>190mm</Width>
+      <Width>185.99967mm</Width>
       <Page>
         <PageFooter>
-          <Height>12.29078mm</Height>
+          <Height>8.51958mm</Height>
           <PrintOnFirstPage>true</PrintOnFirstPage>
           <PrintOnLastPage>true</PrintOnLastPage>
           <ReportItems>
-            <Textbox Name="Textbox109">
+            <Textbox Name="ExecutionTime">
               <CanGrow>true</CanGrow>
               <KeepTogether>true</KeepTogether>
               <Paragraphs>
                 <Paragraph>
                   <TextRuns>
                     <TextRun>
-                      <Value>="Page "&amp;Globals!PageNumber</Value>
+                      <Value>=Globals!ExecutionTime</Value>
                       <Style />
                     </TextRun>
                   </TextRuns>
                   <Style>
-                    <TextAlign>Left</TextAlign>
+                    <TextAlign>Right</TextAlign>
                   </Style>
                 </Paragraph>
               </Paragraphs>
-              <rd:DefaultName>Textbox109</rd:DefaultName>
-              <Top>1.88736mm</Top>
-              <Left>79.86537mm</Left>
-              <Height>6.96383mm</Height>
-              <Width>20.40465mm</Width>
+              <rd:DefaultName>ExecutionTime</rd:DefaultName>
+              <Top>1.76389mm</Top>
+              <Left>101.6mm</Left>
+              <Height>6.35mm</Height>
+              <Width>50.8mm</Width>
               <Style>
                 <Border>
                   <Style>None</Style>
                 </Border>
-                <VerticalAlign>Middle</VerticalAlign>
                 <PaddingLeft>2pt</PaddingLeft>
                 <PaddingRight>2pt</PaddingRight>
                 <PaddingTop>2pt</PaddingTop>
@@ -865,13 +993,9 @@
     </ReportSection>
   </ReportSections>
   <ReportParameters>
-    <ReportParameter Name="CTR_HEADER_ID">
+    <ReportParameter Name="OSP_HEADER_ID">
       <DataType>String</DataType>
-      <Prompt>CTR HEADER ID</Prompt>
-    </ReportParameter>
-    <ReportParameter Name="ITEM_CATEGORY">
-      <DataType>String</DataType>
-      <Prompt>ITEM CATEGORY</Prompt>
+      <Prompt>OSP HEADER ID</Prompt>
     </ReportParameter>
   </ReportParameters>
   <ReportParametersLayout>
@@ -882,105 +1006,11 @@
         <CellDefinition>
           <ColumnIndex>0</ColumnIndex>
           <RowIndex>0</RowIndex>
-          <ParameterName>CTR_HEADER_ID</ParameterName>
-        </CellDefinition>
-        <CellDefinition>
-          <ColumnIndex>1</ColumnIndex>
-          <RowIndex>0</RowIndex>
-          <ParameterName>ITEM_CATEGORY</ParameterName>
+          <ParameterName>OSP_HEADER_ID</ParameterName>
         </CellDefinition>
       </CellDefinitions>
     </GridLayoutDefinition>
   </ReportParametersLayout>
-  <Code>Public Function MakeBarcodeImage(ByVal datastring As String) As Byte()
-        Dim sCode As String = String.Empty
-        '清除該頁輸出緩存，設置該頁無緩存 
-     
-        '將Code39條碼寫入記憶體流，並將其以 "image/Png" 格式輸出  
-        Dim oStream As New System.IO.MemoryStream()
-        Try
-             Dim oBmp As System.Drawing.Bitmap = GetCode39(datastring)
-            oBmp.Save(oStream, System.Drawing.Imaging.ImageFormat.Png)
-            oBmp.Dispose()
-            Return oStream.ToArray()
-        Finally
-            '釋放資源  
-            oStream.Dispose()
-        End Try
-    End Function
-       
-   
-    Private Function GetCode39(ByVal strSource As String) As System.Drawing.Bitmap
-        Dim x As Integer = 5
-        '左邊界
-        Dim y As Integer = 0
-        '上邊界
-        Dim WidLength As Integer = 2
-        '粗BarCode長度
-        Dim NarrowLength As Integer = 1
-        '細BarCode長度
-        Dim BarCodeHeight As Integer = 24
-        'BarCode高度
-        Dim intSourceLength As Integer = strSource.Length
-        Dim strEncode As String = "010010100"
-        '編碼字串 初值為 起始符號 *
-        Dim AlphaBet As String = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ-. $/+%*"
-        'Code39的字母
-        'Code39的各字母對應碼
-      
-        Dim Code39 As String() = {"000110100", "100100001", "001100001", "101100000", "000110001", "100110000", _
-         "001110000", "000100101", "100100100", "001100100", "100001001", "001001001", _
-         "101001000", "000011001", "100011000", "001011000", "000001101", "100001100", _
-         "001001100", "000011100", "100000011", "001000011", "101000010", "000010011", _
-         "100010010", "001010010", "000000111", "100000110", "001000110", "000010110", _
-         "110000001", "011000001", "111000000", "010010001", "110010000", "011010000", _
-         "010000101", "110000100", "011000100", "010101000", "010100010", "010001010", _
-         "000101010", "010010100"}
-        strSource = strSource.ToUpper()
-        '實作圖片
-        Dim objBitmap As New System.Drawing.Bitmap(((WidLength * 3 + NarrowLength * 7) * (intSourceLength + 2)) + (x * 2), BarCodeHeight + (y * 2))
-        Dim objGraphics As System.Drawing.Graphics = System.Drawing.Graphics.FromImage(objBitmap)
-        '宣告GDI+繪圖介面
-        '填上底色
-        objGraphics.FillRectangle(System.Drawing.Brushes.White, 0, 0, objBitmap.Width, objBitmap.Height)
-
-        For i As Integer = 0 To intSourceLength - 1
-            '檢查是否有非法字元
-            If AlphaBet.IndexOf(strSource(i)) = -1 OrElse strSource(i) = "*"c Then
-                objGraphics.DrawString("含有非法字元", System.Drawing.SystemFonts.DefaultFont, System.Drawing.Brushes.Red, x, y)
-                Return objBitmap
-            End If
-            '查表編碼
-            strEncode = String.Format("{0}0{1}", strEncode, Code39(AlphaBet.IndexOf(strSource(i))))
-        Next
-
-        strEncode = String.Format("{0}0010010100", strEncode)
-        '補上結束符號 *
-        Dim intEncodeLength As Integer = strEncode.Length
-        '編碼後長度
-        Dim intBarWidth As Integer
-
-        For i As Integer = 0 To intEncodeLength - 1
-            '依碼畫出Code39 BarCode
-            If strEncode(i) = "1"c Then
-                intBarWidth = WidLength
-            Else
-                intBarWidth = NarrowLength
-            End If
-            If i Mod 2 = 0 Then
-                objGraphics.FillRectangle(System.Drawing.Brushes.Black, x, y, intBarWidth, BarCodeHeight)
-            Else
-                objGraphics.FillRectangle(System.Drawing.Brushes.White, x, y, intBarWidth, BarCodeHeight)
-            End If
-            x = x + intBarWidth
-        Next
-        Return objBitmap
-    End Function
-</Code>
-  <CodeModules>
-    <CodeModule>System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</CodeModule>
-  </CodeModules>
-  <ConsumeContainerWhitespace>true</ConsumeContainerWhitespace>
   <rd:ReportUnitType>Cm</rd:ReportUnitType>
-  <rd:ReportID>762c0a4b-0f80-4c5e-ae40-91aa04bd2363</rd:ReportID>
+  <rd:ReportID>43b78b3a-d0b0-41d8-b20d-713526ad4d85</rd:ReportID>
 </Report>

@@ -243,6 +243,18 @@ function BtnClick() {
         });
     });
 
+    //列印入庫單
+    $('#BtnPurchase').click(function () {
+        var table = $('#ProductionDataTables').DataTable();
+        if (table.data().length == 0) {
+            swal.fire("產出無資料，請先輸入資料。");
+            return;
+        }
+        var OspHeaderId = $('#OspHeaderId').val();
+        window.open("/Home/OspStock/?OspHeaderId=" + OspHeaderId);
+    });
+
+
     //投出驗證公單號
     $('#BtnCheckProductionBatchNo').click(function (e) {
         var BatchNo = $('#OutBatchNo').val();

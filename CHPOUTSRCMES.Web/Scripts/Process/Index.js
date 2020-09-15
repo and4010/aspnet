@@ -318,6 +318,17 @@ function BtnEvent() {
 
 
     });
+
+
+    $('#BtnCutReceipt').click(function () {
+        var OspHeaderId = rowData.pluck('OspHeaderId')[0]
+        window.open("/Home/OspCutReceiptReport/?OspHeaderId=" + OspHeaderId);
+
+    });
+    $('#BtnCutMaterial').click(function () {
+        var OspHeaderId = rowData.pluck('OspHeaderId')[0]
+        window.open("/Home/OspReport/?OspHeaderId=" + OspHeaderId);
+    });
 }
 
 function search() {
@@ -385,6 +396,11 @@ function Open(modal_dialog, OspHeaderId) {
 
         if (new Date(Dialog_CuttingDateFrom) > new Date(Dialog_CuttingDateTo)) {
             swal.fire("時間起不得超過迄");
+            return
+        }
+
+        if (Dialog_MachineNum == null) {
+            swal.fire("機台不能空白");
             return
         }
 
