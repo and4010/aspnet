@@ -14,7 +14,7 @@ namespace CHPOUTSRCMES.Web
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
             routes.MapRoute(
                 name: "StockQuery",
-                url: "{controller}/{action}/{subinventoryCode}/{locatorId}/{itemId}",
+                url: "Stock/Detail/{subinventoryCode}/{locatorId}/{itemId}",
                 defaults: new { controller = "Stock", action = "Detail", subinventoryCode = UrlParameter.Optional, locatorId = UrlParameter.Optional,itemId = UrlParameter.Optional }
             );
             routes.MapRoute(
