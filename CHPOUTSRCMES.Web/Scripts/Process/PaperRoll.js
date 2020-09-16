@@ -36,6 +36,21 @@ $(document).ready(function () {
         DsiplayPaperRollShow();
     }
 
+    if (Status == 4) {
+        //完工紀錄使用
+        DsiplayPaperRollHide();
+        DisplayInvestPaperRollEnable(true);
+        DisplayProductionPaperRollEnable(true);
+        ///隱藏按鈕
+        PaperRollInvestDataTables.column(9).visible(false);
+        PaperRollProductionDataTables.column(8).visible(false);
+        $('#BtnEdit').attr('disabled', true);
+        $('#BtnProcess_Production_Batch_no').attr('disabled', true);
+        $('#ProcessBatchNo').attr('disabled', true);
+        $('#ProcessProductionBatchNo').attr('disabled', true);
+        
+    }
+
 
     //重新整理表格寬度
     $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {

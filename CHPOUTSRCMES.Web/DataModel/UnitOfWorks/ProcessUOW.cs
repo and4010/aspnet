@@ -1111,6 +1111,36 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
         }
 
         /// <summary>
+        /// 關帳用
+        /// </summary>
+        /// <param name="OspHeaderId"></param>
+        /// <param name="BtnStatus"></param>
+        /// <returns></returns>
+        public ResultModel SetClose(long OspHeaderId,string BtnStatus)
+        {
+            try
+            {
+                var header = OspHeaderTRepository.Get(x => x.OspHeaderId == OspHeaderId).SingleOrDefault();
+                if (header != null)
+                {
+                    header.Status = BtnStatus;
+                    OspHeaderTRepository.Update(header, true);
+                    return new ResultModel(true, "成功");
+                }
+                else
+                {
+                    return new ResultModel(false, "找不到ID");
+                }
+
+            }
+            catch (Exception e)
+            {
+                logger.Error(LogUtilities.BuildExceptionMessage(e));
+                return new ResultModel(false, e.Message);
+            }
+        }
+
+        /// <summary>
         /// 檢查工單號是否正確
         /// </summary>
         /// <param name="InputBatchNo"></param>

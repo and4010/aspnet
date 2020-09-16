@@ -87,6 +87,7 @@ namespace CHPOUTSRCMES.Web.Controllers
         }
 
 
+
         [HttpPost]
         public ActionResult _ProcessIndex(string PaperType)
         {
@@ -160,6 +161,13 @@ namespace CHPOUTSRCMES.Web.Controllers
         {
             ProcessViewModel procesViewModel = new ProcessViewModel();
             var resultModel = procesViewModel.SetStatusAndCutDate(OspHeaderId, Dialog_CuttingDateFrom, Dialog_CuttingDateTo, Dialog_MachineNum, BtnStatus);
+            return Json(new { resultModel }, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult SetClose(long OspHeaderId, string BtnStatus)
+        {
+            ProcessViewModel procesViewModel = new ProcessViewModel();
+            var resultModel = procesViewModel.SetClose(OspHeaderId, BtnStatus);
             return Json(new { resultModel }, JsonRequestBehavior.AllowGet);
         }
 
