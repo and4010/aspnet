@@ -162,6 +162,8 @@ namespace CHPOUTSRCMES.Web.DataModel
 
         public DbSet<USER_SUBINVENTORY_T> USER_SUBINVENTORY_Ts { set; get; }
 
+        public DbSet<DOC_UNIQUE_T> DOC_UNIQUE_Ts { set; get; }
+
         #region 庫存
         public DbSet<STOCK_T> STOCK_Ts { set; get; }
 

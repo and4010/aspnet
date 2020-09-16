@@ -43,6 +43,11 @@ namespace CHPOUTSRCMES.Web.Util
             return new SqlParameter(paramName, System.Data.SqlDbType.NVarChar) { Value = data, Size = size, Direction = direction };
         }
 
+        public static SqlParameter GetVarChar(string paramName, string data, int size, System.Data.ParameterDirection direction = System.Data.ParameterDirection.Input)
+        {
+            return new SqlParameter(paramName, System.Data.SqlDbType.VarChar) { Value = data, Size = size, Direction = direction };
+        }
+
 
         public class R
         {

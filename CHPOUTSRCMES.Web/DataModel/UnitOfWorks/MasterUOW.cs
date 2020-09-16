@@ -1626,6 +1626,48 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
 
         #endregion
 
+
+        #region 單號
+
+        /// <summary>
+        /// 產生條碼清單 (請用交易TRANSACTION)
+        /// </summary>
+        /// <param name="organiztionId">組織ID</param>
+        /// <param name="subinventoryCode">倉庫</param>
+        /// <param name="requestQty">數量</param>
+        /// <param name="userId">使用者ID</param>
+        /// <param name="prefix">前置碼</param>
+        /// <returns>ResultDataModel 條碼清單</returns>
+        public ResultDataModel<string> GenerateShipmentNo(string subinventoryCode, string dstSubinventoryCode, DateTime createDate, int digit, string userId)
+        {
+            ResultDataModel<string> result = null;
+            try
+            {
+                var pSub = SqlParamHelper.R.SubinventoryCode("@subinventory", subinventoryCode);
+                var pDstSub = SqlParamHelper.R.SubinventoryCode("@dstSubinventory", dstSubinventoryCode);
+                var pDigit = SqlParamHelper.GetInt("@digit", digit);
+                var pCreateDate = SqlParamHelper.GetDataTime("@createDate", createDate);
+                var pDocNo = SqlParamHelper.GetVarChar("@docNo", "", 50, System.Data.ParameterDirection.Output);
+                var pCode = SqlParamHelper.GetInt("@code", 0, System.Data.ParameterDirection.Output);
+                var pMsg = SqlParamHelper.GetNVarChar("@message", "", 500, System.Data.ParameterDirection.Output);
+                var pUser = SqlParamHelper.GetNVarChar("@user", userId, 128);
+
+                Context.Database.ExecuteSqlCommand("dbo.SP_GenerateDocNum @subinventory, @dstSubinventory, @createDate, @digit, @docNo output, @code output, @message output, @user",
+                    pSub, pDstSub, pCreateDate, pDigit, pDocNo, pCode, pMsg, pUser);
+
+
+                result = new ResultDataModel<string>(Convert.ToInt32(pCode.Value), Convert.ToString(pMsg.Value), Convert.ToString(pDocNo.Value));
+            }
+            catch (Exception ex)
+            {
+                result = new ResultDataModel<string>(-1, ex.Message, null);
+                logger.Error(ex, "產生單號出現例外!!");
+            }
+            return result;
+        }
+
+        #endregion 
+
         /// <summary>
         /// 產生下拉選單內容
         /// </summary>
