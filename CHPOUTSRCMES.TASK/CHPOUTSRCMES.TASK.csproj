@@ -138,6 +138,7 @@
     <Compile Include="Models\Repository\MsSql\CtrHeaderRepository.cs" />
     <Compile Include="Models\Repository\MsSql\CtrPickedRepository.cs" />
     <Compile Include="Models\Repository\MsSql\DlvDetailRepository.cs" />
+    <Compile Include="Models\Repository\MsSql\OspSoaS3Repository.cs" />
     <Compile Include="Models\Repository\MsSql\OspSoaS2Repository.cs" />
     <Compile Include="Models\Repository\MsSql\OspSoaS1Repository.cs" />
     <Compile Include="Models\Repository\MsSql\OspHeaderRepository.cs" />

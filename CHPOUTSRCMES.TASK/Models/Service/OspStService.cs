@@ -34,7 +34,7 @@ namespace CHPOUTSRCMES.TASK.Models.Service
 
 
         /// <summary>
-        /// SOA出貨 資料下載
+        /// SOA出貨 P219 資料下載
         /// </summary>
         /// <param name="tasker"></param>
         /// <param name="token"></param>
@@ -111,7 +111,7 @@ namespace CHPOUTSRCMES.TASK.Models.Service
 
 
         /// <summary>
-        /// SOA出貨 資料上傳
+        /// SOA出貨 P210 資料上傳
         /// </summary>
         /// <param name="tasker"></param>
         /// <param name="token"></param>
@@ -173,7 +173,7 @@ namespace CHPOUTSRCMES.TASK.Models.Service
         }
 
         /// <summary>
-        /// SOA出貨 資料上傳
+        /// SOA出貨 P210 資料上傳
         /// </summary>
         /// <param name="tasker"></param>
         /// <param name="token"></param>
@@ -249,15 +249,16 @@ namespace CHPOUTSRCMES.TASK.Models.Service
             LogInfo($"[{tasker.Name}]-{tasker.Unit}-UpdateStatusOspStRvStage1-結束");
         }
 
-        /// <summary>
-        /// SOA出貨 資料上傳
+
+        /// <summary>UpdateStatusOspStRvStage2
+        /// SOA出貨 P211 資料上傳
         /// </summary>
         /// <param name="tasker"></param>
         /// <param name="token"></param>
         /// <returns></returns>
         internal async Task ExportOspStRvStage2(Tasker tasker, CancellationToken token)
         {
-            LogInfo($"[{tasker.Name}]-{tasker.Unit}-ExportOspStRv-開始");
+            LogInfo($"[{tasker.Name}]-{tasker.Unit}-ExportOspStRvStage2-開始");
 
             try
             {
@@ -265,32 +266,139 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                 {
                     token.ThrowIfCancellationRequested();
                 }
+                using var sqlConn = new SqlConnection(MesConnStr);
+                using var ospStUow = new OspStUOW(sqlConn);
 
-                using var ospStUow = new OspStUOW(new SqlConnection(MesConnStr));
+                var list = await ospStUow.GetOspBatchStage2UploadList();
+                if (list == null || list.Count() == 0)
+                {
+                    LogInfo($"[{tasker.Name}]-{tasker.Unit}-ExportOspStRv-無可轉出資料");
+                    return;
+                }
+
+                for (int i = 0; i < list.Count(); i++)
+                {
+                    using var transaction = sqlConn.BeginTransaction();
+                    try
+                    {
+                        var model = await ospStUow.OspBatchStStage2Upload(list[i], transaction);
+                        LogInfo($"[{tasker.Name}]-{tasker.Unit}-ExportOspStRvStage2 (OSP_HEADER_ID:{list[i]})-{model}");
+
+                        if (!model.Success)
+                        {
+                            throw new Exception(model.Msg);
+                        }
+                        transaction.Commit();
+
+                    }
+                    catch (Exception ex)
+                    {
+                        LogError($"[{tasker.Name}]-{tasker.Unit}-ExportOspStRvStage2-錯誤-{ex.Message}-{ex.StackTrace}");
+                        transaction.Rollback();
+                    }
+                }
 
 
             }
             catch (OperationCanceledException)
             {
-                LogInfo($"[{tasker.Name}]-{tasker.Unit}-ExportOspStRv-使用者取消");
+                LogInfo($"[{tasker.Name}]-{tasker.Unit}-ExportOspStRvStage2-使用者取消");
             }
             catch (Exception ex)
             {
-                LogError($"[{tasker.Name}]-{tasker.Unit}-ExportOspStRv-錯誤-{ex.Message}-{ex.StackTrace}");
+                LogError($"[{tasker.Name}]-{tasker.Unit}-ExportOspStRvStage2-錯誤-{ex.Message}-{ex.StackTrace}");
             }
 
-            LogInfo($"[{tasker.Name}]-{tasker.Unit}-ExportOspStRv-結束");
+            LogInfo($"[{tasker.Name}]-{tasker.Unit}-ExportOspStRvStage2-結束");
         }
 
         /// <summary>
-        /// SOA出貨 資料上傳
+        /// SOA出貨 P211 資料上傳 狀態回寫
+        /// </summary>
+        /// <param name="tasker"></param>
+        /// <param name="token"></param>
+        /// <returns></returns>
+        internal async Task UpdateStatusOspStRvStage2(Tasker tasker, CancellationToken token)
+        {
+            LogInfo($"[{tasker.Name}]-{tasker.Unit}-UpdateStatusOspStRvStage2-開始");
+
+            try
+            {
+                if (token.IsCancellationRequested)
+                {
+                    token.ThrowIfCancellationRequested();
+                }
+                using var sqlConn = new SqlConnection(MesConnStr);
+                using var ospStUow = new OspStUOW(sqlConn);
+
+                var list = await ospStUow.GetOspBatchStage2UploadedList();
+                if (list == null || list.Count() == 0)
+                {
+                    LogInfo($"[{tasker.Name}]-{tasker.Unit}-UpdateStatusOspStRvStage2-無可轉出資料");
+                    return;
+                }
+
+                for (int i = 0; i < list.Count(); i++)
+                {
+                    var data = list[i];
+                    var controlSt = await ospStUow.ControlStageRepository.GetBy(data.PROCESS_CODE, data.SERVER_CODE, data.BATCH_ID, pullingFlag: "In-S");
+
+                    if (controlSt == null
+                        || string.IsNullOrEmpty(data.PROCESS_CODE)
+                        || string.IsNullOrEmpty(data.SERVER_CODE)
+                        || string.IsNullOrEmpty(data.BATCH_ID))
+                    {
+                        continue;
+                    }
+
+                    using var transaction = sqlConn.BeginTransaction();
+                    try
+                    {
+                        data.STATUS_CODE = controlSt.STATUS_CODE;
+                        data.LAST_UPDATE_BY = "SYS";
+                        data.LAST_UPDATE_DATE = DateTime.Now;
+
+                        var model = await ospStUow.OspSoaS2Repository.UpdateStatusCode(data, transaction);
+                        LogInfo($"[{tasker.Name}]-{tasker.Unit}-UpdateStatusOspStRvStage2 (OSP_HEADER_ID:{data.OSP_HEADER_ID}, PROCESS_CODE:{data.PROCESS_CODE}, SERVER_CODE:{data.SERVER_CODE}, BATCH_ID:{data.BATCH_ID})-{model}");
+                        if (!model.Success)
+                        {
+                            throw new Exception(model.Msg);
+                        }
+
+                        transaction.Commit();
+
+                    }
+                    catch (Exception ex)
+                    {
+                        LogError($"[{tasker.Name}]-{tasker.Unit}-UpdateStatusOspStRvStage2-錯誤-{ex.Message}-{ex.StackTrace}");
+                        transaction.Rollback();
+                    }
+                }
+
+
+            }
+            catch (OperationCanceledException)
+            {
+                LogInfo($"[{tasker.Name}]-{tasker.Unit}-UpdateStatusOspStRvStage2-使用者取消");
+            }
+            catch (Exception ex)
+            {
+                LogError($"[{tasker.Name}]-{tasker.Unit}-UpdateStatusOspStRvStage2-錯誤-{ex.Message}-{ex.StackTrace}");
+            }
+
+            LogInfo($"[{tasker.Name}]-{tasker.Unit}-UpdateStatusOspStRvStage2-結束");
+        }
+
+
+        /// <summary>
+        /// SOA出貨 P213 資料上傳
         /// </summary>
         /// <param name="tasker"></param>
         /// <param name="token"></param>
         /// <returns></returns>
         internal async Task ExportOspStRvStage3(Tasker tasker, CancellationToken token)
         {
-            LogInfo($"[{tasker.Name}]-{tasker.Unit}-ExportOspStRv-開始");
+            LogInfo($"[{tasker.Name}]-{tasker.Unit}-ExportOspStRvStage3-開始");
 
             try
             {
@@ -298,21 +406,127 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                 {
                     token.ThrowIfCancellationRequested();
                 }
+                using var sqlConn = new SqlConnection(MesConnStr);
+                using var ospStUow = new OspStUOW(sqlConn);
 
-                using var ospStUOW = new OspStUOW(new SqlConnection(MesConnStr));
+                var list = await ospStUow.GetOspBatchStage3UploadList();
+                if (list == null || list.Count() == 0)
+                {
+                    LogInfo($"[{tasker.Name}]-{tasker.Unit}-ExportOspStRv-無可轉出資料");
+                    return;
+                }
+
+                for (int i = 0; i < list.Count(); i++)
+                {
+                    using var transaction = sqlConn.BeginTransaction();
+                    try
+                    {
+                        var model = await ospStUow.OspBatchStStage3Upload(list[i], transaction);
+                        LogInfo($"[{tasker.Name}]-{tasker.Unit}-ExportOspStRvStage3 (OSP_HEADER_ID:{list[i]})-{model}");
+
+                        if (!model.Success)
+                        {
+                            throw new Exception(model.Msg);
+                        }
+                        transaction.Commit();
+
+                    }
+                    catch (Exception ex)
+                    {
+                        LogError($"[{tasker.Name}]-{tasker.Unit}-ExportOspStRvStage3-錯誤-{ex.Message}-{ex.StackTrace}");
+                        transaction.Rollback();
+                    }
+                }
 
 
             }
             catch (OperationCanceledException)
             {
-                LogInfo($"[{tasker.Name}]-{tasker.Unit}-ExportOspStRv-使用者取消");
+                LogInfo($"[{tasker.Name}]-{tasker.Unit}-ExportOspStRvStage3-使用者取消");
             }
             catch (Exception ex)
             {
-                LogError($"[{tasker.Name}]-{tasker.Unit}-ExportOspStRv-錯誤-{ex.Message}-{ex.StackTrace}");
+                LogError($"[{tasker.Name}]-{tasker.Unit}-ExportOspStRvStage3-錯誤-{ex.Message}-{ex.StackTrace}");
             }
 
-            LogInfo($"[{tasker.Name}]-{tasker.Unit}-ExportOspStRv-結束");
+            LogInfo($"[{tasker.Name}]-{tasker.Unit}-ExportOspStRvStage3-結束");
+        }
+
+        /// <summary>
+        /// SOA出貨 P213 資料上傳 狀態回寫
+        /// </summary>
+        /// <param name="tasker"></param>
+        /// <param name="token"></param>
+        /// <returns></returns>
+        internal async Task UpdateStatusOspStRvStage3(Tasker tasker, CancellationToken token)
+        {
+            LogInfo($"[{tasker.Name}]-{tasker.Unit}-UpdateStatusOspStRvStage3-開始");
+
+            try
+            {
+                if (token.IsCancellationRequested)
+                {
+                    token.ThrowIfCancellationRequested();
+                }
+                using var sqlConn = new SqlConnection(MesConnStr);
+                using var ospStUow = new OspStUOW(sqlConn);
+
+                var list = await ospStUow.GetOspBatchStage3UploadedList();
+                if (list == null || list.Count() == 0)
+                {
+                    LogInfo($"[{tasker.Name}]-{tasker.Unit}-UpdateStatusOspStRvStage3-無可轉出資料");
+                    return;
+                }
+
+                for (int i = 0; i < list.Count(); i++)
+                {
+                    var data = list[i];
+                    var controlSt = await ospStUow.ControlStageRepository.GetBy(data.PROCESS_CODE, data.SERVER_CODE, data.BATCH_ID, pullingFlag: "In-S");
+
+                    if (controlSt == null
+                        || string.IsNullOrEmpty(data.PROCESS_CODE)
+                        || string.IsNullOrEmpty(data.SERVER_CODE)
+                        || string.IsNullOrEmpty(data.BATCH_ID))
+                    {
+                        continue;
+                    }
+
+                    using var transaction = sqlConn.BeginTransaction();
+                    try
+                    {
+                        data.STATUS_CODE = controlSt.STATUS_CODE;
+                        data.LAST_UPDATE_BY = "SYS";
+                        data.LAST_UPDATE_DATE = DateTime.Now;
+
+                        var model = await ospStUow.OspSoaS3Repository.UpdateStatusCode(data, transaction);
+                        LogInfo($"[{tasker.Name}]-{tasker.Unit}-UpdateStatusOspStRvStage3 (OSP_HEADER_ID:{data.OSP_HEADER_ID}, PROCESS_CODE:{data.PROCESS_CODE}, SERVER_CODE:{data.SERVER_CODE}, BATCH_ID:{data.BATCH_ID})-{model}");
+                        if (!model.Success)
+                        {
+                            throw new Exception(model.Msg);
+                        }
+
+                        transaction.Commit();
+
+                    }
+                    catch (Exception ex)
+                    {
+                        LogError($"[{tasker.Name}]-{tasker.Unit}-UpdateStatusOspStRvStage3-錯誤-{ex.Message}-{ex.StackTrace}");
+                        transaction.Rollback();
+                    }
+                }
+
+
+            }
+            catch (OperationCanceledException)
+            {
+                LogInfo($"[{tasker.Name}]-{tasker.Unit}-UpdateStatusOspStRvStage3-使用者取消");
+            }
+            catch (Exception ex)
+            {
+                LogError($"[{tasker.Name}]-{tasker.Unit}-UpdateStatusOspStRvStage3-錯誤-{ex.Message}-{ex.StackTrace}");
+            }
+
+            LogInfo($"[{tasker.Name}]-{tasker.Unit}-UpdateStatusOspStRvStage3-結束");
         }
 
         /// <summary>
