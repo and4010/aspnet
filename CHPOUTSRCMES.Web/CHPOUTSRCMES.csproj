@@ -433,6 +433,10 @@
     <Compile Include="Migrations\202009160039319_add_docnum_table.Designer.cs">
       <DependentUpon>202009160039319_add_docnum_table.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202009160058069_fixproblem.cs" />
+    <Compile Include="Migrations\202009160058069_fixproblem.Designer.cs">
+      <DependentUpon>202009160058069_fixproblem.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Delivery\bDeliveryDetail.cs" />
     <Compile Include="Models\Delivery\DeliveryDetail.cs" />
@@ -2184,6 +2188,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202009160039319_add_docnum_table.resx">
       <DependentUpon>202009160039319_add_docnum_table.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202009160058069_fixproblem.resx">
+      <DependentUpon>202009160058069_fixproblem.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
