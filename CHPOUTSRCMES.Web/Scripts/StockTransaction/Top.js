@@ -83,8 +83,8 @@ function TopInit() {
                     Prefix: request.term
                 },
                 success: function (data) {
-                    response($.map(data.slice(0, 20), function (item) {
-                        return { label: item.Description, value: item.Value };
+                    response($.map(data, function (item) {
+                        return { label: item.Value + " " + item.Description, value: item.Value };
                     }))
                 }
             })

@@ -123,8 +123,8 @@ function ProfitTopInit() {
                     Prefix: request.term
                 },
                 success: function (data) {
-                    response($.map(data.slice(0, 20), function (item) {
-                        return { label: item.Description, value: item.Value };
+                    response($.map(data, function (item) {
+                        return { label: item.Value + " " + item.Description, value: item.Value };
                     }))
                 }
             })
@@ -254,7 +254,7 @@ function ProfitLoadLossDetailDT() {
             $('#Barcode').text(Barcode);
             var ITEM_CATEGORY = dt.rows(indexes).data().pluck('ITEM_CATEGORY')[0];
             if (ITEM_CATEGORY == "平版") {
-                var Unit = dt.rows(indexes).data().pluck('PRIMARY_UOM_CODE')[0];
+                var Unit = dt.rows(indexes).data().pluck('SECONDARY_UOM_CODE')[0];
                 $('#TransactionUnit').text(Unit);
                 $('#txtQty').attr('disabled', false);
             } else if (ITEM_CATEGORY == "捲筒") {
@@ -296,6 +296,7 @@ function ProfitLoadLossDetailDT() {
             $("#ItemNumber").text("");
             $("#Barcode").text("");
             $('#TransactionUnit').text("");
+            $('#txtQty').attr('disabled', false);
 
             var ID = dt.rows(indexes).data().pluck('ID')[0];
             var index = $.inArray(ID, selected);
@@ -824,12 +825,14 @@ function CreateBarcode(ORGANIZATION_ID, SUBINVENTORY_CODE, SEGMENT3, ITEM_NO, LO
             editor.hide(['ID']);
             if (ITEM_CATEGORY == "平版") {
                 editor.show(['SUBINVENTORY_CODE', 'SEGMENT3', 'SECONDARY_TRANSACTION_QTY', 'ITEM_NO']);
+                editor.enable(['SECONDARY_TRANSACTION_QTY']);
                 editor.disable(['PRIMARY_TRANSACTION_QTY', 'SUBINVENTORY_CODE', 'SEGMENT3', 'ITEM_NO']);
                 editor.field('ORGANIZATION_ID').val(ORGANIZATION_ID);
                 editor.field('SUBINVENTORY_CODE').val(SUBINVENTORY_CODE);
                 editor.field('SEGMENT3').val(SEGMENT3);
                 editor.field('LOCATOR_ID').val(LOCATOR_ID);
                 editor.field('ITEM_NO').val(ITEM_NO);
+                editor.hide(['LOT_NUMBER', 'PRIMARY_TRANSACTION_QTY']);
             } else if (ITEM_CATEGORY == "捲筒") {
                 editor.show(['SUBINVENTORY_CODE', 'SEGMENT3', 'LOT_NUMBER', 'PRIMARY_TRANSACTION_QTY', 'ITEM_NO']);
                 editor.enable(['PRIMARY_TRANSACTION_QTY']);

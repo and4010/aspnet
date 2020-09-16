@@ -432,7 +432,10 @@ function OutBoundInit() {
                 var size = Object.keys(StockTransferDTData).length;
                 for (var i = 0; i < size; i++) {
                     var ID = Object.keys(StockTransferDTData)[i];
-                    var REMARK = Object.values(StockTransferDTData[ID])[0];
+                    //var REMARK = Object.values(StockTransferDTData[ID])[0];
+                    var REMARK = Object.keys(StockTransferDTData[ID]).map(function (e) {
+                        return StockTransferDTData[ID][e]
+                    })[0];
 
                     var StockTransferDT = {
                         'ID': ID
@@ -710,7 +713,10 @@ function OutBoundInit() {
                 var size = Object.keys(StockTransferBarcodeDTData).length;
                 for (var i = 0; i < size; i++) {
                     var ID = Object.keys(StockTransferBarcodeDTData)[i];
-                    var REMARK = Object.values(StockTransferBarcodeDTData[ID])[0];
+                    //var REMARK = Object.values(StockTransferBarcodeDTData[ID])[0];
+                    var REMARK = Object.keys(StockTransferBarcodeDTData[ID]).map(function (e) {
+                        return StockTransferBarcodeDTData[ID][e]
+                    })[0];
 
                     var StockTransferBarcodeDT = {
                         'ID': ID,
@@ -1234,8 +1240,8 @@ function OutBoundInit() {
                     Prefix: request.term
                 },
                 success: function (data) {
-                    response($.map(data.slice(0, 20), function (item) {
-                        return { label: item.Description, value: item.Value };
+                    response($.map(data, function (item) {
+                        return { label: item.Value + " " + item.Description, value: item.Value };
                     }))
                 }
             })

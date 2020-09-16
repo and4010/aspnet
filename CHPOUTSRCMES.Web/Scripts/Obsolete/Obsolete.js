@@ -189,7 +189,10 @@ $(document).ready(function () {
                 var size = Object.keys(TData).length;
                 for (var i = 0; i < size; i++) {
                     var ID = Object.keys(TData)[i];
-                    var NOTE = Object.values(TData[ID])[0];
+                    //var NOTE = Object.values(TData[ID])[0];
+                    var NOTE = Object.keys(TData[ID]).map(function (e) {
+                        return TData[ID][e]
+                    })[0];
 
                     var StockObsoleteDT = {
                         'ID': ID,

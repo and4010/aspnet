@@ -124,8 +124,8 @@ function LossTopInit() {
                     Prefix: request.term
                 },
                 success: function (data) {
-                    response($.map(data.slice(0, 20), function (item) {
-                        return { label: item.Description, value: item.Value };
+                    response($.map(data, function (item) {
+                        return { label: item.Value + " " + item.Description, value: item.Value };
                     }))
                 }
             })
@@ -243,7 +243,7 @@ function LossLoadStockDT() {
             $("#ItemNumber").text(ItemNumber);
             var Barcode = dt.rows(indexes).data().pluck('BARCODE')[0];
             $('#Barcode').text(Barcode);
-
+            
             var ITEM_CATEGORY = dt.rows(indexes).data().pluck('ITEM_CATEGORY')[0];
             if (ITEM_CATEGORY == "平版") {
                 var Unit = dt.rows(indexes).data().pluck('SECONDARY_UOM_CODE')[0];

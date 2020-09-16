@@ -115,7 +115,8 @@ SELECT [STOCK_ID] as ID
       ,[SECONDARY_UOM_CODE] AS SECONDARY_UOM_CODE
       ,ISNULL([SECONDARY_AVAILABLE_QTY], 0) AS SECONDARY_AVAILABLE_QTY
       ,[NOTE] AS NOTE
-      ,[STATUS_CODE] AS STATUS_CODE
+      ,[STATUS_CODE] AS STATUS_CODE,
+      ,[ITEM_CATEGORY] AS ITEM_CATEGORY
   FROM [STOCK_T] s
   WHERE s.ORGANIZATION_ID = @organizationId 
   AND s.SUBINVENTORY_CODE = @subinventoryCode
@@ -144,6 +145,7 @@ SELECT [STOCK_ID] as ID
       ,ISNULL([SECONDARY_AVAILABLE_QTY],0) AS SECONDARY_AVAILABLE_QTY
       ,[NOTE] AS NOTE
       ,[STATUS_CODE] AS STATUS_CODE
+      ,[ITEM_CATEGORY] AS ITEM_CATEGORY
   FROM [STOCK_T] s
   LEFT JOIN [LOCATOR_T] l on s.ORGANIZATION_ID = l.ORGANIZATION_ID 
   AND s.SUBINVENTORY_CODE = l.SUBINVENTORY_CODE 
@@ -489,9 +491,11 @@ SELECT m.TRANSFER_INVENTORY_ID AS ID
       ,ISNULL(m.TRANSFER_SECONDARY_QUANTITY,0) AS SECONDARY_TRANSACTION_QTY
 	  ,ISNULL(m.AFTER_SECONDARY_QUANTITY,0) AS SECONDARY_AVAILABLE_QTY
       ,[NOTE] AS NOTE
+      ,i.[CATALOG_ELEM_VAL_070] AS ITEM_CATEGORY
   FROM TRF_INVENTORY_HEADER_T h
   INNER JOIN TRF_INVENTORY_HT m on h.TRANSFER_INVENTORY_HEADER_ID = m.TRANSFER_INVENTORY_HEADER_ID 
   INNER JOIN USER_SUBINVENTORY_T u on h.ORGANIZATION_ID = u.ORGANIZATION_ID AND h.SUBINVENTORY_CODE = u.SUBINVENTORY_CODE
+  INNER JOIN ITEMS_T i on m.INVENTORY_ITEM_ID = i.INVENTORY_ITEM_ID
   WHERE u.UserId = @userId AND h.TRANSACTION_TYPE_ID = @transactionTypeId 
   AND h.ORGANIZATION_ID = @organizationId 
   AND h.SUBINVENTORY_CODE = @subinventoryCode 
@@ -522,9 +526,11 @@ SELECT m.TRANSFER_INVENTORY_ID AS ID
       ,ISNULL(m.TRANSFER_SECONDARY_QUANTITY,0) AS SECONDARY_TRANSACTION_QTY
 	  ,ISNULL(m.AFTER_SECONDARY_QUANTITY,0) AS SECONDARY_AVAILABLE_QTY
       ,[NOTE] AS NOTE
+      ,i.[CATALOG_ELEM_VAL_070] AS ITEM_CATEGORY
   FROM TRF_INVENTORY_HEADER_T h
   INNER JOIN TRF_INVENTORY_HT m on h.TRANSFER_INVENTORY_HEADER_ID = m.TRANSFER_INVENTORY_HEADER_ID 
   INNER JOIN USER_SUBINVENTORY_T u on h.ORGANIZATION_ID = u.ORGANIZATION_ID AND h.SUBINVENTORY_CODE = u.SUBINVENTORY_CODE
+  INNER JOIN ITEMS_T i on m.INVENTORY_ITEM_ID = i.INVENTORY_ITEM_ID
   WHERE u.UserId = @userId AND h.TRANSACTION_TYPE_ID = @transactionTypeId 
   AND h.ORGANIZATION_ID = @organizationId 
   AND h.SUBINVENTORY_CODE = @subinventoryCode 
@@ -729,10 +735,11 @@ SELECT m.TRANSFER_INVENTORY_ID AS ID
                                 decimal rollReamWt = 0;
                                 if (item.CatalogElemVal070 == ItemCategory.Flat)
                                 {
-                                    rollReamWt = 0; //測試完 待改成下方正確的
-                                    //var yszmpckq = GetYszmpckq(header.OrganizationId, header.OrganizationCode, header.SubinventoryCode, item.CatalogElemVal020);
-                                    //if (yszmpckq == null) throw new Exception("找不到令重包數資料");
-                                    //rollReamWt = yszmpckq.PiecesQty;
+                                    //rollReamWt = Math.Ceiling(requestedQty / rollReamQty); //每件令數 = 總令數 除以 棧板數 無條件進位 待確認是否正確
+                                    //rollReamWt = 0; //測試完 待改成下方正確的
+                                    var yszmpckq = GetYszmpckq(header.OrganizationId, header.OrganizationCode, header.SubinventoryCode, item.CatalogElemVal020);
+                                    if (yszmpckq == null) throw new Exception("找不到令重包數資料");
+                                    rollReamWt = yszmpckq.PiecesQty;
                                 }
                                 else if (item.CatalogElemVal070 == ItemCategory.Roll)
                                 {
@@ -748,7 +755,7 @@ SELECT m.TRANSFER_INVENTORY_ID AS ID
                                 stock.OrganizationCode = header.OrganizationCode;
                                 stock.SubinventoryCode = header.SubinventoryCode;
                                 stock.LocatorId = header.LocatorId == 0 ? null : header.LocatorId;
-                                stock.LocatorSegments = header.TransferLocatorCode;
+                                stock.LocatorSegments = header.LocatorCode;
                                 stock.InventoryItemId = detail.InventoryItemId;
                                 stock.ItemNumber = detail.ItemNumber;
                                 stock.ItemDescription = detail.ItemDescription;
@@ -843,8 +850,10 @@ SELECT m.TRANSFER_INVENTORY_ID AS ID
                                 }
 
                                 //更新明細
+                                detail.TransferPrimaryQuantity = mPrimaryQty;
                                 detail.OriginalPrimaryQuantity = stock.PrimaryAvailableQty;
                                 detail.AfterPrimaryQuantity = aftPryQty;
+                                detail.TransferSecondaryQuantity = mSecondaryQty;
                                 detail.OriginalSecondaryQuantity = stock.SecondaryAvailableQty;
                                 detail.AfterSecondaryQuantity = aftSecQty;
                                 detail.LastUpdateBy = userId;

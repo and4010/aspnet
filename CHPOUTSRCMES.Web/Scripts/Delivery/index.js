@@ -45,7 +45,11 @@ $(document).ready(function () {
                 var size = Object.keys(tripDetailDTData).length;
                 for (var i = 0; i < size; i++) {
                     var TRIP_ID = Object.keys(tripDetailDTData)[i];
-                    var AUTHORIZE_DATE = Object.values(tripDetailDTData[TRIP_ID])[0];
+                    //var AUTHORIZE_DATE = Object.values(tripDetailDTData[TRIP_ID])[0];
+                    var AUTHORIZE_DATE = Object.keys(tripDetailDTData[TRIP_ID]).map(function (e) {
+                        return tripDetailDTData[TRIP_ID][e]
+                    })[0];
+
                     //ids.push(tripDetailDT_ID);
                     //dates.push(TRANSACTION_AUTHORIZE_DATE);
                     var TRIP_ID_REPEAT = false;
@@ -164,7 +168,10 @@ $(document).ready(function () {
                 var size = Object.keys(tripDetailDTData).length;
                 for (var i = 0; i < size; i++) {
                     var TRIP_ID = Object.keys(tripDetailDTData)[i];
-                    var AUTHORIZE_DATE = Object.values(tripDetailDTData[TRIP_ID])[0];
+                    //var AUTHORIZE_DATE = Object.values(tripDetailDTData[TRIP_ID])[0];
+                    var AUTHORIZE_DATE = Object.keys(tripDetailDTData[TRIP_ID]).map(function (e) {
+                        return tripDetailDTData[TRIP_ID][e]
+                    })[0];
                     //ids.push(tripDetailDT_ID);
                     //dates.push(TRANSACTION_AUTHORIZE_DATE);
                     var TRIP_ID_REPEAT = false;
