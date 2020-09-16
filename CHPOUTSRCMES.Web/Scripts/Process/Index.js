@@ -321,11 +321,19 @@ function BtnEvent() {
 
 
     $('#BtnCutReceipt').click(function () {
+        if (rowData.pluck('Status')[0] == WaitBatch) {
+            swal.fire("請先排單，再列印裁切單。");
+            return;
+        }
         var OspHeaderId = rowData.pluck('OspHeaderId')[0]
         window.open("/Home/OspCutReceiptReport/?OspHeaderId=" + OspHeaderId);
 
     });
     $('#BtnCutMaterial').click(function () {
+        if (rowData.pluck('Status')[0] == WaitBatch) {
+            swal.fire("請先排單，再列印領料單。");
+            return;
+        }
         var OspHeaderId = rowData.pluck('OspHeaderId')[0]
         window.open("/Home/OspReport/?OspHeaderId=" + OspHeaderId);
     });

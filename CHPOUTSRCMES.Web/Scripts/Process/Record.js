@@ -57,7 +57,7 @@ function LoadRecordInvestTable() {
         },
         columnDefs: [{
             orderable: false, targets: [0], width: "60px",
-        }]
+        }],
         columns: [
             {
                 data: null,

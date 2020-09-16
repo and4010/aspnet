@@ -368,6 +368,13 @@ namespace CHPOUTSRCMES.Web.Controllers
             return Json(new { draw = data.Draw, recordsFiltered = model.Count, recordsTotal = model.Count, data = model }, JsonRequestBehavior.AllowGet);
         }
 
+        [HttpPost]
+        public JsonResult DeleteRate(long OspHeaderId)
+        {
+            ProcessViewModel viewModel = new ProcessViewModel();
+            viewModel.DeleteRate(OspHeaderId);
+            return Json(new {  }, JsonRequestBehavior.AllowGet);
+        }
 
         public JsonResult Loss(long OspDetailInId ,long OspDetailOutId)
         {
