@@ -35,7 +35,19 @@ $(document).ready(function () {
         DisplayProductionEnable(true);
         DsiplayShow();
     }
-
+    if (Status == 4) {
+        DsiplayHide();
+        DisplayInvestEnable(true);
+        DisplayProductionEnable(true);
+        ///隱藏按鈕
+        InvestDataTables.column(11).visible(false);
+        ProductionTables.column(9).visible(false);
+        CotangentDataTable.column(9).visible(false);
+        $('#BtnEdit').attr('disabled', true);
+        $('#BtnCheckProductionBatchNo').attr('disabled', true);
+        $('#InputBatchNo').attr('disabled', true);
+        $('#OutBatchNo').attr('disabled', true);
+    }
  
 
     //重新整理表格寬度

@@ -59,6 +59,20 @@ namespace CHPOUTSRCMES.Web.ViewModels.Process
                 return new ProcessUOW(context).SetStatusAndCutDate(OspHeaderId, Dialog_CuttingDateFrom, Dialog_CuttingDateTo, Dialog_MachineNum, BtnStatus);
             }
         }
+        /// <summary>
+        /// 關帳用
+        /// </summary>
+        /// <param name="OspHeaderId"></param>
+        /// <param name="BtnStatus"></param>
+        /// <returns></returns>
+        public ResultModel SetClose(long OspHeaderId, string BtnStatus)
+        {
+            using (var context = new MesContext())
+            {
+                return new ProcessUOW(context).SetClose(OspHeaderId, BtnStatus);
+            }
+        }
+        
 
         /// <summary>
         /// 

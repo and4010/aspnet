@@ -218,17 +218,19 @@ function ProcessLoadTable(Status, BatchNo, MachineNum, DueDate, CuttingDateFrom,
             {
                 data: "", "autoWidth": true, "render": function (data, type, row) {
                     if (row.Status == CompletedBatch) {
-                        return '<button class="btn btn-primary btn-sm" id = "btnEdit">編輯</button>' + '<button class="btn btn-primary btn-sm" id = "btnRecord">完工紀錄</button>';
+                        return '<button class="btn btn-primary btn-sm" id = "btnRecord">完工紀錄</button>';
                     }
                     if (row.Status == PendingBatch) {
                         return '<button class="btn btn-primary btn-sm" id = "btnEdit">編輯</button>' + '<button class="btn btn-primary btn-sm" id = "btnRecord">完工紀錄</button>';
+                    }
+                    if (row.Status == CloseBatch) {
+                        return '<button class="btn btn-primary btn-sm" id = "btnRecord">完工紀錄</button>';
                     }
                     if (row.Status == DwellBatch) {
                         return '<button class="btn btn-primary btn-sm" id = "btnEdit">編輯</button>';
                     } else {
                         return '<button class="btn btn-primary btn-sm" id = "btnEdit">編輯</button>';
                     }
-
                 }
             }
         ],
@@ -279,11 +281,11 @@ function BtnEvent() {
             swal.fire("請先選擇一項")
             return;
         }
-        var BtnCloss = $('#BtnCloss').text();
+        var BtnCloss = CloseBatch;
         var Status = rowData.pluck('Status')[0]
-        var OspDetailInId = rowData.pluck('OspDetailInId')[0]
-        if (Status == "已完工") {
-            changeStatus(OspDetailInId, BtnCloss);
+        var OspHeaderId = rowData.pluck('OspHeaderId')[0]
+        if (Status == CompletedBatch) {
+            changeStatus(OspHeaderId, BtnCloss);
         } else {
             swal.fire("加工狀態不正確，重新選擇");
             return;
@@ -440,12 +442,12 @@ function Open(modal_dialog, OspHeaderId) {
 
 }
 
-function changeStatus(OspDetailInId, BtnStatus) {
+function changeStatus(OspHeaderId, BtnStatus) {
     $.ajax({
-        url: '/Process/_BtnDailog',
+        url: '/Process/SetClose',
         type: "POST",
         dataType: 'json',
-        data: { OspDetailInId: OspDetailInId, BtnStatus: BtnStatus },
+        data: { OspHeaderId: OspHeaderId, BtnStatus: BtnStatus },
         success: function (result) {
             firstLoad();
         },
