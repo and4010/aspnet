@@ -147,7 +147,7 @@ namespace CHPOUTSRCMES.Web.Models.Information
         /// <returns></returns>
         public IEnumerable<SelectListItem> GetSubinventoryListForUserId(MasterUOW uow, string userId, MasterUOW.DropDownListType type)
         {
-            var subinventoryList = uow.GetSubinventoryDropDownListForUserId(userId, type);
+            var subinventoryList = uow.GetSubinventoryDropDownListForUserId2(userId, type);
             return subinventoryList;
         }
 

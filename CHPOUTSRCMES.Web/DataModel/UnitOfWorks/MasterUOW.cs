@@ -511,6 +511,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             /// 庫存異動至沒庫存
             /// </summary>
             public const string TransferNoneInStock = "S3";
+           
 
             public string GetDesc(string statusCode)
             {
@@ -1640,14 +1641,14 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
         #region 單號
 
         /// <summary>
-        /// 產生條碼清單 (請用交易TRANSACTION)
+        /// 產生出貨單號 (請用交易TRANSACTION)
         /// </summary>
-        /// <param name="organiztionId">組織ID</param>
-        /// <param name="subinventoryCode">倉庫</param>
-        /// <param name="requestQty">數量</param>
-        /// <param name="userId">使用者ID</param>
-        /// <param name="prefix">前置碼</param>
-        /// <returns>ResultDataModel 條碼清單</returns>
+        /// <param name="subinventoryCode"></param>
+        /// <param name="dstSubinventoryCode"></param>
+        /// <param name="createDate"></param>
+        /// <param name="digit">流水號長度</param>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         public ResultDataModel<string> GenerateShipmentNo(string subinventoryCode, string dstSubinventoryCode, DateTime createDate, int digit, string userId)
         {
             ResultDataModel<string> result = null;
@@ -1743,6 +1744,19 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
         {
             var subinventoryList = createDropDownList(type);
             subinventoryList.AddRange(getSubinventoryListForUserId(userId));
+            return subinventoryList;
+        }
+
+        /// <summary>
+        /// 取得使用者倉庫下拉選單 Value為組織Id
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public List<SelectListItem> GetSubinventoryDropDownListForUserId2(string userId, DropDownListType type)
+        {
+            var subinventoryList = createDropDownList(type);
+            subinventoryList.AddRange(getSubinventoryListForUserId2(userId));
             return subinventoryList;
         }
 
@@ -1960,6 +1974,36 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                {
                    Text = x.SubinventoryCode,
                    Value = x.SubinventoryCode
+               }).ToList();
+        }
+
+        /// <summary>
+        /// 取得使用者的倉庫SelectListItem Value為組織Id
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        private List<SelectListItem> getSubinventoryListForUserId2(string userId)
+        {
+            return userSubinventoryTRepository.GetAll().AsNoTracking()
+                .Join(subinventoryRepository.GetAll().AsNoTracking(),
+                us => new { us.OrganizationId, us.SubinventoryCode },
+                s => new { s.OrganizationId, s.SubinventoryCode },
+                (us, s) => new
+                {
+                    UserId = us.UserId,
+                    OrganizationId = us.OrganizationId,
+                    SubinventoryCode = us.SubinventoryCode,
+                    OspFlag = s.OspFlag,
+                    ControlFlag = s.ControlFlag,
+                })
+                .Where(x => x.UserId == userId &&
+                x.OspFlag == OspFlag.IsProcessingPlant &&
+                x.ControlFlag != ControlFlag.Deleted)
+               .OrderBy(x => x.SubinventoryCode)
+               .Select(x => new SelectListItem()
+               {
+                   Text = x.SubinventoryCode,
+                   Value = x.OrganizationId.ToString()
                }).ToList();
         }
 
@@ -2668,6 +2712,11 @@ and usb.UserId = @UserId
             /// 已出貨
             /// </summary>
             public const string Shipped = "DS2";
+            /// <summary>
+            /// 庫存移轉-已出庫
+            /// </summary>
+            public const string TransferOutOfStock = "DS3";
+
 
 
             public string GetDesc(string statusCode)
@@ -2680,6 +2729,8 @@ and usb.UserId = @UserId
                         return "已揀";
                     case Shipped:
                         return "已出貨";
+                    case TransferOutOfStock:
+                        return "庫存移轉-已出庫";
                     default:
                         return "";
                 }
@@ -2695,6 +2746,8 @@ and usb.UserId = @UserId
                         return StockStatusCode.DeliveryPicked;
                     case Shipped:
                         return StockStatusCode.Shipped;
+                    case TransferOutOfStock:
+                        return StockStatusCode.TransferNoneInStock;
                     default:
                         return "";
                 }

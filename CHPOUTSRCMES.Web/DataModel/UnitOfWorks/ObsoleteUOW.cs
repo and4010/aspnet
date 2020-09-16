@@ -52,6 +52,7 @@ SELECT [STOCK_ID] as ID
       ,ISNULL([SECONDARY_AVAILABLE_QTY],0) AS SECONDARY_AVAILABLE_QTY
       ,[NOTE] AS NOTE
       ,[STATUS_CODE] AS STATUS_CODE
+      ,[ITEM_CATEGORY] AS ITEM_CATEGORY
   FROM [STOCK_T] s
   WHERE s.ORGANIZATION_ID = @organizationId 
   AND s.SUBINVENTORY_CODE = @subinventoryCode
@@ -80,6 +81,7 @@ SELECT [STOCK_ID] as ID
       ,ISNULL([SECONDARY_AVAILABLE_QTY],0) AS SECONDARY_AVAILABLE_QTY
       ,[NOTE] AS NOTE
       ,[STATUS_CODE] AS STATUS_CODE
+      ,[ITEM_CATEGORY] AS ITEM_CATEGORY
   FROM [STOCK_T] s
   LEFT JOIN [LOCATOR_T] l on s.ORGANIZATION_ID = l.ORGANIZATION_ID 
   AND s.SUBINVENTORY_CODE = l.SUBINVENTORY_CODE 
@@ -500,8 +502,10 @@ SELECT m.TRANSFER_OBSOLETE_ID AS ID
                             }
 
                             //更新明細
+                            detail.TransferPrimaryQuantity = mPrimaryQty;
                             detail.OriginalPrimaryQuantity = stock.PrimaryAvailableQty;
                             detail.AfterPrimaryQuantity = aftPryQty;
+                            detail.TransferSecondaryQuantity = mSecondaryQty;
                             detail.OriginalSecondaryQuantity = stock.SecondaryAvailableQty;
                             detail.AfterSecondaryQuantity = aftSecQty;
                             detail.LastUpdateBy = userId;

@@ -15,9 +15,11 @@
     }
 
     function getOutOrganizationId() {
+        var a = $("#ddlOutSubinventory").val();
         return $("#ddlOutSubinventory").val();
     }
     function getInOrganizationId() {
+        var a = $("#ddlInSubinventory").val();
         return $("#ddlInSubinventory").val();
     }
 
@@ -683,8 +685,8 @@
                     Prefix: request.term
                 },
                 success: function (data) {
-                    response($.map(data.slice(0, 20), function (item) {
-                        return { label: item.Description, value: item.Value };
+                    response($.map(data, function (item) {
+                        return { label: item.Value + " " + item.Description, value: item.Value };
                     }))
                 }
             })
@@ -726,12 +728,15 @@
             "dataType": "json",
             contentType: 'application/json',
             "data": function (d) {
+               
                 var StockTransferBarcodeDTData = d.data;
                 var StockTransferBarcodeDTList = [];
                 var size = Object.keys(StockTransferBarcodeDTData).length;
                 for (var i = 0; i < size; i++) {
                     var ID = Object.keys(StockTransferBarcodeDTData)[i];
-                    var REMARK = Object.values(StockTransferBarcodeDTData[ID])[0];
+                    var REMARK = Object.keys(StockTransferBarcodeDTData[ID]).map(function (e) {
+                        return StockTransferBarcodeDTData[ID][e]
+                    })[0];
 
                     var StockTransferBarcodeDT = {
                         'ID': ID,
@@ -794,7 +799,6 @@
 
     });
 
-
     mergeBacrodeEditor = new $.fn.dataTable.Editor({
         "language": {
             "url": "/bower_components/datatables/language/zh-TW.json"
@@ -810,7 +814,10 @@
                 var size = Object.keys(StockTransferBarcodeDTData).length;
                 for (var i = 0; i < size; i++) {
                     var ID = Object.keys(StockTransferBarcodeDTData)[i];
-                    var BARCODE = Object.values(StockTransferBarcodeDTData[ID])[0];
+                    //var BARCODE = Object.values(StockTransferBarcodeDTData[ID])[0];
+                    var BARCODE = Object.keys(StockTransferBarcodeDTData[ID]).map(function (e) {
+                        return StockTransferBarcodeDTData[ID][e]
+                    })[0];
 
                     var StockTransferBarcodeDT = {
                         'ID': ID,
@@ -1441,8 +1448,8 @@
     function InBoundSaveTransferNoCheckStockStatus() {
 
         swal.fire({
-            title: "入庫存檔",
-            text: "確定入庫存檔嗎?",
+            title: "直接入庫存檔",
+            text: "確定直接入庫存檔嗎?",
             type: "warning",
             showCancelButton: true,
             confirmButtonColor: "#DD6B55",
