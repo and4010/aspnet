@@ -309,7 +309,9 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
 
         //}
 
-
+        /// <summary>
+        /// 庫存異動記錄 Category
+        /// </summary>
         public class CategoryCode : ICategory
         {
             public const string Delivery = "C0";
@@ -351,6 +353,9 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             }
         }
 
+        /// <summary>
+        /// 庫存異動記錄 ACTION
+        /// </summary>
         public class ActionCode : IAction
         {
             /// <summary>
@@ -497,6 +502,11 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             /// 已出貨
             /// </summary>
             public const string Shipped = "S2";
+
+            /// <summary>
+            /// 加工領料
+            /// </summary>
+            public const string ProcessPicked = "S3";
             /// <summary>
             /// 庫存異動至沒庫存
             /// </summary>

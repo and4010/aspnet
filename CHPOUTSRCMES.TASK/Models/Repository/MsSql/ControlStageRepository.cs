@@ -34,6 +34,13 @@ WHERE A.PROCESS_CODE = @ProcessCode AND A.SOA_PROCESS_CODE = @SoaProcessCode AND
 ORDER BY A.PROCESS_CODE, A.SERVER_CODE, A.BATCH_ID", new { ProcessCode = processCode, SoaProcessCode = soaProcessCode, PullingFlag = pullingFlag },transaction: transaction);
         }
 
+        public async Task<XXIF_CHP_CONTROL_ST> GetBy(string processCode, string serverCode, string batchId, string pullingFlag = "In-S", IDbTransaction transaction = null)
+        {
+            return (await Connection.QueryAsync<XXIF_CHP_CONTROL_ST>(
+$@"{GenerateSelectQuery()} A 
+WHERE A.PROCESS_CODE = @ProcessCode AND A.SERVER_CODE = @ServerCode AND A.BATCH_ID = @BatchId AND SOA_PULLING_FLAG=@PullingFlag
+ORDER BY A.PROCESS_CODE, A.SERVER_CODE, A.BATCH_ID", new { ProcessCode = processCode, ServerCode = serverCode, BatchId = batchId, PullingFlag = pullingFlag }, transaction: transaction)).FirstOrDefault();
+        }
 
         #region IDispose Region
         private bool disposed = false;

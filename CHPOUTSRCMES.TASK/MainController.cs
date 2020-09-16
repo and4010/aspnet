@@ -250,7 +250,10 @@ namespace CHPOUTSRCMES.TASK
             AddTasker(new Tasker("加工轉檔程序", 5, (tasker, token) => {
                 OspStService service = new OspStService(MesConnStr, ErpConnStr);
                 var task = service.ImportOspSt(tasker, token);
-                var rvStage1Task = task.ContinueWith(subTask => service.ExportOspStRvStage1(tasker, token), TaskContinuationOptions.OnlyOnRanToCompletion);
+
+                var rvStage1Task = task.ContinueWith(subTask => service.ExportOspStRvStage1(tasker, token), TaskContinuationOptions.OnlyOnRanToCompletion)
+                                    .ContinueWith(subTask => service.UpdateStatusOspStRvStage1(tasker, token), TaskContinuationOptions.OnlyOnRanToCompletion);
+
                 var rvStage2Task = rvStage1Task.ContinueWith(subTask => service.ExportOspStRvStage2(tasker, token), TaskContinuationOptions.OnlyOnRanToCompletion);
                 var rvStage3Task = rvStage2Task.ContinueWith(subTask => service.ExportOspStRvStage3(tasker, token), TaskContinuationOptions.OnlyOnRanToCompletion);
                 Task.WaitAll(task, rvStage1Task, rvStage2Task, rvStage3Task);

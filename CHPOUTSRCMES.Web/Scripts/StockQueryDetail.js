@@ -4,7 +4,7 @@ $(document).ready(function () {
         $('#SubinventoryCode').val(),
         $('#LocatorId').val(),
         $('#InventoryItemId').val(),
-        $('#ItemCategory').val(),
+        $('#ItemCategory').val()
     );
 
 });

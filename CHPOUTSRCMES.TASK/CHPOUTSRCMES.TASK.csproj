@@ -112,6 +112,10 @@
     <Compile Include="Models\Entity\CTR_PICKED_T.cs" />
     <Compile Include="Models\Entity\CTR_SOA_T.cs" />
     <Compile Include="Models\Entity\DLV_DETAIL_T.cs" />
+    <Compile Include="Models\Entity\OSP_SOA_S3_T.cs" />
+    <Compile Include="Models\Entity\OSP_SOA_S2_T.cs" />
+    <Compile Include="Models\Entity\OSP_SOA_S1_T.cs" />
+    <Compile Include="Models\Entity\OSP_HEADER_T .cs" />
     <Compile Include="Models\Entity\DLV_HEADER_T.cs" />
     <Compile Include="Models\Entity\DLV_ORG_T.cs" />
     <Compile Include="Models\Entity\Temp\ITEMS_TMP_T.cs" />
@@ -134,6 +138,9 @@
     <Compile Include="Models\Repository\MsSql\CtrHeaderRepository.cs" />
     <Compile Include="Models\Repository\MsSql\CtrPickedRepository.cs" />
     <Compile Include="Models\Repository\MsSql\DlvDetailRepository.cs" />
+    <Compile Include="Models\Repository\MsSql\OspSoaS2Repository.cs" />
+    <Compile Include="Models\Repository\MsSql\OspSoaS1Repository.cs" />
+    <Compile Include="Models\Repository\MsSql\OspHeaderRepository.cs" />
     <Compile Include="Models\Repository\MsSql\DlvHeaderRepository.cs" />
     <Compile Include="Models\Repository\MsSql\GenericRepository.cs" />
     <Compile Include="Models\Repository\Oracle\GenericRepository.cs" />

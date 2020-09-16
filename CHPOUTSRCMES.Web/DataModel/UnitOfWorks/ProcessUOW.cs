@@ -1032,7 +1032,7 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
                             var chg = stock.PrimaryTransactionQty - InvestDTListId.RemainingQuantity;
                             if (stock.PrimaryTransactionQty >= aft)
                             {
-                                CheckStock(stock.StockId, UserId, aft ?? 0, ActionCode.Picked);
+                                CheckStock(stock.StockId, UserId, aft ?? 0, StockStatusCode.ProcessPicked);
                                 StockRecord(id.StockId, aft ?? 0, chg ?? 0, 0, 0, CategoryCode.Process, ActionCode.Picked, header.BatchNo, UserId);
                                 txn.Commit();
                                 return new ResultModel(true, "");
@@ -1055,8 +1055,8 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
                         if (id != null)
                         {
                             OspPickedInTRepository.Delete(id, true);
-                            CheckStock(stock.StockId, UserId, stock.PrimaryTransactionQty, ActionCode.Picked);
-                            StockRecord(id.StockId, stock.PrimaryTransactionQty, 0, 0, 0, CategoryCode.Process, ActionCode.Picked, header.BatchNo, UserId);
+                            CheckStock(stock.StockId, UserId, stock.PrimaryTransactionQty, StockStatusCode.InStock);
+                            StockRecord(id.StockId, stock.PrimaryTransactionQty, 0, 0, 0, CategoryCode.Process, ActionCode.Deleted, header.BatchNo, UserId);
                             txn.Commit();
                             return new ResultModel(true, "");
                         }
@@ -1321,7 +1321,7 @@ AND ST.BARCODE = @BARCODE");
                         var chg = data.PrimaryAvailableQty - (Remaining_Weight == "" ? 0 : decimal.Parse(Remaining_Weight));
                         if (data.PrimaryAvailableQty >= aft)
                         {
-                            CheckStock(data.StockId, UserId, aft, ActionCode.Picked);
+                            CheckStock(data.StockId, UserId, aft, StockStatusCode.ProcessPicked);
                             StockRecord(data.StockId, aft, chg, 0, 0, CategoryCode.Process, ActionCode.Picked, Header.BatchNo, UserId);
                             txn.Commit();
                             return new ResultModel(true, "寫入成功");
