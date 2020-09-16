@@ -306,7 +306,7 @@ namespace CHPOUTSRCMES.Web.Controllers
 
 
         /// <summary>
-        /// 領料單
+        /// 加工領料單
         /// </summary>
         /// <param name="OspHeaderId"></param>
         /// <returns></returns>
@@ -374,7 +374,7 @@ namespace CHPOUTSRCMES.Web.Controllers
 
 
         /// <summary>
-        /// 裁切單
+        /// 加工裁切單
         /// </summary>
         /// <param name="OspHeaderId"></param>
         /// <returns></returns>
@@ -451,7 +451,7 @@ namespace CHPOUTSRCMES.Web.Controllers
 
 
         /// <summary>
-        /// 成品入庫
+        /// 加工成品入庫
         /// </summary>
         /// <param name="OspHeaderId"></param>
         /// <returns></returns>
@@ -484,8 +484,12 @@ namespace CHPOUTSRCMES.Web.Controllers
                     localReport.ReportPath = "Report/CutStock.rdlc";
 
                     ReportDataSource stock = new ReportDataSource();
-                    uow.OspStock(ref stock, OspHeaderId);
+                    ReportDataSource Countangent = new ReportDataSource();
+                    ReportDataSource Remain = new ReportDataSource();
+                    uow.OspStock(ref stock, ref Countangent,ref Remain, OspHeaderId);
                     localReport.DataSources.Add(stock);
+                    localReport.DataSources.Add(Countangent);
+                    localReport.DataSources.Add(Remain);
                     // Set the report parameters for the report  
                     localReport.SetParameters(paramList);
 
@@ -499,6 +503,72 @@ namespace CHPOUTSRCMES.Web.Controllers
         }
 
         public ActionResult OspRemoteStockReport(string OspHeaderId)
+        {
+            List<ReportParameter> paramList = new List<ReportParameter>();
+            paramList.Add(new ReportParameter("OSP_HEADER_ID", OspHeaderId, false));
+            var report = new ReportViewer();
+            report.ProcessingMode = ProcessingMode.Remote;
+            report.SizeToReportContent = true;
+            report.BorderStyle = BorderStyle.Solid;
+            report.BorderWidth = 1;
+            report.BackColor = Color.LightGray;
+            report.ServerReport.ReportPath = "/開發區/CHPOUSMES/CutStock.rdl";
+            report.ServerReport.ReportServerUrl = new Uri("http://yfyrs001.yfy.corp/reports/");
+            report.ServerReport.SetParameters(paramList);
+            report.LocalReport.Refresh();
+            ViewBag.ReportViewer = report;
+            return View("Report");
+        }
+
+        /// <summary>
+        /// 加工紙捲成品入庫
+        /// </summary>
+        /// <param name="OspHeaderId"></param>
+        /// <returns></returns>
+        public ActionResult OspPaperRollerStock(string OspHeaderId)
+        {
+#if DEBUG
+            return OspLocalPaperRollerStockReport(OspHeaderId);
+#else
+            return OspRemotePaperRollerStockReport(OspHeaderId);
+#endif
+        }
+
+        public ActionResult OspLocalPaperRollerStockReport(string OspHeaderId)
+        {
+            using (var context = new MesContext())
+            {
+                using (ProcessUOW uow = new ProcessUOW(context))
+                {
+                    List<ReportParameter> paramList = new List<ReportParameter>();
+                    paramList.Add(new ReportParameter("OSP_HEADER_ID", OspHeaderId, false));
+                    var report = new ReportViewer();
+
+                    // Set the processing mode for the ReportViewer to Local  
+                    report.ProcessingMode = ProcessingMode.Local;
+                    report.BackColor = Color.LightGray;
+                    report.SizeToReportContent = true;
+                    report.BorderWidth = 1;
+                    report.BorderStyle = BorderStyle.Solid;
+                    LocalReport localReport = report.LocalReport;
+                    localReport.ReportPath = "Report/OspCutPaperRollStock.rdlc";
+
+                    ReportDataSource stock = new ReportDataSource();
+                    uow.OspPaperRollerStock(ref stock, OspHeaderId);
+                    localReport.DataSources.Add(stock);
+                    // Set the report parameters for the report  
+                    localReport.SetParameters(paramList);
+
+                    report.LocalReport.Refresh();
+
+                    ViewBag.ReportViewer = report;
+                }
+            }
+
+            return View("Report");
+        }
+
+        public ActionResult OspRemotePaperRollerStockReport(string OspHeaderId)
         {
             List<ReportParameter> paramList = new List<ReportParameter>();
             paramList.Add(new ReportParameter("OSP_HEADER_ID", OspHeaderId, false));

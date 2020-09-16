@@ -55,8 +55,7 @@ $(document).ready(function () {
 
     InvestDataTables.on('click', '#btnEdit', function (e) {
         e.preventDefault();
-        $('#Production_Loss').html("");
-        $('#Rate').html("");
+        DeleteRateLoss();
         editorInvest.edit($(this).closest('tr'), {
             title: '編輯',
             buttons: '確定'
@@ -65,8 +64,7 @@ $(document).ready(function () {
 
     InvestDataTables.on('click', '#btnDelete', function (e) {
         e.preventDefault();
-        $('#Production_Loss').html("");
-        $('#Rate').html("");
+        DeleteRateLoss();
         editorInvest.remove($(this).closest('tr'), {
             title: '刪除',
             message: '確定要刪除?',
@@ -76,8 +74,7 @@ $(document).ready(function () {
 
 
     ProductionTables.on('click', '#btnDeleteProductionTable', function (e) {
-        $('#Production_Loss').html("");
-        $('#Rate').html("");
+        DeleteRateLoss();
         editorProduct.remove($(this).closest('tr'), {
             title: '刪除',
             message: '確定要刪除?',
@@ -87,8 +84,7 @@ $(document).ready(function () {
 
     ProductionTables.on('click', '#btnEdit', function (e) {
         e.preventDefault();
-        $('#Production_Loss').html("");
-        $('#Rate').html("");
+        DeleteRateLoss();
         editorProduct.edit($(this).closest('tr'), {
             title: '編輯',
             buttons: '確定'
@@ -113,8 +109,7 @@ $(document).ready(function () {
 
     CotangentDataTable.on('click', '#btnDelete', function (e) {
         e.preventDefault();
-        $('#Production_Loss').html("");
-        $('#Rate').html("");
+        DeleteRateLoss();
         EditorCotangent.remove($(this).closest('tr'), {
             title: '刪除',
             message: '確定要刪除?',
@@ -124,8 +119,7 @@ $(document).ready(function () {
 
     CotangentDataTable.on('click', '#btnInsert', function (e) {
         e.preventDefault();
-        $('#Production_Loss').html("");
-        $('#Rate').html("");
+        DeleteRateLoss();
         EditorCotangent.edit($(this).closest('tr'), {
             title: '新增',
             buttons: '確定'
@@ -245,10 +239,24 @@ function BtnClick() {
 
     //列印入庫單
     $('#BtnPurchase').click(function () {
+        if ($('#InvestDataTables').DataTable().data().length == 0) {
+            swal.fire("投入無資料，請先輸入資料。");
+            return;
+        }
+
+
         var table = $('#ProductionDataTables').DataTable();
         if (table.data().length == 0) {
             swal.fire("產出無資料，請先輸入資料。");
             return;
+        }
+        var CotangentDataTable = $('#CotangentDataTables').DataTable();
+        var Cotangent = CotangentDataTable.columns(4).data()[0];
+        if (CotangentDataTable.data().length != 0) {
+            if (Cotangent == 0) {
+                swal.fire("請先輸入餘切重量。");
+                return;
+            }
         }
         var OspHeaderId = $('#OspHeaderId').val();
         window.open("/Home/OspStock/?OspHeaderId=" + OspHeaderId);
@@ -322,6 +330,13 @@ function BtnClick() {
             swal.fire("令數不得空白");
             return;
         }
+        if (Cotangent == 1) {
+            var CotangentDataTable = $('#CotangentDataTables').DataTable();
+            if (CotangentDataTable.data().length > 0) {
+                swal.fire("已有餘切資料，無法新增");
+                return;
+            }
+        }
         CreateProduct(Production_Roll_Ream_Qty, Production_Roll_Ream_Wt, Cotangent, OspDetailOutId);
     });
     //產出入庫
@@ -335,7 +350,7 @@ function BtnClick() {
             return;
         }
         if (table.data().length == 0) {
-            swal.fire("表格無資料，請先輸入資料。");
+            swal.fire("產出無資料，請先輸入資料。");
             return;
         }
         ChangeProductionStauts(Production_Barcode, OspDetailOutId);
@@ -388,6 +403,18 @@ function BtnClick() {
         var loss = $('#Production_Loss').text();
         var Process_Batch_no = $('#Process_Batch_no').text()
         var OspDetailOutId = $("#OspDetailOutId").val();
+
+        var table = $('#ProductionDataTables').DataTable();
+        if (table.data().length == 0) {
+            swal.fire("產出無資料，請先輸入資料。");
+            return;
+        }
+
+        if ($('#InvestDataTables').DataTable().data().length == 0) {
+            swal.fire("投入無資料，請先輸入資料。");
+            return;
+        }
+
         if (loss == 0) {
             swal.fire("損耗量未計算");
             return;
@@ -418,6 +445,19 @@ function BtnClick() {
 
     //列印標籤紙捲
     $('#BtnLabel').click(function () {
+        var table = $('#ProductionDataTables').DataTable();
+        if (table.data().length == 0) {
+            swal.fire("產出無資料，請先輸入資料。");
+            return;
+        }
+        var CotangentDataTable = $('#CotangentDataTables').DataTable();
+        var Cotangent = CotangentDataTable.columns(4).data()[0];
+        if (CotangentDataTable.data().length != 0) {
+            if (Cotangent == 0) {
+                swal.fire("請先輸入餘切重量。");
+                return;
+            }
+        }
         PrintLable(ProductionTables, "/Process/GeProductLabels", "1", CotangentDataTable, "1");
     })
 
@@ -1096,7 +1136,23 @@ function DisplayProductionEnable(boolean) {
 }
 
 
+function DeleteRateLoss() {
+    $('#Production_Loss').html("");
+    $('#Rate').html("");
+    var OspHeaderId = $('#OspHeaderId').val();
+    $.ajax({
+        url: '/Process/DeleteRate',
+        datatype: 'json',
+        type: "POST",
+        data: { OspHeaderId: OspHeaderId },
+        success: function (data) {
+           
+        },
+        error: function () {
 
+        }
+    });
+}
 
 function displaytext(rowData) {
     var Barcode = rowData.pluck('Barcode')[0]
@@ -1118,7 +1174,6 @@ function displaytext(rowData) {
     $('#Invest_Lot_Number').text(Invest_Lot_Number);
 
 }
-
 
 
 function clear() {

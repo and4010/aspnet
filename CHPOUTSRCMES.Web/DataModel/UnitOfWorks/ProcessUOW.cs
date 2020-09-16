@@ -1432,7 +1432,7 @@ AND ST.BARCODE = @BARCODE");
                     x.b.InventoryItemId == x.a.InventoryItemId &&
                     x.b.ControlFlag != "D").SingleOrDefault();
 
-                if(relate == null)
+                if (relate == null)
                 {
                     return new ResultModel(false, "無餘切資料");
                 }
@@ -2033,6 +2033,31 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
 
 
 
+        }
+
+        public void DeleteRate(long OspHeaderId)
+        {
+
+            using (var txn = this.Context.Database.BeginTransaction())
+            {
+                try
+                {
+                    var op = OspYieldVarianceTRepository.Get(x => x.OspHeaderId == OspHeaderId).SingleOrDefault();
+                    if(op != null)
+                    {
+                        OspYieldVarianceTRepository.Delete(op, true);
+                        txn.Commit();
+                    }
+                   
+                }
+
+                catch (Exception e)
+                {
+                    txn.Rollback();
+                    logger.Error(LogUtilities.BuildExceptionMessage(e));
+
+                }
+            }
         }
 
         /// <summary>
@@ -3008,7 +3033,7 @@ and SUBINVENTORY_CODE = @SUBINVENTORY_CODE");
 
                 return ManchineNum;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 logger.Error(LogUtilities.BuildExceptionMessage(e));
                 return new List<SelectListItem>();
@@ -3235,15 +3260,15 @@ and SUBINVENTORY_CODE = @SUBINVENTORY_CODE");
                     LabelKnife.Value = dataset.Tables["LabelKnife"];
 
 
-                    GetLabelDesc(connection, ref dataset,osp.PackingType);
+                    GetLabelDesc(connection, ref dataset, osp.PackingType);
                     LabelDesc.Name = "LabelDesc";
                     LabelDesc.Value = dataset.Tables["LabelDesc"];
 
-                    GetLabelSize(connection, ref dataset,osp.Specification);
+                    GetLabelSize(connection, ref dataset, osp.Specification);
                     LabelSize.Name = "LabelSize";
                     LabelSize.Value = dataset.Tables["LabelSize"];
 
-                    
+
                     connection.Close();
                 }
                 catch (Exception e)
@@ -3266,7 +3291,7 @@ and SUBINVENTORY_CODE = @SUBINVENTORY_CODE");
 
         public void GetLabelKnife(SqlConnection connection, ref DataSet LabelKnife, string spec)
         {
-            string Header = "SELECT dbo.OspLabelKnife(@SPECIFICATION) AS Knife";
+            string Header = "SELECT dbo.OspLabelKnife(dbo.CheckOspLabelSpec(@SPECIFICATION)) AS Knife";
             SqlCommand command = new SqlCommand(Header, connection);
             command.Parameters.Add(new SqlParameter("@SPECIFICATION", spec));
             SqlDataAdapter salesOrderAdapter = new SqlDataAdapter(command);
@@ -3284,7 +3309,7 @@ and SUBINVENTORY_CODE = @SUBINVENTORY_CODE");
 
         public void GetLabelSize(SqlConnection connection, ref DataSet LabelSize, string spec)
         {
-            string Header = "select dbo.CheckOspLabelSize(@SPECIFICATION) as LabelSize";
+            string Header = "select dbo.CheckOspLabelSize(dbo.CheckOspLabelSpec(@SPECIFICATION)) as LabelSize";
             SqlCommand command = new SqlCommand(Header, connection);
             command.Parameters.Add(new SqlParameter("@SPECIFICATION", spec));
             SqlDataAdapter salesOrderAdapter = new SqlDataAdapter(command);
@@ -3297,7 +3322,7 @@ and SUBINVENTORY_CODE = @SUBINVENTORY_CODE");
         /// </summary>
         /// <param name="stock"></param>
         /// <param name="OspHeaderId"></param>
-        public void  OspStock(ref ReportDataSource stock, string OspHeaderId)
+        public void OspStock(ref ReportDataSource stock, ref ReportDataSource Countangent, ref ReportDataSource Remain, string OspHeaderId)
         {
             using (SqlConnection connection = new SqlConnection(WebConfigurationManager.ConnectionStrings["MesContext"].ConnectionString.ToString()))
             {
@@ -3309,7 +3334,69 @@ and SUBINVENTORY_CODE = @SUBINVENTORY_CODE");
                         throw new ArgumentException("HEADER ID ERROR");
                     }
                     DataSet dataset = new DataSet("stock");
-                    string Header1 = "select * from OspCutStock(@OSP_HEADER_ID)";
+                    OspStockData(connection, ref dataset, ospHeaderId);
+                    stock.Name = "DataSet1";
+                    stock.Value = dataset.Tables["DataSet1"];
+                    OspStockCotangentData(connection, ref dataset, ospHeaderId);
+                    Countangent.Name = "DataSet2";
+                    Countangent.Value = dataset.Tables["DataSet2"];
+                    OspStockRemainData(connection, ref dataset, ospHeaderId);
+                    Remain.Name = "DataSet3";
+                    Remain.Value = dataset.Tables["DataSet3"];
+                    connection.Close();
+                }
+                catch (Exception e)
+                {
+                    logger.Error(LogUtilities.BuildExceptionMessage(e));
+                }
+            }
+        }
+
+        public void OspStockData(SqlConnection connection, ref DataSet dsDetail, long ospHeaderId)
+        {
+            string Header1 = "select * from OspCutStock(@OSP_HEADER_ID)";
+            SqlCommand command = new SqlCommand(Header1, connection);
+            command.Parameters.Add(new SqlParameter("@OSP_HEADER_ID", ospHeaderId) { DbType = DbType.Int64 });
+            SqlDataAdapter salesOrderAdapter = new SqlDataAdapter(command);
+            salesOrderAdapter.Fill(dsDetail, "DataSet1");
+        }
+
+        public void OspStockCotangentData(SqlConnection connection, ref DataSet dsCotangent, long ospHeaderId)
+        {
+            string Header1 = "select * from OspCutCotangentStock(@OSP_HEADER_ID)";
+            SqlCommand command = new SqlCommand(Header1, connection);
+            command.Parameters.Add(new SqlParameter("@OSP_HEADER_ID", ospHeaderId) { DbType = DbType.Int64 });
+            SqlDataAdapter salesOrderAdapter = new SqlDataAdapter(command);
+            salesOrderAdapter.Fill(dsCotangent, "DataSet2");
+        }
+
+        public void OspStockRemainData(SqlConnection connection, ref DataSet Remain, long ospHeaderId)
+        {
+            string Header1 = "select * from OspRemainQty(@OSP_HEADER_ID)";
+            SqlCommand command = new SqlCommand(Header1, connection);
+            command.Parameters.Add(new SqlParameter("@OSP_HEADER_ID", ospHeaderId) { DbType = DbType.Int64 });
+            SqlDataAdapter salesOrderAdapter = new SqlDataAdapter(command);
+            salesOrderAdapter.Fill(Remain, "DataSet3");
+        }
+
+        /// <summary>
+        /// 加工代紙紙捲成品入庫
+        /// </summary>
+        /// <param name="stock"></param>
+        /// <param name="OspHeaderId"></param>
+        public void OspPaperRollerStock(ref ReportDataSource stock, string OspHeaderId)
+        {
+            using (SqlConnection connection = new SqlConnection(WebConfigurationManager.ConnectionStrings["MesContext"].ConnectionString.ToString()))
+            {
+                try
+                {
+                    connection.Open();
+                    if (!long.TryParse(OspHeaderId, out long ospHeaderId))
+                    {
+                        throw new ArgumentException("HEADER ID ERROR");
+                    }
+                    DataSet dataset = new DataSet("PaperRollerstock");
+                    string Header1 = "SELECT * FROM OspCutStock(@OSP_HEADER_ID)";
                     SqlCommand command = new SqlCommand(Header1, connection);
                     command.Parameters.Add(new SqlParameter("@OSP_HEADER_ID", ospHeaderId) { DbType = DbType.Int64 });
                     SqlDataAdapter salesOrderAdapter = new SqlDataAdapter(command);
@@ -3324,6 +3411,7 @@ and SUBINVENTORY_CODE = @SUBINVENTORY_CODE");
                     logger.Error(LogUtilities.BuildExceptionMessage(e));
                 }
             }
+
         }
 
 

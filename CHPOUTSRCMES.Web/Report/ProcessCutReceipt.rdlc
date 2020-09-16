@@ -103,7 +103,7 @@
             <Value>=Parameters!SPECIFICATION.Value</Value>
           </QueryParameter>
         </QueryParameters>
-        <CommandText>SELECT dbo.OspLabelKnife(@SPECIFICATION) AS Knife</CommandText>
+        <CommandText>SELECT dbo.OspLabelKnife(dbo.CheckOspLabelSpec(@SPECIFICATION)) AS Knife</CommandText>
         <rd:UseGenericDesigner>true</rd:UseGenericDesigner>
       </Query>
       <Fields>
@@ -139,7 +139,7 @@
             <Value>=Parameters!SPECIFICATION.Value</Value>
           </QueryParameter>
         </QueryParameters>
-        <CommandText>select dbo.CheckOspLabelSize(@SPECIFICATION) as LabelSize</CommandText>
+        <CommandText>select dbo.CheckOspLabelSize(dbo.CheckOspLabelSpec(@SPECIFICATION)) as LabelSize</CommandText>
       </Query>
       <Fields>
         <Field Name="LabelSize">
@@ -199,7 +199,7 @@
                     <Style />
                   </TextRun>
                   <TextRun>
-                    <Value>=Globals!ExecutionTime</Value>
+                    <Value>=CDate(Globals!ExecutionTime).ToString("yyyy/MM/dd HH:mm:ss")</Value>
                     <Style />
                   </TextRun>
                 </TextRuns>
@@ -274,9 +274,9 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Textbox3</rd:DefaultName>
-            <Top>2.51891cm</Top>
+            <Top>2.41653cm</Top>
             <Left>11.72271cm</Left>
-            <Height>0.54681cm</Height>
+            <Height>0.64919cm</Height>
             <Width>5.5575cm</Width>
             <ZIndex>3</ZIndex>
             <Style>
@@ -300,7 +300,7 @@
                     <Style />
                   </TextRun>
                   <TextRun>
-                    <Value>=First(Fields!DueDate.Value, "DataSet1")</Value>
+                    <Value>=CDate(First(Fields!DueDate.Value, "DataSet1")).ToString("yyyy/MM/dd HH:mm:ss")</Value>
                     <Style />
                   </TextRun>
                 </TextRuns>
@@ -367,7 +367,7 @@
                     <Style />
                   </TextRun>
                   <TextRun>
-                    <Value>=First(Fields!DueDate.Value, "DataSet1")</Value>
+                    <Value>=CDate(First(Fields!DueDate.Value, "DataSet1")).ToString("yyyy/MM/dd HH:mm:ss")</Value>
                     <Style />
                   </TextRun>
                 </TextRuns>
@@ -1559,9 +1559,9 @@
                 </Paragraph>
               </Paragraphs>
               <rd:DefaultName>Textbox37</rd:DefaultName>
-              <Top>0.10583cm</Top>
-              <Left>9.9187cm</Left>
-              <Height>0.70203cm</Height>
+              <Top>0.14111cm</Top>
+              <Left>9.85899cm</Left>
+              <Height>0.46391cm</Height>
               <Width>4.01005cm</Width>
               <Style>
                 <Border>

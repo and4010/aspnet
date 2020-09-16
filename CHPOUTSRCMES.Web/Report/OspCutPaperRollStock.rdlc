@@ -10,56 +10,28 @@
         <Prompt>指定資料來源 DataSource1 的使用者名稱和密碼:</Prompt>
       </ConnectionProperties>
       <rd:SecurityType>DataBase</rd:SecurityType>
-      <rd:DataSourceID>fed1fceb-54c4-454a-a3bc-02fadc2a4fb6</rd:DataSourceID>
+      <rd:DataSourceID>89d161dc-e7c6-47cf-93f4-cb3c054e605a</rd:DataSourceID>
     </DataSource>
   </DataSources>
   <DataSets>
-    <DataSet Name="Header">
+    <DataSet Name="DataSet1">
       <Query>
         <DataSourceName>DataSource1</DataSourceName>
         <QueryParameters>
-          <QueryParameter Name="@CTR_HEADER_ID">
-            <Value>=Parameters!CTR_HEADER_ID.Value</Value>
+          <QueryParameter Name="@OSP_HEADER_ID">
+            <Value>=Parameters!OSP_HEADER_ID.Value</Value>
           </QueryParameter>
         </QueryParameters>
-        <CommandText>SELECT * from PurchaseHeadaer(@CTR_HEADER_ID)</CommandText>
+        <CommandText>SELECT * FROM OspCutStock(@OSP_HEADER_ID)</CommandText>
       </Query>
       <Fields>
-        <Field Name="CONTAINER_NO">
-          <DataField>CONTAINER_NO</DataField>
+        <Field Name="BATCH_NO">
+          <DataField>BATCH_NO</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
-        <Field Name="MV_CONTAINER_DATE">
-          <DataField>MV_CONTAINER_DATE</DataField>
+        <Field Name="CUTTING_DATE_TO">
+          <DataField>CUTTING_DATE_TO</DataField>
           <rd:TypeName>System.DateTime</rd:TypeName>
-        </Field>
-        <Field Name="PAPER_TYPE">
-          <DataField>PAPER_TYPE</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-      </Fields>
-    </DataSet>
-    <DataSet Name="Detail">
-      <Query>
-        <DataSourceName>DataSource1</DataSourceName>
-        <QueryParameters>
-          <QueryParameter Name="@CTR_HEADER_ID">
-            <Value>=Parameters!CTR_HEADER_ID.Value</Value>
-          </QueryParameter>
-          <QueryParameter Name="@ITEM_CATEGORY">
-            <Value>=Parameters!ITEM_CATEGORY.Value</Value>
-          </QueryParameter>
-        </QueryParameters>
-        <CommandText>SELECT * from PurchaseDetail(@CTR_HEADER_ID,@ITEM_CATEGORY)</CommandText>
-      </Query>
-      <Fields>
-        <Field Name="SubId">
-          <DataField>SubId</DataField>
-          <rd:TypeName>System.Int64</rd:TypeName>
-        </Field>
-        <Field Name="ITEM_CATEGORY">
-          <DataField>ITEM_CATEGORY</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
         </Field>
         <Field Name="PAPER_TYPE">
           <DataField>PAPER_TYPE</DataField>
@@ -73,6 +45,26 @@
           <DataField>SPECIFICATION</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
+        <Field Name="SECONDARY_QUANTITY">
+          <DataField>SECONDARY_QUANTITY</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
+        <Field Name="PACKING_TYPE">
+          <DataField>PACKING_TYPE</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="SubId">
+          <DataField>SubId</DataField>
+          <rd:TypeName>System.Int64</rd:TypeName>
+        </Field>
+        <Field Name="Count">
+          <DataField>Count</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="Summ">
+          <DataField>Summ</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
         <Field Name="LOT_NUMBER">
           <DataField>LOT_NUMBER</DataField>
           <rd:TypeName>System.String</rd:TypeName>
@@ -81,26 +73,6 @@
           <DataField>PRIMARY_QUANTITY</DataField>
           <rd:TypeName>System.Decimal</rd:TypeName>
         </Field>
-        <Field Name="PACKING_TYPE">
-          <DataField>PACKING_TYPE</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-        <Field Name="REAM_WEIGHT">
-          <DataField>REAM_WEIGHT</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-      </Fields>
-    </DataSet>
-    <DataSet Name="Reason">
-      <Query>
-        <DataSourceName>DataSource1</DataSourceName>
-        <CommandText>SELECT * FROM PurchaseReason()</CommandText>
-      </Query>
-      <Fields>
-        <Field Name="REASON">
-          <DataField>REASON</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
       </Fields>
     </DataSet>
   </DataSets>
@@ -108,14 +80,14 @@
     <ReportSection>
       <Body>
         <ReportItems>
-          <Textbox Name="ReportTitle2">
+          <Textbox Name="ReportTitle">
             <CanGrow>true</CanGrow>
             <KeepTogether>true</KeepTogether>
             <Paragraphs>
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>貨櫃捲筒入庫單</Value>
+                    <Value>裁切成品入庫單</Value>
                     <Style>
                       <FontFamily>Segoe UI Light</FontFamily>
                       <FontSize>28pt</FontSize>
@@ -130,63 +102,42 @@
             <rd:WatermarkTextbox>Title</rd:WatermarkTextbox>
             <rd:DefaultName>ReportTitle</rd:DefaultName>
             <Top>0mm</Top>
-            <Left>0.00427cm</Left>
-            <Height>10.58333mm</Height>
-            <Width>189.18517mm</Width>
+            <Height>12.7mm</Height>
+            <Width>19cm</Width>
             <Style>
               <Border>
                 <Style>None</Style>
               </Border>
+              <VerticalAlign>Middle</VerticalAlign>
               <PaddingLeft>2pt</PaddingLeft>
               <PaddingRight>2pt</PaddingRight>
               <PaddingTop>2pt</PaddingTop>
               <PaddingBottom>2pt</PaddingBottom>
             </Style>
           </Textbox>
-          <Textbox Name="Textbox47">
+          <Textbox Name="Textbox1">
             <CanGrow>true</CanGrow>
             <KeepTogether>true</KeepTogether>
             <Paragraphs>
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>進櫃時間　</Value>
+                    <Value>工單號碼　</Value>
                     <Style />
                   </TextRun>
                   <TextRun>
-                    <Value>=CDate(First(Fields!MV_CONTAINER_DATE.Value, "Header")).
-ToString("yyyy/MM/dd HH:mm:ss")</Value>
-                    <Style>
-                      <Format>f</Format>
-                    </Style>
-                  </TextRun>
-                  <TextRun>
-                    <Value xml:space="preserve">　</Value>
-                    <Style />
-                  </TextRun>
-                  <TextRun>
-                    <Label>櫃號</Label>
-                    <Value>="櫃號  " +First(Fields!CONTAINER_NO.Value, "Header")</Value>
-                    <Style />
-                  </TextRun>
-                  <TextRun>
-                    <Value xml:space="preserve">　</Value>
-                    <Style />
-                  </TextRun>
-                  <TextRun>
-                    <Label>紙別</Label>
-                    <Value>="紙別  " + First(Fields!PAPER_TYPE.Value, "Detail")</Value>
+                    <Value>=First(Fields!BATCH_NO.Value, "DataSet1")</Value>
                     <Style />
                   </TextRun>
                 </TextRuns>
                 <Style />
               </Paragraph>
             </Paragraphs>
-            <rd:DefaultName>Textbox47</rd:DefaultName>
-            <Top>17.43075mm</Top>
-            <Left>0.04268mm</Left>
-            <Height>7.23195mm</Height>
-            <Width>130.71624mm</Width>
+            <rd:DefaultName>Textbox1</rd:DefaultName>
+            <Top>1.42813cm</Top>
+            <Left>0.02328cm</Left>
+            <Height>0.55245cm</Height>
+            <Width>6.06672cm</Width>
             <ZIndex>1</ZIndex>
             <Style>
               <Border>
@@ -198,65 +149,44 @@ ToString("yyyy/MM/dd HH:mm:ss")</Value>
               <PaddingBottom>2pt</PaddingBottom>
             </Style>
           </Textbox>
-          <Textbox Name="Textbox50">
-            <CanGrow>true</CanGrow>
-            <KeepTogether>true</KeepTogether>
-            <Paragraphs>
-              <Paragraph>
-                <TextRuns>
-                  <TextRun>
-                    <Value>請將損傷深度概測並標註</Value>
-                    <Style />
-                  </TextRun>
-                </TextRuns>
-                <Style />
-              </Paragraph>
-            </Paragraphs>
-            <rd:DefaultName>Textbox50</rd:DefaultName>
-            <Top>40.04028mm</Top>
-            <Left>0.04268mm</Left>
-            <Height>6.40644mm</Height>
-            <Width>42.99058mm</Width>
+          <Image Name="Image1">
+            <Source>Database</Source>
+            <Value>=code.MakeBarcodeImage(First(Fields!BATCH_NO.Value, "DataSet1"))</Value>
+            <MIMEType>image/png</MIMEType>
+            <Sizing>FitProportional</Sizing>
+            <Top>2.351cm</Top>
+            <Left>0.04974cm</Left>
+            <Height>0.69233cm</Height>
+            <Width>6.04026cm</Width>
             <ZIndex>2</ZIndex>
             <Style>
               <Border>
                 <Style>None</Style>
               </Border>
-              <PaddingLeft>2pt</PaddingLeft>
-              <PaddingRight>2pt</PaddingRight>
-              <PaddingTop>2pt</PaddingTop>
-              <PaddingBottom>2pt</PaddingBottom>
             </Style>
-          </Textbox>
-          <Textbox Name="Textbox51">
+          </Image>
+          <Textbox Name="Textbox2">
             <CanGrow>true</CanGrow>
             <KeepTogether>true</KeepTogether>
             <Paragraphs>
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Label>基重</Label>
-                    <Value>="基重  "+ First(Fields!BASIC_WEIGHT.Value, "Detail")</Value>
+                    <Value>列印日期  </Value>
                     <Style />
                   </TextRun>
                   <TextRun>
-                    <Value xml:space="preserve">　　　　　　　　　　　　　　　</Value>
-                    <Style />
-                  </TextRun>
-                  <TextRun>
-                    <Label>SPEC</Label>
-                    <Value>="寬幅 " + First(Fields!SPECIFICATION.Value, "Detail")</Value>
+                    <Value>=CDate(Globals!ExecutionTime).ToString("yyyy/MM/dd HH:mm:ss")</Value>
                     <Style />
                   </TextRun>
                 </TextRuns>
                 <Style />
               </Paragraph>
             </Paragraphs>
-            <rd:DefaultName>Textbox51</rd:DefaultName>
-            <Top>61.96616mm</Top>
-            <Left>0.04268mm</Left>
-            <Height>6.96736mm</Height>
-            <Width>130.71624mm</Width>
+            <rd:DefaultName>Textbox2</rd:DefaultName>
+            <Top>3.21972cm</Top>
+            <Height>0.66174cm</Height>
+            <Width>6.06672cm</Width>
             <ZIndex>3</ZIndex>
             <Style>
               <Border>
@@ -268,102 +198,218 @@ ToString("yyyy/MM/dd HH:mm:ss")</Value>
               <PaddingBottom>2pt</PaddingBottom>
             </Style>
           </Textbox>
-          <Image Name="Image3">
-            <Source>Database</Source>
-            <Value>=code.MakeBarcodeImage(First(Fields!CONTAINER_NO.Value, "Header"))</Value>
-            <MIMEType>image/png</MIMEType>
-            <Sizing>FitProportional</Sizing>
-            <Top>2.76931cm</Top>
-            <Left>0.00427cm</Left>
-            <Height>1.05833cm</Height>
-            <Width>6.12673cm</Width>
+          <Textbox Name="Textbox3">
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>生產日期  </Value>
+                    <Style />
+                  </TextRun>
+                  <TextRun>
+                    <Value>=CDate(First(Fields!CUTTING_DATE_TO.Value, "DataSet1")).ToString("yyyy/MM/dd HH:mm:ss")</Value>
+                    <Style />
+                  </TextRun>
+                </TextRuns>
+                <Style />
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>Textbox3</rd:DefaultName>
+            <Top>4.02257cm</Top>
+            <Left>0.02328cm</Left>
+            <Height>0.70528cm</Height>
+            <Width>6.04344cm</Width>
             <ZIndex>4</ZIndex>
             <Style>
               <Border>
                 <Style>None</Style>
               </Border>
+              <PaddingLeft>2pt</PaddingLeft>
+              <PaddingRight>2pt</PaddingRight>
+              <PaddingTop>2pt</PaddingTop>
+              <PaddingBottom>2pt</PaddingBottom>
             </Style>
-          </Image>
-          <Tablix Name="Tablix9">
-            <TablixBody>
-              <TablixColumns>
-                <TablixColumn>
-                  <Width>3.18587cm</Width>
-                </TablixColumn>
-              </TablixColumns>
-              <TablixRows>
-                <TablixRow>
-                  <Height>1.19917cm</Height>
-                  <TablixCells>
-                    <TablixCell>
-                      <CellContents>
-                        <Textbox Name="REASON">
-                          <CanGrow>true</CanGrow>
-                          <KeepTogether>true</KeepTogether>
-                          <Paragraphs>
-                            <Paragraph>
-                              <TextRuns>
-                                <TextRun>
-                                  <Value>=Fields!REASON.Value</Value>
-                                  <Style />
-                                </TextRun>
-                              </TextRuns>
-                              <Style>
-                                <TextAlign>Left</TextAlign>
-                              </Style>
-                            </Paragraph>
-                          </Paragraphs>
-                          <rd:DefaultName>REASON</rd:DefaultName>
-                          <Style>
-                            <Border>
-                              <Style>None</Style>
-                            </Border>
-                            <VerticalAlign>Middle</VerticalAlign>
-                            <PaddingLeft>2pt</PaddingLeft>
-                            <PaddingRight>2pt</PaddingRight>
-                            <PaddingTop>2pt</PaddingTop>
-                            <PaddingBottom>2pt</PaddingBottom>
-                          </Style>
-                        </Textbox>
-                      </CellContents>
-                    </TablixCell>
-                  </TablixCells>
-                </TablixRow>
-              </TablixRows>
-            </TablixBody>
-            <TablixColumnHierarchy>
-              <TablixMembers>
-                <TablixMember>
-                  <Group Name="REASON">
-                    <GroupExpressions>
-                      <GroupExpression>=Fields!REASON.Value</GroupExpression>
-                    </GroupExpressions>
-                  </Group>
-                  <SortExpressions>
-                    <SortExpression>
-                      <Value>=Fields!REASON.Value</Value>
-                    </SortExpression>
-                  </SortExpressions>
-                </TablixMember>
-              </TablixMembers>
-            </TablixColumnHierarchy>
-            <TablixRowHierarchy>
-              <TablixMembers>
-                <TablixMember />
-              </TablixMembers>
-            </TablixRowHierarchy>
-            <DataSetName>Reason</DataSetName>
-            <Top>4.82106cm</Top>
-            <Left>0.00427cm</Left>
-            <Height>1.19917cm</Height>
-            <Width>3.18587cm</Width>
+          </Textbox>
+          <Textbox Name="Textbox4">
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>紙別　</Value>
+                    <Style />
+                  </TextRun>
+                  <TextRun>
+                    <Value>=First(Fields!PAPER_TYPE.Value, "DataSet1")</Value>
+                    <Style />
+                  </TextRun>
+                </TextRuns>
+                <Style />
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>Textbox4</rd:DefaultName>
+            <Top>1.46341cm</Top>
+            <Left>13.26039cm</Left>
+            <Height>0.76729cm</Height>
+            <Width>5.20097cm</Width>
             <ZIndex>5</ZIndex>
             <Style>
               <Border>
                 <Style>None</Style>
               </Border>
+              <PaddingLeft>2pt</PaddingLeft>
+              <PaddingRight>2pt</PaddingRight>
+              <PaddingTop>2pt</PaddingTop>
+              <PaddingBottom>2pt</PaddingBottom>
             </Style>
-          </Tablix>
+          </Textbox>
+          <Textbox Name="Textbox10">
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>基重　</Value>
+                    <Style />
+                  </TextRun>
+                  <TextRun>
+                    <Value>=First(Fields!BASIC_WEIGHT.Value, "DataSet1")</Value>
+                    <Style />
+                  </TextRun>
+                  <TextRun>
+                    <Value xml:space="preserve">　　</Value>
+                    <Style />
+                  </TextRun>
+                </TextRuns>
+                <Style />
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>Textbox10</rd:DefaultName>
+            <Top>4.86896cm</Top>
+            <Left>0.02328cm</Left>
+            <Height>0.55562cm</Height>
+            <Width>4.19136cm</Width>
+            <ZIndex>6</ZIndex>
+            <Style>
+              <Border>
+                <Style>None</Style>
+              </Border>
+              <PaddingLeft>2pt</PaddingLeft>
+              <PaddingRight>2pt</PaddingRight>
+              <PaddingTop>2pt</PaddingTop>
+              <PaddingBottom>2pt</PaddingBottom>
+            </Style>
+          </Textbox>
+          <Textbox Name="Textbox23">
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>規格　</Value>
+                    <Style />
+                  </TextRun>
+                  <TextRun>
+                    <Value>=First(Fields!SPECIFICATION.Value, "DataSet1")</Value>
+                    <Style />
+                  </TextRun>
+                  <TextRun>
+                    <Value xml:space="preserve">　　</Value>
+                    <Style />
+                  </TextRun>
+                </TextRuns>
+                <Style />
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>Textbox23</rd:DefaultName>
+            <Top>4.80722cm</Top>
+            <Left>4.73287cm</Left>
+            <Height>0.5909cm</Height>
+            <Width>4.95037cm</Width>
+            <ZIndex>7</ZIndex>
+            <Style>
+              <Border>
+                <Style>None</Style>
+              </Border>
+              <PaddingLeft>2pt</PaddingLeft>
+              <PaddingRight>2pt</PaddingRight>
+              <PaddingTop>2pt</PaddingTop>
+              <PaddingBottom>2pt</PaddingBottom>
+            </Style>
+          </Textbox>
+          <Textbox Name="Textbox20">
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>數量　</Value>
+                    <Style />
+                  </TextRun>
+                  <TextRun>
+                    <Value>=First(Fields!Count.Value, "DataSet1")</Value>
+                    <Style />
+                  </TextRun>
+                </TextRuns>
+                <Style />
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>Textbox20</rd:DefaultName>
+            <Top>4.8334cm</Top>
+            <Left>9.83316cm</Left>
+            <Height>0.59118cm</Height>
+            <Width>3.91849cm</Width>
+            <ZIndex>8</ZIndex>
+            <Style>
+              <Border>
+                <Style>None</Style>
+              </Border>
+              <PaddingLeft>2pt</PaddingLeft>
+              <PaddingRight>2pt</PaddingRight>
+              <PaddingTop>2pt</PaddingTop>
+              <PaddingBottom>2pt</PaddingBottom>
+            </Style>
+          </Textbox>
+          <Textbox Name="Textbox12">
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>包裝方式　</Value>
+                    <Style />
+                  </TextRun>
+                  <TextRun>
+                    <Value>=First(Fields!PACKING_TYPE.Value, "DataSet1")</Value>
+                    <Style />
+                  </TextRun>
+                </TextRuns>
+                <Style />
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>Textbox12</rd:DefaultName>
+            <Top>4.79812cm</Top>
+            <Left>13.9545cm</Left>
+            <Height>0.6cm</Height>
+            <Width>4.51004cm</Width>
+            <ZIndex>9</ZIndex>
+            <Style>
+              <Border>
+                <Style>None</Style>
+              </Border>
+              <PaddingLeft>2pt</PaddingLeft>
+              <PaddingRight>2pt</PaddingRight>
+              <PaddingTop>2pt</PaddingTop>
+              <PaddingBottom>2pt</PaddingBottom>
+            </Style>
+          </Textbox>
           <Tablix Name="Tablix4">
             <TablixBody>
               <TablixColumns>
@@ -654,9 +700,9 @@ ToString("yyyy/MM/dd HH:mm:ss")</Value>
               <TablixMembers>
                 <TablixMember>
                   <TablixHeader>
-                    <Size>1.04545cm</Size>
+                    <Size>1.12266cm</Size>
                     <CellContents>
-                      <Textbox Name="Textbox165">
+                      <Textbox Name="Textbox31">
                         <CanGrow>true</CanGrow>
                         <KeepTogether>true</KeepTogether>
                         <Paragraphs>
@@ -674,7 +720,7 @@ ToString("yyyy/MM/dd HH:mm:ss")</Value>
                             </Style>
                           </Paragraph>
                         </Paragraphs>
-                        <rd:DefaultName>Textbox165</rd:DefaultName>
+                        <rd:DefaultName>Textbox31</rd:DefaultName>
                         <Style>
                           <Border>
                             <Style>None</Style>
@@ -715,7 +761,7 @@ ToString("yyyy/MM/dd HH:mm:ss")</Value>
                               <Paragraph>
                                 <TextRuns>
                                   <TextRun>
-                                    <Value>紙捲標籤</Value>
+                                    <Value>標籤</Value>
                                     <Style>
                                       <FontFamily>Arial</FontFamily>
                                     </Style>
@@ -903,7 +949,7 @@ ToString("yyyy/MM/dd HH:mm:ss")</Value>
                   <RepeatOnNewPage>true</RepeatOnNewPage>
                 </TablixMember>
                 <TablixMember>
-                  <Group Name="SubId">
+                  <Group Name="SubId1">
                     <GroupExpressions>
                       <GroupExpression>=Fields!SubId.Value</GroupExpression>
                     </GroupExpressions>
@@ -914,9 +960,9 @@ ToString("yyyy/MM/dd HH:mm:ss")</Value>
                     </SortExpression>
                   </SortExpressions>
                   <TablixHeader>
-                    <Size>1.04545cm</Size>
+                    <Size>1.12266cm</Size>
                     <CellContents>
-                      <Textbox Name="SubId">
+                      <Textbox Name="SubId1">
                         <CanGrow>true</CanGrow>
                         <KeepTogether>true</KeepTogether>
                         <Paragraphs>
@@ -932,7 +978,7 @@ ToString("yyyy/MM/dd HH:mm:ss")</Value>
                             </Style>
                           </Paragraph>
                         </Paragraphs>
-                        <rd:DefaultName>SubId</rd:DefaultName>
+                        <rd:DefaultName>SubId1</rd:DefaultName>
                         <Style>
                           <Border>
                             <Style>None</Style>
@@ -958,57 +1004,22 @@ ToString("yyyy/MM/dd HH:mm:ss")</Value>
                   </TablixHeader>
                   <TablixMembers>
                     <TablixMember>
-                      <TablixHeader>
-                        <Size>10.33415cm</Size>
-                        <CellContents>
-                          <Textbox Name="Textbox199">
-                            <CanGrow>true</CanGrow>
-                            <KeepTogether>true</KeepTogether>
-                            <Paragraphs>
-                              <Paragraph>
-                                <TextRuns>
-                                  <TextRun>
-                                    <Value />
-                                    <Style>
-                                      <FontFamily>Arial</FontFamily>
-                                    </Style>
-                                  </TextRun>
-                                </TextRuns>
-                                <Style>
-                                  <TextAlign>Center</TextAlign>
-                                </Style>
-                              </Paragraph>
-                            </Paragraphs>
-                            <rd:DefaultName>Textbox199</rd:DefaultName>
-                            <Style>
-                              <Border>
-                                <Style>None</Style>
-                              </Border>
-                              <BottomBorder>
-                                <Color>Black</Color>
-                                <Style>Solid</Style>
-                                <Width>1pt</Width>
-                              </BottomBorder>
-                              <RightBorder>
-                                <Color>Black</Color>
-                                <Style>Solid</Style>
-                                <Width>1pt</Width>
-                              </RightBorder>
-                              <VerticalAlign>Middle</VerticalAlign>
-                              <PaddingLeft>2pt</PaddingLeft>
-                              <PaddingRight>2pt</PaddingRight>
-                              <PaddingTop>2pt</PaddingTop>
-                              <PaddingBottom>2pt</PaddingBottom>
-                            </Style>
-                          </Textbox>
-                        </CellContents>
-                      </TablixHeader>
+                      <Group Name="SubId">
+                        <GroupExpressions>
+                          <GroupExpression>=Fields!SubId.Value</GroupExpression>
+                        </GroupExpressions>
+                      </Group>
+                      <SortExpressions>
+                        <SortExpression>
+                          <Value>=Fields!SubId.Value</Value>
+                        </SortExpression>
+                      </SortExpressions>
                       <TablixMembers>
                         <TablixMember>
                           <TablixHeader>
-                            <Size>0.67966cm</Size>
+                            <Size>10.33415cm</Size>
                             <CellContents>
-                              <Textbox Name="Textbox223">
+                              <Textbox Name="Textbox199">
                                 <CanGrow>true</CanGrow>
                                 <KeepTogether>true</KeepTogether>
                                 <Paragraphs>
@@ -1026,7 +1037,7 @@ ToString("yyyy/MM/dd HH:mm:ss")</Value>
                                     </Style>
                                   </Paragraph>
                                 </Paragraphs>
-                                <rd:DefaultName>Textbox223</rd:DefaultName>
+                                <rd:DefaultName>Textbox199</rd:DefaultName>
                                 <Style>
                                   <Border>
                                     <Style>None</Style>
@@ -1053,9 +1064,9 @@ ToString("yyyy/MM/dd HH:mm:ss")</Value>
                           <TablixMembers>
                             <TablixMember>
                               <TablixHeader>
-                                <Size>2.19941cm</Size>
+                                <Size>0.67966cm</Size>
                                 <CellContents>
-                                  <Textbox Name="Textbox203">
+                                  <Textbox Name="Textbox223">
                                     <CanGrow>true</CanGrow>
                                     <KeepTogether>true</KeepTogether>
                                     <Paragraphs>
@@ -1073,7 +1084,7 @@ ToString("yyyy/MM/dd HH:mm:ss")</Value>
                                         </Style>
                                       </Paragraph>
                                     </Paragraphs>
-                                    <rd:DefaultName>Textbox203</rd:DefaultName>
+                                    <rd:DefaultName>Textbox223</rd:DefaultName>
                                     <Style>
                                       <Border>
                                         <Style>None</Style>
@@ -1100,9 +1111,9 @@ ToString("yyyy/MM/dd HH:mm:ss")</Value>
                               <TablixMembers>
                                 <TablixMember>
                                   <TablixHeader>
-                                    <Size>1.61753cm</Size>
+                                    <Size>2.19941cm</Size>
                                     <CellContents>
-                                      <Textbox Name="Textbox227">
+                                      <Textbox Name="Textbox203">
                                         <CanGrow>true</CanGrow>
                                         <KeepTogether>true</KeepTogether>
                                         <Paragraphs>
@@ -1120,7 +1131,7 @@ ToString("yyyy/MM/dd HH:mm:ss")</Value>
                                             </Style>
                                           </Paragraph>
                                         </Paragraphs>
-                                        <rd:DefaultName>Textbox227</rd:DefaultName>
+                                        <rd:DefaultName>Textbox203</rd:DefaultName>
                                         <Style>
                                           <Border>
                                             <Style>None</Style>
@@ -1145,10 +1156,59 @@ ToString("yyyy/MM/dd HH:mm:ss")</Value>
                                     </CellContents>
                                   </TablixHeader>
                                   <TablixMembers>
-                                    <TablixMember />
-                                    <TablixMember />
-                                    <TablixMember />
-                                    <TablixMember />
+                                    <TablixMember>
+                                      <TablixHeader>
+                                        <Size>1.61753cm</Size>
+                                        <CellContents>
+                                          <Textbox Name="Textbox227">
+                                            <CanGrow>true</CanGrow>
+                                            <KeepTogether>true</KeepTogether>
+                                            <Paragraphs>
+                                              <Paragraph>
+                                                <TextRuns>
+                                                  <TextRun>
+                                                    <Value />
+                                                    <Style>
+                                                      <FontFamily>Arial</FontFamily>
+                                                    </Style>
+                                                  </TextRun>
+                                                </TextRuns>
+                                                <Style>
+                                                  <TextAlign>Center</TextAlign>
+                                                </Style>
+                                              </Paragraph>
+                                            </Paragraphs>
+                                            <rd:DefaultName>Textbox227</rd:DefaultName>
+                                            <Style>
+                                              <Border>
+                                                <Style>None</Style>
+                                              </Border>
+                                              <BottomBorder>
+                                                <Color>Black</Color>
+                                                <Style>Solid</Style>
+                                                <Width>1pt</Width>
+                                              </BottomBorder>
+                                              <RightBorder>
+                                                <Color>Black</Color>
+                                                <Style>Solid</Style>
+                                                <Width>1pt</Width>
+                                              </RightBorder>
+                                              <VerticalAlign>Middle</VerticalAlign>
+                                              <PaddingLeft>2pt</PaddingLeft>
+                                              <PaddingRight>2pt</PaddingRight>
+                                              <PaddingTop>2pt</PaddingTop>
+                                              <PaddingBottom>2pt</PaddingBottom>
+                                            </Style>
+                                          </Textbox>
+                                        </CellContents>
+                                      </TablixHeader>
+                                      <TablixMembers>
+                                        <TablixMember />
+                                        <TablixMember />
+                                        <TablixMember />
+                                        <TablixMember />
+                                      </TablixMembers>
+                                    </TablixMember>
                                   </TablixMembers>
                                 </TablixMember>
                               </TablixMembers>
@@ -1161,11 +1221,11 @@ ToString("yyyy/MM/dd HH:mm:ss")</Value>
                 </TablixMember>
               </TablixMembers>
             </TablixRowHierarchy>
-            <DataSetName>Detail</DataSetName>
-            <Top>6.99919cm</Top>
-            <Height>3.86347cm</Height>
-            <Width>18.92279cm</Width>
-            <ZIndex>6</ZIndex>
+            <DataSetName>DataSet1</DataSetName>
+            <Top>5.60097cm</Top>
+            <Height>3.86346cm</Height>
+            <Width>19cm</Width>
+            <ZIndex>10</ZIndex>
             <Style>
               <Border>
                 <Style>Solid</Style>
@@ -1192,7 +1252,7 @@ ToString("yyyy/MM/dd HH:mm:ss")</Value>
               </RightBorder>
             </Style>
           </Tablix>
-          <Textbox Name="Textbox1">
+          <Textbox Name="Textbox5">
             <CanGrow>true</CanGrow>
             <KeepTogether>true</KeepTogether>
             <Paragraphs>
@@ -1207,11 +1267,49 @@ ToString("yyyy/MM/dd HH:mm:ss")</Value>
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Textbox1</rd:DefaultName>
-            <Top>11.03905cm</Top>
-            <Left>11.03075cm</Left>
+            <Top>10.1137cm</Top>
+            <Left>11.45681cm</Left>
             <Height>0.60854cm</Height>
             <Width>3.22792cm</Width>
-            <ZIndex>7</ZIndex>
+            <ZIndex>11</ZIndex>
+            <Style>
+              <Border>
+                <Style>None</Style>
+              </Border>
+              <PaddingLeft>2pt</PaddingLeft>
+              <PaddingRight>2pt</PaddingRight>
+              <PaddingTop>2pt</PaddingTop>
+              <PaddingBottom>2pt</PaddingBottom>
+            </Style>
+          </Textbox>
+          <Textbox Name="Sum">
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>合計  </Value>
+                    <Style>
+                      <Format>0.00;(0.00)</Format>
+                    </Style>
+                  </TextRun>
+                  <TextRun>
+                    <Value>=Sum(Fields!PRIMARY_QUANTITY.Value)</Value>
+                    <Style>
+                      <Format>0.00;(0.00)</Format>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style />
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>Sum</rd:DefaultName>
+            <Top>9.76974cm</Top>
+            <Left>15.95341cm</Left>
+            <Height>0.9525cm</Height>
+            <Width>3.04659cm</Width>
+            <ZIndex>12</ZIndex>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -1223,17 +1321,17 @@ ToString("yyyy/MM/dd HH:mm:ss")</Value>
             </Style>
           </Textbox>
         </ReportItems>
-        <Height>118.41337mm</Height>
+        <Height>107.2224mm</Height>
         <Style>
           <Border>
             <Style>None</Style>
           </Border>
         </Style>
       </Body>
-      <Width>189.22787mm</Width>
+      <Width>190mm</Width>
       <Page>
         <PageFooter>
-          <Height>11.55347mm</Height>
+          <Height>9.04875mm</Height>
           <PrintOnFirstPage>true</PrintOnFirstPage>
           <PrintOnLastPage>true</PrintOnLastPage>
           <ReportItems>
@@ -1254,8 +1352,8 @@ ToString("yyyy/MM/dd HH:mm:ss")</Value>
                 </Paragraph>
               </Paragraphs>
               <rd:DefaultName>Textbox21</rd:DefaultName>
-              <Top>1.76389mm</Top>
-              <Left>87.36725mm</Left>
+              <Top>1.94029mm</Top>
+              <Left>110.3075mm</Left>
               <Height>6.35mm</Height>
               <Width>19.31458mm</Width>
               <Style>
@@ -1269,7 +1367,7 @@ ToString("yyyy/MM/dd HH:mm:ss")</Value>
                 <PaddingBottom>2pt</PaddingBottom>
               </Style>
             </Textbox>
-            <Textbox Name="Textbox2">
+            <Textbox Name="Textbox6">
               <CanGrow>true</CanGrow>
               <KeepTogether>true</KeepTogether>
               <Paragraphs>
@@ -1277,7 +1375,11 @@ ToString("yyyy/MM/dd HH:mm:ss")</Value>
                   <TextRuns>
                     <TextRun>
                       <Label>櫃號</Label>
-                      <Value>="櫃號  " +First(Fields!CONTAINER_NO.Value, "Header")</Value>
+                      <Value>工單號碼　</Value>
+                      <Style />
+                    </TextRun>
+                    <TextRun>
+                      <Value>=First(Fields!BATCH_NO.Value, "DataSet1")</Value>
                       <Style />
                     </TextRun>
                   </TextRuns>
@@ -1286,7 +1388,7 @@ ToString("yyyy/MM/dd HH:mm:ss")</Value>
               </Paragraphs>
               <rd:DefaultName>Textbox2</rd:DefaultName>
               <Top>0.17639cm</Top>
-              <Left>0.00427cm</Left>
+              <Left>0.02328cm</Left>
               <Height>0.65264cm</Height>
               <Width>5.2474cm</Width>
               <ZIndex>1</ZIndex>
@@ -1319,13 +1421,9 @@ ToString("yyyy/MM/dd HH:mm:ss")</Value>
     </ReportSection>
   </ReportSections>
   <ReportParameters>
-    <ReportParameter Name="CTR_HEADER_ID">
+    <ReportParameter Name="OSP_HEADER_ID">
       <DataType>String</DataType>
-      <Prompt>CTR HEADER ID</Prompt>
-    </ReportParameter>
-    <ReportParameter Name="ITEM_CATEGORY">
-      <DataType>String</DataType>
-      <Prompt>ITEM CATEGORY</Prompt>
+      <Prompt>OSP HEADER ID</Prompt>
     </ReportParameter>
   </ReportParameters>
   <ReportParametersLayout>
@@ -1336,12 +1434,7 @@ ToString("yyyy/MM/dd HH:mm:ss")</Value>
         <CellDefinition>
           <ColumnIndex>0</ColumnIndex>
           <RowIndex>0</RowIndex>
-          <ParameterName>CTR_HEADER_ID</ParameterName>
-        </CellDefinition>
-        <CellDefinition>
-          <ColumnIndex>1</ColumnIndex>
-          <RowIndex>0</RowIndex>
-          <ParameterName>ITEM_CATEGORY</ParameterName>
+          <ParameterName>OSP_HEADER_ID</ParameterName>
         </CellDefinition>
       </CellDefinitions>
     </GridLayoutDefinition>
@@ -1429,11 +1522,13 @@ ToString("yyyy/MM/dd HH:mm:ss")</Value>
             x = x + intBarWidth
         Next
         Return objBitmap
-    End Function</Code>
+    End Function
+
+
+</Code>
   <CodeModules>
     <CodeModule>System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</CodeModule>
   </CodeModules>
-  <ConsumeContainerWhitespace>true</ConsumeContainerWhitespace>
   <rd:ReportUnitType>Cm</rd:ReportUnitType>
-  <rd:ReportID>a8b41c25-e3c5-4735-a111-fe3027735c56</rd:ReportID>
+  <rd:ReportID>2cbef5d1-d2d4-4466-9981-3ac1f5b2d437</rd:ReportID>
 </Report>

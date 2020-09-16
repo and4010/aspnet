@@ -53,8 +53,7 @@ $(document).ready(function () {
 
     PaperRollInvestDataTables.on('click', '#btnDelete', function (e) {
         e.preventDefault();
-        $('#Production_Loss').html("");
-        $('#Rate').html("");
+        DeleteRateLoss();
         EditorInvest.remove($(this).closest('tr'), {
             title: '刪除',
             message: '你確定要刪除?',
@@ -64,8 +63,7 @@ $(document).ready(function () {
 
     PaperRollInvestDataTables.on('click', '#btnEdit', function (e) {
         e.preventDefault();
-        $('#Production_Loss').html("");
-        $('#Rate').html("");
+        DeleteRateLoss();
         EditorInvest.edit($(this).closest('tr'), {
             title: '編輯',
             buttons: '確定'
@@ -74,8 +72,7 @@ $(document).ready(function () {
 
     PaperRollProductionDataTables.on('click', '#btnDeleteProductionTable', function (e) {
         e.preventDefault();
-        $('#Production_Loss').html("");
-        $('#Rate').html("");
+        DeleteRateLoss();
         EditorProduction.remove($(this).closest('tr'), {
             title: '刪除',
             message: '你確定要刪除?',
@@ -84,8 +81,7 @@ $(document).ready(function () {
     });
 
     PaperRollProductionDataTables.on('click', '#btnEdit', function (e) {
-        $('#Production_Loss').html("");
-        $('#Rate').html("");
+        DeleteRateLoss();
         e.preventDefault();
         EditorProduction.edit($(this).closest('tr'), {
             title: '編輯',
@@ -182,11 +178,16 @@ function onclick() {
             return;
         }
         var OspHeaderId = $('#OspHeaderId').val();
-        window.open("/Home/OspStock/?OspHeaderId=" + OspHeaderId);
+        window.open("/Home/OspPaperRollerStock/?OspHeaderId=" + OspHeaderId);
     });
 
     //列印成品標籤紙捲
     $('#BtnLabel').click(function () {
+        var table = $('#PaperRollProductionDataTables').DataTable();
+        if (table.data().length == 0) {
+            swal.fire("產出無資料，請先輸入資料。");
+            return;
+        }
         PrintLable(PaperRollProductionDataTables, "/Process/GePaperRollerProductLabels", "1");
     });
 
@@ -345,6 +346,19 @@ function onclick() {
         var loss = $('#Production_Loss').text();
         var Process_Batch_no = $('#Process_Batch_no').text()
         var OspDetailOutId = $("#OspDetailOutId").val();
+        var PaperRollInvestDataTables = $('#PaperRollInvestDataTables').DataTable().data();
+
+        if (PaperRollInvestDataTables.length == 0) {
+            swal.fire("請先新增投入資料。");
+            return;
+        }
+
+        var table = $('#PaperRollProductionDataTables').DataTable();
+        if (table.data().length == 0) {
+            swal.fire("產出無資料，請先輸入資料。");
+            return;
+        }
+
         if (loss == 0) {
             swal.fire("損耗量未計算");
             return;
@@ -749,6 +763,23 @@ function EnableBarcode(boolean) {
 
 }
 
+function DeleteRateLoss() {
+    $('#Production_Loss').html("");
+    $('#Rate').html("");
+    var OspHeaderId = $('#OspHeaderId').val();
+    $.ajax({
+        url: '/Process/DeleteRate',
+        datatype: 'json',
+        type: "POST",
+        data: { OspHeaderId: OspHeaderId },
+        success: function (data) {
+
+        },
+        error: function () {
+
+        }
+    });
+}
 
 //彈出dialog
 function Open(modal_dialog, Process_Batch_no) {

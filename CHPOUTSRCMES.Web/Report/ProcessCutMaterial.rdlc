@@ -116,31 +116,12 @@
                 </TextRuns>
                 <Style />
               </Paragraph>
-              <Paragraph>
-                <TextRuns>
-                  <TextRun>
-                    <Value />
-                    <Style />
-                  </TextRun>
-                </TextRuns>
-                <Style />
-              </Paragraph>
-              <Paragraph>
-                <TextRuns>
-                  <TextRun>
-                    <Label>訂單料號</Label>
-                    <Value>="訂單料號  " + First(Fields!INVENTORY_ITEM_NUMBER.Value, "DataSet1")</Value>
-                    <Style />
-                  </TextRun>
-                </TextRuns>
-                <Style />
-              </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Textbox1</rd:DefaultName>
             <Top>14.11111mm</Top>
             <Left>0mm</Left>
-            <Height>13.49375mm</Height>
-            <Width>61.11875mm</Width>
+            <Height>5.55625mm</Height>
+            <Width>61.64792mm</Width>
             <ZIndex>1</ZIndex>
             <Style>
               <Border>
@@ -160,7 +141,7 @@
                 <TextRuns>
                   <TextRun>
                     <Label>列印日期</Label>
-                    <Value>="列印日期" + First(Fields!PrintDate.Value, "DataSet1")</Value>
+                    <Value>="列印日期 " + CDate(First(Fields!PrintDate.Value, "DataSet1")).ToString("yyyy/MM/dd HH:mm:ss")</Value>
                     <Style />
                   </TextRun>
                 </TextRuns>
@@ -179,7 +160,7 @@
                 <TextRuns>
                   <TextRun>
                     <Label>生產日期</Label>
-                    <Value>="生產日期 " + First(Fields!CUTTING_DATE_TO.Value, "DataSet1")</Value>
+                    <Value>="生產日期 " + CDate(First(Fields!CUTTING_DATE_TO.Value, "DataSet1")).ToString("yyyy/MM/dd HH:mm:ss")</Value>
                     <Style />
                   </TextRun>
                 </TextRuns>
@@ -236,9 +217,9 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Textbox3</rd:DefaultName>
-            <Top>30.13075mm</Top>
+            <Top>37.62728mm</Top>
             <Left>0mm</Left>
-            <Height>10.84792mm</Height>
+            <Height>5.55625mm</Height>
             <Width>18.70604cm</Width>
             <ZIndex>3</ZIndex>
             <Style>
@@ -255,13 +236,10 @@
             <TablixBody>
               <TablixColumns>
                 <TablixColumn>
-                  <Width>9.84134mm</Width>
+                  <Width>9.91895mm</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>88.49312mm</Width>
-                </TablixColumn>
-                <TablixColumn>
-                  <Width>88.49312mm</Width>
+                  <Width>177.14145mm</Width>
                 </TablixColumn>
               </TablixColumns>
               <TablixRows>
@@ -327,39 +305,16 @@
                               <Color>LightGrey</Color>
                               <Style>Solid</Style>
                             </Border>
-                            <VerticalAlign>Middle</VerticalAlign>
-                            <PaddingLeft>2pt</PaddingLeft>
-                            <PaddingRight>2pt</PaddingRight>
-                            <PaddingTop>2pt</PaddingTop>
-                            <PaddingBottom>2pt</PaddingBottom>
-                          </Style>
-                        </Textbox>
-                      </CellContents>
-                    </TablixCell>
-                    <TablixCell>
-                      <CellContents>
-                        <Textbox Name="Textbox8">
-                          <CanGrow>true</CanGrow>
-                          <KeepTogether>true</KeepTogether>
-                          <Paragraphs>
-                            <Paragraph>
-                              <TextRuns>
-                                <TextRun>
-                                  <Value>紙捲標籤</Value>
-                                  <Style />
-                                </TextRun>
-                              </TextRuns>
-                              <Style>
-                                <TextAlign>Center</TextAlign>
-                              </Style>
-                            </Paragraph>
-                          </Paragraphs>
-                          <rd:DefaultName>Textbox8</rd:DefaultName>
-                          <Style>
-                            <Border>
-                              <Color>LightGrey</Color>
+                            <LeftBorder>
+                              <Color>Black</Color>
                               <Style>Solid</Style>
-                            </Border>
+                              <Width>1pt</Width>
+                            </LeftBorder>
+                            <RightBorder>
+                              <Color>Black</Color>
+                              <Style>Solid</Style>
+                              <Width>1pt</Width>
+                            </RightBorder>
                             <VerticalAlign>Middle</VerticalAlign>
                             <PaddingLeft>2pt</PaddingLeft>
                             <PaddingRight>2pt</PaddingRight>
@@ -372,7 +327,7 @@
                   </TablixCells>
                 </TablixRow>
                 <TablixRow>
-                  <Height>29.8256mm</Height>
+                  <Height>65.80893mm</Height>
                   <TablixCells>
                     <TablixCell>
                       <CellContents>
@@ -400,6 +355,16 @@
                               <Color>LightGrey</Color>
                               <Style>Solid</Style>
                             </Border>
+                            <TopBorder>
+                              <Color>Black</Color>
+                              <Style>Solid</Style>
+                              <Width>1pt</Width>
+                            </TopBorder>
+                            <LeftBorder>
+                              <Color>Black</Color>
+                              <Style>Solid</Style>
+                              <Width>1pt</Width>
+                            </LeftBorder>
                             <VerticalAlign>Middle</VerticalAlign>
                             <PaddingLeft>2pt</PaddingLeft>
                             <PaddingRight>2pt</PaddingRight>
@@ -431,36 +396,21 @@
                               <Color>LightGrey</Color>
                               <Style>Solid</Style>
                             </Border>
-                            <PaddingLeft>2pt</PaddingLeft>
-                            <PaddingRight>2pt</PaddingRight>
-                            <PaddingTop>2pt</PaddingTop>
-                            <PaddingBottom>2pt</PaddingBottom>
-                          </Style>
-                        </Textbox>
-                      </CellContents>
-                    </TablixCell>
-                    <TablixCell>
-                      <CellContents>
-                        <Textbox Name="Textbox9">
-                          <CanGrow>true</CanGrow>
-                          <KeepTogether>true</KeepTogether>
-                          <Paragraphs>
-                            <Paragraph>
-                              <TextRuns>
-                                <TextRun>
-                                  <Value />
-                                  <Style />
-                                </TextRun>
-                              </TextRuns>
-                              <Style />
-                            </Paragraph>
-                          </Paragraphs>
-                          <rd:DefaultName>Textbox9</rd:DefaultName>
-                          <Style>
-                            <Border>
-                              <Color>LightGrey</Color>
+                            <TopBorder>
+                              <Color>Black</Color>
                               <Style>Solid</Style>
-                            </Border>
+                              <Width>1pt</Width>
+                            </TopBorder>
+                            <LeftBorder>
+                              <Color>Black</Color>
+                              <Style>Solid</Style>
+                              <Width>1pt</Width>
+                            </LeftBorder>
+                            <RightBorder>
+                              <Color>Black</Color>
+                              <Style>Solid</Style>
+                              <Width>1pt</Width>
+                            </RightBorder>
                             <PaddingLeft>2pt</PaddingLeft>
                             <PaddingRight>2pt</PaddingRight>
                             <PaddingTop>2pt</PaddingTop>
@@ -477,7 +427,6 @@
               <TablixMembers>
                 <TablixMember />
                 <TablixMember />
-                <TablixMember />
               </TablixMembers>
             </TablixColumnHierarchy>
             <TablixRowHierarchy>
@@ -492,14 +441,34 @@
             </TablixRowHierarchy>
             <DataSetName>DataSet1</DataSetName>
             <Top>44.94742mm</Top>
-            <Left>0.23283mm</Left>
-            <Height>38.21995mm</Height>
-            <Width>186.82758mm</Width>
+            <Left>0mm</Left>
+            <Height>74.20328mm</Height>
+            <Width>187.0604mm</Width>
             <ZIndex>4</ZIndex>
             <Style>
               <Border>
-                <Style>None</Style>
+                <Style>Solid</Style>
               </Border>
+              <TopBorder>
+                <Color>Black</Color>
+                <Style>Solid</Style>
+                <Width>1pt</Width>
+              </TopBorder>
+              <BottomBorder>
+                <Color>Black</Color>
+                <Style>Solid</Style>
+                <Width>1pt</Width>
+              </BottomBorder>
+              <LeftBorder>
+                <Color>Black</Color>
+                <Style>Solid</Style>
+                <Width>1pt</Width>
+              </LeftBorder>
+              <RightBorder>
+                <Color>Black</Color>
+                <Style>Solid</Style>
+                <Width>1pt</Width>
+              </RightBorder>
             </Style>
           </Tablix>
           <Textbox Name="Textbox4">
@@ -517,7 +486,7 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Textbox4</rd:DefaultName>
-            <Top>88.0745mm</Top>
+            <Top>122.20575mm</Top>
             <Left>98.56729mm</Left>
             <Height>5.20625mm</Height>
             <Width>22.48958mm</Width>
@@ -532,8 +501,55 @@
               <PaddingBottom>2pt</PaddingBottom>
             </Style>
           </Textbox>
+          <Textbox Name="Textbox10">
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Label>訂單料號</Label>
+                    <Value>="訂單料號  " + First(Fields!INVENTORY_ITEM_NUMBER.Value, "DataSet1")</Value>
+                    <Style />
+                  </TextRun>
+                </TextRuns>
+                <Style />
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>Textbox10</rd:DefaultName>
+            <Top>31.0127mm</Top>
+            <Left>0.23283mm</Left>
+            <Height>4.85069mm</Height>
+            <Width>61.41509mm</Width>
+            <ZIndex>6</ZIndex>
+            <Style>
+              <Border>
+                <Style>None</Style>
+              </Border>
+              <PaddingLeft>2pt</PaddingLeft>
+              <PaddingRight>2pt</PaddingRight>
+              <PaddingTop>2pt</PaddingTop>
+              <PaddingBottom>2pt</PaddingBottom>
+            </Style>
+          </Textbox>
+          <Image Name="Image2">
+            <Source>Database</Source>
+            <Value>=code.MakeBarcodeImage(First(Fields!BATCH_NO.Value, "DataSet1"))</Value>
+            <MIMEType>image/png</MIMEType>
+            <Sizing>FitProportional</Sizing>
+            <Top>2.14312cm</Top>
+            <Left>0.02328cm</Left>
+            <Height>0.78176cm</Height>
+            <Width>6.14151cm</Width>
+            <ZIndex>7</ZIndex>
+            <Style>
+              <Border>
+                <Style>None</Style>
+              </Border>
+            </Style>
+          </Image>
         </ReportItems>
-        <Height>96.39653mm</Height>
+        <Height>132.64445mm</Height>
         <Style>
           <Border>
             <Style>None</Style>
@@ -554,7 +570,7 @@
                 <Paragraph>
                   <TextRuns>
                     <TextRun>
-                      <Value>="Page "&amp;Globals!PageNumber</Value>
+                      <Value>="第"&amp;Globals!PageNumber &amp;"頁"</Value>
                       <Style />
                     </TextRun>
                   </TextRuns>
@@ -568,6 +584,37 @@
               <Left>91.42353mm</Left>
               <Height>5.43278mm</Height>
               <Width>19.84375mm</Width>
+              <Style>
+                <Border>
+                  <Style>None</Style>
+                </Border>
+                <PaddingLeft>2pt</PaddingLeft>
+                <PaddingRight>2pt</PaddingRight>
+                <PaddingTop>2pt</PaddingTop>
+                <PaddingBottom>2pt</PaddingBottom>
+              </Style>
+            </Textbox>
+            <Textbox Name="Textbox5">
+              <CanGrow>true</CanGrow>
+              <KeepTogether>true</KeepTogether>
+              <Paragraphs>
+                <Paragraph>
+                  <TextRuns>
+                    <TextRun>
+                      <Label>工單號碼</Label>
+                      <Value>="工單號碼  " + First(Fields!BATCH_NO.Value, "DataSet1")</Value>
+                      <Style />
+                    </TextRun>
+                  </TextRuns>
+                  <Style />
+                </Paragraph>
+              </Paragraphs>
+              <rd:DefaultName>Textbox1</rd:DefaultName>
+              <Top>2.16959mm</Top>
+              <Left>5.29166mm</Left>
+              <Height>5.02708mm</Height>
+              <Width>56.35625mm</Width>
+              <ZIndex>1</ZIndex>
               <Style>
                 <Border>
                   <Style>None</Style>
@@ -615,7 +662,95 @@
       </CellDefinitions>
     </GridLayoutDefinition>
   </ReportParametersLayout>
+  <Code>Public Function MakeBarcodeImage(ByVal datastring As String) As Byte()
+        Dim sCode As String = String.Empty
+        '清除該頁輸出緩存，設置該頁無緩存 
+     
+        '將Code39條碼寫入記憶體流，並將其以 "image/Png" 格式輸出  
+        Dim oStream As New System.IO.MemoryStream()
+        Try
+             Dim oBmp As System.Drawing.Bitmap = GetCode39(datastring)
+            oBmp.Save(oStream, System.Drawing.Imaging.ImageFormat.Png)
+            oBmp.Dispose()
+            Return oStream.ToArray()
+        Finally
+            '釋放資源  
+            oStream.Dispose()
+        End Try
+    End Function
+       
+   
+    Private Function GetCode39(ByVal strSource As String) As System.Drawing.Bitmap
+        Dim x As Integer = 5
+        '左邊界
+        Dim y As Integer = 0
+        '上邊界
+        Dim WidLength As Integer = 2
+        '粗BarCode長度
+        Dim NarrowLength As Integer = 1
+        '細BarCode長度
+        Dim BarCodeHeight As Integer = 24
+        'BarCode高度
+        Dim intSourceLength As Integer = strSource.Length
+        Dim strEncode As String = "010010100"
+        '編碼字串 初值為 起始符號 *
+        Dim AlphaBet As String = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ-. $/+%*"
+        'Code39的字母
+        'Code39的各字母對應碼
+      
+        Dim Code39 As String() = {"000110100", "100100001", "001100001", "101100000", "000110001", "100110000", _
+         "001110000", "000100101", "100100100", "001100100", "100001001", "001001001", _
+         "101001000", "000011001", "100011000", "001011000", "000001101", "100001100", _
+         "001001100", "000011100", "100000011", "001000011", "101000010", "000010011", _
+         "100010010", "001010010", "000000111", "100000110", "001000110", "000010110", _
+         "110000001", "011000001", "111000000", "010010001", "110010000", "011010000", _
+         "010000101", "110000100", "011000100", "010101000", "010100010", "010001010", _
+         "000101010", "010010100"}
+        strSource = strSource.ToUpper()
+        '實作圖片
+        Dim objBitmap As New System.Drawing.Bitmap(((WidLength * 3 + NarrowLength * 7) * (intSourceLength + 2)) + (x * 2), BarCodeHeight + (y * 2))
+        Dim objGraphics As System.Drawing.Graphics = System.Drawing.Graphics.FromImage(objBitmap)
+        '宣告GDI+繪圖介面
+        '填上底色
+        objGraphics.FillRectangle(System.Drawing.Brushes.White, 0, 0, objBitmap.Width, objBitmap.Height)
+
+        For i As Integer = 0 To intSourceLength - 1
+            '檢查是否有非法字元
+            If AlphaBet.IndexOf(strSource(i)) = -1 OrElse strSource(i) = "*"c Then
+                objGraphics.DrawString("含有非法字元", System.Drawing.SystemFonts.DefaultFont, System.Drawing.Brushes.Red, x, y)
+                Return objBitmap
+            End If
+            '查表編碼
+            strEncode = String.Format("{0}0{1}", strEncode, Code39(AlphaBet.IndexOf(strSource(i))))
+        Next
+
+        strEncode = String.Format("{0}0010010100", strEncode)
+        '補上結束符號 *
+        Dim intEncodeLength As Integer = strEncode.Length
+        '編碼後長度
+        Dim intBarWidth As Integer
+
+        For i As Integer = 0 To intEncodeLength - 1
+            '依碼畫出Code39 BarCode
+            If strEncode(i) = "1"c Then
+                intBarWidth = WidLength
+            Else
+                intBarWidth = NarrowLength
+            End If
+            If i Mod 2 = 0 Then
+                objGraphics.FillRectangle(System.Drawing.Brushes.Black, x, y, intBarWidth, BarCodeHeight)
+            Else
+                objGraphics.FillRectangle(System.Drawing.Brushes.White, x, y, intBarWidth, BarCodeHeight)
+            End If
+            x = x + intBarWidth
+        Next
+        Return objBitmap
+    End Function
+</Code>
+  <CodeModules>
+    <CodeModule>System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</CodeModule>
+  </CodeModules>
   <ConsumeContainerWhitespace>true</ConsumeContainerWhitespace>
-  <rd:ReportUnitType>Mm</rd:ReportUnitType>
+  <rd:ReportUnitType>Cm</rd:ReportUnitType>
   <rd:ReportID>28d174dd-a534-48de-bbd9-3addf8ed412c</rd:ReportID>
 </Report>

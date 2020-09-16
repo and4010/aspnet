@@ -305,6 +305,12 @@ namespace CHPOUTSRCMES.Web.ViewModels.Process
             return new ProcessUOW(context).GetRate(OspHeaderId);
         }
 
+        public void DeleteRate(long OspHeaderId)
+        {
+            using var context = new MesContext();
+            new ProcessUOW(context).DeleteRate(OspHeaderId);
+        }
+
         /// <summary>
         /// 存檔入庫&&工單號狀態更改
         /// </summary>

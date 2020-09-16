@@ -49,8 +49,7 @@ $(document).ready(function () {
 
     FlatInvestTable.on('click', '#btnDelete', function (e) {
         e.preventDefault();
-        $('#Production_Loss').html("");
-        $('#Rate').html("");
+        DeleteRateLoss();
         EditorFlatInvest.remove($(this).closest('tr'), {
             title: '刪除',
             message: '你確定要刪除?',
@@ -60,8 +59,7 @@ $(document).ready(function () {
 
     FlatProductionDataTables.on('click', '#btnEdit', function (e) {
         e.preventDefault();
-        $('#Production_Loss').html("");
-        $('#Rate').html("");
+        DeleteRateLoss();
         EditorFlatProduction.edit($(this).closest('tr'), {
             title: '編輯',
             buttons: '確定'
@@ -80,8 +78,7 @@ $(document).ready(function () {
     });
 
     FlatProductionDataTables.on('click', '#btnDeleteFlatProductionTable', function (e) {
-        $('#Production_Loss').html("");
-        $('#Rate').html("");
+        DeleteRateLoss();
         e.preventDefault();
         EditorFlatProduction.remove($(this).closest('tr'), {
             title: '刪除',
@@ -327,8 +324,13 @@ function onBtnClick() {
 
 
 
-    //列印標籤紙捲
+    //列印標籤成品平版
     $('#BtnLabel').click(function () {
+        var table = $('#FlatProductionDataTables').DataTable();
+        if (table.data().length == 0) {
+            swal.fire("產出無資料，請先輸入資料。");
+            return;
+        }
         PrintLable(FlatProductionDataTables, "/Process/GeProductLabels", "1");
     });
 
@@ -625,6 +627,24 @@ function ChangeFlatProductionStauts(Production_Barcode, OspDetailOutId) {
     });
 }
 
+
+function DeleteRateLoss() {
+    $('#Production_Loss').html("");
+    $('#Rate').html("");
+    var OspHeaderId = $('#OspHeaderId').val();
+    $.ajax({
+        url: '/Process/DeleteRate',
+        datatype: 'json',
+        type: "POST",
+        data: { OspHeaderId: OspHeaderId },
+        success: function (data) {
+
+        },
+        error: function () {
+
+        }
+    });
+}
 
 function FlatDispalyText(data) {
 }
