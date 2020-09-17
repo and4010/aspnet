@@ -1129,7 +1129,7 @@ SELECT [TRANSFER_INVENTORY_ID]
                     decimal? mSecondaryQty = null; //次單位異動量
                     if (item.CatalogElemVal070 == ItemCategory.Flat)
                     {
-                        if (stockInventoryDT.SECONDARY_TRANSACTION_QTY == 0) return new ResultModel(false, "請輸入次單位異動量");
+                        if (stockInventoryDT.SECONDARY_TRANSACTION_QTY == 0) return new ResultModel(false, "次單位異動量輸入錯誤");
                         mSecondaryQty = stockInventoryDT.SECONDARY_TRANSACTION_QTY;
                         aftSecQty = mSecondaryQty;
                         var uomConversionResult = uomConversion.Convert(item.InventoryItemId, (decimal)mSecondaryQty, item.SecondaryUomCode, item.PrimaryUomCode); //次單位數量轉主單位數量
@@ -1139,7 +1139,7 @@ SELECT [TRANSFER_INVENTORY_ID]
                     }
                     else if (item.CatalogElemVal070 == ItemCategory.Roll)
                     {
-                        if (stockInventoryDT.PRIMARY_TRANSACTION_QTY == 0) return new ResultModel(false, "請輸入主單位異動量");
+                        if (stockInventoryDT.PRIMARY_TRANSACTION_QTY == 0) return new ResultModel(false, "主單位異動量輸入錯誤");
                         mPrimaryQty = stockInventoryDT.PRIMARY_TRANSACTION_QTY;
                         aftPryQty = mPrimaryQty;
                         mSecondaryQty = null;
