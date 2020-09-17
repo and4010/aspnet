@@ -510,7 +510,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             /// <summary>
             /// 庫存異動至沒庫存
             /// </summary>
-            public const string TransferNoneInStock = "S3";
+            public const string TransferNoneInStock = "S4";
            
 
             public string GetDesc(string statusCode)

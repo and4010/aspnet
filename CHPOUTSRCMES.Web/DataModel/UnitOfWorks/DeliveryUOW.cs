@@ -150,6 +150,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                     if (!model.Success)
                     {
                         //轉換失敗 該如何處理??
+                        throw new Exception(model.Msg);
                     }
                     //新增一筆PickDT
                     dlvPickedTRepository.Create(new DLV_PICKED_T

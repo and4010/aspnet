@@ -186,7 +186,7 @@ namespace CHPOUTSRCMES.Web.Controllers
 
         [HttpPost]
         public ActionResult AddTransactionDetail(long transactionTypeId,
-      long stockId, decimal mPrimaryQty, string note)
+      long stockId, string mPrimaryQty, string note)
         {
             using (var context = new MesContext())
             {

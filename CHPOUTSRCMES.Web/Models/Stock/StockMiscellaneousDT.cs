@@ -1,4 +1,5 @@
 ﻿using CHPOUTSRCMES.Web.DataModel.UnitOfWorks;
+using CHPOUTSRCMES.Web.Util;
 using CHPOUTSRCMES.Web.ViewModels;
 using CHPOUTSRCMES.Web.ViewModels.Miscellaneous;
 using CHPOUTSRCMES.Web.ViewModels.StockInvetory;
@@ -86,9 +87,11 @@ namespace CHPOUTSRCMES.Web.Models.Stock
         }
 
         public ResultModel CreateDetail(MiscellaneousUOW uow, long transactionTypeId,
-      long stockId, decimal mPrimaryQty, string note, string userId, string userName)
+      long stockId, string mPrimaryQty, string note, string userId, string userName)
         {
-            return uow.CreateDetail(transactionTypeId, stockId, mPrimaryQty, note, userId, userName);
+            var mPrimaryQtyConvertResult = ConvertEx.StringToDecimal(mPrimaryQty);
+            if (!mPrimaryQtyConvertResult.Success) return new ResultModel(false, "數量須為數字");
+            return uow.CreateDetail(transactionTypeId, stockId, mPrimaryQtyConvertResult.Data, note, userId, userName);
         }
 
         public ResultModel AddTransactionDetail(long ID, string Miscellaneous, decimal PrimaryQty, string Note)

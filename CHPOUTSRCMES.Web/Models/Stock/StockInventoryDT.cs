@@ -9,6 +9,7 @@ using System.Web.Mvc;
 using System.Text;
 using CHPOUTSRCMES.Web.Models.Information;
 using CHPOUTSRCMES.Web.DataModel.UnitOfWorks;
+using CHPOUTSRCMES.Web.Util;
 
 namespace CHPOUTSRCMES.Web.Models.Stock
 {
@@ -77,9 +78,11 @@ namespace CHPOUTSRCMES.Web.Models.Stock
             return uow.GetStockInventoryTList(userId, transactionTypeId, fromHistoryData);
         }
 
-        public ResultModel CreateDetail(StockInventoryUOW uow, long transactionTypeId, long stockId, decimal mQty, string userId, string userName)
+        public ResultModel CreateDetail(StockInventoryUOW uow, long transactionTypeId, long stockId, string mQty, string userId, string userName)
         {
-            return uow.CreateDetail(transactionTypeId, stockId, mQty, userId, userName);
+            var result = ConvertEx.StringToDecimal(mQty);
+            if (!result.Success) return new ResultModel(false, "數量須為數字");
+            return uow.CreateDetail(transactionTypeId, stockId, result.Data, userId, userName);
         }
 
         public ResultModel SaveTransactionDetail(StockInventoryUOW uow, long transactionTypeId, string userId, string userName)
@@ -103,6 +106,9 @@ namespace CHPOUTSRCMES.Web.Models.Stock
             else if (editor.Action == "create")
             {
                 if (editor.StockInventoryDTList == null || editor.StockInventoryDTList.Count == 0) return new ResultModel(false, "沒有資料可新增明細");
+                //editor.StockInventoryDTList[0]
+                //var result = ConvertEx.StringToDecimal(mQty);
+                //if (!result.Success) return new ResultModel(false, "數量須為數字");
                 return uow.CreateDetailForNoStock(editor.StockInventoryDTList[0], userId, userName);
             }
             else

@@ -1,4 +1,5 @@
 ﻿using CHPOUTSRCMES.Web.DataModel.UnitOfWorks;
+using CHPOUTSRCMES.Web.Util;
 using CHPOUTSRCMES.Web.ViewModels;
 using CHPOUTSRCMES.Web.ViewModels.Obsolete;
 using System;
@@ -58,9 +59,11 @@ namespace CHPOUTSRCMES.Web.Models.Stock
             return uow.GetStockTList(organizationId, subinventoryCode, locatorId, itemNumber);
         }
 
-        public ResultModel CreateDetail(ObsoleteUOW uow, long stockId, decimal mQty, string userId, string userName)
+        public ResultModel CreateDetail(ObsoleteUOW uow, long stockId, string mQty, string userId, string userName)
         {
-            return uow.CreateDetail( stockId, mQty, userId, userName);
+            var result = ConvertEx.StringToDecimal(mQty);
+            if (!result.Success) return new ResultModel(false, "數量須為數字");
+            return uow.CreateDetail( stockId, result.Data, userId, userName);
         }
 
         public List<StockObsoleteDT> GetObsoleteData(ObsoleteUOW uow, string userId)

@@ -620,7 +620,7 @@ namespace CHPOUTSRCMES.Web.Controllers
         [HttpPost, ActionName("OutboundCreateDetail")]
         public JsonResult OutboundCreateDetail(string shipmentNumber, string transferType, string itemNumber, long outOrganizationId,
             string outSubinventoryCode, long? outLocatorId, long inOrganizationId, string inSubinventoryCode, long? inLocatorId,
-            decimal requestedQty, decimal rollReamQty)
+            string requestedQty, string rollReamQty)
         {
             using (var context = new MesContext())
             {
@@ -669,7 +669,7 @@ namespace CHPOUTSRCMES.Web.Controllers
         [HttpPost, ActionName("InboundCreateDetail")]
         public JsonResult InboundCreateDetail(string shipmentNumber, string transferType, string itemNumber, long outOrganizationId,
             string outSubinventoryCode, long? outLocatorId, long inOrganizationId, string inSubinventoryCode, long? inLocatorId,
-            decimal requestedQty, decimal rollReamWt, string lotNumber)
+            string requestedQty, string rollReamWt, string lotNumber)
         {
             using (var context = new MesContext())
             {

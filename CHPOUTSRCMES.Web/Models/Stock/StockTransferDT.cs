@@ -535,20 +535,32 @@ namespace CHPOUTSRCMES.Web.Models.Stock
         /// <returns></returns>
         public ResultDataModel<TRF_HEADER_T> InboundCreateDetail(TransferUOW uow, string shipmentNumber, string transferType, string itemNumber, long outOrganizationId,
             string outSubinventoryCode, long? outLocatorId, long inOrganizationId, string inSubinventoryCode, long? inLocatorId,
-            decimal requestedQty, decimal rollReamWt, string lotNumber, string createUser, string createUserName)
+            string requestedQty, string rollReamWt, string lotNumber, string createUser, string createUserName)
         {
+            var requestedQtyConvertResult = ConvertEx.StringToDecimal(requestedQty);
+            if (!requestedQtyConvertResult.Success) return new ResultDataModel<TRF_HEADER_T>(false, "數量須為數字", null);
+
+            var rollReamWtConvertResult = ConvertEx.StringToDecimal(rollReamWt);
+            if (!rollReamWtConvertResult.Success) return new ResultDataModel<TRF_HEADER_T>(false, "每棧令數須為數字", null);
+
             return uow.InboundCreateDetail(shipmentNumber, transferType, itemNumber, outOrganizationId,
                 outSubinventoryCode, outLocatorId, inOrganizationId, inSubinventoryCode, inLocatorId,
-                TransferUOW.DataUpdateAuthority.Permit, TransferUOW.DataWriteType.KeyIn, requestedQty, rollReamWt, lotNumber, createUser, createUserName);
+                TransferUOW.DataUpdateAuthority.Permit, TransferUOW.DataWriteType.KeyIn, requestedQtyConvertResult.Data, rollReamWtConvertResult.Data, lotNumber, createUser, createUserName);
         }
 
         public ResultDataModel<TRF_HEADER_T> OutboundCreateDetail(TransferUOW uow, string shipmentNumber, string transferType, string itemNumber, long outOrganizationId,
            string outSubinventoryCode, long? outLocatorId, long inOrganizationId, string inSubinventoryCode, long? inLocatorId,
-           decimal requestedQty, decimal rollReamQty, string createUser, string createUserName)
+           string requestedQty, string rollReamQty, string createUser, string createUserName)
         {
+            var requestedQtyConvertResult = ConvertEx.StringToDecimal(requestedQty);
+            if (!requestedQtyConvertResult.Success) return new ResultDataModel<TRF_HEADER_T>(false, "數量須為數字", null);
+
+            var rollReamQtyConvertResult = ConvertEx.StringToDecimal(rollReamQty);
+            if (!rollReamQtyConvertResult.Success) return new ResultDataModel<TRF_HEADER_T>(false, "棧板數、捲數須為數字", null);
+
             return uow.OutboundCreateDetail(shipmentNumber, transferType, itemNumber, outOrganizationId,
                 outSubinventoryCode, outLocatorId, inOrganizationId, inSubinventoryCode, inLocatorId,
-                TransferUOW.DataUpdateAuthority.Permit, TransferUOW.DataWriteType.KeyIn, requestedQty, rollReamQty, createUser, createUserName);
+                TransferUOW.DataUpdateAuthority.Permit, TransferUOW.DataWriteType.KeyIn, requestedQtyConvertResult.Data, rollReamQtyConvertResult.Data, createUser, createUserName);
         }
 
         public ResultModel OutboundCreatePick(TransferUOW uow, long transferHeaderId, long transferDetailId, string barcode,

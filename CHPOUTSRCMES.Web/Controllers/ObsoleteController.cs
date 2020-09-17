@@ -145,7 +145,7 @@ namespace CHPOUTSRCMES.Web.Controllers
         }
 
         [HttpPost]
-        public ActionResult AddTransactionDetail( long stockId, decimal mQty)
+        public ActionResult AddTransactionDetail( long stockId, string mQty)
         {
             using (var context = new MesContext())
             {

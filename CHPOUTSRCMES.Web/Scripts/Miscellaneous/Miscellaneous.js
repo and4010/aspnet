@@ -5,6 +5,18 @@ $(document).ready(function () {
 
     GetTop();
 
+    function isNotANumber(inputData) {
+        if (!inputData) {
+            return false;
+        }
+        if (isNaN(inputData)) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+
     function getMiscellaneous() {
         return $("#ddlMiscellaneous option:selected").text();
     }
@@ -237,7 +249,7 @@ $(document).ready(function () {
             }
 
             var rowsData = StockDT.rows({ page: 'current' }).data();
-            for (i = 0 ; i < rowsData.length; i++) {
+            for (i = 0; i < rowsData.length; i++) {
                 for (j = 0; j < selected.length; j++) {
                     if (selected[j] == rowsData[i].ID) {
                         selected.splice(j, 1);
@@ -380,18 +392,18 @@ $(document).ready(function () {
             { data: "PRIMARY_TRANSACTION_QTY", name: "主要異動數量", autoWidth: true, className: "dt-body-right" },
             { data: "PRIMARY_AVAILABLE_QTY", name: "主要數量", autoWidth: true, className: "dt-body-right" },
             { data: "PRIMARY_UOM_CODE", name: "主要單位", autoWidth: true },
-             {
-                 data: "SECONDARY_TRANSACTION_QTY", name: "次要異動數量", autoWidth: true, className: "dt-body-right", "mRender": function (data, type, full) {
-                     if (data != null) {
-                         if (data == 0) {
-                             return '';
-                         }
-                         return data;
-                     } else {
-                         return '';
-                     }
-                 }
-             },
+            {
+                data: "SECONDARY_TRANSACTION_QTY", name: "次要異動數量", autoWidth: true, className: "dt-body-right", "mRender": function (data, type, full) {
+                    if (data != null) {
+                        if (data == 0) {
+                            return '';
+                        }
+                        return data;
+                    } else {
+                        return '';
+                    }
+                }
+            },
             {
                 data: "SECONDARY_AVAILABLE_QTY", name: "次要數量", autoWidth: true, className: "dt-body-right", "mRender": function (data, type, full) {
                     if (data != null) {
@@ -455,32 +467,32 @@ $(document).ready(function () {
                         })
                     }
                 },
-                 //{
-                 //    text: '刪除',
-                 //    className: 'btn-danger',
-                 //    action: function () {
-                 //        var selectedData = TransactionDetailDT.rows('.selected').data();
-                 //        if (selectedData.length == 0) {
-                 //            swal.fire("請選擇要刪除的項目");
-                 //            return;
-                 //        }
+                //{
+                //    text: '刪除',
+                //    className: 'btn-danger',
+                //    action: function () {
+                //        var selectedData = TransactionDetailDT.rows('.selected').data();
+                //        if (selectedData.length == 0) {
+                //            swal.fire("請選擇要刪除的項目");
+                //            return;
+                //        }
 
-                 //        swal.fire({
-                 //            title: "異動明細刪除",
-                 //            text: "確定刪除嗎?",
-                 //            type: "warning",
-                 //            showCancelButton: true,
-                 //            confirmButtonColor: "#DD6B55",
-                 //            confirmButtonText: "確定",
-                 //            cancelButtonText: "取消"
-                 //        }).then(function (result) {
-                 //            if (result.value) {
-                 //                DelTransactionDetail(selectedData);
-                 //            }
-                 //        });
+                //        swal.fire({
+                //            title: "異動明細刪除",
+                //            text: "確定刪除嗎?",
+                //            type: "warning",
+                //            showCancelButton: true,
+                //            confirmButtonColor: "#DD6B55",
+                //            confirmButtonText: "確定",
+                //            cancelButtonText: "取消"
+                //        }).then(function (result) {
+                //            if (result.value) {
+                //                DelTransactionDetail(selectedData);
+                //            }
+                //        });
 
-                 //    }
-                 //},
+                //    }
+                //},
                 {
                     text: '編輯備註',
                     className: 'btn-danger',
@@ -549,12 +561,25 @@ $(document).ready(function () {
             swal.fire('請輸入數量');
             event.preventDefault();
             return;
+        } else {
+            if (!isNotANumber($('#txtSearchQty').val())) {
+                swal.fire('數量須為數字');
+                event.preventDefault();
+                return;
+            }
         }
         if ($('#txtPercentageError').val() == "") {
             swal.fire('請輸入誤差百分比');
             event.preventDefault();
             return;
+        } else {
+            if (!isNotANumber($('#txtPercentageError').val())) {
+                swal.fire('誤差百分比須為數字');
+                event.preventDefault();
+                return;
+            }
         }
+
 
         StockDT.ajax.reload(null, false);
     }
@@ -620,7 +645,7 @@ $(document).ready(function () {
 
 
         var list = [];
-        for (i = 0 ; i < selectedData.length; i++) {
+        for (i = 0; i < selectedData.length; i++) {
             list.push(selectedData[i].ID);
         }
 
@@ -715,17 +740,17 @@ function LocatorChangeCallBack() {
 
 function AutoCompleteItemNumberSelectCallBack(ITEM_NO) {
     //$("#txtItemNumber").val(ITEM_NO);
-    
+
     GetStockItemData(ITEM_NO, true);
 }
 
 function LostFocusItemNumberCallBack(ITEM_NO) {
-    
+
     GetStockItemData(ITEM_NO, false);
-   
+
 }
 
-function GetStockItemData(ITEM_NO,focusNext) {
+function GetStockItemData(ITEM_NO, focusNext) {
     $.ajax({
         url: "/StockTransaction/GetStockItemData",
         type: "post",
