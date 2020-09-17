@@ -1535,6 +1535,7 @@
     <Content Include="Data\SQLScript\117_SP_DlvTripCancel.sql" />
     <Content Include="Data\SQLScript\118_SP_P210_OspStStage1Upload.sql" />
     <Content Include="Data\SQLScript\119_SP_P211_OspStStage2Upload.sql" />
+    <Content Include="Data\SQLScript\120_SP_P213_OspStStage3Upload.sql" />
     <Content Include="Data\SQLScript\201_XXIF_CHP_CONTROL_ST.sql" />
     <Content Include="Data\SQLScript\202_XXIF_CHP_P217_CONTAINER_ST.sql" />
     <Content Include="Data\SQLScript\203_XXIF_CHP_P218_CONTAINER_RV_ST.sql" />
