@@ -437,6 +437,10 @@
     <Compile Include="Migrations\202009160058069_fixproblem.Designer.cs">
       <DependentUpon>202009160058069_fixproblem.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202009210149109_fixProcessTable.cs" />
+    <Compile Include="Migrations\202009210149109_fixProcessTable.Designer.cs">
+      <DependentUpon>202009210149109_fixProcessTable.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Delivery\bDeliveryDetail.cs" />
     <Compile Include="Models\Delivery\DeliveryDetail.cs" />
@@ -2197,6 +2201,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202009160058069_fixproblem.resx">
       <DependentUpon>202009160058069_fixproblem.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202009210149109_fixProcessTable.resx">
+      <DependentUpon>202009210149109_fixProcessTable.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

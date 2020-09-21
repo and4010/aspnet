@@ -408,9 +408,9 @@ namespace CHPOUTSRCMES.Web.Controllers
         }
 
         /// <summary>
-        /// 頁籤數字
+        /// 頁籤紙捲數字
         /// </summary>
-        /// <param name="CabinetNumber"></param>
+        /// <param name="id"></param>
         /// <returns></returns>
         [HttpPost]
         public JsonResult PaperNumber(long id)
@@ -421,9 +421,23 @@ namespace CHPOUTSRCMES.Web.Controllers
             return Json(new { PaperTotle }, JsonRequestBehavior.AllowGet);
         }
         /// <summary>
-        /// 頁籤數字
+        /// 頁籤紙捲已入庫數字
         /// </summary>
-        /// <param name="CabinetNumber"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public JsonResult PaperNumberIn(long id)
+        {
+
+            PurchaseViewModel viewModel = new PurchaseViewModel();
+            var PaperTotleIn = viewModel.GetPaperRollNumberInTab(id);
+            return Json(new { PaperTotleIn }, JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
+        /// 頁籤平板數字
+        /// </summary>
+        /// <param name="id"></param>
         /// <returns></returns>
         [HttpPost]
         public JsonResult FlatNumber(long id)
@@ -431,6 +445,19 @@ namespace CHPOUTSRCMES.Web.Controllers
             PurchaseViewModel viewModel = new PurchaseViewModel();
             var FlatTotle = viewModel.GetFlatNumberTab(id);
             return Json(new { FlatTotle }, JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
+        /// 頁籤平板已入庫數字
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public JsonResult FlatInNumberIn(long id)
+        {
+            PurchaseViewModel viewModel = new PurchaseViewModel();
+            var FlatTotleIn = viewModel.GetFlatNumberInTab(id);
+            return Json(new { FlatTotleIn }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]

@@ -1,5 +1,9 @@
 ﻿var PaperRolldataTablesHeader
 var FlatdataTablesHeader
+var PaperRolldataTablesBodys
+var FlatdataTablesBodys
+var PaperRollerRowData
+var FlatRowData
 ///狀態  0已入庫 1待入庫 2 取消
 $(document).ready(function () {
     EnableBarcode(true)
@@ -17,6 +21,23 @@ $(document).ready(function () {
     //}
     callDailog(Status);
     init(Status);
+
+
+    PaperRolldataTablesBodys.on('select', function (e, dt, type, indexes) {
+        PaperRollerRowData = PaperRolldataTablesBodys.rows(indexes).data();
+    });
+
+    PaperRolldataTablesBodys.on('deselect', function (e, dt, type, indexes) {
+        PaperRollerRowData = null;
+    });
+
+    FlatdataTablesBodys.on('select', function (e, dt, type, indexes) {
+        FlatRowData = FlatdataTablesBodys.rows(indexes).data();
+    });
+
+    FlatdataTablesBodys.on('deselect', function (e, dt, type, indexes) {
+        FlatRowData = null;
+    });
 
 
     //紙捲表身編輯事件
@@ -95,11 +116,19 @@ $(document).ready(function () {
 
     //列印標籤紙捲
     $('#PaperRollLabel').on('click', function (e) {
+        if (PaperRollerRowData == null) {
+            swal.fire("請先選擇要列印標籤");
+            return;
+        }
         PrintLableParameter($('#PaperRolldataTablesBody').DataTable(), "/Purchase/PrintPaperRollLabel", "1", $("#Status").val());
     });
 
     //列印標籤平張
     $('#FlatLabel').on('click', function (e) {
+        if (FlatRowData == null) {
+            swal.fire("請先選擇要列印標籤");
+            return;
+        }
         PrintLableParameter($('#FlatdataTablesBody').DataTable(), "/Purchase/PrintFlatLabel", "1", $("#Status").val());
       
     });
@@ -150,6 +179,19 @@ function PaperNavsNumber() {
         }
     });
 
+    $.ajax({
+        url: '/Purchase/PaperNumberIn',
+        type: 'POST',
+        datatype: 'json',
+        data: { id: CtrHeaderId },
+        success: function (data) {
+            $('#PaperRollSpanIn').text(data.PaperTotleIn);
+        },
+        error: function (data) {
+
+        }
+    });
+
 }
 
 function FlatNavsNumber() {
@@ -167,7 +209,18 @@ function FlatNavsNumber() {
         }
     });
 
+    $.ajax({
+        url: '/Purchase/FlatInNumberIn',
+        type: 'POST',
+        datatype: 'json',
+        data: { id: CtrHeaderId },
+        success: function (data) {
+            $('#FlatSpanIn').text(data.FlatTotleIn);
+        },
+        error: function (data) {
 
+        }
+    });
 
 }
 
@@ -394,7 +447,7 @@ function InsertPaperRollBarcode(barcode, CtrHeaderId) {
             } else {
                 swal.fire(data.resultModel.Msg);
             }
-            PaperRolldataTablesBody();
+            PaperRolldataTablesBodys.ajax.reload(null, false);
             PaperNavsNumber();
         }
     });
@@ -414,7 +467,7 @@ function InsertFlatBarocde(barcode, CtrHeaderId) {
             } else {
                 swal.fire(data.resultModel.Msg);
             }
-            FlatdataTablesBody();
+            FlatdataTablesBodys.ajax.reload(null, false);
             FlatNavsNumber();
         }
     });
@@ -722,7 +775,7 @@ function LoadFlatHeader() {
 function PaperRolldataTablesBody() {
     var CtrHeaderId = $("#CtrHeaderId").val();
     var Status = $("#Status").val();
-    $('#PaperRolldataTablesBody').DataTable({
+    PaperRolldataTablesBodys = $('#PaperRolldataTablesBody').DataTable({
         "language": {
             "url": "/bower_components/datatables/language/zh-TW.json"
         },
@@ -817,7 +870,7 @@ function PaperRolldataTablesBody() {
 function FlatdataTablesBody() {
     var CtrHeaderId = $("#CtrHeaderId").val();
     var Status = $("#Status").val();
-    $('#FlatdataTablesBody').DataTable({
+    FlatdataTablesBodys =  $('#FlatdataTablesBody').DataTable({
         "language": {
             "url": "/bower_components/datatables/language/zh-TW.json"
         },

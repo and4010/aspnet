@@ -618,7 +618,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Process
         /// </summary>
         /// 
         [Column("LAST_UPDATE_BY")]
-        [Required]
         public string LastUpdateBy { set; get; }
 
         /// <summary>

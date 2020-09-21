@@ -609,7 +609,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Process
         /// </summary>
         /// 
         [Column("LAST_UPDATE_BY")]
-        [Required]
         [StringLength(128)]
         public string LastUpdateBy { set; get; }
 
@@ -619,8 +618,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Process
         /// 
         [Column("LAST_UPDATE_DATE")]
         [DataType(DataType.Date)]
-        [Required]
-        public DateTime LastUpdateDate { set; get; }
+        public DateTime? LastUpdateDate { set; get; }
 
     }
 }

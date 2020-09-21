@@ -511,7 +511,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             /// 庫存異動至沒庫存
             /// </summary>
             public const string TransferNoneInStock = "S4";
-           
+
 
             public string GetDesc(string statusCode)
             {
@@ -2604,21 +2604,23 @@ WHERE T.STOCK_ID IN");
             {
                 var id = Int32.Parse(OrganizationId);
                 var MachineCode = machinePaperTypeRepository.Get(x => x.ControlFlag != ControlFlag.Deleted && x.OrganizationId == id)
-                             .Select(x => new SelectListItem
-                             {
-                                 Text = x.MachineCode,
-                                 Value = x.MachineCode
-                             }).ToList();
+                                  .GroupBy(x => x.MachineNum)
+                    .Select(y => new SelectListItem
+                    {
+                        Text = y.Key,
+                        Value = y.Key
+                    }).ToList();
                 ManchineNum.AddRange(MachineCode);
             }
             else
             {
-                var MachineCode = machinePaperTypeRepository.Get(x => x.ControlFlag != ControlFlag.Deleted)
-                           .Select(x => new SelectListItem
-                           {
-                               Text = x.MachineCode,
-                               Value = x.MachineCode
-                           }).ToList();
+                var MachineCode = machinePaperTypeRepository.Get(c => c.ControlFlag != ControlFlag.Deleted)
+                     .GroupBy(x => x.MachineNum)
+                    .Select(y => new SelectListItem
+                    {
+                        Text = y.Key,
+                        Value = y.Key
+                    }).ToList();
                 ManchineNum.AddRange(MachineCode);
             }
 

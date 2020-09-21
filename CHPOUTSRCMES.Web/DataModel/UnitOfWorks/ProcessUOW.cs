@@ -770,7 +770,7 @@ DI.BASIC_WEIGHT AS BasicWeight,
 DI.SPECIFICATION AS Specification,
 DI.GRAIN_DIRECTION AS GrainDirection,
 DI.ORDER_WEIGHT AS OrderWeight,
-DO.TRANSACTION_QUANTITY AS ReamWt,
+DI.REAM_WT AS ReamWt,
 DO.PRIMARY_QUANTITY AS PrimaryQuantity,
 DO.PRIMARY_UOM AS PrimaryUom,
 DO.TRANSACTION_UOM AS TransactionUom,
@@ -779,6 +779,13 @@ DI.PAPER_TYPE AS PaperType,
 DI.OSP_REMARK AS OspRemark,
 DI.INVENTORY_ITEM_NUMBER AS SelectedInventoryItemNumber,
 DO.INVENTORY_ITEM_NUMBER AS Product_Item,
+DO.PAPER_TYPE AS DoPaperType,
+DO.SPECIFICATION AS DoSpecification,
+DO.BASIC_WEIGHT AS DoBasicWeight,
+DO.GRAIN_DIRECTION AS DoGrainDirection,
+DO.PRIMARY_QUANTITY AS DoPrimaryQuantity,
+DO.REAM_WT as DoReamWt,
+DO.PACKING_TYPE AS DoPackingType,
 H.NOTE AS Note,
 DI.SUBINVENTORY AS Subinventory,
 DI.LOCATOR_CODE AS LocatorCode,
@@ -793,7 +800,7 @@ JOIN OSP_DETAIL_OUT_T DO ON DO.OSP_HEADER_ID = H.OSP_HEADER_ID
 left JOIN OSP_YIELD_VARIANCE_T OYV ON OYV.OSP_HEADER_ID = H.OSP_HEADER_ID
 WHERE DI.OSP_HEADER_ID = @OSP_HEADER_ID");
                     string commandText = string.Format(query.ToString());
-                    commandText = string.Concat(commandText, " UNION ", commandText.Replace("OSP_DETAIL_IN_T", "OSP_DETAIL_IN_HT").Replace("OSP_DETAIL_OUT_T", "OSP_DETAIL_OUT_HT"));
+                    commandText = string.Concat(commandText, " UNION ", commandText.Replace("OSP_DETAIL_IN_T", "OSP_DETAIL_IN_HT").Replace("OSP_DETAIL_OUT_T", "OSP_DETAIL_OUT_HT").Replace("OSP_YIELD_VARIANCE_T", "OSP_YIELD_VARIANCE_HT"));
                     return mesContext.Database.SqlQuery<CHP_PROCESS_T>(commandText, new SqlParameter("@OSP_HEADER_ID", id)).SingleOrDefault();
                 }
             }
@@ -873,7 +880,7 @@ DI.BASIC_WEIGHT AS BasicWeight,
 DI.SPECIFICATION AS Specification,
 DI.GRAIN_DIRECTION AS GrainDirection,
 DI.ORDER_WEIGHT AS OrderWeight,
-DO.TRANSACTION_QUANTITY AS ReamWt,
+DI.REAM_WT AS ReamWt,
 DO.PRIMARY_QUANTITY AS PrimaryQuantity,
 DO.PRIMARY_UOM AS PrimaryUom,
 DO.TRANSACTION_UOM AS TransactionUom,
@@ -1987,7 +1994,7 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
                 //投入重量：領料量 - 餘捲
                 var investWeight = DetailIn.PrimaryQuantity - RemainWeight;
                 var Totle = Math.Round(ProductWeight / investWeight, 2);
-                var rate = Math.Round((Totle * 100), 2);
+                var rate = Math.Round((ProductWeight / investWeight * 100), 2);
                 var loss = OspYieldVarianceTRepository.Get(x => x.OspHeaderId == DetailOut.OspHeaderId).SingleOrDefault();
                 if (loss == null)
                 {
@@ -3055,8 +3062,8 @@ and SUBINVENTORY_CODE = @SUBINVENTORY_CODE");
                 var MachineCode = machinePaperTypeRepository.Get(x => x.ControlFlag != ControlFlag.Deleted && x.PaperType == PaperType)
                              .Select(x => new SelectListItem
                              {
-                                 Text = x.MachineCode,
-                                 Value = x.MachineCode
+                                 Text = x.MachineNum,
+                                 Value = x.MachineNum
                              }).ToList();
                 ManchineNum.AddRange(MachineCode);
 
@@ -3444,6 +3451,23 @@ and SUBINVENTORY_CODE = @SUBINVENTORY_CODE");
 
         }
 
-
+        /// <summary>
+        /// 取得deatialOut資料
+        /// </summary>
+        /// <param name="OspHeaderId"></param>
+        /// <returns></returns>
+        public OSP_DETAIL_OUT_T GetDetailOut(long OspHeaderId)
+        {
+            try
+            {
+                return OspDetailOutTRepository.Get(x => x.OspHeaderId == OspHeaderId).SingleOrDefault();
+            }
+            catch(Exception e)
+            {
+                logger.Error(LogUtilities.BuildExceptionMessage(e));
+                return new OSP_DETAIL_OUT_T();
+            }
+           
+        }
     }
 }

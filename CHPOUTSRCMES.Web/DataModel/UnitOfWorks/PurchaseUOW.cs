@@ -992,7 +992,7 @@ WHERE p.ITEM_CATEGORY = N'捲筒' and p.CTR_PICKED_ID  = @CTR_PICKED_ID");
                     var ctrPickT = ctrPickedTRepository.Get(x => x.Barcode == Barcode && x.ItemCategory == "捲筒" && x.CtrHeaderId == CtrHeaderId).SingleOrDefault();
                     if (ctrPickT == null)
                     {
-                        return new ResultModel(false, "此無條碼!!");
+                        return new ResultModel(false, "無此條碼!!");
                     }
 
                     switch (ctrPickT.Status)
@@ -1036,7 +1036,7 @@ WHERE p.ITEM_CATEGORY = N'捲筒' and p.CTR_PICKED_ID  = @CTR_PICKED_ID");
                     var ctrPickT = ctrPickedTRepository.Get(x => x.Barcode == Barcode && x.ItemCategory == "平版" && x.CtrHeaderId == CtrHeaderId).SingleOrDefault();
                     if (ctrPickT == null)
                     {
-                        return new ResultModel(false, "此無條碼");
+                        return new ResultModel(false, "無此條碼!!");
                     }
                     switch (ctrPickT.Status)
                     {
@@ -1107,7 +1107,7 @@ WHERE p.ITEM_CATEGORY = N'平版' and p.CTR_PICKED_ID  = @CTR_PICKED_ID");
         }
 
         /// <summary>
-        /// 取得頁籤平版數量
+        /// 取得頁籤未入庫平版數量
         /// </summary>
         /// <param name="CONTAINER_NO"></param>
         /// <returns></returns>
@@ -1139,7 +1139,34 @@ WHERE d1.ITEM_CATEGORY = N'平版' and h1.CTR_HEADER_ID  = @CTR_HEADER_ID");
         }
 
         /// <summary>
-        /// 取得頁籤紙捲數量
+        /// 取得頁籤已入庫平版數量
+        /// </summary>
+        /// <param name="CtrHeaderId"></param>
+        /// <returns></returns>
+        public Int32 GetFlatNumberInTab(long CtrHeaderId)
+        {
+            try
+            {
+                StringBuilder query = new StringBuilder();
+                query.Append(
+$@"SELECT
+COUNT(p.CTR_PICKED_ID)
+FROM CTR_PICKED_T p
+JOIN CTR_HEADER_T h2 ON h2.CTR_HEADER_ID = p.CTR_HEADER_ID
+WHERE p.ITEM_CATEGORY = N'平版' and h2.CTR_HEADER_ID  = @CTR_HEADER_ID and p.STATUS = N'{PickingStatusCode.ALREADY}'");
+                return Context.Database.SqlQuery<Int32>(query.ToString(), new SqlParameter("@CTR_HEADER_ID", CtrHeaderId)).SingleOrDefault();
+
+
+            }
+            catch (Exception e)
+            {
+                logger.Error(e.Message);
+                return 0;
+            }
+        }
+
+        /// <summary>
+        /// 取得頁籤未入庫紙捲數量
         /// </summary>
         /// <param name="CONTAINER_NO"></param>
         /// <returns></returns>
@@ -1160,6 +1187,33 @@ FROM CTR_DETAIL_T d1
 JOIN CTR_HEADER_T h1 ON h1.CTR_HEADER_ID = d1.CTR_HEADER_ID
 WHERE d1.ITEM_CATEGORY = N'捲筒' and h1.CTR_HEADER_ID  = @CTR_HEADER_ID");
                 return Context.Database.SqlQuery<decimal>(query.ToString(), new SqlParameter("@CTR_HEADER_ID", CtrHeaderId)).SingleOrDefault();
+
+
+            }
+            catch (Exception e)
+            {
+                logger.Error(e.Message);
+                return 0;
+            }
+        }
+
+        /// <summary>
+        /// 取得頁籤已入庫紙捲數量
+        /// </summary>
+        /// <param name="CtrHeaderId"></param>
+        /// <returns></returns>
+        public Int32 GetPaperRollNumberInTab(long CtrHeaderId)
+        {
+            try
+            {
+                StringBuilder query = new StringBuilder();
+                query.Append(
+$@"SELECT
+COUNT(p.CTR_PICKED_ID)
+FROM CTR_PICKED_T p
+JOIN CTR_HEADER_T h2 ON h2.CTR_HEADER_ID = p.CTR_HEADER_ID
+WHERE p.ITEM_CATEGORY = N'捲筒' and h2.CTR_HEADER_ID  = @CTR_HEADER_ID and p.STATUS = N'{PickingStatusCode.ALREADY}'");
+                return Context.Database.SqlQuery<Int32>(query.ToString(), new SqlParameter("@CTR_HEADER_ID", CtrHeaderId)).SingleOrDefault();
 
 
             }
