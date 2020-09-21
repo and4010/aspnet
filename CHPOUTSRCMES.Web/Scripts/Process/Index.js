@@ -323,6 +323,10 @@ function BtnEvent() {
 
 
     $('#BtnCutReceipt').click(function () {
+        if (rowData.pluck('Status')[0] == CloseBatch) {
+            swal.fire("關帳，無法列印。");
+            return;
+        }
         if (rowData.pluck('Status')[0] == WaitBatch) {
             swal.fire("請先排單，再列印裁切單。");
             return;
@@ -332,6 +336,10 @@ function BtnEvent() {
 
     });
     $('#BtnCutMaterial').click(function () {
+        if (rowData.pluck('Status')[0] == CloseBatch) {
+            swal.fire("關帳，無法列印。");
+            return;
+        }
         if (rowData.pluck('Status')[0] == WaitBatch) {
             swal.fire("請先排單，再列印領料單。");
             return;

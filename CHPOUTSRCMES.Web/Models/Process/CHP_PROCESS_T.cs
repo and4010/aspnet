@@ -63,7 +63,7 @@ namespace CHPOUTSRCMES.Web.Models.Process
         public string OrderWeight { set; get; }
 
         [Display(Name = "令數")] 
-        public decimal ReamWt { set; get; }
+        public string ReamWt { set; get; }
 
         [Display(Name = "主要重量")] //PRIMARY_QUANTITY
         public decimal PrimaryQuantity { set; get; }
@@ -113,6 +113,26 @@ namespace CHPOUTSRCMES.Web.Models.Process
         [Display(Name = "最後更新日期")] //LAST_UPDATE_DATE
         public DateTime? LastUpdateDate { set; get; }
 
+        [Display(Name = "紙別")]
+        public string DoPaperType { get; set; }
+
+        [Display(Name = "規格")]
+        public string DoSpecification { set; get; }
+
+        [Display(Name = "基重")]
+        public string DoBasicWeight { set; get; }
+
+        [Display(Name = "絲向")]
+        public string DoGrainDirection { set; get; }
+
+        [Display(Name = "令數")]
+        public string DoReamWt { set; get; }
+
+        [Display(Name = "主要重量")] //PRIMARY_QUANTITY
+        public decimal DoPrimaryQuantity { set; get; }
+
+        [Display(Name = "包裝方式")]
+        public string DoPackingType { set; get; }
 
 
 

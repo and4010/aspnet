@@ -280,7 +280,7 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
         /// <summary>
         /// 取得平張頁籤數量
         /// </summary>
-        /// <param name="CabinetNumber"></param>
+        /// <param name="CtrHeaderId"></param>
         /// <returns></returns>
         public decimal GetFlatNumberTab(long CtrHeaderId)
         {
@@ -291,15 +291,42 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
         }
 
         /// <summary>
+        /// 取得平張已入庫頁籤數量
+        /// </summary>
+        /// <param name="CtrHeaderId"></param>
+        /// <returns></returns>
+        public Int32 GetFlatNumberInTab(long CtrHeaderId)
+        {
+            using (var context = new MesContext())
+            {
+                return new PurchaseUOW(context).GetFlatNumberInTab(CtrHeaderId);
+            }
+        }
+
+        /// <summary>
         /// 取得紙捲頁籤數量
         /// </summary>
-        /// <param name="CabinetNumber"></param>
+        /// <param name="CtrHeaderId"></param>
         /// <returns></returns>
         public decimal GetPaperRollNumberTab(long CtrHeaderId)
         {
             using (var context = new MesContext())
             {
                 return new PurchaseUOW(context).GetPaperRollNumberTab(CtrHeaderId);
+            }
+
+        }
+
+        /// <summary>
+        /// 取得紙捲已入庫頁籤數量
+        /// </summary>
+        /// <param name="CtrHeaderId"></param>
+        /// <returns></returns>
+        public Int32 GetPaperRollNumberInTab(long CtrHeaderId)
+        {
+            using (var context = new MesContext())
+            {
+                return new PurchaseUOW(context).GetPaperRollNumberInTab(CtrHeaderId);
             }
 
         }
