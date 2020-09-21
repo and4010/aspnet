@@ -978,32 +978,33 @@ $(document).ready(function () {
         for (i = 0; i < data.length; i++) {
             list.push(data[i].Id);
         }
+        var tripName = data.pluck('TRIP_NAME')[0];
+        window.open("/Delivery/DeliveryPickingReport/?tripName=" + tripName);
+        //$.ajax({
+        //    url: "/Delivery/PrintPickList",
+        //    type: "post",
+        //    data: {
+        //        'id': list
+        //    },
+        //    success: function (data) {
+        //        if (data.status) {
 
-        $.ajax({
-            url: "/Delivery/PrintPickList",
-            type: "post",
-            data: {
-                'id': list
-            },
-            success: function (data) {
-                if (data.status) {
+        //            TripDataTablesBody.ajax.reload(null, false);
 
-                    TripDataTablesBody.ajax.reload(null, false);
-
-                }
-                else {
-                    swal.fire(data.result);
-                }
-            },
-            error: function () {
-                swal.fire('列印備貨單失敗');
-            },
-            complete: function (data) {
+        //        }
+        //        else {
+        //            swal.fire(data.result);
+        //        }
+        //    },
+        //    error: function () {
+        //        swal.fire('列印備貨單失敗');
+        //    },
+        //    complete: function (data) {
 
 
-            }
+        //    }
 
-        });
+        //});
     }
 
     function DeliveryAuthorize(data) {
