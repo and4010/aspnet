@@ -14,6 +14,8 @@ using static CHPOUTSRCMES.Web.DataModel.UnitOfWorks.DeliveryUOW;
 using System.Security.Claims;
 using NLog;
 using CHPOUTSRCMES.Web.Util;
+using Microsoft.Reporting.WebForms;
+using System.Drawing;
 
 namespace CHPOUTSRCMES.Web.Models.Delivery
 {
@@ -1109,6 +1111,41 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
         {
             var resultData = uow.GetLabels(PICKED_IDs, userName);
             return uow.PrintLabel(resultData.Data);
+        }
+
+        public ResultDataModel<ReportViewer> GetDeliveryPickingReportViewer(DeliveryUOW uow, string tripName)
+        {
+            try
+            {
+                List<ReportParameter> paramList = new List<ReportParameter>();
+                paramList.Add(new ReportParameter("TRIP_NAME", tripName, false));
+
+                var report = new ReportViewer();
+                // Set the processing mode for the ReportViewer to Local  
+                report.ProcessingMode = ProcessingMode.Local;
+                report.BackColor = Color.LightGray;
+                report.SizeToReportContent = true;
+                report.BorderWidth = 1;
+                report.BorderStyle = BorderStyle.Solid;
+                LocalReport localReport = report.LocalReport;
+                localReport.ReportPath = "Report/DeliveryPickingList.rdlc";
+
+                var reportDataSourceResult = uow.GetPickingListReportDataSource(tripName);
+                if (!reportDataSourceResult.Success) return new ResultDataModel<ReportViewer>(false, reportDataSourceResult.Msg, null);
+                localReport.DataSources.Add(reportDataSourceResult.Data);
+
+                // Set the report parameters for the report  
+                localReport.SetParameters(paramList);
+
+                report.LocalReport.Refresh();
+
+                return new ResultDataModel<ReportViewer>(true, "取得備貨單報表成功", report);
+            }
+            catch (Exception e)
+            {
+                logger.Error(LogUtilities.BuildExceptionMessage(e));
+                return new ResultDataModel<ReportViewer>(false, "取得備貨單報表失敗", null);
+            }
         }
     }
 

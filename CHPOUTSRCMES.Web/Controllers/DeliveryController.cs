@@ -829,5 +829,31 @@ namespace CHPOUTSRCMES.Web.Controllers
                 }
             }
         }
+
+        /// <summary>
+        /// 出貨-備貨單
+        /// </summary>
+        /// <param name="OspHeaderId"></param>
+        /// <returns></returns>
+
+        public ActionResult DeliveryPickingReport(string tripName)
+        {
+            using (var context = new MesContext())
+            {
+                using (DeliveryUOW uow = new DeliveryUOW(context))
+                {
+#if DEBUG
+                    var reportViewer = tripHeaderData.GetDeliveryPickingReportViewer(uow,tripName);
+                    ViewBag.ReportViewer = reportViewer;
+                    return View("Report");
+#else
+                    return OspRemoteCutReceiptReport(OspHeaderId);
+
+#endif
+                }
+            }
+        }
+
+        
     }
 }

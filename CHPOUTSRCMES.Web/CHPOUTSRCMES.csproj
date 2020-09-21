@@ -2166,6 +2166,7 @@
     <Content Include="Views\Home\Report.cshtml" />
     <Content Include="Views\Stock\Query.cshtml" />
     <Content Include="Views\Stock\Detail.cshtml" />
+    <Content Include="Views\Delivery\Report.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

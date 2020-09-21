@@ -18,6 +18,9 @@ using System.Data.SqlClient;
 using CHPOUTSRCMES.Web.Models;
 using CHPOUTSRCMES.Web.DataModel.Interfaces;
 using CHPOUTSRCMES.Web.DataModel.Entity.Information;
+using Microsoft.Reporting.WebForms;
+using System.Data;
+using System.Web.Configuration;
 
 namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
 {
@@ -1797,6 +1800,41 @@ WHERE p.BARCODE = @Barcode
                 return new ResultDataModel<List<LabelModel>>(false, "取得標籤資料失敗:" + ex.Message, null);
             }
            
+
+        }
+
+
+        /// <summary>
+        /// 取得出貨備貨單ReportDataSource
+        /// </summary>
+        /// <param name="tripName"></param>
+        /// <returns></returns>
+        public ResultDataModel<ReportDataSource> GetPickingListReportDataSource(string tripName)
+        {
+            using (SqlConnection connection = new SqlConnection(WebConfigurationManager.ConnectionStrings["MesContext"].ConnectionString.ToString()))
+            {
+                try
+                {
+                    connection.Open();
+                    ReportDataSource dataSource = new ReportDataSource();
+                    DataSet dataset = new DataSet("dataset");
+                    string cmd = "SELECT * From DeliveryPickingList(@TRIP_NAME)";
+                    SqlCommand command = new SqlCommand(cmd, connection);
+                    command.Parameters.Add(new SqlParameter("@TRIP_NAME", tripName));
+                    SqlDataAdapter salesOrderAdapter = new SqlDataAdapter(command);
+                    salesOrderAdapter.Fill(dataset, "Detail");
+                    dataSource.Name = "Detail";
+                    dataSource.Value = dataset.Tables["Detail"];
+
+                    connection.Close();
+                    return new ResultDataModel<ReportDataSource>(true, "取得備貨單報表資料來源成功", dataSource);
+                }
+                catch (Exception e)
+                {
+                    logger.Error(LogUtilities.BuildExceptionMessage(e));
+                    return new ResultDataModel<ReportDataSource>(false, "取得備貨單報表資料來源失敗", null);
+                }
+            }
 
         }
 
