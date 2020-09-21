@@ -599,5 +599,63 @@ namespace CHPOUTSRCMES.Web.Controllers
             return View("Report");
         }
 
+//        /// <summary>
+//        /// 出貨-備貨單
+//        /// </summary>
+//        /// <param name="OspHeaderId"></param>
+//        /// <returns></returns>
+
+//        public ActionResult DeliveryPickingReport(string TripName)
+//        {
+//#if DEBUG
+//            return OspLocalCutReceiptReport(OspHeaderId);
+//#else
+//            return OspRemoteCutReceiptReport(OspHeaderId);
+//#endif
+//        }
+
+//        public ActionResult DeliveryPickingReport(string TripName)
+//        {
+//            using (var context = new MesContext())
+//            {
+//                using (ProcessUOW uow = new ProcessUOW(context))
+//                {
+//                    List<ReportParameter> paramList = new List<ReportParameter>();
+//                    paramList.Add(new ReportParameter("OSP_HEADER_ID", OspHeaderId, false));
+//                    paramList.Add(new ReportParameter("SPECIFICATION", OspHeaderId, false));
+//                    paramList.Add(new ReportParameter("packingType", OspHeaderId, false));
+//                    var report = new ReportViewer();
+
+//                    // Set the processing mode for the ReportViewer to Local  
+//                    report.ProcessingMode = ProcessingMode.Local;
+//                    report.BackColor = Color.LightGray;
+//                    report.SizeToReportContent = true;
+//                    report.BorderWidth = 1;
+//                    report.BorderStyle = BorderStyle.Solid;
+//                    LocalReport localReport = report.LocalReport;
+//                    localReport.ReportPath = "Report/ProcessCutReceipt.rdlc";
+
+
+//                    ReportDataSource dsDetail = new ReportDataSource();
+//                    ReportDataSource LabelKnife = new ReportDataSource();
+//                    ReportDataSource LabelDesc = new ReportDataSource();
+//                    ReportDataSource LabelSize = new ReportDataSource();
+//                    uow.OspCutReceiptReport(ref dsDetail, ref LabelKnife, ref LabelDesc, ref LabelSize, OspHeaderId);
+//                    localReport.DataSources.Add(dsDetail);
+//                    localReport.DataSources.Add(LabelKnife);
+//                    localReport.DataSources.Add(LabelDesc);
+//                    localReport.DataSources.Add(LabelSize);
+//                    // Set the report parameters for the report  
+//                    localReport.SetParameters(paramList);
+
+//                    report.LocalReport.Refresh();
+
+//                    ViewBag.ReportViewer = report;
+//                }
+//            }
+
+//            return View("Report");
+//        }
+
     }
 }

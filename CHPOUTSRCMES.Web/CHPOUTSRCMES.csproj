@@ -1522,6 +1522,9 @@
     <Content Include="Data\SQLScript\015_SP_GenerateDocNum.sql" />
     <Content Include="Data\SQLScript\016_OspCutCotangentStock.sql" />
     <Content Include="Data\SQLScript\017_OspRemainQty.sql" />
+    <Content Include="Data\SQLScript\018_DeliveryPickingList.sql" />
+    <Content Include="Data\SQLScript\019_InboundPickingList.sql" />
+    <Content Include="Data\SQLScript\020_OutboundPickingList.sql" />
     <Content Include="Data\SQLScript\101_SP_OrgUnitSync.sql" />
     <Content Include="Data\SQLScript\102_SP_OrganizationSync.sql" />
     <Content Include="Data\SQLScript\103_SP_SubinventorySync.sql" />
@@ -2001,6 +2004,9 @@
     <Content Include="Report\ProcessCutMaterial.rdlc" />
     <Content Include="Report\ProcessCutReceipt.rdlc" />
     <Content Include="Report\OspCutPaperRollStock.rdlc" />
+    <Content Include="Report\InboundPickingList.rdlc" />
+    <Content Include="Report\OutboundPickingList.rdlc" />
+    <Content Include="Report\DeliveryPickingList.rdlc" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\Delivery\DetailViewHeader.js" />
     <Content Include="Scripts\Delivery\FlatEdit.js" />
