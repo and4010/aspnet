@@ -324,7 +324,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Process
         /// </summary>
         /// 
         [Column("ORDER_HEADER_ID")]
-        public long OrderHeaderId { set; get; }
+        public long? OrderHeaderId { set; get; }
 
 
         /// <summary>
@@ -332,14 +332,14 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Process
         /// </summary>
         /// 
         [Column("ORDER_NUMBER")]
-        public long OrderNumber { set; get; }
+        public long? OrderNumber { set; get; }
 
         /// <summary>
         ///訂單明細ID(產品)
         /// </summary>
         /// 
         [Column("ORDER_LINE_ID")]
-        public long OrderLineId { set; get; }
+        public long? OrderLineId { set; get; }
 
         /// <summary>
         ///訂單明細行號(產品)
@@ -356,7 +356,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Process
         /// </summary>
         /// 
         [Column("CUSTOMER_ID")]
-        public long CustomerId { set; get; }
+        public long? CustomerId { set; get; }
 
         /// <summary>
         ///客戶編號(產品)
@@ -381,7 +381,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Process
         /// 
         [Required]
         [Column("PR_NUMBER")]
-        public long PrNumber { set; get; }
+        public long? PrNumber { set; get; }
 
         /// <summary>
         ///請購明細行號
@@ -389,7 +389,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Process
         /// 
         [Required]
         [Column("PR_LINE_NUMBER")]
-        public long PrLineNumber { set; get; }
+        public long? PrLineNumber { set; get; }
 
         /// <summary>
         ///請購明細ID
@@ -397,7 +397,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Process
         /// 
         [Required]
         [Column("REQUISITION_LINE_ID")]
-        public long RequisitionLineId { set; get; }
+        public long? RequisitionLineId { set; get; }
 
         /// <summary>
         ///採購單號
@@ -405,7 +405,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Process
         /// 
         [Required]
         [Column("PO_NUMBER")]
-        public long PoNumber { set; get; }
+        public long? PoNumber { set; get; }
 
 
 
@@ -415,7 +415,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Process
         /// 
         [Required]
         [Column("PO_LINE_NUMBER")]
-        public long PoLineNumber { set; get; }
+        public long? PoLineNumber { set; get; }
 
         /// <summary>
         ///採購明細ID
@@ -423,7 +423,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Process
         /// 
         [Required]
         [Column("PO_LINE_ID")]
-        public long PoLineId { set; get; }
+        public long? PoLineId { set; get; }
 
 
         /// <summary>
@@ -432,7 +432,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Process
         /// 
         [Required]
         [Column("PO_UNIT_PRICE")]
-        public decimal PoUnitPrice { set; get; }
+        public decimal? PoUnitPrice { set; get; }
 
         /// <summary>
         ///採購單版次
@@ -440,7 +440,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Process
         /// 
         [Required]
         [Column("PO_REVISION_NUM")]
-        public long PoRevisionNum { set; get; }
+        public long? PoRevisionNum { set; get; }
 
         /// <summary>
         ///採購單狀態
@@ -505,7 +505,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Process
         /// 預留數量(組成成份)
         /// </summary>
         [Column("RESERVATION_QUANTITY")]
-        public decimal ReservationQuantity { set; get; }
+        public decimal? ReservationQuantity { set; get; }
 
 
 
