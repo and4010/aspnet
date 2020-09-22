@@ -20,6 +20,16 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Transfer
         [Column("TRANSFER_HEADER_ID", Order = 1)]
         public long TransferHeaderId { set; get; }
 
+        /// <summary>
+        /// 出入庫
+        /// </summary>
+        /// 
+        [Required]
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [Column("TRANSFER_TYPE", Order = 2)]
+        public string TransferType { set; get; }
+
 
         /// <summary>
         /// XXIFP217
@@ -29,7 +39,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Transfer
         [Required]
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        [Column("PROCESS_CODE", Order = 2)]
+        [Column("PROCESS_CODE", Order = 3)]
         public string ProcessCode { set; get; }
 
         /// <summary>
@@ -40,7 +50,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Transfer
         [Required]
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        [Column("SERVER_CODE", Order = 3)]
+        [Column("SERVER_CODE", Order = 4)]
         public string ServerCode { set; get; }
 
 
@@ -52,7 +62,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Transfer
         [Required]
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        [Column("BATCH_ID", Order = 4)]
+        [Column("BATCH_ID", Order = 5)]
         public string BatchId { set; get; }
 
         /// <summary>

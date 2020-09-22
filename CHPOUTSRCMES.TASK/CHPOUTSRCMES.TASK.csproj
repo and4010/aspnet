@@ -128,6 +128,11 @@
     <Compile Include="Models\Entity\Temp\SUBINVENTORY_TMP_T.cs" />
     <Compile Include="Models\Entity\Temp\TRANSACTION_TYPE_TMP_T.cs" />
     <Compile Include="Models\Entity\Temp\YSZMPCKQ_TMP_T.cs" />
+    <Compile Include="Models\Entity\TRF_HEADER_T.cs" />
+    <Compile Include="Models\Entity\TRF_INVENTORY_HEADER_T.cs" />
+    <Compile Include="Models\Entity\TRF_MISCELLANEOUS_HEADER_T.cs" />
+    <Compile Include="Models\Entity\TRF_OBSOLETE_HEADER_T.cs" />
+    <Compile Include="Models\Entity\TRF_REASON_HEADER_T.cs" />
     <Compile Include="Models\Entity\XXIF_CHP_P218_CONTAINER_RV_ST.cs" />
     <Compile Include="Models\Entity\XXIF_CHP_P217_CONTAINER_ST.cs" />
     <Compile Include="Models\Entity\XXIF_CHP_CONTROL_ST.cs" />
@@ -138,6 +143,11 @@
     <Compile Include="Models\Repository\MsSql\CtrHeaderRepository.cs" />
     <Compile Include="Models\Repository\MsSql\CtrPickedRepository.cs" />
     <Compile Include="Models\Repository\MsSql\DlvDetailRepository.cs" />
+    <Compile Include="Models\Repository\MsSql\TrfInvHeaderRepository.cs" />
+    <Compile Include="Models\Repository\MsSql\TrfMiscHeaderRepository.cs" />
+    <Compile Include="Models\Repository\MsSql\TrfRsnHeaderRepository.cs" />
+    <Compile Include="Models\Repository\MsSql\TrfObsHeaderRepository.cs" />
+    <Compile Include="Models\Repository\MsSql\TrfHeaderRepository.cs" />
     <Compile Include="Models\Repository\MsSql\OspSoaS3Repository.cs" />
     <Compile Include="Models\Repository\MsSql\OspSoaS2Repository.cs" />
     <Compile Include="Models\Repository\MsSql\OspSoaS1Repository.cs" />
@@ -151,11 +161,13 @@
     <Compile Include="Models\Repository\Oracle\ItemRepository.cs" />
     <Compile Include="Models\ResultDataModel.cs" />
     <Compile Include="Models\ResultModel.cs" />
+    <Compile Include="Models\Service\TrfStService.cs" />
     <Compile Include="Models\Service\CtrStService.cs" />
     <Compile Include="Models\Service\OspStService.cs" />
     <Compile Include="Models\Service\DlvStService.cs" />
     <Compile Include="Models\Service\MasterService.cs" />
     <Compile Include="Models\UnitOfWork\BaseUOW.cs" />
+    <Compile Include="Models\UnitOfWork\TrfStUOW.cs" />
     <Compile Include="Models\UnitOfWork\OspStUOW.cs" />
     <Compile Include="Models\UnitOfWork\DlvStUOW.cs" />
     <Compile Include="Models\UnitOfWork\IUnitOfWork.cs" />

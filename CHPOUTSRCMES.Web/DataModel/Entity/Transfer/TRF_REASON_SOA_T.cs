@@ -18,7 +18,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Transfer
         [Required]
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        [Column("TRANSFER_REASON_SOA_ID", Order = 1)]
+        [Column("TRANSFER_REASON_HEADER_ID", Order = 1)]
         public long TransferReasonHeaderId { set; get; }
 
 

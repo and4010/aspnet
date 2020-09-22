@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Transactions.Configuration;
 
 namespace CHPOUTSRCMES.TASK
 {
@@ -260,6 +261,22 @@ namespace CHPOUTSRCMES.TASK
                 var rvStage3Task = rvStage2Task.ContinueWith(subTask => service.ExportOspStRvStage3(tasker, token), TaskContinuationOptions.OnlyOnRanToCompletion)
                                     .ContinueWith(subTask => service.UpdateStatusOspStRvStage3(tasker, token), TaskContinuationOptions.OnlyOnRanToCompletion);
                 Task.WaitAll(task, rvStage1Task, rvStage2Task, rvStage3Task);
+            }));
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        internal void AddTrfStTasker()
+        {
+            AddTasker(new Tasker("庫存異動轉檔程序", 5, (tasker, token) => {
+                TrfStService service = new TrfStService(MesConnStr, ErpConnStr);
+                var trfTask1 = service.ExportTrfStRv(tasker, token);
+                var trfTask2 = trfTask1.ContinueWith(sub => service.ExportMiscStRv(tasker, token), TaskContinuationOptions.OnlyOnRanToCompletion);
+                var trfTask3 = service.ExportRsnStRv(tasker, token);
+                var trfTask4 = trfTask3.ContinueWith(sub => service.ExportObsStRv(tasker, token), TaskContinuationOptions.OnlyOnRanToCompletion);
+
+                Task.WaitAll(trfTask1, trfTask2, trfTask3, trfTask4);
             }));
         }
 
