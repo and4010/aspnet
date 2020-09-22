@@ -17,7 +17,12 @@
                 <div class="col col-md-12 text-center text-align-center">
                     @Html.DisplayTextFor(model => model.Error.Message)
                 </div>
-                
+                <div class="col col-md-12 text-center text-align-center">
+                    @Html.DisplayTextFor(model => model.Error.Code)
+                </div>
+                <div class="col col-md-12 text-center text-align-center">
+                    @Html.DisplayTextFor(model => model.Error.StackTrace)
+                </div>
             </div>
         </div>
     </div>

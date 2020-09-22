@@ -226,8 +226,9 @@ namespace CHPOUTSRCMES.Web.Controllers
 #if DEBUG
             return LocalReport(CtrHeaderId, ItemCategory);
 #else
-            return RemoteReport(CtrHeaderId, ItemCategory);
+           return RemoteReport(CtrHeaderId, ItemCategory);
 #endif
+
         }
 
         public ActionResult LocalReport(string CtrHeaderId, string ItemCategory)
@@ -290,15 +291,15 @@ namespace CHPOUTSRCMES.Web.Controllers
             report.BackColor = Color.LightGray;
             if (ItemCategory == Flat)
             {
-                report.ServerReport.ReportPath = "/開發區/CHPOUSMES/PurchaseFlat.dlc";
+                report.ServerReport.ReportPath = "/開發區/CHPOUSMES/PurchaseFlat";
             }
             else
             {
-                report.ServerReport.ReportPath = "/開發區/CHPOUSMES/PurchasePaperRoll.dlc";
+                report.ServerReport.ReportPath = "/開發區/CHPOUSMES/PurchasePaperRoll";
             }
-            report.ServerReport.ReportServerUrl = new Uri("http://rs.yfy.com/reports/");
+            report.ServerReport.ReportServerUrl = new Uri("http://rs.yfy.com/ReportServer");
             report.ServerReport.SetParameters(paramList);
-            report.LocalReport.Refresh();
+            report.ServerReport.Refresh();
             ViewBag.ReportViewer = report;
             return View("Report");
         }
@@ -366,7 +367,7 @@ namespace CHPOUTSRCMES.Web.Controllers
             report.ServerReport.ReportPath = "/開發區/CHPOUSMES/ProcessCutMaterial.rdl";
             report.ServerReport.ReportServerUrl = new Uri("http://rs.yfy.com/reports/");
             report.ServerReport.SetParameters(paramList);
-            report.LocalReport.Refresh();
+            report.ServerReport.Refresh();
             ViewBag.ReportViewer = report;
             return View("Report");
         }
@@ -452,10 +453,10 @@ namespace CHPOUTSRCMES.Web.Controllers
                     report.BorderStyle = BorderStyle.Solid;
                     report.BorderWidth = 1;
                     report.BackColor = Color.LightGray;
-                    report.ServerReport.ReportPath = "/開發區/CHPOUSMES/ProcessCutReceipt.rdl";
-                    report.ServerReport.ReportServerUrl = new Uri("http://rs.yfy.com/reports/");
+                    report.ServerReport.ReportPath = "/開發區/CHPOUSMES/ProcessCutReceipt";
+                    report.ServerReport.ReportServerUrl = new Uri("http://rs.yfy.com/ReportServer");
                     report.ServerReport.SetParameters(paramList);
-                    report.LocalReport.Refresh();
+                    report.ServerReport.Refresh();
                     ViewBag.ReportViewer = report;
                 }
             }
@@ -525,10 +526,10 @@ namespace CHPOUTSRCMES.Web.Controllers
             report.BorderStyle = BorderStyle.Solid;
             report.BorderWidth = 1;
             report.BackColor = Color.LightGray;
-            report.ServerReport.ReportPath = "/開發區/CHPOUSMES/CutStock.rdl";
-            report.ServerReport.ReportServerUrl = new Uri("http://rs.yfy.com/reports/");
+            report.ServerReport.ReportPath = "/開發區/CHPOUSMES/CutStock";
+            report.ServerReport.ReportServerUrl = new Uri("http://rs.yfy.com/ReportServer");
             report.ServerReport.SetParameters(paramList);
-            report.LocalReport.Refresh();
+            report.ServerReport.Refresh();
             ViewBag.ReportViewer = report;
             return View("Report");
         }
@@ -572,7 +573,7 @@ namespace CHPOUTSRCMES.Web.Controllers
                     // Set the report parameters for the report  
                     localReport.SetParameters(paramList);
 
-                    report.LocalReport.Refresh();
+                    report.ServerReport.Refresh();
 
                     ViewBag.ReportViewer = report;
                 }
@@ -591,10 +592,10 @@ namespace CHPOUTSRCMES.Web.Controllers
             report.BorderStyle = BorderStyle.Solid;
             report.BorderWidth = 1;
             report.BackColor = Color.LightGray;
-            report.ServerReport.ReportPath = "/開發區/CHPOUSMES/OspCutPaperRollStock.rdl";
-            report.ServerReport.ReportServerUrl = new Uri("http://rs.yfy.com/reports/");
+            report.ServerReport.ReportPath = "/開發區/CHPOUSMES/OspCutPaperRollStock";
+            report.ServerReport.ReportServerUrl = new Uri("http://rs.yfy.com/ReportServer");
             report.ServerReport.SetParameters(paramList);
-            report.LocalReport.Refresh();
+            report.ServerReport.Refresh();
             ViewBag.ReportViewer = report;
             return View("Report");
         }

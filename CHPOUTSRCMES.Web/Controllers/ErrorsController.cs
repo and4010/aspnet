@@ -14,6 +14,8 @@ namespace CHPOUTSRCMES.Web.Controllers
         public ActionResult General(Exception exception)
         {
             string msg = "";
+            int code = 0;
+            string StackTrace = "";
             if (exception != null)
             {
                 switch (exception.GetType().ToString())
@@ -23,15 +25,20 @@ namespace CHPOUTSRCMES.Web.Controllers
                         switch (httpEx.GetHttpCode())
                         {
                             case 404:
-                                msg = "找不到網頁";
+                                msg = httpEx.GetHttpCode() + "找不到網頁";
+                                code = httpEx.ErrorCode;
+                                StackTrace = httpEx.StackTrace;
                                 break;
                             default:
-                                msg = exception.Message;
+                                msg = httpEx.GetHttpCode() + httpEx.Message;
+                                code = httpEx.ErrorCode;
+                                StackTrace = httpEx.StackTrace;
                                 break;
                         }
                         break;
                     default:
-                        msg = exception.Message;
+                        msg = $"exception {exception.GetType().ToString()} \n msg : {exception.Message}";
+                        StackTrace = exception.StackTrace;
                         break;
                 }
             }
@@ -40,7 +47,9 @@ namespace CHPOUTSRCMES.Web.Controllers
                 Error = new Error()
                 {
                     Id = 1,
-                    Message = msg
+                    Message = msg,
+                    Code = code,
+                    StackTrace = StackTrace
                 }
             };
             return View(model);

@@ -847,7 +847,7 @@ namespace CHPOUTSRCMES.Web.Controllers
                     ViewBag.ReportViewer = reportViewer;
                     return View("Report");
 #else
-                    return OspRemoteCutReceiptReport(OspHeaderId);
+                    return View("Report");
 
 #endif
                 }
