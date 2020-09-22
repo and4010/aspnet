@@ -16,6 +16,8 @@ using System.Security.Claims;
 using CHPOUTSRCMES.Web.DataModel.Entity;
 using NLog;
 using CHPOUTSRCMES.Web.Util;
+using Microsoft.Reporting.WebForms;
+using System.Drawing;
 
 namespace CHPOUTSRCMES.Web.Models.Stock
 {
@@ -1531,6 +1533,135 @@ namespace CHPOUTSRCMES.Web.Models.Stock
             return uow.SaveReason(file, stockId, reasonCode, transferLocatorId, note, userId, userName);
         }
 
+        #region 報表
+
+        public ResultDataModel<ReportViewer> LocalOutboundPickingReportViewer(TransferUOW uow, string shipmentNumber)
+        {
+            try
+            {
+                List<ReportParameter> paramList = new List<ReportParameter>();
+                paramList.Add(new ReportParameter("SHIPMENT_NUMBER", shipmentNumber, false));
+
+                var report = new ReportViewer();
+                // Set the processing mode for the ReportViewer to Local  
+                report.ProcessingMode = ProcessingMode.Local;
+                report.BackColor = Color.LightGray;
+                report.SizeToReportContent = true;
+                report.BorderWidth = 1;
+                report.BorderStyle = BorderStyle.Solid;
+
+                LocalReport localReport = report.LocalReport;
+                localReport.ReportPath = "Report/OutboundPickingList.rdlc";
+
+                var reportDataSourceResult = uow.GetOutboundPickingListReportDataSource(shipmentNumber);
+                if (!reportDataSourceResult.Success) return new ResultDataModel<ReportViewer>(false, reportDataSourceResult.Msg, null);
+                localReport.DataSources.Add(reportDataSourceResult.Data);
+
+                // Set the report parameters for the report  
+                localReport.SetParameters(paramList);
+
+                report.LocalReport.Refresh();
+
+                return new ResultDataModel<ReportViewer>(true, "取得庫存移轉-備貨單報表成功", report);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(LogUtilities.BuildExceptionMessage(ex));
+                return new ResultDataModel<ReportViewer>(false, "取得庫存移轉-備貨單報表失敗:" + ex.Message, null);
+            }
+        }
+
+        public ResultDataModel<ReportViewer> RemoteOutboundPickingReportViewer(string shipmentNumber)
+        {
+            try
+            {
+                List<ReportParameter> paramList = new List<ReportParameter>();
+                paramList.Add(new ReportParameter("SHIPMENT_NUMBER", shipmentNumber, false));
+
+                var report = new ReportViewer();
+                report.ProcessingMode = ProcessingMode.Remote;
+                report.BackColor = Color.LightGray;
+                report.SizeToReportContent = true;
+                report.BorderWidth = 1;
+                report.BorderStyle = BorderStyle.Solid;
+                report.ServerReport.ReportPath = "/開發區/CHPOUSMES/OutboundPickingList.rdl";
+                report.ServerReport.ReportServerUrl = new Uri("http://rs.yfy.com/reports/");
+                report.ServerReport.SetParameters(paramList);
+                report.LocalReport.Refresh();
+
+                return new ResultDataModel<ReportViewer>(true, "取得庫存移轉-備貨單報表成功", report);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(LogUtilities.BuildExceptionMessage(ex));
+                return new ResultDataModel<ReportViewer>(false, "取得庫存移轉-備貨單報表失敗:" + ex.Message, null);
+            }
+        }
+
+        public ResultDataModel<ReportViewer> LocalInboundPickingReportViewer(TransferUOW uow, string shipmentNumber)
+        {
+            try
+            {
+                List<ReportParameter> paramList = new List<ReportParameter>();
+                paramList.Add(new ReportParameter("SHIPMENT_NUMBER", shipmentNumber, false));
+
+                var report = new ReportViewer();
+                // Set the processing mode for the ReportViewer to Local  
+                report.ProcessingMode = ProcessingMode.Local;
+                report.BackColor = Color.LightGray;
+                report.SizeToReportContent = true;
+                report.BorderWidth = 1;
+                report.BorderStyle = BorderStyle.Solid;
+
+                LocalReport localReport = report.LocalReport;
+                localReport.ReportPath = "Report/InboundPickingList.rdlc";
+
+                var reportDataSourceResult = uow.GetInboundPickingListReportDataSource(shipmentNumber);
+                if (!reportDataSourceResult.Success) return new ResultDataModel<ReportViewer>(false, reportDataSourceResult.Msg, null);
+                localReport.DataSources.Add(reportDataSourceResult.Data);
+
+                // Set the report parameters for the report  
+                localReport.SetParameters(paramList);
+
+                report.LocalReport.Refresh();
+
+                return new ResultDataModel<ReportViewer>(true, "取得庫存移轉-入庫單報表成功", report);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(LogUtilities.BuildExceptionMessage(ex));
+                return new ResultDataModel<ReportViewer>(false, "取得庫存移轉-入庫單報表失敗:" + ex.Message, null);
+            }
+        }
+
+        public ResultDataModel<ReportViewer> RemoteInboundPickingReportViewer(string shipmentNumber)
+        {
+            try
+            {
+                List<ReportParameter> paramList = new List<ReportParameter>();
+                paramList.Add(new ReportParameter("SHIPMENT_NUMBER", shipmentNumber, false));
+
+                var report = new ReportViewer();
+                report.ProcessingMode = ProcessingMode.Remote;
+                report.BackColor = Color.LightGray;
+                report.SizeToReportContent = true;
+                report.BorderWidth = 1;
+                report.BorderStyle = BorderStyle.Solid;
+                report.ServerReport.ReportPath = "/開發區/CHPOUSMES/InboundPickingList.rdl";
+                report.ServerReport.ReportServerUrl = new Uri("http://rs.yfy.com/reports/");
+                report.ServerReport.SetParameters(paramList);
+                report.LocalReport.Refresh();
+
+                return new ResultDataModel<ReportViewer>(true, "取得庫存移轉-入庫單報表成功", report);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(LogUtilities.BuildExceptionMessage(ex));
+                return new ResultDataModel<ReportViewer>(false, "取得庫存移轉-入庫單報表失敗:" + ex.Message, null);
+            }
+        }
+
+        #endregion
     }
 
 

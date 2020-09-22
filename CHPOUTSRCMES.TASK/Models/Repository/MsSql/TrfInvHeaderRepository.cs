@@ -16,14 +16,14 @@ namespace CHPOUTSRCMES.TASK.Models.Repository.MsSql
     {
         
         #region Constructor
-        public TrfHeaderRepository()
+        public TrfInvHeaderRepository()
         {
-            IdField = "TRF_HEADER_ID";
+            IdField = "TRANSFER_INVENTORY_HEADER_ID";
         }
 
-        public TrfHeaderRepository(IDbConnection conn, string tableName) :base(conn, tableName)
+        public TrfInvHeaderRepository(IDbConnection conn, string tableName) :base(conn, tableName)
         {
-            IdField = "TRF_HEADER_ID";
+            IdField = "TRANSFER_INVENTORY_HEADER_ID";
         }
 
         #endregion

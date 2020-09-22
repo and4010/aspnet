@@ -279,7 +279,13 @@
 
 
     $("#btnPrintPick").click(function () {
-
+        var shipmentNumber = getShipmentNumber();
+        if (shipmentNumber == "新增編號") {
+            swal.fire('請選擇出貨編號');
+            event.preventDefault();
+            return;
+        }
+        window.open("/StockTransaction/InboundPickingReport/?shipmentNumber=" + shipmentNumber);
     });
 
     $("#txtBARCODE").keydown(function (e) {

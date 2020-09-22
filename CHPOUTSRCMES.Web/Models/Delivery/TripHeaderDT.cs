@@ -650,9 +650,6 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
 
         public ResultModel PrintPickList(DeliveryUOW uow, List<long> ids, string userId, string userName)
         {
-            //列印備貨單 待寫
-
-            //列印完後更新狀態
             List<long> tripIds = uow.GetTripIdList(ids);
             if (tripIds.Count == 0)
             {
@@ -1113,7 +1110,9 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
             return uow.PrintLabel(resultData.Data);
         }
 
-        public ResultDataModel<ReportViewer> GetDeliveryPickingReportViewer(DeliveryUOW uow, string tripName)
+        #region 報表
+
+        public ResultDataModel<ReportViewer> LocalDeliveryPickingReportViewer(DeliveryUOW uow, string tripName)
         {
             try
             {
@@ -1127,6 +1126,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
                 report.SizeToReportContent = true;
                 report.BorderWidth = 1;
                 report.BorderStyle = BorderStyle.Solid;
+                
                 LocalReport localReport = report.LocalReport;
                 localReport.ReportPath = "Report/DeliveryPickingList.rdlc";
 
@@ -1141,12 +1141,42 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
 
                 return new ResultDataModel<ReportViewer>(true, "取得備貨單報表成功", report);
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                logger.Error(LogUtilities.BuildExceptionMessage(e));
-                return new ResultDataModel<ReportViewer>(false, "取得備貨單報表失敗", null);
+                logger.Error(LogUtilities.BuildExceptionMessage(ex));
+                return new ResultDataModel<ReportViewer>(false, "取得備貨單報表失敗:" + ex.Message, null);
             }
         }
+
+
+        public ResultDataModel<ReportViewer> RemoteDeliveryPickingReportViewer(string tripName)
+        {
+            try
+            {
+                List<ReportParameter> paramList = new List<ReportParameter>();
+                paramList.Add(new ReportParameter("TRIP_NAME", tripName, false));
+
+                var report = new ReportViewer();
+                report.ProcessingMode = ProcessingMode.Remote;
+                report.BackColor = Color.LightGray;
+                report.SizeToReportContent = true;
+                report.BorderWidth = 1;
+                report.BorderStyle = BorderStyle.Solid;
+                report.ServerReport.ReportPath = "/開發區/CHPOUSMES/DeliveryPickingList.rdl";
+                report.ServerReport.ReportServerUrl = new Uri("http://rs.yfy.com/reports/");
+                report.ServerReport.SetParameters(paramList);
+                report.LocalReport.Refresh();                
+
+                return new ResultDataModel<ReportViewer>(true, "取得備貨單報表成功", report);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(LogUtilities.BuildExceptionMessage(ex));
+                return new ResultDataModel<ReportViewer>(false, "取得備貨單報表失敗:" + ex.Message, null);
+            }
+        }
+
+        #endregion
     }
 
     internal class TripDetailDTOrder

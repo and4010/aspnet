@@ -836,24 +836,44 @@ namespace CHPOUTSRCMES.Web.Controllers
         /// <param name="OspHeaderId"></param>
         /// <returns></returns>
 
-        public ActionResult DeliveryPickingReport(string tripName)
+        public ActionResult PickingReport(string tripName)
         {
             using (var context = new MesContext())
             {
                 using (DeliveryUOW uow = new DeliveryUOW(context))
                 {
 #if DEBUG
-                    var reportViewer = tripHeaderData.GetDeliveryPickingReportViewer(uow,tripName);
-                    ViewBag.ReportViewer = reportViewer;
-                    return View("Report");
+                    var result = tripHeaderData.LocalDeliveryPickingReportViewer(uow, tripName);
+                    if (result.Success)
+                    {
+                        ViewBag.ReportViewer = result.Data;
+                        return View("Report");
+                    }
+                    else
+                    {
+                        throw new Exception(result.Msg);
+                        //return new JsonResult { Data = new { status = result.Success, result = result.Msg } };
+                    }
+
 #else
-                    return View("Report");
+                    
+                    var result = tripHeaderData.RemoteDeliveryPickingReportViewer(tripName);
+                    if (result.Success)
+                    {
+                        ViewBag.ReportViewer = result.Data;
+                        return View("Report");
+                    }
+                    else
+                    {
+                        throw new Exception(result.Msg);
+                        //return new JsonResult { Data = new { status = result.Success, result = result.Msg } };
+                    }
 
 #endif
                 }
             }
         }
 
-        
+
     }
 }

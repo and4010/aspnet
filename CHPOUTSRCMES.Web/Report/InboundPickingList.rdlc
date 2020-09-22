@@ -169,7 +169,7 @@
                     </Style>
                   </TextRun>
                   <TextRun>
-                    <Value>=Globals!ExecutionTime</Value>
+                    <Value>=Format(Globals!ExecutionTime, "yyyy/MM/dd")</Value>
                     <Style>
                       <FontSize>12pt</FontSize>
                       <Format>d</Format>

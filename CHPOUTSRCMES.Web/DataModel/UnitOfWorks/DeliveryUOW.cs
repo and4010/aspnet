@@ -1829,10 +1829,10 @@ WHERE p.BARCODE = @Barcode
                     connection.Close();
                     return new ResultDataModel<ReportDataSource>(true, "取得備貨單報表資料來源成功", dataSource);
                 }
-                catch (Exception e)
+                catch (Exception ex)
                 {
-                    logger.Error(LogUtilities.BuildExceptionMessage(e));
-                    return new ResultDataModel<ReportDataSource>(false, "取得備貨單報表資料來源失敗", null);
+                    logger.Error(LogUtilities.BuildExceptionMessage(ex));
+                    return new ResultDataModel<ReportDataSource>(false, "取得備貨單報表資料來源失敗:" + ex.Message, null);
                 }
             }
 

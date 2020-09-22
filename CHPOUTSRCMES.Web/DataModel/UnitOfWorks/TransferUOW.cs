@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.Entity;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Web;
+using System.Web.Configuration;
 using System.Web.Mvc;
 using CHPOUTSRCMES.Web.DataModel.Entity;
 using CHPOUTSRCMES.Web.DataModel.Entity.Information;
@@ -16,6 +18,7 @@ using CHPOUTSRCMES.Web.DataModel.Interfaces;
 using CHPOUTSRCMES.Web.Models;
 using CHPOUTSRCMES.Web.Models.Stock;
 using CHPOUTSRCMES.Web.Util;
+using Microsoft.Reporting.WebForms;
 using NLog;
 
 namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
@@ -3622,6 +3625,67 @@ WHERE p.BARCODE = @Barcode
                 return new ResultDataModel<List<LabelModel>>(false, "取得標籤資料失敗:" + ex.Message, null);
             }
 
+
+        }
+
+        #endregion
+
+        #region 報表
+        public ResultDataModel<ReportDataSource> GetOutboundPickingListReportDataSource(string shipmentNumber)
+        {
+            using (SqlConnection connection = new SqlConnection(WebConfigurationManager.ConnectionStrings["MesContext"].ConnectionString.ToString()))
+            {
+                try
+                {
+                    connection.Open();
+                    ReportDataSource dataSource = new ReportDataSource();
+                    DataSet dataset = new DataSet("dataset");
+                    string cmd = "select * from OutboundPickingList(@SHIPMENT_NUMBER)";
+                    SqlCommand command = new SqlCommand(cmd, connection);
+                    command.Parameters.Add(new SqlParameter("@SHIPMENT_NUMBER", shipmentNumber));
+                    SqlDataAdapter salesOrderAdapter = new SqlDataAdapter(command);
+                    salesOrderAdapter.Fill(dataset, "Detail");
+                    dataSource.Name = "Detail";
+                    dataSource.Value = dataset.Tables["Detail"];
+
+                    connection.Close();
+                    return new ResultDataModel<ReportDataSource>(true, "取得庫存移轉-備貨單報表資料來源成功", dataSource);
+                }
+                catch (Exception ex)
+                {
+                    logger.Error(LogUtilities.BuildExceptionMessage(ex));
+                    return new ResultDataModel<ReportDataSource>(false, "取得庫存移轉-備貨單報表資料來源失敗:" + ex.Message, null);
+                }
+            }
+
+        }
+
+        public ResultDataModel<ReportDataSource> GetInboundPickingListReportDataSource(string shipmentNumber)
+        {
+            using (SqlConnection connection = new SqlConnection(WebConfigurationManager.ConnectionStrings["MesContext"].ConnectionString.ToString()))
+            {
+                try
+                {
+                    connection.Open();
+                    ReportDataSource dataSource = new ReportDataSource();
+                    DataSet dataset = new DataSet("dataset");
+                    string cmd = "select * from InboundPickingList(@SHIPMENT_NUMBER)";
+                    SqlCommand command = new SqlCommand(cmd, connection);
+                    command.Parameters.Add(new SqlParameter("@SHIPMENT_NUMBER", shipmentNumber));
+                    SqlDataAdapter salesOrderAdapter = new SqlDataAdapter(command);
+                    salesOrderAdapter.Fill(dataset, "Detail");
+                    dataSource.Name = "Detail";
+                    dataSource.Value = dataset.Tables["Detail"];
+
+                    connection.Close();
+                    return new ResultDataModel<ReportDataSource>(true, "取得庫存移轉-入庫單報表資料來源成功", dataSource);
+                }
+                catch (Exception ex)
+                {
+                    logger.Error(LogUtilities.BuildExceptionMessage(ex));
+                    return new ResultDataModel<ReportDataSource>(false, "取得庫存移轉-入庫單報表資料來源失敗:" + ex.Message, null);
+                }
+            }
 
         }
 

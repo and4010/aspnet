@@ -157,7 +157,7 @@
                     </Style>
                   </TextRun>
                   <TextRun>
-                    <Value>=Globals!ExecutionTime</Value>
+                    <Value>=Format(Globals!ExecutionTime, "yyyy/MM/dd")</Value>
                     <Style>
                       <FontSize>12pt</FontSize>
                       <Format>d</Format>
@@ -1952,19 +1952,19 @@
        
    
     Private Function GetCode39(ByVal strSource As String) As System.Drawing.Bitmap
-        Dim x As Integer = 4
+        Dim x As Integer = 10
         '左邊界
-        Dim y As Integer = 5
+        Dim y As Integer = 10
         '上邊界
         Dim WidLength As Integer = 2
         '粗BarCode長度
         Dim NarrowLength As Integer = 1
         '細BarCode長度
-        Dim BarCodeHeight As Integer = 24
+        Dim BarCodeHeight As Integer = 30
         'BarCode高度
 		Dim FontHeight As Integer = 8
 		'BarCode字串高度
-		Dim Gap As Integer = 15
+		Dim Gap As Integer = 25
 		'Barcode跟Barcode字串的間隙
         Dim intSourceLength As Integer = strSource.Length
         Dim strEncode As String = "010010100"
