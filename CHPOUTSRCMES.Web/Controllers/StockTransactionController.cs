@@ -1015,5 +1015,85 @@ namespace CHPOUTSRCMES.Web.Controllers
             }
         }
         #endregion
+
+        #region 報表
+
+        public ActionResult OutboundPickingReport(string shipmentNumber)
+        {
+            using (var context = new MesContext())
+            {
+                using (TransferUOW uow = new TransferUOW(context))
+                {
+#if DEBUG
+                    var result = stockTransferData.LocalOutboundPickingReportViewer (uow, shipmentNumber);
+                    if (result.Success)
+                    {
+                        ViewBag.ReportViewer = result.Data;
+                        return View("Report");
+                    }
+                    else
+                    {
+                        throw new Exception(result.Msg);
+                        //return new JsonResult { Data = new { status = result.Success, result = result.Msg } };
+                    }
+
+#else
+                    
+                    var result = stockTransferData.RemoteOutboundPickingReportViewer(tripName);
+                    if (result.Success)
+                    {
+                        ViewBag.ReportViewer = result.Data;
+                        return View("Report");
+                    }
+                    else
+                    {
+                        throw new Exception(result.Msg);
+                        //return new JsonResult { Data = new { status = result.Success, result = result.Msg } };
+                    }
+
+#endif
+                }
+            }
+        }
+
+        public ActionResult InboundPickingReport(string shipmentNumber)
+        {
+            using (var context = new MesContext())
+            {
+                using (TransferUOW uow = new TransferUOW(context))
+                {
+#if DEBUG
+                    var result = stockTransferData.LocalInboundPickingReportViewer(uow, shipmentNumber);
+                    if (result.Success)
+                    {
+                        ViewBag.ReportViewer = result.Data;
+                        return View("Report");
+                    }
+                    else
+                    {
+                        throw new Exception(result.Msg);
+                        //return new JsonResult { Data = new { status = result.Success, result = result.Msg } };
+                    }
+
+#else
+                    
+                    var result = stockTransferData.RemoteInboundPickingReportViewer(tripName);
+                    if (result.Success)
+                    {
+                        ViewBag.ReportViewer = result.Data;
+                        return View("Report");
+                    }
+                    else
+                    {
+                        throw new Exception(result.Msg);
+                        //return new JsonResult { Data = new { status = result.Success, result = result.Msg } };
+                    }
+
+#endif
+                }
+            }
+        }
+
+        #endregion
     }
 }

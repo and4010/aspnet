@@ -360,10 +360,13 @@ $(document).ready(function () {
             {
                 data: null, "autoWidth": true, orderable: false,
                 render: function (data, type, row, meta) {
-                    if (data.DELIVERY_STATUS == null || data.DELIVERY_STATUS == "已取消" || data.DELIVERY_STATUS == "未印") {
+                    if (data.DELIVERY_STATUS == null || data.DELIVERY_STATUS == "已取消") {
                         return null
                     }
-                    if (data.DELIVERY_STATUS == "待出" || data.DELIVERY_STATUS == "已揀") {
+                    if (data.DELIVERY_STATUS == "未印" || data.DELIVERY_STATUS == "待出") {
+                        return '<button class="btn btn-danger btn-sm btn-edit"><i class="fa fa-pencil"></i>出貨</button>' + '&nbsp|&nbsp' + '<button class="btn btn-primary btn-sm btn-print"><i class="glyphicon glyphicon-print"></i>備貨單</button>'
+                    }
+                    if (data.DELIVERY_STATUS == "已揀") {
                         //return '<a href="' + data.DELIVERY_NAME + '">出貨</a>';
                         return '<button class="btn btn-danger btn-sm btn-edit"><i class="fa fa-pencil"></i>出貨</button>'
                     }
@@ -404,16 +407,16 @@ $(document).ready(function () {
                         $(node).removeClass('btn-default')
                     }
                 },
-                {
-                    text: '列印備貨單',
-                    className: 'btn-primary',
-                    action: function () {
-                        PrintPickList();
-                    },
-                    init: function (api, node, config) {
-                        $(node).removeClass('btn-default')
-                    }
-                },
+                //{
+                //    text: '列印備貨單',
+                //    className: 'btn-primary',
+                //    action: function () {
+                //        PrintPickList();
+                //    },
+                //    init: function (api, node, config) {
+                //        $(node).removeClass('btn-default')
+                //    }
+                //},
                 //{
                 //    extend: 'edit',
                 //    editor: editor,
@@ -614,6 +617,16 @@ $(document).ready(function () {
         }
     })
 
+    $('#TripDataTablesBody tbody').on('click', '.btn-print', function (e) {
+
+        var data = TripDataTablesBody.row($(this).parents('tr')).data();
+        if (data == null) {
+            return false;
+        }
+
+        PrintPickList(data);
+        
+    })
 
     $('.box-footer').on('click', '#btnSearch', function (e) {
         TripDataTablesBody.ajax.reload();
@@ -968,43 +981,42 @@ $(document).ready(function () {
         });
     }
 
-    function PrintPickList() {
-        var data = TripDataTablesBody.rows('.selected').data();
-        if (data.length == 0) {
-            return false;
-        }
+    function PrintPickList(selectData) {
+        //var data = TripDataTablesBody.rows('.selected').data();
+        //if (data.length == 0) {
+        //    return false;
+        //}
 
-        var list = [];
-        for (i = 0; i < data.length; i++) {
-            list.push(data[i].Id);
-        }
-        var tripName = data.pluck('TRIP_NAME')[0];
-        window.open("/Delivery/DeliveryPickingReport/?tripName=" + tripName);
-        //$.ajax({
-        //    url: "/Delivery/PrintPickList",
-        //    type: "post",
-        //    data: {
-        //        'id': list
-        //    },
-        //    success: function (data) {
-        //        if (data.status) {
+        //var list = [];
+        //for (i = 0; i < data.length; i++) {
+        //    list.push(data[i].Id);
+        //}
+        //var tripName = data.pluck('TRIP_NAME')[0];
+        
+        $.ajax({
+            url: "/Delivery/PrintPickList",
+            type: "post",
+            data: {
+                'id': selectData.Id
+            },
+            success: function (data) {
+                if (data.status) {
+                    TripDataTablesBody.ajax.reload(null, false);
+                    window.open("/Delivery/PickingReport/?tripName=" + selectData.TRIP_NAME);
+                }
+                else {
+                    swal.fire(data.result);
+                }
+            },
+            error: function () {
+                swal.fire('列印備貨單失敗');
+            },
+            complete: function (data) {
 
-        //            TripDataTablesBody.ajax.reload(null, false);
 
-        //        }
-        //        else {
-        //            swal.fire(data.result);
-        //        }
-        //    },
-        //    error: function () {
-        //        swal.fire('列印備貨單失敗');
-        //    },
-        //    complete: function (data) {
+            }
 
-
-        //    }
-
-        //});
+        });
     }
 
     function DeliveryAuthorize(data) {
