@@ -445,6 +445,10 @@
     <Compile Include="Migrations\202009211129413_fix-osp_tables.Designer.cs">
       <DependentUpon>202009211129413_fix-osp_tables.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202009211211543_fix-osp_tables-2.cs" />
+    <Compile Include="Migrations\202009211211543_fix-osp_tables-2.Designer.cs">
+      <DependentUpon>202009211211543_fix-osp_tables-2.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Delivery\bDeliveryDetail.cs" />
     <Compile Include="Models\Delivery\DeliveryDetail.cs" />
@@ -2218,6 +2222,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202009211129413_fix-osp_tables.resx">
       <DependentUpon>202009211129413_fix-osp_tables.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202009211211543_fix-osp_tables-2.resx">
+      <DependentUpon>202009211211543_fix-osp_tables-2.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
