@@ -457,6 +457,10 @@
     <Compile Include="Migrations\202009230709478_fix-forwhat.Designer.cs">
       <DependentUpon>202009230709478_fix-forwhat.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202009231113205_fix-osp_org_t.cs" />
+    <Compile Include="Migrations\202009231113205_fix-osp_org_t.Designer.cs">
+      <DependentUpon>202009231113205_fix-osp_org_t.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Delivery\bDeliveryDetail.cs" />
     <Compile Include="Models\Delivery\DeliveryDetail.cs" />
@@ -2247,6 +2251,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202009230709478_fix-forwhat.resx">
       <DependentUpon>202009230709478_fix-forwhat.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202009231113205_fix-osp_org_t.resx">
+      <DependentUpon>202009231113205_fix-osp_org_t.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

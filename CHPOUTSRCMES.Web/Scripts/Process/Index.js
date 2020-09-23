@@ -60,7 +60,7 @@ $(document).ready(function () {
         if (BatchType == "OSP") {
             window.location.href = '/Process/Schedule/' + data.OspHeaderId;
         }
-        if (BatchType == "TMP") {
+        if (BatchType == "REP") {
             if (data.PackingType == "" || data.PackingType == null) {
                 window.location.href = '/Process/PaperRoll/' + data.OspHeaderId;
             } else {
@@ -179,14 +179,14 @@ function ProcessLoadTable(Status, BatchNo, MachineNum, DueDate, CuttingDateFrom,
                     if (data == DwellBatch) {
                         switch (row.BatchType) {
                             case "OSP":
-                                return '<a href=/Process/Schedule/' + row.OspDetailInId + '> ' + GetStatusCode(data) + '</a>';
+                                return '<a href=/Process/Schedule/' + row.OspHeaderId + '> ' + GetStatusCode(data) + '</a>';
                                 break;
-                            case "TMP":
+                            case "REP":
                                 if (row.PackingType == "" || row.PackingType == null) {
-                                    return '<a href=/Process/PaperRoll/' + row.OspDetailInId + '> ' + GetStatusCode(data) + '</a>';
+                                    return '<a href=/Process/PaperRoll/' + row.OspHeaderId + '> ' + GetStatusCode(data) + '</a>';
                                     break;
                                 } else {
-                                    return '<a href=/Process/Flat/' + row.OspDetailInId + '> ' + GetStatusCode(data) + '</a>';
+                                    return '<a href=/Process/Flat/' + row.OspHeaderId + '> ' + GetStatusCode(data) + '</a>';
                                     break;
                                 }
 
@@ -213,8 +213,22 @@ function ProcessLoadTable(Status, BatchNo, MachineNum, DueDate, CuttingDateFrom,
             { data: "Note", "name": "生產備註", "autoWidth": true, "className": "dt-body-center" },
             { data: "SelectedInventoryItemNumber", "name": "組成成份料號", "autoWidth": true, "className": "dt-body-center" },
             { data: "Product_Item", "name": "產品料號", "autoWidth": true, "className": "dt-body-center" },
-            { data: "OrderNumber", "name": "訂單編號", "autoWidth": true, "className": "dt-body-center" },
-            { data: "OrderLineNumber", "name": "明細行", "autoWidth": true, "className": "dt-body-center" },
+            {
+                data: "OrderNumber", "name": "訂單編號", "autoWidth": true, "className": "dt-body-center", "render": function (data, type, row) {
+                    if (data != "0") {
+                        return data;
+                    }
+                    return "";
+                }
+            },
+            {
+                data: "OrderLineNumber", "name": "明細行", "autoWidth": true, "className": "dt-body-center", "render": function (data, type, row) {
+                    if (data != "0") {
+                        return data;
+                    }
+                    return "";
+                }
+            },
             {
                 data: "", "autoWidth": true, "render": function (data, type, row) {
                     if (row.Status == CompletedBatch) {

@@ -243,7 +243,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                 oSP.BatchLineId = 2;
                 oSP.PeBatchId = 2;
                 oSP.BatchNo = "P100000";
-                oSP.BatchType = "TMP";
+                oSP.BatchType = "REP";
                 oSP.BatchStatus = 0;
                 oSP.BatchStatusDesc = ProcessStatusCode.WaitBatch;
                 oSP.OrgId = 1;
@@ -317,7 +317,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                 oSP.BatchLineId = 2;
                 oSP.PeBatchId = 2;
                 oSP.BatchNo = "P100000";
-                oSP.BatchType = "TMP";
+                oSP.BatchType = "REP";
                 oSP.BatchStatus = 0;
                 oSP.BatchStatusDesc = ProcessStatusCode.WaitBatch;
                 oSP.OrgId = 1;
@@ -392,7 +392,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                 oSP.BatchLineId = 3;
                 oSP.PeBatchId = 3;
                 oSP.BatchNo = "K100000";
-                oSP.BatchType = "TMP";
+                oSP.BatchType = "REP";
                 oSP.BatchStatus = 0;
                 oSP.BatchStatusDesc = ProcessStatusCode.WaitBatch;
                 oSP.OrgId = 1;
@@ -464,7 +464,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                 oSP.BatchLineId = 3;
                 oSP.PeBatchId = 3;
                 oSP.BatchNo = "K100000";
-                oSP.BatchType = "TMP";
+                oSP.BatchType = "REP";
                 oSP.BatchStatus = 0;
                 oSP.BatchStatusDesc = ProcessStatusCode.WaitBatch;
                 oSP.OrgId = 1;
@@ -764,8 +764,8 @@ H.CUTTING_DATE_FROM AS CuttingDateFrom,
 H.CUTTING_DATE_TO AS CuttingDateTo,
 H.MACHINE_CODE AS MachineNum,
 DI.CUSTOMER_NAME AS CustomerName,
-DI.ORDER_NUMBER AS OrderNumber,
-DI.ORDER_LINE_NUMBER AS OrderLineNumber,
+ISNULL(DI.ORDER_NUMBER, 0) AS OrderNumber,
+ISNULL(DI.ORDER_LINE_NUMBER, 0) AS OrderLineNumber,
 DI.BASIC_WEIGHT AS BasicWeight,
 DI.SPECIFICATION AS Specification,
 DI.GRAIN_DIRECTION AS GrainDirection,
@@ -874,8 +874,8 @@ H.CUTTING_DATE_FROM AS CuttingDateFrom,
 H.CUTTING_DATE_TO AS CuttingDateTo,
 H.MACHINE_CODE AS MachineNum,
 DI.CUSTOMER_NAME AS CustomerName,
-DI.ORDER_NUMBER AS OrderNumber,
-DI.ORDER_LINE_NUMBER AS OrderLineNumber,
+ISNULL(DI.ORDER_NUMBER, 0) AS OrderNumber,
+ISNULL(DI.ORDER_LINE_NUMBER, 0) AS OrderLineNumber,
 DI.BASIC_WEIGHT AS BasicWeight,
 DI.SPECIFICATION AS Specification,
 DI.GRAIN_DIRECTION AS GrainDirection,
@@ -3297,7 +3297,7 @@ and SUBINVENTORY_CODE = @SUBINVENTORY_CODE");
                     LabelKnife.Value = dataset.Tables["LabelKnife"];
 
 
-                    GetLabelDesc(connection, ref dataset, osp.PackingType);
+                    GetLabelDesc(connection, ref dataset, osp.PackingType ?? "");
                     LabelDesc.Name = "LabelDesc";
                     LabelDesc.Value = dataset.Tables["LabelDesc"];
 
@@ -3339,7 +3339,7 @@ and SUBINVENTORY_CODE = @SUBINVENTORY_CODE");
         {
             string Header = "select dbo.ConvertOspLabelDesc(@packingType) as LabelDesc";
             SqlCommand command = new SqlCommand(Header, connection);
-            command.Parameters.Add(new SqlParameter("@packingType", packingType));
+            command.Parameters.Add(new SqlParameter("@packingType", packingType) { IsNullable = true });
             SqlDataAdapter salesOrderAdapter = new SqlDataAdapter(command);
             salesOrderAdapter.Fill(LabelDesc, "LabelDesc");
         }

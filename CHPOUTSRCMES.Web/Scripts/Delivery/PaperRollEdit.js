@@ -126,7 +126,7 @@ $(document).ready(function () {
             var ITEM_NUMBER = dt.rows(indexes).data().pluck('ITEM_NUMBER')[0];
             if (TMP_ITEM_NUMBER) {
                 $("#ITEM_NUMBER").text(TMP_ITEM_NUMBER);
-                $("#PICK_STATUS").text("TMP");
+                $("#PICK_STATUS").text("REP");
             } else {
                 $("#ITEM_NUMBER").text(ITEM_NUMBER);
                 $("#PICK_STATUS").text("");
