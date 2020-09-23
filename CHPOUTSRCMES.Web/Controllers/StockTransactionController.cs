@@ -1056,14 +1056,14 @@ namespace CHPOUTSRCMES.Web.Controllers
             }
         }
 
-        public ActionResult InboundPickingReport(string shipmentNumber)
+        public ActionResult InboundRollPickingReport(string shipmentNumber)
         {
             using (var context = new MesContext())
             {
                 using (TransferUOW uow = new TransferUOW(context))
                 {
 #if DEBUG
-                    var result = stockTransferData.LocalInboundPickingReportViewer(uow, shipmentNumber);
+                    var result = stockTransferData.LocalInboundRollPickingReportViewer(uow, shipmentNumber);
                     if (result.Success)
                     {
                         ViewBag.ReportViewer = result.Data;
@@ -1077,7 +1077,45 @@ namespace CHPOUTSRCMES.Web.Controllers
 
 #else
                     
-                    var result = stockTransferData.RemoteInboundPickingReportViewer(tripName);
+                    var result = stockTransferData.RemoteInboundRollPickingReportViewer(tripName);
+                    if (result.Success)
+                    {
+                        ViewBag.ReportViewer = result.Data;
+                        return View("Report");
+                    }
+                    else
+                    {
+                        throw new Exception(result.Msg);
+                        //return new JsonResult { Data = new { status = result.Success, result = result.Msg } };
+                    }
+
+#endif
+                }
+            }
+        }
+
+        public ActionResult InboundFlatPickingReport(string shipmentNumber)
+        {
+            using (var context = new MesContext())
+            {
+                using (TransferUOW uow = new TransferUOW(context))
+                {
+#if DEBUG
+                    var result = stockTransferData.LocalInboundFlatPickingReportViewer(uow, shipmentNumber);
+                    if (result.Success)
+                    {
+                        ViewBag.ReportViewer = result.Data;
+                        return View("Report");
+                    }
+                    else
+                    {
+                        throw new Exception(result.Msg);
+                        //return new JsonResult { Data = new { status = result.Success, result = result.Msg } };
+                    }
+
+#else
+                    
+                    var result = stockTransferData.RemoteInboundFlatPickingReportViewer(tripName);
                     if (result.Success)
                     {
                         ViewBag.ReportViewer = result.Data;

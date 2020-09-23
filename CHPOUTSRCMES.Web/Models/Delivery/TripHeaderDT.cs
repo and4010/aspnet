@@ -1162,10 +1162,10 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
                 report.SizeToReportContent = true;
                 report.BorderWidth = 1;
                 report.BorderStyle = BorderStyle.Solid;
-                report.ServerReport.ReportPath = "/開發區/CHPOUSMES/DeliveryPickingList.rdl";
-                report.ServerReport.ReportServerUrl = new Uri("http://rs.yfy.com/reports/");
+                report.ServerReport.ReportPath = "/開發區/CHPOUSMES/DeliveryPickingList";
+                report.ServerReport.ReportServerUrl = new Uri("http://rs.yfy.com/ReportServer");
                 report.ServerReport.SetParameters(paramList);
-                report.LocalReport.Refresh();                
+                report.ServerReport.Refresh();                
 
                 return new ResultDataModel<ReportViewer>(true, "取得備貨單報表成功", report);
             }

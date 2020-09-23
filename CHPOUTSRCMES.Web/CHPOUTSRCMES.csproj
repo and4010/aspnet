@@ -2013,9 +2013,10 @@
     <Content Include="Report\ProcessCutMaterial.rdlc" />
     <Content Include="Report\ProcessCutReceipt.rdlc" />
     <Content Include="Report\OspCutPaperRollStock.rdlc" />
-    <Content Include="Report\InboundPickingList.rdlc" />
     <Content Include="Report\OutboundPickingList.rdlc" />
     <Content Include="Report\DeliveryPickingList.rdlc" />
+    <Content Include="Report\InboundFlatPickingList.rdlc" />
+    <Content Include="Report\InboundRollPickingList.rdlc" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\Delivery\DetailViewHeader.js" />
     <Content Include="Scripts\Delivery\FlatEdit.js" />
