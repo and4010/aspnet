@@ -278,15 +278,26 @@
     });
 
 
-    $("#btnPrintPick").click(function () {
+    $("#btnPrintRollPick").click(function () {
         var shipmentNumber = getShipmentNumber();
         if (shipmentNumber == "新增編號") {
             swal.fire('請選擇出貨編號');
             event.preventDefault();
             return;
         }
-        window.open("/StockTransaction/InboundPickingReport/?shipmentNumber=" + shipmentNumber);
+        window.open("/StockTransaction/InboundRollPickingReport/?shipmentNumber=" + shipmentNumber);
     });
+
+    $("#btnPrintFlatPick").click(function () {
+        var shipmentNumber = getShipmentNumber();
+        if (shipmentNumber == "新增編號") {
+            swal.fire('請選擇出貨編號');
+            event.preventDefault();
+            return;
+        }
+        window.open("/StockTransaction/InboundFlatPickingReport/?shipmentNumber=" + shipmentNumber);
+    });
+    
 
     $("#txtBARCODE").keydown(function (e) {
         if (e.keyCode == 13) {
@@ -652,7 +663,8 @@
         $('#btnImportFile').attr('disabled', false);
         $('#btnImportFlatFile').attr('disabled', false);
         $('#btnExampleDownload').attr('disabled', false);
-        $('#btnPrintPick').attr('disabled', false);
+        $('#btnPrintRollPick').attr('disabled', false);
+        $('#btnPrintFlatPick').attr('disabled', false);
         $('#btnMultiLable').attr('disabled', false);
         $('#btnSaveBarcode').attr('disabled', false);
         $('#btnSaveTransfer').attr('disabled', false);
@@ -670,7 +682,8 @@
         $('#btnImportFile').attr('disabled', true);
         $('#btnImportFlatFile').attr('disabled', true);
         $('#btnExampleDownload').attr('disabled', true);
-        $('#btnPrintPick').attr('disabled', true);
+        $('#btnPrintRollPick').attr('disabled', true);
+        $('#btnPrintFlatPick').attr('disabled', true);
         $('#btnMultiLable').attr('disabled', true);
         $('#btnSaveBarcode').attr('disabled', true);
         $('#btnSaveTransfer').attr('disabled', true);
@@ -1748,7 +1761,7 @@
                     //$('#txtBARCODE').attr('disabled', true);
                     //$('#btnImportFile').attr('disabled', true);
                     //$('#btnExampleDownload').attr('disabled', true);
-                    //$('#btnPrintPick').attr('disabled', true);
+                    //$('#btnPrintRollPick').attr('disabled', true);
                     //$('#btnMultiLable').attr('disabled', true);
                     //$('#btnSaveBarcode').attr('disabled', true);
                     //$('#btnSaveTransfer').attr('disabled', true);
