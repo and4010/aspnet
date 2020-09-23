@@ -212,6 +212,7 @@ namespace CHPOUTSRCMES.TASK
                 AddCtrStTasker();
                 AddDlvStTasker();
                 AddOspStTasker();
+                AddTrfStTasker();
             }));
         }
 

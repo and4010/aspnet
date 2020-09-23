@@ -449,6 +449,14 @@
     <Compile Include="Migrations\202009211211543_fix-osp_tables-2.Designer.cs">
       <DependentUpon>202009211211543_fix-osp_tables-2.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202009221134328_fix-trf_soa_t.cs" />
+    <Compile Include="Migrations\202009221134328_fix-trf_soa_t.Designer.cs">
+      <DependentUpon>202009221134328_fix-trf_soa_t.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202009230709478_fix-forwhat.cs" />
+    <Compile Include="Migrations\202009230709478_fix-forwhat.Designer.cs">
+      <DependentUpon>202009230709478_fix-forwhat.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Delivery\bDeliveryDetail.cs" />
     <Compile Include="Models\Delivery\DeliveryDetail.cs" />
@@ -1552,6 +1560,11 @@
     <Content Include="Data\SQLScript\118_SP_P210_OspStStage1Upload.sql" />
     <Content Include="Data\SQLScript\119_SP_P211_OspStStage2Upload.sql" />
     <Content Include="Data\SQLScript\120_SP_P213_OspStStage3Upload.sql" />
+    <Content Include="Data\SQLScript\121_SP_P222_TrfStUpload.sql" />
+    <Content Include="Data\SQLScript\122_SP_P222_TrfRsnStUpload.sql" />
+    <Content Include="Data\SQLScript\123_SP_P222_TrfInvStUpload.sql" />
+    <Content Include="Data\SQLScript\124_SP_P222_TrfMiscStUpload.sql" />
+    <Content Include="Data\SQLScript\125_SP_P222_TrfObsStUpload.sql" />
     <Content Include="Data\SQLScript\201_XXIF_CHP_CONTROL_ST.sql" />
     <Content Include="Data\SQLScript\202_XXIF_CHP_P217_CONTAINER_ST.sql" />
     <Content Include="Data\SQLScript\203_XXIF_CHP_P218_CONTAINER_RV_ST.sql" />
@@ -2227,6 +2240,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202009211211543_fix-osp_tables-2.resx">
       <DependentUpon>202009211211543_fix-osp_tables-2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202009221134328_fix-trf_soa_t.resx">
+      <DependentUpon>202009221134328_fix-trf_soa_t.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202009230709478_fix-forwhat.resx">
+      <DependentUpon>202009230709478_fix-forwhat.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

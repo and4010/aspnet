@@ -2,7 +2,8 @@ namespace CHPOUTSRCMES.Web.Migrations
 {
     using System;
     using System.Data.Entity.Migrations;
-    
+    using System.IO;
+
     public partial class fixtrf_soa_t : DbMigration
     {
         public override void Up()
@@ -12,17 +13,22 @@ namespace CHPOUTSRCMES.Web.Migrations
             AddColumn("dbo.TRF_SOA_T", "TRANSFER_TYPE", c => c.String(nullable: false, maxLength: 128));
             AddPrimaryKey("dbo.TRF_SOA_T", new[] { "TRANSFER_HEADER_ID", "TRANSFER_TYPE", "PROCESS_CODE", "SERVER_CODE", "BATCH_ID" });
 
+            var baseDir = AppDomain.CurrentDomain
+              .BaseDirectory
+              .Replace("\\bin", string.Empty) + "Data\\SQLScript\\";
+
             DropFunctionIfExists("InboundFlatPickingList");
 
-            SqlFile("019_InboundFlatPickingList.sql");
+            SqlFile(Path.Combine(baseDir, "019_InboundFlatPickingList.sql"));
 
             DropFunctionIfExists("OutboundPickingList");
 
-            SqlFile("020_OutboundPickingList.sql");
+            SqlFile(Path.Combine(baseDir, "020_OutboundPickingList.sql"));
 
             DropFunctionIfExists("InboundRollPickingList");
 
-            SqlFile("021_InboundRollPickingList.sql");
+            SqlFile(Path.Combine(baseDir, "021_InboundRollPickingList.sql"));
+
         }
         
         public override void Down()

@@ -121,7 +121,7 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                     using var transaction = sqlConn.BeginTransaction();
                     try
                     {
-                        var model = await trfStUow.TrfReasonStUpload(list[i], transaction);
+                        var model = await trfStUow.TrfRsnStUpload(list[i], transaction);
                         LogInfo($"[{tasker.Name}]-{tasker.Unit}-ExportReasonStRv (TRANSFER_REASON_HEADER_ID:{list[i]})-{model}");
 
                         if (!model.Success)
