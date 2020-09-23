@@ -1039,7 +1039,7 @@ namespace CHPOUTSRCMES.Web.Controllers
 
 #else
                     
-                    var result = stockTransferData.RemoteOutboundPickingReportViewer(tripName);
+                    var result = stockTransferData.RemoteOutboundPickingReportViewer(shipmentNumber);
                     if (result.Success)
                     {
                         ViewBag.ReportViewer = result.Data;
@@ -1077,7 +1077,7 @@ namespace CHPOUTSRCMES.Web.Controllers
 
 #else
                     
-                    var result = stockTransferData.RemoteInboundRollPickingReportViewer(tripName);
+                    var result = stockTransferData.RemoteInboundRollPickingReportViewer(shipmentNumber);
                     if (result.Success)
                     {
                         ViewBag.ReportViewer = result.Data;
@@ -1115,7 +1115,7 @@ namespace CHPOUTSRCMES.Web.Controllers
 
 #else
                     
-                    var result = stockTransferData.RemoteInboundFlatPickingReportViewer(tripName);
+                    var result = stockTransferData.RemoteInboundFlatPickingReportViewer(shipmentNumber);
                     if (result.Success)
                     {
                         ViewBag.ReportViewer = result.Data;
