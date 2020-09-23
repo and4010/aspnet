@@ -23,10 +23,11 @@
           </QueryParameter>
         </QueryParameters>
         <CommandText>SELECT * FROM InboundRollPickingList(@SHIPMENT_NUMBER)</CommandText>
+        <rd:UseGenericDesigner>true</rd:UseGenericDesigner>
       </Query>
       <Fields>
-        <Field Name="GROUP_ID">
-          <DataField>GROUP_ID</DataField>
+        <Field Name="SUB_ID">
+          <DataField>SUB_ID</DataField>
           <rd:TypeName>System.Int64</rd:TypeName>
         </Field>
         <Field Name="SHIPMENT_NUMBER">
@@ -302,7 +303,7 @@
                 <TablixCornerRow>
                   <TablixCornerCell>
                     <CellContents>
-                      <Textbox Name="Textbox13">
+                      <Textbox Name="Textbox1">
                         <CanGrow>true</CanGrow>
                         <KeepTogether>true</KeepTogether>
                         <Paragraphs>
@@ -320,7 +321,7 @@
                             </Style>
                           </Paragraph>
                         </Paragraphs>
-                        <rd:DefaultName>Textbox13</rd:DefaultName>
+                        <rd:DefaultName>Textbox1</rd:DefaultName>
                         <Style>
                           <Border>
                             <Style>Solid</Style>
@@ -921,27 +922,27 @@
             <TablixRowHierarchy>
               <TablixMembers>
                 <TablixMember>
-                  <Group Name="GROUP_ID">
+                  <Group Name="SUB_ID">
                     <GroupExpressions>
-                      <GroupExpression>=Fields!GROUP_ID.Value</GroupExpression>
+                      <GroupExpression>=Fields!SUB_ID.Value</GroupExpression>
                     </GroupExpressions>
                   </Group>
                   <SortExpressions>
                     <SortExpression>
-                      <Value>=Fields!GROUP_ID.Value</Value>
+                      <Value>=Fields!SUB_ID.Value</Value>
                     </SortExpression>
                   </SortExpressions>
                   <TablixHeader>
                     <Size>0.95547cm</Size>
                     <CellContents>
-                      <Textbox Name="GROUP_ID">
+                      <Textbox Name="SUB_ID">
                         <CanGrow>true</CanGrow>
                         <KeepTogether>true</KeepTogether>
                         <Paragraphs>
                           <Paragraph>
                             <TextRuns>
                               <TextRun>
-                                <Value>=Fields!GROUP_ID.Value</Value>
+                                <Value>=Fields!SUB_ID.Value</Value>
                                 <Style>
                                   <FontFamily>Arial</FontFamily>
                                 </Style>
@@ -952,7 +953,7 @@
                             </Style>
                           </Paragraph>
                         </Paragraphs>
-                        <rd:DefaultName>GROUP_ID</rd:DefaultName>
+                        <rd:DefaultName>SUB_ID</rd:DefaultName>
                         <Style>
                           <Border>
                             <Style>Solid</Style>
@@ -1224,7 +1225,7 @@
           </Border>
         </Style>
       </Body>
-      <Width>189.62345mm</Width>
+      <Width>189.62343mm</Width>
       <Page>
         <PageFooter>
           <Height>6.57178mm</Height>
