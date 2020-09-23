@@ -209,10 +209,10 @@ namespace CHPOUTSRCMES.TASK
 
                 Task.WaitAll(taskSubinventory, taskTransactionType, taskItem, taskOspRelatedItem, taskMachinePaperType, tasYszmpckq);
 
-                AddCtrStTasker();
-                AddDlvStTasker();
-                AddOspStTasker();
-                AddTrfStTasker();
+                //AddCtrStTasker();
+                //AddDlvStTasker();
+                //AddOspStTasker();
+                //AddTrfStTasker();
             }));
         }
 
@@ -249,7 +249,7 @@ namespace CHPOUTSRCMES.TASK
         /// </summary>
         internal void AddOspStTasker()
         {
-            AddTasker(new Tasker("加工轉檔程序", 5, (tasker, token) => {
+            AddTasker(new Tasker("加工轉檔程序", 1, (tasker, token) => {
                 OspStService service = new OspStService(MesConnStr, ErpConnStr);
                 var task = service.ImportOspSt(tasker, token);
 

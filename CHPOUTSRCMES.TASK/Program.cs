@@ -24,7 +24,7 @@ namespace CHPOUTSRCMES.TASK
             try
             {
                 MainController.Instance.StartTimer();
-                MainController.Instance.AddMasterTasker();
+                MainController.Instance.AddOspStTasker();
                 Application.Run(MainController.Instance.MainForm);
 
             }
