@@ -56,8 +56,6 @@ namespace CHPOUTSRCMES.Web.Models.StockQuery
         {
             var paramList = new List<SqlParameter>();
             using var mesContext = new MesContext();
-
-            using var masterUow = new MasterUOW(mesContext);
             try
             {
                 StringBuilder builder = new StringBuilder(@"
@@ -76,10 +74,10 @@ ISNULL(S.SUBINVENTORY_CODE, '') AS SubinventoryCode
 , SUM(ISNULL(S.SECONDARY_AVAILABLE_QTY, 0)) + SUM(ISNULL(S.SECONDARY_LOCKED_QTY, 0)) AS SecondarySumQty
 FROM STOCK_T S
 JOIN USER_SUBINVENTORY_T U ON U.SUBINVENTORY_CODE = S.SUBINVENTORY_CODE
-WHERE U.UserId =  @userId 
+WHERE U.UserId =  @userId AND S.STATUS_CODE = @statusCode
 ");
                 paramList.Add(SqlParamHelper.GetVarChar("@userId", userId, 128));
-
+                paramList.Add(SqlParamHelper.GetVarChar("@statusCode", MasterUOW.StockStatusCode.InStock, 10));
                 if (!long.TryParse(locator, out long locatorId))
                 {
                     locatorId = 0;
@@ -113,7 +111,8 @@ WHERE U.UserId =  @userId
  GROUP BY S.SUBINVENTORY_CODE, S.LOCATOR_ID, S.INVENTORY_ITEM_ID
  ORDER BY S.SUBINVENTORY_CODE, S.LOCATOR_ID, S.INVENTORY_ITEM_ID");
 
-                return mesContext.Database.SqlQuery<StockQueryModel>(builder.ToString(), paramList.ToArray()).ToList();
+                var models = mesContext.Database.SqlQuery<StockQueryModel>(builder.ToString(), paramList.ToArray());
+                return models.OrderBy(x => x.SubinventoryCode).ThenBy(x=>x.LocatorSegments).ThenBy(x=>x.ItemNumber).Skip(data.Start).Take(data.Length).ToList();
 
             }
             catch (Exception ex)

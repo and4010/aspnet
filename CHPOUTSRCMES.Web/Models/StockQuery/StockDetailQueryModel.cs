@@ -1,10 +1,12 @@
 ﻿using CHPOUTSRCMES.Web.DataModel;
 using CHPOUTSRCMES.Web.DataModel.UnitOfWorks;
+using CHPOUTSRCMES.Web.Util;
 using CHPOUTSRCMES.Web.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Data.Entity;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Web.UI.WebControls;
 
@@ -69,54 +71,46 @@ namespace CHPOUTSRCMES.Web.Models.StockQuery
         public static List<StockDetailQueryModel> getModels(DataTableAjaxPostViewModel data,
             string subinventory, long locatorId, long itemId, string userId)
         {
-
+            var paramList = new List<SqlParameter>();
             using var mesContext = new MesContext();
 
-            using var masterUow = new MasterUOW(mesContext);
             try
             {
-                var list = masterUow.stockTRepository.GetAll().AsNoTracking()
-                    .Join(masterUow.userSubinventoryTRepository.GetAll().AsNoTracking(), x => x.SubinventoryCode, y => y.SubinventoryCode, (x, y) => new { user = y, stock = x })
-                    .Where(x => x.user.UserId == userId && x.stock.StatusCode == MasterUOW.StockStatusCode.InStock)
-                    .Select(x => x.stock);
-
-                if (!string.IsNullOrEmpty(subinventory) && subinventory.CompareTo("*") != 0)
-                {
-                    list = list.Where(x => x.SubinventoryCode == subinventory);
-                }
-
-                if (locatorId > 0)
-                {
-                    list = list.Where(x => x.LocatorId == locatorId);
-                }
-
-                if (itemId > 0)
-                {
-                    list = list.Where(x => x.InventoryItemId == itemId);
-                }
-
-                var models = list
-                    .Select(x => new StockDetailQueryModel()
-                    {
-                        StockId = x.StockId,
-                        SubinventoryCode = x.SubinventoryCode,
-                        LocatorId = x.LocatorId ?? 0,
-                        LocatorSegments = x.LocatorSegments,
-                        InventoryItemId = x.InventoryItemId,
-                        ItemNumber = x.ItemNumber,
-                        PrimaryUomCode = x.PrimaryUomCode,
-                        PrimaryAvailableQty = x.PrimaryAvailableQty,
-                        SecondaryUomCode = x.SecondaryUomCode,
-                        SecondaryAvailableQty = x.SecondaryAvailableQty,
-                        Barcode = x.Barcode,
-                        BasicWeight = x.BasicWeight,
-                        ReamWeight = x.ReamWeight, 
-                        LotNumber = x.LotNumber, 
-                        PackingType = x.PackingType, 
-                        Specification = x.Specification
-                    });
+                System.Text.StringBuilder builder = new System.Text.StringBuilder(@"
+SELECT 
+ISNULL(S.SUBINVENTORY_CODE, '') AS SubinventoryCode
+, ISNULL(S.LOCATOR_ID, 0) AS LocatorId
+, ISNULL(S.LOCATOR_SEGMENTS, '') AS LocatorSegments
+, ISNULL(S.INVENTORY_ITEM_ID, 0) AS InventoryItemId
+, ISNULL(S.ITEM_NUMBER, '') AS ItemNumber
+, ISNULL(S.ITEM_CATEGORY, '') AS ItemCategory
+, ISNULL(S.BARCODE, '') AS Barcode
+, ISNULL(S.BASIC_WEIGHT, '') AS BasicWeight
+, ISNULL(S.REAM_WEIGHT, '') AS ReamWeight
+, ISNULL(S.LOT_NUMBER, '') AS LotNumber
+, ISNULL(S.PACKING_TYPE, '') AS PackingType
+, ISNULL(S.SPECIFICATION, '') AS Specification
+, ISNULL(S.PRIMARY_UOM_CODE, '') AS PrimaryUomCode
+, ISNULL(S.PRIMARY_AVAILABLE_QTY, 0) AS PrimaryAvailableQty
+, ISNULL(S.SECONDARY_UOM_CODE, '') AS SecondaryUomCode
+, ISNULL(S.SECONDARY_AVAILABLE_QTY, 0) AS SecondaryAvailableQty
+FROM STOCK_T S
+JOIN USER_SUBINVENTORY_T U ON U.SUBINVENTORY_CODE = S.SUBINVENTORY_CODE
+WHERE U.UserId =  @userId 
+AND S.SUBINVENTORY_CODE= @subinventoryCode
+AND S.LOCATOR_ID= @locatorId
+AND S.INVENTORY_ITEM_ID= @itemId
+AND S.STATUS_CODE = @statusCode
+ORDER BY S.SUBINVENTORY_CODE, S.LOCATOR_ID, S.INVENTORY_ITEM_ID
+");
+                paramList.Add(SqlParamHelper.GetVarChar("@userId", userId, 128));
+                paramList.Add(SqlParamHelper.GetVarChar("@statusCode", MasterUOW.StockStatusCode.InStock, 10));
+                paramList.Add(SqlParamHelper.R.SubinventoryCode("@subinventoryCode", subinventory));
+                paramList.Add(SqlParamHelper.GetBigInt("@locatorId", locatorId));
+                paramList.Add(SqlParamHelper.GetBigInt("@itemId", itemId));
+                var models = mesContext.Database.SqlQuery<StockDetailQueryModel>(builder.ToString(), paramList.ToArray()).ToList();
                 //var count = models.Count();
-                return models.OrderBy(x=> new { x.SubinventoryCode, x.LocatorSegments, x.InventoryItemId}).Skip(data.Start).Take(data.Length).ToList();
+                return models.OrderBy(x => x.SubinventoryCode).ThenBy(x => x.LocatorSegments).ThenBy(x => x.ItemNumber).Skip(data.Start).Take(data.Length).ToList();
             }
             catch (Exception ex)
             {
