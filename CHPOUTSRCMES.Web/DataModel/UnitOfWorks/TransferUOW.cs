@@ -326,6 +326,11 @@ AND TRANSFER_SUBINVENTORY_CODE = @trfSubCode AND TRANSFER_ORGANIZATION_ID = @trf
             return trfDetailTRepository.GetAll().AsNoTracking().FirstOrDefault(x => x.TransferHeaderId == transferHeaderId && x.TransferDetailId == transferDetailId);
         }
 
+        public TRF_INBOUND_PICKED_T GetTrfInboundPickedDataFromBarcode(long transferHeaderId, string barcode)
+        {
+            return trfInboundPickedTRepository.GetAll().AsNoTracking().FirstOrDefault(x => x.TransferHeaderId == transferHeaderId && x.Barcode == barcode);
+        }
+
         public TRF_HEADER_T GetTrfHeader(string shipmentNumber, string transferType)
         {
             return trfHeaderTRepository.GetAll().AsNoTracking().FirstOrDefault(x =>

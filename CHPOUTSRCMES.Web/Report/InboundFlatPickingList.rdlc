@@ -23,6 +23,7 @@
           </QueryParameter>
         </QueryParameters>
         <CommandText>SELECT * FROM InboundFlatPickingList(@SHIPMENT_NUMBER)</CommandText>
+        <rd:UseGenericDesigner>true</rd:UseGenericDesigner>
       </Query>
       <Fields>
         <Field Name="SUB_ID">
@@ -45,6 +46,10 @@
           <DataField>LOCATOR_CODE</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
+        <Field Name="SEGMENT3">
+          <DataField>SEGMENT3</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
         <Field Name="TRANSFER_ORGANIZATION_CODE">
           <DataField>TRANSFER_ORGANIZATION_CODE</DataField>
           <rd:TypeName>System.String</rd:TypeName>
@@ -59,6 +64,10 @@
         </Field>
         <Field Name="PAPER_TYPE">
           <DataField>PAPER_TYPE</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="TRANSFER_SEGMENT3">
+          <DataField>TRANSFER_SEGMENT3</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
         <Field Name="BASIC_WEIGHT">
@@ -237,7 +246,7 @@
                     </Style>
                   </TextRun>
                   <TextRun>
-                    <Value>=First(Fields!LOCATOR_CODE.Value, "Detail")</Value>
+                    <Value>=First(Fields!ORGANIZATION_CODE.Value, "Detail")  &amp;","  &amp;First(Fields!SUBINVENTORY_CODE.Value, "Detail")  &amp;","  &amp;First(Fields!SEGMENT3.Value, "Detail")</Value>
                     <Style>
                       <FontSize>12pt</FontSize>
                     </Style>
@@ -275,7 +284,7 @@
                     </Style>
                   </TextRun>
                   <TextRun>
-                    <Value>=First(Fields!TRANSFER_LOCATOR_CODE.Value, "Detail")</Value>
+                    <Value>=First(Fields!TRANSFER_ORGANIZATION_CODE.Value, "Detail") &amp;","  &amp;First(Fields!TRANSFER_SUBINVENTORY_CODE.Value, "Detail")  &amp;","  &amp;First(Fields!TRANSFER_SEGMENT3.Value, "Detail")</Value>
                     <Style>
                       <FontSize>12pt</FontSize>
                     </Style>
@@ -971,7 +980,6 @@
                           <PaddingBottom>2pt</PaddingBottom>
                         </Style>
                       </Textbox>
-                      <rd:Selected>true</rd:Selected>
                     </CellContents>
                   </TablixHeader>
                   <TablixMembers>
@@ -1100,7 +1108,7 @@
             <Top>3.27766cm</Top>
             <Left>0.15525cm</Left>
             <Height>3.85521cm</Height>
-            <Width>18.75995cm</Width>
+            <Width>18.75994cm</Width>
             <ZIndex>5</ZIndex>
             <Style>
               <Border>
