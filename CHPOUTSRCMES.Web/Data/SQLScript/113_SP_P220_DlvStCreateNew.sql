@@ -142,7 +142,19 @@ BEGIN
 		SET @success = 10
 		--資料正常 寫入進櫃主檔、檔頭及明細
 		IF NOT EXISTS (SELECT TOP 1 * FROM @controlStage WHERE STATUS_CODE = 'E')
-		BEGIN -- 檢查正常，寫入主檔
+		BEGIN 
+
+			DECLARE @tripId BIGINT = 0
+			SELECT TOP 1 @tripId = TRIP_ID FROM DLV_HEADER_T WHERE TRIP_ID IN (SELECT DISTINCT TRIP_ID FROM @orgTable)
+			IF (@tripId > 0)
+			BEGIN
+				EXEC dbo.SP_DlvTripDelete @tripId, @code output, @message output, @user
+
+				IF(@code != 0)
+				BEGIN
+					RAISERROR(@message, 16, @success)
+				END
+			END
 
 
 			--主檔
@@ -263,18 +275,7 @@ BEGIN
 		
 
 
-		SET @success = 20
-		DECLARE @tripId BIGINT = 0
-		SELECT TOP 1 @tripId = TRIP_ID FROM DLV_HEADER_T WHERE TRIP_ID IN (SELECT DISTINCT TRIP_ID FROM @orgTable)
-		IF (@tripId > 0)
-		BEGIN
-			EXEC dbo.SP_DlvTripDelete @tripId, @code output, @message output, @user
-
-			IF(@code != 0)
-			BEGIN
-				RAISERROR(@message, 16, @success)
-			END
-		END
+		
 
 		--處理完成回寫 XXIF_CHP_P217_CONTAINER_ST 
 		SET @success = @success + 1
