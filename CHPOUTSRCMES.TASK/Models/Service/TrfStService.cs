@@ -74,7 +74,7 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                     }
                     catch (Exception ex)
                     {
-                        LogError($"[{tasker.Name}]-{tasker.Unit}-ExportTrfStRv-錯誤-{ex.Message}-{ex.StackTrace}");
+                        LogError($"[{tasker.Name}]-{tasker.Unit}-ExportTrfStRv-錯誤-(TRF_HEADER_ID:{list[i]})-{ex.Message}-{ex.StackTrace}");
                         transaction.Rollback();
                     }
                 }
@@ -133,7 +133,7 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                     }
                     catch (Exception ex)
                     {
-                        LogError($"[{tasker.Name}]-{tasker.Unit}-ExportReasonStRv-錯誤-{ex.Message}-{ex.StackTrace}");
+                        LogError($"[{tasker.Name}]-{tasker.Unit}-ExportReasonStRv-錯誤-(TRANSFER_REASON_HEADER_ID:{list[i]})-{ex.Message}-{ex.StackTrace}");
                         transaction.Rollback();
                     }
                 }
@@ -192,7 +192,7 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                     }
                     catch (Exception ex)
                     {
-                        LogError($"[{tasker.Name}]-{tasker.Unit}-ExportInvStRv-錯誤-{ex.Message}-{ex.StackTrace}");
+                        LogError($"[{tasker.Name}]-{tasker.Unit}-ExportInvStRv-錯誤-(TRANSFER_INVENTORY_HEADER_ID:{list[i]})-{ex.Message}-{ex.StackTrace}");
                         transaction.Rollback();
                     }
                 }
@@ -251,7 +251,7 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                     }
                     catch (Exception ex)
                     {
-                        LogError($"[{tasker.Name}]-{tasker.Unit}-ExportMiscStRv-錯誤-{ex.Message}-{ex.StackTrace}");
+                        LogError($"[{tasker.Name}]-{tasker.Unit}-ExportMiscStRv-錯誤-(TRANSFER_MISCELLANEOUS_HEADER_ID:{list[i]})-{ex.Message}-{ex.StackTrace}");
                         transaction.Rollback();
                     }
                 }
@@ -310,7 +310,7 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                     }
                     catch (Exception ex)
                     {
-                        LogError($"[{tasker.Name}]-{tasker.Unit}-ExportObsStRv-錯誤-{ex.Message}-{ex.StackTrace}");
+                        LogError($"[{tasker.Name}]-{tasker.Unit}-ExportObsStRv-錯誤-(TRANSFER_OBSOLETE_HEADER_ID:{list[i]})-{ex.Message}-{ex.StackTrace}");
                         transaction.Rollback();
                     }
                 }

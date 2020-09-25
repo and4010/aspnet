@@ -13,8 +13,14 @@ using System.Web.UI.WebControls;
 
 namespace CHPOUTSRCMES.Web.Models.StockQuery
 {
-    public class StockQueryModel
+    public class StockTxnQueryModel
     {
+        [Display(Name = "組織ID")]
+        public long OrganizationId { set; get; }
+
+        [Display(Name = "組織")]
+        public string OrganizationCode { set; get; }
+
         [Display(Name = "倉庫")]
         public string SubinventoryCode { set; get; }
 
@@ -23,6 +29,21 @@ namespace CHPOUTSRCMES.Web.Models.StockQuery
 
         [Display(Name = "儲位")]
         public string LocatorSegments { set; get; }
+
+        [Display(Name = "移轉組織ID")]
+        public long TrfOrganizationId { set; get; }
+
+        [Display(Name = "移轉組織")]
+        public string TrfOrganizationCode { set; get; }
+
+        [Display(Name = "移轉倉庫")]
+        public string TrfSubinventoryCode { set; get; }
+
+        [Display(Name = "移轉儲位ID")]
+        public long TrfLocatorId { set; get; }
+
+        [Display(Name = "移轉儲位")]
+        public string TrfLocatorSegments { set; get; }
 
         [Display(Name = "料號ID")]
         public long InventoryItemId { set; get; }
@@ -36,20 +57,23 @@ namespace CHPOUTSRCMES.Web.Models.StockQuery
         [Display(Name = "主單位")]
         public string PrimaryUomCode { set; get; }
 
-
         public decimal PrimaryAvailableQty { set; get; }
 
-
-        public decimal PrimarySumQty { set; get; }
+        public decimal PrimaryChangedQty { set; get; }
 
         [Display(Name = "次單位")]
         public string SecondaryUomCode { set; get; }
 
-
         public decimal? SecondaryAvailableQty { set; get; }
 
+        public decimal SecondaryChangedQty { set; get; }
 
-        public decimal? SecondarySumQty { set; get; }
+        public string Category { set; get; }
+
+        public string DocNumber { set; get; }
+
+        public string Action { set; get; }
+
 
         public static List<StockQueryModel> getModels(DataTableAjaxPostViewModel data,
             string subinventory, string locator, string itemCategory, string itemNo, string userId)

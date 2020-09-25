@@ -1,4 +1,5 @@
 ﻿using CHPOUTSRCMES.TASK.Forms;
+using CHPOUTSRCMES.TASK.Models;
 using CHPOUTSRCMES.TASK.Models.Service;
 using CHPOUTSRCMES.TASK.Tasks;
 using CHPOUTSRCMES.TASK.Tasks.Interfaces;
@@ -14,12 +15,13 @@ namespace CHPOUTSRCMES.TASK
 {
     public class MainController : IDisposable
     {
+        private Logger logger = LogManager.GetCurrentClassLogger();
 
         private static MainController instance;
 
         internal static MainController Instance => instance ?? (instance = new MainController());
 
-        private Logger logger = LogManager.GetCurrentClassLogger();
+        internal Configuration configuration { set; get; }
 
         private string erpConnStr;
 
@@ -42,6 +44,7 @@ namespace CHPOUTSRCMES.TASK
             );
 
         private bool disposed = false;
+
         /// <summary>
         /// 取消權杖來源
         /// </summary>
@@ -82,6 +85,22 @@ namespace CHPOUTSRCMES.TASK
             factory = new TaskFactory(taskScheduler);
             taskers = new List<ITasker>();
             taskList = new Dictionary<string, Task>();
+
+            readConfig();
+        }
+
+        /// <summary>
+        /// 讀取AppConfig設定
+        /// </summary>
+        internal void readConfig()
+        {
+            if (configuration == null) configuration = new Configuration();
+
+            configuration.MasterTaskInterval = Helpers.AppConfigHelper.GetInt("MasterTaskInterval");
+            configuration.CtrTaskInterval = Helpers.AppConfigHelper.GetInt("CtrTaskInterval");
+            configuration.DlvTaskInterval = Helpers.AppConfigHelper.GetInt("DlvTaskInterval");
+            configuration.OspTaskInterval = Helpers.AppConfigHelper.GetInt("OspTaskInterval");
+            configuration.TrfTaskInterval = Helpers.AppConfigHelper.GetInt("TrfTaskInterval");
         }
 
         #region 任務計數器
@@ -187,12 +206,27 @@ namespace CHPOUTSRCMES.TASK
             return found;
         }
 
+        internal void TaskerChangeInterval(string taskname, int interval)
+        {
+            
+            for (int i = 0; i < taskers.Count; i++)
+            {
+                string name = taskers?[i]?.Name;
+                bool found = !string.IsNullOrEmpty(name) && taskname.CompareTo(name) == 0;
+                if (found)
+                {
+                    taskers?[i].ChangeInterval(interval);
+                }
+            }
+           
+        }
+
         #endregion 任務計數器
 
 
-        internal void AddMasterTasker()
+        internal void AddMasterTasker(int interval)
         {
-            AddTasker(new Tasker("主檔轉檔程序", 25, (tasker, token) => {
+            AddTasker(new Tasker("主檔轉檔程序", interval, (tasker, token) => {
                 MasterService service = new MasterService(MesConnStr, ErpConnStr);
                 //組織倉庫儲位
                 var taskSubinventory = service.importSubinventory(tasker, token);
@@ -209,19 +243,19 @@ namespace CHPOUTSRCMES.TASK
 
                 Task.WaitAll(taskSubinventory, taskTransactionType, taskItem, taskOspRelatedItem, taskMachinePaperType, tasYszmpckq);
 
-                AddCtrStTasker();
-                AddDlvStTasker();
-                AddOspStTasker();
-                AddTrfStTasker();
+                AddCtrStTasker(configuration.CtrTaskInterval);
+                AddDlvStTasker(configuration.DlvTaskInterval);
+                AddOspStTasker(configuration.OspTaskInterval);
+                AddTrfStTasker(configuration.TrfTaskInterval);
             }));
         }
 
         /// <summary>
         /// 進櫃SOA排程
         /// </summary>
-        internal void AddCtrStTasker()
+        internal void AddCtrStTasker(int interval)
         {
-            AddTasker(new Tasker("進櫃轉檔程序", 5, (tasker, token) => {
+            AddTasker(new Tasker("進櫃轉檔程序", interval, (tasker, token) => {
                 CtrStService service = new CtrStService(MesConnStr, ErpConnStr);
                 var task = service.ImportCtrSt(tasker, token);
                 var rvTask = task.ContinueWith(subTask => service.ExportCtrStRv(tasker, token), TaskContinuationOptions.OnlyOnRanToCompletion);
@@ -233,9 +267,9 @@ namespace CHPOUTSRCMES.TASK
         /// <summary>
         /// 出貨SOA排程
         /// </summary>
-        internal void AddDlvStTasker()
+        internal void AddDlvStTasker(int interval)
         {
-            AddTasker(new Tasker("出貨轉檔程序", 5, (tasker, token) => {
+            AddTasker(new Tasker("出貨轉檔程序", interval, (tasker, token) => {
                 DlvStService service = new DlvStService(MesConnStr, ErpConnStr);
                 var task = service.ImportDlvSt(tasker, token);
                 var rvTask = task.ContinueWith(subTask => service.ExportDlvStRv(tasker, token), TaskContinuationOptions.OnlyOnRanToCompletion);
@@ -247,9 +281,9 @@ namespace CHPOUTSRCMES.TASK
         /// <summary>
         /// 加工SOA排程
         /// </summary>
-        internal void AddOspStTasker()
+        internal void AddOspStTasker(int interval)
         {
-            AddTasker(new Tasker("加工轉檔程序", 5, (tasker, token) => {
+            AddTasker(new Tasker("加工轉檔程序", interval, (tasker, token) => {
                 OspStService service = new OspStService(MesConnStr, ErpConnStr);
                 var task = service.ImportOspSt(tasker, token);
 
@@ -268,9 +302,9 @@ namespace CHPOUTSRCMES.TASK
         /// <summary>
         /// 
         /// </summary>
-        internal void AddTrfStTasker()
+        internal void AddTrfStTasker(int interval)
         {
-            AddTasker(new Tasker("庫存異動轉檔程序", 5, (tasker, token) => {
+            AddTasker(new Tasker("庫存異動轉檔程序", interval, (tasker, token) => {
                 TrfStService service = new TrfStService(MesConnStr, ErpConnStr);
                 var trfTask1 = service.ExportTrfStRv(tasker, token);
                 var trfTask2 = trfTask1.ContinueWith(sub => service.ExportMiscStRv(tasker, token), TaskContinuationOptions.OnlyOnRanToCompletion);

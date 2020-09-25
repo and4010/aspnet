@@ -71,6 +71,11 @@ namespace CHPOUTSRCMES.TASK.Tasks
             Enabled = true;
         }
 
+        public void ChangeInterval(int interval)
+        {
+            this.Unit = interval;
+        }
+
         /// <summary>
         /// 
         /// </summary>

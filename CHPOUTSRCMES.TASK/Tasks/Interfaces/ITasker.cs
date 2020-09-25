@@ -15,6 +15,12 @@ namespace CHPOUTSRCMES.TASK.Tasks.Interfaces
         string Name { set; get; }
 
         /// <summary>
+        /// 修改執行間隔
+        /// </summary>
+        /// <param name="interval"></param>
+        void ChangeInterval(int interval);
+
+        /// <summary>
         /// 執行
         /// </summary>
         /// <param name="factory">TaskFactory元件</param>

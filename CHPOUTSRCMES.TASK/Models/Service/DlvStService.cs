@@ -67,16 +67,14 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                 for (int i = 0; i < list.Count(); i++)
                 {
                     using var transaction = sqlConn.BeginTransaction();
+                    var st = list?[i];
+                    if (st == null)
+                    {
+                        continue;
+                    }
+
                     try
                     {
-
-                        var st = list?[i];
-                        if (st == null)
-                        {
-                            continue;
-                        }
-
-
                         ResultModel model = new ResultModel(false, "未知的錯誤!");
 
                         model = await dlvStUow.DeliveryStReceive(st, transaction);
@@ -92,7 +90,7 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                     }
                     catch (Exception ex)
                     {
-                        LogError($"[{tasker.Name}]-{tasker.Unit}-ImportDlvSt-錯誤-{ex.Message}-{ex.StackTrace}");
+                        LogError($"[{tasker.Name}]-{tasker.Unit}-ImportDlvSt-錯誤-({st.PROCESS_CODE}, {st.SERVER_CODE}, {st.BATCH_ID})-{ex.Message}-{ex.StackTrace}");
                         transaction.Rollback();
                     }
                 }
@@ -153,7 +151,7 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                     }
                     catch (Exception ex)
                     {
-                        LogError($"[{tasker.Name}]-{tasker.Unit}-ExportDlvStRv-錯誤-{ex.Message}-{ex.StackTrace}");
+                        LogError($"[{tasker.Name}]-{tasker.Unit}-ExportDlvStRv-錯誤-(TRIP_ID:{list[i]})-{ex.Message}-{ex.StackTrace}");
                         transaction.Rollback();
                     }
                 }

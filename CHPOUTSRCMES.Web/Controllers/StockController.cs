@@ -18,7 +18,10 @@ namespace CHPOUTSRCMES.Web.Controllers
             return View();
         }
 
-        //
+        /// <summary>
+        /// 庫存查詢
+        /// </summary>
+        /// <returns></returns>
         // GET: /Stock/Query
         public ActionResult Query()
         {
@@ -30,7 +33,13 @@ namespace CHPOUTSRCMES.Web.Controllers
             return View(model);
         }
 
-        //
+        /// <summary>
+        /// 庫存查詢明細
+        /// </summary>
+        /// <param name="subinventoryCode"></param>
+        /// <param name="locatorId"></param>
+        /// <param name="itemId"></param>
+        /// <returns></returns>
         // GET: /Stock/Detail
         public ActionResult Detail(string subinventoryCode, long locatorId, long itemId)
         {
@@ -39,6 +48,31 @@ namespace CHPOUTSRCMES.Web.Controllers
             return View(model);
         }
 
+        /// <summary>
+        /// 庫存交易記錄查詢
+        /// </summary>
+        /// <returns></returns>
+        // GET: /Stock/Transaction
+        public ActionResult Transaction()
+        {
+            var model = new QueryViewModel();
+            model.SubinvenotoryList = QueryViewModel.getSubinvenotoryList(this.User.Identity.GetUserId());
+            model.ItemCategoryList = QueryViewModel.getItemCategoryList(this.User.Identity.GetUserId());
+            model.locatorList = QueryViewModel.getLocatorList(this.User.Identity.GetUserId(), "");
+            model.Fields = new StockQueryModel();
+            return View(model);
+        }
+
+
+        /// <summary>
+        /// 庫存總量查詢
+        /// </summary>
+        /// <param name="data">DataTableAjaxPostViewModel</param>
+        /// <param name="subinventory">倉庫代號</param>
+        /// <param name="locatorId">儲位ID</param>
+        /// <param name="itemCategory">平版/紙捲</param>
+        /// <param name="itemNo">料號</param>
+        /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public JsonResult StockQuery(DataTableAjaxPostViewModel data, 
@@ -51,7 +85,14 @@ namespace CHPOUTSRCMES.Web.Controllers
             return Json(new { draw = data.Draw, recordsFiltered = models.Count, recordsTotal = models.Count, data = models }, JsonRequestBehavior.AllowGet);
         }
 
-
+        /// <summary>
+        /// 庫存明細查詢
+        /// </summary>
+        /// <param name="data">DataTableAjaxPostViewModel</param>
+        /// <param name="subinventory">倉庫代號</param>
+        /// <param name="locatorId">儲位ID</param>
+        /// <param name="itemId">料號ID</param>
+        /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public JsonResult StockDetailQuery(DataTableAjaxPostViewModel data,
@@ -64,7 +105,11 @@ namespace CHPOUTSRCMES.Web.Controllers
             return Json(new { draw = data.Draw, recordsFiltered = models.Count, recordsTotal = models.Count, data = models }, JsonRequestBehavior.AllowGet);
         }
 
-
+        /// <summary>
+        /// 取得儲位清單
+        /// </summary>
+        /// <param name="subinventory">倉庫代號</param>
+        /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public JsonResult GetLocators(string subinventory)
@@ -75,6 +120,11 @@ namespace CHPOUTSRCMES.Web.Controllers
             return this.Json(items, JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>
+        /// 取得料號清單
+        /// </summary>
+        /// <param name="itemNo">料號前置</param>
+        /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public JsonResult GetItemNumbers(string itemNo)
@@ -85,6 +135,11 @@ namespace CHPOUTSRCMES.Web.Controllers
             return this.Json(items, JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>
+        /// 列印標籤
+        /// </summary>
+        /// <param name="StockId"></param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult PrintLabel(List<long> StockId)
         {

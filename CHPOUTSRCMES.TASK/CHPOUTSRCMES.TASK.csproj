@@ -107,6 +107,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Helpers\AppConfigHelper.cs" />
+    <Compile Include="Models\Configuration.cs" />
     <Compile Include="Models\Entity\CTR_DETAIL_T.cs" />
     <Compile Include="Models\Entity\CTR_HEADER_T.cs" />
     <Compile Include="Models\Entity\CTR_PICKED_T.cs" />

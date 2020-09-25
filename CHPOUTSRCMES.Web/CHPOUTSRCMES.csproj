@@ -498,6 +498,7 @@
     <Compile Include="Models\CHP_SUBINVENTORY_T\ORGANIZATION.cs" />
     <Compile Include="Models\CHP_SUBINVENTORY_T\SUBINVENTORY.cs" />
     <Compile Include="Models\ResultPageModel.cs" />
+    <Compile Include="Models\StockQuery\StockTxnQueryModel.cs" />
     <Compile Include="Models\Stock\StockInventoryDT.cs" />
     <Compile Include="Models\Stock\StockDT.cs" />
     <Compile Include="Models\StockInventory\StockInventoryModel.cs" />
@@ -551,6 +552,7 @@
     <Compile Include="ViewModels\StockTransaction\TopViewModel.cs" />
     <Compile Include="ViewModels\StockTransaction\TransferReasonViewModel.cs" />
     <Compile Include="ViewModels\StockTransaction\StockTransferViewModel.cs" />
+    <Compile Include="ViewModels\StockTxnQuery\StockTxnQueryViewModel.cs" />
     <Compile Include="ViewModels\YszmpckqViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -2195,6 +2197,7 @@
     <Content Include="Views\Stock\Detail.cshtml" />
     <Content Include="Views\Delivery\Report.cshtml" />
     <Content Include="Views\StockTransaction\Report.cshtml" />
+    <Content Include="Views\Stock\Transaction.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

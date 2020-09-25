@@ -49,7 +49,7 @@ namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
 
         public async Task<List<long>> GetHeaderListForUpload(IDbTransaction transaction = null)
         {
-            return (await trfHeaderRepository.GetUploadList(transaction));
+            return (await TrfHeaderRepository.GetUploadList(transaction));
         }
 
         public async Task<ResultModel> TransferStUpload(long trfHeaderId, IDbTransaction transaction = null)
@@ -83,7 +83,7 @@ namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
 
         public async Task<List<long>> GetReasonHeaderListForUpload(IDbTransaction transaction = null)
         {
-            return (await trfRsnHeaderRepository.GetUploadList(transaction));
+            return (await TrfRsnHeaderRepository.GetUploadList(transaction));
         }
 
         public async Task<ResultModel> TrfRsnStUpload(long trfRsnHeaderId, IDbTransaction transaction = null)
@@ -118,7 +118,7 @@ namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
 
         public async Task<List<long>> GetInvHeaderListForUpload(IDbTransaction transaction = null)
         {
-            return (await trfRsnHeaderRepository.GetUploadList(transaction));
+            return (await TrfRsnHeaderRepository.GetUploadList(transaction));
         }
 
         public async Task<ResultModel> TrfInvStUpload(long trfInvHeaderId, IDbTransaction transaction = null)
@@ -153,7 +153,7 @@ namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
 
         public async Task<List<long>> GetMiscHeaderListForUpload(IDbTransaction transaction = null)
         {
-            return (await trfMiscHeaderRepository.GetUploadList(transaction));
+            return (await TrfMiscHeaderRepository.GetUploadList(transaction));
         }
 
         public async Task<ResultModel> TrfMiscStUpload(long trfMiscHeaderId, IDbTransaction transaction = null)
@@ -187,7 +187,7 @@ namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
 
         public async Task<List<long>> GetObsHeaderListForUpload(IDbTransaction transaction = null)
         {
-            return (await trfObsHeaderRepository.GetUploadList(transaction));
+            return (await TrfObsHeaderRepository.GetUploadList(transaction));
         }
 
         public async Task<ResultModel> TrfObsStUpload(long trfObsHeaderId, IDbTransaction transaction = null)

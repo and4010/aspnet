@@ -67,14 +67,16 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                 for (int i = 0; i < list.Count(); i++)
                 {
                     using var transaction = sqlConn.BeginTransaction();
+
+                    var st = list?[i];
+                    if (st == null)
+                    {
+                        continue;
+                    }
+
                     try
                     {
 
-                        var st = list?[i];
-                        if (st == null)
-                        {
-                            continue;
-                        }
                         //取第一筆資料來確認 新增/取消/修改
                         var ctrSt = await ctrStUow.GetSingleCtrStByAsync(st.PROCESS_CODE, st.SERVER_CODE, st.BATCH_ID, transaction);
                         if (ctrSt == null)
@@ -123,7 +125,7 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                     }
                     catch (Exception ex)
                     {
-                        LogError($"[{tasker.Name}]-{tasker.Unit}-ImportCtrSt-錯誤-{ex.Message}-{ex.StackTrace}");
+                        LogError($"[{tasker.Name}]-{tasker.Unit}-ImportCtrSt-錯誤-({st.PROCESS_CODE}, {st.SERVER_CODE}, {st.BATCH_ID})-{ex.Message}-{ex.StackTrace}");
                         transaction.Rollback();
                     }
                 }
@@ -295,7 +297,7 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                     }
                     catch (Exception ex)
                     {
-                        LogError($"[{tasker.Name}]-{tasker.Unit}-ExportCtrStRv-錯誤-{ex.Message}-{ex.StackTrace}");
+                        LogError($"[{tasker.Name}]-{tasker.Unit}-ExportCtrStRv-錯誤-(CTR_HEADER_ID:{list[i].CTR_HEADER_ID})-{ex.Message}-{ex.StackTrace}");
                         transaction.Rollback();
                     }
                 }
