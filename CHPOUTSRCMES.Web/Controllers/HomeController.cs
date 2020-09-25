@@ -98,19 +98,19 @@ namespace CHPOUTSRCMES.Web.Controllers
         [HttpPost]
         public ActionResult RecoverTestData()
         {
-            FlatEditBarcodeData.resetData();
-            FlatEditData.resetData();
-            PaperRollEditBarcodeData.resetData();
-            PaperRollEditData.resetData();
-            TripHeaderData.resetData();
-            AccountViewModel.RestData();
-            StockTransferBarcodeData.resetData();
-            StockTransferData.resetData();
-            StockData.resetData();
-            InventoryViewModel.ResetData();
-            StockMiscellaneousData.resetData();
-            StockObsoleteData.resetData();
-            StockInventoryData.resetData();
+            //FlatEditBarcodeData.resetData();
+            //FlatEditData.resetData();
+            //PaperRollEditBarcodeData.resetData();
+            //PaperRollEditData.resetData();
+            //TripHeaderData.resetData();
+            //AccountViewModel.RestData();
+            //StockTransferBarcodeData.resetData();
+            //StockTransferData.resetData();
+            //StockData.resetData();
+            //InventoryViewModel.ResetData();
+            //StockMiscellaneousData.resetData();
+            //StockObsoleteData.resetData();
+            //StockInventoryData.resetData();
             return new JsonResult { Data = new { status = true, result = "測試資料還原成功" } };
         }
 

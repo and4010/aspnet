@@ -46,6 +46,10 @@
           <DataField>SUBINVENTORY_CODE</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
+        <Field Name="SEGMENT3">
+          <DataField>SEGMENT3</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
         <Field Name="BASIC_WEIGHT">
           <DataField>BASIC_WEIGHT</DataField>
           <rd:TypeName>System.String</rd:TypeName>
@@ -64,6 +68,10 @@
         </Field>
         <Field Name="GRAIN_DIRECTION">
           <DataField>GRAIN_DIRECTION</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="TRANSFER_SEGMENT3">
+          <DataField>TRANSFER_SEGMENT3</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
         <Field Name="TRANSFER_SUBINVENTORY_CODE">
@@ -234,7 +242,7 @@
                     </Style>
                   </TextRun>
                   <TextRun>
-                    <Value>=First(Fields!LOCATOR_CODE.Value, "Detail")</Value>
+                    <Value>=First(Fields!ORGANIZATION_CODE.Value, "Detail")  &amp;","  &amp;First(Fields!SUBINVENTORY_CODE.Value, "Detail")  &amp;","  &amp;First(Fields!SEGMENT3.Value, "Detail")</Value>
                     <Style>
                       <FontSize>12pt</FontSize>
                     </Style>
@@ -272,7 +280,7 @@
                     </Style>
                   </TextRun>
                   <TextRun>
-                    <Value>=First(Fields!TRANSFER_LOCATOR_CODE.Value, "Detail")</Value>
+                    <Value>=First(Fields!TRANSFER_ORGANIZATION_CODE.Value, "Detail") &amp;","  &amp;First(Fields!TRANSFER_SUBINVENTORY_CODE.Value, "Detail")  &amp;","  &amp;First(Fields!TRANSFER_SEGMENT3.Value, "Detail")</Value>
                     <Style>
                       <FontSize>12pt</FontSize>
                     </Style>

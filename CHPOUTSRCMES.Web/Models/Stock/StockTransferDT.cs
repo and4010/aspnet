@@ -1422,7 +1422,7 @@ namespace CHPOUTSRCMES.Web.Models.Stock
                 var mergeBarocdeData = uow.GetStock(MergeBarocde);
                 var waitMergeBarcodeDataList = uow.GetTrfInboundPickedList(waitMergeIDs);
 
-                ResultModel checkResult = checkMergeBarcode(mergeBarocdeData, waitMergeBarcodeDataList);
+                ResultModel checkResult = checkMergeBarcode(uow, mergeBarocdeData, waitMergeBarcodeDataList);
                 if (!checkResult.Success)
                 {
                     return new JsonResult { Data = new { status = checkResult.Success, result = checkResult.Msg } };
@@ -1457,7 +1457,7 @@ namespace CHPOUTSRCMES.Web.Models.Stock
 
         }
 
-        public ResultModel checkMergeBarcode(STOCK_T mergeBarocdeData, List<TRF_INBOUND_PICKED_T> waitMergeBarcodeDataList)
+        public ResultModel checkMergeBarcode(TransferUOW uow, STOCK_T mergeBarocdeData, List<TRF_INBOUND_PICKED_T> waitMergeBarcodeDataList)
         {
             if (mergeBarocdeData == null)
             {
@@ -1484,6 +1484,36 @@ namespace CHPOUTSRCMES.Web.Models.Stock
                 return new ResultModel(false, "打包方式不是令包不可併板");
             }
 
+            var header = uow.GetTrfHeader(waitMergeBarcodeDataList[0].TransferHeaderId);
+            if (header == null) return new ResultModel(false, "找不到出貨編號資料");
+
+
+            if (mergeBarocdeData.OrganizationId != header.TransferOrganizationId)
+            {
+                return new ResultModel(false, "被併板條碼的組織須為" + header.TransferOrganizationCode);
+            }
+
+            if (mergeBarocdeData.SubinventoryCode != header.TransferSubinventoryCode)
+            {
+                return new ResultModel(false, "被併板條碼的倉庫須為" + header.TransferSubinventoryCode);
+            }
+
+            if (mergeBarocdeData.LocatorId != null)
+            {
+                if (mergeBarocdeData.LocatorId != header.TransferLocatorId)
+                {
+                    var locator = uow.GetLocatorForTransfer((long)header.TransferLocatorId, DateTime.Now);
+                    if (locator == null) return new ResultModel(false, "找不儲位資料");
+                    return new ResultModel(false, "被併板條碼的儲位須為" + locator.Segment3);
+                }
+            }
+
+
+            var trfInboundPickedData = uow.GetTrfInboundPickedDataFromBarcode(waitMergeBarcodeDataList[0].TransferHeaderId, mergeBarocdeData.Barcode);
+            if (trfInboundPickedData != null) return new ResultModel(false, "此條碼已存在入庫單明細裡");
+
+
+
             foreach (TRF_INBOUND_PICKED_T data in waitMergeBarcodeDataList)
             {
                 if (data.ItemNumber != mergeBarocdeData.ItemNumber)
@@ -1500,7 +1530,7 @@ namespace CHPOUTSRCMES.Web.Models.Stock
             var mergeBarocdeData = uow.GetStock(MergeBarocde);
             var waitMergeBarcodeDataList = uow.GetTrfInboundPickedList2(waitMergeIDs);
 
-            ResultModel checkResult = checkMergeBarcode(mergeBarocdeData, waitMergeBarcodeDataList);
+            ResultModel checkResult = checkMergeBarcode(uow, mergeBarocdeData, waitMergeBarcodeDataList);
             if (!checkResult.Success)
             {
                 return checkResult;

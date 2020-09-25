@@ -50,12 +50,6 @@ namespace CHPOUTSRCMES.Web.Controllers
         public JsonResult DeliverySearch(DataTableAjaxPostViewModel data, string TripActualShipBeginDate, string TripActualShipEndDate, string DeliveryName, string SelectedSubinventory,
             string SelectedTrip, string TransactionDate, string SelectedDeliveryStatus)
         {
-            //if (TripDetailData.source.Count == 0)
-            //{
-            //    TripDetailData.AddDefaultData();
-            //}
-
-            //List<TripDetailDT> model = TripDetailData.model;
 
             using (var context = new MesContext())
             {
@@ -98,14 +92,7 @@ namespace CHPOUTSRCMES.Web.Controllers
             }
         }
 
-        //[HttpPost, ActionName("Search")]
-        //public JsonResult Search(string TripActualShipBeginDate,string TripActualShipEndDate,string DeliveryName, string SelectedSubinventory,
-        //    string SelectedTrip, string TransactionDate, string SelectedDeliveryStatus)
-        //{
-        //    TripDetailData.model = TripDetailData.Search(TripActualShipBeginDate, TripActualShipEndDate, DeliveryName, SelectedSubinventory, SelectedTrip, TransactionDate, SelectedDeliveryStatus);
-
-        //    return new JsonResult { Data = new { status = true, result = "搜尋成功" } };
-        //}
+       
 
         public ActionResult FlatEdit(long id)
         {
@@ -116,43 +103,9 @@ namespace CHPOUTSRCMES.Web.Controllers
                     return View(tripHeaderData.GetFlatEditViewModel(uow, id));
                 }
             }
-
-            //TripHeaderDT detailData = null;
-            //if (string.IsNullOrEmpty(id))
-            //{
-            //    detailData = TripHeaderData.GetData()[0];
-            //}
-            //else
-            //{
-            //    detailData = TripHeaderData.GetData(Convert.ToInt32(id))[0];
-            //}
-
-            //FlatEditViewModel model = new FlatEditViewModel();
-            //model.DeliveryDetailViewHeader = new DeliveryDetailViewHeader();
-            //model.DeliveryDetailViewHeader.CUSTOMER_LOCATION_CODE = detailData.CUSTOMER_LOCATION_CODE;
-            //model.DeliveryDetailViewHeader.CUSTOMER_NAME = detailData.CUSTOMER_NAME;
-            //model.DeliveryDetailViewHeader.DELIVERY_NAME = detailData.DELIVERY_NAME;
-            ////model.DeliveryDetailViewHeader.ORDER_NUMBER = Convert.ToString(detailData.ORDER_NUMBER);
-            //model.DeliveryDetailViewHeader.REMARK = detailData.NOTE;
-            //model.DeliveryDetailViewHeader.SHIP_CUSTOMER_NAME = detailData.SHIP_CUSTOMER_NAME;
-            //model.DeliveryDetailViewHeader.SHIP_LOCATION_CODE = detailData.SHIP_LOCATION_CODE;
-            //model.DeliveryDetailViewHeader.TRIP_ACTUAL_SHIP_DATE = detailData.TRIP_ACTUAL_SHIP_DATE;
-            //model.DeliveryDetailViewHeader.TRIP_CAR = detailData.TRIP_CAR;
-            //model.DeliveryDetailViewHeader.TRIP_NAME = detailData.TRIP_NAME;
-            //model.DeliveryDetailViewHeader.DlvHeaderId = detailData.Id;
-            //model.DeliveryDetailViewHeader.DELIVERY_STATUS = detailData.DELIVERY_STATUS;
-            //return View(model);
         }
 
-        //[HttpGet]
-        //public ActionResult InsteadEdit(string id)
-        //{
-        //    InsteadEditViewModel model = new InsteadEditViewModel();
-        //    DeliveryDetailViewHeader deliveryDetailViewHeader = new DeliveryDetailViewHeader();
-        //    deliveryDetailViewHeader.TRIP_NAME = "1234";
-        //    model.DeliveryDetailViewHeader = deliveryDetailViewHeader;
-        //    return View(model);
-        //}
+        
 
         [HttpGet]
         public ActionResult RollEdit(long id)
@@ -164,47 +117,11 @@ namespace CHPOUTSRCMES.Web.Controllers
                     return View(tripHeaderData.GetPaperRollEditViewModel(uow, id));
                 }
             }
-
-            //TripHeaderDT detailData = null;
-            //if (string.IsNullOrEmpty(id))
-            //{
-            //    detailData = TripHeaderData.GetData()[0];
-            //}
-            //else
-            //{
-            //    detailData = TripHeaderData.GetData(Convert.ToInt32(id))[0];
-            //}
-            //PaperRollEditViewModel model = new PaperRollEditViewModel();
-            //model.DeliveryDetailViewHeader = new DeliveryDetailViewHeader();
-            //model.DeliveryDetailViewHeader.DlvHeaderId = detailData.Id;
-            //model.DeliveryDetailViewHeader.CUSTOMER_LOCATION_CODE = detailData.CUSTOMER_LOCATION_CODE;
-            //model.DeliveryDetailViewHeader.CUSTOMER_NAME = detailData.CUSTOMER_NAME;
-            //model.DeliveryDetailViewHeader.DELIVERY_NAME = detailData.DELIVERY_NAME;
-            ////model.DeliveryDetailViewHeader.ORDER_NUMBER = Convert.ToString(detailData.ORDER_NUMBER);
-            //model.DeliveryDetailViewHeader.REMARK = detailData.NOTE;
-            //model.DeliveryDetailViewHeader.SHIP_CUSTOMER_NAME = detailData.SHIP_CUSTOMER_NAME;
-            //model.DeliveryDetailViewHeader.SHIP_LOCATION_CODE = detailData.SHIP_LOCATION_CODE;
-            //model.DeliveryDetailViewHeader.TRIP_ACTUAL_SHIP_DATE = detailData.TRIP_ACTUAL_SHIP_DATE;
-            //model.DeliveryDetailViewHeader.TRIP_CAR = detailData.TRIP_CAR;
-            //model.DeliveryDetailViewHeader.TRIP_NAME = detailData.TRIP_NAME;
-            //model.DeliveryDetailViewHeader.DELIVERY_STATUS = detailData.DELIVERY_STATUS;
-
-            ////DeliveryDetailViewHeader deliveryDetailViewHeader = new DeliveryDetailViewHeader();
-            ////deliveryDetailViewHeader.TRIP_NAME = "Y191226-1036357";
-            ////deliveryDetailViewHeader.DELIVERY_NAME = "FTY1910000150";
-            ////model.DeliveryDetailViewHeader = deliveryDetailViewHeader;
-
-            //return View(model);
         }
 
         [HttpPost, ActionName("GetRollEdit")]
         public JsonResult GetRollEdit(DataTableAjaxPostViewModel data, long DlvHeaderId, string DELIVERY_STATUS_NAME)
         {
-            //if (PaperRollEditData.getDataCount(DlvHeaderId) == 0)
-            //{
-            //    PaperRollEditData.addDefault(DlvHeaderId);
-            //}
-
             using (var context = new MesContext())
             {
                 using (DeliveryUOW uow = new DeliveryUOW(context))
@@ -286,139 +203,15 @@ namespace CHPOUTSRCMES.Web.Controllers
                     return new JsonResult { Data = new { status = result.Success, result = result.Msg } };
                 }
             }
-
-
-            //        if (BARCODE == "W2005060001" || BARCODE == "W2005060002" || BARCODE == "W2005060003" || BARCODE == "W2005060004" || BARCODE == "W2005060005" || BARCODE == "W2005060006")
-            //{
-            //    if (!PaperRollEditBarcodeData.checkBarcodeExist(BARCODE))
-            //    {
-            //        string ITEM_DESCRIPTION = "";
-            //        if (BARCODE == "W2005060001")
-            //        {
-            //            ITEM_DESCRIPTION = "4FHIZA03000787RL00";
-            //            if (!PaperRollEditData.checkBarcodeItemDesc(DLV_DETAIL_ID, ITEM_DESCRIPTION))
-            //            {
-            //                return new JsonResult { Data = new { status = false, result = "此條碼不符合已選擇的料號" } };
-            //            }
-            //            PaperRollEditBarcodeData.addBarcode123(DLV_DETAIL_ID, DlvHeaderId);
-            //            PaperRollEditData.updateA006(DLV_DETAIL_ID, DlvHeaderId);
-            //        }
-            //        else if (BARCODE == "W2005060004")
-            //        {
-            //            ITEM_DESCRIPTION = "4FHIZA03000787RL00";
-            //            if (!PaperRollEditData.checkBarcodeItemDesc(DLV_DETAIL_ID, ITEM_DESCRIPTION))
-            //            {
-            //                return new JsonResult { Data = new { status = false, result = "此條碼不符合已選擇的料號" } };
-            //            }
-            //            PaperRollEditBarcodeData.addBarcode124(DLV_DETAIL_ID, DlvHeaderId);
-            //            PaperRollEditData.updateA006(DLV_DETAIL_ID, DlvHeaderId);
-            //        }
-            //        else if (BARCODE == "W2005060002")
-            //        {
-            //            ITEM_DESCRIPTION = "4FHIZA02500787RL00";
-            //            if (!PaperRollEditData.checkBarcodeItemDesc(DLV_DETAIL_ID, ITEM_DESCRIPTION))
-            //            {
-            //                return new JsonResult { Data = new { status = false, result = "此條碼不符合已選擇的料號" } };
-            //            }
-            //            PaperRollEditBarcodeData.addBarcode456(DLV_DETAIL_ID, DlvHeaderId);
-            //            PaperRollEditData.updateB001(DLV_DETAIL_ID, DlvHeaderId);
-            //        }
-            //        else if (BARCODE == "W2005060005")
-            //        {
-            //            ITEM_DESCRIPTION = "4FHIZA02500787RL00";
-            //            if (!PaperRollEditData.checkBarcodeItemDesc(DLV_DETAIL_ID, ITEM_DESCRIPTION))
-            //            {
-            //                return new JsonResult { Data = new { status = false, result = "此條碼不符合已選擇的料號" } };
-            //            }
-            //            PaperRollEditBarcodeData.addBarcode457(DLV_DETAIL_ID, DlvHeaderId);
-            //            PaperRollEditData.updateB001(DLV_DETAIL_ID, DlvHeaderId);
-            //        }
-            //        else if (BARCODE == "W2005060003")
-            //        {
-            //            ITEM_DESCRIPTION = "4FHIZA02000787RL00";
-            //            if (!PaperRollEditData.checkBarcodeItemDesc(DLV_DETAIL_ID, ITEM_DESCRIPTION))
-            //            {
-            //                return new JsonResult { Data = new { status = false, result = "此條碼不符合已選擇的料號" } };
-            //            }
-            //            PaperRollEditBarcodeData.addBarcode130(DLV_DETAIL_ID, DlvHeaderId);
-            //            PaperRollEditData.updateA006s(DLV_DETAIL_ID, DlvHeaderId);
-            //        }
-            //        else if (BARCODE == "W2005060006")
-            //        {
-            //            ITEM_DESCRIPTION = "4FHIZA02000787RL00";
-            //            if (!PaperRollEditData.checkBarcodeItemDesc(DLV_DETAIL_ID, ITEM_DESCRIPTION))
-            //            {
-            //                return new JsonResult { Data = new { status = false, result = "此條碼不符合已選擇的料號" } };
-            //            }
-            //            PaperRollEditBarcodeData.addBarcode131(DLV_DETAIL_ID, DlvHeaderId);
-            //            PaperRollEditData.updateA006s(DLV_DETAIL_ID, DlvHeaderId);
-            //        }
-
-
-            //        TripHeaderData.ChangeDeliveryStatus(DlvHeaderId, PaperRollEditData.checkDeliveryPickComplete(DlvHeaderId));
-            //        return new JsonResult { Data = new { status = true, result = "條碼儲存成功" } };
-            //    }
-            //    else
-            //    {
-            //        return new JsonResult { Data = new { status = false, result = "條碼重複輸入" } };
-            //    }
-
-            //}
-            //else
-            //{
-            //    return new JsonResult { Data = new { status = false, result = "找不到條碼資料" } };
-            //}
         }
 
-        //[HttpPost, ActionName("DeleteRollEditBarcode")]
-        //public ActionResult DeleteRollEditBarcode(List<long> PICKED_ID, long DlvHeaderId)
-        //{
-        //    bool result = false;
-        //    List<PaperRollEditBarcodeDT> items = PaperRollEditBarcodeData.getItemList(PICKED_ID);
-        //    if (items.Count > 0)
-        //    {
-        //        result = PaperRollEditBarcodeData.remove(PICKED_ID);
-        //        if (result)
-        //        {
-        //            foreach (PaperRollEditBarcodeDT item in items)
-        //            {
-        //                PaperRollEditData.remove(item.DLV_DETAIL_ID, DlvHeaderId);
-        //                //if (item.ITEM_DESCRIPTION == "A006" && item.PaperRollEditDT_ID == 1)
-        //                //{
-        //                //    PaperRollEditData.removeA006(item.PaperRollEditDT_ID, TripDetailDT_ID);
-        //                //}
-        //                //else if (item.ITEM_DESCRIPTION == "B001")
-        //                //{
-        //                //    PaperRollEditData.removeB001(item.PaperRollEditDT_ID, TripDetailDT_ID);
-        //                //}
-        //                //else if (item.ITEM_DESCRIPTION == "A006" && item.PaperRollEditDT_ID == 3)
-        //                //{
-        //                //    PaperRollEditData.removeA006s(item.PaperRollEditDT_ID, TripDetailDT_ID);
-        //                //}
-        //            }
-        //            TripHeaderData.ChangeDeliveryStatus(DlvHeaderId, PaperRollEditData.checkDeliveryPickComplete(DlvHeaderId));
-        //            return new JsonResult { Data = new { status = true, result = "條碼刪除成功" } };
-        //        }
-        //        else
-        //        {
-        //            return new JsonResult { Data = new { status = false, result = "條碼刪除失敗" } };
-        //        }
-        //    }
-        //    else
-        //    {
-        //        return new JsonResult { Data = new { status = false, result = "條碼刪除失敗" } };
-        //    }
-
-        //}
+       
 
         [HttpPost, ActionName("GetFlatEdit")]
         public JsonResult GetFlatEdit(DataTableAjaxPostViewModel data, long DlvHeaderId, string DELIVERY_STATUS_NAME)
         {
 
-            //if (FlatEditData.getModel(DELIVERY_NAME, TRIP_NAME).Count == 0)
-            //{
-            //    FlatEditData.addDefault();
-            //}
+            
             using (var context = new MesContext())
             {
                 using (DeliveryUOW uow = new DeliveryUOW(context))
@@ -515,48 +308,7 @@ namespace CHPOUTSRCMES.Web.Controllers
 
         }
 
-        [HttpPost, ActionName("DeleteFlatEditBarcode")]
-        public ActionResult DeleteFlatEditBarcode(List<long> PICKED_ID, long DlvHeaderId)
-        {
-            List<FlatEditBarcodeDT> removeBarcodeList = FlatEditBarcodeData.getRemoveBarcodeList(PICKED_ID);
-            if (removeBarcodeList.Count > 0)
-            {
-                FlatEditData.remove(removeBarcodeList);
-                if (FlatEditBarcodeData.remove(PICKED_ID))
-                {
-                    TripHeaderData.ChangeDeliveryStatus(DlvHeaderId, FlatEditData.checkDeliveryPickComplete(DlvHeaderId));
-                    return new JsonResult { Data = new { status = true, result = "條碼刪除成功" } };
-                }
-                else
-                {
-                    return new JsonResult { Data = new { status = false, result = "條碼刪除失敗" } };
-                }
-            }
-            else
-            {
-                return new JsonResult { Data = new { status = false, result = "請選擇要刪除的條碼" } };
-            }
-
-        }
-
-
-        [HttpGet, ActionName("GetInsteadEdit")]
-        public JsonResult GetInsteadEdit(DataTableAjaxPostViewModel data, string DELIVERY_NAME, string TRIP_NAME)
-        {
-
-            List<InsteadEditDT> model = new List<InsteadEditDT>();
-            return Json(new { draw = data.Draw, recordsFiltered = model.Count, recordsTotal = model.Count, data = model }, JsonRequestBehavior.AllowGet);
-
-        }
-
-        [HttpGet, ActionName("GetInsteadEditBarcode")]
-        public JsonResult GetInsteadEditBarcode(DataTableAjaxPostViewModel data, string DELIVERY_DETAIL_ID)
-        {
-
-            List<InsteadEditBarcodeDT> model = new List<InsteadEditBarcodeDT>();
-            return Json(new { draw = data.Draw, recordsFiltered = model.Count, recordsTotal = model.Count, data = model }, JsonRequestBehavior.AllowGet);
-
-        }
+      
 
 
         public ActionResult FlatView(long id)
@@ -568,38 +320,9 @@ namespace CHPOUTSRCMES.Web.Controllers
                     return View(tripHeaderData.GetFlatViewModel(uow, id));
                 }
             }
-
-            //TripHeaderDT detailData = null;
-            //if (string.IsNullOrEmpty(id))
-            //{
-            //    detailData = TripHeaderData.GetData()[0];
-            //}
-            //else
-            //{
-            //    detailData = TripHeaderData.GetData(Convert.ToInt32(id))[0];
-            //}
-            //FlatViewModel model = new FlatViewModel();
-            //model.DeliveryDetailViewHeader = new DeliveryDetailViewHeader();
-            //model.DeliveryDetailViewHeader.DlvHeaderId = detailData.Id;
-            //model.DeliveryDetailViewHeader.CUSTOMER_LOCATION_CODE = detailData.CUSTOMER_LOCATION_CODE;
-            //model.DeliveryDetailViewHeader.CUSTOMER_NAME = detailData.CUSTOMER_NAME;
-            //model.DeliveryDetailViewHeader.DELIVERY_NAME = detailData.DELIVERY_NAME;
-            ////model.DeliveryDetailViewHeader.ORDER_NUMBER = Convert.ToString(detailData.ORDER_NUMBER);
-            //model.DeliveryDetailViewHeader.REMARK = detailData.NOTE;
-            //model.DeliveryDetailViewHeader.SHIP_CUSTOMER_NAME = detailData.SHIP_CUSTOMER_NAME;
-            //model.DeliveryDetailViewHeader.SHIP_LOCATION_CODE = detailData.SHIP_LOCATION_CODE;
-            //model.DeliveryDetailViewHeader.TRIP_ACTUAL_SHIP_DATE = detailData.TRIP_ACTUAL_SHIP_DATE;
-            //model.DeliveryDetailViewHeader.TRIP_CAR = detailData.TRIP_CAR;
-            //model.DeliveryDetailViewHeader.TRIP_NAME = detailData.TRIP_NAME;
-            //model.DeliveryDetailViewHeader.DELIVERY_STATUS = detailData.DELIVERY_STATUS;
-
-            //return View(model);
         }
 
-        public ActionResult InsteadView(string id)
-        {
-            return View();
-        }
+     
 
         public ActionResult RollView(long id)
         {
@@ -610,37 +333,6 @@ namespace CHPOUTSRCMES.Web.Controllers
                     return View(tripHeaderData.GetPaperRollViewModel(uow, id));
                 }
             }
-
-            //TripHeaderDT detailData = null;
-            //if (string.IsNullOrEmpty(id))
-            //{
-            //    detailData = TripHeaderData.GetData()[0];
-            //}
-            //else
-            //{
-            //    detailData = TripHeaderData.GetData(Convert.ToInt32(id))[0];
-            //}
-            //PaperRollViewModel model = new PaperRollViewModel();
-            //model.DeliveryDetailViewHeader = new DeliveryDetailViewHeader();
-            //model.DeliveryDetailViewHeader.DlvHeaderId = detailData.Id;
-            //model.DeliveryDetailViewHeader.CUSTOMER_LOCATION_CODE = detailData.CUSTOMER_LOCATION_CODE;
-            //model.DeliveryDetailViewHeader.CUSTOMER_NAME = detailData.CUSTOMER_NAME;
-            //model.DeliveryDetailViewHeader.DELIVERY_NAME = detailData.DELIVERY_NAME;
-            ////model.DeliveryDetailViewHeader.ORDER_NUMBER = Convert.ToString(detailData.ORDER_NUMBER);
-            //model.DeliveryDetailViewHeader.REMARK = detailData.NOTE;
-            //model.DeliveryDetailViewHeader.SHIP_CUSTOMER_NAME = detailData.SHIP_CUSTOMER_NAME;
-            //model.DeliveryDetailViewHeader.SHIP_LOCATION_CODE = detailData.SHIP_LOCATION_CODE;
-            //model.DeliveryDetailViewHeader.TRIP_ACTUAL_SHIP_DATE = detailData.TRIP_ACTUAL_SHIP_DATE;
-            //model.DeliveryDetailViewHeader.TRIP_CAR = detailData.TRIP_CAR;
-            //model.DeliveryDetailViewHeader.TRIP_NAME = detailData.TRIP_NAME;
-            //model.DeliveryDetailViewHeader.DELIVERY_STATUS = detailData.DELIVERY_STATUS;
-
-            ////DeliveryDetailViewHeader deliveryDetailViewHeader = new DeliveryDetailViewHeader();
-            ////deliveryDetailViewHeader.TRIP_NAME = "Y191226-1036357";
-            ////deliveryDetailViewHeader.DELIVERY_NAME = "FTY1910000150";
-            ////model.DeliveryDetailViewHeader = deliveryDetailViewHeader;
-
-            //return View(model);
         }
 
         [HttpPost]
@@ -658,15 +350,6 @@ namespace CHPOUTSRCMES.Web.Controllers
                     return new JsonResult { Data = new { status = result.Success, result = result.Msg } };
                 }
             }
-
-            //if (result.Success)
-            //{
-            //    return new JsonResult { Data = new { status = true, result = "出貨確認成功" } };
-            //}
-            //else
-            //{
-            //    return new JsonResult { Data = new { status = false, result = "交運單狀態須為已揀" } };
-            //}
         }
 
 

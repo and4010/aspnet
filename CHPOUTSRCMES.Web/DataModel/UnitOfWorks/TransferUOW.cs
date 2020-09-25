@@ -326,6 +326,11 @@ AND TRANSFER_SUBINVENTORY_CODE = @trfSubCode AND TRANSFER_ORGANIZATION_ID = @trf
             return trfDetailTRepository.GetAll().AsNoTracking().FirstOrDefault(x => x.TransferHeaderId == transferHeaderId && x.TransferDetailId == transferDetailId);
         }
 
+        public TRF_INBOUND_PICKED_T GetTrfInboundPickedDataFromBarcode(long transferHeaderId, string barcode)
+        {
+            return trfInboundPickedTRepository.GetAll().AsNoTracking().FirstOrDefault(x => x.TransferHeaderId == transferHeaderId && x.Barcode == barcode);
+        }
+
         public TRF_HEADER_T GetTrfHeader(string shipmentNumber, string transferType)
         {
             return trfHeaderTRepository.GetAll().AsNoTracking().FirstOrDefault(x =>
@@ -882,7 +887,7 @@ SELECT [TRANSFER_PICKED_ID] as ID
                     SecondaryUom = item.SecondaryUomCode,
                     SecondaryQuantity = secondaryQuantity,
                     LotNumber = lotNumber,
-                    LotQuantity = null,
+                    LotQuantity = item.CatalogElemVal070 == ItemCategory.Roll ? primaryQuantity : default(decimal?),  //待確認理論重
                     Note = null,
                     Status = InboundStatus.WaitPrint,
                     PalletStatus = PalletStatusCode.All,
@@ -1248,7 +1253,7 @@ SELECT [TRANSFER_PICKED_ID] as ID
                         SecondaryUom = stock.SecondaryUomCode,
                         SecondaryQuantity = secQty,
                         LotNumber = stock.LotNumber,
-                        LotQuantity = null,
+                        LotQuantity = stock.LotQuantity,
                         Note = note,
                         Status = null,
                         PalletStatus = palletStatus,
@@ -1780,6 +1785,7 @@ SELECT [TRANSFER_PICKED_ID] as ID
                                     stock.PackingType = detail.PackingType;
                                     stock.OspBatchNo = "";
                                     stock.LotNumber = pick.LotNumber;
+                                    stock.LotQuantity = pick.LotQuantity;
                                     stock.Barcode = pick.Barcode;
                                     stock.PrimaryUomCode = pick.PrimaryUom;
                                     stock.PrimaryTransactionQty = pick.PrimaryQuantity;
@@ -1921,6 +1927,7 @@ SELECT [TRANSFER_PICKED_ID] as ID
                                         stock.PackingType = sourceStock.PackingType;
                                         stock.OspBatchNo = sourceStock.OspBatchNo;
                                         stock.LotNumber = sourceStock.LotNumber;
+                                        stock.LotQuantity = sourceStock.LotQuantity;
                                         stock.Barcode = pick.Barcode;
                                         stock.PrimaryUomCode = pick.PrimaryUom;
                                         stock.PrimaryTransactionQty = pick.PrimaryQuantity;
@@ -2044,6 +2051,7 @@ SELECT [TRANSFER_PICKED_ID] as ID
                                 stock.PackingType = detail.PackingType;
                                 stock.OspBatchNo = "";
                                 stock.LotNumber = pick.LotNumber;
+                                stock.LotQuantity = pick.LotQuantity;
                                 stock.Barcode = pick.Barcode;
                                 stock.PrimaryUomCode = pick.PrimaryUom;
                                 stock.PrimaryTransactionQty = pick.PrimaryQuantity;
@@ -2889,8 +2897,8 @@ SELECT
                     pick.PrimaryQuantity = waitMergePrimaryTotalQty;
                     pick.SecondaryUom = waitMergeBarcodeDataList[0].SecondaryUom;
                     pick.SecondaryQuantity = waitMergeSecondaryTotalQty;
-                    pick.LotNumber = null;
-                    pick.LotQuantity = null;
+                    pick.LotNumber = null; //併版沒有捲號
+                    pick.LotQuantity = null; //併版沒有理論重
                     pick.Note = newNote;
                     pick.Status = InboundStatus.WaitPrint;
                     pick.PalletStatus = PalletStatusCode.Merge;
@@ -3083,7 +3091,7 @@ SELECT [STOCK_ID] as ID
                         SecondaryUom = stock.SecondaryUomCode,
                         SecondaryQuantity = stock.SecondaryAvailableQty,
                         LotNumber = stock.LotNumber,
-                        LotQuantity = null,
+                        LotQuantity = stock.LotQuantity,
                         ReasonCode = reasonCode,
                         ReasonDesc = reason.ReasonDesc,
                         Note = note,

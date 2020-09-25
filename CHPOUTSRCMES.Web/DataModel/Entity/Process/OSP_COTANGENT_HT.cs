@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CHPOUTSRCMES.DataAnnotation;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -114,7 +115,13 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Process
         [Required(AllowEmptyStrings = true)]
         public string LotNumber { set; get; }
 
-
+        /// <summary>
+        /// 理論重(KG)
+        /// </summary>
+        /// 
+        [Column("LOT_QUANTITY")]
+        [Precision(30, 10)]
+        public decimal? LotQuantity { set; get; }
 
         /// <summary>
         /// 主要數量

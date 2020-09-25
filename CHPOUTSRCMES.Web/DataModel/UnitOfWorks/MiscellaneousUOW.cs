@@ -424,7 +424,7 @@ SELECT m.TRANSFER_MISCELLANEOUS_ID AS ID
                         OriginalSecondaryQuantity = null,
                         AfterSecondaryQuantity = null,
                         LotNumber = stock.LotNumber,
-                        LotQuantity = null,
+                        LotQuantity = stock.LotQuantity,
                         Note = note,
                         CreatedBy = userId,
                         CreatedUserName = userName,

@@ -219,7 +219,7 @@ SELECT [STOCK_ID] as ID
                         OriginalSecondaryQuantity = null,
                         AfterSecondaryQuantity = null,
                         LotNumber = stock.LotNumber,
-                        LotQuantity = null,
+                        LotQuantity = stock.LotQuantity,
                         Note = null,
                         CreatedBy = userId,
                         CreatedUserName = userName,

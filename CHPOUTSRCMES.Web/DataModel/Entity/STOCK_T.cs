@@ -171,6 +171,13 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity
         public string LotNumber { set; get; }
 
         /// <summary>
+        ///理論重
+        /// </summary>
+        /// 
+        [Column("LOT_QUANTITY")]
+        public decimal? LotQuantity { set; get; }
+
+        /// <summary>
         /// 條碼
         /// </summary>
         /// 
