@@ -461,6 +461,10 @@
     <Compile Include="Migrations\202009231113205_fix-osp_org_t.Designer.cs">
       <DependentUpon>202009231113205_fix-osp_org_t.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202009250631309_add_lot_quantity.cs" />
+    <Compile Include="Migrations\202009250631309_add_lot_quantity.Designer.cs">
+      <DependentUpon>202009250631309_add_lot_quantity.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Delivery\bDeliveryDetail.cs" />
     <Compile Include="Models\Delivery\DeliveryDetail.cs" />
@@ -2254,6 +2258,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202009231113205_fix-osp_org_t.resx">
       <DependentUpon>202009231113205_fix-osp_org_t.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202009250631309_add_lot_quantity.resx">
+      <DependentUpon>202009250631309_add_lot_quantity.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
