@@ -308,7 +308,7 @@ SELECT [STOCK_ID] as ID
                         //    throw new Exception("無法識別貨品類別");
                         //}
 
-                        //產生雜項異動明細
+                        //產生盤點明細
                         detail = new TRF_INVENTORY_T()
                     {
                         TransferInventoryHeaderId = header.TransferInventoryHeaderId,
@@ -326,7 +326,7 @@ SELECT [STOCK_ID] as ID
                         OriginalSecondaryQuantity = null,
                         AfterSecondaryQuantity = null,
                         LotNumber = stock.LotNumber,
-                        LotQuantity = null,
+                        LotQuantity = stock.LotQuantity,
                         Note = null,
                         CreatedBy = userId,
                         CreatedUserName = userName,
@@ -768,6 +768,7 @@ SELECT m.TRANSFER_INVENTORY_ID AS ID
                                 stock.PackingType = item.CatalogElemVal110;
                                 stock.OspBatchNo = null;
                                 stock.LotNumber = detail.LotNumber;
+                                stock.LotQuantity = detail.LotQuantity;
                                 stock.Barcode = detail.Barcode;
                                 stock.PrimaryUomCode = item.PrimaryUomCode;
                                 stock.PrimaryTransactionQty = detail.TransferPrimaryQuantity;
@@ -1207,7 +1208,7 @@ SELECT [TRANSFER_INVENTORY_ID]
                         OriginalSecondaryQuantity = aftSecQty,
                         AfterSecondaryQuantity = aftSecQty,
                         LotNumber = stockInventoryDT.LOT_NUMBER,
-                        LotQuantity = null,
+                        LotQuantity = aftPryQty, //待確認理論重
                         Note = stockInventoryDT.NOTE,
                         CreatedBy = userId,
                         CreatedUserName = userName,

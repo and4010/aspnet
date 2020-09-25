@@ -466,15 +466,8 @@
       <DependentUpon>202009250631309_add_lot_quantity.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
-    <Compile Include="Models\Delivery\bDeliveryDetail.cs" />
-    <Compile Include="Models\Delivery\DeliveryDetail.cs" />
-    <Compile Include="Models\Delivery\DeliveryHeader.cs" />
-    <Compile Include="Models\Delivery\DeliveryORG.cs" />
-    <Compile Include="Models\Delivery\DeliveryPicked.cs" />
     <Compile Include="Models\Delivery\FlatEditBarcodeDT.cs" />
     <Compile Include="Models\Delivery\FlatEditDT.cs" />
-    <Compile Include="Models\Delivery\InsteadEditBarcodeDT.cs" />
-    <Compile Include="Models\Delivery\InsteadEditDT.cs" />
     <Compile Include="Models\Delivery\PaperRollEditBarcodeDT.cs" />
     <Compile Include="Models\Delivery\PaperRollEditDT.cs" />
     <Compile Include="Models\Delivery\TripHeaderDT.cs" />
@@ -2155,10 +2148,8 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Views\Delivery\FlatEdit.cshtml" />
-    <Content Include="Views\Delivery\InsteadEdit.cshtml" />
     <Content Include="Views\Delivery\RollEdit.cshtml" />
     <Content Include="Views\Delivery\FlatView.cshtml" />
-    <Content Include="Views\Delivery\InsteadView.cshtml" />
     <Content Include="Views\Delivery\RollView.cshtml" />
     <Content Include="Views\Shared\_DeliveryPartial.cshtml" />
     <Content Include="Views\Shared\_DeliveryRollPartial.cshtml" />

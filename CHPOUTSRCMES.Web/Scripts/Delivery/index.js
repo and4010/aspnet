@@ -608,10 +608,6 @@ $(document).ready(function () {
             window.location.href = "/Delivery/FlatView/" + data.Id
             //window.open("/Delivery/FlatView/" + data.Id, "_blank");
             return false;
-        } else if (data.DetailType == "代紙") {
-            window.location.href = "/Delivery/InsteadView/" + data.Id
-            //window.open("/Delivery/InsteadView/" + data.Id, "_blank");
-            return false;
         } else {
             return false;
         }
