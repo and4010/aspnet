@@ -643,10 +643,10 @@
                                 <Paragraph>
                                   <TextRuns>
                                     <TextRun>
-                                      <Value>=Sum(Fields!REQUESTED_SECONDARY_QUANTITY.Value)</Value>
+                                      <Value>=Format(Fields!REQUESTED_SECONDARY_QUANTITY.Value,"0.##########")</Value>
                                       <Style>
                                         <FontFamily>Arial</FontFamily>
-                                        <Format>n3</Format>
+                                        <Format>n5</Format>
                                       </Style>
                                     </TextRun>
                                   </TextRuns>
@@ -718,10 +718,10 @@
                                 <Paragraph>
                                   <TextRuns>
                                     <TextRun>
-                                      <Value>=Sum(Fields!REQUESTED_PRIMARY_QUANTITY.Value)</Value>
+                                      <Value>=Format(Fields!REQUESTED_PRIMARY_QUANTITY.Value,"0.##########")</Value>
                                       <Style>
                                         <FontFamily>Arial</FontFamily>
-                                        <Format>n3</Format>
+                                        <Format>n5</Format>
                                       </Style>
                                     </TextRun>
                                   </TextRuns>
