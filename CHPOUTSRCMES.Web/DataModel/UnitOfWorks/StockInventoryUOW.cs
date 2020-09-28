@@ -1220,14 +1220,14 @@ SELECT [TRANSFER_INVENTORY_ID]
                     trfInventoryTRepository.Create(detail, true);
 
                     txn.Commit();
-                    return new ResultModel(true, "新增庫存成功");
+                    return new ResultModel(true, "新增庫存明細成功");
 
                 }
                 catch (Exception ex)
                 {
                     logger.Error(LogUtilities.BuildExceptionMessage(ex));
                     txn.Rollback();
-                    return new ResultModel(false, "新增庫存失敗:" + ex.Message);
+                    return new ResultModel(false, "新增庫存明細失敗:" + ex.Message);
                 }
             }
         }

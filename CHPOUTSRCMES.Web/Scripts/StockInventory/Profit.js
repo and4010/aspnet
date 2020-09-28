@@ -343,6 +343,9 @@ function ProfitLoadProfitDetailDT() {
             success: function (data) {
                 if (data.status) {
                     ProfitDetailDT.ajax.reload();
+                    if (data.result == "新增庫存明細成功") {
+                        swal.fire(data.result + ",請列印標籤");
+                    }
                 }
                 else {
                     swal.fire(data.result);

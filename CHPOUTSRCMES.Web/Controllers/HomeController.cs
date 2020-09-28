@@ -364,7 +364,7 @@ namespace CHPOUTSRCMES.Web.Controllers
             report.BorderStyle = BorderStyle.Solid;
             report.BorderWidth = 1;
             report.BackColor = Color.LightGray;
-            report.ServerReport.ReportPath = "/開發區/CHPOUSMES/ProcessCutMaterial.rdl";
+            report.ServerReport.ReportPath = "/開發區/CHPOUSMES/ProcessCutMaterial";
             report.ServerReport.ReportServerUrl = new Uri("http://rs.yfy.com/reports/");
             report.ServerReport.SetParameters(paramList);
             report.ServerReport.Refresh();
