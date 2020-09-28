@@ -11,40 +11,39 @@ namespace CHPOUTSRCMES.Web.Domain
         public IEnumerable<Navbar> navbarItems()
         {
             var menu = new List<Navbar>();
+            //一般 (第一層選單)
             menu.Add(new Navbar { Id = 1, nameOption = "入庫", controller = "Purchase", action = "Index", imageClass = "fa fa-calendar-plus-o", status = true, isParent = false, parentId = 0 });
             menu.Add(new Navbar { Id = 2, nameOption = "加工", controller = "Process", action = "Index", imageClass = "fa fa-puzzle-piece", status = true, isParent = false, parentId = 0 });
             menu.Add(new Navbar { Id = 3, nameOption = "出貨", controller = "Delivery", action = "Index", imageClass = "fa fa-calendar-minus-o", status = true, isParent = false, parentId = 0 });
-            //menu.Add(new Navbar { Id = 4, nameOption = "盤點", controller = "Inventory", action = "Index", status = true, isParent = false, parentId = 0 });
+            menu.Add(new Navbar { Id = 4, nameOption = "查詢", imageClass = "fa fa-table", status = true, isParent = true, parentId = 0 });
+            menu.Add(new Navbar { Id = 5, nameOption = "基本資料", imageClass = "fa fa-briefcase", status = true, isParent = true, parentId = 0 });
+            menu.Add(new Navbar { Id = 6, nameOption = "庫存異動", imageClass = "fa fa-pie-chart", status = true, isParent = true, parentId = 0 });
+            menu.Add(new Navbar { Id = 7, nameOption = "報表", imageClass = "fa fa-table", status = false, isParent = true, parentId = 0 });
 
-            menu.Add(new Navbar { Id = 8, nameOption = "庫存", imageClass = "fa fa-table", status = true, isParent = true, parentId = 0 });
-            menu.Add(new Navbar { Id = 9, nameOption = "查詢", controller = "Stock", action = "Query", status = true, isParent = false, parentId = 8 });
-            //menu.Add(new Navbar { Id = 11, nameOption = "異動記錄", controller = "Home", action = "Typography", status = false, isParent = false, parentId = 8 });
+            //查詢 (第二層選單)
+            menu.Add(new Navbar { Id = 401, nameOption = "庫存查詢", controller = "Stock", action = "Query", status = true, isParent = false, parentId = 4 });
+            menu.Add(new Navbar { Id = 402, nameOption = "庫存異動記錄", controller = "Stock", action = "Transaction", status = true, isParent = false, parentId = 4 });
+            menu.Add(new Navbar { Id = 403, nameOption = "SOA傳輸記錄", controller = "Stock", action = "SoaView", status = true, isParent = false, parentId = 4 });
 
-            //menu.Add(new Navbar { Id = 12, nameOption = "報表", status = false, isParent = true, parentId = 0 });
-            //menu.Add(new Navbar { Id = 13, nameOption = "工單得率", controller = "Home", action = "Icons", status = false, isParent = false, parentId = 12 });
 
-            menu.Add(new Navbar { Id = 21, nameOption = "基本資料", imageClass = "fa fa-briefcase", status = true, isParent = true, parentId = 0 });
-            menu.Add(new Navbar { Id = 22, nameOption = "使用者", controller = "Account", action = "Index", status = true, isParent = false, parentId = 21 });
-            menu.Add(new Navbar { Id = 23, nameOption = "貨故原因", controller = "Reason", action = "Index", status = true, isParent = false, parentId = 21 });
-            menu.Add(new Navbar { Id = 24, nameOption = "料號", controller = "PartNo", action = "Index", status = true, isParent = false, parentId = 21 });
-            menu.Add(new Navbar { Id = 25, nameOption = "組織倉庫", controller = "OrgSubinventory", action = "Index", status = true, isParent = false, parentId = 21 });
-            menu.Add(new Navbar { Id = 26, nameOption = "板令對照", controller = "Yszmpckq", action = "Index", status = true, isParent = false, parentId = 21 });
-            menu.Add(new Navbar { Id = 27, nameOption = "機台", controller = "MachinePaperType", action = "Index", status = true, isParent = false, parentId = 21 });
-            menu.Add(new Navbar { Id = 28, nameOption = "餘切規格", controller = "OspRelated", action = "Index", status = true, isParent = false, parentId = 21 });
+            //基本資料 (第二層選單)
+            menu.Add(new Navbar { Id = 501, nameOption = "使用者", controller = "Account", action = "Index", status = true, isParent = false, parentId = 5 });
+            menu.Add(new Navbar { Id = 502, nameOption = "貨故原因", controller = "Reason", action = "Index", status = true, isParent = false, parentId = 5 });
+            menu.Add(new Navbar { Id = 503, nameOption = "料號", controller = "PartNo", action = "Index", status = true, isParent = false, parentId = 5 });
+            menu.Add(new Navbar { Id = 504, nameOption = "組織倉庫", controller = "OrgSubinventory", action = "Index", status = true, isParent = false, parentId = 5 });
+            menu.Add(new Navbar { Id = 505, nameOption = "板令對照", controller = "Yszmpckq", action = "Index", status = true, isParent = false, parentId = 5 });
+            menu.Add(new Navbar { Id = 506, nameOption = "機台", controller = "MachinePaperType", action = "Index", status = true, isParent = false, parentId = 5 });
+            menu.Add(new Navbar { Id = 507, nameOption = "餘切規格", controller = "OspRelated", action = "Index", status = true, isParent = false, parentId = 5 });
 
-            menu.Add(new Navbar { Id = 31, nameOption = "庫存異動", imageClass = "fa fa-pie-chart", status = true, isParent = true, parentId = 0 });
-            menu.Add(new Navbar { Id = 32, nameOption = "庫存移轉", controller = "StockTransaction", action = "Index", status = true, isParent = false, parentId = 31 });
-            menu.Add(new Navbar { Id = 33, nameOption = "雜項異動", controller = "Miscellaneous", action = "Index", status = true, isParent = false, parentId = 31 });
-            menu.Add(new Navbar { Id = 34, nameOption = "盤點", controller = "StockInventory", action = "Index", status = true, isParent = false, parentId = 31 });
-            menu.Add(new Navbar { Id = 35, nameOption = "存貨報廢", controller = "Obsolete", action = "Index", status = true, isParent = false, parentId = 31 });
+            //庫存異動 (第二層選單)
+            menu.Add(new Navbar { Id = 601, nameOption = "庫存移轉", controller = "StockTransaction", action = "Index", status = true, isParent = false, parentId = 6 });
+            menu.Add(new Navbar { Id = 601, nameOption = "雜項異動", controller = "Miscellaneous", action = "Index", status = true, isParent = false, parentId = 6 });
+            menu.Add(new Navbar { Id = 601, nameOption = "盤點", controller = "StockInventory", action = "Index", status = true, isParent = false, parentId = 6 });
+            menu.Add(new Navbar { Id = 601, nameOption = "存貨報廢", controller = "Obsolete", action = "Index", status = true, isParent = false, parentId = 6 });
 
-            menu.Add(new Navbar { Id = 41, nameOption = "傳輸記錄", controller = "Home", action = "Blank", status = false, isParent = false, parentId = 0 });
-
-            //menu.Add(new Navbar { Id = 21, nameOption = "登入", controller = "Account", action = "Login", status = true, isParent = false, parentId = 0 });
-
-            //menu.Add(new Navbar { Id = 22, nameOption = "測試資料", controller = "Home", action = "TestData", status = true, isParent = false, parentId = 0 });
-
-            //menu.Add(new Navbar { Id = 19, nameOption = "Purchase Page", controller = "PartNo", action = "Index", status = true, isParent = false, parentId = 0 });
+            //報表 (第二層選單)
+            menu.Add(new Navbar { Id = 701, nameOption = "工單得率報表", controller = "Home", action = "Icons", status = false, isParent = false, parentId = 7 });
+            menu.Add(new Navbar { Id = 702, nameOption = "裁切加工報表", controller = "Home", action = "Icons", status = false, isParent = false, parentId = 7 });
             return menu.ToList();
         }
     }

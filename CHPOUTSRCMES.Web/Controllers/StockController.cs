@@ -2,6 +2,7 @@
 using CHPOUTSRCMES.Web.Models.StockQuery;
 using CHPOUTSRCMES.Web.ViewModels;
 using CHPOUTSRCMES.Web.ViewModels.StockQuery;
+using CHPOUTSRCMES.Web.ViewModels.StockTxnQuery;
 using Microsoft.AspNet.Identity;
 using System.Collections.Generic;
 using System.Web.Mvc;
@@ -55,11 +56,11 @@ namespace CHPOUTSRCMES.Web.Controllers
         // GET: /Stock/Transaction
         public ActionResult Transaction()
         {
-            var model = new QueryViewModel();
-            model.SubinvenotoryList = QueryViewModel.getSubinvenotoryList(this.User.Identity.GetUserId());
-            model.ItemCategoryList = QueryViewModel.getItemCategoryList(this.User.Identity.GetUserId());
-            model.locatorList = QueryViewModel.getLocatorList(this.User.Identity.GetUserId(), "");
-            model.Fields = new StockQueryModel();
+            var model = new StockTxnQueryViewModel();
+            model.SubinvenotoryList = StockTxnQueryViewModel.getSubinvenotoryList(this.User.Identity.GetUserId());
+            model.ItemCategoryList = StockTxnQueryViewModel.getItemCategoryList(this.User.Identity.GetUserId());
+            model.locatorList = StockTxnQueryViewModel.getLocatorList(this.User.Identity.GetUserId(), "");
+            model.Fields = new StockTxnQueryModel();
             return View(model);
         }
 
@@ -101,6 +102,28 @@ namespace CHPOUTSRCMES.Web.Controllers
 
             var userId = User.Identity.GetUserId();
             var models = StockDetailQueryModel.getModels(data, subinventory, locatorId, itemId, userId);
+
+            return Json(new { draw = data.Draw, recordsFiltered = models.Count, recordsTotal = models.Count, data = models }, JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
+        /// 庫存異動記錄查詢
+        /// </summary>
+        /// <param name="data">DataTableAjaxPostViewModel</param>
+        /// <param name="subinventory">倉庫代號</param>
+        /// <param name="locatorId">儲位ID</param>
+        /// <param name="itemCategory">平版/紙捲</param>
+        /// <param name="itemNo">料號</param>
+        /// <param name="barcode">條碼</param>
+        /// <returns></returns>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public JsonResult StockTxnQuery(DataTableAjaxPostViewModel data,
+            string subinventory, string locatorId, string itemCategory, string itemNo, string barcode)
+        {
+
+            var userId = User.Identity.GetUserId();
+            var models = StockTxnQueryModel.getModels(data, subinventory, locatorId, itemCategory, itemNo, barcode, userId);
 
             return Json(new { draw = data.Draw, recordsFiltered = models.Count, recordsTotal = models.Count, data = models }, JsonRequestBehavior.AllowGet);
         }

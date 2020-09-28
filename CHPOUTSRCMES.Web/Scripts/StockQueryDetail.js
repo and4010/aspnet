@@ -68,9 +68,27 @@ function loadTable(subinventory, locatorId, itemId, itemCategory) {
             { data: "ItemNumber", "name": "料號", "autoWidth": true, "className": "dt-body-center" },
             { data: "Barcode", "name": "條碼", "autoWidth": true, "className": "dt-body-center" },
             { data: "LotNumber", "name": "捲號", "autoWidth": true, "className": "dt-body-center", "visible": itemCategory == '捲筒' },
-            { data: "PrimaryAvailableQty", "name": "主單位可用量", "autoWidth": true, "className": "dt-body-right" },
+            {
+                data: "PrimaryAvailableQty", "name": "主單位可用量", "autoWidth": true, "className": "dt-body-right", "visible": itemCategory == '捲筒', "mRender": function (data, type, full) {
+
+                    if (data == null || data == 0) {
+                        return "";
+                    }
+
+                    return data;
+                }
+            },
             { data: "PrimaryUomCode", "name": "主要單位", "autoWidth": true, "className": "dt-body-center", "visible": false  },
-            { data: "SecondaryAvailableQty", "name": "次單位可用量", "autoWidth": true, "className": "dt-body-right" },
+            {
+                data: "SecondaryAvailableQty", "name": "次單位可用量", "autoWidth": true, "className": "dt-body-right", "visible": itemCategory != '捲筒', "mRender": function (data, type, full) {
+
+                    if (data == null || data == 0) {
+                        return "";
+                    }
+
+                    return data;
+                }
+            },
             { data: "SecondaryUomCode", "name": "次要單位", "autoWidth": true, "className": "dt-body-center", "visible": false  },
             { data: "PaperType", "name": "紙別", "autoWidth": true, "className": "dt-body-center", "visible": itemCategory == '捲筒' },
             { data: "BasicWeight", "name": "基重", "autoWidth": true, "className": "dt-body-center", "visible": itemCategory == '捲筒' },

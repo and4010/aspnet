@@ -1,5 +1,6 @@
 ﻿using CHPOUTSRCMES.Web.DataModel.UnitOfWorks;
 using CHPOUTSRCMES.Web.Jsons.Requests;
+using CHPOUTSRCMES.Web.Models.StockQuery;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,7 @@ namespace CHPOUTSRCMES.Web.ViewModels.StockTxnQuery
 {
     public class StockTxnQueryViewModel
     {
-        //public StockQueryModel Fields { set; get; }
+        public StockTxnQueryModel Fields { set; get; }
 
         public IEnumerable<SelectListItem> SubinvenotoryList { set; get; }
 

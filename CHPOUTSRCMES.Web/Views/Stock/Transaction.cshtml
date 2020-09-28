@@ -6,17 +6,17 @@
 }
 
 @section scripts {
-    <script src="~/Scripts/StockQuery.js"></script>
+    <script src="~/Scripts/StockTxnQuery.js"></script>
     <script src="~/Scripts/moment.js"></script>
 }
 <div class="row">
-    <div class="col col-md-10 col-md-offset-1">
+    <div class="col col-md-12">
         <div class="box box-primary" style="padding:20px;">
             <div class="box-header with-border">
                 <h3 class="fa fa-caret-right"><i></i>搜尋條件</h3>
             </div>
             <div class="box-body">
-                @using (Html.BeginForm("StockQuery", "Stock", FormMethod.Post, new { @id = "QueryForm", role = "form" }))
+                @using (Html.BeginForm("StockTxnQuery", "Stock", FormMethod.Post, new { @id = "QueryForm", role = "form" }))
                 {
                     @Html.AntiForgeryToken()
                     <div class="row row-std">
@@ -26,7 +26,7 @@
                         </div>
 
                         <div class="col-md-2">
-                            @Html.DropDownListFor(model => model.SubinvenotoryList, Model.SubinvenotoryList, new { @class = "form-control input-lg", id = "SubinvenotoryCode", autocomplete = "off" })
+                            @Html.DropDownListFor(model => model.SubinvenotoryList, Model.SubinvenotoryList, new { @class = "form-control input-lg", id = "SubinvenotoryCode1", autocomplete = "off" })
                         </div>
 
                         <div class="col col-md-2 text-right">
@@ -60,7 +60,7 @@
 
                     </div>
                     <div class="row row-std">
-                        <div class="col col-md-2 text-right">
+                        <div class="col col-md-1 text-right">
                             <label class="input-lg">條碼</label>
                         </div>
 
@@ -90,13 +90,7 @@
                             <thead>
                                 <tr>
                                     <th rowspan="2">
-                                        @Html.DisplayNameFor(model => model.Fields.SubinventoryCode)
-                                    </th>
-                                    <th rowspan="2">
-                                        @Html.DisplayNameFor(model => model.Fields.LocatorId)
-                                    </th>
-                                    <th rowspan="2">
-                                        @Html.DisplayNameFor(model => model.Fields.LocatorSegments)
+                                        @Html.DisplayNameFor(model => model.Fields.Barcode)
                                     </th>
                                     <th rowspan="2">
                                         @Html.DisplayNameFor(model => model.Fields.InventoryItemId)
@@ -107,26 +101,79 @@
                                     <th rowspan="2">
                                         @Html.DisplayNameFor(model => model.Fields.ItemCategory)
                                     </th>
-                                    <th colspan="4">
-                                        @Html.DisplayName("可用量")
+                                    <th colspan="7">
+                                        @Html.DisplayName("儲位")
                                     </th>
-                                    <th colspan="4">
-                                        @Html.DisplayName("總庫存量")
+                                    <th colspan="7">
+                                        @Html.DisplayName("移轉儲位")
                                     </th>
+                                    <th colspan="3">
+                                        @Html.DisplayName("數量")
+                                    </th>
+                                    <th rowspan="2">
+                                        @Html.DisplayNameFor(model => model.Fields.ActionName)
+                                    </th>
+                                    <th rowspan="2">
+                                        @Html.DisplayNameFor(model => model.Fields.Category)
+                                    </th>
+                                    <th rowspan="2">
+                                        @Html.DisplayNameFor(model => model.Fields.DocNumber)
+                                    </th>
+
                                 </tr>
                                 <tr>
-                                    <th colspan="2">
-                                        重量(KG)
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Fields.OrganizationId)
                                     </th>
-                                    <th colspan="2">
-                                        令數(RE)
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Fields.OrganizationCode)
                                     </th>
-                                    <th colspan="2">
-                                        重量(KG)
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Fields.OrganizationName)
                                     </th>
-                                    <th colspan="2">
-                                        令數(RE)
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Fields.SubinventoryCode)
                                     </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Fields.SubinventoryName)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Fields.LocatorId)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Fields.LocatorSegment3)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Fields.TrfOrganizationId)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Fields.TrfOrganizationCode)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Fields.TrfOrganizationName)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Fields.TrfSubinventoryCode)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Fields.TrfSubinventoryName)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Fields.TrfLocatorId)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Fields.TrfLocatorSegment3)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Fields.UomCode)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Fields.AvailableQty)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Fields.ChangedQty)
+                                    </th>
+
                                 </tr>
                             </thead>
 

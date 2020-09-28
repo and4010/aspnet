@@ -64,7 +64,7 @@ function loadTable(subinventory, locatorId, itemCategory, itemNo) {
             "<'row'<'col-sm-2'l><'col-sm-7'B><'col-sm-3'f>>" +
             "<'row'<'col-sm-12'tr>>" +
             "<'row'<'col-sm-5'i><'col-sm-7'p>>",
-        "lengthMenu": [[500, 1000, 2000, 3000], [500, 1000, 2000, 3000]],
+        "lengthMenu": [[200, 500, 1000, 2000], [200, 500, 1000, 2000]],
         ajax: {
             "url": "/Stock/StockQuery",
             "type": "POST",
@@ -114,9 +114,27 @@ function loadTable(subinventory, locatorId, itemCategory, itemNo) {
                 }
             },
             { data: "SecondaryUomCode", "name": "次要單位", "autoWidth": true, "className": "dt-body-center", "visible": false  },
-            { data: "PrimarySumQty", "name": "主單位合計量", "autoWidth": true, "className": "dt-body-right" },
+            {
+                data: "PrimarySumQty", "name": "主單位合計量", "autoWidth": true, "className": "dt-body-right", "mRender": function (data, type, full) {
+
+                    if (data == null || data == 0) {
+                        return "";
+                    }
+
+                    return data;
+                }
+            },
             { data: "PrimaryUomCode", "name": "主要單位", "autoWidth": true, "className": "dt-body-center", "visible": false },
-            { data: "SecondarySumQty", "name": "次單位合計量", "autoWidth": true, "className": "dt-body-right" },
+            {
+                data: "SecondarySumQty", "name": "次單位合計量", "autoWidth": true, "className": "dt-body-right", "mRender": function (data, type, full) {
+
+                    if (data == null || data == 0) {
+                        return "";
+                    }
+
+                    return data;
+                }
+            },
             { data: "SecondaryUomCode", "name": "次要單位", "autoWidth": true, "className": "dt-body-center", "visible": false}
         ]
 

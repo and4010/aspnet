@@ -2058,6 +2058,7 @@
     <Content Include="Scripts\Obsolete\Obsolete.js" />
     <Content Include="Scripts\OrgSubinventory.js" />
     <Content Include="Scripts\OspRelated.js" />
+    <Content Include="Scripts\StockTxnQuery.js" />
     <Content Include="Scripts\StockQueryDetail.js" />
     <Content Include="Scripts\StockQuery.js" />
     <Content Include="Scripts\PartNo.js" />
