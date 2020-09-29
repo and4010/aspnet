@@ -172,10 +172,13 @@ OR S.DST_SUBINVENTORY_CODE IN (SELECT SUBINVENTORY_CODE FROM USER_SUBINVENTORY_T
                     paramList.Add(SqlParamHelper.R.Barcode("@barcode", barcode));
                 }
 
-                builder.AppendLine(@" ORDER BY S.SUBINVENTORY_CODE, S.LOCATOR_ID, S.INVENTORY_ITEM_ID, S.BARCODE, S.CREATION_DATE");
-
                 var models = mesContext.Database.SqlQuery<StockTxnQueryModel>(builder.ToString(), paramList.ToArray());
-                return models.Skip(data.Start).Take(data.Length).ToList();
+
+                var list = Search(models, data.Search.Value);
+
+                list = Order(data.Order, models);
+
+                return list.Skip(data.Start).Take(data.Length).ToList();
 
             }
             catch (Exception ex)
@@ -184,6 +187,162 @@ OR S.DST_SUBINVENTORY_CODE IN (SELECT SUBINVENTORY_CODE FROM USER_SUBINVENTORY_T
             }
 
             return new List<StockTxnQueryModel>();
+        }
+
+
+        public static IOrderedEnumerable<StockTxnQueryModel> Order(List<Order> orders, IEnumerable<StockTxnQueryModel> models)
+        {
+            IOrderedEnumerable<StockTxnQueryModel> orderedModel = null;
+
+            for (int i = 0; i < orders.Count(); i++)
+            {
+                if (i == 0)
+                {
+                    orderedModel = OrderBy(orders[i].Column, orders[i].Dir, models);
+                }
+                else
+                {
+                    orderedModel = ThenBy(orders[i].Column, orders[i].Dir, orderedModel);
+                }
+            }
+            return orderedModel;
+        }
+
+        private static IOrderedEnumerable<StockTxnQueryModel> OrderBy(int column, string dir, IEnumerable<StockTxnQueryModel> models)
+        {
+            switch (column)
+            {
+                default:
+                case 1:
+                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Barcode) : models.OrderBy(x => x.Barcode);
+                case 2:
+                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.InventoryItemId) : models.OrderBy(x => x.InventoryItemId);
+                case 3:
+                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.ItemNumber) : models.OrderBy(x => x.ItemNumber);
+                case 4:
+                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.ItemCategory) : models.OrderBy(x => x.ItemCategory);
+                case 5:
+                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.OrganizationId) : models.OrderBy(x => x.OrganizationId);
+                case 6:
+                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.OrganizationCode) : models.OrderBy(x => x.OrganizationCode);
+                case 7:
+                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.OrganizationName) : models.OrderBy(x => x.OrganizationName);
+                case 8:
+                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.SubinventoryCode) : models.OrderBy(x => x.SubinventoryCode);
+                case 9:
+                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.SubinventoryName) : models.OrderBy(x => x.SubinventoryName);
+                case 10:
+                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.LocatorId) : models.OrderBy(x => x.LocatorId);
+                case 11:
+                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.LocatorSegment3) : models.OrderBy(x => x.LocatorSegment3);
+                case 12:
+                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.TrfOrganizationId) : models.OrderBy(x => x.TrfOrganizationId);
+                case 13:
+                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.TrfOrganizationCode) : models.OrderBy(x => x.TrfOrganizationCode);
+                case 14:
+                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.TrfOrganizationName) : models.OrderBy(x => x.TrfOrganizationName);
+                case 15:
+                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.TrfSubinventoryCode) : models.OrderBy(x => x.TrfSubinventoryCode);
+                case 16:
+                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.TrfSubinventoryName) : models.OrderBy(x => x.TrfSubinventoryName);
+                case 17:
+                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.TrfLocatorId) : models.OrderBy(x => x.TrfLocatorId);
+                case 18:
+                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.TrfLocatorSegment3) : models.OrderBy(x => x.TrfLocatorSegment3);
+                case 19:
+                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.AvailableQty) : models.OrderBy(x => x.AvailableQty);
+                case 20:
+                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.ChangedQty) : models.OrderBy(x => x.ChangedQty);
+                case 21:
+                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.UomCode) : models.OrderBy(x => x.UomCode);
+                case 22:
+                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.ActionName) : models.OrderBy(x => x.ActionName);
+                case 23:
+                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Category) : models.OrderBy(x => x.Category);
+                case 24:
+                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.DocNumber) : models.OrderBy(x => x.DocNumber);
+                case 25:
+                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.CreateDate) : models.OrderBy(x => x.CreateDate);
+            }
+        }
+
+        private static IOrderedEnumerable<StockTxnQueryModel> ThenBy(int column, string dir, IOrderedEnumerable<StockTxnQueryModel> models)
+        {
+            switch (column)
+            {
+                default:
+                case 1:
+                    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.Barcode) : models.ThenBy(x => x.Barcode);
+                case 2:
+                    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.InventoryItemId) : models.ThenBy(x => x.InventoryItemId);
+                case 3:
+                    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.ItemNumber) : models.ThenBy(x => x.ItemNumber);
+                case 4:
+                    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.ItemCategory) : models.ThenBy(x => x.ItemCategory);
+                case 5:
+                    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.OrganizationId) : models.ThenBy(x => x.OrganizationId);
+                case 6:
+                    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.OrganizationCode) : models.ThenBy(x => x.OrganizationCode);
+                case 7:
+                    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.OrganizationName) : models.ThenBy(x => x.OrganizationName);
+                case 8:
+                    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.SubinventoryCode) : models.ThenBy(x => x.SubinventoryCode);
+                case 9:
+                    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.SubinventoryName) : models.ThenBy(x => x.SubinventoryName);
+                case 10:
+                    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.LocatorId) : models.ThenBy(x => x.LocatorId);
+                case 11:
+                    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.LocatorSegment3) : models.ThenBy(x => x.LocatorSegment3);
+                case 12:
+                    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.TrfOrganizationId) : models.ThenBy(x => x.TrfOrganizationId);
+                case 13:
+                    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.TrfOrganizationCode) : models.ThenBy(x => x.TrfOrganizationCode);
+                case 14:
+                    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.TrfOrganizationName) : models.ThenBy(x => x.TrfOrganizationName);
+                case 15:
+                    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.TrfSubinventoryCode) : models.ThenBy(x => x.TrfSubinventoryCode);
+                case 16:
+                    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.TrfSubinventoryName) : models.ThenBy(x => x.TrfSubinventoryName);
+                case 17:
+                    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.TrfLocatorId) : models.ThenBy(x => x.TrfLocatorId);
+                case 18:
+                    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.TrfLocatorSegment3) : models.ThenBy(x => x.TrfLocatorSegment3);
+                case 19:
+                    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.AvailableQty) : models.ThenBy(x => x.AvailableQty);
+                case 20:
+                    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.ChangedQty) : models.ThenBy(x => x.ChangedQty);
+                case 21:
+                    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.UomCode) : models.ThenBy(x => x.UomCode);
+                case 22:
+                    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.ActionName) : models.ThenBy(x => x.ActionName);
+                case 23:
+                    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.Category) : models.ThenBy(x => x.Category);
+                case 24:
+                    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.DocNumber) : models.ThenBy(x => x.DocNumber);
+                case 25:
+                    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.CreateDate) : models.ThenBy(x => x.CreateDate);
+            }
+        }
+
+        private static IEnumerable<StockTxnQueryModel> Search(IEnumerable<StockTxnQueryModel> models, string search)
+        {
+            if (string.IsNullOrEmpty(search)) return models;
+
+            return models.Where(x =>
+                    (!string.IsNullOrEmpty(x.Barcode) && x.Barcode.Contains(search))
+                    || (!string.IsNullOrEmpty(x.ItemNumber) && x.ItemNumber.Contains(search))
+                    || (!string.IsNullOrEmpty(x.ItemCategory) && x.ItemCategory.Contains(search))
+                    || (!string.IsNullOrEmpty(x.ItemCategory) && x.ItemCategory.Contains(search))
+                    || (!string.IsNullOrEmpty(x.OrganizationCode) && x.OrganizationCode.Contains(search))
+                    || (!string.IsNullOrEmpty(x.SubinventoryCode) && x.SubinventoryCode.Contains(search))
+                    || (!string.IsNullOrEmpty(x.LocatorSegment3) && x.LocatorSegment3.Contains(search))
+                    || (!string.IsNullOrEmpty(x.TrfOrganizationCode) && x.TrfOrganizationCode.Contains(search))
+                    || (!string.IsNullOrEmpty(x.TrfSubinventoryCode) && x.TrfSubinventoryCode.Contains(search))
+                    || (!string.IsNullOrEmpty(x.TrfLocatorSegment3) && x.TrfLocatorSegment3.Contains(search))
+                    || (!string.IsNullOrEmpty(x.ActionName) && x.ActionName.Contains(search))
+                    || (!string.IsNullOrEmpty(x.Category) && x.Category.Contains(search))
+                    || (!string.IsNullOrEmpty(x.DocNumber) && x.DocNumber.Contains(search))
+                );
         }
     }
 }

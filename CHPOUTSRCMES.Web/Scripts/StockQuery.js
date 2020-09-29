@@ -101,7 +101,6 @@ function loadTable(subinventory, locatorId, itemCategory, itemNo) {
                         + data + '</a>';
                 }
             },
-            { data: "PrimaryUomCode", "name": "主要單位", "autoWidth": true, "className": "dt-body-center", "visible": false   },
             {
                 data: "SecondaryAvailableQty", "name": "次單位可用量", "autoWidth": true, "className": "dt-body-right", "mRender": function (data, type, full) {
 
@@ -113,7 +112,6 @@ function loadTable(subinventory, locatorId, itemCategory, itemNo) {
                         + data + '</a>';
                 }
             },
-            { data: "SecondaryUomCode", "name": "次要單位", "autoWidth": true, "className": "dt-body-center", "visible": false  },
             {
                 data: "PrimarySumQty", "name": "主單位合計量", "autoWidth": true, "className": "dt-body-right", "mRender": function (data, type, full) {
 
@@ -124,7 +122,6 @@ function loadTable(subinventory, locatorId, itemCategory, itemNo) {
                     return data;
                 }
             },
-            { data: "PrimaryUomCode", "name": "主要單位", "autoWidth": true, "className": "dt-body-center", "visible": false },
             {
                 data: "SecondarySumQty", "name": "次單位合計量", "autoWidth": true, "className": "dt-body-right", "mRender": function (data, type, full) {
 
@@ -134,8 +131,7 @@ function loadTable(subinventory, locatorId, itemCategory, itemNo) {
 
                     return data;
                 }
-            },
-            { data: "SecondaryUomCode", "name": "次要單位", "autoWidth": true, "className": "dt-body-center", "visible": false}
+            }
         ]
 
     });

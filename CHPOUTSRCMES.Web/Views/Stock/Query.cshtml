@@ -95,25 +95,25 @@
                                     <th rowspan="2">
                                         @Html.DisplayNameFor(model => model.Fields.ItemCategory)
                                     </th>
-                                    <th colspan="4">
+                                    <th colspan="2">
                                         @Html.DisplayName("可用量")
                                     </th>
-                                    <th colspan="4">
+                                    <th colspan="2">
                                         @Html.DisplayName("總庫存量")
                                     </th>
                                 </tr>
                                 <tr>
-                                    <th colspan="2">
-                                        重量(KG)
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Fields.PrimaryAvailableQty)
                                     </th>
-                                    <th colspan="2">
-                                        令數(RE)
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Fields.SecondaryAvailableQty)
                                     </th>
-                                    <th colspan="2">
-                                        重量(KG)
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Fields.PrimarySumQty)
                                     </th>
-                                    <th colspan="2">
-                                        令數(RE)
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Fields.SecondarySumQty)
                                     </th>
                                 </tr>
                             </thead>

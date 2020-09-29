@@ -33,22 +33,22 @@ namespace CHPOUTSRCMES.Web.Models.StockQuery
         [Display(Name = "捲筒/平版")]
         public string ItemCategory { set; get; }
 
-        [Display(Name = "主單位")]
+        [Display(Name = "KG")]
         public string PrimaryUomCode { set; get; }
 
-
+        [Display(Name = "重量(KG)")]
         public decimal PrimaryAvailableQty { set; get; }
 
-
+        [Display(Name = "總重量(KG)")]
         public decimal PrimarySumQty { set; get; }
 
-        [Display(Name = "次單位")]
+        [Display(Name = "RE")]
         public string SecondaryUomCode { set; get; }
 
-
+        [Display(Name = "令數(RE)")]
         public decimal? SecondaryAvailableQty { set; get; }
 
-
+        [Display(Name = "總令數(RE)")]
         public decimal? SecondarySumQty { set; get; }
 
         public static List<StockQueryModel> getModels(DataTableAjaxPostViewModel data,
@@ -111,8 +111,13 @@ WHERE U.UserId =  @userId AND S.STATUS_CODE = @statusCode
  GROUP BY S.SUBINVENTORY_CODE, S.LOCATOR_ID, S.INVENTORY_ITEM_ID
  ORDER BY S.SUBINVENTORY_CODE, S.LOCATOR_ID, S.INVENTORY_ITEM_ID");
 
-                var models = mesContext.Database.SqlQuery<StockQueryModel>(builder.ToString(), paramList.ToArray());
-                return models.OrderBy(x => x.SubinventoryCode).ThenBy(x=>x.LocatorSegments).ThenBy(x=>x.ItemNumber).Skip(data.Start).Take(data.Length).ToList();
+                var models = mesContext.Database.SqlQuery<StockQueryModel>(builder.ToString(), paramList.ToArray()).ToList();
+
+
+                var list = Search(models, data.Search.Value);
+                list = Order(data.Order, models);
+
+                return list.Skip(data.Start).Take(data.Length).ToList();
 
             }
             catch (Exception ex)
@@ -121,6 +126,91 @@ WHERE U.UserId =  @userId AND S.STATUS_CODE = @statusCode
             }
 
             return new List<StockQueryModel>();
+        }
+
+        public static IOrderedEnumerable<StockQueryModel> Order(List<Order> orders, IEnumerable<StockQueryModel> models)
+        {
+            IOrderedEnumerable<StockQueryModel> orderedModel = null;
+
+            for (int i = 0; i < orders.Count(); i++)
+            {
+                if (i == 0)
+                {
+                    orderedModel = OrderBy(orders[i].Column, orders[i].Dir, models);
+                }
+                else
+                {
+                    orderedModel = ThenBy(orders[i].Column, orders[i].Dir, orderedModel);
+                }
+            }
+            return orderedModel;
+        }
+
+        private static IOrderedEnumerable<StockQueryModel> OrderBy(int column, string dir, IEnumerable<StockQueryModel> models)
+        {
+            switch (column)
+            {
+                default:
+                case 1:
+                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.SubinventoryCode) : models.OrderBy(x => x.SubinventoryCode);
+                case 2:
+                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.LocatorId) : models.OrderBy(x => x.LocatorId);
+                case 3:
+                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.LocatorSegments) : models.OrderBy(x => x.LocatorSegments);
+                case 4:
+                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.InventoryItemId) : models.OrderBy(x => x.InventoryItemId);
+                case 5:
+                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.ItemNumber) : models.OrderBy(x => x.ItemNumber);
+                case 6:
+                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.ItemCategory) : models.OrderBy(x => x.ItemCategory);
+                case 7:
+                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.PrimaryAvailableQty) : models.OrderBy(x => x.PrimaryAvailableQty);
+                case 8:
+                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.SecondaryAvailableQty) : models.OrderBy(x => x.SecondaryAvailableQty);
+                case 9:
+                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.PrimarySumQty) : models.OrderBy(x => x.PrimarySumQty);
+                case 10:
+                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.SecondarySumQty) : models.OrderBy(x => x.SecondarySumQty);
+            }
+        }
+
+        private static IOrderedEnumerable<StockQueryModel> ThenBy(int column, string dir, IOrderedEnumerable<StockQueryModel> models)
+        {
+            switch (column)
+            {
+                default:
+                case 1:
+                    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.SubinventoryCode) : models.ThenBy(x => x.SubinventoryCode);
+                case 2:
+                    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.LocatorId) : models.ThenBy(x => x.LocatorId);
+                case 3:
+                    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.LocatorSegments) : models.ThenBy(x => x.LocatorSegments);
+                case 4:
+                    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.InventoryItemId) : models.ThenBy(x => x.InventoryItemId);
+                case 5:
+                    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.ItemNumber) : models.ThenBy(x => x.ItemNumber);
+                case 6:
+                    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.ItemCategory) : models.ThenBy(x => x.ItemCategory);
+                case 7:
+                    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.PrimaryAvailableQty) : models.ThenBy(x => x.PrimaryAvailableQty);
+                case 8:
+                    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.SecondaryAvailableQty) : models.ThenBy(x => x.SecondaryAvailableQty);
+                case 9:
+                    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.PrimarySumQty) : models.ThenBy(x => x.PrimarySumQty);
+                case 10:
+                    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.SecondarySumQty) : models.ThenBy(x => x.SecondarySumQty);
+            }
+        }
+
+        private static IEnumerable<StockQueryModel> Search(IEnumerable<StockQueryModel> models, string search)
+        {
+            if (string.IsNullOrEmpty(search)) return models;
+
+            return models.Where(x =>
+                    (!string.IsNullOrEmpty(x.SubinventoryCode) && x.SubinventoryCode.Contains(search))
+                    || (!string.IsNullOrEmpty(x.LocatorSegments) && x.LocatorSegments.Contains(search))
+                    || (!string.IsNullOrEmpty(x.ItemNumber) && x.ItemNumber.Contains(search))
+                );
         }
     }
 }
