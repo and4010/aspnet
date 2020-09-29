@@ -3013,7 +3013,6 @@ SELECT [STOCK_ID] as ID
                 {
                     var now = DateTime.Now;
 
-
                     var trfLocator = locatorTRepository.GetAll().AsNoTracking().FirstOrDefault(x => x.LocatorId == transferLocatorId);
                     if (trfLocator == null) throw new Exception("找不到目標儲位資料");
 
