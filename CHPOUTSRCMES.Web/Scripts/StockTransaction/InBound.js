@@ -2281,7 +2281,7 @@
                 { data: "ROLL_REAM_QTY", "name": "棧板數", "autoWidth": true },
                 { data: "ROLL_REAM_WT", "name": "每件令數", "autoWidth": true },
                 { data: "REQUESTED_QUANTITY2", "name": "總令數", "autoWidth": true },
-                { data: "REQUESTED_QUANTITY", "name": "數量(頓)", "autoWidth": true },
+                { data: "REQUESTED_QUANTITY", "name": "數量(噸)", "autoWidth": true },
             ]
         });
     }
