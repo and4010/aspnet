@@ -38,7 +38,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Process
         public string BatchNo { set; get; }
 
         /// <summary>
-        /// 工單類別(OSP：加工、TMP：代紙)
+        /// 工單類別(OSP：加工、REP：代紙)
         /// </summary>
         /// 
         [Required]
@@ -180,7 +180,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Process
         [DataType(DataType.Date)]
         public DateTime? CuttingDateTo { set; get; }
 
-
         /// <summary>
         /// 機台
         /// </summary>
@@ -189,6 +188,18 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Process
         [Column("MACHINE_CODE")]
         public string MachineCode{ set; get; }
 
+        /// <summary>
+        /// 來源裁切工單ID (代紙工單時使用 BATCH_TYPE= 'REP') 
+        /// </summary>
+        [Column("SRC_OSP_HEADER_ID")]
+        public long? SrcOspHeaderId { set; get; }
+
+        /// <summary>
+        /// 來源裁切工單號碼 (代紙工單時使用 BATCH_TYPE= 'REP') 
+        /// </summary>
+        [StringLength(32)]
+        [Column("SRC_BATCH_NO")]
+        public string SrcBatchNo { set; get; }
 
         /// <summary>
         /// 生產備註
