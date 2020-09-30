@@ -358,3 +358,9 @@ function AutoCompleteItemNumberSelectCallBack(ITEM_NO) {
     $('#btnSearchStock').focus();
     //SearchStock();
 }
+
+function LostFocusItemNumberCallBack(ITEM_NO) {
+
+   
+
+}

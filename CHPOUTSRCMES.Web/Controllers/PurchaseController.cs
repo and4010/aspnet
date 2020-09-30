@@ -61,8 +61,12 @@ namespace CHPOUTSRCMES.Web.Controllers
         [HttpPost]
         public JsonResult ReturnIndex(long id)
         {
+            //取得使用者ID
+            var userId = this.User.Identity.GetUserId();
+            //取得使用者帳號
+            var name = this.User.Identity.GetUserName();
             PurchaseViewModel purchaseViewModel = new PurchaseViewModel();
-            var resultModel = purchaseViewModel.ChageHeaderStatus(id);
+            var resultModel = purchaseViewModel.ChageHeaderStatus(id, userId, name);
             return Json(new { resultModel }, JsonRequestBehavior.AllowGet);
         }
 

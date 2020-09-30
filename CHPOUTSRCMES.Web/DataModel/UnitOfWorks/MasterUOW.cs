@@ -394,11 +394,76 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             }
         }
 
-        #region 庫存交易類別
+        #region 庫存異動
+
+        public string GetTransferCatalog(long outOrganizationId, long inOrganizationId)
+        {
+            if (outOrganizationId == inOrganizationId)
+            {
+                return TransferCatalog.InvTransfer;
+            }
+            else
+            {
+                return TransferCatalog.OrgTransfer;
+            }
+        }
+
+        public class TransferCatalog
+        {
+            /// <summary>
+            /// 組織間移轉
+            /// </summary>
+            public const string OrgTransfer = "ORG";
+            /// <summary>
+            /// 倉庫間移轉
+            /// </summary>
+            public const string InvTransfer = "INV";
+        }
+
+        /// <summary>
+        /// 取得出貨編號Guid
+        /// </summary>
+        /// <returns></returns>
+        public string GetShipmentNumberGuid()
+        {
+            return Guid.NewGuid().ToString();
+        }
+
+       
 
         public TRANSACTION_TYPE_T GetTransactionType(long transactionTypeId)
         {
             return transactionTypeRepository.GetAll().AsNoTracking().FirstOrDefault(x => x.TransactionTypeId == transactionTypeId && x.ControlFlag != ControlFlag.Deleted);
+        }
+
+        /// <summary>
+        /// 出貨編號狀態
+        /// </summary>
+        public class NumberStatus
+        {
+            /// <summary>
+            /// 未存檔
+            /// </summary>
+            public const string NotSaved = "0";
+            /// <summary>
+            /// 已存檔
+            /// </summary>
+            public const string Saved = "1";
+        }
+
+        /// <summary>
+        /// 此筆資料使否傳給ERP
+        /// </summary>
+        public class ToErp
+        {
+            /// <summary>
+            /// 否; 一般入庫
+            /// </summary>
+            public const string No = "0";
+            /// <summary>
+            /// 是; 庫存異動
+            /// </summary>
+            public const string Yes = "1";
         }
 
         #endregion

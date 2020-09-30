@@ -15,6 +15,7 @@ using CHPOUTSRCMES.Web.DataModel.Entity;
 using CHPOUTSRCMES.Web.DataModel.Entity.Interfaces;
 using CHPOUTSRCMES.Web.DataModel.Entity.Purchase;
 using CHPOUTSRCMES.Web.DataModel.Entity.Repositorys;
+using CHPOUTSRCMES.Web.DataModel.Entity.Transfer;
 using CHPOUTSRCMES.Web.DataModel.Interfaces;
 using CHPOUTSRCMES.Web.Models;
 using CHPOUTSRCMES.Web.Models.Purchase;
@@ -36,6 +37,8 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
         private readonly IRepository<CTR_PICKED_HT> ctrPickedHtRepository;
         private readonly IRepository<CTR_FILEINFO_T> ctrFileInfoTRepository;
         private readonly IRepository<CTR_FILES_T> ctrFilesTRepository;
+        private readonly IRepository<TRF_REASON_HEADER_T> trfReasonHeaderTRepository;
+        private readonly IRepository<TRF_REASON_T> trfReasonTRepository;
 
 
         /// <summary>
@@ -51,6 +54,8 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             this.ctrPickedHtRepository = new GenericRepository<CTR_PICKED_HT>(this);
             this.ctrFileInfoTRepository = new GenericRepository<CTR_FILEINFO_T>(this);
             this.ctrFilesTRepository = new GenericRepository<CTR_FILES_T>(this);
+            this.trfReasonHeaderTRepository = new GenericRepository<TRF_REASON_HEADER_T>(this);
+            this.trfReasonTRepository = new GenericRepository<TRF_REASON_T>(this);
         }
 
 
@@ -539,7 +544,7 @@ and d.ITEM_CATEGORY = N'捲筒'");
                 switch (headerStatus)
                 {
                     case PurchaseStatusCode.Pending:
-                        
+
                         fullCalendarEventModel.Add(new FullCalendarEventModel()
                         {
                             id = header[i].CtrHeaderId,
@@ -595,13 +600,13 @@ and d.ITEM_CATEGORY = N'捲筒'");
         /// </summary>
         /// <param name="ContainerNo"></param>
         /// <returns></returns>
-        public ResultModel ChangeHeaderStatus(long CtrHeaderId)
+        public ResultModel ChangeHeaderStatus(long CtrHeaderId, string userId, string userName)
         {
             using (var txn = this.Context.Database.BeginTransaction())
             {
                 try
                 {
-
+                    var now = DateTime.Now;
                     var pick = ctrPickedTRepository.Get(x => x.CtrHeaderId == CtrHeaderId && x.Status != PickingStatusCode.ALREADY).Count();
                     if (pick > 0)
                     {
@@ -613,9 +618,13 @@ and d.ITEM_CATEGORY = N'捲筒'");
                         //for (int i = 0; i < header.Count; i++)
                         //{
                         header.Status = PurchaseStatusCode.GetCode(PurchaseStatusCode.Already);
+                        header.LastUpdateBy = userId;
+                        header.LastUpdateDate = now;
+                        header.LastUpdateUserName = userName;
                         ctrHeaderTRepository.Update(header, true);
                         ConvertStock(header.CtrHeaderId);
                         StockRecord(header.CtrHeaderId);
+                        SaveTrfReason(header.CtrHeaderId, now);
                         PickToPickHT(header.CtrHeaderId);
                         PickTDelete(header.CtrHeaderId);
                         DetailToDetailHT(header.CtrHeaderId);
@@ -626,7 +635,7 @@ and d.ITEM_CATEGORY = N'捲筒'");
                 }
                 catch (Exception e)
                 {
-                    
+
                     logger.Error(e.Message);
                     return new ResultModel(false, e.Message.ToString());
                 }
@@ -1117,7 +1126,19 @@ WHERE p.ITEM_CATEGORY = N'平版' and p.CTR_PICKED_ID  = @CTR_PICKED_ID");
             {
                 StringBuilder query = new StringBuilder();
                 query.Append(
-                $@"SELECT 
+                $@"SELECT (CASE h.STATUS
+            WHEN  0
+            THEN (SELECT 
+(SELECT 
+sum(d1.ROLL_REAM_QTY)- 
+count(p.CTR_PICKED_ID)
+FROM CTR_PICKED_HT p
+JOIN CTR_HEADER_T h2 ON h2.CTR_HEADER_ID = p.CTR_HEADER_ID
+WHERE p.ITEM_CATEGORY = N'平版' and h2.CTR_HEADER_ID  = @CTR_HEADER_ID and p.STATUS = N'{PickingStatusCode.ALREADY}')
+FROM CTR_DETAIL_HT d1
+JOIN CTR_HEADER_T h1 ON h1.CTR_HEADER_ID = d1.CTR_HEADER_ID
+WHERE d1.ITEM_CATEGORY = N'平版' and h1.CTR_HEADER_ID  = @CTR_HEADER_ID)
+            ELSE (SELECT 
 (SELECT 
 sum(d1.ROLL_REAM_QTY)- 
 count(p.CTR_PICKED_ID)
@@ -1126,7 +1147,9 @@ JOIN CTR_HEADER_T h2 ON h2.CTR_HEADER_ID = p.CTR_HEADER_ID
 WHERE p.ITEM_CATEGORY = N'平版' and h2.CTR_HEADER_ID  = @CTR_HEADER_ID and p.STATUS = N'{PickingStatusCode.ALREADY}')
 FROM CTR_DETAIL_T d1
 JOIN CTR_HEADER_T h1 ON h1.CTR_HEADER_ID = d1.CTR_HEADER_ID
-WHERE d1.ITEM_CATEGORY = N'平版' and h1.CTR_HEADER_ID  = @CTR_HEADER_ID");
+WHERE d1.ITEM_CATEGORY = N'平版' and h1.CTR_HEADER_ID  = @CTR_HEADER_ID)
+        END)
+FROM CTR_HEADER_T h where h.CTR_HEADER_ID = @CTR_HEADER_ID");
                 return Context.Database.SqlQuery<decimal>(query.ToString(), new SqlParameter("@CTR_HEADER_ID", CtrHeaderId)).SingleOrDefault();
 
 
@@ -1149,11 +1172,18 @@ WHERE d1.ITEM_CATEGORY = N'平版' and h1.CTR_HEADER_ID  = @CTR_HEADER_ID");
             {
                 StringBuilder query = new StringBuilder();
                 query.Append(
-$@"SELECT
-COUNT(p.CTR_PICKED_ID)
+$@"SELECT (CASE h.STATUS
+            WHEN  0
+            THEN (SELECT COUNT(p.CTR_PICKED_ID)
+FROM CTR_PICKED_HT p
+JOIN CTR_HEADER_T h2 ON h2.CTR_HEADER_ID = p.CTR_HEADER_ID
+WHERE p.ITEM_CATEGORY = N'平版' and h2.CTR_HEADER_ID  = @CTR_HEADER_ID and p.STATUS = N'{PickingStatusCode.ALREADY}')
+            ELSE (SELECT COUNT(p.CTR_PICKED_ID)
 FROM CTR_PICKED_T p
 JOIN CTR_HEADER_T h2 ON h2.CTR_HEADER_ID = p.CTR_HEADER_ID
-WHERE p.ITEM_CATEGORY = N'平版' and h2.CTR_HEADER_ID  = @CTR_HEADER_ID and p.STATUS = N'{PickingStatusCode.ALREADY}'");
+WHERE p.ITEM_CATEGORY = N'平版' and h2.CTR_HEADER_ID  = @CTR_HEADER_ID and p.STATUS = N'{PickingStatusCode.ALREADY}')
+        END)
+FROM CTR_HEADER_T h where h.CTR_HEADER_ID = @CTR_HEADER_ID");
                 return Context.Database.SqlQuery<Int32>(query.ToString(), new SqlParameter("@CTR_HEADER_ID", CtrHeaderId)).SingleOrDefault();
 
 
@@ -1176,7 +1206,19 @@ WHERE p.ITEM_CATEGORY = N'平版' and h2.CTR_HEADER_ID  = @CTR_HEADER_ID and p.S
             {
                 StringBuilder query = new StringBuilder();
                 query.Append(
-                $@"SELECT 
+                $@"SELECT (CASE h.STATUS
+            WHEN  0
+            THEN (SELECT 
+(SELECT 
+sum(d1.ROLL_REAM_QTY)- 
+count(p.CTR_PICKED_ID)
+FROM CTR_PICKED_HT p
+JOIN CTR_HEADER_T h2 ON h2.CTR_HEADER_ID = p.CTR_HEADER_ID
+WHERE p.ITEM_CATEGORY = N'捲筒' and h2.CTR_HEADER_ID  = @CTR_HEADER_ID and p.STATUS = N'{PickingStatusCode.ALREADY}')
+FROM CTR_DETAIL_HT d1
+JOIN CTR_HEADER_T h1 ON h1.CTR_HEADER_ID = d1.CTR_HEADER_ID
+WHERE d1.ITEM_CATEGORY = N'捲筒' and h1.CTR_HEADER_ID  = @CTR_HEADER_ID)
+            ELSE (SELECT 
 (SELECT 
 sum(d1.ROLL_REAM_QTY)- 
 count(p.CTR_PICKED_ID)
@@ -1185,7 +1227,10 @@ JOIN CTR_HEADER_T h2 ON h2.CTR_HEADER_ID = p.CTR_HEADER_ID
 WHERE p.ITEM_CATEGORY = N'捲筒' and h2.CTR_HEADER_ID  = @CTR_HEADER_ID and p.STATUS = N'{PickingStatusCode.ALREADY}')
 FROM CTR_DETAIL_T d1
 JOIN CTR_HEADER_T h1 ON h1.CTR_HEADER_ID = d1.CTR_HEADER_ID
-WHERE d1.ITEM_CATEGORY = N'捲筒' and h1.CTR_HEADER_ID  = @CTR_HEADER_ID");
+WHERE d1.ITEM_CATEGORY = N'捲筒' and h1.CTR_HEADER_ID  = @CTR_HEADER_ID)
+        END)
+FROM CTR_HEADER_T h where h.CTR_HEADER_ID = @CTR_HEADER_ID
+");
                 return Context.Database.SqlQuery<decimal>(query.ToString(), new SqlParameter("@CTR_HEADER_ID", CtrHeaderId)).SingleOrDefault();
 
 
@@ -1208,11 +1253,18 @@ WHERE d1.ITEM_CATEGORY = N'捲筒' and h1.CTR_HEADER_ID  = @CTR_HEADER_ID");
             {
                 StringBuilder query = new StringBuilder();
                 query.Append(
-$@"SELECT
-COUNT(p.CTR_PICKED_ID)
+$@"SELECT (CASE h.STATUS
+            WHEN  0
+            THEN (SELECT COUNT(p.CTR_PICKED_ID)
+FROM CTR_PICKED_HT p
+JOIN CTR_HEADER_T h2 ON h2.CTR_HEADER_ID = p.CTR_HEADER_ID
+WHERE p.ITEM_CATEGORY = N'捲筒' and h2.CTR_HEADER_ID  = @CTR_HEADER_ID and p.STATUS = N'{PickingStatusCode.ALREADY}')
+            ELSE (SELECT COUNT(p.CTR_PICKED_ID)
 FROM CTR_PICKED_T p
 JOIN CTR_HEADER_T h2 ON h2.CTR_HEADER_ID = p.CTR_HEADER_ID
-WHERE p.ITEM_CATEGORY = N'捲筒' and h2.CTR_HEADER_ID  = @CTR_HEADER_ID and p.STATUS = N'{PickingStatusCode.ALREADY}'");
+WHERE p.ITEM_CATEGORY = N'捲筒' and h2.CTR_HEADER_ID  = @CTR_HEADER_ID and p.STATUS = N'{PickingStatusCode.ALREADY}')
+        END)
+FROM CTR_HEADER_T h where h.CTR_HEADER_ID = @CTR_HEADER_ID");
                 return Context.Database.SqlQuery<Int32>(query.ToString(), new SqlParameter("@CTR_HEADER_ID", CtrHeaderId)).SingleOrDefault();
 
 
@@ -1364,7 +1416,7 @@ WHERE p.ITEM_CATEGORY = N'捲筒' and h2.CTR_HEADER_ID  = @CTR_HEADER_ID and p.S
             return ctrFileInfoTRepository.GetAll()
                 .AsNoTracking()
                 .Where(x => x.CtrPickedId == pickedId)
-                .Select(x=>x.CtrFileinfoId)
+                .Select(x => x.CtrFileinfoId)
                 .ToList();
         }
 
@@ -1865,6 +1917,175 @@ AND (lt.LOCATOR_DISABLE_DATE >= GETDATE() OR lt.LOCATOR_DISABLE_DATE is null)
             salesOrderAdapter.Fill(Reason, "Reason");
 
         }
+
+        public void SaveTrfReason(long ctrHeaderId, DateTime now)
+        {
+
+            var pickList = ctrPickedTRepository.GetAll().AsNoTracking().Where(x => x.CtrHeaderId == ctrHeaderId && !string.IsNullOrEmpty(x.ReasonCode)).ToList();
+            if (pickList == null || pickList.Count == 0) return;
+
+            foreach (var pick in pickList)
+            {
+                var trfLocator = locatorTRepository.GetAll().AsNoTracking().FirstOrDefault(x => x.LocatorId == pick.LocatorId);
+                if (trfLocator == null) throw new Exception("找不到目標儲位資料");
+
+                var stock = stockTRepository.GetAll().FirstOrDefault(x => x.StockId == pick.StockId);
+                if (stock == null) throw new Exception("找不到庫存資料");
+
+                var locator = locatorTRepository.GetAll().AsNoTracking().FirstOrDefault(x => x.LocatorId == stock.LocatorId);
+                if (locator == null) throw new Exception("找不到儲位資料");
+
+                var organization = GetOrganization(stock.OrganizationId);
+                if (organization == null) throw new Exception("找不到組織資料");
+
+                var trfOrganization = GetOrganization(trfLocator.OrganizationId);
+                if (trfOrganization == null) throw new Exception("找不到目標組織資料");
+
+                var reason = stkReasonTRepository.GetAll().AsNoTracking().FirstOrDefault(x => x.ReasonCode == pick.ReasonCode);
+                if (reason == null) throw new Exception("找不到貨故資料");
+
+                long transactionTypeId;
+                var transferCatalog = GetTransferCatalog(stock.OrganizationId, trfLocator.OrganizationId);
+                if (transferCatalog == TransferCatalog.OrgTransfer)
+                {
+                    throw new Exception("貨故不可為組織間移轉");
+                    //transactionTypeId = TransferUOW.TransactionTypeId.IntransitShipment;
+                }
+                else
+                {
+                    transactionTypeId = TransferUOW.TransactionTypeId.Chp30;
+                }
+
+                var transactionType = GetTransactionType(transactionTypeId);
+                if (trfOrganization == null) throw new Exception("找不到庫存交易類別資料");
+
+
+                TRF_REASON_HEADER_T header = new TRF_REASON_HEADER_T
+                {
+                    OrgId = organization.OrgUnitId,
+                    OrganizationId = stock.OrganizationId,
+                    OrganizationCode = stock.OrganizationCode,
+                    ShipmentNumber = GetShipmentNumberGuid(),
+                    SubinventoryCode = stock.SubinventoryCode,
+                    LocatorId = stock.LocatorId,
+                    LocatorCode = stock.LocatorSegments,
+                    Segment3 = locator.Segment3,
+                    TransactionDate = now,
+                    TransactionTypeId = transactionTypeId,
+                    TransactionTypeName = transactionType.TransactionTypeName,
+                    TransferOrgId = trfOrganization.OrgUnitId,
+                    TransferOrganizationId = trfLocator.OrganizationId,
+                    TransferOrganizationCode = trfOrganization.OrganizationCode,
+                    TransferSubinventoryCode = trfLocator.SubinventoryCode,
+                    TransferLocatorId = trfLocator.LocatorId,
+                    TransferLocatorCode = trfLocator.LocatorSegments,
+                    NumberStatus = NumberStatus.Saved,
+                    ToErp = ToErp.Yes,
+                    CreatedBy = pick.CreatedBy,
+                    CreatedUserName = pick.CreatedUserName,
+                    CreationDate = pick.CreationDate,
+                    LastUpdateBy = null,
+                    LastUpdateUserName = null,
+                    LastUpdateDate = null
+                };
+                trfReasonHeaderTRepository.Create(header, true);
+
+                TRF_REASON_T detail = new TRF_REASON_T
+                {
+                    TransferReasonHeaderId = header.TransferReasonHeaderId,
+                    InventoryItemId = stock.InventoryItemId,
+                    ItemNumber = stock.ItemNumber,
+                    ItemDescription = stock.ItemDescription,
+                    Barcode = stock.Barcode,
+                    StockId = stock.StockId,
+                    PrimaryUom = stock.PrimaryUomCode,
+                    PrimaryQuantity = stock.PrimaryAvailableQty,
+                    SecondaryUom = stock.SecondaryUomCode,
+                    SecondaryQuantity = stock.SecondaryAvailableQty,
+                    LotNumber = stock.LotNumber,
+                    LotQuantity = stock.LotQuantity,
+                    ReasonCode = reason.ReasonCode,
+                    ReasonDesc = reason.ReasonDesc,
+                    Note = pick.Note,
+                    CreatedBy = pick.CreatedBy,
+                    CreatedUserName = pick.CreatedUserName,
+                    CreationDate = pick.CreationDate,
+                    LastUpdateBy = null,
+                    LastUpdateUserName = null,
+                    LastUpdateDate = null
+                };
+                trfReasonTRepository.Create(detail, true);
+
+                //複製貨故明細資料到貨故歷史明細
+                string cmd = @"
+INSERT INTO TRF_REASON_HT
+(
+      [TRANSFER_REASON_ID]
+      ,[TRANSFER_REASON_HEADER_ID]
+      ,[INVENTORY_ITEM_ID]
+      ,[ITEM_NUMBER]
+      ,[ITEM_DESCRIPTION]
+      ,[BARCODE]
+      ,[STOCK_ID]
+      ,[PRIMARY_UOM]
+      ,[PRIMARY_QUANTITY]
+      ,[SECONDARY_UOM]
+      ,[SECONDARY_QUANTITY]
+      ,[LOT_NUMBER]
+      ,[LOT_QUANTITY]
+      ,[REASON_CODE]
+      ,[REASON_DESC]
+      ,[NOTE]
+      ,[CREATED_BY]
+      ,[CREATED_USER_NAME]
+      ,[CREATION_DATE]
+      ,[LAST_UPDATE_BY]
+      ,[LAST_UPDATE_USER_NAME]
+      ,[LAST_UPDATE_DATE]
+)
+SELECT [TRANSFER_REASON_ID]
+      ,[TRANSFER_REASON_HEADER_ID]
+      ,[INVENTORY_ITEM_ID]
+      ,[ITEM_NUMBER]
+      ,[ITEM_DESCRIPTION]
+      ,[BARCODE]
+      ,[STOCK_ID]
+      ,[PRIMARY_UOM]
+      ,[PRIMARY_QUANTITY]
+      ,[SECONDARY_UOM]
+      ,[SECONDARY_QUANTITY]
+      ,[LOT_NUMBER]
+      ,[LOT_QUANTITY]
+      ,[REASON_CODE]
+      ,[REASON_DESC]
+      ,[NOTE]
+      ,[CREATED_BY]
+      ,[CREATED_USER_NAME]
+      ,[CREATION_DATE]
+      ,[LAST_UPDATE_BY]
+      ,[LAST_UPDATE_USER_NAME]
+      ,[LAST_UPDATE_DATE]
+  FROM [TRF_REASON_T]
+  WHERE [TRANSFER_REASON_HEADER_ID] = @TRANSFER_REASON_HEADER_ID
+";
+                if (this.Context.Database.ExecuteSqlCommand(cmd, new SqlParameter("@TRANSFER_REASON_HEADER_ID", header.TransferReasonHeaderId)) <= 0)
+                {
+                    throw new Exception("複製貨故明細資料到貨故歷史明細失敗");
+                }
+
+                //刪除貨故明細資料
+                cmd = @"
+  DELETE FROM [TRF_REASON_T]
+  WHERE TRANSFER_REASON_HEADER_ID = @TRANSFER_REASON_HEADER_ID";
+                if (this.Context.Database.ExecuteSqlCommand(cmd, new SqlParameter("@TRANSFER_REASON_HEADER_ID", header.TransferReasonHeaderId)) <= 0)
+                {
+                    throw new Exception("刪除貨故明細資料失敗");
+                }
+            }
+
+            
+        }
+
     }
 
 
