@@ -121,6 +121,7 @@ $(document).ready(function () {
             return;
         }
         PrintLableParameter($('#PaperRolldataTablesBody').DataTable(), "/Purchase/PrintPaperRollLabel", "1", $("#Status").val());
+        PaperRolldataTablesBodys.ajax.reload(null, false);
     });
 
     //列印標籤平張
@@ -130,6 +131,7 @@ $(document).ready(function () {
             return;
         }
         PrintLableParameter($('#FlatdataTablesBody').DataTable(), "/Purchase/PrintFlatLabel", "1", $("#Status").val());
+        FlatdataTablesBodys.ajax.reload(null, false);
       
     });
 

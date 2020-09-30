@@ -344,11 +344,11 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
         /// <summary>
         /// 已入庫完成更改表頭狀態
         /// </summary>
-        public ResultModel ChageHeaderStatus(long CtrHeaderId)
+        public ResultModel ChageHeaderStatus(long CtrHeaderId, string userId, string userName)
         {
             using (var context = new MesContext())
             {
-                return new PurchaseUOW(context).ChangeHeaderStatus(CtrHeaderId);
+                return new PurchaseUOW(context).ChangeHeaderStatus(CtrHeaderId, userId, userName);
             }
         }
 

@@ -97,17 +97,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
 
         }
 
-        public class TransferCatalog
-        {
-            /// <summary>
-            /// 組織間移轉
-            /// </summary>
-            public const string OrgTransfer = "ORG";
-            /// <summary>
-            /// 倉庫間移轉
-            /// </summary>
-            public const string InvTransfer = "INV";
-        }
+       
 
 
 
@@ -123,20 +113,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             public const string Yes = "1";
         }
 
-        /// <summary>
-        /// 此筆資料使否傳給ERP
-        /// </summary>
-        public class ToErp
-        {
-            /// <summary>
-            /// 否; 一般入庫
-            /// </summary>
-            public const string No = "0";
-            /// <summary>
-            /// 是; 庫存異動
-            /// </summary>
-            public const string Yes = "1";
-        }
+        
 
         public class DataUpdateAuthority
         {
@@ -163,33 +140,9 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
         }
 
 
-        /// <summary>
-        /// 出貨編號狀態
-        /// </summary>
-        public class NumberStatus
-        {
-            /// <summary>
-            /// 未存檔
-            /// </summary>
-            public const string NotSaved = "0";
-            /// <summary>
-            /// 已存檔
-            /// </summary>
-            public const string Saved = "1";
-        }
+       
 
-
-        public string GetTransferCatalog(long outOrganizationId, long inOrganizationId)
-        {
-            if (outOrganizationId == inOrganizationId)
-            {
-                return TransferCatalog.InvTransfer;
-            }
-            else
-            {
-                return TransferCatalog.OrgTransfer;
-            }
-        }
+       
 
         #region 儲位
         /// <summary>
@@ -521,14 +474,7 @@ SELECT [TRANSFER_PICKED_ID] as ID
             //return "(" + outSubinventoryCode + "-" + inSubinventoryCode + ")" + DateTime.Now.ToString("yyyyMMdd") + "-" + String.Format("{0:000}", randomList[0].ToString());
         }
 
-        /// <summary>
-        /// 取得出貨編號Guid
-        /// </summary>
-        /// <returns></returns>
-        public string GetShipmentNumberGuid()
-        {
-            return Guid.NewGuid().ToString();
-        }
+       
 
         /// <summary>
         /// 新增明細
