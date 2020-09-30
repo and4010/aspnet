@@ -5,7 +5,7 @@ var files = []; //存放照片
 
 //點擊預覽&&圖片放大
 function addNewContent(obj) {
-
+    $(imgBox).html(""); //清空div imgBox 
     for (var a = 0; a < imgSrc.length; a++) {
         var oldBox = $(obj).html();
         //$(obj).html(oldBox + '<div class="imgContainer"><img title=' + imgName[a] + ' alt=' + imgName[a] + ' src=' + imgSrc[a] + ' onclick="imgDisplay(this)"></div>');

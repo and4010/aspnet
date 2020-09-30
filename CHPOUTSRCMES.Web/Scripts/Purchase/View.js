@@ -60,6 +60,7 @@ function getPhotoList() {
         "url": "/Purchase/GetPhotoList",
         "type": "POST",
         "datatype": "json",
+        "async": false,
         "data": { id: id },
         success: function (data) {
             if (data.Code == 0) {
