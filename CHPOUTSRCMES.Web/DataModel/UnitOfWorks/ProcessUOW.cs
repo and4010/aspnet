@@ -1791,14 +1791,15 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
                         if (id != null)
                         {
                             var PickedOut = OspPickedOutTRepository.GetAll().ToList();
-                            //if (PickedOut.Count == 1)
-                            //{
-                                var cotangent = OspCotangenTRepository.Get(x => x.OspCotangentId == id.OspCotangentId).SingleOrDefault();
+                            if (PickedOut.Count == 1)
+                            {
+                                //var cotangent = OspCotangenTRepository.Get(x => x.OspCotangentId == id.OspCotangentId).SingleOrDefault();
+                                var cotangent = OspCotangenTRepository.Get(x => x.OspHeaderId == id.OspHeaderId).SingleOrDefault();
                                 if (cotangent != null)
                                 {
                                     OspCotangenTRepository.Delete(cotangent, true);
                                 }
-                            //}
+                            }
                             OspPickedOutTRepository.Delete(id, true);
                             txn.Commit();
                             return new ResultModel(true, "");
