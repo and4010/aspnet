@@ -278,6 +278,7 @@
     <Compile Include="Controllers\PurchaseController.cs" />
     <Compile Include="Controllers\NavbarController.cs" />
     <Compile Include="Controllers\ReasonController.cs" />
+    <Compile Include="Controllers\SoaController.cs" />
     <Compile Include="Controllers\StockController.cs" />
     <Compile Include="Controllers\StockInventoryController.cs" />
     <Compile Include="Controllers\StockTransactionController.cs" />
@@ -495,6 +496,8 @@
     <Compile Include="Models\CHP_SUBINVENTORY_T\ORGANIZATION.cs" />
     <Compile Include="Models\CHP_SUBINVENTORY_T\SUBINVENTORY.cs" />
     <Compile Include="Models\ResultPageModel.cs" />
+    <Compile Include="Models\SoaQuery\SoaDetailQueryModel.cs" />
+    <Compile Include="Models\SoaQuery\SoaQueryModel.cs" />
     <Compile Include="Models\StockQuery\StockTxnQueryModel.cs" />
     <Compile Include="Models\Stock\StockInventoryDT.cs" />
     <Compile Include="Models\Stock\StockDT.cs" />
@@ -519,6 +522,7 @@
     <Compile Include="ViewModels\Account\AccountViewModel.cs" />
     <Compile Include="ViewModels\Account\LoginViewModel.cs" />
     <Compile Include="ViewModels\DataTableAjaxPostViewModel.cs" />
+    <Compile Include="ViewModels\DataTableResultModel.cs" />
     <Compile Include="ViewModels\Delivery\DeliverySearchViewModel.cs" />
     <Compile Include="ViewModels\Delivery\FlatEditViewModel.cs" />
     <Compile Include="ViewModels\Delivery\FlatViewModel.cs" />
@@ -531,6 +535,8 @@
     <Compile Include="ViewModels\Obsolete\ObsoleteViewModel.cs" />
     <Compile Include="ViewModels\OrgSubinventoryViewModel.cs" />
     <Compile Include="ViewModels\OspRelatedViewModel.cs" />
+    <Compile Include="ViewModels\SoaQuery\SoaQueryDetailViewModel.cs" />
+    <Compile Include="ViewModels\SoaQuery\SoaQueryViewModel.cs" />
     <Compile Include="ViewModels\StockQuery\QueryDetailViewModel.cs" />
     <Compile Include="ViewModels\StockQuery\QueryViewModel.cs" />
     <Compile Include="Models\StockQuery\StockDetailQueryModel.cs" />
@@ -2058,6 +2064,8 @@
     <Content Include="Scripts\Obsolete\Obsolete.js" />
     <Content Include="Scripts\OrgSubinventory.js" />
     <Content Include="Scripts\OspRelated.js" />
+    <Content Include="Scripts\SoaQuery.js" />
+    <Content Include="Scripts\SoaQueryDetail.js" />
     <Content Include="Scripts\StockTxnQuery.js" />
     <Content Include="Scripts\StockQueryDetail.js" />
     <Content Include="Scripts\StockQuery.js" />
@@ -2194,6 +2202,8 @@
     <Content Include="Views\Delivery\Report.cshtml" />
     <Content Include="Views\StockTransaction\Report.cshtml" />
     <Content Include="Views\Stock\Transaction.cshtml" />
+    <Content Include="Views\Soa\Detail.cshtml" />
+    <Content Include="Views\Soa\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

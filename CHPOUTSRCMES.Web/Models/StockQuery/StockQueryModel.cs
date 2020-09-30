@@ -51,7 +51,7 @@ namespace CHPOUTSRCMES.Web.Models.StockQuery
         [Display(Name = "總令數(RE)")]
         public decimal? SecondarySumQty { set; get; }
 
-        public static List<StockQueryModel> getModels(DataTableAjaxPostViewModel data,
+        public static DataTableJsonResultModel<StockQueryModel> getModels(DataTableAjaxPostViewModel data,
             string subinventory, string locator, string itemCategory, string itemNo, string userId)
         {
             var paramList = new List<SqlParameter>();
@@ -117,7 +117,9 @@ WHERE U.UserId =  @userId AND S.STATUS_CODE = @statusCode
                 var list = Search(models, data.Search.Value);
                 list = Order(data.Order, models);
 
-                return list.Skip(data.Start).Take(data.Length).ToList();
+                list = list.Skip(data.Start).Take(data.Length);
+
+                return new DataTableJsonResultModel<StockQueryModel>(data.Draw, models.Count, list.ToList());
 
             }
             catch (Exception ex)
@@ -125,7 +127,7 @@ WHERE U.UserId =  @userId AND S.STATUS_CODE = @statusCode
 
             }
 
-            return new List<StockQueryModel>();
+            return new DataTableJsonResultModel<StockQueryModel>(data.Draw, 0, new List<StockQueryModel>());
         }
 
         public static IOrderedEnumerable<StockQueryModel> Order(List<Order> orders, IEnumerable<StockQueryModel> models)
@@ -151,25 +153,21 @@ WHERE U.UserId =  @userId AND S.STATUS_CODE = @statusCode
             switch (column)
             {
                 default:
-                case 1:
+                case 0:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.SubinventoryCode) : models.OrderBy(x => x.SubinventoryCode);
-                case 2:
-                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.LocatorId) : models.OrderBy(x => x.LocatorId);
-                case 3:
+                case 1:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.LocatorSegments) : models.OrderBy(x => x.LocatorSegments);
-                case 4:
-                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.InventoryItemId) : models.OrderBy(x => x.InventoryItemId);
-                case 5:
+                case 2:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.ItemNumber) : models.OrderBy(x => x.ItemNumber);
-                case 6:
+                case 3:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.ItemCategory) : models.OrderBy(x => x.ItemCategory);
-                case 7:
+                case 4:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.PrimaryAvailableQty) : models.OrderBy(x => x.PrimaryAvailableQty);
-                case 8:
+                case 5:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.SecondaryAvailableQty) : models.OrderBy(x => x.SecondaryAvailableQty);
-                case 9:
+                case 6:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.PrimarySumQty) : models.OrderBy(x => x.PrimarySumQty);
-                case 10:
+                case 7:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.SecondarySumQty) : models.OrderBy(x => x.SecondarySumQty);
             }
         }
@@ -179,25 +177,21 @@ WHERE U.UserId =  @userId AND S.STATUS_CODE = @statusCode
             switch (column)
             {
                 default:
-                case 1:
+                case 0:
                     return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.SubinventoryCode) : models.ThenBy(x => x.SubinventoryCode);
-                case 2:
-                    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.LocatorId) : models.ThenBy(x => x.LocatorId);
-                case 3:
+                case 1:
                     return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.LocatorSegments) : models.ThenBy(x => x.LocatorSegments);
-                case 4:
-                    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.InventoryItemId) : models.ThenBy(x => x.InventoryItemId);
-                case 5:
+                case 2:
                     return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.ItemNumber) : models.ThenBy(x => x.ItemNumber);
-                case 6:
+                case 3:
                     return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.ItemCategory) : models.ThenBy(x => x.ItemCategory);
-                case 7:
+                case 4:
                     return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.PrimaryAvailableQty) : models.ThenBy(x => x.PrimaryAvailableQty);
-                case 8:
+                case 5:
                     return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.SecondaryAvailableQty) : models.ThenBy(x => x.SecondaryAvailableQty);
-                case 9:
+                case 6:
                     return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.PrimarySumQty) : models.ThenBy(x => x.PrimarySumQty);
-                case 10:
+                case 7:
                     return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.SecondarySumQty) : models.ThenBy(x => x.SecondarySumQty);
             }
         }

@@ -68,7 +68,7 @@ namespace CHPOUTSRCMES.Web.Models.StockQuery
         [Display(Name = "包裝方式")]
         public string PackingType { set; get; }
 
-        public static List<StockDetailQueryModel> getModels(DataTableAjaxPostViewModel data,
+        public static DataTableJsonResultModel<StockDetailQueryModel> getModels(DataTableAjaxPostViewModel data,
             string subinventory, long locatorId, long itemId, string userId)
         {
             var paramList = new List<SqlParameter>();
@@ -118,14 +118,16 @@ ORDER BY S.SUBINVENTORY_CODE, S.LOCATOR_ID, S.INVENTORY_ITEM_ID
                 var list = Search(models, data.Search.Value);
                 list = Order(data.Order, models);
 
-                return list.Skip(data.Start).Take(data.Length).ToList();
+                list = list.Skip(data.Start).Take(data.Length);
+
+                return new DataTableJsonResultModel<StockDetailQueryModel>(data.Draw, 0, list.ToList());
             }
             catch (Exception ex)
             {
 
             }
 
-            return new List<StockDetailQueryModel>();
+            return new DataTableJsonResultModel<StockDetailQueryModel>(data.Draw, 0, new List<StockDetailQueryModel>());
         }
 
         public static IOrderedEnumerable<StockDetailQueryModel> Order(List<Order> orders, IEnumerable<StockDetailQueryModel> models)
@@ -151,6 +153,7 @@ ORDER BY S.SUBINVENTORY_CODE, S.LOCATOR_ID, S.INVENTORY_ITEM_ID
             switch (column)
             {
                 default:
+                case 0:
                 case 1:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.StockId) : models.OrderBy(x => x.StockId);
                 case 2:
@@ -193,6 +196,7 @@ ORDER BY S.SUBINVENTORY_CODE, S.LOCATOR_ID, S.INVENTORY_ITEM_ID
             switch (column)
             {
                 default:
+                case 0:
                 case 1:
                     return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.StockId) : models.ThenBy(x => x.StockId);
                 case 2:

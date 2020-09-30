@@ -80,6 +80,17 @@ function loadTable(subinventory, locatorId, itemCategory, itemNo, barcode) {
             }
         ],
         columns: [
+            {
+                data: "CreateDate", "name": "時間", "autoWidth": true, "className": "dt-body-center", "mRender": function (data, type, full) {
+                    if (data != null) {
+                        var dtStart = new Date(parseInt(data.substr(6)));
+                        var dtStartWrapper = moment(dtStart);
+                        return dtStartWrapper.format('YYYY/MM/DD HH:mm:ss');
+                    } else {
+                        return '';
+                    }
+                }
+            },
             { data: "Barcode", "name": "條碼", "autoWidth": true, "className": "dt-body-center" },
             { data: "InventoryItemId", "name": "料號ID", "autoWidth": true, "className": "dt-body-center", "visible": false },
             { data: "ItemNumber", "name": "料號", "autoWidth": true, "className": "dt-body-center" },
@@ -107,18 +118,8 @@ function loadTable(subinventory, locatorId, itemCategory, itemNo, barcode) {
                 }
             },
             { data: "Category", "name": "作業", "autoWidth": true, "className": "dt-body-center", "visible": false },
-            { data: "DocNumber", "name": "單號", "autoWidth": true, "className": "dt-body-center" },
-            {
-                data: "CreateDate", "name": "時間", "autoWidth": true, "className": "dt-body-center", "mRender": function (data, type, full) {
-                    if (data != null) {
-                        var dtStart = new Date(parseInt(data.substr(6)));
-                        var dtStartWrapper = moment(dtStart);
-                        return dtStartWrapper.format('YYYY/MM/DD HH:mm:ss');
-                    } else {
-                        return '';
-                    }
-                }
-            }
+            { data: "DocNumber", "name": "單號", "autoWidth": true, "className": "dt-body-center" }
+            
             
         ]
 

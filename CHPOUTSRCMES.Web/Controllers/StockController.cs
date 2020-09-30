@@ -83,7 +83,7 @@ namespace CHPOUTSRCMES.Web.Controllers
             var userId = User.Identity.GetUserId();
             var models = StockQueryModel.getModels(data, subinventory, locatorId, itemCategory, itemNo, userId);
 
-            return Json(new { draw = data.Draw, recordsFiltered = models.Count, recordsTotal = models.Count, data = models }, JsonRequestBehavior.AllowGet);
+            return Json(models, JsonRequestBehavior.AllowGet);
         }
 
         /// <summary>
@@ -103,7 +103,7 @@ namespace CHPOUTSRCMES.Web.Controllers
             var userId = User.Identity.GetUserId();
             var models = StockDetailQueryModel.getModels(data, subinventory, locatorId, itemId, userId);
 
-            return Json(new { draw = data.Draw, recordsFiltered = models.Count, recordsTotal = models.Count, data = models }, JsonRequestBehavior.AllowGet);
+            return Json(models, JsonRequestBehavior.AllowGet);
         }
 
         /// <summary>
@@ -125,8 +125,9 @@ namespace CHPOUTSRCMES.Web.Controllers
             var userId = User.Identity.GetUserId();
             var models = StockTxnQueryModel.getModels(data, subinventory, locatorId, itemCategory, itemNo, barcode, userId);
 
-            return Json(new { draw = data.Draw, recordsFiltered = models.Count, recordsTotal = models.Count, data = models }, JsonRequestBehavior.AllowGet);
+            return Json(models, JsonRequestBehavior.AllowGet);
         }
+
 
         /// <summary>
         /// 取得儲位清單

@@ -38,15 +38,15 @@
             noResults: "", results: ""
         }
     });
-    $('#QueryTable tbody').on('click', '.available-query', function () {
-        var data = $('#QueryTable').DataTable().row($(this).parents('tr')).data();
+    //$('#QueryTable tbody').on('click', '.available-query', function () {
+    //    var data = $('#QueryTable').DataTable().row($(this).parents('tr')).data();
 
-        var subinventoryCode = data['SubinventoryCode'];
-        var locatorId = data['LocatorId'];
-        var itemId = data['InventoryItemId'];
+    //    var subinventoryCode = data['SubinventoryCode'];
+    //    var locatorId = data['LocatorId'];
+    //    var itemId = data['InventoryItemId'];
 
-        window.open("/Stock/Detail/" + subinventoryCode + "/" + locatorId + "/" + itemId);
-    });
+    //    window.open("/Stock/Detail/" + subinventoryCode + "/" + locatorId + "/" + itemId);
+    //});
 });
 
 
@@ -85,9 +85,7 @@ function loadTable(subinventory, locatorId, itemCategory, itemNo) {
         ],
         columns: [
             { data: "SubinventoryCode", "name": "倉庫", "autoWidth": true, "className": "dt-body-center"},
-            { data: "LocatorId", "name": "儲位ID", "autoWidth": true, "className": "dt-body-center", "visible": false },
             { data: "LocatorSegments", "name": "儲位", "autoWidth": true, "className": "dt-body-center"},
-            { data: "InventoryItemId", "name": "料號ID", "autoWidth": true, "className": "dt-body-center", "visible": false },
             { data: "ItemNumber", "name": "料號", "autoWidth": true, "className": "dt-body-center" },
             { data: "ItemCategory", "name": "捲筒/平版", "autoWidth": true, "className": "dt-body-center" },
             {

@@ -18,6 +18,11 @@ namespace CHPOUTSRCMES.Web
                 defaults: new { controller = "Stock", action = "Detail", subinventoryCode = UrlParameter.Optional, locatorId = UrlParameter.Optional,itemId = UrlParameter.Optional }
             );
             routes.MapRoute(
+                name: "SoaDetailQuery",
+                url: "Soa/Detail/{processCode}/{serverCode}/{batchId}",
+                defaults: new { controller = "Soa", action = "Detail", processCode = UrlParameter.Optional, serverCode = UrlParameter.Optional, batchId = UrlParameter.Optional }
+            );
+            routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}",
                 defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional }

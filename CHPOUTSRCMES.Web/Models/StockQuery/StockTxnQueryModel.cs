@@ -90,7 +90,7 @@ namespace CHPOUTSRCMES.Web.Models.StockQuery
         public DateTime CreateDate { set; get; }
 
 
-        public static List<StockTxnQueryModel> getModels(DataTableAjaxPostViewModel data,
+        public static DataTableJsonResultModel<StockTxnQueryModel> getModels(DataTableAjaxPostViewModel data,
             string subinventory, string locator, string itemCategory, string itemNo, string barcode, string userId)
         {
             var paramList = new List<SqlParameter>();
@@ -172,13 +172,15 @@ OR S.DST_SUBINVENTORY_CODE IN (SELECT SUBINVENTORY_CODE FROM USER_SUBINVENTORY_T
                     paramList.Add(SqlParamHelper.R.Barcode("@barcode", barcode));
                 }
 
-                var models = mesContext.Database.SqlQuery<StockTxnQueryModel>(builder.ToString(), paramList.ToArray());
+                var models = mesContext.Database.SqlQuery<StockTxnQueryModel>(builder.ToString(), paramList.ToArray()).ToList();
 
                 var list = Search(models, data.Search.Value);
 
                 list = Order(data.Order, models);
 
-                return list.Skip(data.Start).Take(data.Length).ToList();
+                list = list.Skip(data.Start).Take(data.Length);
+
+                return new DataTableJsonResultModel<StockTxnQueryModel>(data.Draw, models.Count, list.ToList());
 
             }
             catch (Exception ex)
@@ -186,7 +188,7 @@ OR S.DST_SUBINVENTORY_CODE IN (SELECT SUBINVENTORY_CODE FROM USER_SUBINVENTORY_T
 
             }
 
-            return new List<StockTxnQueryModel>();
+            return new DataTableJsonResultModel<StockTxnQueryModel>(data.Draw, 0, new List<StockTxnQueryModel>());
         }
 
 
@@ -213,6 +215,8 @@ OR S.DST_SUBINVENTORY_CODE IN (SELECT SUBINVENTORY_CODE FROM USER_SUBINVENTORY_T
             switch (column)
             {
                 default:
+                case 0:
+                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.CreateDate) : models.OrderBy(x => x.CreateDate);
                 case 1:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Barcode) : models.OrderBy(x => x.Barcode);
                 case 2:
@@ -261,8 +265,7 @@ OR S.DST_SUBINVENTORY_CODE IN (SELECT SUBINVENTORY_CODE FROM USER_SUBINVENTORY_T
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Category) : models.OrderBy(x => x.Category);
                 case 24:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.DocNumber) : models.OrderBy(x => x.DocNumber);
-                case 25:
-                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.CreateDate) : models.OrderBy(x => x.CreateDate);
+                
             }
         }
 

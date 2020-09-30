@@ -23,7 +23,7 @@ namespace CHPOUTSRCMES.Web.Domain
             //查詢 (第二層選單)
             menu.Add(new Navbar { Id = 401, nameOption = "庫存查詢", controller = "Stock", action = "Query", status = true, isParent = false, parentId = 4 });
             menu.Add(new Navbar { Id = 402, nameOption = "庫存異動記錄", controller = "Stock", action = "Transaction", status = true, isParent = false, parentId = 4 });
-            menu.Add(new Navbar { Id = 403, nameOption = "SOA傳輸記錄", controller = "Stock", action = "SoaView", status = true, isParent = false, parentId = 4 });
+            menu.Add(new Navbar { Id = 403, nameOption = "SOA傳輸記錄", controller = "Soa", action = "Index", status = true, isParent = false, parentId = 4 });
 
 
             //基本資料 (第二層選單)
