@@ -1734,7 +1734,8 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
                             var PickedOut = OspPickedOutTRepository.GetAll().ToList();
                             if (PickedOut.Count == 1)
                             {
-                                var cotangent = OspCotangenTRepository.Get(x => x.OspCotangentId == id.OspCotangentId).SingleOrDefault();
+                                //var cotangent = OspCotangenTRepository.Get(x => x.OspCotangentId == id.OspCotangentId).SingleOrDefault();
+                                var cotangent = OspCotangenTRepository.Get(x => x.OspHeaderId == id.OspHeaderId).SingleOrDefault();
                                 if (cotangent != null)
                                 {
                                     OspCotangenTRepository.Delete(cotangent, true);
@@ -1790,14 +1791,14 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
                         if (id != null)
                         {
                             var PickedOut = OspPickedOutTRepository.GetAll().ToList();
-                            if (PickedOut.Count == 1)
-                            {
+                            //if (PickedOut.Count == 1)
+                            //{
                                 var cotangent = OspCotangenTRepository.Get(x => x.OspCotangentId == id.OspCotangentId).SingleOrDefault();
                                 if (cotangent != null)
                                 {
                                     OspCotangenTRepository.Delete(cotangent, true);
                                 }
-                            }
+                            //}
                             OspPickedOutTRepository.Delete(id, true);
                             txn.Commit();
                             return new ResultModel(true, "");
@@ -1973,7 +1974,7 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
                 var PickOut = OspPickedOutTRepository.Get(x => x.OspDetailOutId == OspDetailOutId).ToList();
                 var DetailIn = OspDetailInTRepository.Get(x => x.OspDetailInId == OspDetailInId).SingleOrDefault();
                 var DetailOut = OspDetailOutTRepository.Get(x => x.OspDetailOutId == OspDetailOutId).SingleOrDefault();
-                var Cotangent = OspCotangenTRepository.Get(x => x.OspDetailOutId == OspDetailOutId).SingleOrDefault();
+                var Cotangent = OspCotangenTRepository.Get(x => x.OspDetailOutId == OspDetailOutId).ToList();
                 var PickOutWeight = 0M;
                 var RemainWeight = 0M;
                 var PickInWeight = 0M;
@@ -1985,29 +1986,34 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
                     {
                         return new ResultDataModel<OSP_YIELD_VARIANCE_T>(false, "產出請先入庫", null);
                     }
+                    PickOutWeight += + PickOut[i].PrimaryQuantity;
                 }
-                if (Cotangent != null)
+                if (Cotangent != null && Cotangent.Count > 0)
                 {
-                    if (Cotangent.SecondaryQuantity == 0M || Cotangent.SecondaryQuantity == null)
+                    for (int i = 0; i < Cotangent.Count; i++)
                     {
-                        return new ResultDataModel<OSP_YIELD_VARIANCE_T>(false, "餘切請先輸入令數", null);
-                    }
+                        if (Cotangent[i].SecondaryQuantity == 0M || Cotangent[i].SecondaryQuantity == null)
+                        {
+                            return new ResultDataModel<OSP_YIELD_VARIANCE_T>(false, "餘切請先輸入令數", null);
+                        }
 
-                    if (Cotangent.Status == "待入庫")
-                    {
-                        return new ResultDataModel<OSP_YIELD_VARIANCE_T>(false, "餘切請先入庫", null);
+                        if (Cotangent[i].Status == "待入庫")
+                        {
+                            return new ResultDataModel<OSP_YIELD_VARIANCE_T>(false, "餘切請先入庫", null);
+                        }
+                        CotangetnWeight += Cotangent[i].PrimaryQuantity;
                     }
-                    CotangetnWeight = Cotangent.PrimaryQuantity;
                 }
                 //產出重量：訂單+餘切重量
-                var ProductWeight = DetailOut.PrimaryQuantity + CotangetnWeight;
+                var ProductWeight = PickOutWeight + CotangetnWeight;
 
                 for (int i = 0; i < PickIn.Count; i++)
                 {
                     RemainWeight += PickIn[i].RemainingQuantity ?? 0;
+                    PickInWeight += PickIn[i].PrimaryQuantity;
                 }
                 //投入重量：領料量 - 餘捲
-                var investWeight = DetailIn.PrimaryQuantity - RemainWeight;
+                var investWeight = PickInWeight - RemainWeight;
                 var Totle = Math.Round(ProductWeight / investWeight, 2);
                 var rate = Math.Round((ProductWeight / investWeight * 100), 2);
                 var loss = OspYieldVarianceTRepository.Get(x => x.OspHeaderId == DetailOut.OspHeaderId).SingleOrDefault();
@@ -2015,9 +2021,9 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
                 {
                     OSP_YIELD_VARIANCE_T oSP_YIELD_VARIANCE_T = new OSP_YIELD_VARIANCE_T();
                     oSP_YIELD_VARIANCE_T.OspHeaderId = DetailOut.OspHeaderId;
-                    oSP_YIELD_VARIANCE_T.DetailInQuantity = DetailIn.PrimaryQuantity;
+                    oSP_YIELD_VARIANCE_T.DetailInQuantity = investWeight;
                     oSP_YIELD_VARIANCE_T.CotangentQuantity = CotangetnWeight;
-                    oSP_YIELD_VARIANCE_T.DetailOutQuantity = DetailOut.PrimaryQuantity;
+                    oSP_YIELD_VARIANCE_T.DetailOutQuantity = ProductWeight;
                     oSP_YIELD_VARIANCE_T.PrimaryUom = "KG";
                     oSP_YIELD_VARIANCE_T.LossWeight = Totle;
                     oSP_YIELD_VARIANCE_T.Rate = rate;
@@ -2029,9 +2035,11 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
                 }
                 else
                 {
-                    loss.DetailInQuantity = DetailIn.PrimaryQuantity;
+                    loss.DetailInQuantity = investWeight;
                     loss.CotangentQuantity = CotangetnWeight;
-                    loss.DetailOutQuantity = DetailOut.PrimaryQuantity;
+                    loss.DetailOutQuantity = ProductWeight;
+                    loss.LossWeight = Totle;
+                    loss.Rate = rate;
                     loss.LastUpdateBy = UserId;
                     loss.LastUpdateUserName = UserName;
                     loss.LastUpdateDate = DateTime.Now;

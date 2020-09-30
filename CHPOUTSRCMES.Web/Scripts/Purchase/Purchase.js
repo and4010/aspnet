@@ -665,7 +665,7 @@ function ImportFlatTable(data) {
             { data: "ReamWeight", "name": "令重", "autoWidth": true },
             { data: "PackingType", "name": "包裝方式", "autoWidth": true },
             { data: "Pieces_Qty", "name": "每件令數", "autoWidth": true },
-            { data: "Qty", "name": "數量(頓)", "autoWidth": true },
+            { data: "Qty", "name": "數量(噸)", "autoWidth": true },
             { data: "Status", "name": "入庫狀態", "autoWidth": true }
         ]
     });
@@ -931,7 +931,7 @@ function FlatdataTablesBody() {
             { data: "ReamWeight", "name": "令重", "autoWidth": true, "className": "dt-body-right" },
             { data: "PackingType", "name": "包裝方式", "autoWidth": true, "className": "dt-body-center" },
             { data: "Pieces_Qty", "name": "每件令數", "autoWidth": true, "className": "dt-body-right" },
-            { data: "Qty", "name": "數量(頓)", "autoWidth": true, "className": "dt-body-right" },
+            { data: "Qty", "name": "數量(噸)", "autoWidth": true, "className": "dt-body-right" },
             { data: "Remark", "name": "備註", "autoWidth": true, "className": "dt-body-center" },
             {
                 data: null, "width": "40px", "render": function (data) {

@@ -187,7 +187,7 @@ namespace CHPOUTSRCMES.Web.Models.Purchase
             [Display(Name = "每件令數")]//ROLL_REAM_WT
             public decimal Pieces_Qty { get; set; }
 
-            [Display(Name = "數量(頓)")]
+            [Display(Name = "數量(噸)")]
             public decimal Qty { get; set; }
 
             [Display(Name = "入庫狀態")]
