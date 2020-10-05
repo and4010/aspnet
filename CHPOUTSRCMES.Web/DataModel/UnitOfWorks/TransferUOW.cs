@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
 using System.Data.SqlClient;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Web;
@@ -3064,7 +3065,7 @@ SELECT [STOCK_ID] as ID
                             tRF_FILEINFO_T.TransferReasonId = detail.TransferReasonId;
                             tRF_FILEINFO_T.TrfFileId = tRF_FILES_T.TrfFileId;
                             tRF_FILEINFO_T.FileType = hpf.ContentType;
-                            tRF_FILEINFO_T.FileName = hpf.FileName;
+                            tRF_FILEINFO_T.FileName = Path.GetFileName(hpf.FileName);
                             tRF_FILEINFO_T.Size = filebyte.Length;
                             tRF_FILEINFO_T.Seq = 1;
                             tRF_FILEINFO_T.CreatedBy = userId;

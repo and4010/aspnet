@@ -25,18 +25,20 @@ function click() {
 //已存檔入庫預設照片
 function photoView() {
     $('#fileinput').on("change", function () {
-        imgName = [];
-        imgSrc = [];
-        imgFile = [];
-        files = [];
+        //imgName = [];
+        //imgSrc = [];
+        //imgFile = [];
+        //files = [];
         var file = $('#fileinput')[0];
         var fileList = file.files;
         for (var i = 0; i < fileList.length; i++) {
             var imgSrcI = getObjectURL(fileList[i]);
-            imgName.push(fileList[i].name);
-            imgSrc.push(imgSrcI);
-            imgFile.push(fileList[i]);
-            files.push(fileList[i]);
+            if (!imgNameDuplicateCheck(fileList[i].name)) {
+                imgName.push(fileList[i].name);
+                imgSrc.push(imgSrcI);
+                imgFile.push(fileList[i]);
+                files.push(fileList[i]);
+            }
         }
         //photo.js使用
         addNewContent($('#imgBox'));
@@ -133,7 +135,7 @@ function getServicePhoto() {
             if (data.ListBytePhoto != null) {
                 if (data.ListBytePhoto.length != 0) {
                     for (var i = 0; i < data.ListBytePhoto.length; i++) {
-                        imgSrc.push("data:image/jpeg;base64," + data.ListBytePhoto[i]);
+                        uploadedImgSrc.push("data:image/jpeg;base64," + data.ListBytePhoto[i]);
                     }
                     AddNewContent($('#saveBox'));
                 }
@@ -178,7 +180,7 @@ function getPhotoById(id, final) {
         "data": { id: id },
         success: function (data) {
             if (data.Code == 0) {
-                imgSrc.push("data:image/jpeg;base64," + data.Result);
+                uploadedImgSrc.push("data:image/jpeg;base64," + data.Result);
             }
             else {
                 swal.fire(data.Msg);

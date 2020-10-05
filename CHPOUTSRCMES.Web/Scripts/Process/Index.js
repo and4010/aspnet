@@ -198,7 +198,15 @@ function ProcessLoadTable(Status, BatchNo, MachineNum, DueDate, CuttingDateFrom,
 
                 }, "className": "dt-body-center"
             },
-            { data: "CustomerName", "name": "客戶名稱", "autoWidth": true, "className": "dt-body-center" },
+            {
+                data: "CustomerName", "name": "客戶名稱", "autoWidth": true, "mRender": function (data, type, full) {
+                    if (data) {
+                        return data;
+                    } else {
+                        return '中華紙漿';
+                    }
+                }, "className": "dt-body-center"
+            },
             { data: "DoPaperType", "name": "紙別", "autoWidth": true, "className": "dt-body-center" },
             { data: "DoBasicWeight", "name": "基重", "autoWidth": true, "className": "dt-body-right" },
             { data: "DoSpecification", "name": "規格", "autoWidth": true, "className": "dt-body-center" },

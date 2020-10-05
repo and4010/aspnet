@@ -28,7 +28,7 @@ function TransferReasonInit() {
     GetTop();
     OnClick();
     photoView();
-    
+
 
 
     ////重新整理表格寬度
@@ -128,7 +128,8 @@ function TransferReasonTableInit() {
                     } else {
                         return '';
                     }
-                }},
+                }
+            },
             { data: "SECONDARY_UOM_CODE", name: "單位", autoWidth: true },
             { data: "REASON_DESC", name: "原因", autoWidth: true },
             { data: "NOTE", name: "備註", autoWidth: true },
@@ -234,6 +235,10 @@ function SaveReason(StockId, ReasonCode, TransferLocatorId, Note) {
                 clearText();
                 clearContent('#imgBox'); //清除預覽圖片
                 $('#photo_form').trigger("reset"); //清除圖片檔名
+                imgName = [];
+                imgSrc = [];
+                imgFile = [];
+                files = [];
                 swal.fire(data.result);
             } else {
                 swal.fire(data.result);
@@ -253,18 +258,20 @@ function SaveReason(StockId, ReasonCode, TransferLocatorId, Note) {
 //已存檔入庫預設照片
 function photoView() {
     $('#fileinput').on("change", function () {
-        imgName = [];
-        imgSrc = [];
-        imgFile = [];
-        files = [];
+        //imgName = [];
+        //imgSrc = [];
+        //imgFile = [];
+        //files = [];
         var file = $('#fileinput')[0];
         var fileList = file.files;
         for (var i = 0; i < fileList.length; i++) {
             var imgSrcI = getObjectURL(fileList[i]);
-            imgName.push(fileList[i].name);
-            imgSrc.push(imgSrcI);
-            imgFile.push(fileList[i]);
-            files.push(fileList[i]);
+            if (!imgNameDuplicateCheck(fileList[i].name)) {
+                imgName.push(fileList[i].name);
+                imgSrc.push(imgSrcI);
+                imgFile.push(fileList[i]);
+                files.push(fileList[i]);
+            }
         }
         //photo.js使用
         addNewContent($('#imgBox'));
@@ -315,7 +322,7 @@ function LocatorChangeCallBack() {
 function clear() {
     //LoadTransferReasonTable.ajax.reload(null, false);
     selected = [];
-   
+
 }
 
 function clearText() {
@@ -361,6 +368,6 @@ function AutoCompleteItemNumberSelectCallBack(ITEM_NO) {
 
 function LostFocusItemNumberCallBack(ITEM_NO) {
 
-   
+
 
 }

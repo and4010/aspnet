@@ -880,10 +880,20 @@ WHERE p.ITEM_CATEGORY = N'捲筒' and p.CTR_PICKED_ID  = @CTR_PICKED_ID");
 
                     if (Files != null || Files.Count > 0)
                     {
+                        //檢查檔案是否已上傳
                         foreach (string i in Files)
                         {
                             HttpPostedFileBase file = Files[i];
-                            SaveCtrFileInfoT(VaryQualityLevel(file), file.FileName, file.ContentType, ctrPickT.CtrPickedId, LastUpdateBy);
+                            string fileNmae = Path.GetFileName(file.FileName);
+                            var fileInfo = ctrFileInfoTRepository.GetAll().AsNoTracking().FirstOrDefault(x => x.CtrPickedId == id && x.FileName == fileNmae);
+                            if (fileInfo != null) return new ResultModel(false, fileNmae + "此檔案已上傳");
+                        }
+
+                        foreach (string i in Files)
+                        {
+                            HttpPostedFileBase file = Files[i];
+                            string fileNmae = Path.GetFileName(file.FileName);
+                            SaveCtrFileInfoT(VaryQualityLevel(file), fileNmae, file.ContentType, ctrPickT.CtrPickedId, LastUpdateBy);
                         }
                     }
 
@@ -944,10 +954,20 @@ WHERE p.ITEM_CATEGORY = N'捲筒' and p.CTR_PICKED_ID  = @CTR_PICKED_ID");
 
                 if (Files != null || Files.Count > 0)
                 {
+                    //檢查檔案是否已上傳
                     foreach (string i in Files)
                     {
                         HttpPostedFileBase file = Files[i];
-                        SaveCtrFileInfoT(VaryQualityLevel(file), file.FileName, file.ContentType, ctrPickT.CtrPickedId, LastUpdateBy);
+                        string fileNmae = Path.GetFileName(file.FileName);
+                        var fileInfo = ctrFileInfoTRepository.GetAll().AsNoTracking().FirstOrDefault(x => x.CtrPickedId == id && x.FileName == fileNmae);
+                        if (fileInfo != null) return new ResultModel(false, fileNmae + "此檔案已上傳");
+                    }
+
+                    foreach (string i in Files)
+                    {
+                        HttpPostedFileBase file = Files[i];
+                        string fileNmae = Path.GetFileName(file.FileName);
+                        SaveCtrFileInfoT(VaryQualityLevel(file), fileNmae, file.ContentType, ctrPickT.CtrPickedId, LastUpdateBy);
                     }
                 }
 
