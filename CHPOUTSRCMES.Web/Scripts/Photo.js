@@ -2,6 +2,7 @@
 var imgFile = []; //文件
 var imgName = []; //圖片名字
 var files = []; //存放照片
+var uploadedImgSrc = []; //已上傳圖片路徑
 
 //點擊預覽&&圖片放大
 function addNewContent(obj) {
@@ -18,12 +19,12 @@ function clearContent(obj) {
     $(obj).html("");
 }
 
-//點擊預覽&&圖片放大不含刪除
+//點擊預覽&&圖片放大不含刪除 檢視已上傳圖片用
 function AddNewContent(obj) {
 
-    for (var a = 0; a < imgSrc.length; a++) {
+    for (var a = 0; a < uploadedImgSrc.length; a++) {
         var oldBox = $(obj).html();
-        $(obj).html(oldBox + '<div class="col col-md-1 imgContainer"><img title=' + imgName[a] + ' alt=' + imgName[a] + ' src=' + imgSrc[a] + ' onclick="imgDisplay(this)"></div>');
+        $(obj).html(oldBox + '<div class="col col-md-1 imgContainer"><img title=' + imgName[a] + ' alt=' + imgName[a] + ' src=' + uploadedImgSrc[a] + ' onclick="imgDisplay(this)"></div>');
     };
 }
 
@@ -63,3 +64,12 @@ function getObjectURL(file) {
     return url;
 }
 
+//檢查是否重複上傳圖片
+function imgNameDuplicateCheck(inputImgName) {
+    for (var i = 0; i < imgName.length; i++) {
+        if (imgName[i] == inputImgName) {
+            return true;
+        }
+    }
+    return false;
+}
