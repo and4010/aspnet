@@ -3085,6 +3085,14 @@ SELECT [STOCK_ID] as ID
                     stock.ReasonCode = reasonCode;
                     stock.ReasonDesc = reason.ReasonDesc;
                     stock.StatusCode = StockStatusCode.InStock;
+                    if (string.IsNullOrEmpty(stock.Note))
+                    {
+                        stock.Note = note;
+                    }
+                    else
+                    {
+                        stock.Note = stock.Note + "," + note;
+                    }
                     stock.LastUpdateBy = userId;
                     stock.LastUpdateDate = now;
                     stockTRepository.Update(stock);

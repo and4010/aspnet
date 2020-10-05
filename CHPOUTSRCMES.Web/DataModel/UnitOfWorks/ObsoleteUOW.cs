@@ -516,6 +516,14 @@ SELECT m.TRANSFER_OBSOLETE_ID AS ID
                             //更新庫存
                             stock.PrimaryAvailableQty = aftPryQty;
                             stock.SecondaryAvailableQty = aftSecQty;
+                            if (string.IsNullOrEmpty(stock.Note))
+                            {
+                                stock.Note = detail.Note;
+                            }
+                            else
+                            {
+                                stock.Note = stock.Note + "," + detail.Note;
+                            }
                             stock.LastUpdateBy = userId;
                             stock.LastUpdateDate = now;
                             stock.StatusCode = stockStatusCode;
