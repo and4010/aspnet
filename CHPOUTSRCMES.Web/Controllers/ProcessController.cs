@@ -464,7 +464,13 @@ namespace CHPOUTSRCMES.Web.Controllers
             return viewModel.RePrintLabel(StockId, name, Status);
         }
 
-
+        [HttpPost]
+        public ActionResult CheckInsteadPaperOrderProcess(long SrcOspHeaderId)
+        {
+            ProcessViewModel viewModel = new ProcessViewModel();
+            var resultModel = viewModel.CheckInsteadPaperOrderProcess(SrcOspHeaderId);
+            return Json(new { resultModel }, JsonRequestBehavior.AllowGet);
+        }
 
 
 

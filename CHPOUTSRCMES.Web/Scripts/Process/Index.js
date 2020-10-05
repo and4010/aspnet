@@ -45,7 +45,7 @@ $(document).ready(function () {
         changeMonth: true,
         changeYear: true
     });
-    
+
 
     firstLoad();
 
@@ -278,25 +278,38 @@ function BtnEvent() {
             return;
         }
         var Status = rowData.pluck('Status')[0]
-        var OspHeaderId = rowData.pluck('OspHeaderId')[0]
-        var PaperType = rowData.pluck('PaperType')[0]
-        if (Status == WaitBatch) {
-            $.ajax({
-                url: '/Process/_ProcessIndex',
-                type: "POST",
-                data: { PaperType: PaperType},
-                success: function (result) {
-                    $('body').append(result);
-                    Open($('#ProcessModal'), OspHeaderId);
-                }
-            });
-
-        } else {
+        if (Status != WaitBatch) {
             swal.fire("加工狀態不正確，重新選擇");
             return;
         }
+        var OspHeaderId = rowData.pluck('OspHeaderId')[0]
+        var PaperType = rowData.pluck('PaperType')[0]
+        var SrcOspHeaderId = rowData.pluck('SrcOspHeaderId')[0]
+        var BatchType = rowData.pluck('BatchType')[0]
 
-
+        
+        if (BatchType == "REP" && SrcOspHeaderId) {
+            //又裁又代 須檢查來源裁切工單是否完工
+            $.ajax({
+                "url": "/Process/CheckInsteadPaperOrderProcess",
+                "type": "POST",
+                "datatype": "json",
+                "data": {
+                    SrcOspHeaderId: SrcOspHeaderId
+                },
+                success: function (data) {
+                    if (data != null) {
+                        if (data.resultModel.Success) {
+                            orderProcess(PaperType, OspHeaderId);
+                        } else {
+                            swal.fire(data.resultModel.Msg);
+                        }
+                    }
+                }
+            })
+        } else {
+            orderProcess(PaperType, OspHeaderId);
+        }
     });
 
     $('#BtnCloss').click(function () {
@@ -369,6 +382,19 @@ function BtnEvent() {
         }
         var OspHeaderId = rowData.pluck('OspHeaderId')[0]
         window.open("/Home/OspReport/?OspHeaderId=" + OspHeaderId);
+    });
+}
+
+//排單
+function orderProcess(PaperType, OspHeaderId) {
+    $.ajax({
+        url: '/Process/_ProcessIndex',
+        type: "POST",
+        data: { PaperType: PaperType },
+        success: function (result) {
+            $('body').append(result);
+            Open($('#ProcessModal'), OspHeaderId);
+        }
     });
 }
 

@@ -897,6 +897,7 @@ DO.PACKING_TYPE AS DoPackingType,
 DO.INVENTORY_ITEM_NUMBER AS Product_Item,
 DI.INVENTORY_ITEM_NUMBER AS SelectedInventoryItemNumber,
 H.NOTE AS Note,
+ISNULL(H.SRC_OSP_HEADER_ID, 0) AS SrcOspHeaderId,
 DI.SUBINVENTORY AS Subinventory,
 DI.LOCATOR_CODE AS LocatorCode,
 OYV.LOSS_WEIGHT AS Loss,
@@ -3492,6 +3493,18 @@ and SUBINVENTORY_CODE = @SUBINVENTORY_CODE");
                 return new OSP_DETAIL_OUT_T();
             }
            
+        }
+
+        /// <summary>
+        /// 檢查代紙工單是否可以排單
+        /// </summary>
+        /// <param name="SrcOspHeaderId">來源裁切工單HeaderId</param>
+        /// <returns></returns>
+        public ResultModel CheckInsteadPaperOrderProcess(long SrcOspHeaderId)
+        {
+            var header = OspHeaderTRepository.GetAll().AsNoTracking().FirstOrDefault(x => x.OspHeaderId == SrcOspHeaderId);
+            if (header.Status != ProcessStatusCode.CompletedBatch) return new ResultModel(false, "此工單" + header.BatchNo + "尚未完工");
+            return new ResultModel(true, "可以排單");
         }
     }
 }

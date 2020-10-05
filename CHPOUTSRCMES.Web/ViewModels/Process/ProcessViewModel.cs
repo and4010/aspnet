@@ -548,6 +548,14 @@ namespace CHPOUTSRCMES.Web.ViewModels.Process
             }
         }
 
+        public ResultModel CheckInsteadPaperOrderProcess(long SrcOspHeaderId)
+        {
+            using (var context = new MesContext())
+            {
+                return new ProcessUOW(context).CheckInsteadPaperOrderProcess(SrcOspHeaderId);
+            }
+        }
+
         internal class ChpProcessModelDTOrder
         {
             public static IOrderedEnumerable<CHP_PROCESS_T> Order(List<Order> orders, IEnumerable<CHP_PROCESS_T> models)
