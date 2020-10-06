@@ -10,6 +10,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Purchase
         [Key]
         [Required]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Column("OSP_SOA_S3_ID")]
         public long OspSoaS3Id { set; get; }
 
         [Required]

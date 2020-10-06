@@ -9,6 +9,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Purchase
         [Key]
         [Required]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Column("OSP_SOA_S2_ID")]
         public long OspSoaS2Id { set; get; }
 
         [Required]

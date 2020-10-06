@@ -490,6 +490,10 @@
     <Compile Include="Migrations\202010061135531_fix-soa-tables.Designer.cs">
       <DependentUpon>202010061135531_fix-soa-tables.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202010061234436_fix-soa-fieldname.cs" />
+    <Compile Include="Migrations\202010061234436_fix-soa-fieldname.Designer.cs">
+      <DependentUpon>202010061234436_fix-soa-fieldname.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Delivery\FlatEditBarcodeDT.cs" />
     <Compile Include="Models\Delivery\FlatEditDT.cs" />
@@ -2306,6 +2310,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202010061135531_fix-soa-tables.resx">
       <DependentUpon>202010061135531_fix-soa-tables.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202010061234436_fix-soa-fieldname.resx">
+      <DependentUpon>202010061234436_fix-soa-fieldname.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

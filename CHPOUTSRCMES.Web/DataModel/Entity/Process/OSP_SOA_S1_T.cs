@@ -9,10 +9,11 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Purchase
         [Key]
         [Required]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Column("OSP_SOA_S1_ID")]
         public long OspSoaS1Id { set; get; }
 
         [Required]
-        [Column("OSP_HEADER_ID", Order = 1)]
+        [Column("OSP_HEADER_ID")]
         public long OspHeaderId { set; get; }
 
         /// <summary>
@@ -21,7 +22,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Purchase
         /// 
         [StringLength(20)]
         [Required]
-        [Column("PROCESS_CODE", Order = 2)]
+        [Column("PROCESS_CODE")]
         public string ProcessCode { set; get; }
 
 
@@ -31,7 +32,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Purchase
         /// 
         [StringLength(20)]
         [Required]
-        [Column("SERVER_CODE", Order = 3)]
+        [Column("SERVER_CODE")]
         public string ServerCode { set; get; }
 
 
