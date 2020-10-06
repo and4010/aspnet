@@ -36,7 +36,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
 
         InventoryType inventoryType = new InventoryType();
         /// <summary>
-        /// 雜項異動類別
+        /// 盤點異動類別
         /// </summary>
         public class InventoryType
         {
@@ -787,7 +787,7 @@ SELECT m.TRANSFER_INVENTORY_ID AS ID
                                 stock.LastUpdateBy = null;
                                 stock.LastUpdateDate = null;
                                 stockTRepository.Create(stock, true);
-
+                                
                                 //產生異動紀錄
                                 var stkTxnT = CreateStockRecord(stock, null, null, null,
                                 null, CategoryCode.TransferInbound, ActionCode.StockTransfer, header.ShipmentNumber,
@@ -879,12 +879,26 @@ SELECT m.TRANSFER_INVENTORY_ID AS ID
                                 stockTRepository.Update(stock);
 
                                 //產生異動紀錄
-                                var stkTxnT = CreateStockRecord(stock, null, null, null,
-                                null, CategoryCode.Inventory, ActionCode.StockTransfer, header.ShipmentNumber,
+                                if (header.TransactionTypeId == TransactionTypeId.Chp16In)
+                                {
+                                    var stkTxnT = CreateStockRecord(stock, null, null, null,
+                                null, CategoryCode.InventoryProfit, ActionCode.StockTransfer, header.ShipmentNumber,
                                 stock.PrimaryAvailableQty, mPrimaryQty, aftPryQty, stock.SecondaryAvailableQty,
                                 mSecondaryQty, aftSecQty, stockStatusCode, userId, now);
-                                stkTxnTRepository.Create(stkTxnT);
-
+                                    stkTxnTRepository.Create(stkTxnT);
+                                }
+                                else if (header.TransactionTypeId == TransactionTypeId.Chp16Out)
+                                {
+                                    var stkTxnT = CreateStockRecord(stock, null, null, null,
+                               null, CategoryCode.InventoryLoss, ActionCode.StockTransfer, header.ShipmentNumber,
+                               stock.PrimaryAvailableQty, mPrimaryQty, aftPryQty, stock.SecondaryAvailableQty,
+                               mSecondaryQty, aftSecQty, stockStatusCode, userId, now);
+                                    stkTxnTRepository.Create(stkTxnT);
+                                }
+                                else
+                                {
+                                    throw new Exception("異動型態Id錯誤");
+                                }
                                 ////更新其它尚未儲存的明細數量
                                 //if (header.TransactionTypeId == TransactionTypeId.Chp16In)
                                 //{

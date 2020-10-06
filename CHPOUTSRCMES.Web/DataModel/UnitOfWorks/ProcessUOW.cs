@@ -818,7 +818,7 @@ WHERE DI.OSP_HEADER_ID = @OSP_HEADER_ID");
         /// <param name="OspHeaderId"></param>
         /// <param name="note"></param>
         /// <returns></returns>
-        public ResultModel SetEditNote(long OspHeaderId, string note)
+        public ResultModel SetEditNote(long OspHeaderId, string note, string userId)
         {
             try
             {
@@ -826,6 +826,8 @@ WHERE DI.OSP_HEADER_ID = @OSP_HEADER_ID");
                 if (header != null)
                 {
                     header.Note = note;
+                    header.LastUpdateBy = userId;
+                    header.LastUpdateDate = DateTime.Now;
                     OspHeaderTRepository.Update(header, true);
                     return new ResultModel(true, "成功");
                 }
@@ -1045,12 +1047,12 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
                             id.LastUpdateUserName = UserName;
                             id.LastUpdateDate = DateTime.Now;
                             OspPickedInTRepository.Update(id, true);
-                            var aft = InvestDTListId.RemainingQuantity;
-                            var chg = stock.PrimaryTransactionQty - InvestDTListId.RemainingQuantity;
+                            var aft = InvestDTListId.RemainingQuantity ?? 0;
+                            var chg = stock.PrimaryTransactionQty - (InvestDTListId.RemainingQuantity ?? 0);
                             if (stock.PrimaryTransactionQty >= aft)
                             {
-                                CheckStock(stock.StockId, UserId, aft ?? 0, StockStatusCode.ProcessPicked);
-                                StockRecord(id.StockId, aft ?? 0, chg ?? 0, 0, 0, CategoryCode.Process, ActionCode.Picked, header.BatchNo, UserId);
+                                CheckStock(stock.StockId, UserId, aft, StockStatusCode.ProcessPicked);
+                                StockRecord(id.StockId, aft, chg, 0, 0, CategoryCode.Process, ActionCode.Picked, header.BatchNo, UserId);
                                 txn.Commit();
                                 return new ResultModel(true, "");
                             }
@@ -1100,7 +1102,7 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
         /// <param name="BtnStatus"></param>
         /// <returns></returns>
         public ResultModel SetStatusAndCutDate(long OspHeaderId, DateTime Dialog_CuttingDateFrom, DateTime Dialog_CuttingDateTo,
-            string Dialog_MachineNum, string BtnStatus)
+            string Dialog_MachineNum, string BtnStatus, string UserId)
         {
             try
             {
@@ -1111,6 +1113,8 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
                     header.CuttingDateTo = Dialog_CuttingDateTo;
                     header.MachineCode = Dialog_MachineNum == "*" ? "" : Dialog_MachineNum;
                     header.Status = BtnStatus;
+                    header.LastUpdateBy = UserId;
+                    header.LastUpdateDate = DateTime.Now;
                     OspHeaderTRepository.Update(header, true);
                     return new ResultModel(true, "成功");
                 }
@@ -2155,8 +2159,8 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
                     }
 
                     header.Status = ProcessStatusCode.CompletedBatch;
-                    header.PeLastUpdateBy = UserId;
-                    header.PeLastUpdateDate = DateTime.Now;
+                    header.LastUpdateBy = UserId;
+                    header.LastUpdateDate = DateTime.Now;
 
                     OspHeaderTRepository.Update(header, true);
                     SaveStock(header.OspHeaderId, StockStatusCode.InStock);
@@ -2204,8 +2208,8 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
                     }
 
                     header.Status = ProcessStatusCode.PendingBatch;
-                    header.PeLastUpdateBy = UserId;
-                    header.PeLastUpdateDate = DateTime.Now;
+                    header.LastUpdateBy = UserId;
+                    header.LastUpdateDate = DateTime.Now;
                     OspHeaderTRepository.Update(header, true);
 
                     txn.Commit();
