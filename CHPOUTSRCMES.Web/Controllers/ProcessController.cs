@@ -123,25 +123,6 @@ namespace CHPOUTSRCMES.Web.Controllers
             return Json(new { resultModel }, JsonRequestBehavior.AllowGet);
         }
 
-        /// <summary>
-        /// 完工紀錄編輯更改狀態
-        /// </summary>
-        /// <param name="OspHeaderId"></param>
-        /// <param name="Locator"></param>
-        /// <returns></returns>
-        [HttpPost]
-        public ActionResult EditHeaderStauts(long OspHeaderId)
-        {
-            ProcessViewModel viewModel = new ProcessViewModel();
-            //取得使用者ID
-            var Userid = this.User.Identity.GetUserId();
-            //取得使用者帳號
-            var name = this.User.Identity.GetUserName();
-            var resultModel = viewModel.EditHeaderStauts(OspHeaderId, Userid, name);
-
-            return Json(new { resultModel }, JsonRequestBehavior.AllowGet);
-        }
-
         [Authorize(Roles = "系統管理員, 華紙使用者")]
         [HttpPost]
         public ActionResult ApproveHeaderStauts(long OspHeaderId)
@@ -404,10 +385,11 @@ namespace CHPOUTSRCMES.Web.Controllers
         [HttpPost]
         public JsonResult FinisheEdit(string BatchNo, long OspHeaderId)
         {
+            var userId = this.User.Identity.GetUserId();
             ProcessViewModel viewModel = new ProcessViewModel();
-            var resultModel = viewModel.FinisheEdit(BatchNo, OspHeaderId);
+            var resultModel = viewModel.FinisheEdit(BatchNo, OspHeaderId, userId);
 
-            return Json(new { resultModel }, JsonRequestBehavior.AllowGet);
+            return Json(resultModel, JsonRequestBehavior.AllowGet);
         }
 
         /// <summary>

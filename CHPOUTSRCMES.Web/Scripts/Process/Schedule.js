@@ -1210,8 +1210,8 @@ function BtnRecordEdit() {
             type: "POST",
             data: { BatchNo: BatchNo, OspHeaderId: OspHeaderId },
             success: function (data) {
-                if (data.resultModel.Success) {
-                    ChangeStaus();
+                if (data.Success) {
+                    location.href = "/Process/Schedule/" + data.data;
                 } else {
                     swal.fire(data.resultModel.Msg);
                 }
@@ -1243,24 +1243,4 @@ function BtnRecordEdit() {
 
 
 
-}
-
-//完工紀錄使用
-function ChangeStaus() {
-    var OspHeaderId = $("#OspHeaderId").val();
-    $.ajax({
-        url: '/Process/EditHeaderStauts/',
-        dataType: 'json',
-        type: 'post',
-        data: { OspHeaderId: OspHeaderId },
-        success: function (data) {
-            if (data.resultModel.Success) {
-                DisplayInvestEnable(false);
-                DisplayProductionEnable(false);
-            } else {
-                swal.fire(data.resultModel.Msg)
-            }
-         
-        }
-    });
 }

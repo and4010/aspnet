@@ -1,6 +1,7 @@
 ﻿using CHPOUTSRCMES.Web.DataModel.Entity;
 using CHPOUTSRCMES.Web.DataModel.Entity.Interfaces;
 using CHPOUTSRCMES.Web.DataModel.Entity.Process;
+using CHPOUTSRCMES.Web.DataModel.Entity.Purchase;
 using CHPOUTSRCMES.Web.DataModel.Entity.Repositorys;
 using CHPOUTSRCMES.Web.DataModel.Interfaces;
 using CHPOUTSRCMES.Web.DataModel.UnitOfWorks;
@@ -46,7 +47,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
         private readonly IRepository<OSP_PICKED_OUT_HT> OspPickedOutHTRepository;
         private readonly IRepository<OSP_YIELD_VARIANCE_T> OspYieldVarianceTRepository;
         private readonly IRepository<OSP_YIELD_VARIANCE_HT> OspYieldVarianceHTRepository;
-
+        private readonly IRepository<OSP_HEADER_MOD_T> OspHeaderModTRepository;
         public ProcessUOW(DbContext context) : base(context)
         {
             this.OspCotangenTRepository = new GenericRepository<OSP_COTANGENT_T>(this);
@@ -2143,43 +2144,27 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
                     {
                         return new ResultModel(false, "找不到id");
                     }
+                    else if (header.Status == ProcessStatusCode.CompletedBatch)
+                    {
+                        return new ResultModel(false, $"此單號 {header.BatchNo} 已完工!!");
+                    }
+                    else if (header.Status == ProcessStatusCode.PendingBatch) //待核淮存檔
+                    {
+                        header.Modifications += 1;
+                    }
 
-                    if (header.Status == ProcessStatusCode.CompletedBatch)
-                    {
-                        header.Status = ProcessStatusCode.PendingBatch;
-                        header.PeLastUpdateBy = UserId;
-                        header.PeLastUpdateDate = DateTime.Now;
-                        OspHeaderTRepository.Update(header, true);
-                    }
-                    else if (header.Status == ProcessStatusCode.PendingBatch)
-                    {
-                        header.Status = ProcessStatusCode.CompletedBatch;
-                        header.PeLastUpdateBy = UserId;
-                        header.PeLastUpdateDate = DateTime.Now;
-                        header.Modifications = 1;
-                        OspHeaderTRepository.Update(header, true);
-                        SaveStock(header.OspHeaderId, StockStatusCode.InStock);
-                        PickInToHt(header.OspHeaderId);
-                        PirckOutToHt(header.OspHeaderId);
-                        DetailInToHt(header.OspHeaderId);
-                        DetailOutToHt(header.OspHeaderId);
-                        ContangetToHt(header.OspHeaderId);
-                        YieldToHt(header.OspHeaderId);
-                    }
-                    else
-                    {
-                        header.Status = ProcessStatusCode.CompletedBatch;
-                        header.PeLastUpdateBy = UserId;
-                        header.PeLastUpdateDate = DateTime.Now;
-                        OspHeaderTRepository.Update(header, true);
-                        SaveStock(header.OspHeaderId, StockStatusCode.InStock);
-                        PickInToHt(header.OspHeaderId);
-                        PirckOutToHt(header.OspHeaderId);
-                        DetailInToHt(header.OspHeaderId);
-                        DetailOutToHt(header.OspHeaderId);
-                        ContangetToHt(header.OspHeaderId);
-                        YieldToHt(header.OspHeaderId);
-                    }
+                    header.Status = ProcessStatusCode.CompletedBatch;
+                    header.PeLastUpdateBy = UserId;
+                    header.PeLastUpdateDate = DateTime.Now;
+
+                    OspHeaderTRepository.Update(header, true);
+                    SaveStock(header.OspHeaderId, StockStatusCode.InStock);
+                    PickInToHt(header.OspHeaderId);
+                    PirckOutToHt(header.OspHeaderId);
+                    DetailInToHt(header.OspHeaderId);
+                    DetailOutToHt(header.OspHeaderId);
+                    ContangetToHt(header.OspHeaderId);
+                    YieldToHt(header.OspHeaderId);
 
                     txn.Commit();
                     return new ResultModel(true, "");
@@ -2242,46 +2227,66 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
         /// <param name="BatchNo"></param>
         /// <param name="OspHeaderId"></param>
         /// <returns></returns>
-        public ResultModel FinisheEdit(string BatchNo, long OspHeaderId)
+        public ResultDataModel<long> FinisheEdit(string BatchNo, long OspHeaderId, string userId)
         {
             using (var txn = this.Context.Database.BeginTransaction())
             {
                 try
                 {
-                    var batchno = OspHeaderTRepository.Get(x => x.OspHeaderId == OspHeaderId).SingleOrDefault();
-                    if (batchno == null)
+                    var header = OspHeaderTRepository.GetAll().Where(x => x.OspHeaderId == OspHeaderId).FirstOrDefault();
+                    var newHeader = OspHeaderTRepository.GetAll().Where(x => x.OspHeaderId == OspHeaderId).AsNoTracking().FirstOrDefault();
+                    if (newHeader == null)
                     {
-                        return new ResultModel(false, "單號錯誤");
+                        return new ResultDataModel<long>(false, "單號錯誤", 0);
                     }
-                    if (batchno.BatchNo != BatchNo)
+                    if (newHeader.BatchNo != BatchNo)
                     {
-                        return new ResultModel(false, "工單號輸入不對請重新輸入");
+                        return new ResultDataModel<long>(false, "工單號輸入不對請重新輸入", 0);
                     }
 
-                    if (batchno.Status == ProcessStatusCode.CompletedBatch)
+                    if (newHeader.Status == ProcessStatusCode.CompletedBatch)
                     {
-                        if (batchno.Modifications == 1)
+                        if (newHeader.Modifications >= 1)
                         {
-                            return new ResultModel(false, "已修改過，無法再修改");
+                            return new ResultDataModel<long>(false, "已修改過，無法再修改", 0);
                         }
+
+                        newHeader.Status = ProcessStatusCode.PendingBatch;
+                        newHeader.LastUpdateBy = userId;
+                        newHeader.LastUpdateDate = DateTime.Now;
+                        newHeader.OspHeaderId = 0;
+                        OspHeaderTRepository.Create(newHeader);
+
+                        header.Status = ProcessStatusCode.Modified;
+                        header.LastUpdateBy = userId;
+                        header.LastUpdateDate = DateTime.Now;
+                        OspHeaderTRepository.Update(header);
+
+                        var headerMod = new OSP_HEADER_MOD_T();
+                        headerMod.OrgOspHeaderId = header.OspHeaderId;
+                        headerMod.OspHeaderId = newHeader.OspHeaderId;
+                        OspHeaderModTRepository.Create(headerMod);
+
                         HtToTStockDelete(OspHeaderId);
-                        PickInHtToT(OspHeaderId);
-                        PirckOutHtToT(OspHeaderId);
-                        DetailInHtToT(OspHeaderId);
-                        DetailOutHtToT(OspHeaderId);
-                        ContangetHtToT(OspHeaderId);
-                        YieldHtToT(OspHeaderId);
+                        DetailInHtToT(OspHeaderId, header.OspHeaderId);
+                        DetailOutHtToT(OspHeaderId, header.OspHeaderId);
+
+                        PickInHtToT(OspHeaderId, header.OspHeaderId);
+                        PirckOutHtToT(OspHeaderId, header.OspHeaderId);
+                        
+                        ContangetHtToT(OspHeaderId, header.OspHeaderId);
+                        YieldHtToT(OspHeaderId, header.OspHeaderId);
                         txn.Commit();
                     }
 
-                    return new ResultModel(true, "成功");
+                    return new ResultDataModel<long>(true, "成功", header.OspHeaderId);
 
                 }
                 catch (Exception e)
                 {
                     txn.Rollback();
                     logger.Error(LogUtilities.BuildExceptionMessage(e));
-                    return new ResultModel(false, e.Message);
+                    return new ResultDataModel<long>(false, e.Message, 0);
                 }
             }
         }
@@ -2549,73 +2554,72 @@ Delete OSP_YIELD_VARIANCE_T WHERE OSP_HEADER_ID = @OSP_HEADER_ID");
         /// PICKIN歷史轉撿貨&刪除歷史
         /// </summary>
         /// <param name="OSP_HEADER_ID"></param>
-        public void PickInHtToT(long OSP_HEADER_ID)
+        public void PickInHtToT(long orgOspHeaderId, long dstOspHeaderId)
         {
             StringBuilder query = new StringBuilder();
             query.Append(
 @"
-SET IDENTITY_INSERT [OSP_PICKED_IN_T] ON
 INSERT INTO [OSP_PICKED_IN_T]
-([OSP_PICKED_IN_ID],[OSP_DETAIL_IN_ID],[OSP_HEADER_ID],[STOCK_ID],[BARCODE],
+([OSP_DETAIL_IN_ID],[OSP_HEADER_ID],[STOCK_ID],[BARCODE],
 [INVENTORY_ITEM_ID],[INVENTORY_ITEM_NUMBER],[PAPER_TYPE],[BASIC_WEIGHT],[SPECIFICATION],
 [LOT_NUMBER],[LOT_QUANTITY],[PRIMARY_QUANTITY],[PRIMARY_UOM],[SECONDARY_QUANTITY],[SECONDARY_UOM],
 [HAS_REMAINT],[REMAINING_QUANTITY],[REMAINING_UOM],[CREATED_BY],[CREATED_USER_NAME],
 [CREATION_DATE],[LAST_UPDATE_BY],[LAST_UPDATE_DATE],[LAST_UPDATE_USER_NAME])
 SELECT 
-[OSP_PICKED_IN_ID],[OSP_DETAIL_IN_ID] ,[OSP_HEADER_ID],[STOCK_ID],[BARCODE],
-[INVENTORY_ITEM_ID],[INVENTORY_ITEM_NUMBER],[PAPER_TYPE],[BASIC_WEIGHT],[SPECIFICATION],
-[LOT_NUMBER],[LOT_QUANTITY],[PRIMARY_QUANTITY],[PRIMARY_UOM],[SECONDARY_QUANTITY],[SECONDARY_UOM],
-[HAS_REMAINT],[REMAINING_QUANTITY] ,[REMAINING_UOM],[CREATED_BY],[CREATED_USER_NAME],
-[CREATION_DATE],[LAST_UPDATE_BY],[LAST_UPDATE_DATE],[LAST_UPDATE_USER_NAME]
-FROM [OSP_PICKED_IN_HT] 
-where OSP_HEADER_ID = @OSP_HEADER_ID
-Delete OSP_PICKED_IN_HT WHERE OSP_HEADER_ID = @OSP_HEADER_ID
-SET IDENTITY_INSERT [OSP_PICKED_IN_T] OFF");
-            Context.Database.ExecuteSqlCommand(query.ToString(), new SqlParameter("@OSP_HEADER_ID", OSP_HEADER_ID));
+T.[OSP_DETAIL_IN_ID], T.OSP_HEADER_ID AS [OSP_HEADER_ID], P.[STOCK_ID] AS [STOCK_ID], P.[BARCODE],
+P.[INVENTORY_ITEM_ID], P.[INVENTORY_ITEM_NUMBER], P.[PAPER_TYPE], P.[BASIC_WEIGHT], P.[SPECIFICATION],
+P.[LOT_NUMBER], P.[LOT_QUANTITY], P.[PRIMARY_QUANTITY], P.[PRIMARY_UOM], P.[SECONDARY_QUANTITY], P.[SECONDARY_UOM],
+P.[HAS_REMAINT], P.[REMAINING_QUANTITY] , P.[REMAINING_UOM], P.[CREATED_BY], P.[CREATED_USER_NAME],
+P.[CREATION_DATE], P.[LAST_UPDATE_BY], P.[LAST_UPDATE_DATE], P.[LAST_UPDATE_USER_NAME]
+FROM [OSP_PICKED_IN_HT] P
+JOIN [OSP_DETAIL_IN_HT] D ON D.OSP_DETAIL_IN_ID = P.OSP_DETAIL_IN_ID AND D.OSP_HEADER_ID = P.OSP_HEADER_ID
+LEFT JOIN [OSP_DETAIL_IN_T] T ON T.OSP_HEADER_ID = @DST_OSP_HEADER_ID AND T.PROCESS_CODE = D.PROCESS_CODE AND T.SERVER_CODE = D.SERVER_CODE AND T.BATCH_ID = D.BATCH_ID AND T.BATCH_LINE_ID = D.BATCH_LINE_ID
+where P.OSP_HEADER_ID = @ORG_OSP_HEADER_ID");
+            Context.Database.ExecuteSqlCommand(query.ToString(), new SqlParameter("@ORG_OSP_HEADER_ID", orgOspHeaderId), new SqlParameter("@DST_OSP_HEADER_ID", dstOspHeaderId));
         }
 
         /// <summary>
         /// PickOut歷史轉撿貨&刪除歷史
         /// </summary>
         /// <param name="OSP_HEADER_ID"></param>
-        public void PirckOutHtToT(long OSP_HEADER_ID)
+        public void PirckOutHtToT(long orgOspHeaderId, long dstOspHeaderId)
         {
 
             StringBuilder query = new StringBuilder();
             query.Append(
 @"
-SET IDENTITY_INSERT [OSP_PICKED_OUT_T] ON
 INSERT INTO [OSP_PICKED_OUT_T]
-([OSP_PICKED_OUT_ID],[OSP_DETAIL_OUT_ID],[OSP_HEADER_ID],[STOCK_ID],[BARCODE],
+([OSP_DETAIL_OUT_ID],[OSP_HEADER_ID],[STOCK_ID],[BARCODE],
 [INVENTORY_ITEM_ID],[INVENTORY_ITEM_NUMBER],[PAPER_TYPE],[BASIC_WEIGHT],[SPECIFICATION],
 [LOT_NUMBER],[LOT_QUANTITY],[PRIMARY_QUANTITY],[PRIMARY_UOM],[SECONDARY_QUANTITY],[SECONDARY_UOM],
 [STATUS],[COTANGENT],[OSP_COTANGENT_ID],[CREATED_BY],[CREATED_USER_NAME],
 [CREATION_DATE],[LAST_UPDATE_BY],[LAST_UPDATE_DATE],[LAST_UPDATE_USER_NAME])
 SELECT 
-[OSP_PICKED_OUT_ID],[OSP_DETAIL_OUT_ID],[OSP_HEADER_ID],[STOCK_ID],[BARCODE],
-[INVENTORY_ITEM_ID],[INVENTORY_ITEM_NUMBER],[PAPER_TYPE],[BASIC_WEIGHT],[SPECIFICATION],
-[LOT_NUMBER],[LOT_QUANTITY],[PRIMARY_QUANTITY],[PRIMARY_UOM],[SECONDARY_QUANTITY],[SECONDARY_UOM],
-[STATUS],[COTANGENT],[OSP_COTANGENT_ID],[CREATED_BY],[CREATED_USER_NAME],
-[CREATION_DATE],[LAST_UPDATE_BY],[LAST_UPDATE_DATE],[LAST_UPDATE_USER_NAME]
-FROM　[OSP_PICKED_OUT_HT]
-WHERE OSP_HEADER_ID = @OSP_HEADER_ID
-Delete OSP_PICKED_OUT_HT WHERE OSP_HEADER_ID = @OSP_HEADER_ID
-SET IDENTITY_INSERT [OSP_PICKED_OUT_T] OFF");
-            Context.Database.ExecuteSqlCommand(query.ToString(), new SqlParameter("@OSP_HEADER_ID", OSP_HEADER_ID));
+T.[OSP_DETAIL_OUT_ID], T.OSP_HEADER_ID AS [OSP_HEADER_ID], P.STOCK_ID, P.[BARCODE],
+P.[INVENTORY_ITEM_ID], P.[INVENTORY_ITEM_NUMBER], P.[PAPER_TYPE], P.[BASIC_WEIGHT], P.[SPECIFICATION],
+P.[LOT_NUMBER], P.[LOT_QUANTITY], P.[PRIMARY_QUANTITY], P.[PRIMARY_UOM], P.[SECONDARY_QUANTITY], P.[SECONDARY_UOM],
+P.[STATUS], P.[COTANGENT], P.[OSP_COTANGENT_ID], P.[CREATED_BY], P.[CREATED_USER_NAME],
+P.[CREATION_DATE], P.[LAST_UPDATE_BY], P.[LAST_UPDATE_DATE], P.[LAST_UPDATE_USER_NAME]
+FROM　[OSP_PICKED_OUT_HT] P
+JOIN [OSP_DETAIL_OUT_HT] D ON D.OSP_DETAIL_OUT_ID = P.OSP_DETAIL_OUT_ID AND D.OSP_HEADER_ID = P.OSP_HEADER_ID
+LEFT JOIN [OSP_COTANGENT_HT] C ON C.OSP_HEADER_ID = P.OSP_HEADER_ID AND C.OSP_COTANGENT_ID = P.OSP_COTANGENT_ID 
+LEFT JOIN [OSP_DETAIL_OUT_T] T ON T.OSP_HEADER_ID = @DST_OSP_HEADER_ID AND T.PROCESS_CODE = D.PROCESS_CODE AND T.SERVER_CODE = D.SERVER_CODE AND T.BATCH_ID = D.BATCH_ID AND T.BATCH_LINE_ID = D.BATCH_LINE_ID
+LEFT JOIN [OSP_COTANGENT_T] H ON H.OSP_HEADER_ID = T.OSP_HEADER_ID AND H.OSP_DETAIL_OUT_ID = C.OSP_DETAIL_OUT_ID AND H.STOCK_ID = C.STOCK_ID
+WHERE P.OSP_HEADER_ID = @ORG_OSP_HEADER_ID");
+            Context.Database.ExecuteSqlCommand(query.ToString(), new SqlParameter("@ORG_OSP_HEADER_ID", orgOspHeaderId), new SqlParameter("@DST_OSP_HEADER_ID", dstOspHeaderId));
         }
 
         /// <summary>
         /// 投入歷史轉投入明細&刪除歷史
         /// </summary>
         /// <param name="OSP_HEADER_ID"></param>
-        public void DetailInHtToT(long OSP_HEADER_ID)
+        public void DetailInHtToT(long orgOspHeaderId, long dstOspHeaderId)
         {
             StringBuilder query = new StringBuilder();
             query.Append(
 @"
-SET IDENTITY_INSERT [OSP_DETAIL_IN_T] ON
 INSERT INTO [OSP_DETAIL_IN_T]
-([OSP_DETAIL_IN_ID],[OSP_HEADER_ID],[PROCESS_CODE],[SERVER_CODE],
+([OSP_HEADER_ID],[PROCESS_CODE],[SERVER_CODE],
 [BATCH_ID],[BATCH_LINE_ID],[LINE_TYPE],[LINE_NO],[INVENTORY_ITEM_ID],
 [INVENTORY_ITEM_NUMBER],[BASIC_WEIGHT],[SPECIFICATION],[GRAIN_DIRECTION],[ORDER_WEIGHT],
 [REAM_WT],[PAPER_TYPE],[PACKING_TYPE],[PLAN_QTY],[WIP_PLAN_QTY],
@@ -2631,7 +2635,7 @@ INSERT INTO [OSP_DETAIL_IN_T]
 [ATTRIBUTE12],[ATTRIBUTE13],[ATTRIBUTE14],[ATTRIBUTE15],[REQUEST_ID],
 [CREATED_BY],[CREATION_DATE],[LAST_UPDATE_BY],[LAST_UPDATE_DATE])
 SELECT 
-[OSP_DETAIL_IN_ID],[OSP_HEADER_ID],[PROCESS_CODE],[SERVER_CODE],
+@DST_OSP_HEADER_ID AS [OSP_HEADER_ID],[PROCESS_CODE],[SERVER_CODE],
 [BATCH_ID],[BATCH_LINE_ID],[LINE_TYPE],[LINE_NO],[INVENTORY_ITEM_ID],
 [INVENTORY_ITEM_NUMBER],[BASIC_WEIGHT],[SPECIFICATION],[GRAIN_DIRECTION],[ORDER_WEIGHT],
 [REAM_WT],[PAPER_TYPE],[PACKING_TYPE],[PLAN_QTY],[WIP_PLAN_QTY],
@@ -2647,23 +2651,20 @@ SELECT
 [ATTRIBUTE12],[ATTRIBUTE13],[ATTRIBUTE14],[ATTRIBUTE15],[REQUEST_ID],
 [CREATED_BY],[CREATION_DATE],[LAST_UPDATE_BY],[LAST_UPDATE_DATE]
 FROM [OSP_DETAIL_IN_HT]
-WHERE OSP_HEADER_ID = @OSP_HEADER_ID
-DELETE OSP_DETAIL_IN_HT WHERE OSP_HEADER_ID = @OSP_HEADER_ID
-SET IDENTITY_INSERT [OSP_DETAIL_IN_T] OFF");
-            Context.Database.ExecuteSqlCommand(query.ToString(), new SqlParameter("@OSP_HEADER_ID", OSP_HEADER_ID));
+WHERE OSP_HEADER_ID = @ORG_OSP_HEADER_ID");
+            Context.Database.ExecuteSqlCommand(query.ToString(), new SqlParameter("@ORG_OSP_HEADER_ID", orgOspHeaderId), new SqlParameter("@DST_OSP_HEADER_ID", dstOspHeaderId));
         }
         /// <summary>
         /// 產出歷史轉產出明細&刪除歷史
         /// </summary>
         /// <param name="OSP_HEADER_ID"></param>
-        public void DetailOutHtToT(long OSP_HEADER_ID)
+        public void DetailOutHtToT(long orgOspHeaderId, long dstOspHeaderId)
         {
             StringBuilder query = new StringBuilder();
             query.Append(
 @"
-SET IDENTITY_INSERT [OSP_DETAIL_OUT_T] ON
 INSERT INTO [OSP_DETAIL_OUT_T]
-([OSP_DETAIL_OUT_ID],[OSP_HEADER_ID],[PROCESS_CODE],[SERVER_CODE],
+([OSP_HEADER_ID],[PROCESS_CODE],[SERVER_CODE],
 [BATCH_ID],[BATCH_LINE_ID],[LINE_TYPE],[LINE_NO],[INVENTORY_ITEM_ID],
 [INVENTORY_ITEM_NUMBER],[BASIC_WEIGHT],[SPECIFICATION],[GRAIN_DIRECTION],[ORDER_WEIGHT],
 [REAM_WT],[PAPER_TYPE],[PACKING_TYPE],[PLAN_QTY],[WIP_PLAN_QTY],
@@ -2679,7 +2680,7 @@ INSERT INTO [OSP_DETAIL_OUT_T]
 [ATTRIBUTE12],[ATTRIBUTE13],[ATTRIBUTE14],[ATTRIBUTE15],[REQUEST_ID],
 [CREATED_BY],[CREATION_DATE],[LAST_UPDATE_BY],[LAST_UPDATE_DATE])
 SELECT
-[OSP_DETAIL_OUT_ID],[OSP_HEADER_ID],[PROCESS_CODE],[SERVER_CODE],
+@DST_OSP_HEADER_ID AS [OSP_HEADER_ID],[PROCESS_CODE],[SERVER_CODE],
 [BATCH_ID],[BATCH_LINE_ID],[LINE_TYPE],[LINE_NO],[INVENTORY_ITEM_ID],
 [INVENTORY_ITEM_NUMBER],[BASIC_WEIGHT],[SPECIFICATION],[GRAIN_DIRECTION],[ORDER_WEIGHT],
 [REAM_WT],[PAPER_TYPE],[PACKING_TYPE],[PLAN_QTY],[WIP_PLAN_QTY],
@@ -2695,64 +2696,58 @@ SELECT
 [ATTRIBUTE12],[ATTRIBUTE13],[ATTRIBUTE14],[ATTRIBUTE15],[REQUEST_ID],
 [CREATED_BY],[CREATION_DATE],[LAST_UPDATE_BY],[LAST_UPDATE_DATE]
 FROM [OSP_DETAIL_OUT_HT]
-WHERE OSP_HEADER_ID = @OSP_HEADER_ID
-DELETE OSP_DETAIL_OUT_HT WHERE OSP_HEADER_ID = @OSP_HEADER_ID
-SET IDENTITY_INSERT [OSP_DETAIL_OUT_T] OFF");
-            Context.Database.ExecuteSqlCommand(query.ToString(), new SqlParameter("@OSP_HEADER_ID", OSP_HEADER_ID));
+WHERE OSP_HEADER_ID = @ORG_OSP_HEADER_ID");
+            Context.Database.ExecuteSqlCommand(query.ToString(), new SqlParameter("@ORG_OSP_HEADER_ID", orgOspHeaderId), new SqlParameter("@DST_OSP_HEADER_ID", dstOspHeaderId));
         }
 
         /// <summary>
         /// 餘切歷史轉餘切明細&刪除歷史
         /// </summary>
-        public void ContangetHtToT(long OSP_HEADER_ID)
+        public void ContangetHtToT(long orgOspHeaderId, long dstOspHeaderId)
         {
             StringBuilder query = new StringBuilder();
             query.Append(
 @"
-SET IDENTITY_INSERT [OSP_COTANGENT_T] ON
 INSERT INTO [OSP_COTANGENT_T]
-([OSP_COTANGENT_ID],[OSP_DETAIL_OUT_ID],[OSP_HEADER_ID],[STOCK_ID],[BARCODE],
+([OSP_DETAIL_OUT_ID],[OSP_HEADER_ID],[STOCK_ID],[BARCODE],
 [INVENTORY_ITEM_ID],[INVENTORY_ITEM_NUMBER],[PAPER_TYPE],[BASIC_WEIGHT],[SPECIFICATION],
 [LOT_NUMBER],[LOT_QUANTITY],[PRIMARY_QUANTITY],[PRIMARY_UOM],[SECONDARY_QUANTITY],[SECONDARY_UOM],
 [STATUS],[CREATED_BY],[CREATED_USER_NAME],[CREATION_DATE],[LAST_UPDATE_BY],
 [LAST_UPDATE_DATE],[LAST_UPDATE_USER_NAME])
 SELECT 
-[OSP_COTANGENT_ID],[OSP_DETAIL_OUT_ID],[OSP_HEADER_ID],[STOCK_ID],[BARCODE],
-[INVENTORY_ITEM_ID],[INVENTORY_ITEM_NUMBER],[PAPER_TYPE],[BASIC_WEIGHT],[SPECIFICATION],
-[LOT_NUMBER],[LOT_QUANTITY],[PRIMARY_QUANTITY],[PRIMARY_UOM],[SECONDARY_QUANTITY],[SECONDARY_UOM],
-[STATUS],[CREATED_BY],[CREATED_USER_NAME],[CREATION_DATE],[LAST_UPDATE_BY],
-[LAST_UPDATE_DATE],[LAST_UPDATE_USER_NAME]
-FROM [OSP_COTANGENT_HT]
-WHERE OSP_HEADER_ID = @OSP_HEADER_ID
-Delete OSP_COTANGENT_HT WHERE OSP_HEADER_ID = @OSP_HEADER_ID
-SET IDENTITY_INSERT [OSP_COTANGENT_T] OFF
-");
-            Context.Database.ExecuteSqlCommand(query.ToString(), new SqlParameter("@OSP_HEADER_ID", OSP_HEADER_ID));
+T.[OSP_DETAIL_OUT_ID], T.[OSP_HEADER_ID], C.[STOCK_ID], C.[BARCODE],
+C.[INVENTORY_ITEM_ID], C.[INVENTORY_ITEM_NUMBER], C.[PAPER_TYPE], C.[BASIC_WEIGHT], C.[SPECIFICATION],
+C.[LOT_NUMBER], C.[LOT_QUANTITY], C.[PRIMARY_QUANTITY], C.[PRIMARY_UOM], C.[SECONDARY_QUANTITY], C.[SECONDARY_UOM],
+C.[STATUS], C.[CREATED_BY], C.[CREATED_USER_NAME], C.[CREATION_DATE], C.[LAST_UPDATE_BY],
+C.[LAST_UPDATE_DATE], C.[LAST_UPDATE_USER_NAME]
+FROM [OSP_COTANGENT_HT] C
+JOIN [OSP_DETAIL_OUT_HT] D ON D.OSP_DETAIL_OUT_ID = C.OSP_DETAIL_OUT_ID
+LEFT JOIN [OSP_DETAIL_OUT_T] T ON T.OSP_HEADER_ID = @DST_OSP_HEADER_ID AND T.PROCESS_CODE = D.PROCESS_CODE AND T.SERVER_CODE = D.SERVER_CODE AND T.BATCH_ID = D.BATCH_ID AND T.BATCH_LINE_ID = D.BATCH_LINE_ID
+WHERE C.OSP_HEADER_ID = @ORG_OSP_HEADER_ID");
+            Context.Database.ExecuteSqlCommand(query.ToString(), new SqlParameter("@ORG_OSP_HEADER_ID", orgOspHeaderId), new SqlParameter("@DST_OSP_HEADER_ID", dstOspHeaderId));
         }
 
         /// <summary>
         /// 損耗歷史轉損耗明細&刪除歷史
         /// </summary>
         /// <param name="OSP_HEADER_ID"></param>
-        public void YieldHtToT(long OSP_HEADER_ID)
+        public void YieldHtToT(long orgOspHeaderId, long dstOspHeaderId)
         {
             StringBuilder query = new StringBuilder();
             query.Append(
 @"
-SET IDENTITY_INSERT [OSP_YIELD_VARIANCE_T] ON
 INSERT INTO [OSP_YIELD_VARIANCE_T]
-([OSP_YIELD_VARIANCE_ID],[OSP_HEADER_ID],[DETAIL_IN_QUANTITY],[COTANGENT_QUANTITY],[DETAIL_OUT_QUANTITY],
+([OSP_HEADER_ID],[DETAIL_IN_QUANTITY],[COTANGENT_QUANTITY],[DETAIL_OUT_QUANTITY],
 [LOSS_WEIGHT],[PRIMARY_UOM],[RATE],[CREATED_BY],[CREATED_USER_NAME],
 [CREATION_DATE],[LAST_UPDATE_BY],[LAST_UPDATE_DATE],[LAST_UPDATE_USER_NAME])
 SELECT
-[OSP_YIELD_VARIANCE_ID],[OSP_HEADER_ID],[DETAIL_IN_QUANTITY],[COTANGENT_QUANTITY],[DETAIL_OUT_QUANTITY],
+@DST_OSP_HEADER_ID AS [OSP_HEADER_ID],[DETAIL_IN_QUANTITY],[COTANGENT_QUANTITY],[DETAIL_OUT_QUANTITY],
 [LOSS_WEIGHT],[PRIMARY_UOM],[RATE],[CREATED_BY],[CREATED_USER_NAME],
 [CREATION_DATE],[LAST_UPDATE_BY],[LAST_UPDATE_DATE],[LAST_UPDATE_USER_NAME]
 FROM [OSP_YIELD_VARIANCE_HT]
-WHERE OSP_HEADER_ID = @OSP_HEADER_ID
-Delete OSP_YIELD_VARIANCE_HT WHERE OSP_HEADER_ID = @OSP_HEADER_ID
-SET IDENTITY_INSERT [OSP_YIELD_VARIANCE_T] OFF");
-            Context.Database.ExecuteSqlCommand(query.ToString(), new SqlParameter("@OSP_HEADER_ID", OSP_HEADER_ID));
+WHERE OSP_HEADER_ID = @ORG_OSP_HEADER_ID
+");
+            Context.Database.ExecuteSqlCommand(query.ToString(), new SqlParameter("@ORG_OSP_HEADER_ID", orgOspHeaderId), new SqlParameter("@DST_OSP_HEADER_ID", dstOspHeaderId));
         }
 
         /// <summary>
@@ -3225,7 +3220,10 @@ and SUBINVENTORY_CODE = @SUBINVENTORY_CODE");
             /// 關帳
             /// </summary>
             public const string CloseBatch = "4";
-
+            /// <summary>
+            /// 已修改
+            /// </summary>
+            public const string Modified = "5";
 
             public string GetDesc(string statusCode)
             {
@@ -3241,6 +3239,8 @@ and SUBINVENTORY_CODE = @SUBINVENTORY_CODE");
                         return "已完工";
                     case CloseBatch:
                         return "關帳";
+                    case Modified:
+                        return "已修改";
                     default:
                         return "";
                 }

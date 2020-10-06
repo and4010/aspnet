@@ -6,9 +6,12 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Purchase
 {
     public class OSP_SOA_S1_T
     {
-        [Required]
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [Required]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public long OspSoaS1Id { set; get; }
+
+        [Required]
         [Column("OSP_HEADER_ID", Order = 1)]
         public long OspHeaderId { set; get; }
 
@@ -18,8 +21,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Purchase
         /// 
         [StringLength(20)]
         [Required]
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         [Column("PROCESS_CODE", Order = 2)]
         public string ProcessCode { set; get; }
 
@@ -30,8 +31,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Purchase
         /// 
         [StringLength(20)]
         [Required]
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         [Column("SERVER_CODE", Order = 3)]
         public string ServerCode { set; get; }
 
@@ -42,8 +41,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Purchase
         /// 
         [StringLength(20)]
         [Required]
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         [Column("BATCH_ID", Order = 4)]
         public string BatchId { set; get; }
 

@@ -358,10 +358,10 @@ namespace CHPOUTSRCMES.Web.ViewModels.Process
         /// <param name="BatchNo"></param>
         /// <param name="OspHeaderId"></param>
         /// <returns></returns>
-        public ResultModel FinisheEdit(string BatchNo, long OspHeaderId)
+        public ResultDataModel<long> FinisheEdit(string BatchNo, long OspHeaderId, string userId)
         {
             using var context = new MesContext();
-            return new ProcessUOW(context).FinisheEdit(BatchNo, OspHeaderId);
+            return new ProcessUOW(context).FinisheEdit(BatchNo, OspHeaderId, userId);
         }
 
         /// <summary>
