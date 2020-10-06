@@ -478,6 +478,10 @@
     <Compile Include="Migrations\202009301026083_add_field_osp_header_t1.Designer.cs">
       <DependentUpon>202009301026083_add_field_osp_header_t1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202010060100413_change-osp-tables.cs" />
+    <Compile Include="Migrations\202010060100413_change-osp-tables.Designer.cs">
+      <DependentUpon>202010060100413_change-osp-tables.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Delivery\FlatEditBarcodeDT.cs" />
     <Compile Include="Models\Delivery\FlatEditDT.cs" />
@@ -2285,6 +2289,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202009301026083_add_field_osp_header_t1.resx">
       <DependentUpon>202009301026083_add_field_osp_header_t1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202010060100413_change-osp-tables.resx">
+      <DependentUpon>202010060100413_change-osp-tables.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
