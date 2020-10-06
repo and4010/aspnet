@@ -486,6 +486,10 @@
     <Compile Include="Migrations\202010060122108_add-osp-tables.Designer.cs">
       <DependentUpon>202010060122108_add-osp-tables.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202010061135531_fix-soa-tables.cs" />
+    <Compile Include="Migrations\202010061135531_fix-soa-tables.Designer.cs">
+      <DependentUpon>202010061135531_fix-soa-tables.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Delivery\FlatEditBarcodeDT.cs" />
     <Compile Include="Models\Delivery\FlatEditDT.cs" />
@@ -2299,6 +2303,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202010060122108_add-osp-tables.resx">
       <DependentUpon>202010060122108_add-osp-tables.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202010061135531_fix-soa-tables.resx">
+      <DependentUpon>202010061135531_fix-soa-tables.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

@@ -64,7 +64,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             this.OspPickedOutHTRepository = new GenericRepository<OSP_PICKED_OUT_HT>(this);
             this.OspYieldVarianceTRepository = new GenericRepository<OSP_YIELD_VARIANCE_T>(this);
             this.OspYieldVarianceHTRepository = new GenericRepository<OSP_YIELD_VARIANCE_HT>(this);
-
+            this.OspHeaderModTRepository = new GenericRepository<OSP_HEADER_MOD_T>(this);
 
         }
 
