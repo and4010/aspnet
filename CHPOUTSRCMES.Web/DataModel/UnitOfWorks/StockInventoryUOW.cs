@@ -780,7 +780,7 @@ SELECT m.TRANSFER_INVENTORY_ID AS ID
                                 stock.SecondaryLockedQty = null;
                                 stock.ReasonCode = null;
                                 stock.ReasonDesc = null;
-                                stock.Note = null;
+                                stock.Note = detail.Note;
                                 stock.StatusCode = StockStatusCode.InStock;
                                 stock.CreatedBy = userId;
                                 stock.CreationDate = now;
@@ -865,6 +865,14 @@ SELECT m.TRANSFER_INVENTORY_ID AS ID
                                 //更新庫存
                                 stock.PrimaryAvailableQty = aftPryQty;
                                 stock.SecondaryAvailableQty = aftSecQty;
+                                if (string.IsNullOrEmpty(stock.Note))
+                                {
+                                    stock.Note = detail.Note;
+                                }
+                                else
+                                {
+                                    stock.Note = stock.Note + "," + detail.Note;
+                                }
                                 stock.LastUpdateBy = userId;
                                 stock.LastUpdateDate = now;
                                 stock.StatusCode = stockStatusCode;
