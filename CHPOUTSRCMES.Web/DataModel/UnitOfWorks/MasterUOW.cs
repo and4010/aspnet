@@ -319,10 +319,13 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             public const string Purchase = "C2";
             public const string TransferInbound = "C3";
             public const string TransferOutbound = "C4";
-            public const string Miscellaneous = "C5";
-            public const string Obsolete = "C6";
-            public const string Inventory = "C7";
-            public const string TransferReason = "C8";
+            public const string TransferReason = "C5";
+            public const string MiscellaneousIn = "C6";
+            public const string MiscellaneousOut = "C7";
+            public const string Obsolete = "C8";
+            public const string InventoryProfit = "C9";
+            public const string InventoryLoss = "C10";
+
 
 
             public string GetDesc(string category)
@@ -339,14 +342,18 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                         return "庫存移轉-入庫";
                     case TransferOutbound:
                         return "庫存移轉-出庫";
-                    case Miscellaneous:
-                        return "雜項異動";
-                    case Obsolete:
-                        return "存貨報廢";
-                    case Inventory:
-                        return "盤點";
                     case TransferReason:
                         return "庫存移轉-貨故";
+                    case MiscellaneousIn:
+                        return "雜項異動-雜收";
+                    case MiscellaneousOut:
+                        return "雜項異動-雜發";
+                    case Obsolete:
+                        return "存貨報廢";
+                    case InventoryProfit:
+                        return "盤點-盤盈";
+                    case InventoryLoss:
+                        return "盤點-盤虧";
                     default:
                         return "";
                 }

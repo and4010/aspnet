@@ -132,7 +132,7 @@ function TransferReasonTableInit() {
             },
             { data: "SECONDARY_UOM_CODE", name: "單位", autoWidth: true },
             { data: "REASON_DESC", name: "原因", autoWidth: true },
-            //{ data: "NOTE", name: "備註", autoWidth: true },
+            { data: "NOTE", name: "備註", autoWidth: true },
         ],
 
         "order": [[1, 'desc']],

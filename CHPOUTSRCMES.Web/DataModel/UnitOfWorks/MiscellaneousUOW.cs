@@ -704,11 +704,26 @@ SELECT m.TRANSFER_MISCELLANEOUS_ID AS ID
                             stockTRepository.Update(stock);
 
                             //產生異動紀錄
-                            var stkTxnT = CreateStockRecord(stock, null, null, null,
-                            null, CategoryCode.Miscellaneous, ActionCode.StockTransfer, header.ShipmentNumber,
-                            stock.PrimaryAvailableQty, mPrimaryQty, aftPryQty, stock.SecondaryAvailableQty,
-                            mSecondaryQty, aftSecQty, stockStatusCode, userId, now);
-                            stkTxnTRepository.Create(stkTxnT);
+                            if (header.TransactionTypeId == TransactionTypeId.Chp37In)
+                            {
+                                var stkTxnT = CreateStockRecord(stock, null, null, null,
+                         null, CategoryCode.MiscellaneousIn, ActionCode.StockTransfer, header.ShipmentNumber,
+                         stock.PrimaryAvailableQty, mPrimaryQty, aftPryQty, stock.SecondaryAvailableQty,
+                         mSecondaryQty, aftSecQty, stockStatusCode, userId, now);
+                                stkTxnTRepository.Create(stkTxnT);
+                            }
+                            else if (header.TransactionTypeId == TransactionTypeId.Chp37Out)
+                            {
+                                var stkTxnT = CreateStockRecord(stock, null, null, null,
+                         null, CategoryCode.MiscellaneousOut, ActionCode.StockTransfer, header.ShipmentNumber,
+                         stock.PrimaryAvailableQty, mPrimaryQty, aftPryQty, stock.SecondaryAvailableQty,
+                         mSecondaryQty, aftSecQty, stockStatusCode, userId, now);
+                                stkTxnTRepository.Create(stkTxnT);
+                            }
+                            else
+                            {
+                                throw new Exception("異動型態Id錯誤");
+                            }
 
 
                             ////更新其它尚未儲存的明細數量

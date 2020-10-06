@@ -40,11 +40,11 @@ namespace CHPOUTSRCMES.Web.ViewModels.Process
         /// <param name="OspHeaderId"></param>
         /// <param name="Note"></param>
         /// <returns></returns>
-        public ResultModel SetEditNote(long OspHeaderId, string Note)
+        public ResultModel SetEditNote(long OspHeaderId, string Note, string userId)
         {
             using (var context = new MesContext())
             {
-                return new ProcessUOW(context).SetEditNote(OspHeaderId, Note);
+                return new ProcessUOW(context).SetEditNote(OspHeaderId, Note, userId);
             }
         }
         /// <summary>
@@ -52,11 +52,11 @@ namespace CHPOUTSRCMES.Web.ViewModels.Process
         /// </summary>
         /// <returns></returns>
         public ResultModel SetStatusAndCutDate(long OspHeaderId, DateTime Dialog_CuttingDateFrom, DateTime Dialog_CuttingDateTo, 
-            string Dialog_MachineNum, string BtnStatus)
+            string Dialog_MachineNum, string BtnStatus, string UserId)
         {
             using (var context = new MesContext())
             {
-                return new ProcessUOW(context).SetStatusAndCutDate(OspHeaderId, Dialog_CuttingDateFrom, Dialog_CuttingDateTo, Dialog_MachineNum, BtnStatus);
+                return new ProcessUOW(context).SetStatusAndCutDate(OspHeaderId, Dialog_CuttingDateFrom, Dialog_CuttingDateTo, Dialog_MachineNum, BtnStatus, UserId);
             }
         }
         /// <summary>

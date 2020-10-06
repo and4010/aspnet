@@ -55,8 +55,10 @@ namespace CHPOUTSRCMES.Web.Controllers
 
         public JsonResult EditSave(long OspHeaderId, string Note)
         {
+            //取得使用者ID
+            var id = this.User.Identity.GetUserId();
             ProcessViewModel procesViewModel = new ProcessViewModel();
-            var resultModel = procesViewModel.SetEditNote(OspHeaderId, Note);
+            var resultModel = procesViewModel.SetEditNote(OspHeaderId, Note, id);
             return Json(new { resultModel },JsonRequestBehavior.AllowGet);
         }
 
@@ -140,8 +142,10 @@ namespace CHPOUTSRCMES.Web.Controllers
         [HttpPost]
         public ActionResult _BtnDailogChangStatusCutDate(long OspHeaderId, DateTime Dialog_CuttingDateFrom, DateTime Dialog_CuttingDateTo, string Dialog_MachineNum, string BtnStatus)
         {
+            //取得使用者ID
+            var Userid = this.User.Identity.GetUserId();
             ProcessViewModel procesViewModel = new ProcessViewModel();
-            var resultModel = procesViewModel.SetStatusAndCutDate(OspHeaderId, Dialog_CuttingDateFrom, Dialog_CuttingDateTo, Dialog_MachineNum, BtnStatus);
+            var resultModel = procesViewModel.SetStatusAndCutDate(OspHeaderId, Dialog_CuttingDateFrom, Dialog_CuttingDateTo, Dialog_MachineNum, BtnStatus, Userid);
             return Json(new { resultModel }, JsonRequestBehavior.AllowGet);
         }
 

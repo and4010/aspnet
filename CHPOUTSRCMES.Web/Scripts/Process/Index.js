@@ -300,7 +300,7 @@ function BtnEvent() {
                 success: function (data) {
                     if (data != null) {
                         if (data.resultModel.Success) {
-                            orderProcess(PaperType, OspHeaderId);
+                            orderProcess(PaperType, OspHeaderId, BatchType);
                         } else {
                             swal.fire(data.resultModel.Msg);
                         }
@@ -308,7 +308,7 @@ function BtnEvent() {
                 }
             })
         } else {
-            orderProcess(PaperType, OspHeaderId);
+            orderProcess(PaperType, OspHeaderId, BatchType);
         }
     });
 
@@ -338,16 +338,9 @@ function BtnEvent() {
         var Status = rowData.pluck('Status')[0]
         var OspHeaderId = rowData.pluck('OspHeaderId')[0]
         var PaperType = rowData.pluck('PaperType')[0]
+        var BatchType = rowData.pluck('BatchType')[0]
         if (Status == DwellBatch) {
-            $.ajax({
-                url: '/Process/_ProcessIndex',
-                type: "POST",
-                data: { PaperType: PaperType },
-                success: function (result) {
-                    $('body').append(result);
-                    Open($('#ProcessModal'), OspHeaderId);
-                }
-            });
+            orderProcess(PaperType, OspHeaderId, BatchType);
 
         } else {
             swal.fire("加工狀態不正確，重新選擇");
@@ -386,14 +379,14 @@ function BtnEvent() {
 }
 
 //排單
-function orderProcess(PaperType, OspHeaderId) {
+function orderProcess(PaperType, OspHeaderId, BatchType) {
     $.ajax({
         url: '/Process/_ProcessIndex',
         type: "POST",
         data: { PaperType: PaperType },
         success: function (result) {
             $('body').append(result);
-            Open($('#ProcessModal'), OspHeaderId);
+            Open($('#ProcessModal'), OspHeaderId, BatchType);
         }
     });
 }
@@ -417,7 +410,7 @@ function search() {
 }
 
 //彈出dialog
-function Open(modal_dialog, OspHeaderId) {
+function Open(modal_dialog, OspHeaderId, BatchType) {
     modal_dialog.modal({
         backdrop: "static",
         keyboard: true,
@@ -466,7 +459,7 @@ function Open(modal_dialog, OspHeaderId) {
             return
         }
 
-        if (Dialog_MachineNum == null) {
+        if (BatchType != 'REP' && Dialog_MachineNum == null) {
             swal.fire("機台不能空白");
             return
         }
