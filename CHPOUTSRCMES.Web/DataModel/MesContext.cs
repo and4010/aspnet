@@ -343,14 +343,34 @@ namespace CHPOUTSRCMES.Web.DataModel
         public DbSet<OSP_SOA_S1_T> OspSoaS1T { set; get; }
 
         /// <summary>
+        /// 加工SOA明細 第一階段上傳
+        /// </summary>
+        public DbSet<OSP_SOA_DTL_S1_T> OspSoaDtlS1T { set; get; }
+        
+        /// <summary>
         /// 加工SOA 第二階段上傳
         /// </summary>
         public DbSet<OSP_SOA_S2_T> OspSoaS2T { set; get; }
 
         /// <summary>
+        /// 加工SOA明細 第二階段上傳
+        /// </summary>
+        public DbSet<OSP_SOA_DTL_S2_T> OspSoaDtlS2T { set; get; }
+
+        /// <summary>
         /// 加工SOA 第三階段上傳
         /// </summary>
         public DbSet<OSP_SOA_S3_T> OspSoaS3T { set; get; }
+
+        /// <summary>
+        /// 加工SOA明細 第三階段上傳
+        /// </summary>
+        public DbSet<OSP_SOA_DTL_S3_T> OspSoaDtlS3T { set; get; }
+
+        /// <summary>
+        /// 加工修改對應表
+        /// </summary>
+        public DbSet<OSP_HEADER_MOD_T> OspHeaderModT { set; get; }
 
         #endregion
 

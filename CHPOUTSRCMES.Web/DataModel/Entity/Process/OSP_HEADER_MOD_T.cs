@@ -19,7 +19,7 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Purchase
         [Required]
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        [Column("OSP_HEADER_ID", Order = 2)]
+        [Column("ORG_OSP_HEADER_ID", Order = 2)]
         public long OrgOspHeaderId { set; get; }
 
     }

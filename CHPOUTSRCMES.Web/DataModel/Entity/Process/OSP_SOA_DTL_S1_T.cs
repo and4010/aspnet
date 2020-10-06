@@ -6,13 +6,23 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Purchase
 {
     public class OSP_SOA_DTL_S1_T
     {
+        /// <summary>
+        /// RXD
+        /// </summary>
         [Key]
         [Required]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long OspSoaDtlS1Id { set; get; }
 
+        /// <summary>
+        /// OSP_SOA_S1_ID
+        /// </summary>
         [Required]
         public long OspSoaS1Id { set; get; }
+
+        [StringLength(20)]
+        [Required]
+        public string BATCH_LINE_ID { set; get; }
 
         [Required]
         [Column("OSP_HEADER_ID", Order = 1)]
