@@ -3036,34 +3036,36 @@ AND OPO.OSP_PICKED_OUT_ID = @OSP_PICKED_OUT_ID
         /// </summary>
         /// <param name="OspDetailOutId"></param>
         /// <returns></returns>
-        public List<SelectListItem> GetLocator(long OspDetailOutId)
+        public List<SelectListItem> GetLocator(long OspDetailOutId, string UserId)
         {
             try
             {
                 using (var mesContext = new MesContext())
                 {
                     var DetailOut = OspDetailOutTRepository.Get(x => x.OspDetailOutId == OspDetailOutId).SingleOrDefault();
-                    List<SelectListItem> locator = new List<SelectListItem>();
-                    List<SqlParameter> sqlParameterList = new List<SqlParameter>();
-                    StringBuilder query = new StringBuilder();
-                    query.Append(
-@"SELECT 
-[SEGMENT3] as Text,
-cast([LOCATOR_ID] as nvarchar) as Value
-FROM [LOCATOR_T] LT
-where CONTROL_FLAG <> 'D'
-and SUBINVENTORY_CODE = @SUBINVENTORY_CODE");
-                    sqlParameterList.Add(new SqlParameter("@SUBINVENTORY_CODE", DetailOut.Subinventory));
-                    var data = mesContext.Database.SqlQuery<SelectListItem>(query.ToString(), sqlParameterList.ToArray()).ToList();
-                    if (data == null)
-                    {
-                        locator.AddRange(data);
-                    }
-                    else
-                    {
-                        locator.AddRange(data);
-                    }
-                    return locator;
+                    return getLocatorListForUserId(UserId, DetailOut.Subinventory);
+
+//                    List<SelectListItem> locator = new List<SelectListItem>();
+//                    List<SqlParameter> sqlParameterList = new List<SqlParameter>();
+//                    StringBuilder query = new StringBuilder();
+//                    query.Append(
+//@"SELECT 
+//[SEGMENT3] as Text,
+//cast([LOCATOR_ID] as nvarchar) as Value
+//FROM [LOCATOR_T] LT
+//where CONTROL_FLAG <> 'D'
+//and SUBINVENTORY_CODE = @SUBINVENTORY_CODE");
+//                    sqlParameterList.Add(new SqlParameter("@SUBINVENTORY_CODE", DetailOut.Subinventory));
+//                    var data = mesContext.Database.SqlQuery<SelectListItem>(query.ToString(), sqlParameterList.ToArray()).ToList();
+//                    if (data == null)
+//                    {
+//                        locator.AddRange(data);
+//                    }
+//                    else
+//                    {
+//                        locator.AddRange(data);
+//                    }
+//                    return locator;
                 }
             }
             catch (Exception e)

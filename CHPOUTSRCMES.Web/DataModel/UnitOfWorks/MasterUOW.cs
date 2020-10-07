@@ -2233,7 +2233,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
         /// <param name="userId"></param>
         /// <param name="SUBINVENTORY_CODE"></param>
         /// <returns></returns>
-        private List<SelectListItem> getLocatorListForUserId(string userId, string SUBINVENTORY_CODE)
+        public List<SelectListItem> getLocatorListForUserId(string userId, string SUBINVENTORY_CODE)
         {
 
             var tmp = userSubinventoryTRepository.GetAll().AsNoTracking()
