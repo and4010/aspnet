@@ -1052,7 +1052,7 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
                             if (stock.PrimaryTransactionQty >= aft)
                             {
                                 CheckStock(stock.StockId, UserId, aft, StockStatusCode.ProcessPicked);
-                                StockRecord(id.StockId, aft, chg, 0, 0, categoryCode.GetDesc(CategoryCode.Process), actionCode.GetDesc(ActionCode.Picked), header.BatchNo, UserId);
+                                StockRecord(id.StockId, aft, chg, 0, 0, CategoryCode.Process, ActionCode.Picked, header.BatchNo, UserId);
                                 txn.Commit();
                                 return new ResultModel(true, "");
                             }
@@ -1075,7 +1075,7 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
                         {
                             OspPickedInTRepository.Delete(id, true);
                             CheckStock(stock.StockId, UserId, stock.PrimaryTransactionQty, StockStatusCode.InStock);
-                            StockRecord(id.StockId, stock.PrimaryTransactionQty, 0, 0, 0, categoryCode.GetDesc(CategoryCode.Process), actionCode.GetDesc(ActionCode.Deleted), header.BatchNo, UserId);
+                            StockRecord(id.StockId, stock.PrimaryTransactionQty, 0, 0, 0, CategoryCode.Process, ActionCode.Deleted, header.BatchNo, UserId);
                             txn.Commit();
                             return new ResultModel(true, "");
                         }
@@ -1376,7 +1376,7 @@ AND ST.BARCODE = @BARCODE");
                         if (data.PrimaryAvailableQty >= aft)
                         {
                             CheckStock(data.StockId, UserId, aft, StockStatusCode.ProcessPicked);
-                            StockRecord(data.StockId, aft, chg, 0, 0, categoryCode.GetDesc(CategoryCode.Process), actionCode.GetDesc(ActionCode.Picked), Header.BatchNo, UserId);
+                            StockRecord(data.StockId, aft, chg, 0, 0, CategoryCode.Process, ActionCode.Picked, Header.BatchNo, UserId);
                             txn.Commit();
                             return new ResultModel(true, "寫入成功");
                         }
