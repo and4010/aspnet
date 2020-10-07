@@ -708,7 +708,7 @@ SELECT m.TRANSFER_MISCELLANEOUS_ID AS ID
                             {
                                 var stkTxnT = CreateStockRecord(stock, null, null, null,
                          null, CategoryCode.MiscellaneousIn, ActionCode.StockTransfer, header.ShipmentNumber,
-                         stock.PrimaryAvailableQty, mPrimaryQty, aftPryQty, stock.SecondaryAvailableQty,
+                         detail.OriginalPrimaryQuantity, mPrimaryQty, aftPryQty, detail.OriginalSecondaryQuantity,
                          mSecondaryQty, aftSecQty, stockStatusCode, userId, now);
                                 stkTxnTRepository.Create(stkTxnT);
                             }
@@ -716,7 +716,7 @@ SELECT m.TRANSFER_MISCELLANEOUS_ID AS ID
                             {
                                 var stkTxnT = CreateStockRecord(stock, null, null, null,
                          null, CategoryCode.MiscellaneousOut, ActionCode.StockTransfer, header.ShipmentNumber,
-                         stock.PrimaryAvailableQty, mPrimaryQty, aftPryQty, stock.SecondaryAvailableQty,
+                         detail.OriginalPrimaryQuantity, mPrimaryQty, aftPryQty, detail.OriginalSecondaryQuantity,
                          mSecondaryQty, aftSecQty, stockStatusCode, userId, now);
                                 stkTxnTRepository.Create(stkTxnT);
                             }

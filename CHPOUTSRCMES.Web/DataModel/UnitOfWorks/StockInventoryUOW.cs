@@ -883,7 +883,7 @@ SELECT m.TRANSFER_INVENTORY_ID AS ID
                                 {
                                     var stkTxnT = CreateStockRecord(stock, null, null, null,
                                 null, CategoryCode.InventoryProfit, ActionCode.StockTransfer, header.ShipmentNumber,
-                                stock.PrimaryAvailableQty, mPrimaryQty, aftPryQty, stock.SecondaryAvailableQty,
+                                detail.OriginalPrimaryQuantity, mPrimaryQty, aftPryQty, detail.OriginalSecondaryQuantity,
                                 mSecondaryQty, aftSecQty, stockStatusCode, userId, now);
                                     stkTxnTRepository.Create(stkTxnT);
                                 }
@@ -891,7 +891,7 @@ SELECT m.TRANSFER_INVENTORY_ID AS ID
                                 {
                                     var stkTxnT = CreateStockRecord(stock, null, null, null,
                                null, CategoryCode.InventoryLoss, ActionCode.StockTransfer, header.ShipmentNumber,
-                               stock.PrimaryAvailableQty, mPrimaryQty, aftPryQty, stock.SecondaryAvailableQty,
+                               detail.OriginalPrimaryQuantity, mPrimaryQty, aftPryQty, detail.OriginalSecondaryQuantity,
                                mSecondaryQty, aftSecQty, stockStatusCode, userId, now);
                                     stkTxnTRepository.Create(stkTxnT);
                                 }
