@@ -333,10 +333,10 @@ namespace CHPOUTSRCMES.Web.ViewModels.Process
         /// <param name="UserId"></param>
         /// <param name="UserName"></param>
         /// <returns></returns>
-        public ResultModel ChangeHeaderStauts(long OspHeaderId, long Locator, string UserId, string UserName)
+        public ResultModel ChangeHeaderStauts(long OspHeaderId, string LocatorId, string UserId, string UserName)
         {
             using var context = new MesContext();
-            return new ProcessUOW(context).ChangeHeaderStauts(OspHeaderId, Locator, UserId, UserName);
+            return new ProcessUOW(context).ChangeHeaderStauts(OspHeaderId, LocatorId, UserId, UserName);
         }
 
         /// <summary>

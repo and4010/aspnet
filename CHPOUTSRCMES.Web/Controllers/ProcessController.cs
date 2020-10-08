@@ -115,7 +115,7 @@ namespace CHPOUTSRCMES.Web.Controllers
         /// <param name="Locator"></param>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult ChangeHeaderStauts(long OspHeaderId, long Locator)
+        public ActionResult ChangeHeaderStauts(long OspHeaderId, string Locator)
         {
             ProcessViewModel viewModel = new ProcessViewModel();
             //取得使用者ID
@@ -127,6 +127,7 @@ namespace CHPOUTSRCMES.Web.Controllers
             return Json(new { resultModel }, JsonRequestBehavior.AllowGet);
         }
 
+        //待測試修改
         [Authorize(Roles = "系統管理員, 華紙使用者")]
         [HttpPost]
         public ActionResult ApproveHeaderStauts(long OspHeaderId)
@@ -136,7 +137,7 @@ namespace CHPOUTSRCMES.Web.Controllers
             var Userid = this.User.Identity.GetUserId();
             //取得使用者帳號
             var name = this.User.Identity.GetUserName();
-            var resultModel = viewModel.ChangeHeaderStauts(OspHeaderId, 0, Userid, name);
+            var resultModel = viewModel.ChangeHeaderStauts(OspHeaderId, null, Userid, name);
 
             return Json(new { resultModel }, JsonRequestBehavior.AllowGet);
         }

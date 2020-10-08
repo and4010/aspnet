@@ -2135,7 +2135,7 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
         /// <param name="UserId"></param>
         /// <param name="UserName"></param>
         /// <returns></returns>
-        public ResultModel ChangeHeaderStauts(long OspHeaderId, long Locator, string UserId, string UserName)
+        public ResultModel ChangeHeaderStauts(long OspHeaderId, string LocatorId, string UserId, string UserName)
         {
             using (var txn = this.Context.Database.BeginTransaction())
             {
@@ -2163,7 +2163,7 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
                     header.LastUpdateDate = DateTime.Now;
 
                     OspHeaderTRepository.Update(header, true);
-                    SaveStock(header.OspHeaderId, StockStatusCode.InStock);
+                    SaveStock(header.OspHeaderId, StockStatusCode.InStock, LocatorId);
                     PickInToHt(header.OspHeaderId);
                     PirckOutToHt(header.OspHeaderId);
                     DetailInToHt(header.OspHeaderId);
@@ -2301,17 +2301,28 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
         /// </summary>
         /// <param name="headerId"></param>
         /// <param name="statusCode"></param>
-        public void SaveStock(long headerId, string statusCode)
+        public void SaveStock(long headerId, string statusCode, string LocatorId)
         {
+            if (!long.TryParse(LocatorId, out long locatorId))
+            {
+                locatorId = 0;
+            }
+            var locator = locatorTRepository.GetAll().AsNoTracking().FirstOrDefault(x => x.LocatorId == locatorId);
+            string locatorCode = null;
+            if (locator != null) locatorCode = locator.LocatorSegments;
+
             var pheaderId = SqlParamHelper.GetBigInt("@headerId", headerId);
             var pstatusCode = SqlParamHelper.GetNVarChar("@statusCode", statusCode);
             var pCode = SqlParamHelper.GetInt("@code", 0, System.Data.ParameterDirection.Output);
             var pMsg = SqlParamHelper.GetNVarChar("@message", "", 500, System.Data.ParameterDirection.Output);
             var pUser = SqlParamHelper.GetNVarChar("@user", "", 128);
-            this.Context.Database.ExecuteSqlCommand("[SP_SaveOspDetailOut] @headerId, @statusCode ,@code output, @message output, @user",
-                pheaderId, pstatusCode, pCode, pMsg, pUser);
-            this.Context.Database.ExecuteSqlCommand("[SP_SaveCotangentStock] @headerId, @statusCode ,@code output, @message output, @user",
-                pheaderId, pstatusCode, pCode, pMsg, pUser);
+            var pLoc = SqlParamHelper.GetBigInt("@locatorId", locatorId);
+            var pLocatorCode = SqlParamHelper.GetNVarChar("@locatorCode", locatorCode);
+
+            this.Context.Database.ExecuteSqlCommand("[SP_SaveOspDetailOut] @headerId, @statusCode ,@code output, @message output, @user, @locatorId, @locatorCode",
+                pheaderId, pstatusCode, pCode, pMsg, pUser, pLoc, pLocatorCode);
+            this.Context.Database.ExecuteSqlCommand("[SP_SaveCotangentStock] @headerId, @statusCode ,@code output, @message output, @user, @locatorId, @locatorCode",
+                pheaderId, pstatusCode, pCode, pMsg, pUser, pLoc, pLocatorCode);
         }
 
 
