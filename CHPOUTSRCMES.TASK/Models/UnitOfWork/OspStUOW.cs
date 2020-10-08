@@ -21,6 +21,10 @@ namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
         //public CtrStRepository CtrStRepository => ctrStRepository ??
         //    (ctrStRepository = new CtrStRepository(Context, $"{SchemaName}XXIF_CHP_P217_CONTAINER_ST"));
 
+        private OspBatchStRepository ospBatchStRepository = null;
+        public OspBatchStRepository OspBatchStRepository => ospBatchStRepository ??
+            (ospBatchStRepository = new OspBatchStRepository(Context, $"{SchemaName}XXIF_CHP_P219_OSP_BATCH_ST"));
+
         private OspHeaderRepository ospHeaderRepository = null;
         public OspHeaderRepository OspHeaderRepository => ospHeaderRepository ??
             (ospHeaderRepository = new OspHeaderRepository(Context, $"{SchemaName}OSP_HEADER_T"));
@@ -68,6 +72,9 @@ namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
             {
                 var p = new DynamicParameters();
                 p.Add(name: "@ospHeaderId", value: ospHeaderId, dbType: DbType.Int64, direction: ParameterDirection.Input);
+                p.Add(name: "@processCode", dbType: DbType.String, direction: ParameterDirection.Output, size: 20);
+                p.Add(name: "@serverCode", dbType: DbType.String, direction: ParameterDirection.Output, size: 20);
+                p.Add(name: "@batchId", dbType: DbType.String, direction: ParameterDirection.Output, size: 20);
                 p.Add(name: "@code", dbType: DbType.Int32, direction: ParameterDirection.Output);
                 p.Add(name: "@message", dbType: DbType.String, direction: ParameterDirection.Output, size: 500);
                 p.Add(name: "@user", value: "SYS", dbType: DbType.String, direction: ParameterDirection.Input, size: 128);
@@ -118,6 +125,9 @@ namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
             {
                 var p = new DynamicParameters();
                 p.Add(name: "@ospHeaderId", value: ospHeaderId, dbType: DbType.Int64, direction: ParameterDirection.Input);
+                p.Add(name: "@processCode", dbType: DbType.String, direction: ParameterDirection.Output, size: 20);
+                p.Add(name: "@serverCode", dbType: DbType.String, direction: ParameterDirection.Output, size: 20);
+                p.Add(name: "@batchId", dbType: DbType.String, direction: ParameterDirection.Output, size: 20);
                 p.Add(name: "@code", dbType: DbType.Int32, direction: ParameterDirection.Output);
                 p.Add(name: "@message", dbType: DbType.String, direction: ParameterDirection.Output, size: 500);
                 p.Add(name: "@user", value: "SYS", dbType: DbType.String, direction: ParameterDirection.Input, size: 128);
@@ -207,14 +217,44 @@ namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
 
         public async Task<ResultModel> OspBatchStReceive(XXIF_CHP_CONTROL_ST controlStage, IDbTransaction transaction = null)
         {
+            var list = await OspBatchStRepository.GetListBy(controlStage.PROCESS_CODE, controlStage.SERVER_CODE, controlStage.BATCH_ID, transaction);
+
+            if (list.Count == 0)
+                return new ResultModel(false, "");
+
+            for(int i = 0; i < list.Count; i++ )
+            {
+                switch(list[i].BATCH_STATUS)
+                {
+                    case 2:
+                        await OspBatchStCreateNow(list[i], transaction);
+                        break;
+                    case -1:
+                        await OspBatchStCancel(list[i], transaction);
+                        break;
+                    default:
+                        await OspBatchStChange(list[i], transaction);
+                        break;
+                }
+            }
+
+            return await OspBatchStSummarize(controlStage, transaction);
+        }
+
+
+
+
+        public async Task<ResultModel> OspBatchStCreateNow(XXIF_CHP_P219_OSP_BATCH_ST st, IDbTransaction transaction = null)
+        {
             var resultModel = new ResultModel();
             
             try
             {
                 var p = new DynamicParameters();
-                p.Add(name: "@processCode", value: controlStage.PROCESS_CODE, dbType: DbType.String, direction: ParameterDirection.Input, size: 20);
-                p.Add(name: "@serverCode", value: controlStage.SERVER_CODE, dbType: DbType.String, direction: ParameterDirection.Input, size: 20);
-                p.Add(name: "@batchId", value: controlStage.BATCH_ID, dbType: DbType.String, direction: ParameterDirection.Input, size: 20);
+                p.Add(name: "@processCode", value: st.PROCESS_CODE, dbType: DbType.String, direction: ParameterDirection.Input, size: 20);
+                p.Add(name: "@serverCode", value: st.SERVER_CODE, dbType: DbType.String, direction: ParameterDirection.Input, size: 20);
+                p.Add(name: "@batchId", value: st.BATCH_ID, dbType: DbType.String, direction: ParameterDirection.Input, size: 20);
+                p.Add(name: "@peBatchId", value: st.PE_BATCH_ID, dbType: DbType.Int64, direction: ParameterDirection.Input);
                 p.Add(name: "@code", dbType: DbType.Int32, direction: ParameterDirection.Output);
                 p.Add(name: "@message", dbType: DbType.String, direction: ParameterDirection.Output, size: 500);
                 p.Add(name: "@user", value: "SYS", dbType: DbType.String, direction: ParameterDirection.Input, size: 128);
@@ -228,6 +268,101 @@ namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
                 }
             }
             catch(Exception ex)
+            {
+                resultModel.Code = -99;
+                resultModel.Success = false;
+                resultModel.Msg = ex.Message;
+            }
+            return resultModel;
+        }
+
+        public async Task<ResultModel> OspBatchStChange(XXIF_CHP_P219_OSP_BATCH_ST st, IDbTransaction transaction = null)
+        {
+            var resultModel = new ResultModel();
+
+            try
+            {
+                var p = new DynamicParameters();
+                p.Add(name: "@processCode", value: st.PROCESS_CODE, dbType: DbType.String, direction: ParameterDirection.Input, size: 20);
+                p.Add(name: "@serverCode", value: st.SERVER_CODE, dbType: DbType.String, direction: ParameterDirection.Input, size: 20);
+                p.Add(name: "@batchId", value: st.BATCH_ID, dbType: DbType.String, direction: ParameterDirection.Input, size: 20);
+                p.Add(name: "@peBatchId", value: st.PE_BATCH_ID, dbType: DbType.Int64, direction: ParameterDirection.Input);
+                p.Add(name: "@code", dbType: DbType.Int32, direction: ParameterDirection.Output);
+                p.Add(name: "@message", dbType: DbType.String, direction: ParameterDirection.Output, size: 500);
+                p.Add(name: "@user", value: "SYS", dbType: DbType.String, direction: ParameterDirection.Input, size: 128);
+
+                Context.Execute(sql: "SP_P219_OspStChange", param: p, transaction: transaction, commandType: CommandType.StoredProcedure);
+                resultModel = new ResultModel(p.Get<int>("@code"), p.Get<string>("@message"));
+
+                if (!resultModel.Success)
+                {
+                    return resultModel;
+                }
+            }
+            catch (Exception ex)
+            {
+                resultModel.Code = -99;
+                resultModel.Success = false;
+                resultModel.Msg = ex.Message;
+            }
+            return resultModel;
+        }
+
+        public async Task<ResultModel> OspBatchStCancel(XXIF_CHP_P219_OSP_BATCH_ST st, IDbTransaction transaction = null)
+        {
+            var resultModel = new ResultModel();
+
+            try
+            {
+                var p = new DynamicParameters();
+                p.Add(name: "@processCode", value: st.PROCESS_CODE, dbType: DbType.String, direction: ParameterDirection.Input, size: 20);
+                p.Add(name: "@serverCode", value: st.SERVER_CODE, dbType: DbType.String, direction: ParameterDirection.Input, size: 20);
+                p.Add(name: "@batchId", value: st.BATCH_ID, dbType: DbType.String, direction: ParameterDirection.Input, size: 20);
+                p.Add(name: "@peBatchId", value: st.PE_BATCH_ID, dbType: DbType.Int64, direction: ParameterDirection.Input);
+                p.Add(name: "@code", dbType: DbType.Int32, direction: ParameterDirection.Output);
+                p.Add(name: "@message", dbType: DbType.String, direction: ParameterDirection.Output, size: 500);
+                p.Add(name: "@user", value: "SYS", dbType: DbType.String, direction: ParameterDirection.Input, size: 128);
+
+                Context.Execute(sql: "SP_P219_OspStCancel", param: p, transaction: transaction, commandType: CommandType.StoredProcedure);
+                resultModel = new ResultModel(p.Get<int>("@code"), p.Get<string>("@message"));
+
+                if (!resultModel.Success)
+                {
+                    return resultModel;
+                }
+            }
+            catch (Exception ex)
+            {
+                resultModel.Code = -99;
+                resultModel.Success = false;
+                resultModel.Msg = ex.Message;
+            }
+            return resultModel;
+        }
+
+        public async Task<ResultModel> OspBatchStSummarize(XXIF_CHP_CONTROL_ST st, IDbTransaction transaction = null)
+        {
+            var resultModel = new ResultModel();
+
+            try
+            {
+                var p = new DynamicParameters();
+                p.Add(name: "@processCode", value: st.PROCESS_CODE, dbType: DbType.String, direction: ParameterDirection.Input, size: 20);
+                p.Add(name: "@serverCode", value: st.SERVER_CODE, dbType: DbType.String, direction: ParameterDirection.Input, size: 20);
+                p.Add(name: "@batchId", value: st.BATCH_ID, dbType: DbType.String, direction: ParameterDirection.Input, size: 20);
+                p.Add(name: "@code", dbType: DbType.Int32, direction: ParameterDirection.Output);
+                p.Add(name: "@message", dbType: DbType.String, direction: ParameterDirection.Output, size: 500);
+                p.Add(name: "@user", value: "SYS", dbType: DbType.String, direction: ParameterDirection.Input, size: 128);
+
+                Context.Execute(sql: "SP_P219_OspStSummarize", param: p, transaction: transaction, commandType: CommandType.StoredProcedure);
+                resultModel = new ResultModel(p.Get<int>("@code"), p.Get<string>("@message"));
+
+                if (!resultModel.Success)
+                {
+                    return resultModel;
+                }
+            }
+            catch (Exception ex)
             {
                 resultModel.Code = -99;
                 resultModel.Success = false;

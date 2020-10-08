@@ -2260,17 +2260,17 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
                         newHeader.LastUpdateBy = userId;
                         newHeader.LastUpdateDate = DateTime.Now;
                         newHeader.OspHeaderId = 0;
-                        OspHeaderTRepository.Create(newHeader);
+                        OspHeaderTRepository.Create(newHeader, true);
 
                         header.Status = ProcessStatusCode.Modified;
                         header.LastUpdateBy = userId;
                         header.LastUpdateDate = DateTime.Now;
-                        OspHeaderTRepository.Update(header);
+                        OspHeaderTRepository.Update(header, true);
 
                         var headerMod = new OSP_HEADER_MOD_T();
                         headerMod.OrgOspHeaderId = header.OspHeaderId;
                         headerMod.OspHeaderId = newHeader.OspHeaderId;
-                        OspHeaderModTRepository.Create(headerMod);
+                        OspHeaderModTRepository.Create(headerMod, true);
 
                         HtToTStockDelete(OspHeaderId);
                         DetailInHtToT(OspHeaderId, header.OspHeaderId);
@@ -2581,6 +2581,9 @@ JOIN [OSP_DETAIL_IN_HT] D ON D.OSP_DETAIL_IN_ID = P.OSP_DETAIL_IN_ID AND D.OSP_H
 LEFT JOIN [OSP_DETAIL_IN_T] T ON T.OSP_HEADER_ID = @DST_OSP_HEADER_ID AND T.PROCESS_CODE = D.PROCESS_CODE AND T.SERVER_CODE = D.SERVER_CODE AND T.BATCH_ID = D.BATCH_ID AND T.BATCH_LINE_ID = D.BATCH_LINE_ID
 where P.OSP_HEADER_ID = @ORG_OSP_HEADER_ID");
             Context.Database.ExecuteSqlCommand(query.ToString(), new SqlParameter("@ORG_OSP_HEADER_ID", orgOspHeaderId), new SqlParameter("@DST_OSP_HEADER_ID", dstOspHeaderId));
+
+            string cmd = "DELETE FROM [OSP_PICKED_IN_HT] WHERE OSP_HEADER_ID = @ORG_OSP_HEADER_ID ";
+            Context.Database.ExecuteSqlCommand(cmd, new SqlParameter("@ORG_OSP_HEADER_ID", orgOspHeaderId));
         }
 
         /// <summary>
@@ -2612,6 +2615,9 @@ LEFT JOIN [OSP_DETAIL_OUT_T] T ON T.OSP_HEADER_ID = @DST_OSP_HEADER_ID AND T.PRO
 LEFT JOIN [OSP_COTANGENT_T] H ON H.OSP_HEADER_ID = T.OSP_HEADER_ID AND H.OSP_DETAIL_OUT_ID = C.OSP_DETAIL_OUT_ID AND H.STOCK_ID = C.STOCK_ID
 WHERE P.OSP_HEADER_ID = @ORG_OSP_HEADER_ID");
             Context.Database.ExecuteSqlCommand(query.ToString(), new SqlParameter("@ORG_OSP_HEADER_ID", orgOspHeaderId), new SqlParameter("@DST_OSP_HEADER_ID", dstOspHeaderId));
+
+            string cmd = "DELETE FROM [OSP_PICKED_OUT_HT] WHERE OSP_HEADER_ID = @ORG_OSP_HEADER_ID ";
+            Context.Database.ExecuteSqlCommand(cmd, new SqlParameter("@ORG_OSP_HEADER_ID", orgOspHeaderId));
         }
 
         /// <summary>
@@ -2657,7 +2663,11 @@ SELECT
 [CREATED_BY],[CREATION_DATE],[LAST_UPDATE_BY],[LAST_UPDATE_DATE]
 FROM [OSP_DETAIL_IN_HT]
 WHERE OSP_HEADER_ID = @ORG_OSP_HEADER_ID");
+
             Context.Database.ExecuteSqlCommand(query.ToString(), new SqlParameter("@ORG_OSP_HEADER_ID", orgOspHeaderId), new SqlParameter("@DST_OSP_HEADER_ID", dstOspHeaderId));
+
+            string cmd = "DELETE FROM [OSP_DETAIL_IN_HT] WHERE OSP_HEADER_ID = @ORG_OSP_HEADER_ID ";
+            Context.Database.ExecuteSqlCommand(cmd, new SqlParameter("@ORG_OSP_HEADER_ID", orgOspHeaderId));
         }
         /// <summary>
         /// 產出歷史轉產出明細&刪除歷史
@@ -2703,6 +2713,9 @@ SELECT
 FROM [OSP_DETAIL_OUT_HT]
 WHERE OSP_HEADER_ID = @ORG_OSP_HEADER_ID");
             Context.Database.ExecuteSqlCommand(query.ToString(), new SqlParameter("@ORG_OSP_HEADER_ID", orgOspHeaderId), new SqlParameter("@DST_OSP_HEADER_ID", dstOspHeaderId));
+
+            string cmd = "DELETE FROM [OSP_DETAIL_OUT_HT] WHERE OSP_HEADER_ID = @ORG_OSP_HEADER_ID ";
+            Context.Database.ExecuteSqlCommand(cmd, new SqlParameter("@ORG_OSP_HEADER_ID", orgOspHeaderId));
         }
 
         /// <summary>
@@ -2730,6 +2743,9 @@ JOIN [OSP_DETAIL_OUT_HT] D ON D.OSP_DETAIL_OUT_ID = C.OSP_DETAIL_OUT_ID
 LEFT JOIN [OSP_DETAIL_OUT_T] T ON T.OSP_HEADER_ID = @DST_OSP_HEADER_ID AND T.PROCESS_CODE = D.PROCESS_CODE AND T.SERVER_CODE = D.SERVER_CODE AND T.BATCH_ID = D.BATCH_ID AND T.BATCH_LINE_ID = D.BATCH_LINE_ID
 WHERE C.OSP_HEADER_ID = @ORG_OSP_HEADER_ID");
             Context.Database.ExecuteSqlCommand(query.ToString(), new SqlParameter("@ORG_OSP_HEADER_ID", orgOspHeaderId), new SqlParameter("@DST_OSP_HEADER_ID", dstOspHeaderId));
+
+            string cmd = "DELETE FROM [OSP_COTANGENT_HT] WHERE OSP_HEADER_ID = @ORG_OSP_HEADER_ID ";
+            Context.Database.ExecuteSqlCommand(cmd, new SqlParameter("@ORG_OSP_HEADER_ID", orgOspHeaderId));
         }
 
         /// <summary>
@@ -2753,6 +2769,9 @@ FROM [OSP_YIELD_VARIANCE_HT]
 WHERE OSP_HEADER_ID = @ORG_OSP_HEADER_ID
 ");
             Context.Database.ExecuteSqlCommand(query.ToString(), new SqlParameter("@ORG_OSP_HEADER_ID", orgOspHeaderId), new SqlParameter("@DST_OSP_HEADER_ID", dstOspHeaderId));
+
+            string cmd = "DELETE FROM [OSP_YIELD_VARIANCE_HT] WHERE OSP_HEADER_ID = @ORG_OSP_HEADER_ID ";
+            Context.Database.ExecuteSqlCommand(cmd, new SqlParameter("@ORG_OSP_HEADER_ID", orgOspHeaderId));
         }
 
         /// <summary>
@@ -3229,6 +3248,10 @@ and SUBINVENTORY_CODE = @SUBINVENTORY_CODE");
             /// 已修改
             /// </summary>
             public const string Modified = "5";
+            /// <summary>
+            /// 已取消
+            /// </summary>
+            public const string Canceled = "6";
 
             public string GetDesc(string statusCode)
             {
@@ -3246,6 +3269,8 @@ and SUBINVENTORY_CODE = @SUBINVENTORY_CODE");
                         return "關帳";
                     case Modified:
                         return "已修改";
+                    case Canceled:
+                        return "已取消";
                     default:
                         return "";
                 }

@@ -1,0 +1,62 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Linq;
+using System.Reflection;
+using System.Text;
+using System.Threading.Tasks;
+using CHPOUTSRCMES.TASK.Models.Entity;
+using Dapper;
+
+
+namespace CHPOUTSRCMES.TASK.Models.Repository.MsSql
+{
+    public class OspBatchStRepository : GenericRepository<XXIF_CHP_P219_OSP_BATCH_ST>
+    {
+        
+        #region Constructor
+        public OspBatchStRepository()
+        {
+            IdField = "XXIF_CHP_P219_OSP_BATCH_ST";
+        }
+
+        public OspBatchStRepository(IDbConnection conn, string tableName) :base(conn, tableName)
+        {
+            IdField = "XXIF_CHP_P219_OSP_BATCH_ST";
+        }
+
+        #endregion
+
+        public async Task<List<XXIF_CHP_P219_OSP_BATCH_ST>> GetListBy(string processCode, string serverCode, string batchId, IDbTransaction transaction = null)
+        {
+            return (await Connection.QueryAsync<XXIF_CHP_P219_OSP_BATCH_ST>(
+@"SELECT * FROM XXIF_CHP_P219_OSP_BATCH_ST A 
+WHERE A.PROCESS_CODE = @ProcessCode AND A.SERVER_CODE = @ServerCode AND A.BATCH_ID = @BatchId AND A.LINE_TYPE = 'I'
+ORDER BY A.PROCESS_CODE, A.SERVER_CODE, A.BATCH_ID, A.BATCH_LINE_ID", new { ProcessCode = processCode, ServerCode = serverCode, BatchId = batchId }, transaction: transaction)).ToList();
+        }
+
+        #region IDispose Region
+        private bool disposed = false;
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!this.disposed)
+            {
+                if (disposing)
+                {
+
+                }
+            }
+            this.disposed = true;
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+        #endregion
+
+    }
+}

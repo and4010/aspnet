@@ -1580,6 +1580,7 @@
     <Content Include="Data\SQLScript\020_OutboundPickingList.sql" />
     <Content Include="Data\SQLScript\021_InboundRollPickingList.sql" />
     <Content Include="Data\SQLScript\022_GetProcessNameByCode.sql" />
+    <Content Include="Data\SQLScript\023_GetAttributeByTransactionTypeId.sql" />
     <Content Include="Data\SQLScript\101_SP_OrgUnitSync.sql" />
     <Content Include="Data\SQLScript\102_SP_OrganizationSync.sql" />
     <Content Include="Data\SQLScript\103_SP_SubinventorySync.sql" />
@@ -1603,6 +1604,9 @@
     <Content Include="Data\SQLScript\123_SP_P222_TrfInvStUpload.sql" />
     <Content Include="Data\SQLScript\124_SP_P222_TrfMiscStUpload.sql" />
     <Content Include="Data\SQLScript\125_SP_P222_TrfObsStUpload.sql" />
+    <Content Include="Data\SQLScript\126_SP_P219_OspStCancel.sql" />
+    <Content Include="Data\SQLScript\127_SP_P219_OspStChange.sql" />
+    <Content Include="Data\SQLScript\128_SP_P219_OspStSummarize.sql" />
     <Content Include="Data\SQLScript\201_XXIF_CHP_CONTROL_ST.sql" />
     <Content Include="Data\SQLScript\202_XXIF_CHP_P217_CONTAINER_ST.sql" />
     <Content Include="Data\SQLScript\203_XXIF_CHP_P218_CONTAINER_RV_ST.sql" />
