@@ -407,14 +407,14 @@ namespace CHPOUTSRCMES.Web.Controllers
         /// <param name="Process_Detail_Id"></param>
         /// <returns></returns>
         [HttpPost]
-        public JsonResult PaperRollCreateProduction(string PaperRoll_Basic_Weight, string PaperRoll_Specification, string PaperRoll_Lot_Number, long OspDetailOutId)
+        public JsonResult PaperRollCreateProduction(string PaperRoll_Weight, string PaperRoll_Lot_Number, long OspDetailOutId)
         {
             //取得使用者ID
             var Userid = this.User.Identity.GetUserId();
             //取得使用者帳號
             var UserName = this.User.Identity.GetUserName();
             ProcessViewModel viewModel = new ProcessViewModel();
-            var resultModel = viewModel.PaperRollCreateProduction(PaperRoll_Basic_Weight, PaperRoll_Specification, PaperRoll_Lot_Number, OspDetailOutId, Userid, UserName);
+            var resultModel = viewModel.PaperRollCreateProduction(PaperRoll_Weight, PaperRoll_Lot_Number, OspDetailOutId, Userid, UserName);
 
             return Json(new { resultModel }, JsonRequestBehavior.AllowGet);
         }

@@ -279,8 +279,7 @@ function onclick() {
 
     //產出產生明細
     $('#Btn_PaperRoll_Product_detail').click(function () {
-        var PaperRoll_Basic_Weight = $('#PaperRoll_Basic_Weight').val().trim();
-        var PaperRoll_Specification = $('#PaperRoll_Specification').val().trim();
+        var PaperRoll_Weight = $('#PaperRoll_Weight').val().trim();
         var PaperRoll_Lot_Number = $('#PaperRoll_Lot_Number').val().trim();
         var PaperRollInvestDataTables = $('#PaperRollInvestDataTables').DataTable().data();
         var OspDetailOutId = $("#OspDetailOutId").val();
@@ -291,12 +290,8 @@ function onclick() {
             return;
         }
 
-        if (PaperRoll_Basic_Weight.length == 0) {
-            swal.fire("基重不得空白");
-            return;
-        }
-        if (PaperRoll_Specification.length == 0) {
-            swal.fire("寬幅不得空白");
+        if (PaperRoll_Weight.length == 0) {
+            swal.fire("重量不得空白");
             return;
         }
         if (PaperRoll_Lot_Number.length == 0) {
@@ -304,7 +299,7 @@ function onclick() {
             return;
         }
 
-        PaperRollProductionDetail(PaperRoll_Basic_Weight, PaperRoll_Specification, PaperRoll_Lot_Number, OspDetailOutId);
+        PaperRollProductionDetail(PaperRoll_Weight, PaperRoll_Lot_Number, OspDetailOutId);
 
     })
 
@@ -716,15 +711,14 @@ function LoadPaperRollProductionDataTable() {
 }
 
 ///產生明細
-function PaperRollProductionDetail(PaperRoll_Basic_Weight, PaperRoll_Specification, PaperRoll_Lot_Number, OspDetailOutId) {
+function PaperRollProductionDetail(PaperRoll_Weight, PaperRoll_Lot_Number, OspDetailOutId) {
 
     $.ajax({
         "url": "/Process/PaperRollCreateProduction",
         "type": "POST",
         "datatype": "json",
         "data": {
-            PaperRoll_Basic_Weight: PaperRoll_Basic_Weight,
-            PaperRoll_Specification: PaperRoll_Specification,
+            PaperRoll_Weight: PaperRoll_Weight,
             PaperRoll_Lot_Number: PaperRoll_Lot_Number,
             OspDetailOutId: OspDetailOutId
         },
