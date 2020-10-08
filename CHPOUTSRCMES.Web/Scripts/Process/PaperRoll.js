@@ -843,7 +843,7 @@ function DisplayInvestPaperRollEnable(boolean) {
 }
 
 function DisplayProductionPaperRollEnable(boolean) {
-    $('#PaperRoll_Basic_Weight').attr('disabled', boolean);
+    $('#PaperRoll_Weight').attr('disabled', boolean);
     $('#PaperRoll_Specification').attr('disabled', boolean);
     $('#PaperRoll_Lot_Number').attr('disabled', boolean);
     $('#Btn_PaperRoll_Product_detail').attr('disabled', boolean);
@@ -852,6 +852,7 @@ function DisplayProductionPaperRollEnable(boolean) {
     $('#BtnCalculate').attr('disabled', boolean);
     $('#BtnLabel').attr('disabled', boolean);
     $('#BtnPurchase').attr('disabled', boolean);
+
     
 }
 
