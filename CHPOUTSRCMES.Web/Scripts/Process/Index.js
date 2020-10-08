@@ -20,7 +20,10 @@ const CompletedBatch = "3";
 /// 關帳
 /// </summary>
 const CloseBatch = "4";
-
+/// <summary>
+/// 關帳
+/// </summary>
+const Modified = "5";
 
 $(document).ready(function () {
     BtnEvent();
@@ -176,24 +179,21 @@ function ProcessLoadTable(Status, BatchNo, MachineNum, DueDate, CuttingDateFrom,
             { data: "MachineNum", "name": "機台", "autoWidth": true, "className": "dt-body-center" },
             {
                 data: "Status", "name": "狀態", "autoWidth": true, "render": function (data, type, row) {
-                    if (data == DwellBatch) {
+                    if (data == DwellBatch || data == PendingBatch) {
                         switch (row.BatchType) {
                             case "OSP":
                                 return '<a href=/Process/Schedule/' + row.OspHeaderId + '> ' + GetStatusCode(data) + '</a>';
-                                break;
                             case "REP":
                                 if (row.PackingType == "" || row.PackingType == null) {
                                     return '<a href=/Process/PaperRoll/' + row.OspHeaderId + '> ' + GetStatusCode(data) + '</a>';
-                                    break;
                                 } else {
                                     return '<a href=/Process/Flat/' + row.OspHeaderId + '> ' + GetStatusCode(data) + '</a>';
-                                    break;
                                 }
-
-
                         }
                     } else {
-                        return GetStatusCode(data);
+                        var status = GetStatusCode(data);
+           
+                        return status
                     }
 
                 }, "className": "dt-body-center"
@@ -240,20 +240,18 @@ function ProcessLoadTable(Status, BatchNo, MachineNum, DueDate, CuttingDateFrom,
             },
             {
                 data: "", "autoWidth": true, "render": function (data, type, row) {
-                    if (row.Status == CompletedBatch) {
-                        return '<button class="btn btn-primary btn-sm" id = "btnRecord">完工紀錄</button>';
+                    var content = '';
+
+                    if (row.Status == CompletedBatch || row.Status == PendingBatch || row.Status == CloseBatch || row.Status == Modified) {
+                        content = '<button class="btn btn-primary btn-sm" id = "btnRecord">完工紀錄</button>';
                     }
-                    if (row.Status == PendingBatch) {
-                        return '<button class="btn btn-primary btn-sm" id = "btnEdit">編輯</button>' + '<button class="btn btn-primary btn-sm" id = "btnRecord">完工紀錄</button>';
+
+                    if (row.Status == PendingBatch || row.Status == DwellBatch) {
+                        content = content + '<button class="btn btn-primary btn-sm" id = "btnEdit">編輯</button>';
                     }
-                    if (row.Status == CloseBatch) {
-                        return '<button class="btn btn-primary btn-sm" id = "btnRecord">完工紀錄</button>';
-                    }
-                    if (row.Status == DwellBatch) {
-                        return '<button class="btn btn-primary btn-sm" id = "btnEdit">編輯</button>';
-                    } else {
-                        return '<button class="btn btn-primary btn-sm" id = "btnEdit">編輯</button>';
-                    }
+
+                    return content;
+
                 }
             }
         ],
@@ -524,16 +522,20 @@ function firstLoad() {
 
 function GetStatusCode(StatusCode) {
     switch (StatusCode) {
-        case '0':
+        case WaitBatch:
             return '待排單';
-        case '1':
+        case DwellBatch:
             return '已排單';
-        case '2':
+        case PendingBatch:
             return '待核准';
-        case '3':
+        case CompletedBatch:
             return '已完工';
-        case '4':
+        case CloseBatch:
             return '關帳';
+        case Modified:
+            return '已修改';
+        case '6':
+            return '已取消';
         default:
             return '';
     }

@@ -1202,24 +1202,24 @@ function clear() {
 function BtnRecordEdit() {
     $('#BtnEdit').click(function () {
 
-        var BatchNo = $('#InputBatchNo').val();
-        var OspHeaderId = $('#OspHeaderId').val();
-        $.ajax({
-            url: '/Process/FinisheEdit',
-            datatype: 'json',
-            type: "POST",
-            data: { BatchNo: BatchNo, OspHeaderId: OspHeaderId },
-            success: function (data) {
-                if (data.Success) {
-                    location.href = "/Process/Schedule/" + data.data;
-                } else {
-                    swal.fire(data.resultModel.Msg);
-                }
-            },
-            error: function () {
+        //var BatchNo = $('#InputBatchNo').val();
+        //var OspHeaderId = $('#OspHeaderId').val();
+        //$.ajax({
+        //    url: '/Process/FinisheEdit',
+        //    datatype: 'json',
+        //    type: "POST",
+        //    data: { BatchNo: BatchNo, OspHeaderId: OspHeaderId },
+        //    success: function (data) {
+        //        if (data.Success) {
+        //            location.href = "/Process/Schedule/" + data.data;
+        //        } else {
+        //            swal.fire(data.resultModel.Msg);
+        //        }
+        //    },
+        //    error: function () {
 
-            }
-        });
+        //    }
+        //});
 
     });
 
