@@ -364,28 +364,29 @@ else
                         <div class="form-inline col col-md-1">
                             <span id="PaperRoll_Product_Item">@Html.DisplayFor(model => model.CHP_PROCESS_T.Product_Item)</span>
                         </div>
+
+                        @* 基重 *@
+                        <div class="form-inline col-md-1 text-right">
+                            <label>基重</label>
+                        </div>
+
+                        <div class="form-inline col-md-2">
+                            <span>@Html.DisplayFor(model => model.CHP_PROCESS_T.DoBasicWeight)</span>
+                        </div>
+
+                        @* 寬幅 *@
+                        <div class="form-inline col-md-1  text-right">
+                            <label>寬幅</label>
+                        </div>
+
+                        <div class="form-inline col col-md-2">
+                            <span>@Html.DisplayFor(model => model.CHP_PROCESS_T.DoSpecification)</span>
+                        </div>
+
                     </div>
                 </div>
 
                 <div class="row col-md-12">
-                    @* 基重 *@
-                    <div class="form-inline col-md-1 text-right">
-                        <label>基重</label>
-                    </div>
-
-                    <div class="form-inline col col-md-2">
-                        <input class="form-control input-sm" id="PaperRoll_Basic_Weight" autocomplete="off" type="number" />
-                    </div>
-
-                    @* 寬幅 *@
-                    <div class="form-inline col-md-1  text-right">
-                        <label>寬幅</label>
-                    </div>
-
-                    <div class="form-inline col col-md-2">
-                        <input class="form-control input-sm" id="PaperRoll_Specification" autocomplete="off" type="number" />
-                    </div>
-
                     @* 捲號 *@
                     <div class="form-inline col-md-1 text-right">
                         <label>捲號</label>
@@ -393,6 +394,14 @@ else
 
                     <div class="form-inline col col-md-2">
                         <input class="form-control input-sm" id="PaperRoll_Lot_Number" autocomplete="off" type="number" />
+                    </div>
+
+                    <div class="form-inline col-md-1 text-right">
+                        <label>重量</label>
+                    </div>
+
+                    <div class="form-inline col col-md-2">
+                        <input class="form-control input-sm" id="PaperRoll_Weight" autocomplete="off" type="number" />
                     </div>
 
                     <div class="form-group col-md-1 ">

@@ -192,11 +192,11 @@ namespace CHPOUTSRCMES.Web.ViewModels.Process
         /// <param name="PaperRoll_Lot_Number"></param>
         /// <param name="Process_Detail_Id"></param>
         /// <returns></returns>
-        public ResultModel PaperRollCreateProduction(string PaperRoll_Basic_Weight, string PaperRoll_Specification, string PaperRoll_Lot_Number, long OspDetailOutId,string UserId,string UserName)
+        public ResultModel PaperRollCreateProduction(string PaperRoll_Weight, string PaperRoll_Lot_Number, long OspDetailOutId,string UserId,string UserName)
         {
             using (var context = new MesContext())
             {
-                return new ProcessUOW(context).PaperRollCreateProduction(PaperRoll_Basic_Weight, PaperRoll_Specification, PaperRoll_Lot_Number, OspDetailOutId, UserId, UserName);
+                return new ProcessUOW(context).PaperRollCreateProduction(PaperRoll_Weight, PaperRoll_Lot_Number, OspDetailOutId, UserId, UserName);
             }
         }
 

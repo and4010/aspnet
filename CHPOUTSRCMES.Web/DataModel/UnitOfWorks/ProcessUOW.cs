@@ -1557,16 +1557,13 @@ AND ST.BARCODE = @BARCODE");
         /// <param name="UserId"></param>
         /// <param name="UserName"></param>
         /// <returns></returns>
-        public ResultModel PaperRollCreateProduction(string PaperRoll_Basic_Weight, string PaperRoll_Specification, string PaperRoll_Lot_Number, long OspDetailOutId, string UserId, string UserName)
+        public ResultModel PaperRollCreateProduction(string PaperRoll_Weight, string PaperRoll_Lot_Number, long OspDetailOutId, string UserId, string UserName)
         {
-            if (PaperRoll_Basic_Weight == null)
+            if (PaperRoll_Weight == null)
             {
-                return new ResultModel(false, "令數不得空白");
+                return new ResultModel(false, "重量不得空白");
             }
-            if (PaperRoll_Specification == null)
-            {
-                return new ResultModel(false, "棧板數不得空白");
-            }
+
             if (PaperRoll_Lot_Number == null)
             {
                 return new ResultModel(false, "捲號不得空白");
@@ -1594,8 +1591,8 @@ AND ST.BARCODE = @BARCODE");
                     ospPickOut.Specification = detailout.Specification;
                     ospPickOut.PaperType = detailout.PaperType;
                     ospPickOut.LotNumber = PaperRoll_Lot_Number;
-                    ospPickOut.LotQuantity = decimal.Parse(PaperRoll_Basic_Weight);
-                    ospPickOut.PrimaryQuantity = decimal.Parse(PaperRoll_Basic_Weight);
+                    ospPickOut.LotQuantity = decimal.Parse(PaperRoll_Weight);
+                    ospPickOut.PrimaryQuantity = decimal.Parse(PaperRoll_Weight);
                     ospPickOut.PrimaryUom = "KG";
                     ospPickOut.SecondaryQuantity = 0;
                     ospPickOut.SecondaryUom = "";
