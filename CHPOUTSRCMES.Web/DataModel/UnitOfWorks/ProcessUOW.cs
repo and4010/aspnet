@@ -2163,7 +2163,7 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
                     header.LastUpdateDate = DateTime.Now;
 
                     OspHeaderTRepository.Update(header, true);
-                    SaveStock(header.OspHeaderId, StockStatusCode.InStock, LocatorId);
+                    SaveStock(header.OspHeaderId, StockStatusCode.InStock, LocatorId, CategoryCode.Process, ActionCode.Process, header.BatchNo, UserId);
                     PickInToHt(header.OspHeaderId);
                     PirckOutToHt(header.OspHeaderId);
                     DetailInToHt(header.OspHeaderId);
@@ -2301,7 +2301,7 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
         /// </summary>
         /// <param name="headerId"></param>
         /// <param name="statusCode"></param>
-        public void SaveStock(long headerId, string statusCode, string LocatorId)
+        public void SaveStock(long headerId, string statusCode, string LocatorId, string Category, string Action, string Doc, string userId)
         {
             if (!long.TryParse(LocatorId, out long locatorId))
             {
@@ -2318,11 +2318,15 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
             var pUser = SqlParamHelper.GetNVarChar("@user", "", 128);
             var pLoc = SqlParamHelper.GetBigInt("@locatorId", locatorId);
             var pLocatorCode = SqlParamHelper.GetNVarChar("@locatorCode", locatorCode);
+            var pCategory = SqlParamHelper.GetNVarChar("@CATEGORY", categoryCode.GetDesc(Category));
+            var pAction = SqlParamHelper.GetNVarChar("@ACTION", actionCode.GetDesc(Action));
+            var pDoc = SqlParamHelper.GetNVarChar("@DOC", Doc);
+            var pCreatedby = SqlParamHelper.GetNVarChar("@CREATED_BY", userId);
 
-            this.Context.Database.ExecuteSqlCommand("[SP_SaveOspDetailOut] @headerId, @statusCode ,@code output, @message output, @user, @locatorId, @locatorCode",
-                pheaderId, pstatusCode, pCode, pMsg, pUser, pLoc, pLocatorCode);
-            this.Context.Database.ExecuteSqlCommand("[SP_SaveCotangentStock] @headerId, @statusCode ,@code output, @message output, @user, @locatorId, @locatorCode",
-                pheaderId, pstatusCode, pCode, pMsg, pUser, pLoc, pLocatorCode);
+            this.Context.Database.ExecuteSqlCommand("[SP_SaveOspDetailOut] @headerId, @statusCode ,@code output, @message output, @user, @locatorId, @locatorCode, @CATEGORY, @ACTION, @DOC, @CREATED_BY",
+                pheaderId, pstatusCode, pCode, pMsg, pUser, pLoc, pLocatorCode, pCategory, pAction, pDoc, pCreatedby);
+            this.Context.Database.ExecuteSqlCommand("[SP_SaveCotangentStock] @headerId, @statusCode ,@code output, @message output, @user, @locatorId, @locatorCode, @CATEGORY, @ACTION, @DOC, @CREATED_BY",
+                pheaderId, pstatusCode, pCode, pMsg, pUser, pLoc, pLocatorCode, pCategory, pAction, pDoc, pCreatedby);
         }
 
 
