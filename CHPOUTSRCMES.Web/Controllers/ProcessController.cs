@@ -102,7 +102,9 @@ namespace CHPOUTSRCMES.Web.Controllers
         public ActionResult _Locator(long OspDetailOutId)
         {
             ProcessViewModel viewModel = new ProcessViewModel();
-            ViewBag.LocatorItem = viewModel.GetLocator(OspDetailOutId);
+            //取得使用者ID
+            var Userid = this.User.Identity.GetUserId();
+            ViewBag.LocatorItem = viewModel.GetLocator(OspDetailOutId, Userid);
             return PartialView();
         }
 

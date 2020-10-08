@@ -424,11 +424,11 @@ namespace CHPOUTSRCMES.Web.ViewModels.Process
         /// </summary>
         /// <param name="OspDetailOutId"></param>
         /// <returns></returns>
-        public List<SelectListItem> GetLocator(long OspDetailOutId)
+        public List<SelectListItem> GetLocator(long OspDetailOutId, string UserId)
         {
             using (var context = new MesContext())
             {
-                return new ProcessUOW(context).GetLocator(OspDetailOutId);
+                return new ProcessUOW(context).GetLocator(OspDetailOutId, UserId);
             }
         }
 

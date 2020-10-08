@@ -532,7 +532,7 @@ SELECT m.TRANSFER_OBSOLETE_ID AS ID
                             //產生異動紀錄
                             var stkTxnT = CreateStockRecord(stock, null, null, null,
                                  null, CategoryCode.Obsolete, ActionCode.StockTransfer, header.ShipmentNumber,
-                                 stock.PrimaryAvailableQty, mPrimaryQty, aftPryQty, stock.SecondaryAvailableQty,
+                                 detail.OriginalPrimaryQuantity, mPrimaryQty, aftPryQty, detail.OriginalSecondaryQuantity,
                                  mSecondaryQty, aftSecQty, stockStatusCode, userId, now);
                             stkTxnTRepository.Create(stkTxnT);
                         }

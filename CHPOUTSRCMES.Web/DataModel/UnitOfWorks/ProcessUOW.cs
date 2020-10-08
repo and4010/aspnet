@@ -1052,7 +1052,7 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
                             if (stock.PrimaryTransactionQty >= aft)
                             {
                                 CheckStock(stock.StockId, UserId, aft, StockStatusCode.ProcessPicked);
-                                StockRecord(id.StockId, aft, chg, 0, 0, categoryCode.GetDesc(CategoryCode.Process), actionCode.GetDesc(ActionCode.Picked), header.BatchNo, UserId);
+                                StockRecord(id.StockId, aft, chg, 0, 0, CategoryCode.Process, ActionCode.Picked, header.BatchNo, UserId);
                                 txn.Commit();
                                 return new ResultModel(true, "");
                             }
@@ -1075,7 +1075,7 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
                         {
                             OspPickedInTRepository.Delete(id, true);
                             CheckStock(stock.StockId, UserId, stock.PrimaryTransactionQty, StockStatusCode.InStock);
-                            StockRecord(id.StockId, stock.PrimaryTransactionQty, 0, 0, 0, categoryCode.GetDesc(CategoryCode.Process), actionCode.GetDesc(ActionCode.Deleted), header.BatchNo, UserId);
+                            StockRecord(id.StockId, stock.PrimaryTransactionQty, 0, 0, 0, CategoryCode.Process, ActionCode.Deleted, header.BatchNo, UserId);
                             txn.Commit();
                             return new ResultModel(true, "");
                         }
@@ -1376,7 +1376,7 @@ AND ST.BARCODE = @BARCODE");
                         if (data.PrimaryAvailableQty >= aft)
                         {
                             CheckStock(data.StockId, UserId, aft, StockStatusCode.ProcessPicked);
-                            StockRecord(data.StockId, aft, chg, 0, 0, categoryCode.GetDesc(CategoryCode.Process), actionCode.GetDesc(ActionCode.Picked), Header.BatchNo, UserId);
+                            StockRecord(data.StockId, aft, chg, 0, 0, CategoryCode.Process, ActionCode.Picked, Header.BatchNo, UserId);
                             txn.Commit();
                             return new ResultModel(true, "寫入成功");
                         }
@@ -3055,34 +3055,36 @@ AND OPO.OSP_PICKED_OUT_ID = @OSP_PICKED_OUT_ID
         /// </summary>
         /// <param name="OspDetailOutId"></param>
         /// <returns></returns>
-        public List<SelectListItem> GetLocator(long OspDetailOutId)
+        public List<SelectListItem> GetLocator(long OspDetailOutId, string UserId)
         {
             try
             {
                 using (var mesContext = new MesContext())
                 {
                     var DetailOut = OspDetailOutTRepository.Get(x => x.OspDetailOutId == OspDetailOutId).SingleOrDefault();
-                    List<SelectListItem> locator = new List<SelectListItem>();
-                    List<SqlParameter> sqlParameterList = new List<SqlParameter>();
-                    StringBuilder query = new StringBuilder();
-                    query.Append(
-@"SELECT 
-[SEGMENT3] as Text,
-cast([LOCATOR_ID] as nvarchar) as Value
-FROM [LOCATOR_T] LT
-where CONTROL_FLAG <> 'D'
-and SUBINVENTORY_CODE = @SUBINVENTORY_CODE");
-                    sqlParameterList.Add(new SqlParameter("@SUBINVENTORY_CODE", DetailOut.Subinventory));
-                    var data = mesContext.Database.SqlQuery<SelectListItem>(query.ToString(), sqlParameterList.ToArray()).ToList();
-                    if (data == null)
-                    {
-                        locator.AddRange(data);
-                    }
-                    else
-                    {
-                        locator.AddRange(data);
-                    }
-                    return locator;
+                    return getLocatorListForUserId(UserId, DetailOut.Subinventory);
+
+//                    List<SelectListItem> locator = new List<SelectListItem>();
+//                    List<SqlParameter> sqlParameterList = new List<SqlParameter>();
+//                    StringBuilder query = new StringBuilder();
+//                    query.Append(
+//@"SELECT 
+//[SEGMENT3] as Text,
+//cast([LOCATOR_ID] as nvarchar) as Value
+//FROM [LOCATOR_T] LT
+//where CONTROL_FLAG <> 'D'
+//and SUBINVENTORY_CODE = @SUBINVENTORY_CODE");
+//                    sqlParameterList.Add(new SqlParameter("@SUBINVENTORY_CODE", DetailOut.Subinventory));
+//                    var data = mesContext.Database.SqlQuery<SelectListItem>(query.ToString(), sqlParameterList.ToArray()).ToList();
+//                    if (data == null)
+//                    {
+//                        locator.AddRange(data);
+//                    }
+//                    else
+//                    {
+//                        locator.AddRange(data);
+//                    }
+//                    return locator;
                 }
             }
             catch (Exception e)
