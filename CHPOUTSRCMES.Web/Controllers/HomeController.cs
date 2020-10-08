@@ -602,5 +602,76 @@ namespace CHPOUTSRCMES.Web.Controllers
 
 
 
+        /// <summary>
+        /// 加工平張成品入庫
+        /// </summary>
+        /// <param name="OspHeaderId"></param>
+        /// <returns></returns>
+        public ActionResult OspFlatStock(string OspHeaderId)
+        {
+#if DEBUG
+            return OspLocalPaperRollerStockReport(OspHeaderId);
+#else
+            return OspRemotePaperRollerStockReport(OspHeaderId);
+#endif
+        }
+
+        public ActionResult OspLocalFlatStockReport(string OspHeaderId)
+        {
+            using (var context = new MesContext())
+            {
+                using (ProcessUOW uow = new ProcessUOW(context))
+                {
+                    List<ReportParameter> paramList = new List<ReportParameter>();
+                    paramList.Add(new ReportParameter("OSP_HEADER_ID", OspHeaderId, false));
+                    var report = new ReportViewer();
+
+                    // Set the processing mode for the ReportViewer to Local  
+                    report.ProcessingMode = ProcessingMode.Local;
+                    report.BackColor = Color.LightGray;
+                    report.SizeToReportContent = true;
+                    report.BorderWidth = 1;
+                    report.BorderStyle = BorderStyle.Solid;
+                    LocalReport localReport = report.LocalReport;
+                    localReport.ReportPath = "Report/OspReplaceFlatStock.rdlc";
+
+                    ReportDataSource stock = new ReportDataSource();
+                    uow.OspPaperRollerStock(ref stock, OspHeaderId);
+                    localReport.DataSources.Add(stock);
+                    // Set the report parameters for the report  
+                    localReport.SetParameters(paramList);
+
+                    report.ServerReport.Refresh();
+
+                    ViewBag.ReportViewer = report;
+                }
+            }
+
+            return View("Report");
+        }
+
+        public ActionResult OspRemoteFlatStockReport(string OspHeaderId)
+        {
+            List<ReportParameter> paramList = new List<ReportParameter>();
+            paramList.Add(new ReportParameter("OSP_HEADER_ID", OspHeaderId, false));
+            var report = new ReportViewer();
+            report.ProcessingMode = ProcessingMode.Remote;
+            report.SizeToReportContent = true;
+            report.BorderStyle = BorderStyle.Solid;
+            report.BorderWidth = 1;
+            report.BackColor = Color.LightGray;
+            report.ServerReport.ReportPath = "/開發區/CHPOUSMES/OspReplaceFlatStock";
+            report.ServerReport.ReportServerUrl = new Uri("http://rs.yfy.com/ReportServer");
+            report.ServerReport.SetParameters(paramList);
+            report.ServerReport.Refresh();
+            ViewBag.ReportViewer = report;
+            return View("Report");
+        }
+
+
+
+
+       
+
     }
 }

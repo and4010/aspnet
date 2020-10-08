@@ -188,7 +188,7 @@ function onBtnClick() {
             return;
         }
         var OspHeaderId = $('#OspHeaderId').val();
-        window.open("/Home/OspStock/?OspHeaderId=" + OspHeaderId);
+        window.open("/Home/OspFlatStock/?OspHeaderId=" + OspHeaderId);
     });
 
     //投出驗證單號
