@@ -12,6 +12,10 @@ const PendingBatch = "2";
 /// 已完工
 /// </summary>
 const CompletedBatch = "3";
+
+const CloseBatch = "4";
+
+const Modified = "5";
 $(document).ready(function () {
     LoadInvestDataTable();
     LoadProductionDataTable();
@@ -21,7 +25,7 @@ $(document).ready(function () {
     CotangentDataTables();
 
     var Status = $('#Status').val();
-    if (Status == CompletedBatch || Status == PendingBatch) {
+    if (Status == CompletedBatch) {
         //完工紀錄使用
         DsiplayHide();
         DisplayInvestEnable(true);
@@ -30,12 +34,8 @@ $(document).ready(function () {
         InvestDataTables.column(11).visible(false);
         ProductionTables.column(9).visible(false);
         CotangentDataTable.column(9).visible(false);
-    } else {
-        DisplayInvestEnable(true);
-        DisplayProductionEnable(true);
-        DsiplayShow();
     }
-    if (Status == 4) {
+    else if (Status == CloseBatch || Status == Modified) {
         DsiplayHide();
         DisplayInvestEnable(true);
         DisplayProductionEnable(true);
@@ -47,6 +47,10 @@ $(document).ready(function () {
         $('#BtnCheckProductionBatchNo').attr('disabled', true);
         $('#InputBatchNo').attr('disabled', true);
         $('#OutBatchNo').attr('disabled', true);
+    } else {
+        DisplayInvestEnable(true);
+        DisplayProductionEnable(true);
+        DsiplayShow();
     }
  
 
@@ -1080,7 +1084,7 @@ function Open(modal_dialog) {
         var Locator = $('#dialg_Locator').val();
         var OspHeaderId = $("#OspHeaderId").val();
         $.ajax({
-            url: '/Process/ChangeHeaderStauts/',
+            url: '/Process/ChangeHeaderStatus/',
             dataType: 'json',
             type: 'post',
             data: { OspHeaderId: OspHeaderId, Locator: Locator },
@@ -1202,24 +1206,24 @@ function clear() {
 function BtnRecordEdit() {
     $('#BtnEdit').click(function () {
 
-        //var BatchNo = $('#InputBatchNo').val();
-        //var OspHeaderId = $('#OspHeaderId').val();
-        //$.ajax({
-        //    url: '/Process/FinisheEdit',
-        //    datatype: 'json',
-        //    type: "POST",
-        //    data: { BatchNo: BatchNo, OspHeaderId: OspHeaderId },
-        //    success: function (data) {
-        //        if (data.Success) {
-        //            location.href = "/Process/Schedule/" + data.data;
-        //        } else {
-        //            swal.fire(data.resultModel.Msg);
-        //        }
-        //    },
-        //    error: function () {
+        var BatchNo = $('#InputBatchNo').val();
+        var OspHeaderId = $('#OspHeaderId').val();
+        $.ajax({
+            url: '/Process/FinisheEdit',
+            datatype: 'json',
+            type: "POST",
+            data: { BatchNo: BatchNo, OspHeaderId: OspHeaderId },
+            success: function (data) {
+                if (data.Success) {
+                    location.href = "/Process/Schedule/" + data.data;
+                } else {
+                    swal.fire(data.Msg);
+                }
+            },
+            error: function () {
 
-        //    }
-        //});
+            }
+        });
 
     });
 

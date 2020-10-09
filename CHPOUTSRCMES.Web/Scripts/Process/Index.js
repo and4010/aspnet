@@ -21,7 +21,7 @@ const CompletedBatch = "3";
 /// </summary>
 const CloseBatch = "4";
 /// <summary>
-/// 關帳
+/// 已修改
 /// </summary>
 const Modified = "5";
 

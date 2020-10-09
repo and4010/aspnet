@@ -35,7 +35,7 @@ namespace CHPOUTSRCMES.TASK.Models.Repository.MsSql
 $@"
 SELECT O.OSP_HEADER_ID FROM OSP_HEADER_T O 
 LEFT JOIN OSP_SOA_S1_T S1 ON S1.OSP_HEADER_ID = O.OSP_HEADER_ID
-WHERE O.[STATUS] IN ('3', '4')
+WHERE O.[STATUS] IN ('3', '4', '5')
 AND (S1.OSP_HEADER_ID IS NULL OR S1.STATUS_CODE = 'R')
 ", transaction: transaction)).ToList();
         }
@@ -44,9 +44,9 @@ AND (S1.OSP_HEADER_ID IS NULL OR S1.STATUS_CODE = 'R')
         {
             return (await Connection.QueryAsync<OSP_SOA_S1_T>(
 $@"
-SELECT O.OSP_HEADER_ID FROM OSP_HEADER_T O 
+SELECT S1.* FROM OSP_HEADER_T O 
 JOIN OSP_SOA_S1_T S1 ON S1.OSP_HEADER_ID = O.OSP_HEADER_ID
-WHERE O.[STATUS] IN ('3', '4')
+WHERE O.[STATUS] IN ('3', '4', '5')
 AND S1.STATUS_CODE IS NULL
 ", transaction: transaction)).ToList();
         }

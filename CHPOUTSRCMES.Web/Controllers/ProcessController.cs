@@ -115,14 +115,14 @@ namespace CHPOUTSRCMES.Web.Controllers
         /// <param name="Locator"></param>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult ChangeHeaderStauts(long OspHeaderId, string Locator)
+        public ActionResult ChangeHeaderStatus(long OspHeaderId, string Locator)
         {
             ProcessViewModel viewModel = new ProcessViewModel();
             //取得使用者ID
             var Userid = this.User.Identity.GetUserId();
             //取得使用者帳號
             var name = this.User.Identity.GetUserName();
-            var resultModel = viewModel.ChangeHeaderStauts(OspHeaderId, Locator, Userid, name);
+            var resultModel = viewModel.ChangeHeaderStatus(OspHeaderId, Locator, Userid, name);
             
             return Json(new { resultModel }, JsonRequestBehavior.AllowGet);
         }
@@ -137,7 +137,7 @@ namespace CHPOUTSRCMES.Web.Controllers
             var Userid = this.User.Identity.GetUserId();
             //取得使用者帳號
             var name = this.User.Identity.GetUserName();
-            var resultModel = viewModel.ChangeHeaderStauts(OspHeaderId, null, Userid, name);
+            var resultModel = viewModel.ChangeHeaderStatus(OspHeaderId, null, Userid, name);
 
             return Json(new { resultModel }, JsonRequestBehavior.AllowGet);
         }

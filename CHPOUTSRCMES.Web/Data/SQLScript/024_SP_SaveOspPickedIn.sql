@@ -1,0 +1,76 @@
+﻿/****** SSMS 中 SelectTopNRows 命令的指令碼  ******/
+-- =============================================
+-- Author:		Polo
+-- Create date: 2020/10/09
+-- Description:	加工領料庫存異動
+-- =============================================
+CREATE PROCEDURE [dbo].[SP_SavePickedIn]
+	-- Add the parameters for the stored procedure here
+	@headerId BIGINT,
+	@inStockStatusCode VARCHAR(10),
+	@processPickedStatusCode VARCHAR(10),
+	@category VARCHAR(30),
+	@action VARCHAR(50),
+	@doc VARCHAR(50),
+	@code INT OUTPUT,
+	@message VARCHAR(500) OUTPUT,
+	@user VARCHAR(128)
+AS
+BEGIN
+
+DECLARE @table TABLE (
+	STOCK_ID BIGINT,
+	BARCODE NVARCHAR(40)
+)
+BEGIN TRY
+	DECLARE @step INT = 1
+	
+	SET @step = @step + 1
+
+	UPDATE S SET 
+		STATUS_CODE = CASE WHEN PRIMARY_LOCKED_QTY - P.PRIMARY_QUANTITY > 0 THEN @inStockStatusCode ELSE @processPickedStatusCode END
+		, PRIMARY_LOCKED_QTY = PRIMARY_LOCKED_QTY - P.PRIMARY_QUANTITY
+		, SECONDARY_LOCKED_QTY = SECONDARY_LOCKED_QTY - P.SECONDARY_QUANTITY
+		, LAST_UPDATE_BY = @user
+		, LAST_UPDATE_DATE = GETDATE()
+	FROM STOCK_T S
+	JOIN OSP_PICKED_IN_T P ON P.STOCK_ID = S.STOCK_ID
+	WHERE OSP_HEADER_ID = @headerId
+
+	SET @step = @step + 1
+
+	INSERT INTO [dbo].[STK_TXN_T]
+        ([STOCK_ID],[ORGANIZATION_ID] ,[ORGANIZATION_CODE],[SUBINVENTORY_CODE]
+        ,[LOCATOR_ID],[DST_ORGANIZATION_ID]  ,[DST_ORGANIZATION_CODE],[DST_SUBINVENTORY_CODE] ,[DST_LOCATOR_ID]
+        ,[INVENTORY_ITEM_ID],[ITEM_NUMBER],[ITEM_DESCRIPTION] ,[ITEM_CATEGORY] ,[LOT_NUMBER]
+        ,[BARCODE],[PRY_UOM_CODE] ,[PRY_BEF_QTY],[PRY_AFT_QTY],[PRY_CHG_QTY]
+        ,[SEC_UOM_CODE] ,[SEC_BEF_QTY],[SEC_CHG_QTY],[SEC_AFT_QTY],[CATEGORY]
+        ,[DOC],[ACTION],[NOTE],[STATUS_CODE],[CREATED_BY]
+        ,[CREATION_DATE],[LAST_UPDATE_BY],[LAST_UPDATE_DATE])
+	SELECT 
+		T.[STOCK_ID],T.[ORGANIZATION_ID] ,T.[ORGANIZATION_CODE],[SUBINVENTORY_CODE]
+        ,T.[LOCATOR_ID],''  ,'','' ,''
+        ,T.[INVENTORY_ITEM_ID],[ITEM_NUMBER],[ITEM_DESCRIPTION] ,T.[ITEM_CATEGORY] ,T.[LOT_NUMBER]
+        ,T.[BARCODE],PRIMARY_UOM_CODE ,T.PRIMARY_TRANSACTION_QTY,T.PRIMARY_TRANSACTION_QTY, 0
+        ,SECONDARY_UOM_CODE, SECONDARY_TRANSACTION_QTY,SECONDARY_TRANSACTION_QTY, 0, @category
+        ,@doc,@action,T.[NOTE],[STATUS_CODE], @user
+        ,GETDATE(),NULL,NULL
+	FROM STOCK_T T
+	JOIN OSP_PICKED_IN_T P ON P.STOCK_ID = T.STOCK_ID
+	WHERE OSP_HEADER_ID = @headerId
+
+	IF (@@ROWCOUNT <= 0 OR @@ERROR <> 0)
+	BEGIN
+		RAISERROR('異動紀錄錯誤!!', 16, @step)
+	END
+
+	SET @code = 0
+	SET @message = ''
+	
+END TRY
+BEGIN CATCH
+	SET @code = -1 * @step
+	SET @message = CAST(@step AS VARCHAR(2)) + ':' + ERROR_MESSAGE()
+END CATCH
+	
+END

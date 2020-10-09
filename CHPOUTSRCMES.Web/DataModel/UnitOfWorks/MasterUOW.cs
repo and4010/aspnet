@@ -381,7 +381,9 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
 
             public const string StockTransfer = "A4";
 
-            public const string Process = "A5";
+            public const string ProcessStored = "A5";
+
+            public const string ProcessPicked = "A6";
 
             public string GetDesc(string category)
             {
@@ -397,8 +399,10 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                         return "進貨";
                     case StockTransfer:
                         return "庫存異動";
-                    case Process:
-                        return "加工";
+                    case ProcessStored:
+                        return "加工入庫";
+                    case ProcessPicked:
+                        return "加工領料";
                     default:
                         return "";
                 }

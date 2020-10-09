@@ -695,7 +695,7 @@ function Open(modal_dialog, Process_Batch_no) {
         var Locator = $('#dialg_Locator').val();
         var OspHeaderId = $("#OspHeaderId").val();
         $.ajax({
-            url: '/Process/ChangeHeaderStauts/',
+            url: '/Process/ChangeHeaderStatus/',
             dataType: 'json',
             type: 'post',
             data: { OspHeaderId: OspHeaderId, Locator: Locator },

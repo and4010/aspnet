@@ -2132,7 +2132,7 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
         /// <param name="UserId"></param>
         /// <param name="UserName"></param>
         /// <returns></returns>
-        public ResultModel ChangeHeaderStauts(long OspHeaderId, string LocatorId, string UserId, string UserName)
+        public ResultModel ChangeHeaderStatus(long OspHeaderId, string LocatorId, string UserId, string UserName)
         {
             using (var txn = this.Context.Database.BeginTransaction())
             {
@@ -2160,7 +2160,22 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
                     header.LastUpdateDate = DateTime.Now;
 
                     OspHeaderTRepository.Update(header, true);
-                    SaveStock(header.OspHeaderId, StockStatusCode.InStock, LocatorId, CategoryCode.Process, ActionCode.Process, header.BatchNo, UserId);
+                    var m1 = SaveInvestStock(header.OspHeaderId, StockStatusCode.InStock, StockStatusCode.ProcessPicked, CategoryCode.Process, ActionCode.ProcessPicked, header.BatchNo, UserId);
+                    if(!m1.Success)
+                    {
+                        throw new Exception($"CODE:{m1.Code} MSG:{m1.Msg}");
+                    }
+
+                    var m2 = SaveProductStock(header.OspHeaderId, StockStatusCode.InStock, LocatorId, CategoryCode.Process, ActionCode.ProcessStored, header.BatchNo, UserId);
+                    if (!m2.Success)
+                    {
+                        throw new Exception($"CODE:{m2.Code} MSG:{m2.Msg}");
+                    }
+                    var m3 = SaveContangetStock(header.OspHeaderId, StockStatusCode.InStock, LocatorId, CategoryCode.Process, ActionCode.ProcessStored, header.BatchNo, UserId);
+                    if (!m3.Success)
+                    {
+                        throw new Exception($"CODE:{m3.Code} MSG:{m3.Msg}");
+                    }
                     PickInToHt(header.OspHeaderId);
                     PirckOutToHt(header.OspHeaderId);
                     DetailInToHt(header.OspHeaderId);
@@ -2235,17 +2250,24 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
             {
                 try
                 {
+
                     var header = OspHeaderTRepository.GetAll().Where(x => x.OspHeaderId == OspHeaderId).FirstOrDefault();
-                    var newHeader = OspHeaderTRepository.GetAll().Where(x => x.OspHeaderId == OspHeaderId).AsNoTracking().FirstOrDefault();
-                    if (newHeader == null)
+                    
+                    if (header == null)
                     {
                         return new ResultDataModel<long>(false, "單號錯誤", 0);
                     }
-                    if (newHeader.BatchNo != BatchNo)
+                    if (header.BatchNo != BatchNo)
                     {
                         return new ResultDataModel<long>(false, "工單號輸入不對請重新輸入", 0);
                     }
 
+                    if(header.Status != ProcessStatusCode.CompletedBatch)
+                    {
+                        return new ResultDataModel<long>(false, "僅完工狀態可進行修改!!", 0);
+                    }
+
+                    var newHeader = OspHeaderTRepository.GetAll().Where(x => x.OspHeaderId == OspHeaderId).AsNoTracking().FirstOrDefault();
                     if (newHeader.Status == ProcessStatusCode.CompletedBatch)
                     {
                         if (newHeader.Modifications >= 1)
@@ -2269,19 +2291,45 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
                         headerMod.OspHeaderId = newHeader.OspHeaderId;
                         OspHeaderModTRepository.Create(headerMod, true);
 
-                        HtToTStockDelete(OspHeaderId);
-                        DetailInHtToT(OspHeaderId, header.OspHeaderId);
-                        DetailOutHtToT(OspHeaderId, header.OspHeaderId);
+                        if(DeleteStock(OspHeaderId) <= 0)
+                        {
+                            throw new Exception($"OSP_HEADER_ID:{OspHeaderId} 刪除產品庫存資料失敗");
+                        }
 
-                        PickInHtToT(OspHeaderId, header.OspHeaderId);
-                        PirckOutHtToT(OspHeaderId, header.OspHeaderId);
-                        
-                        ContangetHtToT(OspHeaderId, header.OspHeaderId);
-                        YieldHtToT(OspHeaderId, header.OspHeaderId);
+                        if (CopyDetailInHT(header.OspHeaderId) <= 0)
+                        {
+                            throw new Exception($"OSP_HEADER_ID:{OspHeaderId} 搬移加工組成成份資料失敗");
+                        }
+
+                        if (CopyDetailOutHT(header.OspHeaderId) <= 0)
+                        {
+                            throw new Exception($"OSP_HEADER_ID:{OspHeaderId} 搬移加工產品資料失敗");
+                        }
+
+                        if (CopyPickedInHT(header.OspHeaderId) <= 0)
+                        {
+                            throw new Exception($"OSP_HEADER_ID:{OspHeaderId} 搬移加工組成成份揀貨資料失敗");
+                        }
+
+                        if (CopyPickedOut(header.OspHeaderId) <= 0)
+                        {
+                            throw new Exception($"OSP_HEADER_ID:{OspHeaderId} 搬移加工產品揀貨資料失敗");
+                        }
+
+                        if (CopyContangetHT(header.OspHeaderId) < 0)
+                        {
+                            throw new Exception($"OSP_HEADER_ID:{OspHeaderId} 搬移加工餘切資料失敗");
+                        }
+
+                        if (CopyYieldHT(header.OspHeaderId) < 0)
+                        {
+                            throw new Exception($"OSP_HEADER_ID:{OspHeaderId} 搬移得率資料失敗");
+                        }
+
                         txn.Commit();
                     }
 
-                    return new ResultDataModel<long>(true, "成功", header.OspHeaderId);
+                    return new ResultDataModel<long>(true, "成功", newHeader.OspHeaderId);
 
                 }
                 catch (Exception e)
@@ -2294,12 +2342,97 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
         }
 
         /// <summary>
-        /// 轉入新增庫存
+        /// 轉入扣除產品庫存
         /// </summary>
         /// <param name="headerId"></param>
         /// <param name="statusCode"></param>
-        public void SaveStock(long headerId, string statusCode, string LocatorId, string Category, string Action, string Doc, string userId)
+        public ResultModel SaveInvestStock(long headerId, string statusInStockCode, string statusProcessPicked, string Category, string Action, string Doc, string userId)
         {
+            var resultModel = new ResultModel(false, "");
+
+            var pHeaderId = SqlParamHelper.GetBigInt("@headerId", headerId);
+            var pInStockStatusCode = SqlParamHelper.GetNVarChar("@inStockStatusCode", statusInStockCode);
+            var pProcessPickedStatusCode = SqlParamHelper.GetNVarChar("@processPickedStatusCode", statusProcessPicked);
+
+            var pCategory = SqlParamHelper.GetNVarChar("@category", categoryCode.GetDesc(Category));
+            var pAction = SqlParamHelper.GetNVarChar("@action", actionCode.GetDesc(Action));
+            var pDoc = SqlParamHelper.GetNVarChar("@doc", Doc);
+            var pCode = SqlParamHelper.GetInt("@code", 0, System.Data.ParameterDirection.Output);
+            var pMsg = SqlParamHelper.GetNVarChar("@message", "", 500, System.Data.ParameterDirection.Output);
+            var pUser = SqlParamHelper.GetNVarChar("@user", userId, 128);
+
+            this.Context.Database.ExecuteSqlCommand("[SP_SaveOspPickedIn] @headerId, @inStockStatusCode, @processPickedStatusCode, @category, @action, @doc, @code output, @message output, @user",
+                pHeaderId, pInStockStatusCode, pProcessPickedStatusCode, pCategory, pAction, pDoc, pCode, pMsg, pUser);
+
+            if(pCode.Value != DBNull.Value)
+            {
+                resultModel.Code = Convert.ToInt32(pCode.Value);
+                resultModel.Success = resultModel.Code == ResultModel.CODE_SUCCESS;
+            }
+
+            if (pMsg.Value != DBNull.Value)
+            {
+                resultModel.Msg = Convert.ToString(pMsg.Value);
+            }
+
+            return resultModel;
+        }
+
+        /// <summary>
+        /// 轉入新增產品庫存
+        /// </summary>
+        /// <param name="headerId"></param>
+        /// <param name="statusCode"></param>
+        public ResultModel SaveProductStock(long headerId, string statusCode, string LocatorId, string Category, string Action, string Doc, string userId)
+        {
+            var resultModel = new ResultModel(false, "");
+
+            if (!long.TryParse(LocatorId, out long locatorId))
+            {
+                locatorId = 0;
+            }
+            var locator = locatorTRepository.GetAll().AsNoTracking().FirstOrDefault(x => x.LocatorId == locatorId);
+            string locatorCode = null;
+            if (locator != null) locatorCode = locator.LocatorSegments;
+
+            var pheaderId = SqlParamHelper.GetBigInt("@headerId", headerId);
+            var pstatusCode = SqlParamHelper.GetNVarChar("@statusCode", statusCode);
+
+            var pLoc = SqlParamHelper.GetBigInt("@locatorId", locatorId);
+            var pLocatorCode = SqlParamHelper.GetNVarChar("@locatorCode", locatorCode);
+            var pCategory = SqlParamHelper.GetNVarChar("@category", categoryCode.GetDesc(Category));
+            var pAction = SqlParamHelper.GetNVarChar("@action", actionCode.GetDesc(Action));
+            var pDoc = SqlParamHelper.GetNVarChar("@doc", Doc);
+            var pCode = SqlParamHelper.GetInt("@code", 0, System.Data.ParameterDirection.Output);
+            var pMsg = SqlParamHelper.GetNVarChar("@message", "", 500, System.Data.ParameterDirection.Output);
+            var pUser = SqlParamHelper.GetNVarChar("@user", userId, 128);
+
+            this.Context.Database.ExecuteSqlCommand("[SP_SaveOspDetailOut] @headerId, @statusCode, @locatorId, @locatorCode, @category, @action, @doc, @code output, @message output, @user",
+                pheaderId, pstatusCode, pLoc, pLocatorCode, pCategory, pAction, pDoc, pCode, pMsg, pUser);
+
+            if (pCode.Value != DBNull.Value)
+            {
+                resultModel.Code = Convert.ToInt32(pCode.Value);
+                resultModel.Success = resultModel.Code == ResultModel.CODE_SUCCESS;
+            }
+
+            if (pMsg.Value != DBNull.Value)
+            {
+                resultModel.Msg = Convert.ToString(pMsg.Value);
+            }
+
+            return resultModel;
+        }
+
+        /// <summary>
+        /// 轉入新增餘切庫存
+        /// </summary>
+        /// <param name="headerId"></param>
+        /// <param name="statusCode"></param>
+        public ResultModel SaveContangetStock(long headerId, string statusCode, string LocatorId, string Category, string Action, string Doc, string userId)
+        {
+            var resultModel = new ResultModel(false, "");
+
             if (!long.TryParse(LocatorId, out long locatorId))
             {
                 locatorId = 0;
@@ -2312,20 +2445,29 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
             var pstatusCode = SqlParamHelper.GetNVarChar("@statusCode", statusCode);
             var pCode = SqlParamHelper.GetInt("@code", 0, System.Data.ParameterDirection.Output);
             var pMsg = SqlParamHelper.GetNVarChar("@message", "", 500, System.Data.ParameterDirection.Output);
-            var pUser = SqlParamHelper.GetNVarChar("@user", "", 128);
+            var pUser = SqlParamHelper.GetNVarChar("@user", userId, 128);
             var pLoc = SqlParamHelper.GetBigInt("@locatorId", locatorId);
             var pLocatorCode = SqlParamHelper.GetNVarChar("@locatorCode", locatorCode);
-            var pCategory = SqlParamHelper.GetNVarChar("@CATEGORY", categoryCode.GetDesc(Category));
-            var pAction = SqlParamHelper.GetNVarChar("@ACTION", actionCode.GetDesc(Action));
-            var pDoc = SqlParamHelper.GetNVarChar("@DOC", Doc);
-            var pCreatedby = SqlParamHelper.GetNVarChar("@CREATED_BY", userId);
+            var pCategory = SqlParamHelper.GetNVarChar("@category", categoryCode.GetDesc(Category));
+            var pAction = SqlParamHelper.GetNVarChar("@action", actionCode.GetDesc(Action));
+            var pDoc = SqlParamHelper.GetNVarChar("@doc", Doc);
 
-            this.Context.Database.ExecuteSqlCommand("[SP_SaveOspDetailOut] @headerId, @statusCode ,@code output, @message output, @user, @locatorId, @locatorCode, @CATEGORY, @ACTION, @DOC, @CREATED_BY",
-                pheaderId, pstatusCode, pCode, pMsg, pUser, pLoc, pLocatorCode, pCategory, pAction, pDoc, pCreatedby);
-            this.Context.Database.ExecuteSqlCommand("[SP_SaveCotangentStock] @headerId, @statusCode ,@code output, @message output, @user, @locatorId, @locatorCode, @CATEGORY, @ACTION, @DOC, @CREATED_BY",
-                pheaderId, pstatusCode, pCode, pMsg, pUser, pLoc, pLocatorCode, pCategory, pAction, pDoc, pCreatedby);
+            this.Context.Database.ExecuteSqlCommand("[SP_SaveCotangentStock] @headerId, @statusCode, @locatorId, @locatorCode, @category, @action, @doc ,@code output, @message output, @user",
+                pheaderId, pstatusCode, pLoc, pLocatorCode, pCategory, pAction, pDoc, pCode, pMsg, pUser);
+
+            if (pCode.Value != DBNull.Value)
+            {
+                resultModel.Code = Convert.ToInt32(pCode.Value);
+                resultModel.Success = resultModel.Code == ResultModel.CODE_SUCCESS;
+            }
+
+            if (pMsg.Value != DBNull.Value)
+            {
+                resultModel.Msg = Convert.ToString(pMsg.Value);
+            }
+
+            return resultModel;
         }
-
 
         /// <summary>
         /// 庫存異動紀錄
@@ -2571,10 +2713,9 @@ Delete OSP_YIELD_VARIANCE_T WHERE OSP_HEADER_ID = @OSP_HEADER_ID");
         /// PICKIN歷史轉撿貨&刪除歷史
         /// </summary>
         /// <param name="OSP_HEADER_ID"></param>
-        public void PickInHtToT(long orgOspHeaderId, long dstOspHeaderId)
+        public int CopyPickedInHT(long ospHeaderId)
         {
-            StringBuilder query = new StringBuilder();
-            query.Append(
+            return Context.Database.ExecuteSqlCommand(
 @"
 INSERT INTO [OSP_PICKED_IN_T]
 ([OSP_DETAIL_IN_ID],[OSP_HEADER_ID],[STOCK_ID],[BARCODE],
@@ -2589,24 +2730,31 @@ P.[LOT_NUMBER], P.[LOT_QUANTITY], P.[PRIMARY_QUANTITY], P.[PRIMARY_UOM], P.[SECO
 P.[HAS_REMAINT], P.[REMAINING_QUANTITY] , P.[REMAINING_UOM], P.[CREATED_BY], P.[CREATED_USER_NAME],
 P.[CREATION_DATE], P.[LAST_UPDATE_BY], P.[LAST_UPDATE_DATE], P.[LAST_UPDATE_USER_NAME]
 FROM [OSP_PICKED_IN_HT] P
+JOIN [OSP_HEADER_MOD_T] M ON M.ORG_OSP_HEADER_ID = P.OSP_HEADER_ID
 JOIN [OSP_DETAIL_IN_HT] D ON D.OSP_DETAIL_IN_ID = P.OSP_DETAIL_IN_ID AND D.OSP_HEADER_ID = P.OSP_HEADER_ID
-LEFT JOIN [OSP_DETAIL_IN_T] T ON T.OSP_HEADER_ID = @DST_OSP_HEADER_ID AND T.PROCESS_CODE = D.PROCESS_CODE AND T.SERVER_CODE = D.SERVER_CODE AND T.BATCH_ID = D.BATCH_ID AND T.BATCH_LINE_ID = D.BATCH_LINE_ID
-where P.OSP_HEADER_ID = @ORG_OSP_HEADER_ID");
-            Context.Database.ExecuteSqlCommand(query.ToString(), new SqlParameter("@ORG_OSP_HEADER_ID", orgOspHeaderId), new SqlParameter("@DST_OSP_HEADER_ID", dstOspHeaderId));
+LEFT JOIN [OSP_DETAIL_IN_T] T ON T.OSP_HEADER_ID = M.OSP_HEADER_ID AND T.PROCESS_CODE = D.PROCESS_CODE AND T.SERVER_CODE = D.SERVER_CODE AND T.BATCH_ID = D.BATCH_ID AND T.BATCH_LINE_ID = D.BATCH_LINE_ID
+where P.OSP_HEADER_ID = @OSP_HEADER_ID"
+                    , new SqlParameter("@OSP_HEADER_ID", ospHeaderId)
+                );
 
-            string cmd = "DELETE FROM [OSP_PICKED_IN_HT] WHERE OSP_HEADER_ID = @ORG_OSP_HEADER_ID ";
-            Context.Database.ExecuteSqlCommand(cmd, new SqlParameter("@ORG_OSP_HEADER_ID", orgOspHeaderId));
+        }
+
+        public int DeletePickedInHT(long ospHeaderId)
+        {
+            return Context.Database.ExecuteSqlCommand(
+                    "DELETE FROM [OSP_PICKED_IN_HT] WHERE OSP_HEADER_ID = @OSP_HEADER_ID "
+                    , new SqlParameter("@OSP_HEADER_ID", ospHeaderId)
+                   );
         }
 
         /// <summary>
         /// PickOut歷史轉撿貨&刪除歷史
         /// </summary>
         /// <param name="OSP_HEADER_ID"></param>
-        public void PirckOutHtToT(long orgOspHeaderId, long dstOspHeaderId)
+        public int CopyPickedOut(long ospHeaderId)
         {
 
-            StringBuilder query = new StringBuilder();
-            query.Append(
+            return Context.Database.ExecuteSqlCommand(
 @"
 INSERT INTO [OSP_PICKED_OUT_T]
 ([OSP_DETAIL_OUT_ID],[OSP_HEADER_ID],[STOCK_ID],[BARCODE],
@@ -2621,25 +2769,30 @@ P.[LOT_NUMBER], P.[LOT_QUANTITY], P.[PRIMARY_QUANTITY], P.[PRIMARY_UOM], P.[SECO
 P.[STATUS], P.[COTANGENT], P.[OSP_COTANGENT_ID], P.[CREATED_BY], P.[CREATED_USER_NAME],
 P.[CREATION_DATE], P.[LAST_UPDATE_BY], P.[LAST_UPDATE_DATE], P.[LAST_UPDATE_USER_NAME]
 FROM　[OSP_PICKED_OUT_HT] P
+JOIN [OSP_HEADER_MOD_T] M ON M.ORG_OSP_HEADER_ID = P.OSP_HEADER_ID
 JOIN [OSP_DETAIL_OUT_HT] D ON D.OSP_DETAIL_OUT_ID = P.OSP_DETAIL_OUT_ID AND D.OSP_HEADER_ID = P.OSP_HEADER_ID
-LEFT JOIN [OSP_COTANGENT_HT] C ON C.OSP_HEADER_ID = P.OSP_HEADER_ID AND C.OSP_COTANGENT_ID = P.OSP_COTANGENT_ID 
-LEFT JOIN [OSP_DETAIL_OUT_T] T ON T.OSP_HEADER_ID = @DST_OSP_HEADER_ID AND T.PROCESS_CODE = D.PROCESS_CODE AND T.SERVER_CODE = D.SERVER_CODE AND T.BATCH_ID = D.BATCH_ID AND T.BATCH_LINE_ID = D.BATCH_LINE_ID
-LEFT JOIN [OSP_COTANGENT_T] H ON H.OSP_HEADER_ID = T.OSP_HEADER_ID AND H.OSP_DETAIL_OUT_ID = C.OSP_DETAIL_OUT_ID AND H.STOCK_ID = C.STOCK_ID
-WHERE P.OSP_HEADER_ID = @ORG_OSP_HEADER_ID");
-            Context.Database.ExecuteSqlCommand(query.ToString(), new SqlParameter("@ORG_OSP_HEADER_ID", orgOspHeaderId), new SqlParameter("@DST_OSP_HEADER_ID", dstOspHeaderId));
+LEFT JOIN [OSP_DETAIL_OUT_T] T ON T.OSP_HEADER_ID = M.OSP_HEADER_ID AND T.PROCESS_CODE = D.PROCESS_CODE AND T.SERVER_CODE = D.SERVER_CODE AND T.BATCH_ID = D.BATCH_ID AND T.BATCH_LINE_ID = D.BATCH_LINE_ID
+WHERE P.OSP_HEADER_ID = @OSP_HEADER_ID"
+                    , new SqlParameter("@OSP_HEADER_ID", ospHeaderId)
+                );
 
-            string cmd = "DELETE FROM [OSP_PICKED_OUT_HT] WHERE OSP_HEADER_ID = @ORG_OSP_HEADER_ID ";
-            Context.Database.ExecuteSqlCommand(cmd, new SqlParameter("@ORG_OSP_HEADER_ID", orgOspHeaderId));
+        }
+
+        public int DeletePickedOutHT(long ospHeaderId)
+        {
+            return Context.Database.ExecuteSqlCommand(
+                    "DELETE FROM [OSP_PICKED_OUT_HT] WHERE OSP_HEADER_ID = @OSP_HEADER_ID "
+                    , new SqlParameter("@OSP_HEADER_ID", ospHeaderId)
+                   );
         }
 
         /// <summary>
         /// 投入歷史轉投入明細&刪除歷史
         /// </summary>
         /// <param name="OSP_HEADER_ID"></param>
-        public void DetailInHtToT(long orgOspHeaderId, long dstOspHeaderId)
+        public int CopyDetailInHT(long ospHeaderId)
         {
-            StringBuilder query = new StringBuilder();
-            query.Append(
+            return Context.Database.ExecuteSqlCommand(
 @"
 INSERT INTO [OSP_DETAIL_IN_T]
 ([OSP_HEADER_ID],[PROCESS_CODE],[SERVER_CODE],
@@ -2658,7 +2811,7 @@ INSERT INTO [OSP_DETAIL_IN_T]
 [ATTRIBUTE12],[ATTRIBUTE13],[ATTRIBUTE14],[ATTRIBUTE15],[REQUEST_ID],
 [CREATED_BY],[CREATION_DATE],[LAST_UPDATE_BY],[LAST_UPDATE_DATE])
 SELECT 
-@DST_OSP_HEADER_ID AS [OSP_HEADER_ID],[PROCESS_CODE],[SERVER_CODE],
+M.OSP_HEADER_ID AS [OSP_HEADER_ID],[PROCESS_CODE],[SERVER_CODE],
 [BATCH_ID],[BATCH_LINE_ID],[LINE_TYPE],[LINE_NO],[INVENTORY_ITEM_ID],
 [INVENTORY_ITEM_NUMBER],[BASIC_WEIGHT],[SPECIFICATION],[GRAIN_DIRECTION],[ORDER_WEIGHT],
 [REAM_WT],[PAPER_TYPE],[PACKING_TYPE],[PLAN_QTY],[WIP_PLAN_QTY],
@@ -2673,22 +2826,30 @@ SELECT
 [ATTRIBUTE7],[ATTRIBUTE8],[ATTRIBUTE9],[ATTRIBUTE10],[ATTRIBUTE11],
 [ATTRIBUTE12],[ATTRIBUTE13],[ATTRIBUTE14],[ATTRIBUTE15],[REQUEST_ID],
 [CREATED_BY],[CREATION_DATE],[LAST_UPDATE_BY],[LAST_UPDATE_DATE]
-FROM [OSP_DETAIL_IN_HT]
-WHERE OSP_HEADER_ID = @ORG_OSP_HEADER_ID");
+FROM [OSP_DETAIL_IN_HT] D
+JOIN [OSP_HEADER_MOD_T] M ON M.ORG_OSP_HEADER_ID = D.OSP_HEADER_ID
+WHERE D.OSP_HEADER_ID = @OSP_HEADER_ID"
+                , new SqlParameter("@OSP_HEADER_ID", ospHeaderId)
+              );
 
-            Context.Database.ExecuteSqlCommand(query.ToString(), new SqlParameter("@ORG_OSP_HEADER_ID", orgOspHeaderId), new SqlParameter("@DST_OSP_HEADER_ID", dstOspHeaderId));
-
-            string cmd = "DELETE FROM [OSP_DETAIL_IN_HT] WHERE OSP_HEADER_ID = @ORG_OSP_HEADER_ID ";
-            Context.Database.ExecuteSqlCommand(cmd, new SqlParameter("@ORG_OSP_HEADER_ID", orgOspHeaderId));
+            
         }
+
+        public int DeleteDetailInHT(long ospHeaderId)
+        {
+            return Context.Database.ExecuteSqlCommand(
+                    "DELETE FROM [OSP_DETAIL_IN_HT] WHERE OSP_HEADER_ID = @OSP_HEADER_ID "
+                    , new SqlParameter("@OSP_HEADER_ID", ospHeaderId)
+                  );
+        }
+
         /// <summary>
         /// 產出歷史轉產出明細&刪除歷史
         /// </summary>
         /// <param name="OSP_HEADER_ID"></param>
-        public void DetailOutHtToT(long orgOspHeaderId, long dstOspHeaderId)
+        public int CopyDetailOutHT(long ospHeaderId)
         {
-            StringBuilder query = new StringBuilder();
-            query.Append(
+            return Context.Database.ExecuteSqlCommand(
 @"
 INSERT INTO [OSP_DETAIL_OUT_T]
 ([OSP_HEADER_ID],[PROCESS_CODE],[SERVER_CODE],
@@ -2707,7 +2868,7 @@ INSERT INTO [OSP_DETAIL_OUT_T]
 [ATTRIBUTE12],[ATTRIBUTE13],[ATTRIBUTE14],[ATTRIBUTE15],[REQUEST_ID],
 [CREATED_BY],[CREATION_DATE],[LAST_UPDATE_BY],[LAST_UPDATE_DATE])
 SELECT
-@DST_OSP_HEADER_ID AS [OSP_HEADER_ID],[PROCESS_CODE],[SERVER_CODE],
+M.OSP_HEADER_ID AS [OSP_HEADER_ID],[PROCESS_CODE],[SERVER_CODE],
 [BATCH_ID],[BATCH_LINE_ID],[LINE_TYPE],[LINE_NO],[INVENTORY_ITEM_ID],
 [INVENTORY_ITEM_NUMBER],[BASIC_WEIGHT],[SPECIFICATION],[GRAIN_DIRECTION],[ORDER_WEIGHT],
 [REAM_WT],[PAPER_TYPE],[PACKING_TYPE],[PLAN_QTY],[WIP_PLAN_QTY],
@@ -2722,21 +2883,28 @@ SELECT
 [ATTRIBUTE7],[ATTRIBUTE8],[ATTRIBUTE9],[ATTRIBUTE10],[ATTRIBUTE11],
 [ATTRIBUTE12],[ATTRIBUTE13],[ATTRIBUTE14],[ATTRIBUTE15],[REQUEST_ID],
 [CREATED_BY],[CREATION_DATE],[LAST_UPDATE_BY],[LAST_UPDATE_DATE]
-FROM [OSP_DETAIL_OUT_HT]
-WHERE OSP_HEADER_ID = @ORG_OSP_HEADER_ID");
-            Context.Database.ExecuteSqlCommand(query.ToString(), new SqlParameter("@ORG_OSP_HEADER_ID", orgOspHeaderId), new SqlParameter("@DST_OSP_HEADER_ID", dstOspHeaderId));
+FROM [OSP_DETAIL_OUT_HT] D
+JOIN [OSP_HEADER_MOD_T] M ON M.ORG_OSP_HEADER_ID = D.OSP_HEADER_ID
+WHERE D.OSP_HEADER_ID = @ORG_OSP_HEADER_ID"
+                    , new SqlParameter("@ORG_OSP_HEADER_ID", ospHeaderId)
+                );
 
-            string cmd = "DELETE FROM [OSP_DETAIL_OUT_HT] WHERE OSP_HEADER_ID = @ORG_OSP_HEADER_ID ";
-            Context.Database.ExecuteSqlCommand(cmd, new SqlParameter("@ORG_OSP_HEADER_ID", orgOspHeaderId));
+        }
+
+        public int DeleteDetailOutHT(long ospHeaderId)
+        {
+            return Context.Database.ExecuteSqlCommand(
+                    "DELETE FROM [OSP_DETAIL_OUT_HT] WHERE OSP_HEADER_ID = @OSP_HEADER_ID "
+                    , new SqlParameter("@OSP_HEADER_ID", ospHeaderId)
+                  );
         }
 
         /// <summary>
         /// 餘切歷史轉餘切明細&刪除歷史
         /// </summary>
-        public void ContangetHtToT(long orgOspHeaderId, long dstOspHeaderId)
+        public int CopyContangetHT(long ospHeaderId)
         {
-            StringBuilder query = new StringBuilder();
-            query.Append(
+            return Context.Database.ExecuteSqlCommand(
 @"
 INSERT INTO [OSP_COTANGENT_T]
 ([OSP_DETAIL_OUT_ID],[OSP_HEADER_ID],[STOCK_ID],[BARCODE],
@@ -2753,55 +2921,83 @@ C.[LAST_UPDATE_DATE], C.[LAST_UPDATE_USER_NAME]
 FROM [OSP_COTANGENT_HT] C
 JOIN OSP_HEADER_MOD_T M ON M.ORG_OSP_HEADER_ID = C.OSP_HEADER_ID
 JOIN [OSP_DETAIL_OUT_HT] D ON D.OSP_DETAIL_OUT_ID = C.OSP_DETAIL_OUT_ID
-LEFT JOIN [OSP_DETAIL_OUT_T] T ON T.OSP_HEADER_ID = M.OSP_HEADER_ID");
-            Context.Database.ExecuteSqlCommand(query.ToString(), new SqlParameter("@ORG_OSP_HEADER_ID", orgOspHeaderId), new SqlParameter("@DST_OSP_HEADER_ID", dstOspHeaderId));
+LEFT JOIN [OSP_DETAIL_OUT_T] T ON T.OSP_HEADER_ID = M.OSP_HEADER_ID AND T.PROCESS_CODE = D.PROCESS_CODE AND T.SERVER_CODE = D.SERVER_CODE AND T.BATCH_ID = D.BATCH_ID AND T.BATCH_LINE_ID = D.BATCH_LINE_ID
+WHERE C.OSP_HEADER_ID = @OSP_HEADER_ID"
+                    , new SqlParameter("@OSP_HEADER_ID", ospHeaderId)
+                );
 
-            string cmd = "DELETE FROM [OSP_COTANGENT_HT] WHERE OSP_HEADER_ID = @ORG_OSP_HEADER_ID ";
-            Context.Database.ExecuteSqlCommand(cmd, new SqlParameter("@ORG_OSP_HEADER_ID", orgOspHeaderId));
+            
+        }
+
+        public int DeleteContangetHT(long ospHeaderId)
+        {
+            return Context.Database.ExecuteSqlCommand(
+                "DELETE FROM [OSP_COTANGENT_HT] WHERE OSP_HEADER_ID = @OSP_HEADER_ID "
+                , new SqlParameter("@OSP_HEADER_ID"
+                , ospHeaderId));
         }
 
         /// <summary>
         /// 損耗歷史轉損耗明細&刪除歷史
         /// </summary>
         /// <param name="OSP_HEADER_ID"></param>
-        public void YieldHtToT(long orgOspHeaderId, long dstOspHeaderId)
+        public int CopyYieldHT(long ospHeaderId)
         {
-            StringBuilder query = new StringBuilder();
-            query.Append(
+            return Context.Database.ExecuteSqlCommand(
 @"
 INSERT INTO [OSP_YIELD_VARIANCE_T]
 ([OSP_HEADER_ID],[DETAIL_IN_QUANTITY],[COTANGENT_QUANTITY],[DETAIL_OUT_QUANTITY],
 [LOSS_WEIGHT],[PRIMARY_UOM],[RATE],[CREATED_BY],[CREATED_USER_NAME],
 [CREATION_DATE],[LAST_UPDATE_BY],[LAST_UPDATE_DATE],[LAST_UPDATE_USER_NAME])
 SELECT
-@DST_OSP_HEADER_ID AS [OSP_HEADER_ID],[DETAIL_IN_QUANTITY],[COTANGENT_QUANTITY],[DETAIL_OUT_QUANTITY],
+M.OSP_HEADER_ID,[DETAIL_IN_QUANTITY],[COTANGENT_QUANTITY],[DETAIL_OUT_QUANTITY],
 [LOSS_WEIGHT],[PRIMARY_UOM],[RATE],[CREATED_BY],[CREATED_USER_NAME],
 [CREATION_DATE],[LAST_UPDATE_BY],[LAST_UPDATE_DATE],[LAST_UPDATE_USER_NAME]
-FROM [OSP_YIELD_VARIANCE_HT]
-WHERE OSP_HEADER_ID = @ORG_OSP_HEADER_ID
-");
-            Context.Database.ExecuteSqlCommand(query.ToString(), new SqlParameter("@ORG_OSP_HEADER_ID", orgOspHeaderId), new SqlParameter("@DST_OSP_HEADER_ID", dstOspHeaderId));
+FROM [OSP_YIELD_VARIANCE_HT] Y
+JOIN OSP_HEADER_MOD_T M ON M.ORG_OSP_HEADER_ID = Y.OSP_HEADER_ID
+WHERE Y.OSP_HEADER_ID = @OSP_HEADER_ID
+"
+                    , new SqlParameter("@OSP_HEADER_ID", ospHeaderId)
+                );
 
-            string cmd = "DELETE FROM [OSP_YIELD_VARIANCE_HT] WHERE OSP_HEADER_ID = @ORG_OSP_HEADER_ID ";
-            Context.Database.ExecuteSqlCommand(cmd, new SqlParameter("@ORG_OSP_HEADER_ID", orgOspHeaderId));
+
+        }
+
+        public int DeleteYieldHT(long ospHeaderId)
+        {
+            return Context.Database.ExecuteSqlCommand(
+                    "DELETE FROM [OSP_YIELD_VARIANCE_HT] WHERE OSP_HEADER_ID = @OSP_HEADER_ID "
+                    , new SqlParameter("@OSP_HEADER_ID", ospHeaderId)
+                );
         }
 
         /// <summary>
         /// 歷史轉修改資料庫存資料刪除
         /// </summary>
         /// <param name="OSP_HEADER_ID"></param>
-        public void HtToTStockDelete(long OSP_HEADER_ID)
+        public int DeleteStock(long ospHeaderId)
         {
-            StringBuilder query = new StringBuilder();
-            query.Append(
+            return DeleteStockFromOspPickedHT(ospHeaderId) + DeleteStockFromOspContangetHT(ospHeaderId);
+        }
+
+        public int DeleteStockFromOspPickedHT(long ospHeaderId)
+        {
+            return Context.Database.ExecuteSqlCommand(
 @"DELETE ST FROM STOCK_T ST
 JOIN OSP_PICKED_OUT_HT POH ON POH.STOCK_ID = ST.STOCK_ID
-WHERE POH.OSP_HEADER_ID = @OSP_HEADER_ID
+WHERE POH.OSP_HEADER_ID = @OSP_HEADER_ID"
+                    , new SqlParameter("@OSP_HEADER_ID", ospHeaderId)
+                );
+        }
 
-DELETE ST FROM STOCK_T ST
+        public int DeleteStockFromOspContangetHT(long ospHeaderId)
+        {
+            return Context.Database.ExecuteSqlCommand(
+@"DELETE ST FROM STOCK_T ST
 JOIN OSP_COTANGENT_HT CHT ON CHT.STOCK_ID = ST.STOCK_ID
-WHERE CHT.OSP_HEADER_ID = @OSP_HEADER_ID");
-            Context.Database.ExecuteSqlCommand(query.ToString(), new SqlParameter("@OSP_HEADER_ID", OSP_HEADER_ID));
+WHERE CHT.OSP_HEADER_ID = @OSP_HEADER_ID"
+                    , new SqlParameter("@OSP_HEADER_ID", ospHeaderId)
+                );
         }
 
 
