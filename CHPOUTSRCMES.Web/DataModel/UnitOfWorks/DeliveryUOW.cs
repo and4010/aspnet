@@ -111,9 +111,19 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                     return new ResultModel(false, "此條碼不符合已選擇的料號");
                 }
             }
-         
+            
+            if (detailData.LocatorId != null && detailData.LocatorId != stock.LocatorId)
+            {
+                var stockLocator = locatorTRepository.GetAll().FirstOrDefault(x => x.LocatorId == stock.LocatorId);
+                var detailLocator = locatorTRepository.GetAll().FirstOrDefault(x => x.LocatorId == detailData.LocatorId);
+                string stockLocatorSegment3 = "";
+                string detailLocatorSegment3 = "";
+                if (stockLocator != null) stockLocatorSegment3 = stockLocator.Segment3;
+                if (detailLocator != null) detailLocatorSegment3 = detailLocator.Segment3;
+                return new ResultModel(false, "此條碼的儲位" + stockLocatorSegment3 + "不符合出貨儲位" + detailLocatorSegment3);
+            }
 
-            var pickData = dlvPickedTRepository.GetAll().AsNoTracking().Where(x => x.Barcode == barcode).ToList();
+            var pickData = dlvPickedTRepository.GetAll().AsNoTracking().Where(x => x.Barcode == barcode && x.DlvHeaderId == dlvHeaderId).ToList();
             if (pickData.Count > 0) return new ResultModel(false, "條碼重複輸入");
 
 
@@ -1264,6 +1274,107 @@ SELECT [DLV_PICKED_ID]
                         header.LastUpdateUserName = userName;
                         header.LastUpdateDate = now;
                         dlvHeaderTRepository.Update(header);
+
+                        //複製出貨明細資料到出貨歷史明細
+                        string cmd = @"
+INSERT INTO [DLV_DETAIL_HT]
+(
+	[DLV_DETAIL_ID]
+      ,[DLV_HEADER_ID]
+      ,[PROCESS_CODE]
+      ,[SERVER_CODE]
+      ,[BATCH_ID]
+      ,[BATCH_LINE_ID]
+      ,[Order_Number]
+      ,[ORDER_LINE_ID]
+      ,[ORDER_SHIP_NUMBER]
+      ,[DELIVERY_DETAIL_ID]
+      ,[PACKING_TYPE]
+      ,[INVENTORY_ITEM_ID]
+      ,[ITEM_NUMBER]
+      ,[ITEM_DESCRIPTION]
+      ,[REAM_WEIGHT]
+      ,[ITEM_CATEGORY]
+      ,[PAPER_TYPE]
+      ,[BASIC_WEIGHT]
+      ,[SPECIFICATION]
+      ,[GRAIN_DIRECTION]
+      ,[LOCATOR_ID]
+      ,[LOCATOR_CODE]
+      ,[REQUESTED_TRANSACTION_QUANTITY]
+      ,[REQUESTED_TRANSACTION_UOM]
+      ,[REQUESTED_PRIMARY_QUANTITY]
+      ,[REQUESTED_PRIMARY_UOM]
+      ,[REQUESTED_SECONDARY_QUANTITY]
+      ,[REQUESTED_SECONDARY_UOM]
+      ,[OSP_BATCH_ID]
+      ,[OSP_BATCH_NO]
+      ,[OSP_BATCH_TYPE]
+      ,[TMP_ITEM_ID]
+      ,[TMP_ITEM_NUMBER]
+      ,[TMP_ITEM_DESCRIPTION]
+      ,[CREATED_BY]
+      ,[CREATED_USER_NAME]
+      ,[CREATION_DATE]
+      ,[LAST_UPDATE_BY]
+      ,[LAST_UPDATE_USER_NAME]
+      ,[LAST_UPDATE_DATE]
+)
+SELECT [DLV_DETAIL_ID]
+      ,[DLV_HEADER_ID]
+      ,[PROCESS_CODE]
+      ,[SERVER_CODE]
+      ,[BATCH_ID]
+      ,[BATCH_LINE_ID]
+      ,[Order_Number]
+      ,[ORDER_LINE_ID]
+      ,[ORDER_SHIP_NUMBER]
+      ,[DELIVERY_DETAIL_ID]
+      ,[PACKING_TYPE]
+      ,[INVENTORY_ITEM_ID]
+      ,[ITEM_NUMBER]
+      ,[ITEM_DESCRIPTION]
+      ,[REAM_WEIGHT]
+      ,[ITEM_CATEGORY]
+      ,[PAPER_TYPE]
+      ,[BASIC_WEIGHT]
+      ,[SPECIFICATION]
+      ,[GRAIN_DIRECTION]
+      ,[LOCATOR_ID]
+      ,[LOCATOR_CODE]
+      ,[REQUESTED_TRANSACTION_QUANTITY]
+      ,[REQUESTED_TRANSACTION_UOM]
+      ,[REQUESTED_PRIMARY_QUANTITY]
+      ,[REQUESTED_PRIMARY_UOM]
+      ,[REQUESTED_SECONDARY_QUANTITY]
+      ,[REQUESTED_SECONDARY_UOM]
+      ,[OSP_BATCH_ID]
+      ,[OSP_BATCH_NO]
+      ,[OSP_BATCH_TYPE]
+      ,[TMP_ITEM_ID]
+      ,[TMP_ITEM_NUMBER]
+      ,[TMP_ITEM_DESCRIPTION]
+      ,[CREATED_BY]
+      ,[CREATED_USER_NAME]
+      ,[CREATION_DATE]
+      ,[LAST_UPDATE_BY]
+      ,[LAST_UPDATE_USER_NAME]
+      ,[LAST_UPDATE_DATE]
+  FROM [DLV_DETAIL_T]
+  WHERE DLV_HEADER_ID = @DLV_HEADER_ID
+";
+                        if (this.Context.Database.ExecuteSqlCommand(cmd, new SqlParameter("@DLV_HEADER_ID", header.DlvHeaderId)) <= 0)
+                        {
+                            throw new Exception("複製出貨明細資料到出貨歷史明細失敗");
+                        }
+                        //刪除出貨明細資料
+                        cmd = @"
+  DELETE FROM [DLV_DETAIL_T]
+  WHERE DLV_HEADER_ID = @DLV_HEADER_ID";
+                        if (this.Context.Database.ExecuteSqlCommand(cmd, new SqlParameter("@DLV_HEADER_ID", header.DlvHeaderId)) <= 0)
+                        {
+                            throw new Exception("刪除出貨明細資料失敗");
+                        }
 
                         var pickList = dlvPickedTRepository.GetAll().Where(x => x.DlvHeaderId == header.DlvHeaderId).ToList();
                         //if (pickList == null || pickList.Count == 0) throw new Exception("找不到揀貨資料");

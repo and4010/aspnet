@@ -363,6 +363,9 @@ $(document).ready(function () {
                     if (data.DELIVERY_STATUS == null || data.DELIVERY_STATUS == "已取消") {
                         return null
                     }
+                    if (data.DELIVERY_STATUS == "未印") {
+                        return '<button class="btn btn-primary btn-sm btn-print"><i class="glyphicon glyphicon-print"></i>備貨單</button>'
+                    }
                     if (data.DELIVERY_STATUS == "未印" || data.DELIVERY_STATUS == "待出") {
                         return '<button class="btn btn-danger btn-sm btn-edit"><i class="fa fa-pencil"></i>出貨</button>' + '&nbsp|&nbsp' + '<button class="btn btn-primary btn-sm btn-print"><i class="glyphicon glyphicon-print"></i>備貨單</button>'
                     }
