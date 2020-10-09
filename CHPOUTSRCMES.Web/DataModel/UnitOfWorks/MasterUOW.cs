@@ -924,8 +924,8 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
 
                 stock.LastUpdateBy = lastUpdatedBy;
                 stock.LastUpdateDate = now;
-                stkTxnT.CreatedBy = stock.CreatedBy;
-                stkTxnT.CreationDate = stock.CreationDate;
+                stkTxnT.CreatedBy = lastUpdatedBy;
+                stkTxnT.CreationDate = now;
                 stkTxnT.LastUpdateBy = null;
                 stkTxnT.LastUpdateDate = null;
                 stkTxnT.StatusCode = stock.StatusCode;
@@ -1030,8 +1030,8 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             stock.LastUpdateDate = addDate;
             //記錄庫存狀態
             stock.StatusCode = stock.PrimaryAvailableQty == 0 ? detail.ToStockStatus(statusCode) : StockStatusCode.InStock; //數量為0時為指定的庫存狀態，非0時為在庫
-            stkTxnT.CreatedBy = stock.CreatedBy;
-            stkTxnT.CreationDate = stock.CreationDate;
+            stkTxnT.CreatedBy = lastUpdatedBy;
+            stkTxnT.CreationDate = addDate;
             stkTxnT.LastUpdateBy = null;
             stkTxnT.LastUpdateDate = null;
             stkTxnT.StatusCode = stock.StatusCode;
