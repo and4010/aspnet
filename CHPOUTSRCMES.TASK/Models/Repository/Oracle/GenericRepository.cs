@@ -163,7 +163,7 @@ namespace CHPOUTSRCMES.TASK.Models.Repository.Oracle
             return insertQuery.ToString();
         }
 
-        private string GenerateUpdateQuery()
+        private string GenerateUpdateQuery(string condition = " WHERE Id =:Id")
         {
             var updateQuery = new StringBuilder(string.Format("UPDATE {0} SET ", tableName));
             var properties = GenerateListOfProperties(GetProperties());
@@ -177,7 +177,8 @@ namespace CHPOUTSRCMES.TASK.Models.Repository.Oracle
             });
 
             updateQuery.Remove(updateQuery.Length - 1, 1); //remove last comma
-            updateQuery.Append(" WHERE Id=:Id");
+           
+            updateQuery.Append(condition);
 
             return updateQuery.ToString();
         }

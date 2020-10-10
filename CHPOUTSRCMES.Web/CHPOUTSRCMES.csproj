@@ -1610,6 +1610,12 @@
     <Content Include="Data\SQLScript\126_SP_P219_OspStCancel.sql" />
     <Content Include="Data\SQLScript\127_SP_P219_OspStChange.sql" />
     <Content Include="Data\SQLScript\128_SP_P219_OspStSummarize.sql" />
+    <Content Include="Data\SQLScript\129_SP_P222_TrfStSummarize.sql" />
+    <Content Include="Data\SQLScript\130_SP_P222_TrfRsnStSummarize.sql" />
+    <Content Include="Data\SQLScript\131_SP_P222_TrfInvStSummarize.sql" />
+    <Content Include="Data\SQLScript\132_SP_P222_TrfMiscStSummarize.sql" />
+    <Content Include="Data\SQLScript\133_SP_P222_TrfObsStSummarize.sql" />
+    <Content Include="Data\SQLScript\134_SP_P221_ShipConfirmSummarize.sql" />
     <Content Include="Data\SQLScript\201_XXIF_CHP_CONTROL_ST.sql" />
     <Content Include="Data\SQLScript\202_XXIF_CHP_P217_CONTAINER_ST.sql" />
     <Content Include="Data\SQLScript\203_XXIF_CHP_P218_CONTAINER_RV_ST.sql" />

@@ -124,9 +124,11 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                 {
                     token.ThrowIfCancellationRequested();
                 }
-
                 using var sqlConn = new SqlConnection(MesConnStr);
+                using var oraConn = new OracleConnection(ErpConnStr);
                 using var dlvStUow = new DlvStUOW(sqlConn);
+                using var masterUOW = new MasterUOW(oraConn);
+
                 var list = await dlvStUow.GetTripList();
                 if (list == null || list.Count() == 0)
                 {
@@ -139,7 +141,7 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                     using var transaction = sqlConn.BeginTransaction();
                     try
                     {
-                        var model = await dlvStUow.DeliveryStUpload(list[i], transaction);
+                        var model = await dlvStUow.DeliveryStUpload(list[i], masterUOW, transaction: transaction);
                         LogInfo($"[{tasker.Name}]-{tasker.Unit}-ExportDlvStRv (TRIP_ID:{list[i]})-{model}");
 
                         if (!model.Success)

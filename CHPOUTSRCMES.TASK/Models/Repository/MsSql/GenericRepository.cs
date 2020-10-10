@@ -165,7 +165,7 @@ namespace CHPOUTSRCMES.TASK.Models.Repository.MsSql
             return insertQuery.ToString();
         }
 
-        private string GenerateUpdateQuery()
+        private string GenerateUpdateQuery(string condition= "")
         {
             var updateQuery = new StringBuilder(string.Format("UPDATE {0} SET ", tableName));
             var properties = GenerateListOfProperties(GetProperties());
@@ -179,7 +179,15 @@ namespace CHPOUTSRCMES.TASK.Models.Repository.MsSql
             });
 
             updateQuery.Remove(updateQuery.Length - 1, 1); //remove last comma
-            updateQuery.Append($" WHERE {IdField}=@Id");
+            if(string.IsNullOrEmpty(condition))
+            {
+                updateQuery.Append($" WHERE {IdField}=@Id");
+            }
+            else
+            {
+                updateQuery.Append($" {condition}");
+            }
+            
 
             return updateQuery.ToString();
         }

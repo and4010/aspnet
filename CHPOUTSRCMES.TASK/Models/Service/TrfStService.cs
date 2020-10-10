@@ -48,8 +48,10 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                 {
                     token.ThrowIfCancellationRequested();
                 }
+                using var oraConn = new OracleConnection(ErpConnStr);
                 using var sqlConn = new SqlConnection(MesConnStr);
                 using var trfStUow = new TrfStUOW(sqlConn);
+                using var masterUow = new MasterUOW(oraConn);
                 var list = await trfStUow.GetHeaderListForUpload();
                 if (list == null || list.Count() == 0)
                 {
@@ -62,7 +64,7 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                     using var transaction = sqlConn.BeginTransaction();
                     try
                     {
-                        var model = await trfStUow.TransferStUpload(list[i], transaction);
+                        var model = await trfStUow.TransferStUpload(list[i], masterUow, transaction: transaction);
                         LogInfo($"[{tasker.Name}]-{tasker.Unit}-ExportTrfStRv (TRF_HEADER_ID:{list[i]})-{model}");
                         
                         if (!model.Success)
@@ -107,8 +109,10 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                 {
                     token.ThrowIfCancellationRequested();
                 }
+                using var oraConn = new OracleConnection(ErpConnStr);
                 using var sqlConn = new SqlConnection(MesConnStr);
                 using var trfStUow = new TrfStUOW(sqlConn);
+                using var masterUow = new MasterUOW(oraConn);
                 var list = await trfStUow.GetReasonHeaderListForUpload();
                 if (list == null || list.Count() == 0)
                 {
@@ -121,7 +125,7 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                     using var transaction = sqlConn.BeginTransaction();
                     try
                     {
-                        var model = await trfStUow.TrfRsnStUpload(list[i], transaction);
+                        var model = await trfStUow.TrfRsnStUpload(list[i], masterUow,transaction: transaction);
                         LogInfo($"[{tasker.Name}]-{tasker.Unit}-ExportReasonStRv (TRANSFER_REASON_HEADER_ID:{list[i]})-{model}");
 
                         if (!model.Success)
@@ -166,8 +170,10 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                 {
                     token.ThrowIfCancellationRequested();
                 }
+                using var oraConn = new OracleConnection(ErpConnStr);
                 using var sqlConn = new SqlConnection(MesConnStr);
                 using var trfStUow = new TrfStUOW(sqlConn);
+                using var masterUow = new MasterUOW(oraConn);
                 var list = await trfStUow.GetInvHeaderListForUpload();
                 if (list == null || list.Count() == 0)
                 {
@@ -180,7 +186,7 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                     using var transaction = sqlConn.BeginTransaction();
                     try
                     {
-                        var model = await trfStUow.TrfInvStUpload(list[i], transaction);
+                        var model = await trfStUow.TrfInvStUpload(list[i], masterUow, transaction: transaction);
                         LogInfo($"[{tasker.Name}]-{tasker.Unit}-ExportInvStRv (TRANSFER_INVENTORY_HEADER_ID:{list[i]})-{model}");
 
                         if (!model.Success)
@@ -225,8 +231,10 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                 {
                     token.ThrowIfCancellationRequested();
                 }
+                using var oraConn = new OracleConnection(ErpConnStr);
                 using var sqlConn = new SqlConnection(MesConnStr);
                 using var trfStUow = new TrfStUOW(sqlConn);
+                using var masterUow = new MasterUOW(oraConn);
                 var list = await trfStUow.GetMiscHeaderListForUpload();
                 if (list == null || list.Count() == 0)
                 {
@@ -239,7 +247,7 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                     using var transaction = sqlConn.BeginTransaction();
                     try
                     {
-                        var model = await trfStUow.TrfMiscStUpload(list[i], transaction);
+                        var model = await trfStUow.TrfMiscStUpload(list[i], masterUow, transaction: transaction);
                         LogInfo($"[{tasker.Name}]-{tasker.Unit}-ExportMiscStRv (TRANSFER_MISCELLANEOUS_HEADER_ID:{list[i]})-{model}");
 
                         if (!model.Success)
@@ -284,8 +292,10 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                 {
                     token.ThrowIfCancellationRequested();
                 }
+                using var oraConn = new OracleConnection(ErpConnStr);
                 using var sqlConn = new SqlConnection(MesConnStr);
                 using var trfStUow = new TrfStUOW(sqlConn);
+                using var masterUow = new MasterUOW(oraConn);
                 var list = await trfStUow.GetObsHeaderListForUpload();
                 if (list == null || list.Count() == 0)
                 {
@@ -298,7 +308,7 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                     using var transaction = sqlConn.BeginTransaction();
                     try
                     {
-                        var model = await trfStUow.TrfObsStUpload(list[i], transaction);
+                        var model = await trfStUow.TrfObsStUpload(list[i], masterUow, transaction: transaction);
                         LogInfo($"[{tasker.Name}]-{tasker.Unit}-ExportObsStRv (TRANSFER_OBSOLETE_HEADER_ID:{list[i]})-{model}");
 
                         if (!model.Success)
