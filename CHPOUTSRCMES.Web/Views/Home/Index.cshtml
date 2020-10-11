@@ -1,9 +1,10 @@
-﻿<div class="row">
+﻿@model CHPOUTSRCMES.Web.ViewModels.HomeViewModel
+<div class="row">
     <div class="col-lg-4 col-xs-12">
         <!-- small box -->
         <div class="small-box bg-aqua">
             <div class="inner">
-                <h3>26</h3>
+                <h3>@Model.CtrPendingCount.ToString()</h3>
 
                 <p>進貨</p>
             </div>
@@ -18,7 +19,7 @@
         <!-- small box -->
         <div class="small-box bg-green">
             <div class="inner">
-                <h3>12</h3>
+                <h3>@Model.OspPendingCount.ToString()</h3>
 
                 <p>加工／施工中</p>
             </div>
@@ -33,7 +34,7 @@
         <!-- small box -->
         <div class="small-box bg-yellow">
             <div class="inner">
-                <h3>124</h3>
+                <h3>@Model.DlvPendingCount.ToString()</h3>
 
                 <p>出貨</p>
             </div>

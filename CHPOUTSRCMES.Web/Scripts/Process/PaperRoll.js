@@ -877,7 +877,7 @@ function BtnRecord() {
         var BatchNo = $('#ProcessBatchNo').val();
         var OspHeaderId = $('#OspHeaderId').val();
         $.ajax({
-            url: '/Process/FinisheEdit',
+            url: '/Process/FinishedEdit',
             datatype: 'json',
             type: "POST",
             data: { BatchNo: BatchNo, OspHeaderId: OspHeaderId },
@@ -919,7 +919,7 @@ function BtnRecord() {
 function changeStaus() {
     var OspHeaderId = $("#OspHeaderId").val();
     $.ajax({
-        url: '/Process/EditHeaderStauts/',
+        url: '/Process/EditHeaderStatus/',
         dataType: 'json',
         type: 'post',
         data: { OspHeaderId: OspHeaderId },

@@ -1914,7 +1914,6 @@ WHERE p.BARCODE = @Barcode
 
         }
 
-
         /// <summary>
         /// 取得出貨備貨單ReportDataSource
         /// </summary>
@@ -1947,6 +1946,28 @@ WHERE p.BARCODE = @Barcode
                 }
             }
 
+        }
+
+        public ResultDataModel<int> GetDlvPendingCount()
+        {
+            var resultDataModel = new ResultDataModel<int>(false, "", 0);
+            try
+            {
+                resultDataModel.Data = dlvHeaderTRepository.GetAll()
+                .Where(x => 
+                    x.DeliveryStatusCode != DeliveryStatusCode.Canceled
+                    && x.DeliveryStatusCode != DeliveryStatusCode.Shipped)
+                .Count();
+                resultDataModel.Code = ResultModel.CODE_SUCCESS;
+                resultDataModel.Msg = "";
+            }
+            catch (Exception ex)
+            {
+                resultDataModel.Code = -1;
+                resultDataModel.Msg = $"取得加工單未完成數量時發生錯誤 EX:{ex.Message}";
+            }
+
+            return resultDataModel;
         }
 
     }

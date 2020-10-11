@@ -563,6 +563,7 @@
     <Compile Include="ViewModels\Obsolete\ObsoleteViewModel.cs" />
     <Compile Include="ViewModels\OrgSubinventoryViewModel.cs" />
     <Compile Include="ViewModels\OspRelatedViewModel.cs" />
+    <Compile Include="ViewModels\HomeViewModel.cs" />
     <Compile Include="ViewModels\SoaQuery\SoaQueryDetailViewModel.cs" />
     <Compile Include="ViewModels\SoaQuery\SoaQueryViewModel.cs" />
     <Compile Include="ViewModels\StockQuery\QueryDetailViewModel.cs" />

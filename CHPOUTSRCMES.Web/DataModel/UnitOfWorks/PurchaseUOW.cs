@@ -2106,6 +2106,26 @@ SELECT [TRANSFER_REASON_ID]
             
         }
 
+        public ResultDataModel<int> GetCtrPendingCount()
+        {
+            var resultDataModel = new ResultDataModel<int>(false, "", 0);
+            try
+            {
+                resultDataModel.Data = ctrHeaderTRepository.GetAll()
+                .Where(x => x.Status != PurchaseStatusCode.GetCode(PurchaseStatusCode.Cancel)
+                    && x.Status != PurchaseStatusCode.GetCode(PurchaseStatusCode.Already))
+                .Count();
+                resultDataModel.Code = ResultModel.CODE_SUCCESS;
+                resultDataModel.Msg = "";
+            }
+            catch (Exception ex)
+            {
+                resultDataModel.Code = -1;
+                resultDataModel.Msg = $"取得加工單未完成數量時發生錯誤 EX:{ex.Message}";
+            }
+
+            return resultDataModel;
+        }
     }
 
 

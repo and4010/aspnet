@@ -346,10 +346,10 @@ namespace CHPOUTSRCMES.Web.ViewModels.Process
         /// <param name="UserId"></param>
         /// <param name="UserName"></param>
         /// <returns></returns>
-        public ResultModel EditHeaderStauts(long OspHeaderId, string UserId, string UserName)
+        public ResultModel EditHeaderStatus(long OspHeaderId, string UserId, string UserName)
         {
             using var context = new MesContext();
-            return new ProcessUOW(context).EditHeaderStauts(OspHeaderId, UserId, UserName);
+            return new ProcessUOW(context).EditHeaderStatus(OspHeaderId, UserId, UserName);
         }
 
         /// <summary>
@@ -358,10 +358,10 @@ namespace CHPOUTSRCMES.Web.ViewModels.Process
         /// <param name="BatchNo"></param>
         /// <param name="OspHeaderId"></param>
         /// <returns></returns>
-        public ResultDataModel<long> FinisheEdit(string BatchNo, long OspHeaderId, string userId)
+        public ResultDataModel<long> FinishedEdit(string BatchNo, long OspHeaderId, string userId)
         {
             using var context = new MesContext();
-            return new ProcessUOW(context).FinisheEdit(BatchNo, OspHeaderId, userId);
+            return new ProcessUOW(context).FinishedEdit(BatchNo, OspHeaderId, userId);
         }
 
         /// <summary>

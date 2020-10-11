@@ -31,7 +31,7 @@ namespace CHPOUTSRCMES.TASK.Models.Repository.MsSql
         public async Task<List<XXIF_CHP_P222_SUB_TRANSFER_ST>> GetListBy(string processCode, string serverCode, string batchId, IDbTransaction transaction = null)
         {
             return (await Connection.QueryAsync<XXIF_CHP_P222_SUB_TRANSFER_ST>(
-@"SELECT * FROM XXIF_CHP_P219_OSP_BATCH_ST A 
+@"SELECT * FROM XXIF_CHP_P222_SUB_TRANSFER_ST A 
 WHERE A.PROCESS_CODE = @ProcessCode AND A.SERVER_CODE = @ServerCode AND A.BATCH_ID = @BatchId
 ORDER BY A.PROCESS_CODE, A.SERVER_CODE, A.BATCH_ID, A.BATCH_LINE_ID", new { ProcessCode = processCode, ServerCode = serverCode, BatchId = batchId }, transaction: transaction)).ToList();
         }

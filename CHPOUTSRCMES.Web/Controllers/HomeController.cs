@@ -4,6 +4,7 @@ using CHPOUTSRCMES.Web.Models;
 using CHPOUTSRCMES.Web.Models.Delivery;
 using CHPOUTSRCMES.Web.Models.Stock;
 using CHPOUTSRCMES.Web.Util;
+using CHPOUTSRCMES.Web.ViewModels;
 using CHPOUTSRCMES.Web.ViewModels.Account;
 using CHPOUTSRCMES.Web.ViewModels.Inventory;
 using CHPOUTSRCMES.Web.ViewModels.Process;
@@ -28,67 +29,24 @@ namespace CHPOUTSRCMES.Web.Controllers
         public const string PaperRoller = "捲筒";
 
         StockTransferBarcodeData stockTransferBarcodeData = new StockTransferBarcodeData();
+
         public ActionResult Index()
         {
-            return View();
+            using var mesContext = new MesContext();
+            using var processUow = new ProcessUOW(mesContext);
+            using var purchaseUow = new PurchaseUOW(mesContext);
+            using var deliveryUow = new DeliveryUOW(mesContext);
+
+            HomeViewModel viewModel = new HomeViewModel();
+            var model1 = purchaseUow.GetCtrPendingCount();
+            var model2 = deliveryUow.GetDlvPendingCount();
+            var model3 = processUow.GetOspPendingCount();
+            viewModel.CtrPendingCount = model1.Data;
+            viewModel.DlvPendingCount = model2.Data;
+            viewModel.OspPendingCount = model3.Data;
+
+            return View(viewModel);
         }
-
-        public ActionResult FlotCharts()
-        {
-            return View("FlotCharts");
-        }
-
-        public ActionResult MorrisCharts()
-        {
-            return View("MorrisCharts");
-        }
-
-        public ActionResult Tables()
-        {
-            return View("Tables");
-        }
-
-        public ActionResult Forms()
-        {
-            return View("Forms");
-        }
-
-        public ActionResult Panels()
-        {
-            return View("Panels");
-        }
-
-        public ActionResult Buttons()
-        {
-            return View("Buttons");
-        }
-
-        public ActionResult Notifications()
-        {
-            return View("Notifications");
-        }
-
-        public ActionResult Typography()
-        {
-            return View("Typography");
-        }
-
-        public ActionResult Icons()
-        {
-            return View("Icons");
-        }
-
-        public ActionResult Grid()
-        {
-            return View("Grid");
-        }
-
-        public ActionResult Blank()
-        {
-            return View("Blank");
-        }
-
-
 
         public ActionResult TestData()
         {
@@ -116,7 +74,6 @@ namespace CHPOUTSRCMES.Web.Controllers
 
         [HttpPost]
         public ActionResult GetLabel(List<string> BARCODE)
-        //public ActionResult GetLabel(List<PurchaseDetailModel> model)
         {
             string msg = "";
             LabelData labelData = new LabelData();
@@ -138,7 +95,6 @@ namespace CHPOUTSRCMES.Web.Controllers
 
         [HttpPost]
         public ActionResult GetLabel2(List<string> BARCODE)
-        //public ActionResult GetLabel(List<PurchaseDetailModel> model)
         {
             string msg = "";
             LabelData labelData = new LabelData();
@@ -160,7 +116,6 @@ namespace CHPOUTSRCMES.Web.Controllers
 
         [HttpPost]
         public ActionResult GetLabels3(List<string> BARCODE)
-        //public ActionResult GetLabel(List<PurchaseDetailModel> model)
         {
             string msg = "";
             LabelData labelData = new LabelData();
@@ -221,6 +176,7 @@ namespace CHPOUTSRCMES.Web.Controllers
             //HttpContext.Current.Response.Write();
             Response.End();
         }
+
         public ActionResult CtrReport(string CtrHeaderId, string ItemCategory)
         {
 #if DEBUG
@@ -277,7 +233,6 @@ namespace CHPOUTSRCMES.Web.Controllers
             return View("Report");
         }
 
-
         public ActionResult RemoteReport(string CtrHeaderId, string ItemCategory)
         {
             List<ReportParameter> paramList = new List<ReportParameter>();
@@ -303,8 +258,6 @@ namespace CHPOUTSRCMES.Web.Controllers
             ViewBag.ReportViewer = report;
             return View("Report");
         }
-
-
 
         /// <summary>
         /// 加工領料單
@@ -371,8 +324,6 @@ namespace CHPOUTSRCMES.Web.Controllers
             ViewBag.ReportViewer = report;
             return View("Report");
         }
-
-
 
         /// <summary>
         /// 加工裁切單
@@ -462,7 +413,6 @@ namespace CHPOUTSRCMES.Web.Controllers
             }
             return View("Report");
         }
-
 
         /// <summary>
         /// 加工成品入庫
@@ -600,8 +550,6 @@ namespace CHPOUTSRCMES.Web.Controllers
             return View("Report");
         }
 
-
-
         /// <summary>
         /// 加工平張成品入庫
         /// </summary>
@@ -668,10 +616,39 @@ namespace CHPOUTSRCMES.Web.Controllers
             return View("Report");
         }
 
+        [HttpPost]
+        public JsonResult GetOspCount()
+        {
+            
+            using var mesContext = new MesContext();
+            using var processUow = new ProcessUOW(mesContext);
 
+            var model = processUow.GetOspPendingCount();
 
+            return Json(model, JsonRequestBehavior.AllowGet);
+        }
 
-       
+        [HttpPost]
+        public JsonResult GetDlvCount()
+        {
+            using var mesContext = new MesContext();
+            using var deliveryUow = new DeliveryUOW(mesContext);
+
+            var model = deliveryUow.GetDlvPendingCount();
+
+            return Json(model, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public JsonResult GetCtrCount()
+        {
+            using var mesContext = new MesContext();
+            using var purchaseUOW = new PurchaseUOW(mesContext);
+
+            var model = purchaseUOW.GetCtrPendingCount();
+
+            return Json(model, JsonRequestBehavior.AllowGet);
+        }
 
     }
 }

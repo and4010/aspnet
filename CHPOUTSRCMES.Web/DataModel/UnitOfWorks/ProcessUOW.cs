@@ -2204,7 +2204,7 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
         /// <param name="UserId"></param>
         /// <param name="UserName"></param>
         /// <returns></returns>
-        public ResultModel EditHeaderStauts(long OspHeaderId, string UserId, string UserName)
+        public ResultModel EditHeaderStatus(long OspHeaderId, string UserId, string UserName)
         {
             using (var txn = this.Context.Database.BeginTransaction())
             {
@@ -2244,7 +2244,7 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
         /// <param name="BatchNo"></param>
         /// <param name="OspHeaderId"></param>
         /// <returns></returns>
-        public ResultDataModel<long> FinisheEdit(string BatchNo, long OspHeaderId, string userId)
+        public ResultDataModel<long> FinishedEdit(string BatchNo, long OspHeaderId, string userId)
         {
             using (var txn = this.Context.Database.BeginTransaction())
             {
@@ -2703,11 +2703,6 @@ WHERE OSP_HEADER_ID = @OSP_HEADER_ID
 Delete OSP_YIELD_VARIANCE_T WHERE OSP_HEADER_ID = @OSP_HEADER_ID");
             Context.Database.ExecuteSqlCommand(query.ToString(), new SqlParameter("@OSP_HEADER_ID", OSP_HEADER_ID));
         }
-
-
-
-
-
 
         /// <summary>
         /// PICKIN歷史轉撿貨&刪除歷史
@@ -3744,6 +3739,29 @@ AND OPO.OSP_PICKED_OUT_ID = @OSP_PICKED_OUT_ID
             var header = OspHeaderTRepository.GetAll().AsNoTracking().FirstOrDefault(x => x.OspHeaderId == SrcOspHeaderId);
             if (header.Status != ProcessStatusCode.CompletedBatch) return new ResultModel(false, "此工單" + header.BatchNo + "尚未完工");
             return new ResultModel(true, "可以排單");
+        }
+
+        public ResultDataModel<int> GetOspPendingCount()
+        {
+            var resultDataModel = new ResultDataModel<int>(false, "", 0);
+            try
+            {
+                resultDataModel.Data = OspHeaderTRepository.GetAll()
+                    .Where(x => x.Status != ProcessStatusCode.Modified
+                        && x.Status != ProcessStatusCode.Canceled
+                        && x.Status != ProcessStatusCode.CompletedBatch
+                        && x.Status != ProcessStatusCode.CloseBatch)
+                    .Count();
+                resultDataModel.Code = ResultModel.CODE_SUCCESS;
+                resultDataModel.Msg = "";
+            }
+            catch (Exception ex)
+            {
+                resultDataModel.Code = -1;
+                resultDataModel.Msg = $"取得加工單未完成數量時發生錯誤 EX:{ex.Message}";
+            }
+            
+            return resultDataModel;
         }
     }
 }

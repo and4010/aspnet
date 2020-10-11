@@ -390,11 +390,11 @@ namespace CHPOUTSRCMES.Web.Controllers
         /// <param name="OspHeaderId"></param>
         /// <returns></returns>
         [HttpPost]
-        public JsonResult FinisheEdit(string BatchNo, long OspHeaderId)
+        public JsonResult FinishedEdit(string BatchNo, long OspHeaderId)
         {
             var userId = this.User.Identity.GetUserId();
             ProcessViewModel viewModel = new ProcessViewModel();
-            var resultModel = viewModel.FinisheEdit(BatchNo, OspHeaderId, userId);
+            var resultModel = viewModel.FinishedEdit(BatchNo, OspHeaderId, userId);
 
             return Json(resultModel, JsonRequestBehavior.AllowGet);
         }
@@ -460,9 +460,6 @@ namespace CHPOUTSRCMES.Web.Controllers
             var resultModel = viewModel.CheckInsteadPaperOrderProcess(SrcOspHeaderId);
             return Json(new { resultModel }, JsonRequestBehavior.AllowGet);
         }
-
-
-
 
     }
 }

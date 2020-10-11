@@ -1209,7 +1209,7 @@ function BtnRecordEdit() {
         var BatchNo = $('#InputBatchNo').val();
         var OspHeaderId = $('#OspHeaderId').val();
         $.ajax({
-            url: '/Process/FinisheEdit',
+            url: '/Process/FinishedEdit',
             datatype: 'json',
             type: "POST",
             data: { BatchNo: BatchNo, OspHeaderId: OspHeaderId },
