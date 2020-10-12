@@ -3,7 +3,7 @@
 -- Create date: 2020/08/31
 -- Description:	SOA DELIVERY_ST 資料接收
 -- =============================================
-CREATE PROCEDURE [dbo].[SP_P220_DlvStCreateNew]
+ALTER PROCEDURE [dbo].[SP_P220_DlvStCreateNew]
 	@processCode NVARCHAR(20),
 	@serverCode NVARCHAR(20),
 	@batchId NVARCHAR(20),
@@ -70,6 +70,7 @@ BEGIN
 				AND ((s.OSP_FLAG <> 'Y') OR (s.OSP_FLAG = 'Y' AND l.LOCATOR_ID IS NOT NULL AND l.CONTROL_FLAG <> 'D')) 
 				AND (c.BATCH_NO IS NULL OR (c.BATCH_NO IS NOT NULL AND p.BATCH_NO IS NOT NULL))
 				AND (c.INVENTORY_ITEM_NUMBER IS NULL OR (c.INVENTORY_ITEM_NUMBER IS NOT NULL AND m.ITEM_NUMBER IS NOT NULL))
+				AND (h.DELIVERY_STATUS_CODE != 'DH5')
 				THEN 'S' 
 				ELSE 'E' END AS STATUS_CODE,
 			CASE WHEN o.DLV_ORG_ID IS NOT NULL THEN N'出貨單資料已存在!! ' ELSE '' END +
@@ -79,7 +80,8 @@ BEGIN
 			CASE WHEN l.LOCATOR_ID IS NULL AND s.OSP_FLAG = 'Y' THEN N'儲位不存在!!' WHEN l.CONTROL_FLAG = 'D' THEN N'儲位已刪除!!' ELSE '' END + 
 			CASE WHEN t.INVENTORY_ITEM_ID IS NULL THEN N'料號資料不存在!! ' WHEN t.CONTROL_FLAG = 'D' THEN N'料號已刪除!!' ELSE '' END + 
 			CASE WHEN c.BATCH_NO IS NOT NULL AND p.BATCH_NO IS NULL THEN N'代紙工單資料不存在!! ' ELSE '' END + 
-			CASE WHEN c.INVENTORY_ITEM_NUMBER IS NOT NULL AND m.ITEM_NUMBER IS NULL THEN N'代紙料號不存在!! ' ELSE '' END
+			CASE WHEN c.INVENTORY_ITEM_NUMBER IS NOT NULL AND m.ITEM_NUMBER IS NULL THEN N'代紙料號不存在!! ' ELSE '' END +
+			CASE WHEN h.TRIP_ID IS NOT NULL AND h.DELIVERY_STATUS_CODE = 'DH5' THEN N'此航程號已出貨!! ' ELSE '' END
 			AS ERROR_MSG
 		  FROM [XXIF_CHP_CONTROL_ST] ctl
 		  JOIN @controlStage cs ON cs.PROCESS_CODE = ctl.PROCESS_CODE AND cs.SERVER_CODE = ctl.SERVER_CODE AND cs.BATCH_ID = ctl.BATCH_ID
@@ -91,6 +93,7 @@ BEGIN
 		  LEFT JOIN LOCATOR_T l ON l.LOCATOR_ID = c.LOCATOR_ID AND l.SUBINVENTORY_CODE = c.SUBINVENTORY_CODE 
 		  LEFT JOIN OSP_HEADER_T p ON p.BATCH_NO = c.BATCH_NO
 		  LEFT JOIN ITEMS_T m ON m.ITEM_NUMBER = c.INVENTORY_ITEM_NUMBER
+		  LEFT JOIN DLV_HEADER_T h ON h.TRIP_ID = c.TRIP_ID
 		  WHERE ctl.PROCESS_CODE = @processCode 
 		  AND ctl.SERVER_CODE = @serverCode
 		  AND ctl.BATCH_ID = @batchId
@@ -101,6 +104,21 @@ BEGIN
 			RAISERROR(@message, 16, @success)
 		END
 
+		DECLARE @tripId BIGINT = 0
+		DECLARE csr CURSOR FOR SELECT DISTINCT TRIP_ID FROM @orgTable
+		OPEN csr
+		FETCH NEXT FROM csr INTO @tripId  --(3.抓取Cursor中之記錄資料)
+		WHILE @@FETCH_STATUS = 0   /*0: Fetch成功 -1: Fetch失敗 -2: 要Fetch之記錄已不存在(一般發生 在KEYSET之CURSOR) */ 
+		BEGIN
+			EXEC dbo.SP_DlvTripDelete @tripId, @code output, @message output, @user
+			IF(@code != 0)
+			BEGIN
+				RAISERROR(@message, 16, @success)
+			END
+			FETCH NEXT FROM csr INTO @tripId
+		END
+		CLOSE csr
+		DEALLOCATE csr
 		--統計錯誤訊息
 		SET @success = @success + 1
 		UPDATE C SET STATUS_CODE = D.STATUS_CODE, ERROR_MSG = CASE WHEN RTRIM(D.ERROR_MSG) = '' THEN NULL ELSE SUBSTRING(RTRIM(D.ERROR_MSG),0, 500) END
@@ -138,24 +156,13 @@ BEGIN
 			END
 		END
 
+		
+
 
 		SET @success = 10
 		--資料正常 寫入進櫃主檔、檔頭及明細
 		IF NOT EXISTS (SELECT TOP 1 * FROM @controlStage WHERE STATUS_CODE = 'E')
 		BEGIN 
-
-			DECLARE @tripId BIGINT = 0
-			SELECT TOP 1 @tripId = TRIP_ID FROM DLV_HEADER_T WHERE TRIP_ID IN (SELECT DISTINCT TRIP_ID FROM @orgTable)
-			IF (@tripId > 0)
-			BEGIN
-				EXEC dbo.SP_DlvTripDelete @tripId, @code output, @message output, @user
-
-				IF(@code != 0)
-				BEGIN
-					RAISERROR(@message, 16, @success)
-				END
-			END
-
 
 			--主檔
 			INSERT INTO DLV_ORG_T (
@@ -272,10 +279,6 @@ BEGIN
 				RAISERROR(@message, 16, @success)
 			END
 		END
-		
-
-
-		
 
 		--處理完成回寫 XXIF_CHP_P217_CONTAINER_ST 
 		SET @success = @success + 1
