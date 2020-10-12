@@ -3,7 +3,7 @@
 -- Create date: 2020/09/22
 -- Description:	SOA SUB_TRANSFER_ST 資料上傳
 -- =============================================
-ALTER PROCEDURE [dbo].[SP_P222_TrfInvStUpload]
+CREATE PROCEDURE [dbo].[SP_P222_TrfInvStUpload]
 	@trfInvHeaderId BIGINT,
 	@processCode VARCHAR(20) OUTPUT,
 	@serverCode VARCHAR(20) OUTPUT,
