@@ -511,7 +511,8 @@ namespace CHPOUTSRCMES.Web.Controllers
             //取得使用者帳號
             PurchaseViewModel viewModel = new PurchaseViewModel();
             var name = this.User.Identity.GetUserName();
-            return viewModel.PritFlatLabel(Id, name, Status);
+            var userId = this.User.Identity.GetUserId();
+            return viewModel.PritFlatLabel(Id, userId, name, Status);
             //return new JsonResult { Data = new { status = false, result = "" } };
         }
 
@@ -527,7 +528,8 @@ namespace CHPOUTSRCMES.Web.Controllers
             //取得使用者帳號
             PurchaseViewModel viewModel = new PurchaseViewModel();
             var name = this.User.Identity.GetUserName();
-            return viewModel.PritPaperRollLabel(Id, name, Status);
+            var userId = this.User.Identity.GetUserId();
+            return viewModel.PritPaperRollLabel(Id, userId, name, Status);
             //return new JsonResult { Data = new { status = false, result = "" } };
         }
 

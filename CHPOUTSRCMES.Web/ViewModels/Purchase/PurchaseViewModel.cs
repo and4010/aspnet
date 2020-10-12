@@ -501,11 +501,11 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
         /// <param name="userName"></param>
         /// <param name="Status"></param>
         /// <returns></returns>
-        public ActionResult PritFlatLabel(List<long> PICKED_IDs, string userName,string Status)
+        public ActionResult PritFlatLabel(List<long> PICKED_IDs,string userId, string userName,string Status)
         {
             using var context = new MesContext();
             using var uow = new PurchaseUOW(context);
-            var label = uow.GetFlatLabels(PICKED_IDs, userName, Status);
+            var label = uow.GetFlatLabels(PICKED_IDs, userId, userName, Status);
 
             return uow.PrintLabel(label.Data);
         }
@@ -517,11 +517,11 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
         /// <param name="userName"></param>
         /// <param name="Status"></param>
         /// <returns></returns>
-        public ActionResult PritPaperRollLabel(List<long> PICKED_IDs, string userName, string Status)
+        public ActionResult PritPaperRollLabel(List<long> PICKED_IDs, string userId, string userName, string Status)
         {
             using var context = new MesContext();
             using var uow = new PurchaseUOW(context);
-            var label = uow.GetPaperRollLabels(PICKED_IDs, userName, Status);
+            var label = uow.GetPaperRollLabels(PICKED_IDs, userId, userName, Status);
 
             return uow.PrintLabel(label.Data);
         }

@@ -1607,7 +1607,7 @@ SELECT T.[STOCK_ID],T.[ORGANIZATION_ID] ,T.[ORGANIZATION_CODE],[SUBINVENTORY_COD
            ,T.[BARCODE],PRIMARY_UOM_CODE ,0,PRIMARY_TRANSACTION_QTY,PRIMARY_TRANSACTION_QTY
            ,SECONDARY_UOM_CODE ,0,SECONDARY_TRANSACTION_QTY,SECONDARY_TRANSACTION_QTY,N'入庫'
            ,H.CONTAINER_NO,N'入庫',T.[NOTE],[STATUS_CODE],T.[CREATED_BY]
-           ,GETDATE(),T.[LAST_UPDATE_BY],GETDATE()
+           ,GETDATE(),NULL,NULL
 FROM STOCK_T T
 JOIN CTR_PICKED_T P ON P.STOCK_ID = T.STOCK_ID
 JOIN CTR_HEADER_T H on H.CTR_HEADER_ID = P.CTR_HEADER_ID
@@ -1623,7 +1623,7 @@ WHERE P.CTR_HEADER_ID = @CTR_HEADER_ID");
         /// <param name="userName"></param>
         /// <param name="Status"></param>
         /// <returns></returns>
-        public ResultDataModel<List<LabelModel>> GetFlatLabels(List<long> PICKED_IDs, string userName, string Status)
+        public ResultDataModel<List<LabelModel>> GetFlatLabels(List<long> PICKED_IDs,string userId, string userName, string Status)
         {
             try
             {
@@ -1635,7 +1635,7 @@ WHERE P.CTR_HEADER_ID = @CTR_HEADER_ID");
                     List<SqlParameter> sqlParameterList = new List<SqlParameter>();
                     StringBuilder cmd = new StringBuilder();
                     cmd.AppendLine(
-@"UPDATE CTR_PICKED_T SET STATUS =@TO_STATUS 
+@"UPDATE CTR_PICKED_T SET STATUS =@TO_STATUS, LAST_UPDATE_BY =@userId, LAST_UPDATE_USER_NAME =@userName, LAST_UPDATE_DATE =@now
 WHERE STATUS=@FROM_STATUS AND CTR_PICKED_ID = @CTR_PICKED_ID");
 
                     string picked =
@@ -1664,6 +1664,8 @@ AND pt.CTR_PICKED_ID = @CTR_PICKED_ID";
                     sqlParameterList.Add(new SqlParameter("@CTR_PICKED_ID", PICKED_IDs[i]));
                     sqlParameterList.Add(new SqlParameter("@TO_STATUS", PickingStatusCode.PENDING));
                     sqlParameterList.Add(new SqlParameter("@FROM_STATUS", PickingStatusCode.NOT_PRINTED));
+                    sqlParameterList.Add(SqlParamHelper.GetDataTime("@now", DateTime.Now));
+                    sqlParameterList.Add(SqlParamHelper.GetNVarChar("@userId", userId));
 
                     var labelModel = this.Context.Database.SqlQuery<LabelModel>(commandText, sqlParameterList.ToArray()).SingleOrDefault();
                     if (labelModel == null) return new ResultDataModel<List<LabelModel>>(false, "找不到標籤資料", null);
@@ -1680,7 +1682,7 @@ AND pt.CTR_PICKED_ID = @CTR_PICKED_ID";
 
 
         }
-
+        
         /// <summary>
         /// 列印紙捲標籤
         /// </summary>
@@ -1688,7 +1690,7 @@ AND pt.CTR_PICKED_ID = @CTR_PICKED_ID";
         /// <param name="userName"></param>
         /// <param name="Status"></param>
         /// <returns></returns>
-        public ResultDataModel<List<LabelModel>> GetPaperRollLabels(List<long> PICKED_IDs, string userName, string Status)
+        public ResultDataModel<List<LabelModel>> GetPaperRollLabels(List<long> PICKED_IDs, string userId, string userName, string Status)
         {
             try
             {
@@ -1699,7 +1701,7 @@ AND pt.CTR_PICKED_ID = @CTR_PICKED_ID";
                 {
                     List<SqlParameter> sqlParameterList = new List<SqlParameter>();
                     StringBuilder cmd = new StringBuilder();
-                    cmd.AppendLine(@"UPDATE CTR_PICKED_T SET STATUS =@TO_STATUS 
+                    cmd.AppendLine(@"UPDATE CTR_PICKED_T SET STATUS =@TO_STATUS, LAST_UPDATE_BY =@userId, LAST_UPDATE_USER_NAME =@userName, LAST_UPDATE_DATE =@now 
 WHERE STATUS=@FROM_STATUS AND CTR_PICKED_ID = @CTR_PICKED_ID");
                     string picked = @"
 SELECT 
@@ -1727,6 +1729,8 @@ AND pt.CTR_PICKED_ID = @CTR_PICKED_ID
                     sqlParameterList.Add(new SqlParameter("@CTR_PICKED_ID", PICKED_IDs[i]));
                     sqlParameterList.Add(new SqlParameter("@TO_STATUS", PickingStatusCode.PENDING));
                     sqlParameterList.Add(new SqlParameter("@FROM_STATUS", PickingStatusCode.NOT_PRINTED));
+                    sqlParameterList.Add(SqlParamHelper.GetDataTime("@now", DateTime.Now));
+                    sqlParameterList.Add(SqlParamHelper.GetNVarChar("@userId", userId));
 
 
                     var labelModel = this.Context.Database.SqlQuery<LabelModel>(commandText, sqlParameterList.ToArray()).SingleOrDefault();
