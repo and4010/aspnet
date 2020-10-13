@@ -221,19 +221,22 @@ namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
 
             if (list.Count == 0)
                 return new ResultModel(false, "");
-
+            bool success = false;
             for(int i = 0; i < list.Count; i++ )
             {
                 switch(list[i].BATCH_STATUS)
                 {
                     case 2:
-                        await OspBatchStCreateNow(list[i], transaction);
+                        var m1 = await OspBatchStCreateNow(list[i], transaction);
+                        success &= m1.Success;
                         break;
                     case -1:
-                        await OspBatchStCancel(list[i], transaction);
+                        var m2 = await OspBatchStCancel(list[i], transaction);
+                        success &= m2.Success;
                         break;
                     default:
-                        await OspBatchStChange(list[i], transaction);
+                        var m3 = await OspBatchStChange(list[i], transaction);
+                        success &= m3.Success;
                         break;
                 }
             }
