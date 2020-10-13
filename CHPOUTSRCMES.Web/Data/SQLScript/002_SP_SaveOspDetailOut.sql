@@ -26,7 +26,7 @@ DECLARE @table TABLE (
 BEGIN TRY
 	DECLARE @step INT = 1
 	
-	UPDATE OSP_DETAIL_OUT_T SET LOCATOR_ID = ISNULL(@locatorId, 0), LOCATOR_CODE = @locatorCode
+	UPDATE OSP_DETAIL_OUT_T SET LOCATOR_ID = ISNULL(@locatorId, 0), LOCATOR_CODE = ISNULL(@locatorCode, '')
 	WHERE OSP_HEADER_ID = @headerId
 
 	SET @step = @step + 1

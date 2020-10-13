@@ -11,6 +11,14 @@ const PendingBatch = "2";
 /// 已完工
 /// </summary>
 const CompletedBatch = "3";
+/// <summary>
+/// 關帳
+/// </summary>
+const CloseBatch = "4";
+/// <summary>
+/// 已修改
+/// </summary>
+const Modified = "5";
 
 $(document).ready(function () {
 
@@ -22,7 +30,7 @@ $(document).ready(function () {
 
     var Status = $('#Status').val();
     if (Status == CompletedBatch || Status == PendingBatch) {
-  
+
         //完工紀錄使用
         DsiplayPaperRollHide();
         DisplayInvestPaperRollEnable(true);
@@ -30,15 +38,10 @@ $(document).ready(function () {
         ///隱藏按鈕
         PaperRollInvestDataTables.column(9).visible(false);
         PaperRollProductionDataTables.column(8).visible(false);
-    } else {
-        DisplayInvestPaperRollEnable(true);
-        DisplayProductionPaperRollEnable(true);
-        DsiplayPaperRollShow();
-    }
-
-    if (Status == 4) {
+        DsiplayPaperRollShow(Status);
+    } else if (Status == CloseBatch || Status == Modified) {
         //完工紀錄使用
-        DsiplayPaperRollHide();
+        //DsiplayPaperRollHide();
         DisplayInvestPaperRollEnable(true);
         DisplayProductionPaperRollEnable(true);
         ///隱藏按鈕
@@ -48,6 +51,15 @@ $(document).ready(function () {
         $('#BtnProcess_Production_Batch_no').attr('disabled', true);
         $('#ProcessBatchNo').attr('disabled', true);
         $('#ProcessProductionBatchNo').attr('disabled', true);
+
+        $('#InputBathNoArea').hide();
+        $('#OutputBathNoArea').hide();
+    } else {
+        DisplayInvestPaperRollEnable(true);
+        DisplayProductionPaperRollEnable(true);
+        $('#BtnProcess_Batch_no').show()
+        $('#BtnEdit').hide()
+        $('#BtnApprove').hide()
         
     }
 
@@ -833,12 +845,52 @@ function Open(modal_dialog, Process_Batch_no) {
 
 }
 
+function OpenApproveDialog(modal_dialog) {
+    modal_dialog.modal({
+        backdrop: "static",
+        keyboard: true,
+        show: true
+    });
 
+    modal_dialog.on('hidden.bs.modal', function (e) {
+        $("div").remove(modal_dialog.selector);
+    });
+
+    modal_dialog.on('show.bs.modal', function (e) {
+        $.validator.unobtrusive.parse('form');
+    });
+
+    //確認按鍵
+    modal_dialog.on('click', '#btnSaveSubinventory', function (e) {
+        var Locator = $('#dialg_Locator').val();
+        var OspHeaderId = $("#OspHeaderId").val();
+        $.ajax({
+            url: '/Process/ApproveHeaderStauts/',
+            dataType: 'json',
+            type: 'post',
+            data: { OspHeaderId: OspHeaderId, Locator: Locator },
+            success: function (data) {
+                if (data.resultModel.Success) {
+                    window.location.href = '/Process/Index';
+                } else {
+                    swal.fire(data.resultModel.Msg)
+                }
+
+            }
+        });
+
+    });
+
+
+
+    modal_dialog.modal('show');
+
+}
 
 function DisplayInvestPaperRollEnable(boolean) {
     $('#PaperRoll_Invest_Barcode').attr('disabled', boolean);
     $('#Btn_PaperRoll_ProcessSave').attr('disabled', boolean);
-
+    $('#BtnRePrint').attr('disabled', boolean);
     
 }
 
@@ -865,10 +917,12 @@ function DsiplayPaperRollHide() {
 
 }
 
-function DsiplayPaperRollShow() {
+function DsiplayPaperRollShow(Status) {
     $('#BtnProcess_Batch_no').show()
     $('#BtnEdit').hide()
-    $('#BtnApprove').hide()
+    if (Status == CompletedBatch) {
+        $('#BtnApprove').hide()
+    }
 }
 
 //完工紀錄使用
@@ -896,19 +950,51 @@ function BtnRecord() {
     });
 
     $('#BtnApprove').click(function () {
-        var OspHeaderId = $("#OspHeaderId").val();
-        var Status = "核准";
+        //var OspHeaderId = $("#OspHeaderId").val();
+        //var Status = "核准";
+        //$.ajax({
+        //    url: '/Process/ApproveHeaderStauts/',
+        //    dataType: 'json',
+        //    type: 'post',
+        //    data: { OspHeaderId: OspHeaderId },
+        //    success: function (data) {
+        //        if (data.resultModel.Success) {
+        //            window.location.href = '/Process/Index';
+        //        } else {
+        //            swal.fire(data.resultModel.Msg)
+        //        }
+        //    }
+        //});
+
+        var loss = $('#Production_Loss').text();
+        var OspDetailOutId = $("#OspDetailOutId").val();
+        var PaperRollInvestDataTables = $('#PaperRollInvestDataTables').DataTable().data();
+
+        if (PaperRollInvestDataTables.length == 0) {
+            swal.fire("請先新增投入資料。");
+            return;
+        }
+
+        var table = $('#PaperRollProductionDataTables').DataTable();
+        if (table.data().length == 0) {
+            swal.fire("產出無資料，請先輸入資料。");
+            return;
+        }
+
+        if (loss == 0) {
+            swal.fire("損耗量未計算");
+            return;
+        }
+
+
         $.ajax({
-            url: '/Process/ApproveHeaderStauts/',
-            dataType: 'json',
-            type: 'post',
-            data: { OspHeaderId: OspHeaderId },
-            success: function (data) {
-                if (data.resultModel.Success) {
-                    window.location.href = '/Process/Index';
-                } else {
-                    swal.fire(data.resultModel.Msg)
-                }
+            url: '/Process/_Locator/',
+            type: 'POST',
+            datatype: 'json',
+            data: { OspDetailOutId: OspDetailOutId },
+            success: function (result) {
+                $('body').append(result);
+                OpenApproveDialog($('#SubinventoryModal'));
             }
         });
 

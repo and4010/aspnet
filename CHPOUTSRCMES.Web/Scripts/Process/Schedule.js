@@ -12,9 +12,13 @@ const PendingBatch = "2";
 /// 已完工
 /// </summary>
 const CompletedBatch = "3";
-
+/// <summary>
+/// 關帳
+/// </summary>
 const CloseBatch = "4";
-
+/// <summary>
+/// 已修改
+/// </summary>
 const Modified = "5";
 $(document).ready(function () {
     LoadInvestDataTable();
@@ -46,7 +50,11 @@ $(document).ready(function () {
         $('#BtnEdit').attr('disabled', true);
         $('#BtnCheckProductionBatchNo').attr('disabled', true);
         $('#InputBatchNo').attr('disabled', true);
-        $('#OutBatchNo').attr('disabled', true);
+        $('#OutBatchNo').attr('disabled', true);        
+
+        $('#InputBathNoArea').hide();
+        $('#OutputBathNoArea').hide();
+
     } else {
         DisplayInvestEnable(true);
         DisplayProductionEnable(true);
