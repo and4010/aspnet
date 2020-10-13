@@ -73,7 +73,7 @@ $@"UPDATE OSP_SOA_S1_T SET
     status = data.STATUS_CODE,
     user = data.LAST_UPDATE_BY,
     createDate = data.LAST_UPDATE_DATE
-});
+}, transaction: transaction);
                 resultModel.Code = 0;
                 resultModel.Success = true;
                 resultModel.Msg = "";

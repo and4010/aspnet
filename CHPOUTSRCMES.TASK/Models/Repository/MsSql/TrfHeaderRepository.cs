@@ -18,23 +18,24 @@ namespace CHPOUTSRCMES.TASK.Models.Repository.MsSql
         #region Constructor
         public TrfHeaderRepository()
         {
-            IdField = "TRF_HEADER_ID";
+            IdField = "TRANSFER_HEADER_ID";
         }
 
         public TrfHeaderRepository(IDbConnection conn, string tableName) :base(conn, tableName)
         {
-            IdField = "TRF_HEADER_ID";
+            IdField = "TRANSFER_HEADER_ID";
         }
 
         #endregion
 
         public async Task<List<long>> GetUploadList(IDbTransaction transaction = null)
         {
+            //取得上傳清單，排除已上傳、未存檔及 倉庫移轉MES入庫
             return (await Connection.QueryAsync<long>(
 $@"
 SELECT H.TRANSFER_HEADER_ID FROM TRF_HEADER_T H
 LEFT JOIN TRF_SOA_T S ON S.TRANSFER_HEADER_ID = H.TRANSFER_HEADER_ID AND S.TRANSFER_TYPE = H.TRANSFER_TYPE
-WHERE S.TRANSFER_HEADER_ID IS NULL AND H.NUMBER_STATUS = '1'
+WHERE S.TRANSFER_HEADER_ID IS NULL AND H.NUMBER_STATUS = '1' AND NOT (H.IS_MES = '1' AND H.TRANSFER_CATALOG = 'INV' AND H.TRANSFER_TYPE = 'I')
 ", transaction: transaction)).ToList();
         }
 

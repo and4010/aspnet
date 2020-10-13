@@ -3,7 +3,7 @@
 -- Create date: 2020/09/4
 -- Description:	SOA CONTAINER_RV_ST 資料上傳
 -- =============================================
-ALTER PROCEDURE [dbo].[SP_P218_CtrStUpload]
+CREATE PROCEDURE [dbo].[SP_P218_CtrStUpload]
 	@ctrHeaderId BIGINT,
 	@code INT OUTPUT,
 	@message VARCHAR(500) OUTPUT,
