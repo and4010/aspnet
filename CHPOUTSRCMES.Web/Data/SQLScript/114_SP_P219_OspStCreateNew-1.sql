@@ -3,7 +3,7 @@
 -- Create date: 2020/09/1
 -- Description:	SOA OSP_BATCH_ST 資料接收
 -- =============================================
-CREATE PROCEDURE [dbo].[SP_P219_OspStCreateNew]
+ALTER PROCEDURE [dbo].[SP_P219_OspStCreateNew]
 
 	@processCode NVARCHAR(20),
 	@serverCode NVARCHAR(20),
