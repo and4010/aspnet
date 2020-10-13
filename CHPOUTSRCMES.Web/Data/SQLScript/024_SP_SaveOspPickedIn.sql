@@ -4,7 +4,7 @@
 -- Create date: 2020/10/09
 -- Description:	加工領料庫存異動
 -- =============================================
-CREATE PROCEDURE [dbo].[SP_SavePickedIn]
+CREATE PROCEDURE [dbo].[SP_SaveOspPickedIn]
 	-- Add the parameters for the stored procedure here
 	@headerId BIGINT,
 	@inStockStatusCode VARCHAR(10),
@@ -51,8 +51,8 @@ BEGIN TRY
 		T.[STOCK_ID],T.[ORGANIZATION_ID] ,T.[ORGANIZATION_CODE],[SUBINVENTORY_CODE]
         ,T.[LOCATOR_ID],''  ,'','' ,''
         ,T.[INVENTORY_ITEM_ID],[ITEM_NUMBER],[ITEM_DESCRIPTION] ,T.[ITEM_CATEGORY] ,T.[LOT_NUMBER]
-        ,T.[BARCODE],PRIMARY_UOM_CODE ,T.PRIMARY_TRANSACTION_QTY,T.PRIMARY_TRANSACTION_QTY, 0
-        ,SECONDARY_UOM_CODE, SECONDARY_TRANSACTION_QTY,SECONDARY_TRANSACTION_QTY, 0, @category
+        ,T.[BARCODE],PRIMARY_UOM_CODE ,T.PRIMARY_TRANSACTION_QTY,T.PRIMARY_AVAILABLE_QTY, 0
+        ,SECONDARY_UOM_CODE, SECONDARY_TRANSACTION_QTY,SECONDARY_AVAILABLE_QTY, 0, @category
         ,@doc,@action,T.[NOTE],[STATUS_CODE], @user
         ,GETDATE(),NULL,NULL
 	FROM STOCK_T T

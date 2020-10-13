@@ -10,6 +10,14 @@ const PendingBatch = "2";
 /// 已完工
 /// </summary>
 const CompletedBatch = "3";
+/// <summary>
+/// 關帳
+/// </summary>
+const CloseBatch = "4";
+/// <summary>
+/// 已修改
+/// </summary>
+const Modified = "5";
 $(document).ready(function () {
     BtnRecord();
     init();
@@ -31,7 +39,7 @@ $(document).ready(function () {
         DisplayProductionFlatEnable(true);
         DsiplayFlatShow();
     }
-    if (Status == 4) {
+    if (Status == CloseBatch || Status == Modified) {
         //完工紀錄使用
         DsiplayFlatHide();
         DisplayInvestFlatEnable(true);
@@ -43,7 +51,10 @@ $(document).ready(function () {
         $('#BtnProcess_Production_Batch_no').attr('disabled', true);
         $('#ProcessBatchNo').attr('disabled', true);
         $('#ProcessProductionBatchNo').attr('disabled', true);
-        
+        $('#BtnProcess_Batch_no').attr('disabled', true);
+
+        $('#InputBathNoArea').hide();
+        $('#OutputBathNoArea').hide();
     }
 
     //重新整理表格寬度
@@ -764,7 +775,7 @@ function BtnRecord() {
 function DisplayInvestFlatEnable(boolean) {
     $('#Flat_Invest_Barcode').attr('disabled', boolean);
     $('#BtnFlat_ProcessSave').attr('disabled', boolean);
-
+    $('#BtnRePrint').attr('disabled', boolean);
 
     
 }

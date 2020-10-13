@@ -2392,7 +2392,7 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
                 locatorId = 0;
             }
             var locator = locatorTRepository.GetAll().AsNoTracking().FirstOrDefault(x => x.LocatorId == locatorId);
-            string locatorCode = null;
+            string locatorCode = "";
             if (locator != null) locatorCode = locator.LocatorSegments;
 
             var pheaderId = SqlParamHelper.GetBigInt("@headerId", headerId);
@@ -2409,7 +2409,6 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
 
             this.Context.Database.ExecuteSqlCommand("[SP_SaveOspDetailOut] @headerId, @statusCode, @locatorId, @locatorCode, @category, @action, @doc, @code output, @message output, @user",
                 pheaderId, pstatusCode, pLoc, pLocatorCode, pCategory, pAction, pDoc, pCode, pMsg, pUser);
-
             if (pCode.Value != DBNull.Value)
             {
                 resultModel.Code = Convert.ToInt32(pCode.Value);

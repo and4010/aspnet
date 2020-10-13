@@ -318,7 +318,7 @@ namespace CHPOUTSRCMES.Web.Controllers
             report.BorderWidth = 1;
             report.BackColor = Color.LightGray;
             report.ServerReport.ReportPath = "/開發區/CHPOUSMES/ProcessCutMaterial";
-            report.ServerReport.ReportServerUrl = new Uri("http://rs.yfy.com/reports/");
+            report.ServerReport.ReportServerUrl = new Uri("http://rs.yfy.com/ReportServer");
             report.ServerReport.SetParameters(paramList);
             report.ServerReport.Refresh();
             ViewBag.ReportViewer = report;

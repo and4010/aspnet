@@ -130,14 +130,14 @@ namespace CHPOUTSRCMES.Web.Controllers
         //待測試修改
         [Authorize(Roles = "系統管理員, 華紙使用者")]
         [HttpPost]
-        public ActionResult ApproveHeaderStauts(long OspHeaderId)
+        public ActionResult ApproveHeaderStauts(long OspHeaderId, string Locator)
         {
             ProcessViewModel viewModel = new ProcessViewModel();
             //取得使用者ID
             var Userid = this.User.Identity.GetUserId();
             //取得使用者帳號
             var name = this.User.Identity.GetUserName();
-            var resultModel = viewModel.ChangeHeaderStatus(OspHeaderId, null, Userid, name);
+            var resultModel = viewModel.ChangeHeaderStatus(OspHeaderId, Locator, Userid, name);
 
             return Json(new { resultModel }, JsonRequestBehavior.AllowGet);
         }
