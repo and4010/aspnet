@@ -34,14 +34,10 @@ $(document).ready(function () {
         ///隱藏按鈕
         FlatInvestTable.column(6).visible(false);
         FlatProductionDataTables.column(9).visible(false);
-    } else {
-        DisplayInvestFlatEnable(true);
-        DisplayProductionFlatEnable(true);
-        DsiplayFlatShow();
-    }
-    if (Status == CloseBatch || Status == Modified) {
+        DsiplayFlatShow(Status);
+    }else if (Status == CloseBatch || Status == Modified) {
         //完工紀錄使用
-        DsiplayFlatHide();
+        //DsiplayFlatHide();
         DisplayInvestFlatEnable(true);
         DisplayProductionFlatEnable(true);
         ///隱藏按鈕
@@ -55,6 +51,13 @@ $(document).ready(function () {
 
         $('#InputBathNoArea').hide();
         $('#OutputBathNoArea').hide();
+    } else {
+        DisplayInvestFlatEnable(true);
+        DisplayProductionFlatEnable(true);
+        $('#BtnProcess_Batch_no').show()
+        $('#BtnEdit').hide()
+        $('#BtnApprove').hide()
+
     }
 
     //重新整理表格寬度
@@ -803,7 +806,9 @@ function DsiplayFlatHide() {
 function DsiplayFlatShow() {
     $('#BtnProcess_Batch_no').show()
     $('#BtnEdit').hide()
-    $('#BtnApprove').hide()
+    if (Status == CompletedBatch) {
+        $('#BtnApprove').hide()
+    }
 }
 
 

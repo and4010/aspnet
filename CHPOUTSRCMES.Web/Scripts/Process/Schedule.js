@@ -29,7 +29,7 @@ $(document).ready(function () {
     CotangentDataTables();
 
     var Status = $('#Status').val();
-    if (Status == CompletedBatch) {
+    if (Status == CompletedBatch || Status == PendingBatch) {
         //完工紀錄使用
         DsiplayHide();
         DisplayInvestEnable(true);
@@ -38,9 +38,10 @@ $(document).ready(function () {
         InvestDataTables.column(11).visible(false);
         ProductionTables.column(9).visible(false);
         CotangentDataTable.column(9).visible(false);
+        DsiplayShow(Status);
     }
     else if (Status == CloseBatch || Status == Modified) {
-        DsiplayHide();
+        //DsiplayHide();
         DisplayInvestEnable(true);
         DisplayProductionEnable(true);
         ///隱藏按鈕
@@ -58,7 +59,9 @@ $(document).ready(function () {
     } else {
         DisplayInvestEnable(true);
         DisplayProductionEnable(true);
-        DsiplayShow();
+        $('#BtnCheckBatchNo').show()
+        $('#BtnEdit').hide()
+        $('#BtnApprove').hide()
     }
  
 
@@ -1128,10 +1131,12 @@ function DsiplayHide() {
     $('#ProductForm').hide();
 }
 
-function DsiplayShow() {
+function DsiplayShow(Status) {
     $('#BtnCheckBatchNo').show()
     $('#BtnEdit').hide()
-    $('#BtnApprove').hide()
+    if (Status == CompletedBatch) {
+        $('#BtnApprove').hide()
+    }
 }
 
 //驗證disable投入
