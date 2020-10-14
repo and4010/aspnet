@@ -32,8 +32,45 @@ namespace CHPOUTSRCMES.TASK.Models.Repository.MsSql
         {
             return (await Connection.QueryAsync<XXIF_CHP_P219_OSP_BATCH_ST>(
 @"SELECT * FROM XXIF_CHP_P219_OSP_BATCH_ST A 
-WHERE A.PROCESS_CODE = @ProcessCode AND A.SERVER_CODE = @ServerCode AND A.BATCH_ID = @BatchId AND A.LINE_TYPE = 'I'
+WHERE A.PROCESS_CODE = @ProcessCode AND A.SERVER_CODE = @ServerCode AND A.BATCH_ID = @BatchId
 ORDER BY A.PROCESS_CODE, A.SERVER_CODE, A.BATCH_ID, A.BATCH_LINE_ID", new { ProcessCode = processCode, ServerCode = serverCode, BatchId = batchId }, transaction: transaction)).ToList();
+        }
+
+        public async Task<ResultModel> UpdateStatus(XXIF_CHP_P219_OSP_BATCH_ST st, IDbTransaction transaction = null)
+        {
+            var resultModel = new ResultModel();
+
+            try
+            {
+
+                int count = await Connection.ExecuteAsync(
+$@"UPDATE XXIF_CHP_P219_OSP_BATCH_ST SET 
+    STATUS_CODE=@statusCode, ERROR_MSG=@errorMsg
+    WHERE
+    PROCESS_CODE = @processCode 
+    AND SERVER_CODE = @serverCode 
+    AND BATCH_ID = @batchId
+    AND BATCH_LINE_ID = @batchLineId", new
+{
+    processCode = st.PROCESS_CODE,
+    serverCode = st.SERVER_CODE,
+    batchId = st.BATCH_ID,
+    batchLineId = st.BATCH_LINE_ID,
+    statusCode = st.STATUS_CODE,
+    errorMsg = st.ERROR_MSG
+}, transaction: transaction);
+                resultModel.Code = 0;
+                resultModel.Success = true;
+                resultModel.Msg = "";
+            }
+            catch (Exception ex)
+            {
+                resultModel.Code = -99;
+                resultModel.Success = false;
+                resultModel.Msg = ex.Message;
+            }
+            return resultModel;
+
         }
 
         #region IDispose Region

@@ -23,6 +23,8 @@ namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
         private string schemaName = "dbo";
 #endif
 
+        public IDbConnection connection; 
+
         public string SchemaName
         {
             set { schemaName = value; }
@@ -36,6 +38,7 @@ namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
 
         public BaseUOW(IDbConnection conn, bool beginTransaction = false) : base(conn, beginTransaction)
         {
+            this.connection = conn;
         }
 
 
@@ -77,6 +80,11 @@ namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
                 logger.Error(ex, "產生條碼出現例外!!");
             }
             return result;
+        }
+
+        public async Task<ResultModel> UpdateStatus(XXIF_CHP_CONTROL_ST st, IDbTransaction transaction = null)
+        {
+            return await ControlStageRepository.UpdateStatus(st, transaction);
         }
 
     }

@@ -42,6 +42,40 @@ WHERE A.PROCESS_CODE = @ProcessCode AND A.SERVER_CODE = @ServerCode AND A.BATCH_
 ORDER BY A.PROCESS_CODE, A.SERVER_CODE, A.BATCH_ID", new { ProcessCode = processCode, ServerCode = serverCode, BatchId = batchId, PullingFlag = pullingFlag }, transaction: transaction)).FirstOrDefault();
         }
 
+        public async Task<ResultModel> UpdateStatus(XXIF_CHP_CONTROL_ST st, IDbTransaction transaction = null)
+        {
+            var resultModel = new ResultModel();
+
+            try
+            {
+
+                int count = await Connection.ExecuteAsync(
+$@"UPDATE XXIF_CHP_CONTROL_ST SET 
+    STATUS_CODE=@statusCode, ERROR_MSG=@errorMsg
+    WHERE PROCESS_CODE = @processCode 
+    AND SERVER_CODE = @serverCode 
+    AND BATCH_ID = @batchId", new
+{
+    processCode = st.PROCESS_CODE,
+    serverCode = st.SERVER_CODE,
+    batchId = st.BATCH_ID,
+    statusCode = st.STATUS_CODE,
+    errorMsg = st.ERROR_MSG
+}, transaction: transaction);
+                resultModel.Code = 0;
+                resultModel.Success = true;
+                resultModel.Msg = "";
+            }
+            catch (Exception ex)
+            {
+                resultModel.Code = -99;
+                resultModel.Success = false;
+                resultModel.Msg = ex.Message;
+            }
+            return resultModel;
+
+        }
+
         #region IDispose Region
         private bool disposed = false;
 

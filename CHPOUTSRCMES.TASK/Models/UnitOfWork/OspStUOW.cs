@@ -10,6 +10,7 @@ using System.Data;
 using System.Linq;
 using System.Runtime.Remoting.Messaging;
 using System.Threading.Tasks;
+using System.Transactions;
 
 namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
 {
@@ -215,42 +216,75 @@ namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
         //    return (await OspHeaderRepository.GetExportedStage3List(transaction));
         //}
 
-        public async Task<ResultModel> OspBatchStReceive(XXIF_CHP_CONTROL_ST controlStage, IDbTransaction transaction = null)
+        public ResultModel OspBatchStReceive(XXIF_CHP_CONTROL_ST controlStage, IDbTransaction transaction = null)
         {
-            var list = await OspBatchStRepository.GetListBy(controlStage.PROCESS_CODE, controlStage.SERVER_CODE, controlStage.BATCH_ID, transaction);
+
+            var task = OspBatchStRepository.GetListBy(controlStage.PROCESS_CODE, controlStage.SERVER_CODE, controlStage.BATCH_ID, transaction);
+            task.Wait();
+            var list = task.Result;
 
             if (list.Count == 0)
                 return new ResultModel(false, "");
-            bool success = false;
-            for(int i = 0; i < list.Count; i++ )
+
+            using var trans = connection.BeginTransaction();
+            bool rollback = false;
+            for (int i = 0; i < list.Count; i++)
             {
-                switch(list[i].BATCH_STATUS)
+                ResultModel result = null;
+
+                if(list[i].LINE_TYPE.CompareTo("P") == 0)
+                {
+                    continue;
+                }
+
+
+                switch (list[i].BATCH_STATUS)
                 {
                     case 2:
-                        var m1 = await OspBatchStCreateNow(list[i], transaction);
-                        success &= m1.Success;
+                        result = OspBatchStCreateNow(list[i], trans);
                         break;
                     case -1:
-                        var m2 = await OspBatchStCancel(list[i], transaction);
-                        success &= m2.Success;
+                        result = OspBatchStCancel(list[i], trans);
                         break;
                     default:
-                        var m3 = await OspBatchStChange(list[i], transaction);
-                        success &= m3.Success;
+                        result = OspBatchStChange(list[i], trans);
                         break;
                 }
+
+                if (result.Code != ResultModel.CODE_SUCCESS)
+                {
+                    list[i].STATUS_CODE = "E";
+                    list[i].ERROR_MSG = result.Msg;
+                    rollback = true;
+                }
+
             }
 
-            return await OspBatchStSummarize(controlStage, transaction);
+            if (rollback)
+            {
+                trans.Rollback();
+            }
+            else
+            {
+                trans.Commit();
+            }
+
+
+            for (int i = 0; i < list.Count; i++)
+            {
+                OspBatchStRepository.UpdateStatus(list[i]);
+            }
+
+
+            return OspBatchStSummarize(controlStage, transaction);
+
         }
 
 
-
-
-        public async Task<ResultModel> OspBatchStCreateNow(XXIF_CHP_P219_OSP_BATCH_ST st, IDbTransaction transaction = null)
+        public ResultModel OspBatchStCreateNow(XXIF_CHP_P219_OSP_BATCH_ST st, IDbTransaction transaction = null)
         {
             var resultModel = new ResultModel();
-            
+
             try
             {
                 var p = new DynamicParameters();
@@ -262,7 +296,38 @@ namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
                 p.Add(name: "@message", dbType: DbType.String, direction: ParameterDirection.Output, size: 500);
                 p.Add(name: "@user", value: "SYS", dbType: DbType.String, direction: ParameterDirection.Input, size: 128);
 
-                Context.Execute(sql: "SP_P219_OspStCreateNew", param: p,transaction: transaction, commandType: CommandType.StoredProcedure);
+                Context.Execute(sql: "SP_P219_OspStCreateNew", param: p, transaction: transaction, commandType: CommandType.StoredProcedure);
+                resultModel = new ResultModel(p.Get<int>("@code"), p.Get<string>("@message"));
+
+                if (!resultModel.Success)
+                {
+                    return resultModel;
+                }
+            }
+            catch (Exception ex)
+            {
+                resultModel.Code = -99;
+                resultModel.Success = false;
+                resultModel.Msg = ex.Message;
+            }
+            return resultModel;
+        }
+
+        public ResultModel OspBatchStCheck(string processCode, string serverCode, string batchId, string userId = "SYS", IDbTransaction transaction = null)
+        {
+            var resultModel = new ResultModel();
+            
+            try
+            {
+                var p = new DynamicParameters();
+                p.Add(name: "@processCode", value: processCode, dbType: DbType.String, direction: ParameterDirection.Input, size: 20);
+                p.Add(name: "@serverCode", value: serverCode, dbType: DbType.String, direction: ParameterDirection.Input, size: 20);
+                p.Add(name: "@batchId", value: batchId, dbType: DbType.String, direction: ParameterDirection.Input, size: 20);
+                p.Add(name: "@code", dbType: DbType.Int32, direction: ParameterDirection.Output);
+                p.Add(name: "@message", dbType: DbType.String, direction: ParameterDirection.Output, size: 500);
+                p.Add(name: "@user", value: userId, dbType: DbType.String, direction: ParameterDirection.Input, size: 128);
+
+                Context.Execute(sql: "SP_P219_CheckOspBatchSt", param: p,transaction: transaction, commandType: CommandType.StoredProcedure);
                 resultModel = new ResultModel(p.Get<int>("@code"), p.Get<string>("@message"));
 
                 if(!resultModel.Success)
@@ -279,7 +344,7 @@ namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
             return resultModel;
         }
 
-        public async Task<ResultModel> OspBatchStChange(XXIF_CHP_P219_OSP_BATCH_ST st, IDbTransaction transaction = null)
+        public ResultModel OspBatchStChange(XXIF_CHP_P219_OSP_BATCH_ST st, IDbTransaction transaction = null)
         {
             var resultModel = new ResultModel();
 
@@ -311,7 +376,7 @@ namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
             return resultModel;
         }
 
-        public async Task<ResultModel> OspBatchStCancel(XXIF_CHP_P219_OSP_BATCH_ST st, IDbTransaction transaction = null)
+        public ResultModel OspBatchStCancel(XXIF_CHP_P219_OSP_BATCH_ST st, IDbTransaction transaction = null)
         {
             var resultModel = new ResultModel();
 
@@ -343,7 +408,7 @@ namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
             return resultModel;
         }
 
-        public async Task<ResultModel> OspBatchStSummarize(XXIF_CHP_CONTROL_ST st, IDbTransaction transaction = null)
+        public ResultModel OspBatchStSummarize(XXIF_CHP_CONTROL_ST st, IDbTransaction transaction = null)
         {
             var resultModel = new ResultModel();
 
@@ -373,6 +438,7 @@ namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
             }
             return resultModel;
         }
+
 
         public async Task<XXIF_CHP_CONTROL_ST> GetControlSt(string processCode, string serverCode, string batchId)
         {

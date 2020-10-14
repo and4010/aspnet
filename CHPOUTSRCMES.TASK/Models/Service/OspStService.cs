@@ -66,8 +66,6 @@ namespace CHPOUTSRCMES.TASK.Models.Service
 
                 for (int i = 0; i < list.Count(); i++)
                 {
-                    using var transaction = sqlConn.BeginTransaction();
-
                     var st = list?[i];
                     if (st == null)
                     {
@@ -76,24 +74,30 @@ namespace CHPOUTSRCMES.TASK.Models.Service
 
                     try
                     {
-                        ResultModel model = new ResultModel(false, "未知的錯誤!");
+                        var model = ospStUow.OspBatchStCheck(st.PROCESS_CODE, st.SERVER_CODE, st.BATCH_ID);
 
-                        model = await ospStUow.OspBatchStReceive(st, transaction);
-                        LogInfo($"[{tasker.Name}]-{tasker.Unit}-ImportOspSt ({st.PROCESS_CODE}, {st.SERVER_CODE}, {st.BATCH_ID})-{model}");
-                        if (!model.Success)
+                        if (model.Code != ResultModel.CODE_SUCCESS)
                         {
                             throw new Exception($"code:{model.Code} message:{model.Msg}");
                         }
 
-
-                        transaction.Commit();
+                        Thread.Sleep(300);
+                        model = ospStUow.OspBatchStReceive(st);
+                        LogInfo($"[{tasker.Name}]-{tasker.Unit}-ImportOspSt ({st.PROCESS_CODE}, {st.SERVER_CODE}, {st.BATCH_ID})-{model}");
+                        if (model.Code != ResultModel.CODE_SUCCESS)
+                        {
+                            throw new Exception($"code:{model.Code} message:{model.Msg}");
+                        }
 
                     }
                     catch (Exception ex)
                     {
+                        st.STATUS_CODE = "E";
+                        st.ERROR_MSG = ex.Message;
+                        ospStUow.UpdateStatus(st).Wait();
                         LogError($"[{tasker.Name}]-{tasker.Unit}-ImportOspSt-錯誤-({st.PROCESS_CODE}, {st.SERVER_CODE}, {st.BATCH_ID})-{ex.Message}-{ex.StackTrace}");
-                        transaction.Rollback();
                     }
+                    Thread.Sleep(300);
                 }
             }
             catch (OperationCanceledException)
