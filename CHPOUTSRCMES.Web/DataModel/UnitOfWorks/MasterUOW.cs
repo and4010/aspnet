@@ -2278,6 +2278,56 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                      }).ToList();
         }
 
+        public List<SelectListItem> getLocatorListForUserId(string userId, string SUBINVENTORY_CODE, long? selectedLocatorId )
+        {
+
+            var tmp = userSubinventoryTRepository.GetAll().AsNoTracking()
+                .Join(locatorTRepository.GetAll().AsNoTracking(),
+                    us => new { us.OrganizationId, us.SubinventoryCode },
+                    l => new { l.OrganizationId, l.SubinventoryCode },
+                    (us, l) => new
+                    {
+                        UserId = us.UserId,
+                        OrganizationId = us.OrganizationId,
+                        SubinventoryCode = us.SubinventoryCode,
+                        Segment2 = l.Segment2,
+                        Segment3 = l.Segment3,
+                        LocatorId = l.LocatorId,
+                        LocatorControlFlag = l.ControlFlag,
+                        LocatorDisableDate = l.LocatorDisableDate
+                    })
+                .Where(x =>
+                    x.UserId == userId
+                    && x.LocatorControlFlag != ControlFlag.Deleted
+                    && (x.LocatorDisableDate == null || x.LocatorDisableDate > DateTime.Now)
+                    );
+
+            if (!string.IsNullOrEmpty(SUBINVENTORY_CODE))
+            {
+                tmp = tmp.Where(x => x.SubinventoryCode == SUBINVENTORY_CODE);
+            }
+
+            if (selectedLocatorId != null)
+            {
+                return tmp.OrderBy(x => x.Segment3)
+                     .Select(x => new SelectListItem()
+                     {
+                         Text = x.Segment2 + "." + x.Segment3,
+                         Value = x.LocatorId.ToString(),
+                         Selected = x.LocatorId == selectedLocatorId
+                     }).ToList();
+            }
+            else
+            {
+                return tmp.OrderBy(x => x.Segment3)
+                     .Select(x => new SelectListItem()
+                     {
+                         Text = x.Segment2 + "." + x.Segment3,
+                         Value = x.LocatorId.ToString()
+                     }).ToList();
+            }
+        }
+
         /// <summary>
         /// 取得倉庫資料
         /// </summary>

@@ -85,12 +85,12 @@ namespace CHPOUTSRCMES.Web.ViewModels.Process
         /// <param name="CuttingDateTo"></param>
         /// <param name="Subinventory"></param>
         /// <returns></returns>
-        public List<CHP_PROCESS_T> Search(string Status, string BatchNo, string MachineNum, string DueDate, string CuttingDateFrom, string CuttingDateTo, string Subinventory)
+        public List<CHP_PROCESS_T> Search(string Status, string BatchNo, string MachineNum, string DueDate, string CuttingDateFrom, string CuttingDateTo, string Subinventory, string UserId)
         {
        
             using (var context = new MesContext())
             {
-                return new ProcessUOW(context).GetTable(Status, BatchNo, MachineNum, DueDate, CuttingDateFrom, CuttingDateTo, Subinventory);
+                return new ProcessUOW(context).GetTable(Status, BatchNo, MachineNum, DueDate, CuttingDateFrom, CuttingDateTo, Subinventory, UserId);
             }
 
         }
@@ -176,11 +176,11 @@ namespace CHPOUTSRCMES.Web.ViewModels.Process
         /// <param name="Production_Roll_Ream_Wt"></param>
         /// <param name="Cotangent"></param>
         /// <param name="OspDetailOutId"></param>
-        public ResultModel CreateProduction(string UserId,string UserName,string Production_Roll_Ream_Qty, string Production_Roll_Ream_Wt, string Cotangent, long OspDetailOutId)
+        public ResultModel CreateProduction(string UserId,string UserName,string Production_Roll_Ream_Qty, string Production_Roll_Ream_Wt, string Cotangent, long OspDetailOutId, long OspDetailInId)
         {
             using (var context = new MesContext())
             {
-              return new ProcessUOW(context).CreateProduction(UserId, UserName, Production_Roll_Ream_Qty, Production_Roll_Ream_Wt, Cotangent, OspDetailOutId);
+              return new ProcessUOW(context).CreateProduction(UserId, UserName, Production_Roll_Ream_Qty, Production_Roll_Ream_Wt, Cotangent, OspDetailOutId, OspDetailInId);
             }
         }
 
