@@ -39,7 +39,7 @@ namespace CHPOUTSRCMES.TASK.Models.Service
         /// <param name="tasker"></param>
         /// <param name="token"></param>
         /// <returns></returns>
-        internal async Task ImportCtrSt(Tasker tasker, CancellationToken token)
+        internal void ImportCtrSt(Tasker tasker, CancellationToken token)
         {
             LogInfo($"[{tasker.Name}]-{tasker.Unit}-ImportCtrSt-開始");
 
@@ -55,9 +55,9 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                 using var mstUow = new MasterUOW(oraConn);
 
 
-                var list = await ctrStUow.GetByProcessCodeAsync("XXIFP217");
-
-
+                var task = ctrStUow.GetByProcessCodeAsync("XXIFP217");
+                task.Wait();
+                var list = task.Result;
                 if (list == null || list.Count() == 0)
                 {
                     LogInfo($"[{tasker.Name}]-{tasker.Unit}-ImportCtrSt-無可轉入資料");
@@ -78,7 +78,9 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                     {
 
                         //取第一筆資料來確認 新增/取消/修改
-                        var ctrSt = await ctrStUow.GetSingleCtrStByAsync(st.PROCESS_CODE, st.SERVER_CODE, st.BATCH_ID, transaction);
+                        var taskCtrSt = ctrStUow.GetSingleCtrStByAsync(st.PROCESS_CODE, st.SERVER_CODE, st.BATCH_ID, transaction);
+                        taskCtrSt.Wait();
+                        var ctrSt = taskCtrSt.Result;
                         if (ctrSt == null)
                         {
                             LogInfo($"[{tasker.Name}]-{tasker.Unit}-ImportCtrSt ({st.PROCESS_CODE}, {st.SERVER_CODE}, {st.BATCH_ID})-無法取得CONTAINER_ST明細首筆");
@@ -90,25 +92,31 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                         switch (ctrSt.ATTRIBUTE1.ToUpper())
                         {
                             case "N":
-                                model = await ctrStUow.ContainerStReceive(st, transaction);
+                                var taskReceive = ctrStUow.ContainerStReceive(st, transaction);
+                                taskReceive.Wait();
+                                model = taskReceive.Result;
                                 LogInfo($"[{tasker.Name}]-{tasker.Unit}-ImportCtrSt ({ctrSt.ATTRIBUTE1}, {st.PROCESS_CODE}, {st.SERVER_CODE}, {st.BATCH_ID})-{model}");
                                 if (!model.Success)
                                 {
                                     throw new Exception($"code:{model.Code} message:{model.Msg}");
                                 }
-                                await GenerateCtrPickedOfFlat(ctrSt.PROCESS_CODE, ctrSt.SERVER_CODE, ctrSt.BATCH_ID, mstUow, ctrStUow, transaction);
+                                GenerateCtrPickedOfFlat(ctrSt.PROCESS_CODE, ctrSt.SERVER_CODE, ctrSt.BATCH_ID, mstUow, ctrStUow, transaction);
                                 break;
                             case "Y":
-                                model = await ctrStUow.ContainerStChange(st, transaction);
+                                var taskChange = ctrStUow.ContainerStChange(st, transaction);
+                                taskChange.Wait();
+                                model = taskChange.Result;
                                 LogInfo($"[{tasker.Name}]-{tasker.Unit}-ImportCtrSt ({ctrSt.ATTRIBUTE1}, {st.PROCESS_CODE}, {st.SERVER_CODE}, {st.BATCH_ID})-{model}");
                                 if (!model.Success)
                                 {
                                     throw new Exception($"code:{model.Code} message:{model.Msg}");
                                 }
-                                await GenerateCtrPickedOfFlat(ctrSt.PROCESS_CODE, ctrSt.SERVER_CODE, ctrSt.BATCH_ID, mstUow, ctrStUow, transaction);
+                                GenerateCtrPickedOfFlat(ctrSt.PROCESS_CODE, ctrSt.SERVER_CODE, ctrSt.BATCH_ID, mstUow, ctrStUow, transaction);
                                 break;
                             case "C":
-                                model = await ctrStUow.ContainerStCancel(st, transaction);
+                                var taskCancel = ctrStUow.ContainerStCancel(st, transaction);
+                                taskCancel.Wait();
+                                model = taskCancel.Result;
                                 LogInfo($"[{tasker.Name}]-{tasker.Unit}-ImportCtrSt ({ctrSt.ATTRIBUTE1}, {st.PROCESS_CODE}, {st.SERVER_CODE}, {st.BATCH_ID})-{model}");
                                 if (!model.Success)
                                 {
@@ -143,22 +151,27 @@ namespace CHPOUTSRCMES.TASK.Models.Service
         }
 
 
-        internal async Task GenerateCtrPickedOfFlat(string processCode, string serverCode, string batchId, MasterUOW mstUow, CtrStUOW ctrStUow, IDbTransaction transaction = null)
+        internal void GenerateCtrPickedOfFlat(string processCode, string serverCode, string batchId, MasterUOW mstUow, CtrStUOW ctrStUow, IDbTransaction transaction = null)
         {
-            var detailList = await ctrStUow.GetFlatDetailListBy(processCode, serverCode, batchId, transaction);
+            var task = ctrStUow.GetFlatDetailListBy(processCode, serverCode, batchId, transaction);
+            task.Wait();
+            var detailList = task.Result;
+            
             DateTime now = DateTime.Now;
             foreach (var detail in detailList)
             {
                 int reamQty = Convert.ToInt32(detail.ROLL_REAM_QTY); //總捲數
-
-                var header = await ctrStUow.GetHeaderById(detail.CTR_HEADER_ID, transaction: transaction);
+                var taskHeader = ctrStUow.GetHeaderById(detail.CTR_HEADER_ID, transaction: transaction);
+                taskHeader.Wait();
+                var header = taskHeader.Result;
 
                 if (header == null)
                 {
                     throw new Exception($"找不到進櫃檔頭 ID:{detail.CTR_HEADER_ID}");
                 }
-
-                var gbModel = await ctrStUow.GenerateBarcodes(header.ORGANIZATION_ID, header.SUBINVENTORY, reamQty, "SYS", "", transaction: transaction);
+                var taskBarcode = ctrStUow.GenerateBarcodes(header.ORGANIZATION_ID, header.SUBINVENTORY, reamQty, "SYS", "", transaction: transaction);
+                taskBarcode.Wait();
+                var gbModel = taskBarcode.Result;
 
                 if (!gbModel.Success)
                 {
@@ -175,10 +188,10 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                 decimal reamWt = detail.ROLL_REAM_WT; //每件令數
                 decimal totalSecQty = detail.SECONDARY_QUANTITY ?? 0;
 
-                decimal pryQty = (await mstUow.UomConvertAsync(detail.INVENTORY_ITEM_ID, reamWt, detail.SECONDARY_UOM, detail.PRIMARY_UOM)) ?? 0;
+                decimal pryQty = (mstUow.UomConvert(detail.INVENTORY_ITEM_ID, reamWt, detail.SECONDARY_UOM, detail.PRIMARY_UOM)) ?? 0;
                 decimal txnQty = string.Compare(detail.TRANSACTION_UOM, detail.PRIMARY_UOM) == 0 ?
                     pryQty : string.Compare(detail.TRANSACTION_UOM, detail.SECONDARY_UOM) == 0 ?
-                    reamWt : ((await mstUow.UomConvertAsync(detail.INVENTORY_ITEM_ID, reamWt, detail.SECONDARY_UOM, detail.TRANSACTION_UOM)) ?? 0);
+                    reamWt : ((mstUow.UomConvert(detail.INVENTORY_ITEM_ID, reamWt, detail.SECONDARY_UOM, detail.TRANSACTION_UOM)) ?? 0);
 
                 for (int j = 0; j < reamQty; j++)
                 {
@@ -193,10 +206,10 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                         //餘重
                         secQty = totalSecQty;
 
-                        pryQty = (await mstUow.UomConvertAsync(detail.INVENTORY_ITEM_ID, secQty, detail.SECONDARY_UOM, detail.PRIMARY_UOM)) ?? 0;
+                        pryQty = (mstUow.UomConvert(detail.INVENTORY_ITEM_ID, secQty, detail.SECONDARY_UOM, detail.PRIMARY_UOM)) ?? 0;
                         txnQty = string.Compare(detail.TRANSACTION_UOM, detail.PRIMARY_UOM) == 0 ?
                             pryQty : string.Compare(detail.TRANSACTION_UOM, detail.SECONDARY_UOM) == 0 ?
-                            secQty : ((await mstUow.UomConvertAsync(detail.INVENTORY_ITEM_ID, reamWt, detail.SECONDARY_UOM, detail.TRANSACTION_UOM)) ?? 0);
+                            secQty : ((mstUow.UomConvert(detail.INVENTORY_ITEM_ID, reamWt, detail.SECONDARY_UOM, detail.TRANSACTION_UOM)) ?? 0);
                         totalSecQty = 0;
                     }
                     else
@@ -243,8 +256,9 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                         LAST_UPDATE_DATE = null,
                         LAST_UPDATE_USER_NAME = null
                     };
-
-                    var saveModel = await ctrStUow.SaveCtrPicked(picked, transaction);
+                    var taskSaveCtrPicked = ctrStUow.SaveCtrPicked(picked, transaction);
+                    taskSaveCtrPicked.Wait();
+                    var saveModel = taskSaveCtrPicked.Result;
 
                     if (!saveModel.Success)
                     {
@@ -261,7 +275,7 @@ namespace CHPOUTSRCMES.TASK.Models.Service
         /// <param name="tasker"></param>
         /// <param name="token"></param>
         /// <returns></returns>
-        internal async Task ExportCtrStRv(Tasker tasker, CancellationToken token)
+        internal void ExportCtrStRv(Tasker tasker, CancellationToken token)
         {
             LogInfo($"[{tasker.Name}]-{tasker.Unit}-ExportCtrStRv-開始");
 

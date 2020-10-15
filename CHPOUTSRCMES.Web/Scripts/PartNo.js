@@ -17,12 +17,12 @@ function LoadTable(Catalog_elem_val_050, Catalog_elem_val_020, Catalog_elem_val_
         processing: true,
         serverSide: true,
         autoWidth: false,
-        destroy:true,
+        destroy: true,
         dom:
             "<'row'<'col-sm-2'l><'col-sm-7'B><'col-sm-3'f>>" +
             "<'row'<'col-sm-12'tr>>" +
             "<'row'<'col-sm-5'i><'col-sm-7'p>>",
-        "lengthMenu": [[200, 250, 300, 350], [200, 250, 300, 350]],
+        "lengthMenu": [[10, 20, 50, 100], [10, 20, 50, 100]],
         ajax: {
             "url": "/PartNo/PartNoJson",
             "type": "POST",

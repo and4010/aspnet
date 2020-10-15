@@ -1579,14 +1579,17 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                 {
                     StringBuilder query = new StringBuilder();
                     query.Append(
-                    @"select
+                    @"
+select
  [REASON_CODE] as Reason_code,
  [REASON_DESC] as Reason_desc,
- [CREATED_BY] as Create_by,
+ u.UserName as Create_by,
  [CREATION_DATE] as Create_date,
- [LAST_UPDATE_BY] as Last_update_by,
+ l.UserName as Last_update_by,
  [LAST_UPDATE_DATE] as Last_Create_date
- from STK_REASON_T");
+ from STK_REASON_T s
+ left join USER_T u on u.Id = CREATED_BY
+ left join USER_T l on l.Id = LAST_UPDATE_BY");
                     return mesContext.Database.SqlQuery<ReasonModel>(query.ToString()).ToList();
                 }
             }
@@ -2418,7 +2421,8 @@ SELECT [ORGANIZATION_ID] FROM [SUBINVENTORY_T] WHERE SUBINVENTORY_CODE = @inSubi
                 List<string> cond = new List<string>();
                 List<SqlParameter> sqlParameterList = new List<SqlParameter>();
                 string prefixCmd = @"
-select o.ORGANIZATION_ID,
+select 
+o.ORGANIZATION_ID,
 o.ORGANIZATION_CODE,
 o.ORGANIZATION_NAME,
 s.SUBINVENTORY_CODE,
@@ -2434,10 +2438,8 @@ l.SEGMENT2,
 l.SEGMENT3,
 l.SEGMENT4
 from ORGANIZATION_T o
-inner join SUBINVENTORY_T s
-on o.ORGANIZATION_ID = s.ORGANIZATION_ID
-inner join LOCATOR_T l
-on s.ORGANIZATION_ID = l.ORGANIZATION_ID and s.SUBINVENTORY_CODE = l.SUBINVENTORY_CODE";
+inner join SUBINVENTORY_T s on o.ORGANIZATION_ID = s.ORGANIZATION_ID
+left join LOCATOR_T l on s.ORGANIZATION_ID = l.ORGANIZATION_ID and s.SUBINVENTORY_CODE = l.SUBINVENTORY_CODE ";
 
                 if (ORGANIZATION_ID != "*")
                 {
@@ -2457,6 +2459,8 @@ on s.ORGANIZATION_ID = l.ORGANIZATION_ID and s.SUBINVENTORY_CODE = l.SUBINVENTOR
                 }
 
                 string commandText = string.Format(prefixCmd + "{0}{1}", cond.Count > 0 ? " WHERE " : "", string.Join(" AND ", cond.ToArray()));
+
+                commandText += " AND s.CONTROL_FLAG <> 'D' AND l.CONTROL_FLAG <> 'D' AND o.CONTROL_FLAG <> 'D'";
 
                 if (sqlParameterList.Count > 0)
                 {

@@ -152,6 +152,29 @@ $"SELECT ROUND({SchemaNameOfUomConversion}UOM_CONVERSION(:ITEM_ID, :FROM_QTY, :F
             return null;
         }
 
+        public decimal? UomConvert(long itemId, decimal amount, string fromUom, string toUom, int round = 5)
+        {
+            try
+            {
+                DynamicParameters parameters = new DynamicParameters();
+                parameters.Add(":ITEM_ID", itemId);
+                parameters.Add(":FROM_QTY", amount);
+                parameters.Add(":FROM_UOM", fromUom);
+                parameters.Add(":TO_UOM", toUom);
+                parameters.Add(":ROUND", round);
+
+                return Context.QueryFirst<decimal>($"SELECT ROUND({SchemaNameOfUomConversion}UOM_CONVERSION(:ITEM_ID, :FROM_QTY, :FROM_UOM, :TO_UOM), :ROUND) QUANTITY FROM DUAL", parameters
+                    );
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+
+
+            return null;
+        }
+
         public XXCINV_MES_ITEMS_FTY_V GetItemAsync(string itemNo)
         {
             try

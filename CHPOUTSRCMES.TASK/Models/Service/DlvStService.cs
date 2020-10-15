@@ -39,7 +39,7 @@ namespace CHPOUTSRCMES.TASK.Models.Service
         /// <param name="tasker"></param>
         /// <param name="token"></param>
         /// <returns></returns>
-        internal async Task ImportDlvSt(Tasker tasker, CancellationToken token)
+        internal void ImportDlvSt(Tasker tasker, CancellationToken token)
         {
             LogInfo($"[{tasker.Name}]-{tasker.Unit}-ImportDlvSt-開始");
 
@@ -55,9 +55,9 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                 using var mstUow = new MasterUOW(oraConn);
 
 
-                var list = await dlvStUow.GetByProcessCodeAsync("XXIFP220");
-
-
+                var task = dlvStUow.GetByProcessCodeAsync("XXIFP220");
+                task.Wait();
+                var list = task.Result;
                 if (list == null || list.Count() == 0)
                 {
                     LogInfo($"[{tasker.Name}]-{tasker.Unit}-ImportDlvSt-無可轉入資料");
@@ -77,7 +77,9 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                     {
                         ResultModel model = new ResultModel(false, "未知的錯誤!");
 
-                        model = await dlvStUow.DeliveryStReceive(st, transaction);
+                        var taskReceive = dlvStUow.DeliveryStReceive(st, transaction);
+                        taskReceive.Wait();
+                        model = taskReceive.Result;
                         LogInfo($"[{tasker.Name}]-{tasker.Unit}-ImportDlvSt ({st.PROCESS_CODE}, {st.SERVER_CODE}, {st.BATCH_ID})-{model}");
                         if (!model.Success)
                         {
@@ -114,7 +116,7 @@ namespace CHPOUTSRCMES.TASK.Models.Service
         /// <param name="tasker"></param>
         /// <param name="token"></param>
         /// <returns></returns>
-        internal async Task ExportDlvStRv(Tasker tasker, CancellationToken token)
+        internal void ExportDlvStRv(Tasker tasker, CancellationToken token)
         {
             LogInfo($"[{tasker.Name}]-{tasker.Unit}-ExportDlvStRv-開始");
 
@@ -129,7 +131,9 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                 using var dlvStUow = new DlvStUOW(sqlConn);
                 using var masterUOW = new MasterUOW(oraConn);
 
-                var list = await dlvStUow.GetTripList();
+                var task = dlvStUow.GetTripList();
+                task.Wait();
+                var list = task.Result;
                 if (list == null || list.Count() == 0)
                 {
                     LogInfo($"[{tasker.Name}]-{tasker.Unit}-ExportDlvStRv-無可轉出資料");
@@ -141,7 +145,9 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                     using var transaction = sqlConn.BeginTransaction();
                     try
                     {
-                        var model = await dlvStUow.DeliveryStUpload(list[i], masterUOW, transaction: transaction);
+                        var taskStage = dlvStUow.DeliveryStUpload(list[i], masterUOW, transaction: transaction);
+                        taskStage.Wait();
+                        var model = taskStage.Result;
                         LogInfo($"[{tasker.Name}]-{tasker.Unit}-ExportDlvStRv (TRIP_ID:{list[i]})-{model}");
 
                         if (!model.Success)

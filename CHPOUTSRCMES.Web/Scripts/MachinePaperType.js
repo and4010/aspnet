@@ -20,7 +20,7 @@ function LoadTable(Organization_code) {
             "<'row'<'col-sm-2'l><'col-sm-7'><'col-sm-3'f>>" +
             "<'row'<'col-sm-12'tr>>" +
             "<'row'<'col-sm-5'i><'col-sm-7'p>>",
-        "lengthMenu": [[25, 50, 100, 150], [25, 50, 100, 150]],
+        "lengthMenu": [[10, 20, 50, 100], [10, 20, 50, 100]],
         ajax: {
             "url": "/MachinePaperType/MachinePaperType",
             "type": "POST",

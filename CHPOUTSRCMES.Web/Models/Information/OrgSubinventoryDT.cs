@@ -59,8 +59,8 @@ namespace CHPOUTSRCMES.Web.Models.Information
         public string SUBINVENTORY_NAME { set; get; }
         public string OSP_FLAG { set; get; }
         public string BARCODE_PREFIX_CODE { set; get; }
-        public long LOCATOR_ID { set; get; }
-        public long LOCATOR_TYPE { set; get; }
+        public long? LOCATOR_ID { set; get; }
+        public long? LOCATOR_TYPE { set; get; }
         public string LOCATOR_SEGMENTS { set; get; }
         public string LOCATOR_DESC { set; get; }
         public string SEGMENT1 { set; get; }

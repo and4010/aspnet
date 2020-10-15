@@ -257,7 +257,7 @@ namespace CHPOUTSRCMES.TASK
         {
             AddTasker(new Tasker("進櫃轉檔程序", interval, (tasker, token) => {
                 CtrStService service = new CtrStService(MesConnStr, ErpConnStr);
-                var task = service.ImportCtrSt(tasker, token);
+                var task = Task.Run(() => service.ImportCtrSt(tasker, token));
                 var rvTask = task.ContinueWith(subTask => service.ExportCtrStRv(tasker, token), TaskContinuationOptions.OnlyOnRanToCompletion);
 
                 Task.WaitAll(task, rvTask);
@@ -271,7 +271,8 @@ namespace CHPOUTSRCMES.TASK
         {
             AddTasker(new Tasker("出貨轉檔程序", interval, (tasker, token) => {
                 DlvStService service = new DlvStService(MesConnStr, ErpConnStr);
-                var task = service.ImportDlvSt(tasker, token);
+                var task = Task.Run(() => service.ImportDlvSt(tasker, token));
+                //var task = service.ImportDlvSt(tasker, token);
                 var rvTask = task.ContinueWith(subTask => service.ExportDlvStRv(tasker, token), TaskContinuationOptions.OnlyOnRanToCompletion);
 
                 Task.WaitAll(task, rvTask);

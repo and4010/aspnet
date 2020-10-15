@@ -276,7 +276,7 @@ namespace CHPOUTSRCMES.Web.Models.Stock
             }
 
             string SEGMENT3 = newOrgList[0].SEGMENT3;
-            long LOCATOR_TYPE = newOrgList[0].LOCATOR_TYPE;
+            long LOCATOR_TYPE = newOrgList[0].LOCATOR_TYPE.HasValue ? newOrgList[0].LOCATOR_TYPE.Value : 0;
 
             foreach (StockDT stockDT in source)
             {
