@@ -29,38 +29,51 @@ $(document).ready(function () {
     onclick();
 
     var Status = $('#Status').val();
-    if (Status == CompletedBatch || Status == PendingBatch) {
-
-        //完工紀錄使用
-        DsiplayPaperRollHide();
+    if (Status == CompletedBatch) {
         DisplayInvestPaperRollEnable(true);
         DisplayProductionPaperRollEnable(true);
+        $('#BtnProcess_Batch_no').hide();
+        $("#BtnSave").hide();
+        $('#BtnEdit').show();
+        $('#BtnApprove').show();
+        $('#OutputBathNoArea').hide();
         ///隱藏按鈕
         PaperRollInvestDataTables.column(9).visible(false);
         PaperRollProductionDataTables.column(8).visible(false);
-        DsiplayPaperRollShow(Status);
-    } else if (Status == CloseBatch || Status == Modified) {
-        //完工紀錄使用
-        //DsiplayPaperRollHide();
+    }
+    else if (Status == PendingBatch) {
         DisplayInvestPaperRollEnable(true);
         DisplayProductionPaperRollEnable(true);
-        ///隱藏按鈕
+        $('#BtnCheckBatchNo').show();
+        $('#BtnEdit').hide();
+        $('#BtnApprove').show();
+        $('#BtnSave').hide();
+    }
+    else if (Status == Modified) {
+        DisplayInvestPaperRollEnable(true);
+        DisplayProductionPaperRollEnable(true);
         PaperRollInvestDataTables.column(9).visible(false);
         PaperRollProductionDataTables.column(8).visible(false);
-        $('#BtnEdit').attr('disabled', true);
-        $('#BtnProcess_Production_Batch_no').attr('disabled', true);
-        $('#ProcessBatchNo').attr('disabled', true);
-        $('#ProcessProductionBatchNo').attr('disabled', true);
 
+        $('#BtnSave').hide();
+        $('#InputBathNoArea').hide();
+        $('#OutputBathNoArea').hide();
+    }
+    else if (Status == CloseBatch) {
+        DisplayInvestPaperRollEnable(true);
+        DisplayProductionPaperRollEnable(true);
+        PaperRollInvestDataTables.column(9).visible(false);
+        PaperRollProductionDataTables.column(8).visible(false);
+
+        $('#BtnSave').hide();
         $('#InputBathNoArea').hide();
         $('#OutputBathNoArea').hide();
     } else {
         DisplayInvestPaperRollEnable(true);
         DisplayProductionPaperRollEnable(true);
-        $('#BtnProcess_Batch_no').show()
-        $('#BtnEdit').hide()
-        $('#BtnApprove').hide()
-        
+        $('#BtnProcess_Batch_no').show();
+        $('#BtnEdit').hide();
+        $('#BtnApprove').hide();
     }
 
 
@@ -386,7 +399,6 @@ function onclick() {
             return;
         }
 
-
         $.ajax({
             url: '/Process/_Locator/',
             type: 'POST',
@@ -587,6 +599,7 @@ function PaperInvestSaveBarcode(Barcode, Remnant, Remaining_Weight, OspDetailInI
         success: function (data) {
             if (data.resultModel.Success) {
                 LoadPaperRollInvestDataTable();
+                ClearRateLoss();
             } else {
                 swal.fire(data.resultModel.Msg);
             }
@@ -738,6 +751,7 @@ function PaperRollProductionDetail(PaperRoll_Weight, PaperRoll_Lot_Number, OspDe
             if (data != null) {
                 if (data.resultModel.Success) {
                     LoadPaperRollProductionDataTable();
+                    ClearRateLoss();
                 } else {
                     swal.fire(data.resultModel.Msg);
                 }
@@ -785,8 +799,7 @@ function EnableBarcode(boolean) {
 }
 
 function DeleteRateLoss() {
-    $('#Production_Loss').html("");
-    $('#Rate').html("");
+    ClearRateLoss();
     var OspHeaderId = $('#OspHeaderId').val();
     $.ajax({
         url: '/Process/DeleteRate',
@@ -925,6 +938,11 @@ function DsiplayPaperRollShow(Status) {
     }
 }
 
+function ClearRateLoss() {
+    $('#Production_Loss').html("");
+    $('#Rate').html("");
+}
+
 //完工紀錄使用
 function BtnRecord() {
     $('#BtnEdit').click(function () {
@@ -936,17 +954,17 @@ function BtnRecord() {
             type: "POST",
             data: { BatchNo: BatchNo, OspHeaderId: OspHeaderId },
             success: function (data) {
-                if (data.resultModel.Success) {
-                    changeStaus();
+                if (data.Success) {
+                    //changeStaus();
+                    location.href = "/Process/Schedule/" + data.Data;
                 } else {
-                    swal.fire(data.resultModel.Msg);
+                    swal.fire(data.Msg);
                 }
             },
             error: function () {
 
             }
         });
-
     });
 
     $('#BtnApprove').click(function () {

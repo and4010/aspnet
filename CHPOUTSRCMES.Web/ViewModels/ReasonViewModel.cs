@@ -68,7 +68,7 @@ namespace CHPOUTSRCMES.Web.ViewModels
                     case 2:
                         return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Reason_desc) : models.OrderBy(x => x.Reason_desc);
                     case 3:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Create_by) : models.OrderBy(x => x.Create_by);
+                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.UserName) : models.OrderBy(x => x.UserName);
                     case 4:
                         return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Create_date) : models.OrderBy(x => x.Create_date);
                     case 5:
@@ -90,7 +90,7 @@ namespace CHPOUTSRCMES.Web.ViewModels
                     case 2:
                         return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Reason_desc) : models.OrderBy(x => x.Reason_desc);
                     case 3:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Create_by) : models.OrderBy(x => x.Create_by);
+                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.UserName) : models.OrderBy(x => x.UserName);
                     case 4:
                         return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Create_date) : models.OrderBy(x => x.Create_date);
                     case 5:
@@ -109,7 +109,7 @@ namespace CHPOUTSRCMES.Web.ViewModels
                     // Apply search   
                     model = model.Where(p => (!string.IsNullOrEmpty(p.Reason_code.ToString()) && p.Reason_code.ToString().ToLower().Contains(search.ToLower()))
                         || (!string.IsNullOrEmpty(p.Reason_desc) && p.Reason_desc.ToLower().Contains(search.ToLower()))
-                        || (!string.IsNullOrEmpty(p.Create_by) && p.Create_by.ToLower().Contains(search.ToLower()))
+                        || (!string.IsNullOrEmpty(p.UserName) && p.UserName.ToLower().Contains(search.ToLower()))
                         || (!string.IsNullOrEmpty(p.Last_update_by) && p.Last_update_by.ToLower().Contains(search.ToLower()))).ToList();
                 }
                 return model;

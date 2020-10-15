@@ -259,14 +259,14 @@ namespace CHPOUTSRCMES.Web.Controllers
         /// <param name="OspDetailOutId"></param>
         /// <returns></returns>
         [HttpPost]
-        public JsonResult CreateProduction(string Production_Roll_Ream_Qty, string Production_Roll_Ream_Wt, string Cotangent, long OspDetailOutId, long OspDetailInId)
+        public JsonResult CreateProduction(string Production_Roll_Ream_Qty, string Production_Roll_Ream_Wt, string Cotangent, long OspDetailOutId, long OspDetailInId, long OspHeaderId)
         {
             //取得使用者ID
             var Userid = this.User.Identity.GetUserId();
             //取得使用者帳號
             var UserName = this.User.Identity.GetUserName();
             ProcessViewModel procesViewModel = new ProcessViewModel();
-            var resultModel = procesViewModel.CreateProduction(Userid, UserName,Production_Roll_Ream_Qty, Production_Roll_Ream_Wt, Cotangent, OspDetailOutId, OspDetailInId);
+            var resultModel = procesViewModel.CreateProduction(Userid, UserName,Production_Roll_Ream_Qty, Production_Roll_Ream_Wt, Cotangent, OspDetailOutId, OspDetailInId, OspHeaderId);
             
             return Json(new { resultModel }, JsonRequestBehavior.AllowGet);
         }

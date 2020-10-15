@@ -949,19 +949,19 @@ left JOIN OSP_YIELD_VARIANCE_T OYV ON OYV.OSP_HEADER_ID = H.OSP_HEADER_ID");
                     }
                     else
                     {
-                       var subinventoryCodeList = subinventoryRepository.GetAll().AsNoTracking().Join(
-                            userSubinventoryTRepository.GetAll().AsNoTracking(),
-                            s => new { s.SubinventoryCode },
-                            us => new { us.SubinventoryCode },
-                (s, us) => new
-                {
-                    UserId = us.UserId,
-                    SubinventoryCode = s.SubinventoryCode,
-                    OspFlag = s.OspFlag
-                }).Where(x => x.UserId == UserId && x.OspFlag == "Y").Select(x => x.SubinventoryCode).ToList();
+                        var subinventoryCodeList = subinventoryRepository.GetAll().AsNoTracking().Join(
+                             userSubinventoryTRepository.GetAll().AsNoTracking(),
+                             s => new { s.SubinventoryCode },
+                             us => new { us.SubinventoryCode },
+                 (s, us) => new
+                 {
+                     UserId = us.UserId,
+                     SubinventoryCode = s.SubinventoryCode,
+                     OspFlag = s.OspFlag
+                 }).Where(x => x.UserId == UserId && x.OspFlag == "Y").Select(x => x.SubinventoryCode).ToList();
 
                         string temp = "";
-                        foreach(string subinventoryCode in subinventoryCodeList)
+                        foreach (string subinventoryCode in subinventoryCodeList)
                         {
                             temp += "'" + subinventoryCode + "'" + ',';
                         }
@@ -1159,7 +1159,7 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
         /// <param name="OspHeaderId"></param>
         /// <param name="BtnStatus"></param>
         /// <returns></returns>
-        public ResultModel SetClose(long OspHeaderId,string BtnStatus)
+        public ResultModel SetClose(long OspHeaderId, string BtnStatus)
         {
             try
             {
@@ -1399,6 +1399,8 @@ AND ST.BARCODE = @BARCODE");
                         {
                             CheckStock(data.StockId, UserId, aft, StockStatusCode.ProcessPicked);
                             StockRecord(data.StockId, aft, chg, 0, 0, CategoryCode.Process, ActionCode.Picked, Header.BatchNo, UserId);
+                            var delteRateResult = DeleteRateNoTransaction(oSP_PICKED_IN_T.OspHeaderId);
+                            if (!delteRateResult.Success) throw new Exception(delteRateResult.Msg);
                             txn.Commit();
                             return new ResultModel(true, "寫入成功");
                         }
@@ -1434,7 +1436,7 @@ AND ST.BARCODE = @BARCODE");
         /// <param name="Cotangent"></param>
         /// <param name="OspDetailOutId"></param>
         /// <returns></returns>
-        public ResultModel CreateProduction(string UserId, string UserName, string Production_Roll_Ream_Qty, string Production_Roll_Ream_Wt, string Cotangent, long OspDetailOutId, long OspDetailInId)
+        public ResultModel CreateProduction(string UserId, string UserName, string Production_Roll_Ream_Qty, string Production_Roll_Ream_Wt, string Cotangent, long OspDetailOutId, long OspDetailInId,long OspHeaderId)
         {
             if (Production_Roll_Ream_Qty == null)
             {
@@ -1449,6 +1451,8 @@ AND ST.BARCODE = @BARCODE");
                 try
                 {
                     var save = InsertPickOut(UserId, UserName, Production_Roll_Ream_Qty, Production_Roll_Ream_Wt, Cotangent, OspDetailOutId, OspDetailInId);
+                    var delteRateResult = DeleteRateNoTransaction(OspHeaderId);
+                    if (!delteRateResult.Success) throw new Exception(delteRateResult.Msg);
                     if (save.Success == false)
                     {
                         txn.Rollback();
@@ -1644,6 +1648,8 @@ AND ST.BARCODE = @BARCODE");
                     ospPickOut.CreatedUserName = UserName;
                     ospPickOut.CreationDate = DateTime.Now;
                     OspPickedOutTRepository.Create(ospPickOut, true);
+                    var delteRateResult = DeleteRateNoTransaction(ospPickOut.OspHeaderId);
+                    if (!delteRateResult.Success) throw new Exception(delteRateResult.Msg);
                     txn.Commit();
                     return new ResultModel(true, "");
                 }
@@ -2079,7 +2085,7 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
                     {
                         return new ResultDataModel<OSP_YIELD_VARIANCE_T>(false, "產出請先入庫", null);
                     }
-                    PickOutWeight += + PickOut[i].PrimaryQuantity;
+                    PickOutWeight += +PickOut[i].PrimaryQuantity;
                 }
                 if (Cotangent != null && Cotangent.Count > 0)
                 {
@@ -2107,7 +2113,8 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
                 }
                 //投入重量：領料量 - 餘捲
                 var investWeight = PickInWeight - RemainWeight;
-                var Totle = Math.Round(ProductWeight / investWeight, 2);
+                //var Totle = Math.Round(ProductWeight / investWeight, 2);
+                var Totle = Math.Round(investWeight - ProductWeight, 2);
                 var rate = Math.Round((ProductWeight / investWeight * 100), 2);
                 var loss = OspYieldVarianceTRepository.Get(x => x.OspHeaderId == DetailOut.OspHeaderId).SingleOrDefault();
                 if (loss == null)
@@ -2196,12 +2203,12 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
                 try
                 {
                     var op = OspYieldVarianceTRepository.Get(x => x.OspHeaderId == OspHeaderId).SingleOrDefault();
-                    if(op != null)
+                    if (op != null)
                     {
                         OspYieldVarianceTRepository.Delete(op, true);
                         txn.Commit();
                     }
-                   
+
                 }
 
                 catch (Exception e)
@@ -2210,6 +2217,29 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
                     logger.Error(LogUtilities.BuildExceptionMessage(e));
 
                 }
+            }
+        }
+
+        /// <summary>
+        /// 清除損耗記錄 使用時要在外面加Transaction
+        /// </summary>
+        /// <param name="OspHeaderId"></param>
+        /// <returns></returns>
+        public ResultModel DeleteRateNoTransaction(long OspHeaderId)
+        {
+            try
+            {
+                var op = OspYieldVarianceTRepository.Get(x => x.OspHeaderId == OspHeaderId).SingleOrDefault();
+                if (op != null)
+                {
+                    OspYieldVarianceTRepository.Delete(op, true);
+                }
+                return new ResultModel(true, "清除損耗記錄成功");
+            }
+            catch (Exception e)
+            {
+                logger.Error(LogUtilities.BuildExceptionMessage(e));
+                return new ResultModel(false, "清除損耗記錄發生錯誤: " + e.Message);
             }
         }
 
@@ -2250,7 +2280,7 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
 
                     OspHeaderTRepository.Update(header, true);
                     var m1 = SaveInvestStock(header.OspHeaderId, StockStatusCode.InStock, StockStatusCode.ProcessPicked, CategoryCode.Process, ActionCode.ProcessPicked, header.BatchNo, UserId);
-                    if(!m1.Success)
+                    if (!m1.Success)
                     {
                         throw new Exception($"CODE:{m1.Code} MSG:{m1.Msg}");
                     }
@@ -2341,7 +2371,7 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
                 {
 
                     var header = OspHeaderTRepository.GetAll().Where(x => x.OspHeaderId == OspHeaderId).FirstOrDefault();
-                    
+
                     if (header == null)
                     {
                         return new ResultDataModel<long>(false, "單號錯誤", 0);
@@ -2351,7 +2381,7 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
                         return new ResultDataModel<long>(false, "工單號輸入不對請重新輸入", 0);
                     }
 
-                    if(header.Status != ProcessStatusCode.CompletedBatch)
+                    if (header.Status != ProcessStatusCode.CompletedBatch)
                     {
                         return new ResultDataModel<long>(false, "僅完工狀態可進行修改!!", 0);
                     }
@@ -2380,7 +2410,7 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
                         headerMod.OspHeaderId = newHeader.OspHeaderId;
                         OspHeaderModTRepository.Create(headerMod, true);
 
-                        if(DeleteStock(OspHeaderId) <= 0)
+                        if (DeleteStock(OspHeaderId) <= 0)
                         {
                             throw new Exception($"OSP_HEADER_ID:{OspHeaderId} 刪除產品庫存資料失敗");
                         }
@@ -2453,7 +2483,7 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
             this.Context.Database.ExecuteSqlCommand("[SP_SaveOspPickedIn] @headerId, @inStockStatusCode, @processPickedStatusCode, @category, @action, @doc, @code output, @message output, @user",
                 pHeaderId, pInStockStatusCode, pProcessPickedStatusCode, pCategory, pAction, pDoc, pCode, pMsg, pUser);
 
-            if(pCode.Value != DBNull.Value)
+            if (pCode.Value != DBNull.Value)
             {
                 resultModel.Code = Convert.ToInt32(pCode.Value);
                 resultModel.Success = resultModel.Code == ResultModel.CODE_SUCCESS;
@@ -2915,7 +2945,7 @@ WHERE D.OSP_HEADER_ID = @OSP_HEADER_ID"
                 , new SqlParameter("@OSP_HEADER_ID", ospHeaderId)
               );
 
-            
+
         }
 
         public int DeleteDetailInHT(long ospHeaderId)
@@ -3009,7 +3039,7 @@ WHERE C.OSP_HEADER_ID = @OSP_HEADER_ID"
                     , new SqlParameter("@OSP_HEADER_ID", ospHeaderId)
                 );
 
-            
+
         }
 
         public int DeleteContangetHT(long ospHeaderId)
@@ -3355,27 +3385,27 @@ AND OPO.OSP_PICKED_OUT_ID = @OSP_PICKED_OUT_ID
                     var DetailOut = OspDetailOutTRepository.Get(x => x.OspDetailOutId == OspDetailOutId).SingleOrDefault();
                     return getLocatorListForUserId(UserId, DetailOut.Subinventory, DetailOut.LocatorId);
 
-//                    List<SelectListItem> locator = new List<SelectListItem>();
-//                    List<SqlParameter> sqlParameterList = new List<SqlParameter>();
-//                    StringBuilder query = new StringBuilder();
-//                    query.Append(
-//@"SELECT 
-//[SEGMENT3] as Text,
-//cast([LOCATOR_ID] as nvarchar) as Value
-//FROM [LOCATOR_T] LT
-//where CONTROL_FLAG <> 'D'
-//and SUBINVENTORY_CODE = @SUBINVENTORY_CODE");
-//                    sqlParameterList.Add(new SqlParameter("@SUBINVENTORY_CODE", DetailOut.Subinventory));
-//                    var data = mesContext.Database.SqlQuery<SelectListItem>(query.ToString(), sqlParameterList.ToArray()).ToList();
-//                    if (data == null)
-//                    {
-//                        locator.AddRange(data);
-//                    }
-//                    else
-//                    {
-//                        locator.AddRange(data);
-//                    }
-//                    return locator;
+                    //                    List<SelectListItem> locator = new List<SelectListItem>();
+                    //                    List<SqlParameter> sqlParameterList = new List<SqlParameter>();
+                    //                    StringBuilder query = new StringBuilder();
+                    //                    query.Append(
+                    //@"SELECT 
+                    //[SEGMENT3] as Text,
+                    //cast([LOCATOR_ID] as nvarchar) as Value
+                    //FROM [LOCATOR_T] LT
+                    //where CONTROL_FLAG <> 'D'
+                    //and SUBINVENTORY_CODE = @SUBINVENTORY_CODE");
+                    //                    sqlParameterList.Add(new SqlParameter("@SUBINVENTORY_CODE", DetailOut.Subinventory));
+                    //                    var data = mesContext.Database.SqlQuery<SelectListItem>(query.ToString(), sqlParameterList.ToArray()).ToList();
+                    //                    if (data == null)
+                    //                    {
+                    //                        locator.AddRange(data);
+                    //                    }
+                    //                    else
+                    //                    {
+                    //                        locator.AddRange(data);
+                    //                    }
+                    //                    return locator;
                 }
             }
             catch (Exception e)
@@ -3809,12 +3839,12 @@ AND OPO.OSP_PICKED_OUT_ID = @OSP_PICKED_OUT_ID
             {
                 return OspDetailOutTRepository.Get(x => x.OspHeaderId == OspHeaderId).SingleOrDefault();
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 logger.Error(LogUtilities.BuildExceptionMessage(e));
                 return new OSP_DETAIL_OUT_T();
             }
-           
+
         }
 
         /// <summary>
@@ -3848,7 +3878,7 @@ AND OPO.OSP_PICKED_OUT_ID = @OSP_PICKED_OUT_ID
                 resultDataModel.Code = -1;
                 resultDataModel.Msg = $"取得加工單未完成數量時發生錯誤 EX:{ex.Message}";
             }
-            
+
             return resultDataModel;
         }
     }

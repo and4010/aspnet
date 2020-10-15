@@ -304,15 +304,15 @@ namespace CHPOUTSRCMES.Web.Util
 
 
                 int rowCount = sheet.LastRowNum;
+                int subId = 1;
                 for (int i = ItemNo_cell.RowIndex + 1; i <= rowCount; i++)
                 {
 
                     try
                     {
-
                         var excelPartNo = ExcelUtil.GetStringCellValue(i, ItemNo_cell.ColumnIndex, sheet).Trim();
                         var model = new StockTransferBarcodeDT();
-                        model.ID = i;
+                        model.ID = subId;
                         //model.BARCODE = "B200619000" + (i).ToString();
                         model.ITEM_NUMBER = ExcelUtil.GetStringCellValue(i, ItemNo_cell.ColumnIndex, sheet).Trim();
                         model.PAPERTYPE = ExcelUtil.GetStringCellValue(i, PaperType_cell.ColumnIndex, sheet).Trim();
@@ -345,6 +345,7 @@ namespace CHPOUTSRCMES.Web.Util
                         {
                             stockTransferBarcodeDTs.Add(model);
                         }
+                        subId++;
                     }
                     catch (Exception e)
                     {
@@ -465,6 +466,7 @@ namespace CHPOUTSRCMES.Web.Util
 
 
                 int rowCount = sheet.LastRowNum;
+                int subId = 1;
                 for (int i = ItemNo_cell.RowIndex + 1; i <= rowCount; i++)
                 {
 
@@ -473,7 +475,7 @@ namespace CHPOUTSRCMES.Web.Util
 
                         var excelPartNo = ExcelUtil.GetStringCellValue(i, ItemNo_cell.ColumnIndex, sheet).Trim();
                         var model = new StockTransferDT();
-                        model.ID = i;
+                        model.ID = subId;
                         //model.BARCODE = "B200619000" + (i).ToString();
 
                         model.ITEM_NUMBER = ExcelUtil.GetStringCellValue(i, ItemNo_cell.ColumnIndex, sheet).Trim();
@@ -494,7 +496,7 @@ namespace CHPOUTSRCMES.Web.Util
                         {
                             stockTransferDTs.Add(model);
                         }
-
+                        subId++;
                     }
                     catch (Exception e)
                     {
