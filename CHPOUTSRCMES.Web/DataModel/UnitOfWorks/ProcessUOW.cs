@@ -855,7 +855,7 @@ WHERE DI.OSP_HEADER_ID = @OSP_HEADER_ID");
         /// <param name="CuttingDateTo"></param>
         /// <param name="Subinventory"></param>
         /// <returns></returns>
-        public List<CHP_PROCESS_T> GetTable(string Status, string BatchNo, string MachineNum, string DueDate, string CuttingDateFrom, string CuttingDateTo, string Subinventory)
+        public List<CHP_PROCESS_T> GetTable(string Status, string BatchNo, string MachineNum, string DueDate, string CuttingDateFrom, string CuttingDateTo, string Subinventory, string UserId)
         {
             try
             {
@@ -946,6 +946,28 @@ left JOIN OSP_YIELD_VARIANCE_T OYV ON OYV.OSP_HEADER_ID = H.OSP_HEADER_ID");
                     {
                         cond.Add("DI.SUBINVENTORY = @SUBINVENTORY");
                         sqlParameterList.Add(new SqlParameter("@SUBINVENTORY", Subinventory));
+                    }
+                    else
+                    {
+                       var subinventoryCodeList = subinventoryRepository.GetAll().AsNoTracking().Join(
+                            userSubinventoryTRepository.GetAll().AsNoTracking(),
+                            s => new { s.SubinventoryCode },
+                            us => new { us.SubinventoryCode },
+                (s, us) => new
+                {
+                    UserId = us.UserId,
+                    SubinventoryCode = s.SubinventoryCode,
+                    OspFlag = s.OspFlag
+                }).Where(x => x.UserId == UserId && x.OspFlag == "Y").Select(x => x.SubinventoryCode).ToList();
+
+                        string temp = "";
+                        foreach(string subinventoryCode in subinventoryCodeList)
+                        {
+                            temp += "'" + subinventoryCode + "'" + ',';
+                        }
+                        temp = temp.TrimEnd(',');
+                        temp = string.Format("DI.SUBINVENTORY IN({0})", temp);
+                        cond.Add(temp);
                     }
 
                     string commandText = string.Format(query + "{0}{1}", cond.Count > 0 ? " where " : "", string.Join(" and ", cond.ToArray()));
@@ -1412,7 +1434,7 @@ AND ST.BARCODE = @BARCODE");
         /// <param name="Cotangent"></param>
         /// <param name="OspDetailOutId"></param>
         /// <returns></returns>
-        public ResultModel CreateProduction(string UserId, string UserName, string Production_Roll_Ream_Qty, string Production_Roll_Ream_Wt, string Cotangent, long OspDetailOutId)
+        public ResultModel CreateProduction(string UserId, string UserName, string Production_Roll_Ream_Qty, string Production_Roll_Ream_Wt, string Cotangent, long OspDetailOutId, long OspDetailInId)
         {
             if (Production_Roll_Ream_Qty == null)
             {
@@ -1426,7 +1448,7 @@ AND ST.BARCODE = @BARCODE");
             {
                 try
                 {
-                    var save = InsertPickOut(UserId, UserName, Production_Roll_Ream_Qty, Production_Roll_Ream_Wt, Cotangent, OspDetailOutId);
+                    var save = InsertPickOut(UserId, UserName, Production_Roll_Ream_Qty, Production_Roll_Ream_Wt, Cotangent, OspDetailOutId, OspDetailInId);
                     if (save.Success == false)
                     {
                         txn.Rollback();
@@ -1458,7 +1480,7 @@ AND ST.BARCODE = @BARCODE");
         /// <param name="Cotangent"></param>
         /// <param name="OspDetailOutId"></param>
         /// <returns></returns>
-        public ResultModel InsertPickOut(string UserId, string UserName, string Production_Roll_Ream_Qty, string Production_Roll_Ream_Wt, string Cotangent, long OspDetailOutId)
+        public ResultModel InsertPickOut(string UserId, string UserName, string Production_Roll_Ream_Qty, string Production_Roll_Ream_Wt, string Cotangent, long OspDetailOutId, long OspDetailInId)
         {
 
             var detailout = OspDetailOutTRepository.Get(x => x.OspDetailOutId == OspDetailOutId).SingleOrDefault();
@@ -1472,7 +1494,7 @@ AND ST.BARCODE = @BARCODE");
 
             if (Cotangent == "1")
             {
-                var relate = OspDetailOutTRepository.Get().
+                var relate = OspDetailInTRepository.Get().
                     Join(relatedTRepository.GetAll(),
                     s => s.InventoryItemId,
                     c => c.InventoryItemId,
@@ -1482,7 +1504,7 @@ AND ST.BARCODE = @BARCODE");
                         b = c
 
                     }).Where(
-                    x => x.a.OspDetailOutId == OspDetailOutId &&
+                    x => x.a.OspDetailInId == OspDetailInId &&
                     x.b.InventoryItemId == x.a.InventoryItemId &&
                     x.b.ControlFlag != "D").SingleOrDefault();
 
@@ -1493,11 +1515,13 @@ AND ST.BARCODE = @BARCODE");
                 //尋找餘切
                 var Relateitem = itemsTRepository.Get(x => x.InventoryItemId == relate.b.RelatedItemId).SingleOrDefault();
 
+                var barcodesResult = GenerateBarcodes(header.OrganizationId, detailout.Subinventory, 1, UserName);
+                if (!barcodesResult.Success) throw new Exception(barcodesResult.Msg);
 
                 ospCotanget.OspDetailOutId = OspDetailOutId;
                 ospCotanget.OspHeaderId = detailout.OspHeaderId;
                 ospCotanget.StockId = null;
-                ospCotanget.Barcode = GenerateBarcodes(header.OrganizationId, detailout.Subinventory, 1, UserName).Data[0];
+                ospCotanget.Barcode = barcodesResult.Data[0];
                 ospCotanget.InventoryItemId = Relateitem.InventoryItemId;
                 ospCotanget.InventoryItemNumber = Relateitem.ItemNumber;
                 ospCotanget.BasicWeight = Relateitem.CatalogElemVal040;
@@ -1516,12 +1540,16 @@ AND ST.BARCODE = @BARCODE");
                 OspCotangenTRepository.Create(ospCotanget, true);
 
             }
+
+            var generateBarcodesResult = GenerateBarcodes(header.OrganizationId, detailout.Subinventory, int.Parse(Production_Roll_Ream_Qty), UserName);
+            if (!generateBarcodesResult.Success) throw new Exception(generateBarcodesResult.Msg);
+
             for (int i = 0; i < int.Parse(Production_Roll_Ream_Qty); i++)
             {
                 ospPickOut.OspDetailOutId = OspDetailOutId;
                 ospPickOut.OspHeaderId = detailout.OspHeaderId;
                 ospPickOut.StockId = null;
-                ospPickOut.Barcode = GenerateBarcodes(header.OrganizationId, detailout.Subinventory, int.Parse(Production_Roll_Ream_Qty), UserName).Data[i];
+                ospPickOut.Barcode = generateBarcodesResult.Data[i];
                 ospPickOut.InventoryItemId = detailout.InventoryItemId;
                 ospPickOut.InventoryItemNumber = detailout.InventoryItemNumber;
                 ospPickOut.BasicWeight = detailout.BasicWeight;
@@ -1534,8 +1562,10 @@ AND ST.BARCODE = @BARCODE");
                 ospPickOut.SecondaryQuantity = decimal.Parse(Production_Roll_Ream_Wt);
                 ospPickOut.SecondaryUom = "RE";
                 ospPickOut.Status = "待入庫";
-                ospPickOut.Cotangent = Cotangent == "1" ? "Y" : "N";
-                ospPickOut.OspCotangentId = ospCotanget.OspCotangentId;
+                ospPickOut.Cotangent = null;
+                ospPickOut.OspCotangentId = null;
+                //ospPickOut.Cotangent = Cotangent == "1" ? "Y" : "N";
+                //ospPickOut.OspCotangentId = ospCotanget.OspCotangentId;
                 ospPickOut.CreatedBy = UserId;
                 ospPickOut.CreatedUserName = UserName;
                 ospPickOut.CreationDate = DateTime.Now;
@@ -1579,12 +1609,15 @@ AND ST.BARCODE = @BARCODE");
                         return new ResultModel(false, "ID錯誤");
                     }
                     OSP_PICKED_OUT_T ospPickOut = new OSP_PICKED_OUT_T();
-                    OSP_COTANGENT_T ospCotanget = new OSP_COTANGENT_T();
+                    //OSP_COTANGENT_T ospCotanget = new OSP_COTANGENT_T();
+
+                    var barcodesResult = GenerateBarcodes(header.OrganizationId, detailout.Subinventory, 1, UserName);
+                    if (!barcodesResult.Success) throw new Exception(barcodesResult.Msg);
 
                     ospPickOut.OspDetailOutId = OspDetailOutId;
                     ospPickOut.OspHeaderId = detailout.OspHeaderId;
                     ospPickOut.StockId = null;
-                    ospPickOut.Barcode = GenerateBarcodes(header.OrganizationId, detailout.Subinventory, 1, UserName).Data[0];
+                    ospPickOut.Barcode = barcodesResult.Data[0];
                     ospPickOut.InventoryItemId = detailout.InventoryItemId;
                     ospPickOut.InventoryItemNumber = detailout.InventoryItemNumber;
                     ospPickOut.BasicWeight = detailout.BasicWeight;
@@ -1597,8 +1630,10 @@ AND ST.BARCODE = @BARCODE");
                     ospPickOut.SecondaryQuantity = 0;
                     ospPickOut.SecondaryUom = "";
                     ospPickOut.Status = "待入庫";
-                    ospPickOut.Cotangent = "N";
-                    ospPickOut.OspCotangentId = ospCotanget.OspCotangentId;
+                    //ospPickOut.Cotangent = "N";
+                    ospPickOut.Cotangent = null;
+                    ospPickOut.OspCotangentId = null;
+                    //ospPickOut.OspCotangentId = ospCotanget.OspCotangentId;
                     ospPickOut.CreatedBy = UserId;
                     ospPickOut.CreatedUserName = UserName;
                     ospPickOut.CreationDate = DateTime.Now;
@@ -1727,29 +1762,62 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
                             txn.Commit();
                             return new ResultModel(true, "");
                         }
+                        return new ResultModel(false, "找不到ID");
                     }
-                    if (ProductionDTEditor.Action == "remove")
+                    else if (ProductionDTEditor.Action == "remove")
                     {
                         var OspPickedOutId = ProductionDTEditor.ProductionList[0].OspPickedOutId;
                         var id = OspPickedOutTRepository.Get(r => r.OspPickedOutId == OspPickedOutId).SingleOrDefault();
                         if (id != null)
                         {
-                            var PickedOut = OspPickedOutTRepository.GetAll().ToList();
-                            if (PickedOut.Count == 1)
-                            {
-                                //var cotangent = OspCotangenTRepository.Get(x => x.OspCotangentId == id.OspCotangentId).SingleOrDefault();
-                                var cotangent = OspCotangenTRepository.Get(x => x.OspHeaderId == id.OspHeaderId).SingleOrDefault();
-                                if (cotangent != null)
-                                {
-                                    OspCotangenTRepository.Delete(cotangent, true);
-                                }
-                            }
                             OspPickedOutTRepository.Delete(id, true);
+                            //if (id.Cotangent == "N")
+                            //{
+                            //    //產出資料沒有餘切時，直接刪除產出資料
+                            //    OspPickedOutTRepository.Delete(id, true);
+                            //}
+                            //else
+                            //{
+                            //    var PickedOutList = OspPickedOutTRepository.GetAll().AsNoTracking().Where(x => x.OspCotangentId == id.OspCotangentId).ToList(); //取得同餘切id的pick產出資料
+                            //    if (PickedOutList == null)
+                            //    {
+                            //        throw new Exception("找不到產出資料");
+                            //    }
+                            //    else if (PickedOutList.Count == 1)
+                            //    {
+                            //        //當產出資料只有一個時，刪除對映的餘切
+                            //        var cotangent = OspCotangenTRepository.GetAll().FirstOrDefault(x => x.OspCotangentId == id.OspCotangentId);
+                            //        if (cotangent == null) throw new Exception("找不到餘切資料");
+                            //        OspCotangenTRepository.Delete(cotangent, true);
+                            //        OspPickedOutTRepository.Delete(id, true);
+                            //    }
+                            //    else
+                            //    {
+                            //        //當產出資料有多個時，保留餘切資料
+                            //        OspPickedOutTRepository.Delete(id, true);
+                            //    }
+                            //}
+
+                            //var PickedOut = OspPickedOutTRepository.GetAll().ToList();
+                            //if (PickedOut.Count == 1)
+                            //{
+                            //    //var cotangent = OspCotangenTRepository.Get(x => x.OspCotangentId == id.OspCotangentId).SingleOrDefault();
+                            //    var cotangent = OspCotangenTRepository.Get(x => x.OspHeaderId == id.OspHeaderId).SingleOrDefault();
+                            //    if (cotangent != null)
+                            //    {
+                            //        OspCotangenTRepository.Delete(cotangent, true);
+                            //    }
+                            //}
+                            //OspPickedOutTRepository.Delete(id, true);
                             txn.Commit();
                             return new ResultModel(true, "");
                         }
+                        return new ResultModel(false, "找不到ID");
                     }
-                    return new ResultModel(false, "找不到ID");
+                    else
+                    {
+                        return new ResultModel(false, "無法識別作業項目");
+                    }
                 }
                 catch (Exception e)
                 {
@@ -1786,8 +1854,9 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
                             txn.Commit();
                             return new ResultModel(true, "");
                         }
+                        return new ResultModel(false, "找不到ID");
                     }
-                    if (ProductionDTEditor.Action == "remove")
+                    else if (ProductionDTEditor.Action == "remove")
                     {
                         var OspPickedOutId = ProductionDTEditor.ProductionList[0].OspPickedOutId;
                         var id = OspPickedOutTRepository.Get(r => r.OspPickedOutId == OspPickedOutId).SingleOrDefault();
@@ -1807,8 +1876,12 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
                             txn.Commit();
                             return new ResultModel(true, "");
                         }
+                        return new ResultModel(false, "找不到ID");
                     }
-                    return new ResultModel(false, "找不到ID");
+                    else
+                    {
+                        return new ResultModel(false, "無法識別作業項目");
+                    }
                 }
                 catch (Exception e)
                 {
@@ -1846,24 +1919,34 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
                             txn.Commit();
                             return new ResultModel(true, "");
                         }
-
+                        return new ResultModel(false, "找不到ID");
                     }
-                    if (cotangentDTEditor.Action == "remove")
+                    else if (cotangentDTEditor.Action == "remove")
                     {
                         var OspCotangentId = cotangentDTEditor.CotangentList[0].OspCotangentId;
                         var id = OspCotangenTRepository.Get(r => r.OspCotangentId == OspCotangentId).SingleOrDefault();
                         if (id != null)
                         {
-                            var osppick = OspPickedOutTRepository.Get(x => x.OspCotangentId == id.OspCotangentId).FirstOrDefault();
-                            osppick.Cotangent = "N";
-                            osppick.OspCotangentId = null;
+                            //var osppickList = OspPickedOutTRepository.Get(x => x.OspCotangentId == id.OspCotangentId).ToList();
+                            //foreach (var osppick in osppickList)
+                            //{
+                            //    osppick.Cotangent = "N";
+                            //    osppick.OspCotangentId = null;
+                            //    osppick.LastUpdateBy = UserId;
+                            //    osppick.LastUpdateUserName = UserName;
+                            //    osppick.LastUpdateDate = DateTime.Now;
+                            //    OspPickedOutTRepository.Update(osppick, true);
+                            //}
                             OspCotangenTRepository.Delete(id, true);
                             txn.Commit();
                             return new ResultModel(true, "");
                         }
-
+                        return new ResultModel(false, "找不到ID");
                     }
-                    return new ResultModel(false, "找不到ID");
+                    else
+                    {
+                        return new ResultModel(false, "無法識別作業項目");
+                    }
                 }
                 catch (Exception e)
                 {
@@ -2437,7 +2520,7 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
                 locatorId = 0;
             }
             var locator = locatorTRepository.GetAll().AsNoTracking().FirstOrDefault(x => x.LocatorId == locatorId);
-            string locatorCode = null;
+            string locatorCode = "";
             if (locator != null) locatorCode = locator.LocatorSegments;
 
             var pheaderId = SqlParamHelper.GetBigInt("@headerId", headerId);
@@ -3264,7 +3347,7 @@ AND OPO.OSP_PICKED_OUT_ID = @OSP_PICKED_OUT_ID
                 using (var mesContext = new MesContext())
                 {
                     var DetailOut = OspDetailOutTRepository.Get(x => x.OspDetailOutId == OspDetailOutId).SingleOrDefault();
-                    return getLocatorListForUserId(UserId, DetailOut.Subinventory);
+                    return getLocatorListForUserId(UserId, DetailOut.Subinventory, DetailOut.LocatorId);
 
 //                    List<SelectListItem> locator = new List<SelectListItem>();
 //                    List<SqlParameter> sqlParameterList = new List<SqlParameter>();

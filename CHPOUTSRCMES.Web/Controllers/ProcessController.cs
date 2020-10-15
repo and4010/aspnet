@@ -165,7 +165,8 @@ namespace CHPOUTSRCMES.Web.Controllers
             string MachineNum, string DueDate, string CuttingDateFrom, string CuttingDateTo, string Subinventory)
         {
             ProcessViewModel viewModel = new ProcessViewModel();
-            List<CHP_PROCESS_T> model = viewModel.Search(Status, BatchNo, MachineNum, DueDate, CuttingDateFrom, CuttingDateTo, Subinventory);
+            var Userid = this.User.Identity.GetUserId();
+            List<CHP_PROCESS_T> model = viewModel.Search(Status, BatchNo, MachineNum, DueDate, CuttingDateFrom, CuttingDateTo, Subinventory, Userid);
             model = ProcessViewModel.ChpProcessModelDTOrder.Search(data, model);
             model = ProcessViewModel.ChpProcessModelDTOrder.Order(data.Order, model).ToList();
             var model1 = model.Skip(data.Start).Take(data.Length).ToList();
@@ -258,14 +259,14 @@ namespace CHPOUTSRCMES.Web.Controllers
         /// <param name="OspDetailOutId"></param>
         /// <returns></returns>
         [HttpPost]
-        public JsonResult CreateProduction(string Production_Roll_Ream_Qty, string Production_Roll_Ream_Wt, string Cotangent, long OspDetailOutId)
+        public JsonResult CreateProduction(string Production_Roll_Ream_Qty, string Production_Roll_Ream_Wt, string Cotangent, long OspDetailOutId, long OspDetailInId)
         {
             //取得使用者ID
             var Userid = this.User.Identity.GetUserId();
             //取得使用者帳號
             var UserName = this.User.Identity.GetUserName();
             ProcessViewModel procesViewModel = new ProcessViewModel();
-            var resultModel = procesViewModel.CreateProduction(Userid, UserName,Production_Roll_Ream_Qty, Production_Roll_Ream_Wt, Cotangent, OspDetailOutId);
+            var resultModel = procesViewModel.CreateProduction(Userid, UserName,Production_Roll_Ream_Qty, Production_Roll_Ream_Wt, Cotangent, OspDetailOutId, OspDetailInId);
             
             return Json(new { resultModel }, JsonRequestBehavior.AllowGet);
         }

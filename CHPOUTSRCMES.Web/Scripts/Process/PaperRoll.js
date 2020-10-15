@@ -295,7 +295,7 @@ function onclick() {
         var PaperRoll_Lot_Number = $('#PaperRoll_Lot_Number').val().trim();
         var PaperRollInvestDataTables = $('#PaperRollInvestDataTables').DataTable().data();
         var OspDetailOutId = $("#OspDetailOutId").val();
-
+        
 
         if (PaperRollInvestDataTables.length == 0) {
             swal.fire("請先新增投入條碼。");

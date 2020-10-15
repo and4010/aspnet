@@ -363,6 +363,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                     ).Where(x => x.d.ItemCategory == "捲筒" && x.e.CtrHeaderId == CtrHeaderId).ToList();
                     var header = ctrHeaderTRepository.Get(x => x.CtrHeaderId == CtrHeaderId).SingleOrDefault();
                     var barcode = GenerateBarcodes(header.OrganizationId, header.Subinventory, PaperRollModel.Count, userName);
+                    if (!barcode.Success) throw new Exception(barcode.Msg);
                     for (int j = 0; j < ctrDetail.Count; j++)
                     {
 
