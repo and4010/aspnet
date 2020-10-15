@@ -764,7 +764,7 @@ H.DUE_DATE AS DueDate,
 H.CUTTING_DATE_FROM AS CuttingDateFrom,
 H.CUTTING_DATE_TO AS CuttingDateTo,
 H.MACHINE_CODE AS MachineNum,
-DI.CUSTOMER_NAME AS CustomerName,
+DO.CUSTOMER_NAME AS CustomerName,
 ISNULL(DI.ORDER_NUMBER, 0) AS OrderNumber,
 ISNULL(DI.ORDER_LINE_NUMBER, 0) AS OrderLineNumber,
 DI.BASIC_WEIGHT AS BasicWeight,
@@ -876,7 +876,7 @@ H.DUE_DATE AS DueDate,
 H.CUTTING_DATE_FROM AS CuttingDateFrom,
 H.CUTTING_DATE_TO AS CuttingDateTo,
 H.MACHINE_CODE AS MachineNum,
-DI.CUSTOMER_NAME AS CustomerName,
+DO.CUSTOMER_NAME AS CustomerName,
 ISNULL(DI.ORDER_NUMBER, 0) AS OrderNumber,
 ISNULL(DI.ORDER_LINE_NUMBER, 0) AS OrderLineNumber,
 DI.BASIC_WEIGHT AS BasicWeight,
@@ -1598,6 +1598,12 @@ AND ST.BARCODE = @BARCODE");
             {
                 return new ResultModel(false, "捲號不得空白");
             }
+
+            var tempDetail = OspPickedOutTRepository.GetAll().FirstOrDefault(x => x.LotNumber == PaperRoll_Lot_Number);
+            if (tempDetail != null) return new ResultModel(false, "捲號不可重複");
+            var stock = stockTRepository.GetAll().FirstOrDefault(x => x.LotNumber == PaperRoll_Lot_Number);
+            if (stock != null) return new ResultModel(false, "此捲號" + PaperRoll_Lot_Number + "已入庫");
+
             using (var txn = this.Context.Database.BeginTransaction())
             {
                 try
