@@ -273,7 +273,10 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                 }
                 using var sqlConn = new SqlConnection(MesConnStr);
                 using var ctrStUow = new CtrStUOW(sqlConn);
-                var list = await ctrStUow.GetHeaderListForUpload();
+                var task = ctrStUow.GetHeaderListForUpload();
+                task.Wait();
+                var list = task.Result;
+
                 if (list == null || list.Count() == 0)
                 {
                     LogInfo($"[{tasker.Name}]-{tasker.Unit}-ExportCtrStRv-無可轉出資料");
@@ -285,7 +288,9 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                     using var transaction = sqlConn.BeginTransaction();
                     try
                     {
-                        var model = await ctrStUow.ContainerStUpload(list[i].CTR_HEADER_ID, transaction);
+                        var taskUpload = ctrStUow.ContainerStUpload(list[i].CTR_HEADER_ID, transaction);
+                        taskUpload.Wait();
+                        var model = taskUpload.Result;
                         LogInfo($"[{tasker.Name}]-{tasker.Unit}-ExportCtrStRv (CTR_HEADER_ID:{list[i].CTR_HEADER_ID})-{model}");
                         
                         if (!model.Success)
@@ -300,6 +305,7 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                         LogError($"[{tasker.Name}]-{tasker.Unit}-ExportCtrStRv-錯誤-(CTR_HEADER_ID:{list[i].CTR_HEADER_ID})-{ex.Message}-{ex.StackTrace}");
                         transaction.Rollback();
                     }
+                    Thread.Sleep(100);
                 }
             }
             catch (OperationCanceledException)

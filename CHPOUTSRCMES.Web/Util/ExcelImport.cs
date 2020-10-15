@@ -229,10 +229,10 @@ namespace CHPOUTSRCMES.Web.Util
 
             try
             {
-                ICell Id_cell = null;
-                ICell Subinventory_cell = null;
-                ICell Locator_cell = null;
-                ICell Barocde_cell = null;
+                ICell StockDateCell = null;
+                ICell SubinventoryDataCell = null;
+                ICell LocatorDataCell = null;
+                ICell ContainerDataCell = null;
                 ICell ItemNo_cell = null;
                 ICell PaperType_cell = null;
                 ICell BaseWeight_cell = null;
@@ -246,6 +246,10 @@ namespace CHPOUTSRCMES.Web.Util
                 ICell Status_cell = null;
                 ICell Remark_cell = null;
 
+                StockDateCell = ExcelUtil.FindCell("入庫日期", sheet);
+                SubinventoryDataCell = ExcelUtil.FindCell("倉庫", sheet);
+                LocatorDataCell = ExcelUtil.FindCell("儲位", sheet);
+                ContainerDataCell = ExcelUtil.FindCell("櫃號", sheet);
 
                 ItemNo_cell = ExcelUtil.FindCell("料號", sheet);
                 if (ItemNo_cell == null)
@@ -268,24 +272,30 @@ namespace CHPOUTSRCMES.Web.Util
                 Specification_cell = ExcelUtil.FindCell("規格", sheet);
                 if (Specification_cell == null)
                 {
+                    Specification_cell = ExcelUtil.FindCell("寬幅", sheet);
+                }
+
+                if (Specification_cell == null)
+                {
                     throw new Exception("找不到規格欄位");
                 }
 
                 TheoreticalWeight_cell = ExcelUtil.FindCell("重量", sheet);
+
+                if(TheoreticalWeight_cell == null)
+                {
+                    TheoreticalWeight_cell = ExcelUtil.FindCell("理論重", sheet);
+                }
+
                 if (TheoreticalWeight_cell == null)
                 {
                     throw new Exception("找不到重量欄位");
                 }
 
-
-
                 PrimaryUom_cell = ExcelUtil.FindCell("單位", sheet);
-                if (PrimaryUom_cell == null)
-                {
-                    throw new Exception("找不到單位欄位");
-                }
 
-                LotNumber_cell = ExcelUtil.FindCell("捲號", sheet);
+
+                LotNumber_cell = ExcelUtil.FindCell("捲號", sheet, true);
                 if (LotNumber_cell == null)
                 {
                     throw new Exception("找不到捲號欄位");
@@ -308,16 +318,33 @@ namespace CHPOUTSRCMES.Web.Util
                         model.PAPERTYPE = ExcelUtil.GetStringCellValue(i, PaperType_cell.ColumnIndex, sheet).Trim();
                         model.Base_Weight = ExcelUtil.GetStringCellValue(i, BaseWeight_cell.ColumnIndex, sheet).Trim();
                         model.Specification = ExcelUtil.GetStringCellValue(i, Specification_cell.ColumnIndex, sheet).Trim();
+
+
+
                         model.PRIMARY_QUANTITY = ExcelUtil.GetDecimalCellValue(i, TheoreticalWeight_cell.ColumnIndex, sheet);
-                        model.PRIMARY_UOM = ExcelUtil.GetStringCellValue(i, PrimaryUom_cell.ColumnIndex, sheet).Trim();
+                        if (PrimaryUom_cell != null)
+                        {
+                            model.PRIMARY_UOM = ExcelUtil.GetStringCellValue(i, PrimaryUom_cell.ColumnIndex, sheet).Trim();
+                        }
+                        else
+                        {
+                            model.PRIMARY_UOM = "KG";
+                        }
+
+                        if (StockDateCell != null)
+                            model.CREATION_DATE = ExcelUtil.GetDateTimeCellValue(i, StockDateCell.ColumnIndex, sheet);
+
                         model.LOT_NUMBER = ExcelUtil.GetStringCellValue(i, LotNumber_cell.ColumnIndex, sheet).Trim();
                         //model.Status = "待入庫";
                         model.Subinventory = ddlInSubinventory;
                         model.Locator = ddlInLocator == "請選擇" ? "" : ddlInLocator;
                         //model.Remark = ExcelUtil.GetCellString(i, Remark_cell.ColumnIndex, sheet).Trim();
                         //model.Lo = RollHeader[j].Locator;
-                        stockTransferBarcodeDTs.Add(model);
 
+                        if (model.PRIMARY_QUANTITY > 0 && !string.IsNullOrEmpty(model.ITEM_NUMBER))
+                        {
+                            stockTransferBarcodeDTs.Add(model);
+                        }
                     }
                     catch (Exception e)
                     {
@@ -379,6 +406,9 @@ namespace CHPOUTSRCMES.Web.Util
 
             try
             {
+                ICell StockDateCell = null;
+                ICell SubinventoryDataCell = null;
+                ICell LocatorDataCell = null;
                 ICell Id_cell = null;
                 ICell Subinventory_cell = null;
                 ICell Locator_cell = null;
@@ -391,6 +421,11 @@ namespace CHPOUTSRCMES.Web.Util
                 ICell Qty_cell = null;
                 ICell Status_cell = null;
                 ICell Remark_cell = null;
+
+
+                StockDateCell = ExcelUtil.FindCell("入庫日期", sheet);
+                SubinventoryDataCell = ExcelUtil.FindCell("倉庫", sheet);
+                LocatorDataCell = ExcelUtil.FindCell("儲位", sheet);
 
                 ItemNo_cell = ExcelUtil.FindCell("料號", sheet);
                 if (ItemNo_cell == null)
@@ -448,10 +483,17 @@ namespace CHPOUTSRCMES.Web.Util
                         model.ROLL_REAM_WT = ExcelUtil.GetDecimalCellValue(i, EveyReam_cell.ColumnIndex, sheet);
                         model.ROLL_REAM_QTY = ExcelUtil.GetDecimalCellValue(i, ReamWeight_cell.ColumnIndex, sheet);
 
+                        if(StockDateCell != null)
+                            model.CREATION_DATE = ExcelUtil.GetDateTimeCellValue(i, StockDateCell.ColumnIndex, sheet);
+
                         //model.Status = "待入庫";
                         model.IN_SUBINVENTORY_CODE = ddlInSubinventory == "請選擇" ? "" : ddlInSubinventory;
                         model.IN_LOCATOR_ID = ddlInLocator == "請選擇" ? "" : ddlInLocator;
-                        stockTransferDTs.Add(model);
+
+                        if (model.REQUESTED_QUANTITY > 0 && !string.IsNullOrEmpty(model.ITEM_NUMBER))
+                        {
+                            stockTransferDTs.Add(model);
+                        }
 
                     }
                     catch (Exception e)

@@ -52,7 +52,10 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                 using var sqlConn = new SqlConnection(MesConnStr);
                 using var trfStUow = new TrfStUOW(sqlConn);
                 using var masterUow = new MasterUOW(oraConn);
-                var list = await trfStUow.GetHeaderListForUpload();
+                var task = trfStUow.GetHeaderListForUpload();
+                task.Wait();
+                var list = task.Result;
+
                 if (list == null || list.Count() == 0)
                 {
                     LogInfo($"[{tasker.Name}]-{tasker.Unit}-ExportTrfStRv-無可轉出資料");
@@ -64,7 +67,8 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                     using var transaction = sqlConn.BeginTransaction();
                     try
                     {
-                        var model = await trfStUow.TransferStUpload(list[i], masterUow, transaction: transaction);
+                        var model = trfStUow.TransferStUpload(list[i], masterUow, transaction: transaction);
+
                         LogInfo($"[{tasker.Name}]-{tasker.Unit}-ExportTrfStRv (TRF_HEADER_ID:{list[i]})-{model}");
                         
                         if (!model.Success)
@@ -79,6 +83,7 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                         LogError($"[{tasker.Name}]-{tasker.Unit}-ExportTrfStRv-錯誤-(TRF_HEADER_ID:{list[i]})-{ex.Message}-{ex.StackTrace}");
                         transaction.Rollback();
                     }
+                    Thread.Sleep(100);
                 }
             }
             catch (OperationCanceledException)

@@ -56,7 +56,7 @@ namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
             return (await TrfHeaderRepository.GetUploadList(transaction));
         }
 
-        public async Task<ResultModel> TransferStUpload(long trfHeaderId, MasterUOW masterUOW, string userId = "SYS", IDbTransaction transaction = null)
+        public ResultModel TransferStUpload(long trfHeaderId, MasterUOW masterUOW, string userId = "SYS", IDbTransaction transaction = null)
         {
             var resultModel = new ResultModel();
 
@@ -84,7 +84,9 @@ namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
                 string processCode = p.Get<string>("@processCode");
                 string serverCode = p.Get<string>("@serverCode");
                 string batchId = p.Get<string>("@batchId");
-                var list = await SubTransferStRepository.GetListBy(processCode, serverCode, batchId, transaction);
+                var task = SubTransferStRepository.GetListBy(processCode, serverCode, batchId, transaction);
+                task.Wait();
+                var list = task.Result;
                 if(list == null || list.Count == 0)
                 {
                     return new ResultModel(false, "TransferStUpload 無資料可上傳");
@@ -95,7 +97,9 @@ namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
                     var m = list[i];
                     if (m.SECONDARY_QUANTITY > 0 && !string.IsNullOrEmpty(m.SECONDARY_UOM_CODE))
                     {
-                        var primaryQuantity = await masterUOW.UomConvertAsync(m.INVENTORY_ITEM_ID, m.SECONDARY_QUANTITY, m.SECONDARY_UOM_CODE, m.PRIMARY_UOM);
+                        var taskConvert = masterUOW.UomConvertAsync(m.INVENTORY_ITEM_ID, m.SECONDARY_QUANTITY, m.SECONDARY_UOM_CODE, m.PRIMARY_UOM);
+                        taskConvert.Wait();
+                        var primaryQuantity = taskConvert.Result;
                         if (!primaryQuantity.HasValue)
                         {
                             throw new Exception($"單位換算失敗!! ITEM ID :{m.INVENTORY_ITEM_ID} AMOUNT:{m.PRIMARY_UOM} UOM:{m.SECONDARY_UOM_CODE} TO:{m.PRIMARY_UOM}");
@@ -111,12 +115,12 @@ namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
                         m.TRANSACTION_UOM = m.PRIMARY_UOM;
                         m.ROLL_QUANTITY = Math.Abs(m.PRIMARY_QUANTITY).ToString("0.#####");
                     }
-                    SubTransferStRepository.Update(m, transaction);
+                    SubTransferStRepository.Update(m, transaction).Wait();
                 }
 
                 //回寫 CONTROL_ST
                 var paramSoa = new DynamicParameters();
-                paramSoa.Add(name: "@trfRsnHeaderId", value: trfHeaderId, dbType: DbType.Int64, direction: ParameterDirection.Input);
+                paramSoa.Add(name: "@trfHeaderId", value: trfHeaderId, dbType: DbType.Int64, direction: ParameterDirection.Input);
                 paramSoa.Add(name: "@processCode", value: processCode, dbType: DbType.String, direction: ParameterDirection.Input, size: 20);
                 paramSoa.Add(name: "@serverCode", value: serverCode, dbType: DbType.String, direction: ParameterDirection.Input, size: 20);
                 paramSoa.Add(name: "@batchId", value: batchId, dbType: DbType.String, direction: ParameterDirection.Input, size: 20);

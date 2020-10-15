@@ -6,12 +6,12 @@ namespace CHPOUTSRCMES.Web.Util
     public class ExcelUtil
     {
 
-        public static ICell FindCell(string contain, ISheet sheet)
+        public static ICell FindCell(string contain, ISheet sheet, bool partialContain = false)
         {
-            return FindCell(0, 0, contain, sheet);
+            return FindCell(0, 0, contain, sheet, partialContain);
         }
 
-        public static ICell FindCell(int start_y, int start_x, string contain, ISheet sheet)
+        public static ICell FindCell(int start_y, int start_x, string contain, ISheet sheet, bool partialContain)
         {
             try
             {
@@ -21,7 +21,11 @@ namespace CHPOUTSRCMES.Web.Util
                     IRow row = sheet.GetRow(y_pos);
                     for (int x_pos = start_x; x_pos < 100; x_pos++)
                     {
-                        if (row.GetCell(x_pos) != null && string.Compare(GetStringCellValue(row.GetCell(x_pos)),contain) == 0)
+                        if (!partialContain && row.GetCell(x_pos) != null && string.Compare(GetStringCellValue(row.GetCell(x_pos)),contain) == 0)
+                        {
+                            return row.GetCell(x_pos);
+                        } 
+                        else if (partialContain && row.GetCell(x_pos) != null && GetStringCellValue(row.GetCell(x_pos)).Contains(contain))
                         {
                             return row.GetCell(x_pos);
                         }
