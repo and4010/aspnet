@@ -43,7 +43,7 @@
             <div class="row row-std col-md-12 form-inline" id="SHIPMENT_NUMBER_AREA">
                 <div class="col-md-8">
                     @* <span id="TransactionType" class="input-group-addon" style="width: 53px;">編號</span>
-                        <input class="form-control" type="text" id="AutoCompleteShipmentNumber" placeholder="請輸入編號" />*@
+        <input class="form-control" type="text" id="AutoCompleteShipmentNumber" placeholder="請輸入編號" />*@
                     <label id="TransactionType" class="input-lg">出貨編號</label>
                     @Html.DropDownListFor(model => model.SelectedShipmentNumber, Model.ShipmentNumberItems, new { @class = "form-control", id = "ddlShipmentNumber", autocomplete = "off" })
                     <span id="NumberStatus" style="display: none;"></span>

@@ -1954,11 +1954,14 @@ AND (lt.LOCATOR_DISABLE_DATE >= GETDATE() OR lt.LOCATOR_DISABLE_DATE is null)
                 var trfLocator = locatorTRepository.GetAll().AsNoTracking().FirstOrDefault(x => x.LocatorId == pick.LocatorId);
                 if (trfLocator == null) throw new Exception("找不到目標儲位資料");
 
+                var ctrDetail = ctrDetailTRepository.GetAll().AsNoTracking().FirstOrDefault(x => x.CtrDetailId == pick.CtrDetailId);
+                if (ctrDetail == null) throw new Exception("找不到明細資料");
+
                 var stock = stockTRepository.GetAll().FirstOrDefault(x => x.StockId == pick.StockId);
                 if (stock == null) throw new Exception("找不到庫存資料");
 
-                var locator = locatorTRepository.GetAll().AsNoTracking().FirstOrDefault(x => x.LocatorId == stock.LocatorId);
-                if (locator == null) throw new Exception("找不到儲位資料");
+                var locator = locatorTRepository.GetAll().AsNoTracking().FirstOrDefault(x => x.LocatorId == ctrDetail.LocatorId);
+                if (locator == null) throw new Exception("找不到原本儲位資料");
 
                 var organization = GetOrganization(stock.OrganizationId);
                 if (organization == null) throw new Exception("找不到組織資料");
@@ -1992,8 +1995,8 @@ AND (lt.LOCATOR_DISABLE_DATE >= GETDATE() OR lt.LOCATOR_DISABLE_DATE is null)
                     OrganizationCode = stock.OrganizationCode,
                     ShipmentNumber = GetShipmentNumberGuid(),
                     SubinventoryCode = stock.SubinventoryCode,
-                    LocatorId = stock.LocatorId,
-                    LocatorCode = stock.LocatorSegments,
+                    LocatorId = locator.LocatorId,
+                    LocatorCode = locator.LocatorSegments,
                     Segment3 = locator.Segment3,
                     TransactionDate = now,
                     TransactionTypeId = transactionTypeId,

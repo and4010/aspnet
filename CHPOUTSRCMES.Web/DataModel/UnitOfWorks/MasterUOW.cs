@@ -1585,8 +1585,10 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
  [CREATED_BY] as Create_by,
  [CREATION_DATE] as Create_date,
  [LAST_UPDATE_BY] as Last_update_by,
- [LAST_UPDATE_DATE] as Last_Create_date
- from STK_REASON_T");
+ [LAST_UPDATE_DATE] as Last_Create_date,
+ [UserName]
+ from STK_REASON_T r
+ JOIN USER_T u on r.[CREATED_BY] = u.Id");
                     return mesContext.Database.SqlQuery<ReasonModel>(query.ToString()).ToList();
                 }
             }

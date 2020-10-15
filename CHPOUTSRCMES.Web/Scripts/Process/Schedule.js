@@ -360,7 +360,7 @@ function BtnClick() {
         var InvestDataTables = $('#InvestDataTables').DataTable().data();
         var OspDetailOutId = $("#OspDetailOutId").val();
         var OspDetailInId = $("#OspDetailInId").val();
-
+        var OspHeaderId = $("#OspHeaderId").val()
 
         if (InvestDataTables.length == 0) {
             swal.fire("請先新增投入條碼。");
@@ -382,7 +382,7 @@ function BtnClick() {
                 return;
             }
         }
-        CreateProduct(Production_Roll_Ream_Qty, Production_Roll_Ream_Wt, Cotangent, OspDetailOutId, OspDetailInId);
+        CreateProduct(Production_Roll_Ream_Qty, Production_Roll_Ream_Wt, Cotangent, OspDetailOutId, OspDetailInId, OspHeaderId);
     });
     //產出入庫
     $('#BtnProductionSave').click(function () {
@@ -698,6 +698,7 @@ function InvestSaveBarcode(Barcode, Remnant, Remaining_Weight, OspDetailInId) {
         success: function (data) {
             if (data.resultModel.Success) {
                 LoadInvestDataTable();
+                ClearRateLoss();
             } else {
                 swal.fire(data.resultModel.Msg);
             }
@@ -858,7 +859,7 @@ function LoadProductionDataTable() {
 }
 
 //產生明細
-function CreateProduct(Production_Roll_Ream_Qty, Production_Roll_Ream_Wt, Cotangent, OspDetailOutId, OspDetailInId) {
+function CreateProduct(Production_Roll_Ream_Qty, Production_Roll_Ream_Wt, Cotangent, OspDetailOutId, OspDetailInId, OspHeaderId) {
 
     $.ajax({
         "url": "/Process/CreateProduction",
@@ -869,13 +870,15 @@ function CreateProduct(Production_Roll_Ream_Qty, Production_Roll_Ream_Wt, Cotang
             Production_Roll_Ream_Wt: Production_Roll_Ream_Wt,
             Cotangent: Cotangent,
             OspDetailOutId: OspDetailOutId,
-            OspDetailInId: OspDetailInId
+            OspDetailInId: OspDetailInId,
+            OspHeaderId: OspHeaderId
         },
         success: function (data) {
             if (data != null) {
                 if (data.resultModel.Success) {
                     LoadProductionDataTable();
                     CotangentDataTables();
+                    ClearRateLoss();
                 } else {
                     swal.fire(data.resultModel.Msg);
                 }
@@ -1199,6 +1202,11 @@ function DsiplayShow(Status) {
     $('#BtnSave').hide();
 }
 
+function ClearRateLoss() {
+    $('#Production_Loss').html("");
+    $('#Rate').html("");
+}
+
 //驗證disable投入
 function DisplayInvestEnable(boolean) {
     $('#Invest_Barcode').attr('disabled', boolean);
@@ -1226,8 +1234,7 @@ function DisplayProductionEnable(boolean) {
 
 
 function DeleteRateLoss() {
-    $('#Production_Loss').html("");
-    $('#Rate').html("");
+    ClearRateLoss();
     var OspHeaderId = $('#OspHeaderId').val();
     $.ajax({
         url: '/Process/DeleteRate',
