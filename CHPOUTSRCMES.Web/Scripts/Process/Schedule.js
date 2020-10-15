@@ -29,38 +29,51 @@ $(document).ready(function () {
     CotangentDataTables();
 
     var Status = $('#Status').val();
-    if (Status == CompletedBatch || Status == PendingBatch) {
-        //完工紀錄使用
-        if (Status == CompletedBatch) {
-            DsiplayHide();
-        }
+    if (Status == CompletedBatch) {
         DisplayInvestEnable(true);
         DisplayProductionEnable(true);
-        ///隱藏按鈕
+        $('#BtnCheckBatchNo').hide()
+        $('#BtnSave').hide();
+        $('#BtnEdit').show()
+        $('#BtnApprove').show()
+        $('#OutputBathNoArea').hide();
+        //$('#BtnCheckProductionBatchNo').hide()
+        //$('#ProductForm').hide();
         InvestDataTables.column(11).visible(false);
         ProductionTables.column(9).visible(false);
         CotangentDataTable.column(9).visible(false);
-        if (Status == PendingBatch) {
-            DsiplayShow(Status);
-        }
     }
-    else if (Status == CloseBatch || Status == Modified) {
-        //DsiplayHide();
+    else if (Status == PendingBatch) {
         DisplayInvestEnable(true);
         DisplayProductionEnable(true);
-        ///隱藏按鈕
+        $('#BtnCheckBatchNo').show();
+        $('#BtnEdit').hide();
+        $('#BtnApprove').show();
+        $('#BtnSave').hide();
+    }
+    else if (Status == Modified) {
+        DisplayInvestEnable(true);
+        DisplayProductionEnable(true);
         InvestDataTables.column(11).visible(false);
         ProductionTables.column(9).visible(false);
         CotangentDataTable.column(9).visible(false);
-        $('#BtnEdit').attr('disabled', true);
-        $('#BtnCheckProductionBatchNo').attr('disabled', true);
-        $('#InputBatchNo').attr('disabled', true);
-        $('#OutBatchNo').attr('disabled', true);        
 
+        $('#BtnSave').hide();
         $('#InputBathNoArea').hide();
         $('#OutputBathNoArea').hide();
+    }
+    else if (Status == CloseBatch) {
+        DisplayInvestEnable(true);
+        DisplayProductionEnable(true);
+        InvestDataTables.column(11).visible(false);
+        ProductionTables.column(9).visible(false);
+        CotangentDataTable.column(9).visible(false);
 
-    } else {
+        $('#BtnSave').hide();
+        $('#InputBathNoArea').hide();
+        $('#OutputBathNoArea').hide();
+    }
+    else {
         DisplayInvestEnable(true);
         DisplayProductionEnable(true);
         $('#BtnCheckBatchNo').show()
