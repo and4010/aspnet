@@ -94,6 +94,7 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                     {
                         st.STATUS_CODE = "E";
                         st.ERROR_MSG = ex.Message;
+                        st.SOA_PULLING_FLAG = "OutAck-W";
                         ospStUow.UpdateStatus(st).Wait();
                         LogError($"[{tasker.Name}]-{tasker.Unit}-ImportOspSt-錯誤-({st.PROCESS_CODE}, {st.SERVER_CODE}, {st.BATCH_ID})-{ex.Message}-{ex.StackTrace}");
                     }

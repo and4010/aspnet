@@ -51,7 +51,7 @@ ORDER BY A.PROCESS_CODE, A.SERVER_CODE, A.BATCH_ID", new { ProcessCode = process
 
                 int count = await Connection.ExecuteAsync(
 $@"UPDATE XXIF_CHP_CONTROL_ST SET 
-    STATUS_CODE=@statusCode, ERROR_MSG=@errorMsg
+    STATUS_CODE=@statusCode, ERROR_MSG=@errorMsg, SOA_PULLING_FLAG=@soaPullingFlag
     WHERE PROCESS_CODE = @processCode 
     AND SERVER_CODE = @serverCode 
     AND BATCH_ID = @batchId", new
@@ -60,7 +60,8 @@ $@"UPDATE XXIF_CHP_CONTROL_ST SET
     serverCode = st.SERVER_CODE,
     batchId = st.BATCH_ID,
     statusCode = st.STATUS_CODE,
-    errorMsg = st.ERROR_MSG
+    errorMsg = st.ERROR_MSG,
+    soaPullingFlag = st.SOA_PULLING_FLAG
 }, transaction: transaction);
                 resultModel.Code = 0;
                 resultModel.Success = true;

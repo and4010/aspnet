@@ -257,7 +257,7 @@ namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
                     list[i].ERROR_MSG = result.Msg;
                     rollback = true;
                 }
-
+                
             }
 
             if (rollback)
@@ -272,10 +272,10 @@ namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
 
             for (int i = 0; i < list.Count; i++)
             {
-                OspBatchStRepository.UpdateStatus(list[i]);
+                OspBatchStRepository.UpdateStatus(list[i]).Wait();
+                System.Threading.Thread.Sleep(100);
             }
-
-
+            
             return OspBatchStSummarize(controlStage, transaction);
 
         }

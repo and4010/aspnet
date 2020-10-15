@@ -29,11 +29,6 @@ namespace CHPOUTSRCMES.Web
             {
                 //readFromXls(mesContext);
             }
-            
-            logger.Info("Info");
-            logger.Warn("Warn");
-            logger.Debug("Debug");
-            logger.Error("Error");
         }
 
         protected void Application_Error()

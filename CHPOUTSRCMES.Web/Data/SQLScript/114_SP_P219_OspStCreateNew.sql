@@ -4,7 +4,6 @@
 -- Description:	SOA OSP_BATCH_ST 資料接收
 -- =============================================
 CREATE PROCEDURE [dbo].[SP_P219_OspStCreateNew]
-
 	@processCode NVARCHAR(20),
 	@serverCode NVARCHAR(20),
 	@batchId NVARCHAR(20),
@@ -81,9 +80,9 @@ BEGIN
 		FROM XXIF_CHP_P219_OSP_BATCH_ST c
 		JOIN XXIF_CHP_CONTROL_ST o ON o.PROCESS_CODE = c.PROCESS_CODE AND o.SERVER_CODE = c.SERVER_CODE AND o.BATCH_ID = c.BATCH_ID
 		JOIN ITEMS_T i ON i.INVENTORY_ITEM_ID = c.INVENTORY_ITEM_ID
-		WHERE o.PROCESS_CODE = @processCode AND o.SERVER_CODE = @serverCode AND o.BATCH_ID = @batchId
+		WHERE o.PROCESS_CODE = @processCode AND o.SERVER_CODE = @serverCode AND o.BATCH_ID = @batchId AND c.PE_BATCH_ID = @peBatchId
 
-		IF (@@ROWCOUNT <= 0 AND @@ERROR <> 0)
+		IF (@@ROWCOUNT <= 0 OR @@ERROR <> 0)
 		BEGIN
 			SET @message = 'PROCESS_CODE:' + @processCode + ' SERVER_CODE:' + @serverCode + ' BATCH_ID:' + @batchId + ' 寫入加工主檔失敗'
 			RAISERROR(@message, 16, @success)
@@ -118,22 +117,30 @@ BEGIN
 		WHERE o.OSP_ORG_ID IN (SELECT OSP_ORG_ID FROM @table)
 		GROUP BY PROCESS_CODE, SERVER_CODE, BATCH_ID, PE_BATCH_ID, BATCH_NO
 
-		IF (@@ROWCOUNT <= 0 AND @@ERROR <> 0)
+		IF (@@ROWCOUNT <= 0 OR @@ERROR <> 0)
 		BEGIN
 			SET @message = 'PROCESS_CODE:' + @processCode + ' SERVER_CODE:' + @serverCode + ' BATCH_ID:' + @batchId + ' 寫入加工檔頭失敗'
 			RAISERROR(@message, 16, @success)
 		END
-			
+		
 		--代紙單 工號搜尋
-		UPDATE OSP_HEADER_T SET SRC_OSP_HEADER_ID = (SELECT TOP 1 OSP_HEADER_ID FROM OSP_HEADER_T AS SRC_OSP_HEADER_ID WHERE BATCH_NO = h.SRC_BATCH_NO)
-		FROM OSP_HEADER_T h 
-		JOIN @headerTable t ON t.OSP_HEADER_ID = h.OSP_HEADER_ID
-		WHERE h.SRC_BATCH_NO IS NOT NULL
-		IF (@@ERROR <> 0)
+		IF EXISTS (SELECT TOP 1 * FROM OSP_HEADER_T h 
+			JOIN @headerTable t ON t.OSP_HEADER_ID = h.OSP_HEADER_ID
+			WHERE h.SRC_BATCH_NO IS NOT NULL)
 		BEGIN
-			SET @message = 'PROCESS_CODE:' + @processCode + ' SERVER_CODE:' + @serverCode + ' BATCH_ID:' + @batchId + ' 寫入代紙工單檔頭失敗'
-			RAISERROR(@message, 16, @success)
+			UPDATE OSP_HEADER_T SET SRC_OSP_HEADER_ID = (SELECT TOP 1 OSP_HEADER_ID FROM OSP_HEADER_T AS SRC_OSP_HEADER_ID WHERE BATCH_NO = h.SRC_BATCH_NO)
+			FROM OSP_HEADER_T h 
+			JOIN @headerTable t ON t.OSP_HEADER_ID = h.OSP_HEADER_ID
+			WHERE h.SRC_BATCH_NO IS NOT NULL
+			IF (@@ROWCOUNT <= 0 OR @@ERROR <> 0)
+			BEGIN
+				SET @message = 'PROCESS_CODE:' + @processCode + ' SERVER_CODE:' + @serverCode + ' BATCH_ID:' + @batchId + ' 寫入代紙工單檔頭失敗'
+				RAISERROR(@message, 16, @success)
+			END
 		END
+
+		
+
 
 		--組成料號明細
 		SET @success = @success + 1
@@ -176,7 +183,7 @@ BEGIN
 		LEFT JOIN ITEMS_T i ON i.INVENTORY_ITEM_ID = o.INVENTORY_ITEM_ID
 		WHERE o.OSP_ORG_ID IN (SELECT OSP_ORG_ID FROM @table) AND o.LINE_TYPE = 'I'
 
-		IF (@@ROWCOUNT <= 0 AND @@ERROR <> 0)
+		IF (@@ROWCOUNT <= 0 OR @@ERROR <> 0)
 		BEGIN
 			SET @message = 'PROCESS_CODE:' + @processCode + ' SERVER_CODE:' + @serverCode + ' BATCH_ID:' + @batchId + ' 寫入加工明細失敗'
 			RAISERROR(@message, 16, @success)
@@ -223,15 +230,9 @@ BEGIN
 		LEFT JOIN ITEMS_T i ON i.INVENTORY_ITEM_ID = o.INVENTORY_ITEM_ID
 		WHERE o.OSP_ORG_ID IN (SELECT OSP_ORG_ID FROM @table) AND o.LINE_TYPE = 'P'
 
-		IF (@@ROWCOUNT <= 0 AND @@ERROR <> 0)
+		IF (@@ROWCOUNT <= 0 OR @@ERROR <> 0)
 		BEGIN
 			SET @message = 'PROCESS_CODE:' + @processCode + ' SERVER_CODE:' + @serverCode + ' BATCH_ID:' + @batchId + ' 寫入加工明細失敗'
-			RAISERROR(@message, 16, @success)
-		END
-
-		IF(@@ROWCOUNT <= 0 AND @@ERROR <> 0)
-		BEGIN
-			SET @message = @message + ' 更新 XXIF_CHP_P219_OSP_BATCH_ST 錯誤'
 			RAISERROR(@message, 16, @success)
 		END
 		

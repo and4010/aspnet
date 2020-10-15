@@ -66,6 +66,12 @@ BEGIN
 			WHERE B.PROCESS_CODE = @processCode AND B.SERVER_CODE = @serverCode AND B.BATCH_ID = @batchId
 		END
 
+		IF(@@ROWCOUNT <= 0 OR @@ERROR <> 0)
+		BEGIN
+			SET @message = @message + ' 錯誤!!'
+			RAISERROR(@message, 16, @success)
+		END
+
 		SET @code = 0
 		SET @message = ''
 		
