@@ -4,13 +4,13 @@
 @if (Model.CHP_PROCESS_T.Status == "已完工" || Model.CHP_PROCESS_T.Status == "待核准")
 {
     ViewBag.EnableReturnButton = "true";
-    ViewBag.Title = "加工-紙捲-完工紀錄";
+    ViewBag.Title = "代紙-紙捲-完工紀錄";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 else
 {
     ViewBag.EnableReturnButton = "true";
-    ViewBag.Title = "加工-紙捲-完工";
+    ViewBag.Title = "代紙-紙捲-完工";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -489,6 +489,14 @@ else
                     </div>
                 </div>
                 <div class="row col-md-12">
+                    <div class="form-inline col col-md-1">
+                        @Html.LabelFor(model => model.YieldVariance.InvestWeight)
+                        <label id="InvestWeight">@Html.DisplayFor(model => model.YieldVariance.InvestWeight)</label>
+                    </div>
+                    <div class="form-inline col col-md-1">
+                        @Html.LabelFor(model => model.YieldVariance.ProductWeight)
+                        <label id="ProductWeight">@Html.DisplayFor(model => model.YieldVariance.ProductWeight)</label>
+                    </div>
                     <div class="form-inline col col-md-1">
                         @Html.LabelFor(model => model.YieldVariance.LossWeight)
                         <label id="Production_Loss">@Html.DisplayFor(model => model.YieldVariance.LossWeight)</label>

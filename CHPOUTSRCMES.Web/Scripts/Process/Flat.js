@@ -322,8 +322,10 @@ function onBtnClick() {
             "data": { OspDetailInId: OspDetailInId, OspDetailOutId: OspDetailOutId },
             success: function (data) {
                 if (data.resultDataModel.Success) {
+                    $('#InvestWeight').html(data.resultDataModel.Data.InvestWeight);
+                    $('#ProductWeight').html(data.resultDataModel.Data.ProductWeight);
                     $('#Production_Loss').html(data.resultDataModel.Data.LossWeight);
-                    $('#Rate').html(data.resultDataModel.Data.Rate + "%");
+                    $('#Rate').html(data.resultDataModel.Data.Rate);
                 } else {
                     swal.fire(data.resultDataModel.Msg)
                 }
@@ -462,7 +464,15 @@ function LoadFlatInvestTable() {
         },
         buttons: [
             'selectAll',
-            'selectNone'
+            'selectNone',
+            buttons: [
+                'selectAll',
+                'selectNone',
+                {
+                    extend: 'excel',
+                    text: '匯出Excel'
+                },
+            ],
         ],
         columnDefs: [{
             orderable: false, targets: [0, 6], width: "60px",
@@ -592,7 +602,15 @@ function LoadFlatProductionDataTable() {
         },
         buttons: [
             'selectAll',
-            'selectNone'
+            'selectNone',
+            buttons: [
+                'selectAll',
+                'selectNone',
+                {
+                    extend: 'excel',
+                    text: '匯出Excel'
+                },
+            ],
         ],
         columnDefs: [{
             orderable: false, targets: [0, 9], width: "60px",
@@ -799,6 +817,8 @@ function DsiplayFlatShow() {
 }
 
 function ClearRateLoss() {
+    $('#InvestWeight').html("");
+    $('#ProductWeight').html("");
     $('#Production_Loss').html("");
     $('#Rate').html("");
 }

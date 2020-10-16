@@ -431,8 +431,10 @@ function BtnClick() {
             "data": { OspDetailInId: OspDetailInId, OspDetailOutId: OspDetailOutId},
             success: function (data) {
                 if (data.resultDataModel.Success) {
+                    $('#InvestWeight').html(data.resultDataModel.Data.InvestWeight);
+                    $('#ProductWeight').html(data.resultDataModel.Data.ProductWeight);
                     $('#Production_Loss').html(data.resultDataModel.Data.LossWeight);
-                    $('#Rate').html(data.resultDataModel.Data.Rate + "%");
+                    $('#Rate').html(data.resultDataModel.Data.Rate);
                 } else {
                     swal.fire(data.resultDataModel.Msg)
                 }
@@ -658,7 +660,10 @@ function LoadInvestDataTable() {
         buttons: [
             'selectAll',
             'selectNone',
-
+            {
+                extend: 'excel',
+                text: '匯出Excel'
+            },
         ],
         columns: [
             {
@@ -809,7 +814,10 @@ function LoadProductionDataTable() {
         buttons: [
             'selectAll',
             'selectNone',
-
+            {
+                extend: 'excel',
+                text: '匯出Excel'
+            },
         ],
         columnDefs: [{
             orderable: false, targets: [0, 9], width: "60px",
@@ -1014,7 +1022,11 @@ function CotangentDataTables() {
         },
         buttons: [
             'selectAll',
-            'selectNone'
+            'selectNone',
+            {
+                extend: 'excel',
+                text: '匯出Excel'
+            },
         ],
         columnDefs: [{
             orderable: false, targets: [0, 9], width: "60px",
@@ -1205,6 +1217,8 @@ function DsiplayShow(Status) {
 function ClearRateLoss() {
     $('#Production_Loss').html("");
     $('#Rate').html("");
+    $('#InvestWeight').html("");
+    $('#ProductWeight').html("");
 }
 
 //驗證disable投入

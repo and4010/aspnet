@@ -1441,7 +1441,7 @@ AND ST.BARCODE = @BARCODE");
         /// <param name="Cotangent"></param>
         /// <param name="OspDetailOutId"></param>
         /// <returns></returns>
-        public ResultModel CreateProduction(string UserId, string UserName, string Production_Roll_Ream_Qty, string Production_Roll_Ream_Wt, string Cotangent, long OspDetailOutId, long OspDetailInId,long OspHeaderId)
+        public ResultModel CreateProduction(string UserId, string UserName, string Production_Roll_Ream_Qty, string Production_Roll_Ream_Wt, string Cotangent, long OspDetailOutId, long OspDetailInId, long OspHeaderId)
         {
             if (Production_Roll_Ream_Qty == null)
             {
@@ -2070,7 +2070,7 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
         /// <param name="OspDetailInId"></param>
         /// <param name="OspDetailOutId"></param>
         /// <returns></returns>
-        public ResultDataModel<OSP_YIELD_VARIANCE_T> Loss(long OspDetailInId, long OspDetailOutId, string UserId, string UserName)
+        public ResultDataModel<YieldVariance> Loss(long OspDetailInId, long OspDetailOutId, string UserId, string UserName)
         {
             try
             {
@@ -2088,7 +2088,7 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
                     var status = PickOut[i].Status;
                     if (status == "待入庫")
                     {
-                        return new ResultDataModel<OSP_YIELD_VARIANCE_T>(false, "產出請先入庫", null);
+                        return new ResultDataModel<YieldVariance>(false, "產出請先入庫", null);
                     }
                     PickOutWeight += +PickOut[i].PrimaryQuantity;
                 }
@@ -2098,12 +2098,12 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
                     {
                         if (Cotangent[i].SecondaryQuantity == 0M || Cotangent[i].SecondaryQuantity == null)
                         {
-                            return new ResultDataModel<OSP_YIELD_VARIANCE_T>(false, "餘切請先輸入令數", null);
+                            return new ResultDataModel<YieldVariance>(false, "餘切請先輸入令數", null);
                         }
 
                         if (Cotangent[i].Status == "待入庫")
                         {
-                            return new ResultDataModel<OSP_YIELD_VARIANCE_T>(false, "餘切請先入庫", null);
+                            return new ResultDataModel<YieldVariance>(false, "餘切請先入庫", null);
                         }
                         CotangetnWeight += Cotangent[i].PrimaryQuantity;
                     }
@@ -2118,9 +2118,10 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
                 }
                 //投入重量：領料量 - 餘捲
                 var investWeight = PickInWeight - RemainWeight;
-                //var Totle = Math.Round(ProductWeight / investWeight, 2);
-                var Totle = Math.Round(investWeight - ProductWeight, 2);
-                var rate = Math.Round((ProductWeight / investWeight * 100), 2);
+                //var Totle = Math.Round(investWeight - ProductWeight, 2);
+                //var rate = Math.Round((ProductWeight / investWeight * 100), 2);
+                var Totle = investWeight - ProductWeight;
+                var rate = ProductWeight / investWeight * 100;
                 var loss = OspYieldVarianceTRepository.Get(x => x.OspHeaderId == DetailOut.OspHeaderId).SingleOrDefault();
                 if (loss == null)
                 {
@@ -2136,7 +2137,16 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
                     oSP_YIELD_VARIANCE_T.CreatedUserName = UserName;
                     oSP_YIELD_VARIANCE_T.CreationDate = DateTime.Now;
                     OspYieldVarianceTRepository.Create(oSP_YIELD_VARIANCE_T, true);
-                    return new ResultDataModel<OSP_YIELD_VARIANCE_T>(true, "成功", oSP_YIELD_VARIANCE_T);
+                    return new ResultDataModel<YieldVariance>(true, "成功",
+                        new YieldVariance
+                        {
+                            OspYieldVarianceId = oSP_YIELD_VARIANCE_T.OspYieldVarianceId,
+                            OspHeaderId = oSP_YIELD_VARIANCE_T.OspHeaderId,
+                            InvestWeight = Math.Round(oSP_YIELD_VARIANCE_T.DetailInQuantity, 5),
+                            ProductWeight = Math.Round(oSP_YIELD_VARIANCE_T.DetailOutQuantity, 5),
+                            LossWeight = Math.Round(oSP_YIELD_VARIANCE_T.LossWeight, 5),
+                            Rate = Math.Round(oSP_YIELD_VARIANCE_T.Rate, 2)
+                        });
                 }
                 else
                 {
@@ -2149,7 +2159,16 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
                     loss.LastUpdateUserName = UserName;
                     loss.LastUpdateDate = DateTime.Now;
                     OspYieldVarianceTRepository.Update(loss, true);
-                    return new ResultDataModel<OSP_YIELD_VARIANCE_T>(true, "成功", loss);
+                    return new ResultDataModel<YieldVariance>(true, "成功",
+                        new YieldVariance
+                        {
+                            OspYieldVarianceId = loss.OspYieldVarianceId,
+                            OspHeaderId = loss.OspHeaderId,
+                            InvestWeight = Math.Round(loss.DetailInQuantity, 5),
+                            ProductWeight = Math.Round(loss.DetailOutQuantity, 5),
+                            LossWeight = Math.Round(loss.LossWeight, 5),
+                            Rate = Math.Round(loss.Rate, 2)
+                        });
                 }
 
 
@@ -2157,7 +2176,7 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
             catch (Exception e)
             {
                 logger.Error(LogUtilities.BuildExceptionMessage(e));
-                return new ResultDataModel<OSP_YIELD_VARIANCE_T>(false, e.Message, null);
+                return new ResultDataModel<YieldVariance>(false, e.Message, null);
             }
 
         }
@@ -2180,9 +2199,11 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
 @"SELECT 
 [OSP_YIELD_VARIANCE_ID] as OspYieldVarianceId,
 [OSP_HEADER_ID] as OspHeaderId,
-[LOSS_WEIGHT] as LossWeight,
+ROUND([LOSS_WEIGHT], 5) as LossWeight,
 [PRIMARY_UOM],
-[RATE] as Rate
+ROUND([RATE], 2) as Rate,
+ROUND([DETAIL_IN_QUANTITY], 5) as InvestWeight,
+ROUND([DETAIL_OUT_QUANTITY], 5) as ProductWeight
 FROM [OSP_YIELD_VARIANCE_T]
 where OSP_HEADER_ID = @OSP_HEADER_ID");
                     string commandText = string.Format(query.ToString());
