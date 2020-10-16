@@ -137,5 +137,7 @@ namespace CHPOUTSRCMES.Web.Models.Process
         public long SrcOspHeaderId { set; get; }
 
         public string SrcBatchNo { set; get; }
+
+        public long OrgOspHeaderId { set; get; }
     }
 }

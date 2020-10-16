@@ -907,11 +907,14 @@ OYV.LOSS_WEIGHT AS Loss,
 DI.CREATED_BY AS Createdby,
 DI.CREATION_DATE AS Creationdate,
 DI.LAST_UPDATE_BY AS LastUpdatedBy,
-DI.LAST_UPDATE_DATE AS LastUpdateDate
+DI.LAST_UPDATE_DATE AS LastUpdateDate,
+HM.ORG_OSP_HEADER_ID AS OrgOspHeaderId
 FROM [OSP_HEADER_T] H
 JOIN OSP_DETAIL_IN_T DI ON DI.OSP_HEADER_ID = H.OSP_HEADER_ID
 JOIN OSP_DETAIL_OUT_T DO ON DO.OSP_HEADER_ID = H.OSP_HEADER_ID
-left JOIN OSP_YIELD_VARIANCE_T OYV ON OYV.OSP_HEADER_ID = H.OSP_HEADER_ID");
+left JOIN OSP_YIELD_VARIANCE_T OYV ON OYV.OSP_HEADER_ID = H.OSP_HEADER_ID
+left JOIN OSP_HEADER_MOD_T HM ON HM.OSP_HEADER_ID = H.OSP_HEADER_ID
+");
                     if (Status != "*")
                     {
                         cond.Add("H.STATUS = @STATUS");
@@ -969,6 +972,8 @@ left JOIN OSP_YIELD_VARIANCE_T OYV ON OYV.OSP_HEADER_ID = H.OSP_HEADER_ID");
                         temp = string.Format("DI.SUBINVENTORY IN({0})", temp);
                         cond.Add(temp);
                     }
+
+                    cond.Add("H.STATUS <> '5'");
 
                     string commandText = string.Format(query + "{0}{1}", cond.Count > 0 ? " where " : "", string.Join(" and ", cond.ToArray()));
 
@@ -3267,8 +3272,8 @@ CAST(tt.ITEM_DESC_TCH AS nvarchar) AS BarocdeName,
 CAST(OCT.PAPER_TYPE AS nvarchar) AS PapaerType,
 CAST(OCT.BASIC_WEIGHT AS nvarchar) AS BasicWeight,
 CAST(OCT.SPECIFICATION AS nvarchar) AS Specification,
-CAST(FORMAT(OCT.PRIMARY_QUANTITY,'0.##########') AS nvarchar) AS Qty,
-CAST(OCT.PRIMARY_UOM AS nvarchar) AS Unit
+CAST(FORMAT(OCT.SECONDARY_QUANTITY,'0.##########') AS nvarchar) AS Qty,
+CAST(OCT.SECONDARY_UOM AS nvarchar) AS Unit
 --CAST(OH.BATCH_NO AS nvarchar) AS BatchNo
 FROM OSP_COTANGENT_T OCT
 join OSP_HEADER_T OH ON OH.OSP_HEADER_ID = OCT.OSP_HEADER_ID
