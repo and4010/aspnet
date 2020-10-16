@@ -4,7 +4,7 @@
 -- Description:	SOA XXIF_CHP_P210_IN_MMT_INGR_ST 資料上傳
 -- 未解決.. RXD  捲筒理論重
 -- =============================================
-ALTER PROCEDURE [dbo].[SP_P210_OspStStage1Upload]
+CREATE PROCEDURE [dbo].[SP_P210_OspStStage1Upload]
 	@ospHeaderId BIGINT,
 	@processCode VARCHAR(20) OUTPUT,
 	@serverCode VARCHAR(20) OUTPUT,

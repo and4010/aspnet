@@ -1586,7 +1586,7 @@ select
  u.UserName as Create_by,
  [CREATION_DATE] as Create_date,
  l.UserName as Last_update_by,
- [LAST_UPDATE_DATE] as Last_Create_date,
+ [LAST_UPDATE_DATE] as Last_Create_date
  from STK_REASON_T s
  left join USER_T u on u.Id = CREATED_BY
  left join USER_T l on l.Id = LAST_UPDATE_BY");
