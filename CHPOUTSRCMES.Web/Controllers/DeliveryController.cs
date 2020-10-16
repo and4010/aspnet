@@ -67,6 +67,8 @@ namespace CHPOUTSRCMES.Web.Controllers
                             || (!string.IsNullOrEmpty(p.DELIVERY_NAME) && p.DELIVERY_NAME.ToLower().Contains(search.ToLower()))
                             || (!string.IsNullOrEmpty(p.CUSTOMER_NAME) && p.CUSTOMER_NAME.ToLower().Contains(search.ToLower()))
                             || (!string.IsNullOrEmpty(p.CUSTOMER_LOCATION_CODE) && p.CUSTOMER_LOCATION_CODE.ToLower().Contains(search.ToLower()))
+                            || (!string.IsNullOrEmpty(p.SHIP_CUSTOMER_NAME) && p.SHIP_CUSTOMER_NAME.ToLower().Contains(search.ToLower()))
+                            || (!string.IsNullOrEmpty(p.TRIP_CAR) && p.TRIP_CAR.ToLower().Contains(search.ToLower()))
                             //|| p.SRC_REQUESTED_QUANTITY.ToString().ToLower().Contains(search.ToLower())
                             //|| (!string.IsNullOrEmpty(p.SRC_REQUESTED_QUANTITY_UOM) && p.SRC_REQUESTED_QUANTITY_UOM.ToLower().Contains(search.ToLower()))
                             //|| p.REQUESTED_QUANTITY2.ToString().ToLower().Contains(search.ToLower())
