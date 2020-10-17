@@ -607,18 +607,16 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
                 case 8:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.CUSTOMER_NAME) : models.OrderBy(x => x.CUSTOMER_NAME);
                 case 9:
-                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.CUSTOMER_LOCATION_CODE) : models.OrderBy(x => x.CUSTOMER_LOCATION_CODE);
-                case 10:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.SHIP_CUSTOMER_NAME) : models.OrderBy(x => x.SHIP_CUSTOMER_NAME);
-                case 11:
+                case 10:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.SUBINVENTORY_CODE) : models.OrderBy(x => x.SUBINVENTORY_CODE);
-                case 12:
+                case 11:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.TRIP_ACTUAL_SHIP_DATE) : models.OrderBy(x => x.TRIP_ACTUAL_SHIP_DATE);
-                case 13:
+                case 12:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.TRANSACTION_DATE) : models.OrderBy(x => x.TRANSACTION_DATE);
-                case 14:
+                case 13:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.AUTHORIZE_DATE) : models.OrderBy(x => x.AUTHORIZE_DATE);
-                case 15:
+                case 14:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.NOTE) : models.OrderBy(x => x.NOTE);
 
 
@@ -647,18 +645,16 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
                 case 8:
                     return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.CUSTOMER_NAME) : models.ThenBy(x => x.CUSTOMER_NAME);
                 case 9:
-                    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.CUSTOMER_LOCATION_CODE) : models.ThenBy(x => x.CUSTOMER_LOCATION_CODE);
-                case 10:
                     return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.SHIP_CUSTOMER_NAME) : models.ThenBy(x => x.SHIP_CUSTOMER_NAME);
-                case 11:
+                case 10:
                     return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.SUBINVENTORY_CODE) : models.ThenBy(x => x.SUBINVENTORY_CODE);
-                case 12:
+                case 11:
                     return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.TRIP_ACTUAL_SHIP_DATE) : models.ThenBy(x => x.TRIP_ACTUAL_SHIP_DATE);
-                case 13:
+                case 12:
                     return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.TRANSACTION_DATE) : models.ThenBy(x => x.TRANSACTION_DATE);
-                case 14:
+                case 13:
                     return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.AUTHORIZE_DATE) : models.ThenBy(x => x.AUTHORIZE_DATE);
-                case 15:
+                case 14:
                     return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.NOTE) : models.ThenBy(x => x.NOTE);
 
 

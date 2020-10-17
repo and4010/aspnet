@@ -1856,7 +1856,8 @@
                     'ItemNumber': value.ITEM_NUMBER,
                     'Qty': value.PRIMARY_QUANTITY,
                     'LotNumber': value.LOT_NUMBER,
-                    'RollReamWt': 0
+                    'RollReamWt': 0,
+                    'ContainerNo': value.CONTAINER_NO
                 }
                 excelList.push(InboundImportExcelModel);
             });

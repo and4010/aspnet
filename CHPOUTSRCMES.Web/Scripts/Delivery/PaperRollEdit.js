@@ -17,6 +17,7 @@ $(document).ready(function () {
         "serverSide": true,
         processing: true,
         orderMulti: true,
+        lengthMenu: [[25, 50, 100, 200], [25, 50, 100, 200]],
         //pageLength: 2,
         //"paging": true,
         //"pagingType": "full_numbers",
@@ -306,6 +307,7 @@ $(document).ready(function () {
         //pageLength: 2,
         serverSide: true,
         processing: true,
+        lengthMenu: [[25, 50, 100, 200], [25, 50, 100, 200]],
         dom:
             "<'row'<'col-sm-2'l><'col-sm-7'B><'col-sm-3'f>>" +
             "<'row'<'col-sm-12'tr>>" +
@@ -481,13 +483,13 @@ $(document).ready(function () {
 
 
     $("#btnCheckDeliveryName").click(function () {
-        deliveryNameCheck();
+        deliveryNameCheck(true);
 
     });
 
     $('#txtDeliveryName').keydown(function (e) {
         if (e.keyCode == 13) {
-            deliveryNameCheck();
+            deliveryNameCheck(true);
         }
     })
 
@@ -591,14 +593,16 @@ $(document).ready(function () {
         });
     }
 
-    function deliveryNameCheck() {
+    function deliveryNameCheck(showDialog) {
         var DELIVERY_NAME = $("#DELIVERY_NAME").text();
 
         if (DELIVERY_NAME == $("#txtDeliveryName").val()) {
             inputOpen();
         } else {
-            swal.fire("交運單號輸入錯誤");
-            event.preventDefault();
+            if (showDialog) {
+                swal.fire("交運單號輸入錯誤");
+                event.preventDefault();
+            }
         }
     }
 
@@ -617,6 +621,8 @@ $(document).ready(function () {
         $('#btnSaveBarcode').attr('disabled', true);
     }
     inpuClose();
+
+    deliveryNameCheck(false);
 });
 
 

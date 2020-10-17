@@ -635,6 +635,7 @@ function LoadInvestDataTable() {
         "language": {
             "url": "/bower_components/datatables/language/zh-TW.json"
         },
+        lengthMenu: [[25, 50, 100, 200], [25, 50, 100, 200]],
         destroy: true,
         processing: true,
         serverSide: true,
@@ -792,6 +793,7 @@ function LoadProductionDataTable() {
         "language": {
             "url": "/bower_components/datatables/language/zh-TW.json"
         },
+        lengthMenu: [[25, 50, 100, 200], [25, 50, 100, 200]],
         destroy: true,
         processing: true,
         serverSide: true,
@@ -1001,6 +1003,7 @@ function CotangentDataTables() {
         "language": {
             "url": "/bower_components/datatables/language/zh-TW.json"
         },
+        lengthMenu: [[25, 50, 100, 200], [25, 50, 100, 200]],
         destroy: true,
         processing: true,
         serverSide: true,

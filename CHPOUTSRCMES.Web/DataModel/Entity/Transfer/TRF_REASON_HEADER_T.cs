@@ -21,6 +21,8 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Transfer
         [Column("TRANSFER_REASON_HEADER_ID")]
         public long TransferReasonHeaderId { set; get; }
 
+        [Column("CTR_HEADER_ID")]
+        public long? CtrHeaderId { set; get; }
 
         /// <summary>
         /// 作業單元ID(OU)

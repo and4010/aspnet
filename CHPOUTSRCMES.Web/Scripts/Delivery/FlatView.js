@@ -8,6 +8,7 @@
         serverSide: true,
         processing: true,
         orderMulti: true,
+        lengthMenu: [[25, 50, 100, 200], [25, 50, 100, 200]],
         
         dom:
             "<'row'<'col-sm-2'l><'col-sm-7'><'col-sm-3'f>>" +
@@ -66,6 +67,7 @@
         serverSide: true,
         processing: true,
         orderMulti: true,
+        lengthMenu: [[25, 50, 100, 200], [25, 50, 100, 200]],
         //pageLength: 2,
         dom:
             "<'row'<'col-sm-2'l><'col-sm-7'><'col-sm-3'f>>" +

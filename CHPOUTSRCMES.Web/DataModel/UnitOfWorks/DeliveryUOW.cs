@@ -202,7 +202,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                     dlvPickedTRepository.SaveChanges();
 
                     //更新Header狀態
-                    var pickedResult = CheckPicked(dlvHeaderId);
+                    var pickedResult = CheckPicked2(dlvHeaderId);
                     if (!pickedResult.Success)
                     {
                         throw new Exception(pickedResult.Msg);
@@ -211,8 +211,8 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                     if (updateDatas == null || updateDatas.Count == 0) throw new Exception("找不到交運單資料");
                     foreach (DLV_HEADER_T data in updateDatas)
                     {
-                        data.DeliveryStatusCode = pickedResult.Msg;
-                        data.DeliveryStatusName = deliveryStatusCode.GetDesc(pickedResult.Msg);
+                        data.DeliveryStatusCode = pickedResult.Data;
+                        data.DeliveryStatusName = deliveryStatusCode.GetDesc(pickedResult.Data);
                         dlvHeaderTRepository.Update(data);
                         data.LastUpdateBy = addUser;
                         data.LastUpdateUserName = addUserName;
@@ -272,6 +272,64 @@ OR (SUM(ISNULL(p.SECONDARY_QUANTITY, 0)) <> MIN(d.REQUESTED_SECONDARY_QUANTITY) 
 
         }
 
+        /// <summary>
+        /// 檢查是否此Header是否揀畢
+        /// </summary>
+        /// <param name="dlvHeaderId"></param>
+        /// <returns></returns>
+        public ResultDataModel<string> CheckPicked2(long dlvHeaderId)
+        {
+            try
+            {
+                string cmd = @"
+          select 
+ case when ((SUM(ISNULL(p.PRIMARY_QUANTITY, 0)) > MIN(d.REQUESTED_PRIMARY_QUANTITY * 1.05) AND MIN(d.ITEM_CATEGORY) = '捲筒' AND MIN(d.REQUESTED_TRANSACTION_UOM) = 'LB')
+ OR (SUM(ISNULL(p.PRIMARY_QUANTITY, 0)) > MIN(d.REQUESTED_PRIMARY_QUANTITY) AND MIN(d.ITEM_CATEGORY) = '捲筒' )
+ OR (SUM(ISNULL(p.SECONDARY_QUANTITY, 0)) > MIN(d.REQUESTED_SECONDARY_QUANTITY) AND MIN(d.ITEM_CATEGORY) = '平版' ))
+ then 1
+ when ((SUM(ISNULL(p.PRIMARY_QUANTITY, 0)) < MIN(d.REQUESTED_PRIMARY_QUANTITY * 1.05) AND MIN(d.ITEM_CATEGORY) = '捲筒' AND MIN(d.REQUESTED_TRANSACTION_UOM) = 'LB')
+ OR (SUM(ISNULL(p.PRIMARY_QUANTITY, 0)) < MIN(d.REQUESTED_PRIMARY_QUANTITY) AND MIN(d.ITEM_CATEGORY) = '捲筒' )
+ OR (SUM(ISNULL(p.SECONDARY_QUANTITY, 0)) < MIN(d.REQUESTED_SECONDARY_QUANTITY) AND MIN(d.ITEM_CATEGORY) = '平版' ))
+ then -1
+ else 0
+ end
+from DLV_DETAIL_T d
+JOIN DLV_HEADER_T h ON h.DLV_HEADER_ID = d.DLV_HEADER_ID
+LEFT JOIN DLV_PICKED_T p ON p.DLV_HEADER_ID = d.DLV_HEADER_ID AND p.DLV_DETAIL_ID = d.DLV_DETAIL_ID
+where h.DLV_HEADER_ID = @DLV_HEADER_ID
+GROUP BY d.DLV_DETAIL_ID";
+
+                var list = this.Context.Database.SqlQuery<int>(cmd, new SqlParameter("@DLV_HEADER_ID", dlvHeaderId)).ToList();
+                if (list.Count == 0) //為0表示應揀量等於已揀量
+                {
+                    throw new Exception("找不到明細資料");
+                }
+                else
+                {
+                    if (list[0] == 1)
+                    {
+                        return new ResultDataModel<string>(false, "已揀數量超過需求量", null);
+                    }
+                    else if (list[0] == -1)
+                    {
+                        return new ResultDataModel<string>(true, "檢查是否揀畢成功", DeliveryStatusCode.UnPicked);
+                    }
+                    else
+                    {
+                        return new ResultDataModel<string>(true, "檢查是否揀畢成功", DeliveryStatusCode.Picked);
+                    }
+                    
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(LogUtilities.BuildExceptionMessage(ex));
+                return new ResultDataModel<string>(false, "檢查是否揀畢失敗:" + ex.Message, null);
+            }
+
+
+        }
+
 
         /// <summary>
         /// 刪除揀貨明細
@@ -308,7 +366,7 @@ OR (SUM(ISNULL(p.SECONDARY_QUANTITY, 0)) <> MIN(d.REQUESTED_SECONDARY_QUANTITY) 
                     dlvPickedTRepository.SaveChanges();
 
                     //更新Header狀態
-                    var pickedResult = CheckPicked(dlvHeaderId);
+                    var pickedResult = CheckPicked2(dlvHeaderId);
                     if (!pickedResult.Success)
                     {
                         throw new Exception(pickedResult.Msg);
@@ -317,8 +375,8 @@ OR (SUM(ISNULL(p.SECONDARY_QUANTITY, 0)) <> MIN(d.REQUESTED_SECONDARY_QUANTITY) 
                     if (updateDatas.Count == 0) throw new Exception("找不到交運單資料");
                     foreach (DLV_HEADER_T data in updateDatas)
                     {
-                        data.DeliveryStatusCode = pickedResult.Msg;
-                        data.DeliveryStatusName = deliveryStatusCode.GetDesc(pickedResult.Msg);
+                        data.DeliveryStatusCode = pickedResult.Data;
+                        data.DeliveryStatusName = deliveryStatusCode.GetDesc(pickedResult.Data);
                         data.LastUpdateBy = addUser;
                         data.LastUpdateUserName = addUserName;
                         data.LastUpdateDate = addDate;

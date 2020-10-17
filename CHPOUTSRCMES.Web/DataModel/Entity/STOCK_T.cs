@@ -36,6 +36,15 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity
         [Column("ORGANIZATION_CODE")]
         public string OrganizationCode { set; get; }
 
+
+        /// <summary>
+        /// 櫃號
+        /// </summary>
+        /// 
+        [StringLength(40)]
+        [Column("CONTAINER_NO")]
+        public string ContainerNo { set; get; }
+
         /// <summary>
         /// 倉庫
         /// </summary>

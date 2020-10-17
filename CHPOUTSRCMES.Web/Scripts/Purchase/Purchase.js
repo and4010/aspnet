@@ -584,6 +584,7 @@ function ImportPaperRollTable(data) {
         "language": {
             "url": "/bower_components/datatables/language/zh-TW.json"
         },
+        lengthMenu: [[25, 50, 100, 200], [25, 50, 100, 200]],
         dom:
             "<'row'<'col-sm-2'l><'col-sm-7'><'col-sm-3'f>>" +
             "<'row'<'col-sm-12'tr>>" +
@@ -648,6 +649,7 @@ function ImportFlatTable(data) {
         "language": {
             "url": "/bower_components/datatables/language/zh-TW.json"
         },
+        lengthMenu: [[25, 50, 100, 200], [25, 50, 100, 200]],
         dom:
             "<'row'<'col-sm-2'l><'col-sm-7'><'col-sm-3'f>>" +
             "<'row'<'col-sm-12'tr>>" +
@@ -681,6 +683,7 @@ function LoadPaperRollHeard() {
         "language": {
             "url": "/bower_components/datatables/language/zh-TW.json"
         },
+        lengthMenu: [[25, 50, 100, 200], [25, 50, 100, 200]],
         dom:
             "<'row'<'col-sm-2'l><'col-sm-7'><'col-sm-3'f>>" +
             "<'row'<'col-sm-12'tr>>" +
@@ -731,6 +734,7 @@ function LoadFlatHeader() {
         "language": {
             "url": "/bower_components/datatables/language/zh-TW.json"
         },
+        lengthMenu: [[25, 50, 100, 200], [25, 50, 100, 200]],
         dom:
             "<'row'<'col-sm-2'l><'col-sm-7'><'col-sm-3'f>>" +
             "<'row'<'col-sm-12'tr>>" +
@@ -781,6 +785,7 @@ function PaperRolldataTablesBody() {
         "language": {
             "url": "/bower_components/datatables/language/zh-TW.json"
         },
+        lengthMenu: [[25, 50, 100, 200], [25, 50, 100, 200]],
         //scrollX: true,
         destroy: true,
         autoWidth: true,
@@ -876,6 +881,7 @@ function FlatdataTablesBody() {
         "language": {
             "url": "/bower_components/datatables/language/zh-TW.json"
         },
+        lengthMenu: [[25, 50, 100, 200], [25, 50, 100, 200]],
         //scrollX: true,
         destroy: true,
         autoWidth: false,
