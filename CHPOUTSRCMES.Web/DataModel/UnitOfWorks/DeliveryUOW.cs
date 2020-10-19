@@ -1896,7 +1896,7 @@ SELECT p.BARCODE as Barocde
 ,s.PAPER_TYPE as PapaerType
 ,s.BASIC_WEIGHT as BasicWeight
 ,s.SPECIFICATION as Specification
-,s.OSP_BATCH_NO as BatchNo");
+,s.OSP_BATCH_NO as OspBatchNo");
 
                     if (pick.PalletStatus == PalletStatusCode.Split) //判斷是否拆板
                     {

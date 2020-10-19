@@ -983,7 +983,7 @@ SELECT [TRANSFER_PICKED_ID] as ID
                     else if (item.CatalogElemVal070 == ItemCategory.Flat)
                     {
                         //rollReamWt = Math.Ceiling(requestedQty / rollReamQty); //每件令數 = 總令數 除以 棧板數 無條件進位 待確認是否正確
-                        var yszmpckq = GetYszmpckq(outOrganization.OrganizationId, outOrganization.OrganizationCode, outSubinventoryCode, item.CatalogElemVal020);
+                        var yszmpckq = GetYszmpckq(outOrganization.OrganizationId, outOrganization.OrganizationCode, outSubinventoryCode, item.CatalogElemVal020, item.CatalogElemVal040);
                         if (yszmpckq == null) throw new Exception("找不到令重包數資料");
                         rollReamWt = yszmpckq.PiecesQty;
                         //var yszmpckq = GetYszmpckq(outOrganization.OrganizationId, outOrganization.OrganizationCode, outSubinventoryCode, item.CatalogElemVal020);
@@ -1083,7 +1083,7 @@ SELECT [TRANSFER_PICKED_ID] as ID
                     if (detail == null) throw new Exception("找不到明細資料");
 
                     //檢查庫存
-                    var stock = stockTRepository.GetAll().FirstOrDefault(x => x.Barcode == barcode);
+                    var stock = stockTRepository.GetAll().FirstOrDefault(x => x.Barcode == barcode && x.LocatorId == header.LocatorId);
                     if (stock == null) throw new Exception("找不到庫存資料");
                     if (stock.StatusCode != StockStatusCode.InStock) throw new Exception("不在庫");
                     if (detail.InventoryItemId != stock.InventoryItemId) throw new Exception("料號不正確");
@@ -1698,7 +1698,7 @@ SELECT [TRANSFER_PICKED_ID] as ID
                         {
                             if (pick.StockId == 0)
                             {
-                                //為另外新增的資料
+                                //為在入庫時另外新增的資料
                                 if (pick.PalletStatus == PalletStatusCode.All)
                                 {
                                     //整板 新增庫存
@@ -1753,7 +1753,8 @@ SELECT [TRANSFER_PICKED_ID] as ID
                                     stockTRepository.Create(stock, true);
 
                                     //產生異動紀錄
-                                    var stkTxnT = CreateStockRecord(stock, header.TransferOrganizationId, header.TransferOrganizationCode, header.TransferSubinventoryCode,
+                                    var stkTxnT = CreateStockRecord(stock, header.OrganizationId, header.OrganizationCode, header.SubinventoryCode, header.LocatorId,
+                                        header.TransferOrganizationId, header.TransferOrganizationCode, header.TransferSubinventoryCode,
                                     header.TransferLocatorId, CategoryCode.TransferInbound, ActionCode.StockTransfer, header.ShipmentNumber,
                                     0, stock.PrimaryAvailableQty, stock.PrimaryAvailableQty, 0, stock.SecondaryAvailableQty, stock.SecondaryAvailableQty, StockStatusCode.InStock, userId, now);
                                     stkTxnTRepository.Create(stkTxnT);
@@ -1781,6 +1782,7 @@ SELECT [TRANSFER_PICKED_ID] as ID
                                     {
                                         stock.Note = stock.Note + "," + pick.Note;
                                     }
+                                    stkTxnT.Note = stock.Note;
                                     stock.StatusCode = StockStatusCode.InStock;
                                     stkTxnT.StatusCode = stock.StatusCode;
                                     stock.LastUpdateBy = userId;
@@ -1826,6 +1828,7 @@ SELECT [TRANSFER_PICKED_ID] as ID
                                         //var detail = trfDetailTRepository.GetAll().AsNoTracking().FirstOrDefault(x => x.TransferDetailId == pick.TransferDetailId);
                                         //if (detail == null) throw new Exception("找不到明細資料");
 
+                                        //產生異動紀錄
                                         stock.OrganizationId = (long)header.TransferOrganizationId;
                                         stock.OrganizationCode = header.TransferOrganizationCode;
                                         stock.SubinventoryCode = header.TransferSubinventoryCode;
@@ -1844,8 +1847,8 @@ SELECT [TRANSFER_PICKED_ID] as ID
                                         stock.LastUpdateDate = now;
                                         stockTRepository.Update(stock, true);
 
-                                        //產生異動紀錄
-                                        var stkTxnT = CreateStockRecord(stock, header.TransferOrganizationId, header.TransferOrganizationCode, header.TransferSubinventoryCode,
+                                        var stkTxnT = CreateStockRecord(stock, header.OrganizationId, header.OrganizationCode, header.SubinventoryCode, header.LocatorId,
+                                            header.TransferOrganizationId, header.TransferOrganizationCode, header.TransferSubinventoryCode,
                                         header.TransferLocatorId, CategoryCode.TransferInbound, ActionCode.StockTransfer, header.ShipmentNumber,
                                         stock.PrimaryAvailableQty, 0, stock.PrimaryAvailableQty, stock.SecondaryAvailableQty, 0, stock.SecondaryAvailableQty, StockStatusCode.InStock, userId, now);
                                         stkTxnTRepository.Create(stkTxnT);
@@ -1895,7 +1898,8 @@ SELECT [TRANSFER_PICKED_ID] as ID
                                         stockTRepository.Create(stock, true);
 
                                         //產生異動紀錄
-                                        var stkTxnT = CreateStockRecord(stock, header.TransferOrganizationId, header.TransferOrganizationCode, header.TransferSubinventoryCode,
+                                        var stkTxnT = CreateStockRecord(stock, header.OrganizationId, header.OrganizationCode, header.SubinventoryCode, header.LocatorId,
+                                            header.TransferOrganizationId, header.TransferOrganizationCode, header.TransferSubinventoryCode,
                                         header.TransferLocatorId, CategoryCode.TransferInbound, ActionCode.StockTransfer, header.ShipmentNumber,
                                         0, stock.PrimaryAvailableQty, stock.PrimaryAvailableQty, 0, stock.SecondaryAvailableQty, stock.SecondaryAvailableQty, StockStatusCode.InStock, userId, now);
                                         stkTxnTRepository.Create(stkTxnT);
@@ -1925,6 +1929,7 @@ SELECT [TRANSFER_PICKED_ID] as ID
                                     {
                                         stock.Note = stock.Note + "," + pick.Note;
                                     }
+                                    stkTxnT.Note = stock.Note;
                                     stock.StatusCode = StockStatusCode.InStock;
                                     stkTxnT.StatusCode = stock.StatusCode;
                                     stock.LastUpdateBy = userId;
@@ -2020,7 +2025,8 @@ SELECT [TRANSFER_PICKED_ID] as ID
                                 stockTRepository.Create(stock, true);
 
                                 //產生異動紀錄
-                                var stkTxnT = CreateStockRecord(stock, header.TransferOrganizationId, header.TransferOrganizationCode, header.TransferSubinventoryCode,
+                                var stkTxnT = CreateStockRecord(stock, header.OrganizationId, header.OrganizationCode, header.SubinventoryCode, header.LocatorId,
+                                    header.TransferOrganizationId, header.TransferOrganizationCode, header.TransferSubinventoryCode,
                                 header.TransferLocatorId, CategoryCode.TransferInbound, ActionCode.StockTransfer, header.ShipmentNumber,
                                 0, stock.PrimaryAvailableQty, stock.PrimaryAvailableQty, 0, stock.SecondaryAvailableQty, stock.SecondaryAvailableQty, StockStatusCode.InStock, userId, now);
                                 stkTxnTRepository.Create(stkTxnT);
@@ -2048,6 +2054,7 @@ SELECT [TRANSFER_PICKED_ID] as ID
                                 {
                                     stock.Note = stock.Note + "," + pick.Note;
                                 }
+                                stkTxnT.Note = stock.Note;
                                 stock.StatusCode = StockStatusCode.InStock;
                                 stkTxnT.StatusCode = stock.StatusCode;
                                 stock.LastUpdateBy = userId;

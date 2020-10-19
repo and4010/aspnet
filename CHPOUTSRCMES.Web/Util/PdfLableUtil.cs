@@ -344,20 +344,20 @@ namespace CHPOUTSRCMES.Web.Util
                         xPath = new XGraphicsPath();
                         y += 3;
                         xPath.AddString("條碼:" + lable.Barocde, new XFontFamily("Arial"), XFontStyle.Regular, 8, new XPoint(XUnit.FromMillimeter(60), XUnit.FromMillimeter(y)), XStringFormats.TopLeft);
-                        y += 5;
+                        y += 4;
                         xPath.AddString("中文品名:" + lable.BarocdeName, new XFontFamily("Arial"), XFontStyle.Regular, 16, new XPoint(XUnit.FromMillimeter(5), XUnit.FromMillimeter(y)), XStringFormats.TopLeft);
-                        y += 9;
+                        y += 8;
                         xPath.AddString("紙別:" + lable.PapaerType, new XFontFamily("Arial"), XFontStyle.Regular, 12, new XPoint(XUnit.FromMillimeter(10), XUnit.FromMillimeter(y)), XStringFormats.TopLeft);
                         xPath.AddString("基重:" + lable.BasicWeight, new XFontFamily("Arial"), XFontStyle.Regular, 12, new XPoint(XUnit.FromMillimeter(50), XUnit.FromMillimeter(y)), XStringFormats.TopLeft);
-                        y += 7;
+                        y += 6;
                         xPath.AddString("規格:" + lable.Specification, new XFontFamily("Arial"), XFontStyle.Regular, 12, new XPoint(XUnit.FromMillimeter(10), XUnit.FromMillimeter(y)), XStringFormats.TopLeft);
                         xPath.AddString("數量:" + lable.Qty, new XFontFamily("Arial"), XFontStyle.Regular, 12, new XPoint(XUnit.FromMillimeter(50), XUnit.FromMillimeter(y)), XStringFormats.TopLeft);
                         if (!string.IsNullOrEmpty(lable.OspBatchNo))
                         {
-                            y += 7;
+                            y += 6;
                             xPath.AddString("工單號碼:" + lable.OspBatchNo, new XFontFamily("Arial"), XFontStyle.Regular, 12, new XPoint(XUnit.FromMillimeter(10), XUnit.FromMillimeter(y)), XStringFormats.TopLeft);
                         }
-                        y += 7;
+                        y += 6;
                         xPath.AddString("列印人:" + lable.PrintBy, new XFontFamily("Arial"), XFontStyle.Regular, 12, new XPoint(XUnit.FromMillimeter(10), XUnit.FromMillimeter(y)), XStringFormats.TopLeft);
 
                         Gfx.DrawPath(Pen, Brush, xPath);
@@ -393,11 +393,11 @@ namespace CHPOUTSRCMES.Web.Util
                         //副BAR CODE
                         if (string.IsNullOrEmpty(lable.OspBatchNo))
                         {
-                            y += 15 + 7; //補回工單號碼高度
+                            y += 12 + 6; //補回工單號碼高度
                         }
                         else
                         {
-                            y += 15;
+                            y += 12;
                         }
 
                         int columnHeight = (lableHeight - y) / 4;
