@@ -161,9 +161,35 @@ $(document).ready(function () {
         var CtrHeaderId = $("#CtrHeaderId").val()
         window.open("/Home/CtrReport/?CtrHeaderId=" + CtrHeaderId + "&ItemCategory=" + "平版");
     });
+
+    CheckCabinetNumber(Status, false);
 });
 
+function CheckCabinetNumber(status, showDialog) {
+    var InputCabinetNumber = $('#CheckCabinetNumber').val();
+    var ViewCabinetNumber = $("#CabinetNumber").val();
+    if (status == 0) {
+        return
+    }
+    $.ajax({
+        url: '/Purchase/CheckCabinetNumber',
+        datatype: 'json',
+        type: "POST",
+        data: { InputCabinetNumber: InputCabinetNumber, ViewCabinetNumber: ViewCabinetNumber },
+        success: function (data) {
+            if (data.boolean) {
+                EnableBarcode(false);
+            } else {
+                if (showDialog) {
+                    swal.fire("櫃號輸入不對請重新輸入");
+                }
+            }
+        },
+        error: function () {
 
+        }
+    });
+}
 
 
 function PaperNavsNumber() {
@@ -353,27 +379,7 @@ function init(status) {
 
     //檢查櫃號按鈕
     $('#BtnCabinetNumber').click(function (e) {
-        var InputCabinetNumber = $('#CheckCabinetNumber').val();
-        var ViewCabinetNumber = $("#CabinetNumber").val();
-        if (status == 0) {
-            return
-        }
-        $.ajax({
-            url: '/Purchase/CheckCabinetNumber',
-            datatype: 'json',
-            type: "POST",
-            data: { InputCabinetNumber: InputCabinetNumber, ViewCabinetNumber: ViewCabinetNumber },
-            success: function (data) {
-                if (data.boolean) {
-                    EnableBarcode(false);
-                } else {
-                    swal.fire("櫃號輸入不對請重新輸入");
-                }
-            },
-            error: function () {
-
-            }
-        });
+        CheckCabinetNumber(status, true);
 
     });
 
