@@ -38,7 +38,7 @@ namespace CHPOUTSRCMES.TASK.Models.Service
         /// <param name="tasker"></param>
         /// <param name="token"></param>
         /// <returns></returns>
-        internal async Task ExportTrfStRv(Tasker tasker, CancellationToken token)
+        internal void ExportTrfStRv(Tasker tasker, CancellationToken token)
         {
             LogInfo($"[{tasker.Name}]-{tasker.Unit}-ExportTrfStRv-開始");
 
@@ -52,10 +52,8 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                 using var sqlConn = new SqlConnection(MesConnStr);
                 using var trfStUow = new TrfStUOW(sqlConn);
                 using var masterUow = new MasterUOW(oraConn);
-                var task = trfStUow.GetHeaderListForUpload();
-                task.Wait();
-                var list = task.Result;
 
+                var list = trfStUow.GetHeaderListForUpload();
                 if (list == null || list.Count() == 0)
                 {
                     LogInfo($"[{tasker.Name}]-{tasker.Unit}-ExportTrfStRv-無可轉出資料");
@@ -104,7 +102,7 @@ namespace CHPOUTSRCMES.TASK.Models.Service
         /// <param name="tasker"></param>
         /// <param name="token"></param>
         /// <returns></returns>
-        internal async Task ExportRsnStRv(Tasker tasker, CancellationToken token)
+        internal void ExportRsnStRv(Tasker tasker, CancellationToken token)
         {
             LogInfo($"[{tasker.Name}]-{tasker.Unit}-ExportReasonStRv-開始");
 
@@ -118,7 +116,7 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                 using var sqlConn = new SqlConnection(MesConnStr);
                 using var trfStUow = new TrfStUOW(sqlConn);
                 using var masterUow = new MasterUOW(oraConn);
-                var list = await trfStUow.GetReasonHeaderListForUpload();
+                var list = trfStUow.GetReasonHeaderListForUpload();
                 if (list == null || list.Count() == 0)
                 {
                     LogInfo($"[{tasker.Name}]-{tasker.Unit}-ExportReasonStRv-無可轉出資料");
@@ -130,7 +128,7 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                     using var transaction = sqlConn.BeginTransaction();
                     try
                     {
-                        var model = await trfStUow.TrfRsnStUpload(list[i], masterUow,transaction: transaction);
+                        var model = trfStUow.TrfRsnStUpload(list[i], masterUow,transaction: transaction);
                         LogInfo($"[{tasker.Name}]-{tasker.Unit}-ExportReasonStRv (TRANSFER_REASON_HEADER_ID:{list[i]})-{model}");
 
                         if (!model.Success)
@@ -165,7 +163,7 @@ namespace CHPOUTSRCMES.TASK.Models.Service
         /// <param name="tasker"></param>
         /// <param name="token"></param>
         /// <returns></returns>
-        internal async Task ExportInvStRv(Tasker tasker, CancellationToken token)
+        internal void ExportInvStRv(Tasker tasker, CancellationToken token)
         {
             LogInfo($"[{tasker.Name}]-{tasker.Unit}-ExportInvStRv-開始");
 
@@ -179,7 +177,7 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                 using var sqlConn = new SqlConnection(MesConnStr);
                 using var trfStUow = new TrfStUOW(sqlConn);
                 using var masterUow = new MasterUOW(oraConn);
-                var list = await trfStUow.GetInvHeaderListForUpload();
+                var list = trfStUow.GetInvHeaderListForUpload();
                 if (list == null || list.Count() == 0)
                 {
                     LogInfo($"[{tasker.Name}]-{tasker.Unit}-ExportInvStRv-無可轉出資料");
@@ -191,7 +189,7 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                     using var transaction = sqlConn.BeginTransaction();
                     try
                     {
-                        var model = await trfStUow.TrfInvStUpload(list[i], masterUow, transaction: transaction);
+                        var model = trfStUow.TrfInvStUpload(list[i], masterUow, transaction: transaction);
                         LogInfo($"[{tasker.Name}]-{tasker.Unit}-ExportInvStRv (TRANSFER_INVENTORY_HEADER_ID:{list[i]})-{model}");
 
                         if (!model.Success)
@@ -226,7 +224,7 @@ namespace CHPOUTSRCMES.TASK.Models.Service
         /// <param name="tasker"></param>
         /// <param name="token"></param>
         /// <returns></returns>
-        internal async Task ExportMiscStRv(Tasker tasker, CancellationToken token)
+        internal void ExportMiscStRv(Tasker tasker, CancellationToken token)
         {
             LogInfo($"[{tasker.Name}]-{tasker.Unit}-ExportMiscStRv-開始");
 
@@ -240,7 +238,7 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                 using var sqlConn = new SqlConnection(MesConnStr);
                 using var trfStUow = new TrfStUOW(sqlConn);
                 using var masterUow = new MasterUOW(oraConn);
-                var list = await trfStUow.GetMiscHeaderListForUpload();
+                var list = trfStUow.GetMiscHeaderListForUpload();
                 if (list == null || list.Count() == 0)
                 {
                     LogInfo($"[{tasker.Name}]-{tasker.Unit}-ExportMiscStRv-無可轉出資料");
@@ -252,7 +250,7 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                     using var transaction = sqlConn.BeginTransaction();
                     try
                     {
-                        var model = await trfStUow.TrfMiscStUpload(list[i], masterUow, transaction: transaction);
+                        var model = trfStUow.TrfMiscStUpload(list[i], masterUow, transaction: transaction);
                         LogInfo($"[{tasker.Name}]-{tasker.Unit}-ExportMiscStRv (TRANSFER_MISCELLANEOUS_HEADER_ID:{list[i]})-{model}");
 
                         if (!model.Success)
@@ -287,7 +285,7 @@ namespace CHPOUTSRCMES.TASK.Models.Service
         /// <param name="tasker"></param>
         /// <param name="token"></param>
         /// <returns></returns>
-        internal async Task ExportObsStRv(Tasker tasker, CancellationToken token)
+        internal void ExportObsStRv(Tasker tasker, CancellationToken token)
         {
             LogInfo($"[{tasker.Name}]-{tasker.Unit}-ExportObsStRv-開始");
 
@@ -301,7 +299,7 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                 using var sqlConn = new SqlConnection(MesConnStr);
                 using var trfStUow = new TrfStUOW(sqlConn);
                 using var masterUow = new MasterUOW(oraConn);
-                var list = await trfStUow.GetObsHeaderListForUpload();
+                var list = trfStUow.GetObsHeaderListForUpload();
                 if (list == null || list.Count() == 0)
                 {
                     LogInfo($"[{tasker.Name}]-{tasker.Unit}-ExportObsStRv-無可轉出資料");
@@ -313,7 +311,7 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                     using var transaction = sqlConn.BeginTransaction();
                     try
                     {
-                        var model = await trfStUow.TrfObsStUpload(list[i], masterUow, transaction: transaction);
+                        var model = trfStUow.TrfObsStUpload(list[i], masterUow, transaction: transaction);
                         LogInfo($"[{tasker.Name}]-{tasker.Unit}-ExportObsStRv (TRANSFER_OBSOLETE_HEADER_ID:{list[i]})-{model}");
 
                         if (!model.Success)

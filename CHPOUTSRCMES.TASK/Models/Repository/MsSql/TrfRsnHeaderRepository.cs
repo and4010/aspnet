@@ -28,10 +28,10 @@ namespace CHPOUTSRCMES.TASK.Models.Repository.MsSql
 
         #endregion
 
-        public async Task<List<long>> GetUploadList(IDbTransaction transaction = null)
+        public List<long> GetUploadList(IDbTransaction transaction = null)
         {
             //入庫貨故移轉上傳，必須等待20分後始可上傳 避免搶先入庫上傳
-            return (await Connection.QueryAsync<long>(
+            return Connection.Query<long>(
 $@"
 SELECT TRANSFER_REASON_HEADER_ID FROM (
 SELECT H.TRANSFER_REASON_HEADER_ID FROM TRF_REASON_HEADER_T H
@@ -45,7 +45,7 @@ WHERE TO_ERP <> '0'
 AND S.TRANSFER_REASON_HEADER_ID IS NULL AND H.NUMBER_STATUS = '1' 
 ) A
 ORDER BY TRANSFER_REASON_HEADER_ID
-", transaction: transaction)).ToList();
+", transaction: transaction).ToList();
         }
 
         #region IDispose Region

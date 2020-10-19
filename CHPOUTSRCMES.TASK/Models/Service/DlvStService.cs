@@ -55,9 +55,7 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                 using var mstUow = new MasterUOW(oraConn);
 
 
-                var task = dlvStUow.GetByProcessCodeAsync("XXIFP220");
-                task.Wait();
-                var list = task.Result;
+                var list = dlvStUow.GetByProcessCode("XXIFP220");
                 if (list == null || list.Count() == 0)
                 {
                     LogInfo($"[{tasker.Name}]-{tasker.Unit}-ImportDlvSt-無可轉入資料");
@@ -77,15 +75,13 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                     {
                         ResultModel model = new ResultModel(false, "未知的錯誤!");
 
-                        var taskReceive = dlvStUow.DeliveryStReceive(st, transaction);
-                        taskReceive.Wait();
-                        model = taskReceive.Result;
+                        model = dlvStUow.DeliveryStReceive(st, transaction);
+
                         LogInfo($"[{tasker.Name}]-{tasker.Unit}-ImportDlvSt ({st.PROCESS_CODE}, {st.SERVER_CODE}, {st.BATCH_ID})-{model}");
                         if (!model.Success)
                         {
                             throw new Exception($"code:{model.Code} message:{model.Msg}");
                         }
-
 
                         transaction.Commit();
 
@@ -131,9 +127,7 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                 using var dlvStUow = new DlvStUOW(sqlConn);
                 using var masterUOW = new MasterUOW(oraConn);
 
-                var task = dlvStUow.GetTripList();
-                task.Wait();
-                var list = task.Result;
+                var list = dlvStUow.GetTripList();
                 if (list == null || list.Count() == 0)
                 {
                     LogInfo($"[{tasker.Name}]-{tasker.Unit}-ExportDlvStRv-無可轉出資料");
@@ -145,9 +139,7 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                     using var transaction = sqlConn.BeginTransaction();
                     try
                     {
-                        var taskStage = dlvStUow.DeliveryStUpload(list[i], masterUOW, transaction: transaction);
-                        taskStage.Wait();
-                        var model = taskStage.Result;
+                        var model = dlvStUow.DeliveryStUpload(list[i], masterUOW, transaction: transaction);
                         LogInfo($"[{tasker.Name}]-{tasker.Unit}-ExportDlvStRv (TRIP_ID:{list[i]})-{model}");
 
                         if (!model.Success)

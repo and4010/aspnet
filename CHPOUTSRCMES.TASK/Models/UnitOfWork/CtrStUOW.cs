@@ -42,6 +42,13 @@ namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
             return await CtrStRepository.GetSingleBy(processCode, serverCode, batchId, transaction: transaction);
         }
 
+        public XXIF_CHP_P217_CONTAINER_ST GetSingleCtrStBy(string processCode, string serverCode, string batchId, IDbTransaction transaction = null)
+        {
+            var task = CtrStRepository.GetSingleBy(processCode, serverCode, batchId, transaction: transaction);
+            task.Wait();
+            return task.Result;
+        }
+
         public async Task<List<CTR_DETAIL_T>> GetFlatDetailListBy(string processCode, string serverCode, string batchId, IDbTransaction transaction = null)
         {
             return (await CtrDetailRepository.GetFlatListBy(processCode, serverCode, batchId, transaction))?.ToList();
@@ -82,7 +89,7 @@ namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
             return model;
         }
 
-        public async Task<ResultModel> ContainerStReceive(XXIF_CHP_CONTROL_ST controlStage, IDbTransaction transaction = null)
+        public ResultModel ContainerStReceive(XXIF_CHP_CONTROL_ST controlStage, IDbTransaction transaction = null)
         {
             var resultModel = new ResultModel();
 
@@ -113,7 +120,7 @@ namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
             return resultModel;
         }
 
-        public async Task<ResultModel> ContainerStChange(XXIF_CHP_CONTROL_ST contolStage, IDbTransaction transaction = null)
+        public ResultModel ContainerStChange(XXIF_CHP_CONTROL_ST contolStage, IDbTransaction transaction = null)
         {
             var resultModel = new ResultModel();
             try
@@ -138,7 +145,7 @@ namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
             return resultModel;
         }
 
-        public async Task<ResultModel> ContainerStCancel(XXIF_CHP_CONTROL_ST contolStage, IDbTransaction transaction = null)
+        public ResultModel ContainerStCancel(XXIF_CHP_CONTROL_ST contolStage, IDbTransaction transaction = null)
         {
             var resultModel = new ResultModel();
             try
@@ -163,7 +170,7 @@ namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
             return resultModel;
         }
 
-        public async Task<ResultModel> ContainerStUpload(long ctrHeaderId, IDbTransaction transaction = null)
+        public ResultModel ContainerStUpload(long ctrHeaderId, IDbTransaction transaction = null)
         {
             var resultModel = new ResultModel();
 

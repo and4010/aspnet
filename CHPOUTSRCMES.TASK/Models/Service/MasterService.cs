@@ -3,6 +3,7 @@ using CHPOUTSRCMES.TASK.Models.Entity.Temp;
 using CHPOUTSRCMES.TASK.Models.UnitOfWork;
 using CHPOUTSRCMES.TASK.Models.Views;
 using CHPOUTSRCMES.TASK.Tasks;
+using CHPOUTSRCMES.TASK.Utils;
 using CHPOUTSRCMES.Web.DataModel.Entity.Information;
 using NLog;
 using Oracle.ManagedDataAccess.Client;
@@ -43,7 +44,7 @@ namespace CHPOUTSRCMES.TASK.Models.Service
         /// <param name="tasker"></param>
         /// <param name="token"></param>
         /// <returns></returns>
-        internal async Task importSubinventory(Tasker tasker, CancellationToken token)
+        internal void importSubinventory(Tasker tasker, CancellationToken token)
         {
             LogInfo($"[{tasker.Name}]-{tasker.Unit}-importSubinventory-開始");
 
@@ -60,7 +61,9 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                 {
                     using (MasterUOW masterUOW = new MasterUOW(conn))
                     {
-                        list = (await masterUOW.GetSubinventoryListAsync()).ToList();
+                        var task = masterUOW.GetSubinventoryListAsync();
+                        task.Wait();
+                        list = task.Result.ToList();
 
                         if (list.Count() == 0)
                         {
@@ -164,13 +167,14 @@ namespace CHPOUTSRCMES.TASK.Models.Service
 
             LogInfo($"[{tasker.Name}]-{tasker.Unit}-importSubinventory-結束");
         }
+
         /// <summary>
         /// 同步 庫存交易類別
         /// </summary>
         /// <param name="tasker"></param>
         /// <param name="token"></param>
         /// <returns></returns>
-        internal async Task importTransactionType(Tasker tasker, CancellationToken token)
+        internal void importTransactionType(Tasker tasker, CancellationToken token)
         {
             LogInfo($"[{tasker.Name}]-{tasker.Unit}-importTransactionType-開始");
 
@@ -187,8 +191,9 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                 {
                     using (MasterUOW masterUOW = new MasterUOW(conn))
                     {
-                        list = (await masterUOW.GetTransactionTypeListAsync()).ToList();
-
+                        var task = masterUOW.GetTransactionTypeListAsync();
+                        task.Wait();
+                        list = task.Result.ToList();
                         if (list.Count() == 0)
                         {
                             LogInfo($"[{tasker.Name}]-{tasker.Unit}-importTransactionType-無法從{typeof(XXCINV_TRANSACTION_TYPE_V)}VIEW取得資料");
@@ -341,7 +346,7 @@ namespace CHPOUTSRCMES.TASK.Models.Service
         /// <param name="tasker"></param>
         /// <param name="token"></param>
         /// <returns></returns>
-        internal async Task importItem(Tasker tasker, CancellationToken token)
+        internal void importItem(Tasker tasker, CancellationToken token)
         {
 
             LogInfo($"[{tasker.Name}]-{tasker.Unit}-importItem-開始");
@@ -379,8 +384,9 @@ namespace CHPOUTSRCMES.TASK.Models.Service
 
                     using (MasterUOW masterUOW = new MasterUOW(new OracleConnection(ErpConnStr)))
                     {
-                        oraItemAllCount = await masterUOW.GetItemCountAsync();
-                        oraItemCount = sqlItemLastUpdateDate.HasValue ? (await masterUOW.ItemCountByLastUpdateDateAsync(sqlItemLastUpdateDate.Value)) : 0;
+                        oraItemAllCount = AsyncUtil.RunSync<long>(() => masterUOW.GetItemCountAsync());
+                        oraItemCount = sqlItemLastUpdateDate.HasValue ? AsyncUtil.RunSync<long>(() => masterUOW.ItemCountByLastUpdateDateAsync(sqlItemLastUpdateDate.Value)) : 0;
+                        
                         LogInfo($"[{tasker.Name}]-{tasker.Unit}-importItem- SQL 總筆數:{sqlItemCount} 最後更新日期:{sqlItemLastUpdateDate:yyyy-MM-dd HH:mm:ss.fff}");
                         LogInfo($"[{tasker.Name}]-{tasker.Unit}-importItem- ORACLE 總筆數:{oraItemAllCount} 差異筆數:{oraItemCount}");
 
@@ -395,14 +401,14 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                                 else if (sqlItemLastUpdateDate.HasValue && sqlItemCount > 0 && oraItemCount < 1000)
                                 {
                                     //更新部分差異
-                                    var resultModel = await ImportItemPartially(sqlConn, trans, masterUOW, sqlItemLastUpdateDate.Value, "SP_ItemSync", "SP_OrgItemSync");
+                                    var resultModel = ImportItemPartially(sqlConn, trans, masterUOW, sqlItemLastUpdateDate.Value, "SP_ItemSync", "SP_OrgItemSync");
 
                                     LogInfo($"[{tasker.Name}]-{tasker.Unit}-importItem-ImportItemPartially:{resultModel}");
                                 }
                                 else
                                 {
                                     //資料全部重抓
-                                    var resultModel = await ReimportItem(sqlConn, trans, masterUOW, "ITEMS_TMP_T", "SP_ItemSync", "ORG_ITEMS_TMP_T", "SP_OrgItemSync");
+                                    var resultModel = ReimportItem(sqlConn, trans, masterUOW, "ITEMS_TMP_T", "SP_ItemSync", "ORG_ITEMS_TMP_T", "SP_OrgItemSync");
                                     LogInfo($"[{tasker.Name}]-{tasker.Unit}-importItem-ReimportItem:{resultModel}");
                                 }
                                 trans.Commit();
@@ -444,19 +450,19 @@ namespace CHPOUTSRCMES.TASK.Models.Service
         /// <param name="tableName"></param>
         /// <param name="spName"></param>
         /// <returns></returns>
-        internal async Task<ResultModel> ReimportItem(SqlConnection sqlConn, SqlTransaction trans, MasterUOW masterUOW, string tableName, string spName, string mapTableName, string mapSpName)
+        internal ResultModel ReimportItem(SqlConnection sqlConn, SqlTransaction trans, MasterUOW masterUOW, string tableName, string spName, string mapTableName, string mapSpName)
         {
             long dividedCount = 5000;
 
             BulkCopier bCopier = new BulkCopier(sqlConn, trans);
 
-            long allCount = await masterUOW.GetItemCountAsync();
+            long allCount = AsyncUtil.RunSync<long>(() => masterUOW.GetItemCountAsync());
             long count = 0;
             bool notDeleted = true;
 
             while (count < allCount)
             {
-                var tmp = (await masterUOW.GetItemRangeAsync(count, dividedCount));
+                var tmp = AsyncUtil.RunSync<IEnumerable<XXCINV_MES_ITEMS_FTY_V>>(() => masterUOW.GetItemRangeAsync(count, dividedCount));
 
                 var list = tmp
                     .Select(x => new ITEMS_TMP_T()
@@ -546,10 +552,10 @@ namespace CHPOUTSRCMES.TASK.Models.Service
         /// <param name="lastUpdateDate"></param>
         /// <param name="spName"></param>
         /// <returns></returns>
-        internal async Task<ResultModel> ImportItemPartially(SqlConnection sqlConn, SqlTransaction trans, MasterUOW masterUOW, DateTime lastUpdateDate, string spName, string mapSpName)
+        internal ResultModel ImportItemPartially(SqlConnection sqlConn, SqlTransaction trans, MasterUOW masterUOW, DateTime lastUpdateDate, string spName, string mapSpName)
         {
             BulkCopier bCopier = new BulkCopier(sqlConn, trans);
-            var tmp = (await masterUOW.GetAllItemByLastUpdateDate(lastUpdateDate));
+            var tmp = AsyncUtil.RunSync<IEnumerable<XXCINV_MES_ITEMS_FTY_V>>(() => masterUOW.GetAllItemByLastUpdateDate(lastUpdateDate));
             var list = tmp
                     .Select(x => new ITEMS_TMP_T()
                     {
@@ -625,7 +631,7 @@ namespace CHPOUTSRCMES.TASK.Models.Service
         /// <param name="tasker"></param>
         /// <param name="token"></param>
         /// <returns></returns>
-        internal async Task importOspRelatedItem(Tasker tasker, CancellationToken token)
+        internal void importOspRelatedItem(Tasker tasker, CancellationToken token)
         {
             LogInfo($"[{tasker.Name}]-{tasker.Unit}-importOspRelatedItem-開始");
 
@@ -643,7 +649,7 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                 {
                     using (MasterUOW masterUOW = new MasterUOW(conn))
                     {
-                        list = (await masterUOW.GetOspRelatedItemListAsync()).ToList();
+                        list = AsyncUtil.RunSync(() => masterUOW.GetOspRelatedItemListAsync()).ToList();
 
                         if (list.Count() == 0)
                         {
@@ -710,7 +716,7 @@ namespace CHPOUTSRCMES.TASK.Models.Service
         /// <param name="tasker"></param>
         /// <param name="token"></param>
         /// <returns></returns>
-        internal async Task importYszmpckq(Tasker tasker, CancellationToken token)
+        internal void importYszmpckq(Tasker tasker, CancellationToken token)
         {
             LogInfo($"[{tasker.Name}]-{tasker.Unit}-importYszmpckq-開始");
 
@@ -727,7 +733,7 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                 {
                     using (MasterUOW masterUOW = new MasterUOW(conn))
                     {
-                        list = (await masterUOW.GetYszmpckqListAsync()).ToList();
+                        list = AsyncUtil.RunSync(() => masterUOW.GetYszmpckqListAsync()).ToList();
 
                         if (list.Count() == 0)
                         {

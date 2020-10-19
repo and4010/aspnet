@@ -55,9 +55,7 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                 using var mstUow = new MasterUOW(oraConn);
 
 
-                var task = ctrStUow.GetByProcessCodeAsync("XXIFP217");
-                task.Wait();
-                var list = task.Result;
+                var list = ctrStUow.GetByProcessCode("XXIFP217");
                 if (list == null || list.Count() == 0)
                 {
                     LogInfo($"[{tasker.Name}]-{tasker.Unit}-ImportCtrSt-無可轉入資料");
@@ -78,9 +76,7 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                     {
 
                         //取第一筆資料來確認 新增/取消/修改
-                        var taskCtrSt = ctrStUow.GetSingleCtrStByAsync(st.PROCESS_CODE, st.SERVER_CODE, st.BATCH_ID, transaction);
-                        taskCtrSt.Wait();
-                        var ctrSt = taskCtrSt.Result;
+                        var ctrSt = ctrStUow.GetSingleCtrStBy(st.PROCESS_CODE, st.SERVER_CODE, st.BATCH_ID, transaction);
                         if (ctrSt == null)
                         {
                             LogInfo($"[{tasker.Name}]-{tasker.Unit}-ImportCtrSt ({st.PROCESS_CODE}, {st.SERVER_CODE}, {st.BATCH_ID})-無法取得CONTAINER_ST明細首筆");
@@ -92,9 +88,7 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                         switch (ctrSt.ATTRIBUTE1.ToUpper())
                         {
                             case "N":
-                                var taskReceive = ctrStUow.ContainerStReceive(st, transaction);
-                                taskReceive.Wait();
-                                model = taskReceive.Result;
+                                model = ctrStUow.ContainerStReceive(st, transaction);
                                 LogInfo($"[{tasker.Name}]-{tasker.Unit}-ImportCtrSt ({ctrSt.ATTRIBUTE1}, {st.PROCESS_CODE}, {st.SERVER_CODE}, {st.BATCH_ID})-{model}");
                                 if (!model.Success)
                                 {
@@ -103,9 +97,7 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                                 GenerateCtrPickedOfFlat(ctrSt.PROCESS_CODE, ctrSt.SERVER_CODE, ctrSt.BATCH_ID, mstUow, ctrStUow, transaction);
                                 break;
                             case "Y":
-                                var taskChange = ctrStUow.ContainerStChange(st, transaction);
-                                taskChange.Wait();
-                                model = taskChange.Result;
+                                model = ctrStUow.ContainerStChange(st, transaction);
                                 LogInfo($"[{tasker.Name}]-{tasker.Unit}-ImportCtrSt ({ctrSt.ATTRIBUTE1}, {st.PROCESS_CODE}, {st.SERVER_CODE}, {st.BATCH_ID})-{model}");
                                 if (!model.Success)
                                 {
@@ -114,9 +106,7 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                                 GenerateCtrPickedOfFlat(ctrSt.PROCESS_CODE, ctrSt.SERVER_CODE, ctrSt.BATCH_ID, mstUow, ctrStUow, transaction);
                                 break;
                             case "C":
-                                var taskCancel = ctrStUow.ContainerStCancel(st, transaction);
-                                taskCancel.Wait();
-                                model = taskCancel.Result;
+                                model = ctrStUow.ContainerStCancel(st, transaction);
                                 LogInfo($"[{tasker.Name}]-{tasker.Unit}-ImportCtrSt ({ctrSt.ATTRIBUTE1}, {st.PROCESS_CODE}, {st.SERVER_CODE}, {st.BATCH_ID})-{model}");
                                 if (!model.Success)
                                 {
@@ -302,9 +292,7 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                     using var transaction = sqlConn.BeginTransaction();
                     try
                     {
-                        var taskUpload = ctrStUow.ContainerStUpload(list[i].CTR_HEADER_ID, transaction);
-                        taskUpload.Wait();
-                        var model = taskUpload.Result;
+                        var model = ctrStUow.ContainerStUpload(list[i].CTR_HEADER_ID, transaction);
                         LogInfo($"[{tasker.Name}]-{tasker.Unit}-ExportCtrStRv (CTR_HEADER_ID:{list[i].CTR_HEADER_ID})-{model}");
                         
                         if (!model.Success)

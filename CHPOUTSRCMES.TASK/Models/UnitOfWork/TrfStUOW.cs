@@ -46,14 +46,14 @@ namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
         {
         }
 
-        public async Task<TRF_HEADER_T> GetHeaderById(long headerId, IDbTransaction transaction = null)
+        public TRF_HEADER_T GetHeaderById(long headerId, IDbTransaction transaction = null)
         {
-            return (await TrfHeaderRepository.GetAsync(headerId, transaction));
+            return TrfHeaderRepository.Get(headerId, transaction);
         }
 
-        public async Task<List<long>> GetHeaderListForUpload(IDbTransaction transaction = null)
+        public List<long> GetHeaderListForUpload(IDbTransaction transaction = null)
         {
-            return (await TrfHeaderRepository.GetUploadList(transaction));
+            return TrfHeaderRepository.GetUploadList(transaction);
         }
 
         public ResultModel TransferStUpload(long trfHeaderId, MasterUOW masterUOW, string userId = "SYS", IDbTransaction transaction = null)
@@ -80,42 +80,16 @@ namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
                     return resultModel;
                 }
 
-                //換算主單位及交易單位
+
                 string processCode = p.Get<string>("@processCode");
                 string serverCode = p.Get<string>("@serverCode");
                 string batchId = p.Get<string>("@batchId");
-                var task = SubTransferStRepository.GetListBy(processCode, serverCode, batchId, transaction);
-                task.Wait();
-                var list = task.Result;
-                if(list == null || list.Count == 0)
+                
+                //換算主單位及交易單位
+                resultModel = updateSubTransferStList(processCode, serverCode, batchId, masterUOW, transaction);
+                if (!resultModel.Success)
                 {
-                    return new ResultModel(false, "TransferStUpload 無資料可上傳");
-                }
-
-                for(int i= 0; i < list.Count; i ++)
-                {
-                    var m = list[i];
-                    if (m.SECONDARY_QUANTITY > 0 && !string.IsNullOrEmpty(m.SECONDARY_UOM_CODE))
-                    {
-                        var taskConvert = masterUOW.UomConvertAsync(m.INVENTORY_ITEM_ID, m.SECONDARY_QUANTITY, m.SECONDARY_UOM_CODE, m.PRIMARY_UOM);
-                        taskConvert.Wait();
-                        var primaryQuantity = taskConvert.Result;
-                        if (!primaryQuantity.HasValue)
-                        {
-                            throw new Exception($"單位換算失敗!! ITEM ID :{m.INVENTORY_ITEM_ID} AMOUNT:{m.PRIMARY_UOM} UOM:{m.SECONDARY_UOM_CODE} TO:{m.PRIMARY_UOM}");
-                        }
-
-                        m.PRIMARY_QUANTITY = primaryQuantity.Value;
-                        m.TRANSACTION_QUANTITY = m.SECONDARY_QUANTITY;
-                        m.TRANSACTION_UOM = m.SECONDARY_UOM_CODE;
-                    }
-                    else
-                    {
-                        m.TRANSACTION_QUANTITY = m.PRIMARY_QUANTITY;
-                        m.TRANSACTION_UOM = m.PRIMARY_UOM;
-                        m.ROLL_QUANTITY = Math.Abs(m.PRIMARY_QUANTITY).ToString("0.#####");
-                    }
-                    SubTransferStRepository.Update(m, transaction).Wait();
+                    return resultModel;
                 }
 
                 //回寫 CONTROL_ST
@@ -146,12 +120,12 @@ namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
         }
 
 
-        public async Task<List<long>> GetReasonHeaderListForUpload(IDbTransaction transaction = null)
+        public List<long> GetReasonHeaderListForUpload(IDbTransaction transaction = null)
         {
-            return (await TrfRsnHeaderRepository.GetUploadList(transaction));
+            return TrfRsnHeaderRepository.GetUploadList(transaction);
         }
 
-        public async Task<ResultModel> TrfRsnStUpload(long trfRsnHeaderId, MasterUOW masterUOW, string userId = "SYS", IDbTransaction transaction = null)
+        public ResultModel TrfRsnStUpload(long trfRsnHeaderId, MasterUOW masterUOW, string userId = "SYS", IDbTransaction transaction = null)
         {
             var resultModel = new ResultModel();
 
@@ -174,39 +148,16 @@ namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
                     return resultModel;
                 }
 
-                //換算主單位及交易單位
+
                 string processCode = p.Get<string>("@processCode");
                 string serverCode = p.Get<string>("@serverCode");
                 string batchId = p.Get<string>("@batchId");
-                var list = await SubTransferStRepository.GetListBy(processCode, serverCode, batchId, transaction);
-                if (list == null || list.Count == 0)
+                
+                //換算主單位及交易單位
+                resultModel = updateSubTransferStList(processCode, serverCode, batchId, masterUOW, transaction);
+                if (!resultModel.Success)
                 {
-                    return new ResultModel(false, "TrfRsnStUpload 無資料可上傳");
-                }
-
-                for (int i = 0; i < list.Count; i++)
-                {
-                    var m = list[i];
-                    if (m.SECONDARY_QUANTITY > 0 && !string.IsNullOrEmpty(m.SECONDARY_UOM_CODE))
-                    {
-                        var primaryQuantity = await masterUOW.UomConvertAsync(m.INVENTORY_ITEM_ID, m.SECONDARY_QUANTITY, m.SECONDARY_UOM_CODE, m.PRIMARY_UOM);
-                        if (!primaryQuantity.HasValue)
-                        {
-                            throw new Exception($"單位換算失敗!! ITEM ID :{m.INVENTORY_ITEM_ID} AMOUNT:{m.PRIMARY_UOM} UOM:{m.SECONDARY_UOM_CODE} TO:{m.PRIMARY_UOM}");
-                        }
-
-                        m.PRIMARY_QUANTITY = primaryQuantity.Value;
-                        m.TRANSACTION_QUANTITY = m.SECONDARY_QUANTITY;
-                        m.TRANSACTION_UOM = m.SECONDARY_UOM_CODE;
-                    }
-                    else
-                    {
-                        m.TRANSACTION_QUANTITY = m.PRIMARY_QUANTITY;
-                        m.TRANSACTION_UOM = m.PRIMARY_UOM;
-                        m.ROLL_QUANTITY = Math.Abs(m.PRIMARY_QUANTITY).ToString("0.#####");
-                    }
-                    await SubTransferStRepository.Update(m, transaction);
-                    
+                    return resultModel;
                 }
 
                 //回寫 CONTROL_ST
@@ -238,12 +189,12 @@ namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
         }
 
 
-        public async Task<List<long>> GetInvHeaderListForUpload(IDbTransaction transaction = null)
+        public List<long> GetInvHeaderListForUpload(IDbTransaction transaction = null)
         {
-            return (await TrfRsnHeaderRepository.GetUploadList(transaction));
+            return TrfRsnHeaderRepository.GetUploadList(transaction);
         }
 
-        public async Task<ResultModel> TrfInvStUpload(long trfInvHeaderId, MasterUOW masterUOW, string userId = "SYS", IDbTransaction transaction = null)
+        public ResultModel TrfInvStUpload(long trfInvHeaderId, MasterUOW masterUOW, string userId = "SYS", IDbTransaction transaction = null)
         {
             var resultModel = new ResultModel();
 
@@ -266,40 +217,15 @@ namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
                     return resultModel;
                 }
 
-                //換算主單位及交易單位
                 string processCode = p.Get<string>("@processCode");
                 string serverCode = p.Get<string>("@serverCode");
                 string batchId = p.Get<string>("@batchId");
 
-                var list = await SubTransferStRepository.GetListBy(processCode, serverCode, batchId, transaction);
-                if (list == null || list.Count == 0)
+                //換算主單位及交易單位
+                resultModel = updateSubTransferStList(processCode, serverCode, batchId, masterUOW, transaction);
+                if (!resultModel.Success)
                 {
-                    return new ResultModel(false, "TrfInvStUpload 無資料可上傳");
-                }
-
-                for (int i = 0; i < list.Count; i++)
-                {
-                    var m = list[i];
-                    if (m.SECONDARY_QUANTITY > 0 && !string.IsNullOrEmpty(m.SECONDARY_UOM_CODE))
-                    {
-                        var primaryQuantity = await masterUOW.UomConvertAsync(m.INVENTORY_ITEM_ID, m.SECONDARY_QUANTITY, m.SECONDARY_UOM_CODE, m.PRIMARY_UOM);
-                        if (!primaryQuantity.HasValue)
-                        {
-                            throw new Exception($"單位換算失敗!! ITEM ID :{m.INVENTORY_ITEM_ID} AMOUNT:{m.PRIMARY_UOM} UOM:{m.SECONDARY_UOM_CODE} TO:{m.PRIMARY_UOM}");
-                        }
-
-                        m.PRIMARY_QUANTITY = primaryQuantity.Value;
-                        m.TRANSACTION_QUANTITY = m.SECONDARY_QUANTITY;
-                        m.TRANSACTION_UOM = m.SECONDARY_UOM_CODE;
-                    }
-                    else
-                    {
-                        m.TRANSACTION_QUANTITY = m.PRIMARY_QUANTITY;
-                        m.TRANSACTION_UOM = m.PRIMARY_UOM;
-                        m.ROLL_QUANTITY = Math.Abs(m.PRIMARY_QUANTITY).ToString("0.#####");
-                    }
-                    await SubTransferStRepository.Update(m, transaction);
-
+                    return resultModel;
                 }
 
                 //回寫 CONTROL_ST
@@ -330,12 +256,12 @@ namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
         }
 
 
-        public async Task<List<long>> GetMiscHeaderListForUpload(IDbTransaction transaction = null)
+        public List<long> GetMiscHeaderListForUpload(IDbTransaction transaction = null)
         {
-            return (await TrfMiscHeaderRepository.GetUploadList(transaction));
+            return TrfMiscHeaderRepository.GetUploadList(transaction);
         }
 
-        public async Task<ResultModel> TrfMiscStUpload(long trfMiscHeaderId, MasterUOW masterUOW, string userId = "SYS", IDbTransaction transaction = null)
+        public ResultModel TrfMiscStUpload(long trfMiscHeaderId, MasterUOW masterUOW, string userId = "SYS", IDbTransaction transaction = null)
         {
             var resultModel = new ResultModel();
 
@@ -358,41 +284,17 @@ namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
                     return resultModel;
                 }
 
-                //換算主單位及交易單位
                 string processCode = p.Get<string>("@processCode");
                 string serverCode = p.Get<string>("@serverCode");
                 string batchId = p.Get<string>("@batchId");
 
-                var list = await SubTransferStRepository.GetListBy(processCode, serverCode, batchId, transaction);
-                if (list == null || list.Count == 0)
+                //換算主單位及交易單位
+                resultModel = updateSubTransferStList(processCode, serverCode, batchId, masterUOW, transaction);
+                if (!resultModel.Success)
                 {
-                    return new ResultModel(false, "TrfMiscStUpload 無資料可上傳");
+                    return resultModel;
                 }
 
-                for (int i = 0; i < list.Count; i++)
-                {
-                    var m = list[i];
-                    if (m.SECONDARY_QUANTITY > 0 && !string.IsNullOrEmpty(m.SECONDARY_UOM_CODE))
-                    {
-                        var primaryQuantity = await masterUOW.UomConvertAsync(m.INVENTORY_ITEM_ID, m.SECONDARY_QUANTITY, m.SECONDARY_UOM_CODE, m.PRIMARY_UOM);
-                        if (!primaryQuantity.HasValue)
-                        {
-                            throw new Exception($"單位換算失敗!! ITEM ID :{m.INVENTORY_ITEM_ID} AMOUNT:{m.PRIMARY_UOM} UOM:{m.SECONDARY_UOM_CODE} TO:{m.PRIMARY_UOM}");
-                        }
-
-                        m.PRIMARY_QUANTITY = primaryQuantity.Value;
-                        m.TRANSACTION_QUANTITY = m.SECONDARY_QUANTITY;
-                        m.TRANSACTION_UOM = m.SECONDARY_UOM_CODE;
-                    }
-                    else
-                    {
-                        m.TRANSACTION_QUANTITY = m.PRIMARY_QUANTITY;
-                        m.TRANSACTION_UOM = m.PRIMARY_UOM;
-                        m.ROLL_QUANTITY = Math.Abs(m.PRIMARY_QUANTITY).ToString("0.#####");
-                    }
-                    await SubTransferStRepository.Update(m, transaction);
-
-                }
 
                 //回寫 CONTROL_ST
                 var paramSoa = new DynamicParameters();
@@ -422,12 +324,12 @@ namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
             return resultModel;
         }
 
-        public async Task<List<long>> GetObsHeaderListForUpload(IDbTransaction transaction = null)
+        public List<long> GetObsHeaderListForUpload(IDbTransaction transaction = null)
         {
-            return (await TrfObsHeaderRepository.GetUploadList(transaction));
+            return TrfObsHeaderRepository.GetUploadList(transaction);
         }
 
-        public async Task<ResultModel> TrfObsStUpload(long trfObsHeaderId, MasterUOW masterUOW, string userId = "SYS", IDbTransaction transaction = null)
+        public ResultModel TrfObsStUpload(long trfObsHeaderId, MasterUOW masterUOW, string userId = "SYS", IDbTransaction transaction = null)
         {
             var resultModel = new ResultModel();
 
@@ -450,41 +352,15 @@ namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
                     return resultModel;
                 }
 
-
-                //換算主單位及交易單位
                 string processCode = p.Get<string>("@processCode");
                 string serverCode = p.Get<string>("@serverCode");
                 string batchId = p.Get<string>("@batchId");
 
-                var list = await SubTransferStRepository.GetListBy(processCode, serverCode, batchId, transaction);
-                if (list == null || list.Count == 0)
+                //換算主單位及交易單位
+                resultModel = updateSubTransferStList(processCode, serverCode, batchId, masterUOW, transaction);
+                if (!resultModel.Success)
                 {
-                    return new ResultModel(false, "TrfMiscStUpload 無資料可上傳");
-                }
-
-                for (int i = 0; i < list.Count; i++)
-                {
-                    var m = list[i];
-                    if (m.SECONDARY_QUANTITY > 0 && !string.IsNullOrEmpty(m.SECONDARY_UOM_CODE))
-                    {
-                        var primaryQuantity = await masterUOW.UomConvertAsync(m.INVENTORY_ITEM_ID, m.SECONDARY_QUANTITY, m.SECONDARY_UOM_CODE, m.PRIMARY_UOM);
-                        if (!primaryQuantity.HasValue)
-                        {
-                            throw new Exception($"單位換算失敗!! ITEM ID :{m.INVENTORY_ITEM_ID} AMOUNT:{m.PRIMARY_UOM} UOM:{m.SECONDARY_UOM_CODE} TO:{m.PRIMARY_UOM}");
-                        }
-
-                        m.PRIMARY_QUANTITY = primaryQuantity.Value;
-                        m.TRANSACTION_QUANTITY = m.SECONDARY_QUANTITY;
-                        m.TRANSACTION_UOM = m.SECONDARY_UOM_CODE;
-                    }
-                    else
-                    {
-                        m.TRANSACTION_QUANTITY = m.PRIMARY_QUANTITY;
-                        m.TRANSACTION_UOM = m.PRIMARY_UOM;
-                        m.ROLL_QUANTITY = Math.Abs(m.PRIMARY_QUANTITY).ToString("0.#####");
-                    }
-                    await SubTransferStRepository.Update(m, transaction);
-
+                    return resultModel;
                 }
 
                 //回寫 CONTROL_ST
@@ -515,9 +391,44 @@ namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
             return resultModel;
         }
 
-        public async Task<List<XXIF_CHP_P222_SUB_TRANSFER_ST>> GetSubTransferStList(string processCode, string serverCode, string batchId, IDbTransaction transaction = null)
+        public List<XXIF_CHP_P222_SUB_TRANSFER_ST> GetSubTransferStList(string processCode, string serverCode, string batchId, IDbTransaction transaction = null)
         {
-            return (await SubTransferStRepository.GetListBy(processCode, serverCode, batchId, transaction));
+            return SubTransferStRepository.GetListBy(processCode, serverCode, batchId, transaction);
+        }
+
+        public ResultModel updateSubTransferStList(string processCode, string serverCode, string batchId, MasterUOW masterUOW, IDbTransaction transaction = null)
+        {
+            var list = SubTransferStRepository.GetListBy(processCode, serverCode, batchId, transaction);
+            if (list == null || list.Count == 0)
+            {
+                return new ResultModel(false, "無資料可上傳");
+            }
+
+            for (int i = 0; i < list.Count; i++)
+            {
+                var m = list[i];
+                if (m.SECONDARY_QUANTITY > 0 && !string.IsNullOrEmpty(m.SECONDARY_UOM_CODE))
+                {
+                    var primaryQuantity = masterUOW.UomConvert(m.INVENTORY_ITEM_ID, m.SECONDARY_QUANTITY, m.SECONDARY_UOM_CODE, m.PRIMARY_UOM);
+                    if (!primaryQuantity.HasValue)
+                    {
+                        throw new Exception($"單位換算失敗!! ITEM ID :{m.INVENTORY_ITEM_ID} AMOUNT:{m.PRIMARY_UOM} UOM:{m.SECONDARY_UOM_CODE} TO:{m.PRIMARY_UOM}");
+                    }
+
+                    m.PRIMARY_QUANTITY = primaryQuantity.Value;
+                    m.TRANSACTION_QUANTITY = m.SECONDARY_QUANTITY;
+                    m.TRANSACTION_UOM = m.SECONDARY_UOM_CODE;
+                }
+                else
+                {
+                    m.TRANSACTION_QUANTITY = m.PRIMARY_QUANTITY;
+                    m.TRANSACTION_UOM = m.PRIMARY_UOM;
+                }
+                SubTransferStRepository.Update(m, transaction);
+
+            }
+
+            return new ResultModel(true, "");
         }
     }
 }

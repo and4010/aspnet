@@ -81,6 +81,15 @@ namespace CHPOUTSRCMES.TASK.Models.Repository.MsSql
             return result;
         }
 
+        public T Get(long id, IDbTransaction transaction = null)
+        {
+            var result = Connection.QuerySingleOrDefault<T>($"{GenerateSelectQuery()} WHERE {IdField}=@Id", new { Id = id }, transaction: transaction);
+            if (result == null)
+                throw new KeyNotFoundException($"{tableName} with id [{id}] could not be found.");
+
+            return result;
+        }
+
         public async Task<int> SaveRangeAsync(IEnumerable<T> list, IDbTransaction transaction = null)
         {
             var query = GenerateInsertQuery();

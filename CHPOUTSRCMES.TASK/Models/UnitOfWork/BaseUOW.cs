@@ -47,6 +47,13 @@ namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
             return (await ControlStageRepository.GetControlStageListBy(processCode, soaProcessCode, pullingFlag, transaction:transaction))?.ToList();
         }
 
+        public List<XXIF_CHP_CONTROL_ST> GetByProcessCode(string processCode, string soaProcessCode = "S", string pullingFlag = "Out-S", IDbTransaction transaction = null)
+        {
+            var task = ControlStageRepository.GetControlStageListBy(processCode, soaProcessCode, pullingFlag, transaction: transaction);
+            task.Wait();
+            return task.Result.ToList();
+        }
+
         /// <summary>
         /// 產生條碼清單 (請用交易TRANSACTION)
         /// </summary>

@@ -225,6 +225,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tasks\Tasker.cs" />
     <Compile Include="Tasks\TaskTimer.cs" />
+    <Compile Include="Utils\AsyncUtil.cs" />
     <EmbeddedResource Include="Forms\ChildForm.resx">
       <DependentUpon>ChildForm.cs</DependentUpon>
     </EmbeddedResource>

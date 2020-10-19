@@ -43,12 +43,12 @@ namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
             return (await DlvHeaderRepository.GetAsync(headerId, transaction));
         }
 
-        public async Task<List<long>> GetTripList(IDbTransaction transaction = null)
+        public List<long> GetTripList(IDbTransaction transaction = null)
         {
-            return (await DlvHeaderRepository.GetUploadList(transaction));
+            return DlvHeaderRepository.GetUploadList(transaction);
         }
 
-        public async Task<ResultModel> DeliveryStReceive(XXIF_CHP_CONTROL_ST controlStage, IDbTransaction transaction = null)
+        public ResultModel DeliveryStReceive(XXIF_CHP_CONTROL_ST controlStage, IDbTransaction transaction = null)
         {
             var resultModel = new ResultModel();
             
@@ -79,7 +79,7 @@ namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
             return resultModel;
         }
 
-        public async Task<ResultModel> DeliveryStUpload(long TripId, MasterUOW masterUOW, string userId = "SYS", IDbTransaction transaction = null)
+        public ResultModel DeliveryStUpload(long TripId, MasterUOW masterUOW, string userId = "SYS", IDbTransaction transaction = null)
         {
             var resultModel = new ResultModel();
 
@@ -107,7 +107,7 @@ namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
                 string serverCode = p.Get<string>("@serverCode");
                 string batchId = p.Get<string>("@batchId");
 
-                var list = await ShipConfirmStRepository.GetListBy(processCode, serverCode, batchId, transaction);
+                var list = ShipConfirmStRepository.GetListBy(processCode, serverCode, batchId, transaction);
                 if (list == null || list.Count == 0)
                 {
                     return new ResultModel(false, "DeliveryStUpload 無資料可上傳");
@@ -118,7 +118,7 @@ namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
                     var m = list[i];
                     if (m.SECONDARY_QUANTITY.HasValue && m.SECONDARY_QUANTITY.Value > 0 && !string.IsNullOrEmpty(m.SECONDARY_UOM))
                     {
-                        var primaryQuantity = await masterUOW.UomConvertAsync(m.INVENTORY_ITEM_ID, m.SECONDARY_QUANTITY.Value, m.SECONDARY_UOM, m.PRIMARY_UOM);
+                        var primaryQuantity = masterUOW.UomConvert(m.INVENTORY_ITEM_ID, m.SECONDARY_QUANTITY.Value, m.SECONDARY_UOM, m.PRIMARY_UOM);
                         if (!primaryQuantity.HasValue)
                         {
                             throw new Exception($"單位換算失敗!! ITEM ID :{m.INVENTORY_ITEM_ID} AMOUNT:{m.SECONDARY_QUANTITY} UOM:{m.SECONDARY_UOM} TO:{m.PRIMARY_UOM}");
@@ -126,7 +126,7 @@ namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
 
                         m.PRIMARY_QUANTITY = primaryQuantity.Value;
 
-                        var txnQuantity = await masterUOW.UomConvertAsync(m.INVENTORY_ITEM_ID, m.SECONDARY_QUANTITY.Value, m.SECONDARY_UOM, m.TRANSACTION_UOM);
+                        var txnQuantity = masterUOW.UomConvert(m.INVENTORY_ITEM_ID, m.SECONDARY_QUANTITY.Value, m.SECONDARY_UOM, m.TRANSACTION_UOM);
                         if (!txnQuantity.HasValue)
                         {
                             throw new Exception($"單位換算失敗!! ITEM ID :{m.INVENTORY_ITEM_ID} AMOUNT:{m.SECONDARY_QUANTITY} UOM:{m.SECONDARY_UOM} TO:{m.TRANSACTION_UOM}");
@@ -136,16 +136,15 @@ namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
                     }
                     else
                     {
-                        var txnQuantity = await masterUOW.UomConvertAsync(m.INVENTORY_ITEM_ID, m.PRIMARY_QUANTITY, m.PRIMARY_UOM, m.TRANSACTION_UOM);
+                        var txnQuantity = masterUOW.UomConvert(m.INVENTORY_ITEM_ID, m.PRIMARY_QUANTITY, m.PRIMARY_UOM, m.TRANSACTION_UOM);
                         if (!txnQuantity.HasValue)
                         {
                             throw new Exception($"單位換算失敗!! ITEM ID :{m.INVENTORY_ITEM_ID} AMOUNT:{m.PRIMARY_QUANTITY} UOM:{m.PRIMARY_UOM} TO:{m.TRANSACTION_UOM}");
                         }
 
                         m.TRANSACTION_QUANTITY = txnQuantity.Value;
-                        m.ROLL_QUANTITY = Math.Abs(m.PRIMARY_QUANTITY).ToString("0.#####");
                     }
-                    await ShipConfirmStRepository.Update(m, transaction);
+                    ShipConfirmStRepository.Update(m, transaction);
 
                 }
 
