@@ -159,9 +159,7 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                 {
                     throw new Exception($"找不到進櫃檔頭 ID:{detail.CTR_HEADER_ID}");
                 }
-                var taskBarcode = ctrStUow.GenerateBarcodes(header.ORGANIZATION_ID, header.SUBINVENTORY, reamQty, "SYS", "", transaction: transaction);
-                taskBarcode.Wait();
-                var gbModel = taskBarcode.Result;
+                var gbModel = ctrStUow.GenerateBarcodes(header.ORGANIZATION_ID, header.SUBINVENTORY, reamQty, "SYS", "", transaction: transaction);
 
                 if (!gbModel.Success)
                 {

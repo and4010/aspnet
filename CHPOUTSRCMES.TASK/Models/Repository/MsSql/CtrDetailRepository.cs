@@ -48,7 +48,7 @@ WHERE A.PROCESS_CODE = @processCode AND A.SERVER_CODE = @serverCode AND A.BATCH_
         #region IDispose Region
         private bool disposed = false;
 
-        protected virtual void Dispose(bool disposing)
+        protected override void Dispose(bool disposing)
         {
             if (!this.disposed)
             {
@@ -60,7 +60,7 @@ WHERE A.PROCESS_CODE = @processCode AND A.SERVER_CODE = @serverCode AND A.BATCH_
             this.disposed = true;
         }
 
-        public void Dispose()
+        public new void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);

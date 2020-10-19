@@ -26,30 +26,30 @@ namespace CHPOUTSRCMES.TASK.Models.Repository.MsSql
 
         #endregion
 
-        public async Task<IEnumerable<XXIF_CHP_CONTROL_ST>> GetControlStageListBy(string processCode, string soaProcessCode = "S", string pullingFlag = "Out-S", IDbTransaction transaction = null)
+        public IEnumerable<XXIF_CHP_CONTROL_ST> GetControlStageListBy(string processCode, string soaProcessCode = "S", string pullingFlag = "Out-S", IDbTransaction transaction = null)
         {
-            return await this.Connection.QueryAsync<XXIF_CHP_CONTROL_ST>(
+            return this.Connection.Query<XXIF_CHP_CONTROL_ST>(
 $@"{GenerateSelectQuery()} A 
 WHERE A.PROCESS_CODE = @ProcessCode AND A.SOA_PROCESS_CODE = @SoaProcessCode AND A.SOA_PULLING_FLAG = @PullingFlag
 ORDER BY A.PROCESS_CODE, A.SERVER_CODE, A.BATCH_ID", new { ProcessCode = processCode, SoaProcessCode = soaProcessCode, PullingFlag = pullingFlag },transaction: transaction);
         }
 
-        public async Task<XXIF_CHP_CONTROL_ST> GetBy(string processCode, string serverCode, string batchId, string pullingFlag = "In-S", IDbTransaction transaction = null)
+        public XXIF_CHP_CONTROL_ST GetBy(string processCode, string serverCode, string batchId, string pullingFlag = "In-S", IDbTransaction transaction = null)
         {
-            return (await Connection.QueryAsync<XXIF_CHP_CONTROL_ST>(
+            return Connection.Query<XXIF_CHP_CONTROL_ST>(
 $@"{GenerateSelectQuery()} A 
 WHERE A.PROCESS_CODE = @ProcessCode AND A.SERVER_CODE = @ServerCode AND A.BATCH_ID = @BatchId AND SOA_PULLING_FLAG=@PullingFlag
-ORDER BY A.PROCESS_CODE, A.SERVER_CODE, A.BATCH_ID", new { ProcessCode = processCode, ServerCode = serverCode, BatchId = batchId, PullingFlag = pullingFlag }, transaction: transaction)).FirstOrDefault();
+ORDER BY A.PROCESS_CODE, A.SERVER_CODE, A.BATCH_ID", new { ProcessCode = processCode, ServerCode = serverCode, BatchId = batchId, PullingFlag = pullingFlag }, transaction: transaction).FirstOrDefault();
         }
 
-        public async Task<ResultModel> UpdateStatus(XXIF_CHP_CONTROL_ST st, IDbTransaction transaction = null)
+        public ResultModel UpdateStatus(XXIF_CHP_CONTROL_ST st, IDbTransaction transaction = null)
         {
             var resultModel = new ResultModel();
 
             try
             {
 
-                int count = await Connection.ExecuteAsync(
+                int count = Connection.Execute(
 $@"UPDATE XXIF_CHP_CONTROL_ST SET 
     STATUS_CODE=@statusCode, ERROR_MSG=@errorMsg, SOA_PULLING_FLAG=@soaPullingFlag
     WHERE PROCESS_CODE = @processCode 
@@ -80,7 +80,7 @@ $@"UPDATE XXIF_CHP_CONTROL_ST SET
         #region IDispose Region
         private bool disposed = false;
 
-        protected virtual void Dispose(bool disposing)
+        protected override void Dispose(bool disposing)
         {
             if (!this.disposed)
             {
@@ -92,7 +92,7 @@ $@"UPDATE XXIF_CHP_CONTROL_ST SET
             this.disposed = true;
         }
 
-        public void Dispose()
+        public new void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);

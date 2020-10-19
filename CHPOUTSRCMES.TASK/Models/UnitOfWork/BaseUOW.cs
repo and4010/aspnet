@@ -42,16 +42,14 @@ namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
         }
 
 
-        public async Task<List<XXIF_CHP_CONTROL_ST>> GetByProcessCodeAsync(string processCode, string soaProcessCode = "S", string pullingFlag = "Out-S", IDbTransaction transaction = null)
+        public List<XXIF_CHP_CONTROL_ST> GetByProcessCodeAsync(string processCode, string soaProcessCode = "S", string pullingFlag = "Out-S", IDbTransaction transaction = null)
         {
-            return (await ControlStageRepository.GetControlStageListBy(processCode, soaProcessCode, pullingFlag, transaction:transaction))?.ToList();
+            return ControlStageRepository.GetControlStageListBy(processCode, soaProcessCode, pullingFlag, transaction:transaction)?.ToList();
         }
 
         public List<XXIF_CHP_CONTROL_ST> GetByProcessCode(string processCode, string soaProcessCode = "S", string pullingFlag = "Out-S", IDbTransaction transaction = null)
         {
-            var task = ControlStageRepository.GetControlStageListBy(processCode, soaProcessCode, pullingFlag, transaction: transaction);
-            task.Wait();
-            return task.Result.ToList();
+            return ControlStageRepository.GetControlStageListBy(processCode, soaProcessCode, pullingFlag, transaction: transaction).ToList();
         }
 
         /// <summary>
@@ -63,7 +61,7 @@ namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
         /// <param name="requestQty">數量</param>
         /// <param name="userId">使用者ID</param>
         /// <returns>ResultDataModel 條碼清單</returns>
-        public async Task<ResultDataModel<List<string>>> GenerateBarcodes(long organiztionId, string subinventoryCode, int requestQty, string userId, string prefix = "", IDbTransaction transaction = null)
+        public ResultDataModel<List<string>> GenerateBarcodes(long organiztionId, string subinventoryCode, int requestQty, string userId, string prefix = "", IDbTransaction transaction = null)
         {
             ResultDataModel<List<string>> result = null;
             try
@@ -78,7 +76,7 @@ namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
                 p.Add(name: "@user", value: "SYS", dbType: DbType.String, direction: ParameterDirection.Input, size: 128);
 
 
-                var list = (await Context.QueryAsync<string>(sql: "SP_GenerateBarcodes", param: p, transaction: transaction, commandType: CommandType.StoredProcedure)).ToList();
+                var list = Context.Query<string>(sql: "SP_GenerateBarcodes", param: p, transaction: transaction, commandType: CommandType.StoredProcedure).ToList();
                 result = new ResultDataModel<List<string>>(p.Get<int>("@code"), p.Get<string>("@message"), list);
             }
             catch (Exception ex)
@@ -89,9 +87,9 @@ namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
             return result;
         }
 
-        public async Task<ResultModel> UpdateStatus(XXIF_CHP_CONTROL_ST st, IDbTransaction transaction = null)
+        public ResultModel UpdateStatus(XXIF_CHP_CONTROL_ST st, IDbTransaction transaction = null)
         {
-            return await ControlStageRepository.UpdateStatus(st, transaction);
+            return ControlStageRepository.UpdateStatus(st, transaction);
         }
 
     }

@@ -135,6 +135,7 @@
     <Compile Include="Models\Entity\TRF_MISCELLANEOUS_HEADER_T.cs" />
     <Compile Include="Models\Entity\TRF_OBSOLETE_HEADER_T.cs" />
     <Compile Include="Models\Entity\TRF_REASON_HEADER_T.cs" />
+    <Compile Include="Models\Entity\XXIF_CHP_P210_IN_MMT_INGR_ST.cs" />
     <Compile Include="Models\Entity\XXIF_CHP_P221_SHIP_CONFIRM_ST.cs" />
     <Compile Include="Models\Entity\XXIF_CHP_P222_SUB_TRANSFER_ST.cs" />
     <Compile Include="Models\Entity\XXIF_CHP_P219_OSP_BATCH_ST.cs" />
@@ -148,6 +149,7 @@
     <Compile Include="Models\Repository\MsSql\CtrHeaderRepository.cs" />
     <Compile Include="Models\Repository\MsSql\CtrPickedRepository.cs" />
     <Compile Include="Models\Repository\MsSql\DlvDetailRepository.cs" />
+    <Compile Include="Models\Repository\MsSql\InMmtIngredientStRepository.cs" />
     <Compile Include="Models\Repository\MsSql\ShipConfirmStRepository.cs" />
     <Compile Include="Models\Repository\MsSql\SubTransferStRepository.cs" />
     <Compile Include="Models\Repository\MsSql\OspBatchStRepository.cs" />

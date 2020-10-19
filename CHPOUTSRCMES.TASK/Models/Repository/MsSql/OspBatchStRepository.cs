@@ -28,22 +28,22 @@ namespace CHPOUTSRCMES.TASK.Models.Repository.MsSql
 
         #endregion
 
-        public async Task<List<XXIF_CHP_P219_OSP_BATCH_ST>> GetListBy(string processCode, string serverCode, string batchId, IDbTransaction transaction = null)
+        public List<XXIF_CHP_P219_OSP_BATCH_ST> GetListBy(string processCode, string serverCode, string batchId, IDbTransaction transaction = null)
         {
-            return (await Connection.QueryAsync<XXIF_CHP_P219_OSP_BATCH_ST>(
+            return Connection.Query<XXIF_CHP_P219_OSP_BATCH_ST>(
 @"SELECT * FROM XXIF_CHP_P219_OSP_BATCH_ST A 
 WHERE A.PROCESS_CODE = @ProcessCode AND A.SERVER_CODE = @ServerCode AND A.BATCH_ID = @BatchId
-ORDER BY A.PROCESS_CODE, A.SERVER_CODE, A.BATCH_ID, A.BATCH_LINE_ID", new { ProcessCode = processCode, ServerCode = serverCode, BatchId = batchId }, transaction: transaction)).ToList();
+ORDER BY A.PROCESS_CODE, A.SERVER_CODE, A.BATCH_ID, A.BATCH_LINE_ID", new { ProcessCode = processCode, ServerCode = serverCode, BatchId = batchId }, transaction: transaction).ToList();
         }
 
-        public async Task<ResultModel> UpdateStatus(XXIF_CHP_P219_OSP_BATCH_ST st, IDbTransaction transaction = null)
+        public ResultModel UpdateStatus(XXIF_CHP_P219_OSP_BATCH_ST st, IDbTransaction transaction = null)
         {
             var resultModel = new ResultModel();
 
             try
             {
 
-                int count = await Connection.ExecuteAsync(
+                int count = Connection.Execute(
 $@"UPDATE XXIF_CHP_P219_OSP_BATCH_ST SET 
     STATUS_CODE=@statusCode, ERROR_MSG=@errorMsg
     WHERE
@@ -76,7 +76,7 @@ $@"UPDATE XXIF_CHP_P219_OSP_BATCH_ST SET
         #region IDispose Region
         private bool disposed = false;
 
-        protected virtual void Dispose(bool disposing)
+        protected override void Dispose(bool disposing)
         {
             if (!this.disposed)
             {
@@ -88,7 +88,7 @@ $@"UPDATE XXIF_CHP_P219_OSP_BATCH_ST SET
             this.disposed = true;
         }
 
-        public void Dispose()
+        public new void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);

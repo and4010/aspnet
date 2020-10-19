@@ -42,6 +42,11 @@ namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
         public OspSoaS3Repository OspSoaS3Repository => ospSoaS3Repository ??
             (ospSoaS3Repository = new OspSoaS3Repository(Context, $"{SchemaName}OSP_SOA_S3_T"));
 
+        private InMmtIngredientStRepository inMmtIngredientStRepository = null;
+        public InMmtIngredientStRepository InMmtIngredientStRepository => inMmtIngredientStRepository ??
+            (inMmtIngredientStRepository = new InMmtIngredientStRepository(Context, $"{SchemaName}XXIF_CHP_P210_IN_MMT_INGR_ST"));
+
+
 
         public OspStUOW(IDbConnection conn, bool beginTransaction = false) : base(conn, beginTransaction)
         {
@@ -49,23 +54,23 @@ namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
 
         #region OSP_SOA_S1_T
 
-        public async Task<List<long>> GetOspBatchStage1UploadList(IDbTransaction transaction = null)
+        public List<long> GetOspBatchStage1UploadList(IDbTransaction transaction = null)
         {
-            return (await OspSoaS1Repository.GetUploadList(transaction));
+            return OspSoaS1Repository.GetUploadList(transaction);
         }
 
-        public async Task<List<OSP_SOA_S1_T>> GetOspBatchStage1UploadedList(IDbTransaction transaction = null)
+        public List<OSP_SOA_S1_T> GetOspBatchStage1UploadedList(IDbTransaction transaction = null)
         {
-            return (await OspSoaS1Repository.GetUploadedList(transaction));
+            return OspSoaS1Repository.GetUploadedList(transaction);
         }
 
-        public async Task<ResultModel> UpdateStatusCode(OSP_SOA_S1_T data, IDbTransaction transaction = null)
+        public ResultModel UpdateStatusCode(OSP_SOA_S1_T data, IDbTransaction transaction = null)
         {
-            return ( await OspSoaS1Repository.UpdateStatusCode(data, transaction) );
+            return OspSoaS1Repository.UpdateStatusCode(data, transaction);
 
         }
 
-        public async Task<ResultModel> OspBatchStStage1Upload(long ospHeaderId, IDbTransaction transaction = null)
+        public ResultModel OspBatchStStage1Upload(long ospHeaderId, MasterUOW masterUOW, IDbTransaction transaction = null)
         {
             var resultModel = new ResultModel();
 
@@ -87,6 +92,19 @@ namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
                 {
                     return resultModel;
                 }
+
+                string processCode = p.Get<string>("@processCode");
+                string serverCode = p.Get<string>("@serverCode");
+                string batchId = p.Get<string>("@batchId");
+
+
+                //換算主單位及交易單位
+                resultModel = updateInMmtIngrStList(processCode, serverCode, batchId, masterUOW, transaction);
+                if (!resultModel.Success)
+                {
+                    return resultModel;
+                }
+
             }
             catch (Exception ex)
             {
@@ -98,27 +116,58 @@ namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
             return resultModel;
         }
 
+
+        public ResultModel updateInMmtIngrStList(string processCode, string serverCode, string batchId, MasterUOW masterUOW, IDbTransaction transaction = null)
+        {
+            var list = InMmtIngredientStRepository.GetListBy(processCode, serverCode, batchId, transaction);
+            if (list == null || list.Count == 0)
+            {
+                return new ResultModel(false, "無資料可上傳");
+            }
+
+            for (int i = 0; i < list.Count; i++)
+            {
+                var m = list[i];
+                if (m.SECONDARY_TRANSACTION_QUANTITY.HasValue && m.SECONDARY_TRANSACTION_QUANTITY.Value > 0 && !string.IsNullOrEmpty(m.SECONDARY_UOM_CODE))
+                {
+                    var itemId = InMmtIngredientStRepository.GetInventoryItemId(m.ITEM_NO, transaction);
+                    var primaryQuantity = masterUOW.UomConvert(itemId, m.SECONDARY_TRANSACTION_QUANTITY.Value, m.SECONDARY_UOM_CODE, m.TRANSACTION_UOM);
+                    if (!primaryQuantity.HasValue)
+                    {
+                        throw new Exception($"單位換算失敗!! ITEM ID :{itemId} AMOUNT:{m.SECONDARY_TRANSACTION_QUANTITY.Value} UOM:{m.SECONDARY_UOM_CODE} TO:{m.TRANSACTION_UOM}");
+                    }
+
+                    m.TRANSACTION_QUANTITY = primaryQuantity.Value;
+                }
+                InMmtIngredientStRepository.Update(m, transaction);
+
+            }
+
+            return new ResultModel(true, "");
+        }
+
+
         #endregion
 
         #region OSP_SOA_S2_T
 
-        public async Task<List<long>> GetOspBatchStage2UploadList(IDbTransaction transaction = null)
+        public List<long> GetOspBatchStage2UploadList(IDbTransaction transaction = null)
         {
-            return (await OspSoaS2Repository.GetUploadList(transaction));
+            return OspSoaS2Repository.GetUploadList(transaction);
         }
 
-        public async Task<List<OSP_SOA_S2_T>> GetOspBatchStage2UploadedList(IDbTransaction transaction = null)
+        public List<OSP_SOA_S2_T> GetOspBatchStage2UploadedList(IDbTransaction transaction = null)
         {
-            return (await OspSoaS2Repository.GetUploadedList(transaction));
+            return OspSoaS2Repository.GetUploadedList(transaction);
         }
 
-        public async Task<ResultModel> UpdateStage2StatusCode(OSP_SOA_S2_T data, IDbTransaction transaction = null)
+        public ResultModel UpdateStage2StatusCode(OSP_SOA_S2_T data, IDbTransaction transaction = null)
         {
-            return (await OspSoaS2Repository.UpdateStatusCode(data, transaction));
+            return OspSoaS2Repository.UpdateStatusCode(data, transaction);
 
         }
 
-        public async Task<ResultModel> OspBatchStStage2Upload(long ospHeaderId, IDbTransaction transaction = null)
+        public ResultModel OspBatchStStage2Upload(long ospHeaderId, IDbTransaction transaction = null)
         {
             var resultModel = new ResultModel();
 
@@ -157,23 +206,23 @@ namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
 
         #region OSP_SOA_S3_T
 
-        public async Task<List<long>> GetOspBatchStage3UploadList(IDbTransaction transaction = null)
+        public List<long> GetOspBatchStage3UploadList(IDbTransaction transaction = null)
         {
-            return (await OspSoaS3Repository.GetUploadList(transaction));
+            return OspSoaS3Repository.GetUploadList(transaction);
         }
 
-        public async Task<List<OSP_SOA_S3_T>> GetOspBatchStage3UploadedList(IDbTransaction transaction = null)
+        public List<OSP_SOA_S3_T> GetOspBatchStage3UploadedList(IDbTransaction transaction = null)
         {
-            return (await OspSoaS3Repository.GetUploadedList(transaction));
+            return OspSoaS3Repository.GetUploadedList(transaction);
         }
 
-        public async Task<ResultModel> UpdateStage3StatusCode(OSP_SOA_S3_T data, IDbTransaction transaction = null)
+        public ResultModel UpdateStage3StatusCode(OSP_SOA_S3_T data, IDbTransaction transaction = null)
         {
-            return (await OspSoaS3Repository.UpdateStatusCode(data, transaction));
+            return OspSoaS3Repository.UpdateStatusCode(data, transaction);
 
         }
 
-        public async Task<ResultModel> OspBatchStStage3Upload(long ospHeaderId, IDbTransaction transaction = null)
+        public ResultModel OspBatchStStage3Upload(long ospHeaderId, IDbTransaction transaction = null)
         {
             var resultModel = new ResultModel();
 
@@ -206,22 +255,10 @@ namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
 
         #endregion
 
-        //public async Task<List<long>> GetOspBatchStage3List(IDbTransaction transaction = null)
-        //{
-        //    return (await OspHeaderRepository.GetStage3List(transaction));
-        //}
-
-        //public async Task<List<long>> GetOspBatchExportedStage3List(IDbTransaction transaction = null)
-        //{
-        //    return (await OspHeaderRepository.GetExportedStage3List(transaction));
-        //}
-
         public ResultModel OspBatchStReceive(XXIF_CHP_CONTROL_ST controlStage, IDbTransaction transaction = null)
         {
 
-            var task = OspBatchStRepository.GetListBy(controlStage.PROCESS_CODE, controlStage.SERVER_CODE, controlStage.BATCH_ID, transaction);
-            task.Wait();
-            var list = task.Result;
+            var list = OspBatchStRepository.GetListBy(controlStage.PROCESS_CODE, controlStage.SERVER_CODE, controlStage.BATCH_ID, transaction);
 
             if (list.Count == 0)
                 return new ResultModel(false, "");
@@ -272,7 +309,7 @@ namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
 
             for (int i = 0; i < list.Count; i++)
             {
-                OspBatchStRepository.UpdateStatus(list[i]).Wait();
+                OspBatchStRepository.UpdateStatus(list[i]);
                 System.Threading.Thread.Sleep(100);
             }
             
@@ -440,9 +477,9 @@ namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
         }
 
 
-        public async Task<XXIF_CHP_CONTROL_ST> GetControlSt(string processCode, string serverCode, string batchId)
+        public XXIF_CHP_CONTROL_ST GetControlSt(string processCode, string serverCode, string batchId)
         {
-            return await ControlStageRepository.GetBy(processCode, serverCode, batchId);
+            return ControlStageRepository.GetBy(processCode, serverCode, batchId);
         }
 
     }

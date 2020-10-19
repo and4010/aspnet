@@ -55,7 +55,7 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                 using var mstUow = new MasterUOW(oraConn);
 
 
-                var list = await ospStUow.GetByProcessCodeAsync("XXIFP219");
+                var list = ospStUow.GetByProcessCode("XXIFP219");
 
 
                 if (list == null || list.Count() == 0)
@@ -95,7 +95,7 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                         st.STATUS_CODE = "E";
                         st.ERROR_MSG = ex.Message;
                         st.SOA_PULLING_FLAG = "OutAck-W";
-                        ospStUow.UpdateStatus(st).Wait();
+                        ospStUow.UpdateStatus(st);
                         LogError($"[{tasker.Name}]-{tasker.Unit}-ImportOspSt-錯誤-({st.PROCESS_CODE}, {st.SERVER_CODE}, {st.BATCH_ID})-{ex.Message}-{ex.StackTrace}");
                     }
                     Thread.Sleep(300);
@@ -120,7 +120,7 @@ namespace CHPOUTSRCMES.TASK.Models.Service
         /// <param name="tasker"></param>
         /// <param name="token"></param>
         /// <returns></returns>
-        internal async Task ExportOspStRvStage1(Tasker tasker, CancellationToken token)
+        internal void ExportOspStRvStage1(Tasker tasker, CancellationToken token)
         {
             LogInfo($"[{tasker.Name}]-{tasker.Unit}-ExportOspStRvStage1-開始");
 
@@ -131,9 +131,11 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                     token.ThrowIfCancellationRequested();
                 }
                 using var sqlConn = new SqlConnection(MesConnStr);
+                using var oraConn = new OracleConnection(ErpConnStr);
                 using var ospStUow = new OspStUOW(sqlConn);
+                using var masterUow = new MasterUOW(oraConn);
 
-                var list = await ospStUow.GetOspBatchStage1UploadList();
+                var list = ospStUow.GetOspBatchStage1UploadList();
                 if (list == null || list.Count() == 0)
                 {
                     LogInfo($"[{tasker.Name}]-{tasker.Unit}-ExportOspStRv-無可轉出資料");
@@ -145,7 +147,7 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                     using var transaction = sqlConn.BeginTransaction();
                     try
                     {
-                        var model = await ospStUow.OspBatchStStage1Upload(list[i], transaction);
+                        var model = ospStUow.OspBatchStStage1Upload(list[i], masterUow,transaction);
                         LogInfo($"[{tasker.Name}]-{tasker.Unit}-ExportOspStRvStage1 (OSP_HEADER_ID:{list[i]})-{model}");
 
                         if (!model.Success)
@@ -194,9 +196,8 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                 }
                 using var sqlConn = new SqlConnection(MesConnStr);
                 using var ospStUow = new OspStUOW(sqlConn);
-                var task = ospStUow.GetOspBatchStage1UploadedList();
-                task.Wait();
-                var list = task.Result;
+                var list = ospStUow.GetOspBatchStage1UploadedList();
+
                 if (list == null || list.Count() == 0)
                 {
                     LogInfo($"[{tasker.Name}]-{tasker.Unit}-UpdateStatusOspStRvStage1-無可轉出資料");
@@ -206,9 +207,7 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                 for (int i = 0; i < list.Count(); i++)
                 {
                     var data = list[i];
-                    var taskControlSt = ospStUow.ControlStageRepository.GetBy(data.PROCESS_CODE, data.SERVER_CODE, data.BATCH_ID, pullingFlag: "In-S");
-                    taskControlSt.Wait();
-                    var controlSt = taskControlSt.Result;
+                    var controlSt = ospStUow.ControlStageRepository.GetBy(data.PROCESS_CODE, data.SERVER_CODE, data.BATCH_ID, pullingFlag: "In-S");
                     if (controlSt == null 
                         || string.IsNullOrEmpty(data.PROCESS_CODE) 
                         || string.IsNullOrEmpty(data.SERVER_CODE) 
@@ -223,9 +222,7 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                         data.STATUS_CODE = controlSt.STATUS_CODE;
                         data.LAST_UPDATE_BY = "SYS";
                         data.LAST_UPDATE_DATE = DateTime.Now;
-                        var taskStatusCode = ospStUow.OspSoaS1Repository.UpdateStatusCode(data, transaction);
-                        taskStatusCode.Wait();
-                        var model = taskStatusCode.Result;
+                        var model = ospStUow.OspSoaS1Repository.UpdateStatusCode(data, transaction);
                         
                         LogInfo($"[{tasker.Name}]-{tasker.Unit}-UpdateStatusOspStRvStage1 (OSP_HEADER_ID:{data.OSP_HEADER_ID}, PROCESS_CODE:{data.PROCESS_CODE}, SERVER_CODE:{data.SERVER_CODE}, BATCH_ID:{data.BATCH_ID})-{model}");
                         if (!model.Success)
@@ -265,7 +262,7 @@ namespace CHPOUTSRCMES.TASK.Models.Service
         /// <param name="tasker"></param>
         /// <param name="token"></param>
         /// <returns></returns>
-        internal async Task ExportOspStRvStage2(Tasker tasker, CancellationToken token)
+        internal void ExportOspStRvStage2(Tasker tasker, CancellationToken token)
         {
             LogInfo($"[{tasker.Name}]-{tasker.Unit}-ExportOspStRvStage2-開始");
 
@@ -278,9 +275,7 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                 using var sqlConn = new SqlConnection(MesConnStr);
                 using var ospStUow = new OspStUOW(sqlConn);
 
-                var task = ospStUow.GetOspBatchStage2UploadList();
-                task.Wait();
-                var list = task.Result;
+                var list = ospStUow.GetOspBatchStage2UploadList();
 
                 if (list == null || list.Count() == 0)
                 {
@@ -293,9 +288,8 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                     using var transaction = sqlConn.BeginTransaction();
                     try
                     {
-                        var taskStage2 = ospStUow.OspBatchStStage2Upload(list[i], transaction);
-                        taskStage2.Wait();
-                        var model = taskStage2.Result;
+                        var model = ospStUow.OspBatchStStage2Upload(list[i], transaction);
+
                         LogInfo($"[{tasker.Name}]-{tasker.Unit}-ExportOspStRvStage2 (OSP_HEADER_ID:{list[i]})-{model}");
 
                         if (!model.Success)
@@ -344,9 +338,7 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                 }
                 using var sqlConn = new SqlConnection(MesConnStr);
                 using var ospStUow = new OspStUOW(sqlConn);
-                var task = ospStUow.GetOspBatchStage2UploadedList();
-                task.Wait();
-                var list = task.Result;
+                var list = ospStUow.GetOspBatchStage2UploadedList();
                 
                 if (list == null || list.Count() == 0)
                 {
@@ -357,9 +349,7 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                 for (int i = 0; i < list.Count(); i++)
                 {
                     var data = list[i];
-                    var taskControlSt = ospStUow.ControlStageRepository.GetBy(data.PROCESS_CODE, data.SERVER_CODE, data.BATCH_ID, pullingFlag: "In-S");
-                    taskControlSt.Wait();
-                    var controlSt = taskControlSt.Result;
+                    var controlSt = ospStUow.ControlStageRepository.GetBy(data.PROCESS_CODE, data.SERVER_CODE, data.BATCH_ID, pullingFlag: "In-S");
                     
                     if (controlSt == null
                         || string.IsNullOrEmpty(data.PROCESS_CODE)
@@ -376,9 +366,8 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                         data.LAST_UPDATE_BY = "SYS";
                         data.LAST_UPDATE_DATE = DateTime.Now;
 
-                        var taskStatusCode = ospStUow.OspSoaS2Repository.UpdateStatusCode(data, transaction);
-                        taskStatusCode.Wait();
-                        var model = taskStatusCode.Result;
+                        var model = ospStUow.OspSoaS2Repository.UpdateStatusCode(data, transaction);
+
                         LogInfo($"[{tasker.Name}]-{tasker.Unit}-UpdateStatusOspStRvStage2 (OSP_HEADER_ID:{data.OSP_HEADER_ID}, PROCESS_CODE:{data.PROCESS_CODE}, SERVER_CODE:{data.SERVER_CODE}, BATCH_ID:{data.BATCH_ID})-{model}");
                         if (!model.Success)
                         {
@@ -429,9 +418,8 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                 using var sqlConn = new SqlConnection(MesConnStr);
                 using var ospStUow = new OspStUOW(sqlConn);
 
-                var task = ospStUow.GetOspBatchStage3UploadList();
-                task.Wait();
-                var list = task.Result;
+                var list = ospStUow.GetOspBatchStage3UploadList();
+
                 if (list == null || list.Count() == 0)
                 {
                     LogInfo($"[{tasker.Name}]-{tasker.Unit}-ExportOspStRv-無可轉出資料");
@@ -443,9 +431,7 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                     using var transaction = sqlConn.BeginTransaction();
                     try
                     {
-                        var taskStage1Upload = ospStUow.OspBatchStStage3Upload(list[i], transaction);
-                        taskStage1Upload.Wait();
-                        var model = taskStage1Upload.Result;
+                        var model = ospStUow.OspBatchStStage3Upload(list[i], transaction);
 
                         LogInfo($"[{tasker.Name}]-{tasker.Unit}-ExportOspStRvStage3 (OSP_HEADER_ID:{list[i]})-{model}");
 
@@ -496,9 +482,8 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                 using var sqlConn = new SqlConnection(MesConnStr);
                 using var ospStUow = new OspStUOW(sqlConn);
 
-                var task = ospStUow.GetOspBatchStage3UploadedList();
-                task.Wait();
-                var list = task.Result;
+                var list = ospStUow.GetOspBatchStage3UploadedList();
+
                 if (list == null || list.Count() == 0)
                 {
                     LogInfo($"[{tasker.Name}]-{tasker.Unit}-UpdateStatusOspStRvStage3-無可轉出資料");
@@ -508,9 +493,8 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                 for (int i = 0; i < list.Count(); i++)
                 {
                     var data = list[i];
-                    var taskControlStage = ospStUow.ControlStageRepository.GetBy(data.PROCESS_CODE, data.SERVER_CODE, data.BATCH_ID, pullingFlag: "In-S");
-                    taskControlStage.Wait();
-                    var controlsSt = taskControlStage.Result;
+                    var controlsSt = ospStUow.ControlStageRepository.GetBy(data.PROCESS_CODE, data.SERVER_CODE, data.BATCH_ID, pullingFlag: "In-S");
+
                     if (controlsSt == null
                         || string.IsNullOrEmpty(data.PROCESS_CODE)
                         || string.IsNullOrEmpty(data.SERVER_CODE)
@@ -526,9 +510,7 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                         data.LAST_UPDATE_BY = "SYS";
                         data.LAST_UPDATE_DATE = DateTime.Now;
                         
-                        var taskUpdateStatusCode = ospStUow.OspSoaS3Repository.UpdateStatusCode(data, transaction);
-                        taskUpdateStatusCode.Wait();
-                        var model = taskUpdateStatusCode.Result;
+                        var model = ospStUow.OspSoaS3Repository.UpdateStatusCode(data, transaction);
 
                         LogInfo($"[{tasker.Name}]-{tasker.Unit}-UpdateStatusOspStRvStage3 (OSP_HEADER_ID:{data.OSP_HEADER_ID}, PROCESS_CODE:{data.PROCESS_CODE}, SERVER_CODE:{data.SERVER_CODE}, BATCH_ID:{data.BATCH_ID})-{model}");
                         if (!model.Success)
