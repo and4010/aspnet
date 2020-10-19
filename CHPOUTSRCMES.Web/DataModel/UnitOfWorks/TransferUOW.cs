@@ -507,7 +507,7 @@ SELECT [TRANSFER_PICKED_ID] as ID
                 {
                     var result = InboundCreateDetailNoTransaction(shipmentNumber, transferType, itemNumber, outOrganizationId,
              outSubinventoryCode, outLocatorId, inOrganizationId, inSubinventoryCode, inLocatorId, dataUpadteAuthority, dataWriteType,
-             requestedQty, rollReamWt, lotNumber, createUser, createUserName);
+             requestedQty, rollReamWt, lotNumber, createUser, createUserName, "");
 
                     txn.Commit();
                     return new ResultDataModel<TRF_HEADER_T>(true, "新增明細成功", result.Data);
@@ -543,7 +543,7 @@ SELECT [TRANSFER_PICKED_ID] as ID
         /// <returns></returns>
         public ResultDataModel<TRF_HEADER_T> InboundCreateDetailNoTransaction(string shipmentNumber, string transferType, string itemNumber, long outOrganizationId,
           string outSubinventoryCode, long? outLocatorId, long inOrganizationId, string inSubinventoryCode, long? inLocatorId, string dataUpadteAuthority, string dataWriteType,
-          decimal requestedQty, decimal rollReamWt, string lotNumber, string createUser, string createUserName)
+          decimal requestedQty, decimal rollReamWt, string lotNumber, string createUser, string createUserName, string containerNo)
         {
 
             var now = DateTime.Now;
@@ -843,8 +843,8 @@ SELECT [TRANSFER_PICKED_ID] as ID
                     CreationDate = now,
                     LastUpdateBy = null,
                     LastUpdateUserName = null,
-                    LastUpdateDate = null
-
+                    LastUpdateDate = null,
+                    ContainerNo = containerNo
                 });
 
             }
@@ -1633,7 +1633,7 @@ SELECT [TRANSFER_PICKED_ID] as ID
                     {
                         result = InboundCreateDetailNoTransaction(shipmentNumber, transferType, excel.ItemNumber, outOrganizationId,
                  outSubinventoryCode, outLocatorId, inOrganizationId, inSubinventoryCode, inLocatorId,
-                 TransferUOW.DataUpdateAuthority.Permit, TransferUOW.DataWriteType.ExcelImport, excel.Qty, excel.RollReamWt, excel.LotNumber, userId, userName);
+                 TransferUOW.DataUpdateAuthority.Permit, TransferUOW.DataWriteType.ExcelImport, excel.Qty, excel.RollReamWt, excel.LotNumber, userId, userName, excel.ContainerNo);
                         if (result.Success)
                         {
                             if (shipmentNumber == DropDownListTypeValue.Add) shipmentNumber = result.Data.ShipmentNumber;  //如果是新增編號,則在第一筆新增明細成功後更新出貨編號
@@ -2012,6 +2012,7 @@ SELECT [TRANSFER_PICKED_ID] as ID
                                 stock.ReasonDesc = null;
                                 stock.Note = pick.Note;
                                 stock.StatusCode = StockStatusCode.InStock;
+                                stock.ContainerNo = pick.ContainerNo;
                                 stock.CreatedBy = userId;
                                 stock.CreationDate = now;
                                 stock.LastUpdateBy = null;
@@ -2271,6 +2272,7 @@ INSERT INTO [TRF_INBOUND_PICKED_HT]
       ,[STATUS]
       ,[SPLIT_FROM_BARCODE]
       ,[PALLET_STATUS]
+      ,[CONTAINER_NO]
       ,[CREATED_BY]
       ,[CREATED_USER_NAME]
       ,[CREATION_DATE]
@@ -2295,6 +2297,7 @@ SELECT [TRANSFER_PICKED_ID]
       ,[STATUS]
       ,[SPLIT_FROM_BARCODE]
       ,[PALLET_STATUS]
+      ,[CONTAINER_NO]
       ,[CREATED_BY]
       ,[CREATED_USER_NAME]
       ,[CREATION_DATE]

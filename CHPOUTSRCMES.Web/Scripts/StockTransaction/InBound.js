@@ -1856,7 +1856,8 @@
                     'ItemNumber': value.ITEM_NUMBER,
                     'Qty': value.PRIMARY_QUANTITY,
                     'LotNumber': value.LOT_NUMBER,
-                    'RollReamWt': 0
+                    'RollReamWt': 0,
+                    'ContainerNo': value.CONTAINER_NO
                 }
                 excelList.push(InboundImportExcelModel);
             });
@@ -2193,6 +2194,7 @@
                 { data: "Subinventory", "name": "倉庫", "autoWidth": true, "className": "dt-body-center" },
                 { data: "Locator", "name": "儲位", "autoWidth": true, "className": "dt-body-center" },
                 { data: "ITEM_NUMBER", "name": "料號", "autoWidth": true, "className": "dt-body-left" },
+                { data: "CONTAINER_NO", "name": "櫃號", "autoWidth": true, "className": "dt-body-left" },
                 { data: "PAPERTYPE", "name": "紙別", "autoWidth": true, "className": "dt-body-center" },
                 { data: "Base_Weight", "name": "基重", "autoWidth": true, "className": "dt-body-center" },
                 { data: "Specification", "name": "規格", "autoWidth": true, "className": "dt-body-center" },

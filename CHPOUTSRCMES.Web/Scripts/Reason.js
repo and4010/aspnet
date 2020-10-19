@@ -168,7 +168,7 @@ function table() {
             },
             { data: "Reason_code", "name": "代碼", "autoWidth": true, "className": "dt-body-center"},
             { data: "Reason_desc", "name": "原因", "autoWidth": true, "className": "dt-body-center"},
-            { data: "UserName", "name": "建立人員ID", "autoWidth": true, "className": "dt-body-center"},
+            { data: "Create_by", "name": "建立人員ID", "autoWidth": true, "className": "dt-body-center"},
             {
                 data: "Create_date", "name": "建立日期", "autoWidth": true, "mRender": function (data, type, full) {
                     if (data != null) {

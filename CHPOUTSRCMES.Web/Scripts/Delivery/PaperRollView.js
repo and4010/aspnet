@@ -11,6 +11,7 @@
         //select: true,
         serverSide: true,
         processing: true,
+        lengthMenu: [[25, 50, 100, 200], [25, 50, 100, 200]],
         //"paging": true,
         //"pagingType": "full_numbers",
         //"lengthMenu": [[1, 10, 5, 2], [1, 10, 5, 2]],
@@ -62,6 +63,7 @@
         //"pageLength": 1,
         serverSide: true,
         processing: true,
+        lengthMenu: [[25, 50, 100, 200], [25, 50, 100, 200]],
         dom:
             "<'row'<'col-sm-2'l><'col-sm-7'><'col-sm-3'f>>" +
             "<'row'<'col-sm-12'tr>>" +

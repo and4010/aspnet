@@ -283,6 +283,7 @@ $(document).ready(function () {
         serverSide: true,
         processing: true,
         deferLoading: 0, //初始化DataTable時，不發出ajax
+        lengthMenu: [[25, 50, 100, 200], [25, 50, 100, 200]],
         //sScrollX: "100%",
         //sScrollXInner: "110%",
         dom:
@@ -313,8 +314,8 @@ $(document).ready(function () {
             { data: "DetailType", name: "作業別", "autoWidth": true },
             { data: "DELIVERY_STATUS", name: "狀態", "autoWidth": true },
             { data: "CUSTOMER_NAME", name: "客戶", "autoWidth": true },
-            { data: "CUSTOMER_LOCATION_CODE", name: "送貨地點", "autoWidth": true },
-            { data: "SHIP_CUSTOMER_NAME", name: "收貨公司名稱", "autoWidth": true },
+            //{ data: "CUSTOMER_LOCATION_CODE", name: "送貨地點", "autoWidth": true },
+            { data: "SHIP_CUSTOMER_NAME", name: "送貨客戶名稱", "autoWidth": true },
             //{ data: "ORDER_NUMBER", name: "訂單", "autoWidth": true },
             //{ data: "ORDER_SHIP_NUMBER", name: "訂單行號", "autoWidth": true },
             //{ data: "ITEM_DESCRIPTION", name: "料號名稱", "autoWidth": true },
@@ -898,20 +899,50 @@ $(document).ready(function () {
 
     });
 
+    //取得判斷核准日可選範圍的基準日
+    function GetStandardDate() {
+        var sandardDate = new Date();
+        sandardDate.setDate(5);
+        return sandardDate;
+    }
+
     function GetTransactionAuthorizeMinDate() {
+        //var now = new Date();
+        //now.setDate(1);
+        //now.setMonth(now.getMonth() - 1);
+        //var miniDate = moment(now).format('YYYY-MM-DD');
+        //return miniDate;
+        var sandardDate = GetStandardDate();
         var now = new Date();
-        now.setDate(1);
-        now.setMonth(now.getMonth() - 1);
-        var miniDate = moment(now).format('YYYY-MM-DD');
-        return miniDate;
+        if (now > sandardDate) {
+            now.setDate(1);
+            return moment(now).format('YYYY-MM-DD');
+        } else {
+            now.setMonth(now.getMonth() - 1);
+            now.setDate(1);
+            return moment(now).format('YYYY-MM-DD');
+        }
     }
 
     function GetTransactionAuthorizeMaxDate() {
-        var now = new Date();
-        now.setDate(3);
-        var miniDate = moment(now).format('YYYY-MM-DD');
-        return miniDate;
+        return new Date();
     }
+
+    //function GetTransactionAuthorizeMaxDate() {
+    //    var sandardDate = GetStandardDate();
+    //    var now = new Date();
+    //    if (now > sandardDate) {
+    //        var year = sandardDate.getFullYear();  //2019
+    //        var month = sandardDate.getMonth() + 1;  //5
+    //        var maxDate = new Date(year, month, 0);
+    //        return moment(maxDate).format('YYYY-MM-DD');
+    //        //var maxDate = moment(now).format('YYYY-MM-DD');
+    //    } else {
+    //        return moment(sandardDate).format('YYYY-MM-DD');
+    //    }
+    //    //var miniDate = moment(now).format('YYYY-MM-DD');
+    //    //return miniDate;
+    //}
 
 
     function DeliveryConfirm(data) {

@@ -166,6 +166,14 @@ namespace CHPOUTSRCMES.Web.DataModel.Entiy.Transfer
         public string PalletStatus { set; get; }
 
         /// <summary>
+        /// 櫃號
+        /// </summary>
+        /// 
+        [StringLength(40)]
+        [Column("CONTAINER_NO")]
+        public string ContainerNo { set; get; }
+
+        /// <summary>
         /// 建立人員
         /// </summary>
         /// 

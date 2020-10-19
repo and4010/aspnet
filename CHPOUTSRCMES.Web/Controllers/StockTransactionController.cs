@@ -41,7 +41,7 @@ namespace CHPOUTSRCMES.Web.Controllers
 
         public ActionResult _ImportBodyRoll()
         {
-            return PartialView("~/Views/Purchase/_ImportBodyRoll.cshtml");
+            return PartialView("~/Views/StockTransaction/_InBoundRollImport.cshtml");
         }
 
         public ActionResult _ImportBodyFlat()

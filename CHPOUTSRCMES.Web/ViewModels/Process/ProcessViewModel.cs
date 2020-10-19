@@ -302,7 +302,7 @@ namespace CHPOUTSRCMES.Web.ViewModels.Process
         /// <param name="UserId"></param>
         /// <param name="UserName"></param>
         /// <returns></returns>
-        public ResultDataModel<OSP_YIELD_VARIANCE_T> Loss(long OspDetailInId, long OspDetailOutId, string UserId, string UserName)
+        public ResultDataModel<YieldVariance> Loss(long OspDetailInId, long OspDetailOutId, string UserId, string UserName)
         {
             using var context = new MesContext();
             return new ProcessUOW(context).Loss(OspDetailInId, OspDetailOutId, UserId, UserName);

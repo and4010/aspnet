@@ -127,13 +127,14 @@ function ProcessLoadTable(Status, BatchNo, MachineNum, DueDate, CuttingDateFrom,
         "language": {
             "url": "/bower_components/datatables/language/zh-TW.json"
         },
+        lengthMenu: [[25, 50, 100, 200], [25, 50, 100, 200]],
         //scrollX: true,
         destroy: true,
         processing: true,
         serverSide: true,
         autoWidth: false,
         dom:
-            "<'row'<'col-sm-2'l><'col-sm-7'><'col-sm-3'f>>" +
+            "<'row'<'col-sm-2'l><'col-sm-7'B><'col-sm-3'f>>" +
             "<'row'<'col-sm-12'tr>>" +
             "<'row'<'col-sm-5'i><'col-sm-7'p>>",
         ajax: {
@@ -150,6 +151,12 @@ function ProcessLoadTable(Status, BatchNo, MachineNum, DueDate, CuttingDateFrom,
             style: 'single',
             selector: 'td:first-child'
         },
+        buttons: [
+            {
+                extend: 'excel',
+                text: '匯出Excel'
+            },
+        ],
         columnDefs: [{
             orderable: false, targets: [0, 24], width: "60px",
         }],

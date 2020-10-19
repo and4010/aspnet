@@ -362,8 +362,10 @@ function onclick() {
             "data": { OspDetailInId: OspDetailInId, OspDetailOutId: OspDetailOutId },
             success: function (data) {
                 if (data.resultDataModel.Success) {
+                    $('#InvestWeight').html(data.resultDataModel.Data.InvestWeight);
+                    $('#ProductWeight').html(data.resultDataModel.Data.ProductWeight);
                     $('#Production_Loss').html(data.resultDataModel.Data.LossWeight);
-                    $('#Rate').html(data.resultDataModel.Data.Rate + "%");
+                    $('#Rate').html(data.resultDataModel.Data.Rate);
                 } else {
                     swal.fire(data.resultDataModel.Msg)
                 }
@@ -491,8 +493,6 @@ function LoadPaperRollInvestDataTable() {
                 }
             },
         }
-
-
     });
 
     EditorInvest.hide('OspPickedInId');
@@ -532,6 +532,7 @@ function LoadPaperRollInvestDataTable() {
         "language": {
             "url": "/bower_components/datatables/language/zh-TW.json"
         },
+        lengthMenu: [[25, 50, 100, 200], [25, 50, 100, 200]],
         destroy: true,
         processing: true,
         serverSide: true,
@@ -553,7 +554,11 @@ function LoadPaperRollInvestDataTable() {
         },
         buttons: [
             'selectAll',
-            'selectNone'
+            'selectNone',
+             {
+                extend: 'excel',
+                text: '匯出Excel'
+            },
         ],
         columnDefs: [{
             orderable: false, targets: [0, 9], width: "60px",
@@ -670,6 +675,7 @@ function LoadPaperRollProductionDataTable() {
         "language": {
             "url": "/bower_components/datatables/language/zh-TW.json"
         },
+        lengthMenu: [[25, 50, 100, 200], [25, 50, 100, 200]],
         destroy: true,
         processing: true,
         serverSide: true,
@@ -691,7 +697,11 @@ function LoadPaperRollProductionDataTable() {
         },
         buttons: [
             'selectAll',
-            'selectNone'
+            'selectNone',
+            {
+                extend: 'excel',
+                text: '匯出Excel'
+            },
         ],
         columnDefs: [{
             orderable: false, targets: [0, 8], width: "60px",
@@ -939,6 +949,8 @@ function DsiplayPaperRollShow(Status) {
 }
 
 function ClearRateLoss() {
+    $('#InvestWeight').html("");
+    $('#ProductWeight').html("");
     $('#Production_Loss').html("");
     $('#Rate').html("");
 }

@@ -63,6 +63,9 @@ namespace CHPOUTSRCMES.Web.Models.Purchase
             [Display(Name = "儲位")]
             public string Locator { set; get; }
 
+            [Display(Name = "櫃號")]
+            public string ContainerNo { set; get; }
+
             [Display(Name = "條碼號")]
             public string Barcode { get; set; }
 

@@ -110,6 +110,9 @@ namespace CHPOUTSRCMES.Web.Models.Stock
 
         [Display(Name = "棧板狀態")]
         public string PALLET_STATUS { get; set; }
+
+        [Display(Name = "櫃號")]
+        public string CONTAINER_NO { get; set; }
     }
 
 

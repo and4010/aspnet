@@ -1866,7 +1866,9 @@ namespace CHPOUTSRCMES.Web.Models.Stock
         /// 每件令數;紙捲時填0
         /// </summary>
         public decimal RollReamWt { get; set; }
-
-
+        /// <summary>
+        /// 櫃號;沒有時填空字串("")
+        /// </summary>
+        public string ContainerNo { get; set; }
     }
 }
