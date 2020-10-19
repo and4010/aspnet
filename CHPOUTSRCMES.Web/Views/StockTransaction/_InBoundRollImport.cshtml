@@ -1,0 +1,89 @@
+﻿<script src="~/bower_components/bootstrap-filestyle/src/bootstrap-filestyle.min.js"></script>
+<div class="modal fade" id="PaperRollModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="exampleModalLabel">匯入明細(紙捲)</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                @using (Html.BeginForm("Upload", "Purchase", FormMethod.Post, new { @id = "PurchaseEditForm", role = "form" }))
+                {
+                    <div class="form-inline row" style="margin-bottom:10px">
+                        <label class="control-label col-md-1" style="width:15%">上傳檔案</label>
+                        <input type="file" class="filestyle" id="file" name="file" accept="xls/xlsx" data-icon="true" data-badge="true" required data-buttonText="選擇">
+                        <button type="button" class="btn btn-default" id="btnImport">匯入</button>
+                    </div>
+                }
+
+                <div class="col-md-12">
+                    <h4 style="color:red">
+                        警告：若先前已經上傳進櫃明細，再次上傳資料會被清除
+                    </h4>
+                </div>
+
+                <div class="cl-md-12">
+                    <h4 class="page-header">
+                        資料預覽
+                    </h4>
+                </div>
+
+                <div class="form-inline modal-body" style="margin-bottom:10px">
+                    <table class="table table-striped table-bordered table-hover" id="ImportPaperRollTable">
+                        <thead>
+                            <tr>
+                                <th>
+                                    @Html.DisplayName("項次")
+                                </th>
+                                <th>
+                                    @Html.DisplayName("倉庫")
+                                </th>
+                                <th>
+                                    @Html.DisplayName("儲位")
+                                </th>
+                                <th>
+                                    @Html.DisplayName("料號")
+                                </th>
+                                <th>
+                                    @Html.DisplayName("櫃號")
+                                </th>
+                                <th>
+                                    @Html.DisplayName("紙別")
+                                </th>
+                                <th>
+                                    @Html.DisplayName("基重")
+                                </th>
+                                <th>
+                                    @Html.DisplayName("規格")
+                                </th>
+                                <th>
+                                    @Html.DisplayName("重量")
+                                </th>
+                                <th>
+                                    @Html.DisplayName("單位")
+                                </th>
+                                <th>
+                                    @Html.DisplayName("捲號")
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+
+
+
+
+
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="btnDailogPaperRoll">儲存</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" id="BtnCancel">取消</button>
+            </div>
+        </div>
+    </div>
+</div>

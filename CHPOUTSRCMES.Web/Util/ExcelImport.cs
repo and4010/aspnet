@@ -59,6 +59,7 @@ namespace CHPOUTSRCMES.Web.Util
                 ICell LotNumber_cell = null;
                 ICell Status_cell = null;
                 ICell Remark_cell = null;
+                ICell ContainerNo_cell = null;
 
                 PartNo_cell = ExcelUtil.FindCell("料號", sheet);
                 if (PartNo_cell == null)
@@ -102,6 +103,8 @@ namespace CHPOUTSRCMES.Web.Util
                     throw new Exception("找不到捲號欄位");
                 }
 
+                ContainerNo_cell = ExcelUtil.FindCell("櫃號", sheet);
+
                 int rowCount = sheet.LastRowNum;
                 for (int j = 0; j < RollHeader.Count; j++)
                 {
@@ -129,6 +132,7 @@ namespace CHPOUTSRCMES.Web.Util
                                 model.PrimanyQuantity = ExcelUtil.GetDecimalCellValue(i, TheoreticalWeight_cell.ColumnIndex, sheet);
                                 model.PrimaryUom = ExcelUtil.GetStringCellValue(i, PrimaryUom_cell.ColumnIndex, sheet).Trim();
                                 model.LotNumber = ExcelUtil.GetStringCellValue(i, LotNumber_cell.ColumnIndex, sheet).Trim();
+                                if (ContainerNo_cell != null) model.ContainerNo = ExcelUtil.GetStringCellValue(i, ContainerNo_cell.ColumnIndex, sheet).Trim();
                                 model.Status = "待入庫";
                                 //model.Remark = ExcelUtil.GetCellString(i, Remark_cell.ColumnIndex, sheet).Trim();
                                 model.Subinventory = RollHeader[j].Subinventory;

@@ -2255,6 +2255,7 @@
     <Content Include="Views\Stock\Transaction.cshtml" />
     <Content Include="Views\Soa\Detail.cshtml" />
     <Content Include="Views\Soa\Index.cshtml" />
+    <Content Include="Views\StockTransaction\_InBoundRollImport.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
