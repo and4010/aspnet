@@ -502,6 +502,10 @@
     <Compile Include="Migrations\202010170822037_addContainerNo2.Designer.cs">
       <DependentUpon>202010170822037_addContainerNo2.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202010190605191_change_osp_soa_dtl.cs" />
+    <Compile Include="Migrations\202010190605191_change_osp_soa_dtl.Designer.cs">
+      <DependentUpon>202010190605191_change_osp_soa_dtl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Delivery\FlatEditBarcodeDT.cs" />
     <Compile Include="Models\Delivery\FlatEditDT.cs" />
@@ -2342,6 +2346,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202010170822037_addContainerNo2.resx">
       <DependentUpon>202010170822037_addContainerNo2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202010190605191_change_osp_soa_dtl.resx">
+      <DependentUpon>202010190605191_change_osp_soa_dtl.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

@@ -22,10 +22,9 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Purchase
         [Column("OSP_SOA_S2_ID")]
         public long OspSoaS2Id { set; get; }
 
-        [StringLength(20)]
         [Required]
-        [Column("BATCH_LINE_ID")]
-        public string BatchLineId { set; get; }
+        [Column("INVENTORY_ITEM_ID")]
+        public long InventoryItemId { set; get; }
 
         [Required]
         [Column("OSP_HEADER_ID", Order = 1)]

@@ -70,7 +70,7 @@ namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
 
         }
 
-        public ResultModel OspBatchStStage1Upload(long ospHeaderId, MasterUOW masterUOW, IDbTransaction transaction = null)
+        public ResultModel OspBatchStStage1Upload(long ospHeaderId, MasterUOW masterUOW, string userId = "SYS", IDbTransaction transaction = null)
         {
             var resultModel = new ResultModel();
 
@@ -83,7 +83,7 @@ namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
                 p.Add(name: "@batchId", dbType: DbType.String, direction: ParameterDirection.Output, size: 20);
                 p.Add(name: "@code", dbType: DbType.Int32, direction: ParameterDirection.Output);
                 p.Add(name: "@message", dbType: DbType.String, direction: ParameterDirection.Output, size: 500);
-                p.Add(name: "@user", value: "SYS", dbType: DbType.String, direction: ParameterDirection.Input, size: 128);
+                p.Add(name: "@user", value: userId, dbType: DbType.String, direction: ParameterDirection.Input, size: 128);
 
                 Context.Execute(sql: "SP_P210_OspStStage1Upload", param: p, transaction: transaction, commandType: CommandType.StoredProcedure);
                 resultModel = new ResultModel(p.Get<int>("@code"), p.Get<string>("@message"));
@@ -100,6 +100,24 @@ namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
 
                 //換算主單位及交易單位
                 resultModel = updateInMmtIngrStList(processCode, serverCode, batchId, masterUOW, transaction);
+                if (!resultModel.Success)
+                {
+                    return resultModel;
+                }
+
+                //回寫 CONTROL_ST
+                var paramSoa = new DynamicParameters();
+                paramSoa.Add(name: "@ospHeaderId", value: ospHeaderId, dbType: DbType.Int64, direction: ParameterDirection.Input);
+                paramSoa.Add(name: "@processCode", value: processCode, dbType: DbType.String, direction: ParameterDirection.Input, size: 20);
+                paramSoa.Add(name: "@serverCode", value: serverCode, dbType: DbType.String, direction: ParameterDirection.Input, size: 20);
+                paramSoa.Add(name: "@batchId", value: batchId, dbType: DbType.String, direction: ParameterDirection.Input, size: 20);
+                paramSoa.Add(name: "@code", dbType: DbType.Int32, direction: ParameterDirection.Output);
+                paramSoa.Add(name: "@message", dbType: DbType.String, direction: ParameterDirection.Output, size: 500);
+                paramSoa.Add(name: "@user", value: userId, dbType: DbType.String, direction: ParameterDirection.Input, size: 128);
+                Context.Execute(sql: "SP_P210_InMmtIngrStSummarize", param: paramSoa, transaction: transaction, commandType: CommandType.StoredProcedure);
+
+                resultModel = new ResultModel(paramSoa.Get<int>("@code"), paramSoa.Get<string>("@message"));
+
                 if (!resultModel.Success)
                 {
                     return resultModel;
