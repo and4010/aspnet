@@ -213,6 +213,15 @@
                 return;
             }
         }
+
+        if ($('#ddlOutLocatorArea').is(":visible") && $('#ddlInLocatorArea').is(":visible")) {
+            if (getOutLocatorId() == getInLocatorId()) {
+                swal.fire('同倉庫儲位要不同');
+                event.preventDefault();
+                return;
+            }
+        }
+
         //if ($('#AutoCompleteShipmentNumber').val().trim() == "") {
         //    swal.fire("請輸入編號");
         //    event.preventDefault();
@@ -253,6 +262,14 @@
         if ($('#ddlInLocatorArea').is(":visible")) {
             if ($('#ddlInLocator').val() == "請選擇") {
                 swal.fire('請選擇收貨儲位');
+                event.preventDefault();
+                return;
+            }
+        }
+
+        if ($('#ddlOutLocatorArea').is(":visible") && $('#ddlInLocatorArea').is(":visible")) {
+            if (getOutLocatorId() == getInLocatorId()) {
+                swal.fire('同倉庫儲位要不同');
                 event.preventDefault();
                 return;
             }
