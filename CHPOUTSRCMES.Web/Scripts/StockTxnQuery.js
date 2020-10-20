@@ -117,6 +117,7 @@ function loadTable(subinventory, locatorId, itemCategory, itemNo, barcode) {
                     return full["Category"] + "-(" + data + ")";
                 }
             },
+            { data: "Note", "name": "備註", "autoWidth": true, "className": "dt-body-center", "visible": true },
             { data: "Category", "name": "作業", "autoWidth": true, "className": "dt-body-center", "visible": false },
             { data: "DocNumber", "name": "單號", "autoWidth": true, "className": "dt-body-center" }
             

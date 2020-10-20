@@ -86,6 +86,9 @@ namespace CHPOUTSRCMES.Web.Models.StockQuery
         [Display(Name = "原因")]
         public string ActionName { set; get; }
 
+        [Display(Name = "備註")]
+        public string Note { set; get; }
+
         [Display(Name = "時間")]
         public DateTime CreateDate { set; get; }
 
@@ -120,9 +123,18 @@ ISNULL(S.BARCODE, '') AS Barcode
 , CASE ISNULL(S.ITEM_CATEGORY, '') WHEN '平版' THEN ISNULL(S.SEC_UOM_CODE, '') ELSE ISNULL(S.PRY_UOM_CODE, '') END AS UomCode
 , CASE ISNULL(S.ITEM_CATEGORY, '') WHEN '平版' THEN ISNULL(S.SEC_AFT_QTY, 0) ELSE ISNULL(S.PRY_AFT_QTY, 0) END AS AvailableQty
 , CASE ISNULL(S.ITEM_CATEGORY, '') WHEN '平版' THEN ISNULL(S.SEC_CHG_QTY, 0) ELSE ISNULL(S.PRY_CHG_QTY, 0) END AS ChangedQty
-, ISNULL(S.DOC, '') AS DocNumber
+, ISNULL(
+	CASE S.CATEGORY 
+	WHEN '庫存移轉-貨故' THEN '' 
+	WHEN '盤點-盤盈' THEN ''  
+	WHEN '盤點-盤虧' THEN '' 
+	WHEN '雜項異動-雜發' THEN ''  
+	WHEN '雜項異動-雜收' THEN '' 
+	WHEN '存貨報廢' THEN ''
+	ELSE S.DOC END, '') AS DocNumber
 , ISNULL(S.ACTION, '') AS ActionName
 , ISNULL(S.CATEGORY, '') AS Category
+, ISNULL(S.NOTE, '') AS Note 
 , ISNULL(S.CREATION_DATE, '') AS CreateDate
 FROM STK_TXN_T S
 LEFT JOIN ORGANIZATION_T O ON O.ORGANIZATION_ID = S.ORGANIZATION_ID
@@ -262,8 +274,10 @@ OR S.DST_SUBINVENTORY_CODE IN (SELECT SUBINVENTORY_CODE FROM USER_SUBINVENTORY_T
                 case 22:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.ActionName) : models.OrderBy(x => x.ActionName);
                 case 23:
-                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Category) : models.OrderBy(x => x.Category);
+                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Note) : models.OrderBy(x => x.Note);
                 case 24:
+                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Category) : models.OrderBy(x => x.Category);
+                case 25:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.DocNumber) : models.OrderBy(x => x.DocNumber);
                 
             }
@@ -274,6 +288,8 @@ OR S.DST_SUBINVENTORY_CODE IN (SELECT SUBINVENTORY_CODE FROM USER_SUBINVENTORY_T
             switch (column)
             {
                 default:
+                case 0:
+                    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.CreateDate) : models.ThenBy(x => x.CreateDate);
                 case 1:
                     return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.Barcode) : models.ThenBy(x => x.Barcode);
                 case 2:
@@ -319,11 +335,11 @@ OR S.DST_SUBINVENTORY_CODE IN (SELECT SUBINVENTORY_CODE FROM USER_SUBINVENTORY_T
                 case 22:
                     return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.ActionName) : models.ThenBy(x => x.ActionName);
                 case 23:
-                    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.Category) : models.ThenBy(x => x.Category);
+                    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.Note) : models.ThenBy(x => x.Note);
                 case 24:
-                    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.DocNumber) : models.ThenBy(x => x.DocNumber);
+                    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.Category) : models.ThenBy(x => x.Category);
                 case 25:
-                    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.CreateDate) : models.ThenBy(x => x.CreateDate);
+                    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.DocNumber) : models.ThenBy(x => x.DocNumber);
             }
         }
 
@@ -345,6 +361,7 @@ OR S.DST_SUBINVENTORY_CODE IN (SELECT SUBINVENTORY_CODE FROM USER_SUBINVENTORY_T
                     || (!string.IsNullOrEmpty(x.ActionName) && x.ActionName.Contains(search))
                     || (!string.IsNullOrEmpty(x.Category) && x.Category.Contains(search))
                     || (!string.IsNullOrEmpty(x.DocNumber) && x.DocNumber.Contains(search))
+                    || (!string.IsNullOrEmpty(x.Note) && x.Note.Contains(search))
                 );
         }
     }

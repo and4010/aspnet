@@ -134,10 +134,10 @@ namespace CHPOUTSRCMES.Web.Models.Process
         [Display(Name = "包裝方式")]
         public string DoPackingType { set; get; }
 
-        public long SrcOspHeaderId { set; get; }
+        public long? SrcOspHeaderId { set; get; }
 
         public string SrcBatchNo { set; get; }
 
-        public long OrgOspHeaderId { set; get; }
+        public long? OrgOspHeaderId { set; get; }
     }
 }

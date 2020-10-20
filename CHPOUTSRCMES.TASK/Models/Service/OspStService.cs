@@ -113,7 +113,6 @@ namespace CHPOUTSRCMES.TASK.Models.Service
             LogInfo($"[{tasker.Name}]-{tasker.Unit}-ImportOspSt-結束");
         }
 
-
         /// <summary>
         /// SOA出貨 P210 資料上傳
         /// </summary>
@@ -134,7 +133,7 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                 using var oraConn = new OracleConnection(ErpConnStr);
                 using var ospStUow = new OspStUOW(sqlConn);
                 using var masterUow = new MasterUOW(oraConn);
-
+                string userId = "SYS";
                 var list = ospStUow.GetOspBatchStage1UploadList();
                 if (list == null || list.Count() == 0)
                 {
@@ -147,7 +146,7 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                     using var transaction = sqlConn.BeginTransaction();
                     try
                     {
-                        var model = ospStUow.OspBatchStStage1Upload(list[i], masterUow,transaction);
+                        var model = ospStUow.OspBatchStStage1Upload(list[i], masterUow, userId,transaction);
                         LogInfo($"[{tasker.Name}]-{tasker.Unit}-ExportOspStRvStage1 (OSP_HEADER_ID:{list[i]})-{model}");
 
                         if (!model.Success)
@@ -198,6 +197,8 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                 using var ospStUow = new OspStUOW(sqlConn);
                 var list = ospStUow.GetOspBatchStage1UploadedList();
 
+                string userId = "SYS";
+
                 if (list == null || list.Count() == 0)
                 {
                     LogInfo($"[{tasker.Name}]-{tasker.Unit}-UpdateStatusOspStRvStage1-無可轉出資料");
@@ -220,7 +221,7 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                     try
                     {
                         data.STATUS_CODE = controlSt.STATUS_CODE;
-                        data.LAST_UPDATE_BY = "SYS";
+                        data.LAST_UPDATE_BY = userId;
                         data.LAST_UPDATE_DATE = DateTime.Now;
                         var model = ospStUow.OspSoaS1Repository.UpdateStatusCode(data, transaction);
                         
@@ -255,7 +256,6 @@ namespace CHPOUTSRCMES.TASK.Models.Service
             LogInfo($"[{tasker.Name}]-{tasker.Unit}-UpdateStatusOspStRvStage1-結束");
         }
 
-
         /// <summary>UpdateStatusOspStRvStage2
         /// SOA出貨 P211 資料上傳
         /// </summary>
@@ -273,8 +273,10 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                     token.ThrowIfCancellationRequested();
                 }
                 using var sqlConn = new SqlConnection(MesConnStr);
+                using var oraConn = new OracleConnection(ErpConnStr);
                 using var ospStUow = new OspStUOW(sqlConn);
-
+                using var masterUow = new MasterUOW(oraConn);
+                string userId = "SYS";
                 var list = ospStUow.GetOspBatchStage2UploadList();
 
                 if (list == null || list.Count() == 0)
@@ -288,7 +290,7 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                     using var transaction = sqlConn.BeginTransaction();
                     try
                     {
-                        var model = ospStUow.OspBatchStStage2Upload(list[i], transaction);
+                        var model = ospStUow.OspBatchStStage2Upload(list[i], masterUow, userId, transaction);
 
                         LogInfo($"[{tasker.Name}]-{tasker.Unit}-ExportOspStRvStage2 (OSP_HEADER_ID:{list[i]})-{model}");
 
@@ -339,7 +341,8 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                 using var sqlConn = new SqlConnection(MesConnStr);
                 using var ospStUow = new OspStUOW(sqlConn);
                 var list = ospStUow.GetOspBatchStage2UploadedList();
-                
+                string userId = "SYS";
+
                 if (list == null || list.Count() == 0)
                 {
                     LogInfo($"[{tasker.Name}]-{tasker.Unit}-UpdateStatusOspStRvStage2-無可轉出資料");
@@ -363,7 +366,7 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                     try
                     {
                         data.STATUS_CODE = controlSt.STATUS_CODE;
-                        data.LAST_UPDATE_BY = "SYS";
+                        data.LAST_UPDATE_BY = userId;
                         data.LAST_UPDATE_DATE = DateTime.Now;
 
                         var model = ospStUow.OspSoaS2Repository.UpdateStatusCode(data, transaction);
@@ -419,7 +422,7 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                 using var ospStUow = new OspStUOW(sqlConn);
 
                 var list = ospStUow.GetOspBatchStage3UploadList();
-
+                string userId = "SYS";
                 if (list == null || list.Count() == 0)
                 {
                     LogInfo($"[{tasker.Name}]-{tasker.Unit}-ExportOspStRv-無可轉出資料");
@@ -431,7 +434,7 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                     using var transaction = sqlConn.BeginTransaction();
                     try
                     {
-                        var model = ospStUow.OspBatchStStage3Upload(list[i], transaction);
+                        var model = ospStUow.OspBatchStStage3Upload(list[i], userId, transaction);
 
                         LogInfo($"[{tasker.Name}]-{tasker.Unit}-ExportOspStRvStage3 (OSP_HEADER_ID:{list[i]})-{model}");
 
@@ -481,7 +484,7 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                 }
                 using var sqlConn = new SqlConnection(MesConnStr);
                 using var ospStUow = new OspStUOW(sqlConn);
-
+                string userId = "SYS";
                 var list = ospStUow.GetOspBatchStage3UploadedList();
 
                 if (list == null || list.Count() == 0)
@@ -507,7 +510,7 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                     try
                     {
                         data.STATUS_CODE = controlsSt.STATUS_CODE;
-                        data.LAST_UPDATE_BY = "SYS";
+                        data.LAST_UPDATE_BY = userId;
                         data.LAST_UPDATE_DATE = DateTime.Now;
                         
                         var model = ospStUow.OspSoaS3Repository.UpdateStatusCode(data, transaction);

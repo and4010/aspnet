@@ -83,7 +83,7 @@ BEGIN
 		IF (@@ROWCOUNT <= 0 OR @@ERROR <> 0)
 		BEGIN
 			SET @message = 'PROCESS_CODE:' + @processCode + ' SERVER_CODE:' + @serverCode + ' BATCH_ID:' 
-			+ @batchId + ' TRANSFER_INVENTORY_HEADER_ID:' + CONVERT(varchar, @trfInvHeaderId) + ' 上傳儲位異動失敗'
+			+ @batchId + ' TRANSFER_INVENTORY_HEADER_ID:' + CONVERT(varchar, @trfInvHeaderId) + ' 上傳盤點失敗'
 			RAISERROR(@message, 16, @success)
 		END
 

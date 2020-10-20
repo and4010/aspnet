@@ -68,6 +68,9 @@ namespace CHPOUTSRCMES.Web.Models.StockQuery
         [Display(Name = "包裝方式")]
         public string PackingType { set; get; }
 
+        [Display(Name = "櫃號")]
+        public string ContainerNo { set; get; }
+
         public static DataTableJsonResultModel<StockDetailQueryModel> getModels(DataTableAjaxPostViewModel data,
             string subinventory, long locatorId, long itemId, string userId)
         {
@@ -97,6 +100,7 @@ S.STOCK_ID AS StockId
 , CASE ISNULL(S.ITEM_CATEGORY, '') WHEN '平版' THEN 0 ELSE ISNULL(S.PRIMARY_AVAILABLE_QTY, 0) END AS PrimaryAvailableQty
 , ISNULL(S.SECONDARY_UOM_CODE, '') AS SecondaryUomCode
 , ISNULL(S.SECONDARY_AVAILABLE_QTY, 0) AS SecondaryAvailableQty
+, ISNULL(S.CONTAINER_NO, '') AS ContainerNo
 FROM STOCK_T S
 JOIN USER_SUBINVENTORY_T U ON U.SUBINVENTORY_CODE = S.SUBINVENTORY_CODE
 JOIN SUBINVENTORY_T B ON B.SUBINVENTORY_CODE = S.SUBINVENTORY_CODE AND B.ORGANIZATION_ID = S.ORGANIZATION_ID
@@ -188,6 +192,8 @@ ORDER BY S.SUBINVENTORY_CODE, S.LOCATOR_ID, S.INVENTORY_ITEM_ID
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.ReamWeight) : models.OrderBy(x => x.ReamWeight);
                 case 17:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.PackingType) : models.OrderBy(x => x.PackingType);
+                case 18:
+                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.ContainerNo) : models.OrderBy(x => x.ContainerNo);
             }
         }
 
@@ -231,6 +237,8 @@ ORDER BY S.SUBINVENTORY_CODE, S.LOCATOR_ID, S.INVENTORY_ITEM_ID
                     return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.ReamWeight) : models.ThenBy(x => x.ReamWeight);
                 case 17:
                     return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.PackingType) : models.ThenBy(x => x.PackingType);
+                case 18:
+                    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.ContainerNo) : models.ThenBy(x => x.ContainerNo);
             }
         }
 
@@ -249,6 +257,7 @@ ORDER BY S.SUBINVENTORY_CODE, S.LOCATOR_ID, S.INVENTORY_ITEM_ID
                     || (!string.IsNullOrEmpty(x.LotNumber) && x.LotNumber.Contains(search))
                     || (!string.IsNullOrEmpty(x.PaperType) && x.PaperType.Contains(search))
                     || (!string.IsNullOrEmpty(x.PackingType) && x.PackingType.Contains(search))
+                    || (!string.IsNullOrEmpty(x.ContainerNo) && x.ContainerNo.Contains(search))
                 );
         }
         

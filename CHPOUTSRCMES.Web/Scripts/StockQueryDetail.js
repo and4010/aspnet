@@ -94,7 +94,8 @@ function loadTable(subinventory, locatorId, itemId, itemCategory) {
             { data: "BasicWeight", "name": "基重", "autoWidth": true, "className": "dt-body-center", "visible": itemCategory == '捲筒' },
             { data: "Specification", "name": "規格", "autoWidth": true, "className": "dt-body-center", "visible": itemCategory == '捲筒' },
             { data: "ReamWeight", "name": "令重", "autoWidth": true, "className": "dt-body-right", "visible": itemCategory == '平版' },
-            { data: "PackingType", "name": "包裝方式", "autoWidth": true, "className": "dt-body-center", "visible": itemCategory == '平版' }
+            { data: "PackingType", "name": "包裝方式", "autoWidth": true, "className": "dt-body-center", "visible": itemCategory == '平版' },
+            { data: "ContainerNo", "name": "櫃號", "autoWidth": true, "className": "dt-body-center", "visible": itemCategory == '捲筒' },
         ]
 
     });

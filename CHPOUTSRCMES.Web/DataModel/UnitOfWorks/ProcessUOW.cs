@@ -908,7 +908,7 @@ DI.CREATED_BY AS Createdby,
 DI.CREATION_DATE AS Creationdate,
 DI.LAST_UPDATE_BY AS LastUpdatedBy,
 DI.LAST_UPDATE_DATE AS LastUpdateDate,
-HM.ORG_OSP_HEADER_ID AS OrgOspHeaderId
+CASE WHEN HM.ORG_OSP_HEADER_ID IS NOT NULL THEN HM.ORG_OSP_HEADER_ID ELSE H.OSP_HEADER_ID END AS OrgOspHeaderId
 FROM [OSP_HEADER_T] H
 JOIN OSP_DETAIL_IN_T DI ON DI.OSP_HEADER_ID = H.OSP_HEADER_ID
 JOIN OSP_DETAIL_OUT_T DO ON DO.OSP_HEADER_ID = H.OSP_HEADER_ID
@@ -956,12 +956,12 @@ left JOIN OSP_HEADER_MOD_T HM ON HM.OSP_HEADER_ID = H.OSP_HEADER_ID
                              userSubinventoryTRepository.GetAll().AsNoTracking(),
                              s => new { s.SubinventoryCode },
                              us => new { us.SubinventoryCode },
-                 (s, us) => new
-                 {
-                     UserId = us.UserId,
-                     SubinventoryCode = s.SubinventoryCode,
-                     OspFlag = s.OspFlag
-                 }).Where(x => x.UserId == UserId && x.OspFlag == "Y").Select(x => x.SubinventoryCode).ToList();
+                             (s, us) => new
+                             {
+                                 UserId = us.UserId,
+                                 SubinventoryCode = s.SubinventoryCode,
+                                 OspFlag = s.OspFlag
+                             }).Where(x => x.UserId == UserId && x.OspFlag == "Y").Select(x => x.SubinventoryCode).ToList();
 
                         string temp = "";
                         foreach (string subinventoryCode in subinventoryCodeList)

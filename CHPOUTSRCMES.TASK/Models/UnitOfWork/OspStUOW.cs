@@ -46,7 +46,9 @@ namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
         public InMmtIngredientStRepository InMmtIngredientStRepository => inMmtIngredientStRepository ??
             (inMmtIngredientStRepository = new InMmtIngredientStRepository(Context, $"{SchemaName}XXIF_CHP_P210_IN_MMT_INGR_ST"));
 
-
+        private InMmtProductStRepository inMmtProductStRepository = null;
+        public InMmtProductStRepository InMmtProductStRepository => inMmtProductStRepository ??
+            (inMmtProductStRepository = new InMmtProductStRepository(Context, $"{SchemaName}XXIF_CHP_P211_IN_MMT_PROD_ST"));
 
         public OspStUOW(IDbConnection conn, bool beginTransaction = false) : base(conn, beginTransaction)
         {
@@ -97,7 +99,6 @@ namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
                 string serverCode = p.Get<string>("@serverCode");
                 string batchId = p.Get<string>("@batchId");
 
-
                 //換算主單位及交易單位
                 resultModel = updateInMmtIngrStList(processCode, serverCode, batchId, masterUOW, transaction);
                 if (!resultModel.Success)
@@ -146,13 +147,23 @@ namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
             for (int i = 0; i < list.Count; i++)
             {
                 var m = list[i];
+                var itemId = InMmtIngredientStRepository.GetInventoryItemId(m.ITEM_NO, transaction);
                 if (m.SECONDARY_TRANSACTION_QUANTITY.HasValue && m.SECONDARY_TRANSACTION_QUANTITY.Value > 0 && !string.IsNullOrEmpty(m.SECONDARY_UOM_CODE))
                 {
-                    var itemId = InMmtIngredientStRepository.GetInventoryItemId(m.ITEM_NO, transaction);
                     var primaryQuantity = masterUOW.UomConvert(itemId, m.SECONDARY_TRANSACTION_QUANTITY.Value, m.SECONDARY_UOM_CODE, m.TRANSACTION_UOM);
                     if (!primaryQuantity.HasValue)
                     {
                         throw new Exception($"單位換算失敗!! ITEM ID :{itemId} AMOUNT:{m.SECONDARY_TRANSACTION_QUANTITY.Value} UOM:{m.SECONDARY_UOM_CODE} TO:{m.TRANSACTION_UOM}");
+                    }
+
+                    m.TRANSACTION_QUANTITY = primaryQuantity.Value;
+                }
+                else
+                {
+                    var primaryQuantity = masterUOW.UomConvert(itemId, m.TRANSACTION_QUANTITY, "KG", m.TRANSACTION_UOM);
+                    if (!primaryQuantity.HasValue)
+                    {
+                        throw new Exception($"單位換算失敗!! ITEM ID :{itemId} AMOUNT:{m.TRANSACTION_QUANTITY} UOM:KG TO:{m.TRANSACTION_UOM}");
                     }
 
                     m.TRANSACTION_QUANTITY = primaryQuantity.Value;
@@ -185,7 +196,7 @@ namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
 
         }
 
-        public ResultModel OspBatchStStage2Upload(long ospHeaderId, IDbTransaction transaction = null)
+        public ResultModel OspBatchStStage2Upload(long ospHeaderId, MasterUOW masterUOW, string userId = "SYS", IDbTransaction transaction = null)
         {
             var resultModel = new ResultModel();
 
@@ -198,7 +209,7 @@ namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
                 p.Add(name: "@batchId", dbType: DbType.String, direction: ParameterDirection.Output, size: 20);
                 p.Add(name: "@code", dbType: DbType.Int32, direction: ParameterDirection.Output);
                 p.Add(name: "@message", dbType: DbType.String, direction: ParameterDirection.Output, size: 500);
-                p.Add(name: "@user", value: "SYS", dbType: DbType.String, direction: ParameterDirection.Input, size: 128);
+                p.Add(name: "@user", value: userId, dbType: DbType.String, direction: ParameterDirection.Input, size: 128);
 
                 Context.Execute(sql: "SP_P211_OspStStage2Upload", param: p, transaction: transaction, commandType: CommandType.StoredProcedure);
                 resultModel = new ResultModel(p.Get<int>("@code"), p.Get<string>("@message"));
@@ -207,6 +218,36 @@ namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
                 {
                     return resultModel;
                 }
+
+                string processCode = p.Get<string>("@processCode");
+                string serverCode = p.Get<string>("@serverCode");
+                string batchId = p.Get<string>("@batchId");
+
+                //換算主單位及交易單位
+                resultModel = updateInMmtProdStList(processCode, serverCode, batchId, masterUOW, transaction);
+                if (!resultModel.Success)
+                {
+                    return resultModel;
+                }
+
+                //回寫 CONTROL_ST
+                var paramSoa = new DynamicParameters();
+                paramSoa.Add(name: "@ospHeaderId", value: ospHeaderId, dbType: DbType.Int64, direction: ParameterDirection.Input);
+                paramSoa.Add(name: "@processCode", value: processCode, dbType: DbType.String, direction: ParameterDirection.Input, size: 20);
+                paramSoa.Add(name: "@serverCode", value: serverCode, dbType: DbType.String, direction: ParameterDirection.Input, size: 20);
+                paramSoa.Add(name: "@batchId", value: batchId, dbType: DbType.String, direction: ParameterDirection.Input, size: 20);
+                paramSoa.Add(name: "@code", dbType: DbType.Int32, direction: ParameterDirection.Output);
+                paramSoa.Add(name: "@message", dbType: DbType.String, direction: ParameterDirection.Output, size: 500);
+                paramSoa.Add(name: "@user", value: userId, dbType: DbType.String, direction: ParameterDirection.Input, size: 128);
+                Context.Execute(sql: "SP_P211_InMmtProdStSummarize", param: paramSoa, transaction: transaction, commandType: CommandType.StoredProcedure);
+
+                resultModel = new ResultModel(paramSoa.Get<int>("@code"), paramSoa.Get<string>("@message"));
+
+                if (!resultModel.Success)
+                {
+                    return resultModel;
+                }
+
             }
             catch (Exception ex)
             {
@@ -218,6 +259,44 @@ namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
             return resultModel;
         }
 
+        public ResultModel updateInMmtProdStList(string processCode, string serverCode, string batchId, MasterUOW masterUOW, IDbTransaction transaction = null)
+        {
+            var list = InMmtProductStRepository.GetListBy(processCode, serverCode, batchId, transaction);
+            if (list == null || list.Count == 0)
+            {
+                return new ResultModel(false, "無資料可上傳");
+            }
+
+            for (int i = 0; i < list.Count; i++)
+            {
+                var m = list[i];
+                var itemId = InMmtProductStRepository.GetInventoryItemId(m.ITEM_NO, transaction);
+                if (m.SECONDARY_TRANSACTION_QUANTITY.HasValue && m.SECONDARY_TRANSACTION_QUANTITY.Value > 0 && !string.IsNullOrEmpty(m.SECONDARY_UOM_CODE))
+                {
+                    var primaryQuantity = masterUOW.UomConvert(itemId, m.SECONDARY_TRANSACTION_QUANTITY.Value, m.SECONDARY_UOM_CODE, m.TRANSACTION_UOM);
+                    if (!primaryQuantity.HasValue)
+                    {
+                        throw new Exception($"單位換算失敗!! ITEM ID :{itemId} AMOUNT:{m.SECONDARY_TRANSACTION_QUANTITY.Value} UOM:{m.SECONDARY_UOM_CODE} TO:{m.TRANSACTION_UOM}");
+                    }
+
+                    m.TRANSACTION_QUANTITY = primaryQuantity.Value;
+                }
+                else
+                {
+                    var primaryQuantity = masterUOW.UomConvert(itemId, m.TRANSACTION_QUANTITY, "KG", m.TRANSACTION_UOM);
+                    if (!primaryQuantity.HasValue)
+                    {
+                        throw new Exception($"單位換算失敗!! ITEM ID :{itemId} AMOUNT:{m.TRANSACTION_QUANTITY} UOM:KG TO:{m.TRANSACTION_UOM}");
+                    }
+
+                    m.TRANSACTION_QUANTITY = primaryQuantity.Value;
+                }
+                InMmtProductStRepository.Update(m, transaction);
+
+            }
+
+            return new ResultModel(true, "");
+        }
 
         #endregion
 
@@ -240,7 +319,7 @@ namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
 
         }
 
-        public ResultModel OspBatchStStage3Upload(long ospHeaderId, IDbTransaction transaction = null)
+        public ResultModel OspBatchStStage3Upload(long ospHeaderId, string userId = "SYS",IDbTransaction transaction = null)
         {
             var resultModel = new ResultModel();
 
@@ -250,7 +329,7 @@ namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
                 p.Add(name: "@ospHeaderId", value: ospHeaderId, dbType: DbType.Int64, direction: ParameterDirection.Input);
                 p.Add(name: "@code", dbType: DbType.Int32, direction: ParameterDirection.Output);
                 p.Add(name: "@message", dbType: DbType.String, direction: ParameterDirection.Output, size: 500);
-                p.Add(name: "@user", value: "SYS", dbType: DbType.String, direction: ParameterDirection.Input, size: 128);
+                p.Add(name: "@user", value: userId, dbType: DbType.String, direction: ParameterDirection.Input, size: 128);
 
                 Context.Execute(sql: "SP_P213_OspStStage3Upload", param: p, transaction: transaction, commandType: CommandType.StoredProcedure);
                 resultModel = new ResultModel(p.Get<int>("@code"), p.Get<string>("@message"));

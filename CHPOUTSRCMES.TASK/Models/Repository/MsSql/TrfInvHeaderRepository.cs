@@ -28,14 +28,14 @@ namespace CHPOUTSRCMES.TASK.Models.Repository.MsSql
 
         #endregion
 
-        public async Task<List<long>> GetUploadList(IDbTransaction transaction = null)
+        public List<long> GetUploadList(IDbTransaction transaction = null)
         {
-            return (await Connection.QueryAsync<long>(
+            return Connection.Query<long>(
 $@"
 SELECT H.TRANSFER_INVENTORY_HEADER_ID FROM TRF_INVENTORY_HEADER_T H
 LEFT JOIN TRF_INVENTORY_SOA_T S ON S.TRANSFER_INVENTORY_HEADER_ID = H.TRANSFER_INVENTORY_HEADER_ID
 WHERE S.TRANSFER_INVENTORY_HEADER_ID IS NULL AND H.NUMBER_STATUS = '1'
-", transaction: transaction)).ToList();
+", transaction: transaction).ToList();
         }
 
         #region IDispose Region

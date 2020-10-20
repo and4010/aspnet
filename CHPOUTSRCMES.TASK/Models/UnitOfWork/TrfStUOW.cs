@@ -191,7 +191,7 @@ namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
 
         public List<long> GetInvHeaderListForUpload(IDbTransaction transaction = null)
         {
-            return TrfRsnHeaderRepository.GetUploadList(transaction);
+            return TrfInvHeaderRepository.GetUploadList(transaction);
         }
 
         public ResultModel TrfInvStUpload(long trfInvHeaderId, MasterUOW masterUOW, string userId = "SYS", IDbTransaction transaction = null)
@@ -372,7 +372,7 @@ namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
                 paramSoa.Add(name: "@code", dbType: DbType.Int32, direction: ParameterDirection.Output);
                 paramSoa.Add(name: "@message", dbType: DbType.String, direction: ParameterDirection.Output, size: 500);
                 paramSoa.Add(name: "@user", value: userId, dbType: DbType.String, direction: ParameterDirection.Input, size: 128);
-                Context.Execute(sql: "SP_P222_TrfMiscStSummarize", param: paramSoa, transaction: transaction, commandType: CommandType.StoredProcedure);
+                Context.Execute(sql: "SP_P222_TrfObsStSummarize", param: paramSoa, transaction: transaction, commandType: CommandType.StoredProcedure);
 
                 resultModel = new ResultModel(paramSoa.Get<int>("@code"), paramSoa.Get<string>("@message"));
 
