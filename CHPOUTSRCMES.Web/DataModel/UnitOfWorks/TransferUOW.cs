@@ -1126,14 +1126,14 @@ SELECT [TRANSFER_PICKED_ID] as ID
                     string palletStatus = "";
                     if (stock.PackingType == PackingType.Ream)
                     {
-                        //if (reamQty == stock.SecondaryAvailableQty)
-                        //{
-                        //    palletStatus = PalletStatusCode.All;
-                        //}
-                        if (reamQty == detail.RollReamWt)
+                        if (reamQty == stock.SecondaryAvailableQty)
                         {
                             palletStatus = PalletStatusCode.All;
                         }
+                        //if (reamQty == detail.RollReamWt)
+                        //{
+                        //    palletStatus = PalletStatusCode.All;
+                        //}
                         else if (reamQty > stock.SecondaryAvailableQty)
                         {
                             throw new Exception("庫存量不足，僅剩:" + stock.SecondaryAvailableQty + " " + stock.SecondaryUomCode);
