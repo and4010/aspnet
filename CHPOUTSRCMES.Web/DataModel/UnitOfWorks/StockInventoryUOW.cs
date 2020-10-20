@@ -737,7 +737,7 @@ SELECT m.TRANSFER_INVENTORY_ID AS ID
                                 {
                                     //rollReamWt = Math.Ceiling(requestedQty / rollReamQty); //每件令數 = 總令數 除以 棧板數 無條件進位 待確認是否正確
                                     //rollReamWt = 0; //測試完 待改成下方正確的
-                                    var yszmpckq = GetYszmpckq(header.OrganizationId, header.OrganizationCode, header.SubinventoryCode, item.CatalogElemVal020);
+                                    var yszmpckq = GetYszmpckq(header.OrganizationId, header.OrganizationCode, header.SubinventoryCode, item.CatalogElemVal020, item.CatalogElemVal040);
                                     if (yszmpckq == null) throw new Exception("找不到令重包數資料");
                                     rollReamWt = yszmpckq.PiecesQty;
                                 }

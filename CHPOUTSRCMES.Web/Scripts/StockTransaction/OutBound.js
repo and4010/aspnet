@@ -1307,21 +1307,21 @@ function OutBoundInit() {
             }
         }
 
-        if ($('#ddlOutLocatorArea').is(":visible") && $('#ddlInLocatorArea').is(":visible")) {
-            if (getOutLocatorId() == getInLocatorId()) {
-                swal.fire('同倉庫儲位要不同');
-                event.preventDefault();
-                return;
-            }
-        }
+        //if ($('#ddlOutLocatorArea').is(":visible") && $('#ddlInLocatorArea').is(":visible")) {
+        //    if (getOutLocatorId() == getInLocatorId()) {
+        //        swal.fire('同倉庫儲位要不同');
+        //        event.preventDefault();
+        //        return;
+        //    }
+        //}
 
-        if ($('#ddlOutLocatorArea').is(":hidden ") && $('#ddlInLocatorArea').is(":hidden ")) {
-            if (getOutSubinventoryCode() == getInSubinventoryCode()) {
-                swal.fire('不可同倉庫無儲位移轉');
-                event.preventDefault();
-                return;
-            }
-        }
+        //if ($('#ddlOutLocatorArea').is(":hidden ") && $('#ddlInLocatorArea').is(":hidden ")) {
+        //    if (getOutSubinventoryCode() == getInSubinventoryCode()) {
+        //        swal.fire('不可同倉庫無儲位移轉');
+        //        event.preventDefault();
+        //        return;
+        //    }
+        //}
 
         //if (GetTransactionType() == "出貨編號") {
         //    if ($('#txtShipmentNumber').val() == "") {

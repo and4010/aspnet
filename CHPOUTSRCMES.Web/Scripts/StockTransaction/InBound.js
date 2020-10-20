@@ -214,13 +214,13 @@
             }
         }
 
-        if ($('#ddlOutLocatorArea').is(":visible") && $('#ddlInLocatorArea').is(":visible")) {
-            if (getOutLocatorId() == getInLocatorId()) {
-                swal.fire('同倉庫儲位要不同');
-                event.preventDefault();
-                return;
-            }
-        }
+        //if ($('#ddlOutLocatorArea').is(":visible") && $('#ddlInLocatorArea').is(":visible")) {
+        //    if (getOutLocatorId() == getInLocatorId()) {
+        //        swal.fire('同倉庫儲位要不同');
+        //        event.preventDefault();
+        //        return;
+        //    }
+        //}
 
         //if ($('#AutoCompleteShipmentNumber').val().trim() == "") {
         //    swal.fire("請輸入編號");
@@ -267,13 +267,13 @@
             }
         }
 
-        if ($('#ddlOutLocatorArea').is(":visible") && $('#ddlInLocatorArea').is(":visible")) {
-            if (getOutLocatorId() == getInLocatorId()) {
-                swal.fire('同倉庫儲位要不同');
-                event.preventDefault();
-                return;
-            }
-        }
+        //if ($('#ddlOutLocatorArea').is(":visible") && $('#ddlInLocatorArea').is(":visible")) {
+        //    if (getOutLocatorId() == getInLocatorId()) {
+        //        swal.fire('同倉庫儲位要不同');
+        //        event.preventDefault();
+        //        return;
+        //    }
+        //}
 
         //if ($('#AutoCompleteShipmentNumber').val().trim() == "") {
         //    swal.fire("請輸入編號");
@@ -1570,13 +1570,13 @@
             }
         }
 
-        if ($('#ddlOutLocatorArea').is(":visible") && $('#ddlInLocatorArea').is(":visible")) {
-            if (getOutLocatorId() == getInLocatorId()) {
-                swal.fire('同倉庫儲位要不同');
-                event.preventDefault();
-                return;
-            }
-        }
+        //if ($('#ddlOutLocatorArea').is(":visible") && $('#ddlInLocatorArea').is(":visible")) {
+        //    if (getOutLocatorId() == getInLocatorId()) {
+        //        swal.fire('同倉庫儲位要不同');
+        //        event.preventDefault();
+        //        return;
+        //    }
+        //}
 
         //if ($('#ddlOutLocatorArea').is(":hidden ") && $('#ddlInLocatorArea').is(":hidden ")) {
         //    if (getOutSubinventoryCode() == getInSubinventoryCode()) {

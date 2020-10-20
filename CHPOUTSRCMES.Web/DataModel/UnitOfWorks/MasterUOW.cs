@@ -1201,6 +1201,49 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             };
         }
 
+        public STK_TXN_T CreateStockRecord(STOCK_T stock, long organizationId, string organizationCode, string subinventoryCode, long? locatorId,
+            long? dstOrganizationId, string dstOrganizationCode,
+           string dstSubinventoryCode, long? dstLocatorId, string categoryCode, string actionCode, string doc,
+           decimal? pryBefQty, decimal? pryChgQty, decimal? pryAftQty, decimal? secBefQty, decimal? secChgQty, decimal? secAftQty,
+           string statusCode, string userId, DateTime createDate)
+        {
+            return new STK_TXN_T
+            {
+                StockId = stock.StockId,
+                OrganizationId = organizationId,
+                OrganizationCode = organizationCode,
+                SubinventoryCode = subinventoryCode,
+                LocatorId = locatorId,
+                Barcode = stock.Barcode,
+                InventoryItemId = stock.InventoryItemId,
+                ItemNumber = stock.ItemNumber,
+                ItemDescription = stock.ItemDescription,
+                ItemCategory = stock.ItemCategory,
+                DstOrganizationId = dstOrganizationId,
+                DstOrganizationCode = dstOrganizationCode,
+                DstSubinventoryCode = dstSubinventoryCode,
+                DstLocatorId = dstLocatorId,
+                Category = this.categoryCode.GetDesc(categoryCode),
+                Action = this.actionCode.GetDesc(actionCode),
+                Note = stock.Note,
+                Doc = doc,
+                LotNumber = stock.LotNumber,
+                PryUomCode = stock.PrimaryUomCode,
+                PryBefQty = pryBefQty,
+                PryChgQty = pryChgQty,
+                PryAftQty = pryAftQty,
+                SecBefQty = secBefQty,
+                SecChgQty = secChgQty,
+                SecAftQty = secAftQty,
+                SecUomCode = stock.SecondaryUomCode,
+                StatusCode = statusCode,
+                CreatedBy = userId,
+                CreationDate = createDate,
+                LastUpdateBy = null,
+                LastUpdateDate = null
+            };
+        }
+
         #endregion
 
 
@@ -2816,14 +2859,16 @@ and usb.UserId = @UserId
         }
 
 
-        public YSZMPCKQ_T GetYszmpckq(long organizationId, string organizationCode, string ospSubinventory, string pstyp)
+        public YSZMPCKQ_T GetYszmpckq(long organizationId, string organizationCode, string ospSubinventory, string pstyp, string sBasicWeight)
         {
             try
             {
+                decimal basicWeight = Convert.ToDecimal(sBasicWeight);
                 using (var mesContext = new MesContext())
                 {
                     return yszmpckqTRepository.GetAll().AsNoTracking().FirstOrDefault(x => x.OrganizationId == organizationId &&
-                        x.OrganizationCode == organizationCode && x.OspSubinventory == ospSubinventory && x.Pstyp == pstyp);
+                        x.OrganizationCode == organizationCode && x.OspSubinventory == ospSubinventory && x.Pstyp == pstyp
+                        && basicWeight >= x.Bwetdn && basicWeight <= x.Bwetup);
                 }
             }
             catch (Exception e)
