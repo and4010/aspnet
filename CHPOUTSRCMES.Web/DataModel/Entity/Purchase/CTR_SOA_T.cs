@@ -48,6 +48,13 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Purchase
         public string BatchId { set; get; }
 
         /// <summary>
+        /// 狀態碼
+        /// </summary>
+        [StringLength(1)]
+        [Column("STATUS_CODE")]
+        public string StatusCode { set; get; }
+
+        /// <summary>
         /// 建立人員
         /// </summary>
         /// 
@@ -65,5 +72,20 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Purchase
         [Column("CREATION_DATE")]
         public DateTime CreationDate { set; get; }
 
+        /// <summary>
+        /// 更新人員
+        /// </summary>
+        /// 
+        [Column("LAST_UPDATE_BY")]
+        [StringLength(128)]
+        public string LastUpdateBy { set; get; }
+
+        /// <summary>
+        /// 更新時間
+        /// </summary>
+        /// 
+        [Column("LAST_UPDATE_DATE")]
+        [DataType(DataType.Date)]
+        public DateTime? LastUpdateDate { set; get; }
     }
 }

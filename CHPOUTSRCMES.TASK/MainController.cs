@@ -312,8 +312,8 @@ namespace CHPOUTSRCMES.TASK
                 CtrStService service = new CtrStService(MesConnStr, ErpConnStr);
                 var task = Task.Run(() => service.ImportCtrSt(tasker, token));
                 var rvTask = task.ContinueWith(subTask => service.ExportCtrStRv(tasker, token), TaskContinuationOptions.OnlyOnRanToCompletion);
-
-                Task.WaitAll(task, rvTask);
+                var statusTask = rvTask.ContinueWith(t => service.UpdateStatusCtrSt(tasker, token), TaskContinuationOptions.OnlyOnRanToCompletion);
+                Task.WaitAll(task, rvTask, statusTask);
             }));
         }
 

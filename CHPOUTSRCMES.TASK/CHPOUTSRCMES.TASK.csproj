@@ -152,6 +152,7 @@
     <Compile Include="Models\Repository\MsSql\DlvDetailRepository.cs" />
     <Compile Include="Models\Repository\MsSql\InMmtProductStRepository.cs" />
     <Compile Include="Models\Repository\MsSql\InMmtIngredientStRepository.cs" />
+    <Compile Include="Models\Repository\MsSql\CtrSoaRepository.cs" />
     <Compile Include="Models\Repository\MsSql\ShipConfirmStRepository.cs" />
     <Compile Include="Models\Repository\MsSql\SubTransferStRepository.cs" />
     <Compile Include="Models\Repository\MsSql\OspBatchStRepository.cs" />

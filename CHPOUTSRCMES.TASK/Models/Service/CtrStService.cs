@@ -321,6 +321,85 @@ namespace CHPOUTSRCMES.TASK.Models.Service
         }
 
         /// <summary>
+        /// SOA入庫 P218 回傳狀態回寫
+        /// </summary>
+        /// <param name="tasker"></param>
+        /// <param name="token"></param>
+        /// <returns></returns>
+        internal void UpdateStatusCtrSt(Tasker tasker, CancellationToken token)
+        {
+            LogInfo($"[{tasker.Name}]-{tasker.Unit}-UpdateStatusCtrSt-開始");
+
+            try
+            {
+                if (token.IsCancellationRequested)
+                {
+                    token.ThrowIfCancellationRequested();
+                }
+                using var sqlConn = new SqlConnection(MesConnStr);
+                using var ctrStUow = new CtrStUOW(sqlConn);
+                var list = ctrStUow.GetCtrUploadedList();
+
+                string userId = "SYS";
+
+                if (list == null || list.Count() == 0)
+                {
+                    LogInfo($"[{tasker.Name}]-{tasker.Unit}-UpdateStatusCtrSt-無可轉出資料");
+                    return;
+                }
+
+                for (int i = 0; i < list.Count(); i++)
+                {
+                    var data = list[i];
+                    var controlSt = ctrStUow.ControlStageRepository.GetBy(data.PROCESS_CODE, data.SERVER_CODE, data.BATCH_ID, pullingFlag: "In-S");
+                    if (controlSt == null
+                        || string.IsNullOrEmpty(data.PROCESS_CODE)
+                        || string.IsNullOrEmpty(data.SERVER_CODE)
+                        || string.IsNullOrEmpty(data.BATCH_ID))
+                    {
+                        continue;
+                    }
+
+                    using var transaction = sqlConn.BeginTransaction();
+                    try
+                    {
+                        data.STATUS_CODE = controlSt.STATUS_CODE;
+                        data.LAST_UPDATE_BY = userId;
+                        data.LAST_UPDATE_DATE = DateTime.Now;
+                        var model = ctrStUow.CtrSoaRepository.UpdateStatusCode(data, transaction);
+
+                        LogInfo($"[{tasker.Name}]-{tasker.Unit}-UpdateStatusCtrSt (CTR_HEADER_ID:{data.CTR_HEADER_ID}, PROCESS_CODE:{data.PROCESS_CODE}, SERVER_CODE:{data.SERVER_CODE}, BATCH_ID:{data.BATCH_ID})-{model}");
+                        if (!model.Success)
+                        {
+                            throw new Exception(model.Msg);
+                        }
+
+                        transaction.Commit();
+
+                    }
+                    catch (Exception ex)
+                    {
+                        LogError($"[{tasker.Name}]-{tasker.Unit}-UpdateStatusCtrSt-錯誤-(CTR_HEADER_ID:{data.CTR_HEADER_ID}, PROCESS_CODE:{data.PROCESS_CODE}, SERVER_CODE:{data.SERVER_CODE}, BATCH_ID:{data.BATCH_ID})-{ex.Message}-{ex.StackTrace}");
+                        transaction.Rollback();
+                    }
+                    Thread.Sleep(100);
+                }
+
+
+            }
+            catch (OperationCanceledException)
+            {
+                LogInfo($"[{tasker.Name}]-{tasker.Unit}-UpdateStatusCtrSt-使用者取消");
+            }
+            catch (Exception ex)
+            {
+                LogError($"[{tasker.Name}]-{tasker.Unit}-UpdateStatusCtrSt-錯誤-{ex.Message}-{ex.StackTrace}");
+            }
+
+            LogInfo($"[{tasker.Name}]-{tasker.Unit}-UpdateStatusCtrSt-結束");
+        }
+
+        /// <summary>
         /// LOG - 一般
         /// </summary>
         /// <param name="message"></param>

@@ -33,6 +33,10 @@ namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
         public CtrPickedRepository CtrPickedRepository => ctrPickedRepository ??
             (ctrPickedRepository = new CtrPickedRepository(Context, $"{SchemaName}CTR_PICKED_T"));
 
+        private CtrSoaRepository ctrSoaRepository = null;
+        public CtrSoaRepository CtrSoaRepository => ctrSoaRepository ??
+            (ctrSoaRepository = new CtrSoaRepository(Context, $"{SchemaName}CTR_SOA_T"));
+
         public CtrStUOW(IDbConnection conn, bool beginTransaction = false) : base(conn, beginTransaction)
         {
         }
@@ -62,6 +66,17 @@ namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
         public async Task<List<CTR_HEADER_T>> GetHeaderListForUpload(IDbTransaction transaction = null)
         {
             return (await CtrHeaderRepository.GetUploadList(transaction));
+        }
+
+        public List<CTR_SOA_T> GetCtrUploadedList(IDbTransaction transaction = null)
+        {
+            return CtrSoaRepository.GetUploadedList(transaction);
+        }
+
+        public ResultModel UpdateStatusCode(CTR_SOA_T data, IDbTransaction transaction = null)
+        {
+            return CtrSoaRepository.UpdateStatusCode(data, transaction);
+
         }
 
         public async Task<ResultDataModel<CTR_PICKED_T>> SaveCtrPicked(CTR_PICKED_T ctrPicked, IDbTransaction transaction = null)
