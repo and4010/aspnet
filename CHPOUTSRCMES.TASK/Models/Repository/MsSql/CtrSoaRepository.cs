@@ -60,7 +60,7 @@ $@"UPDATE CTR_SOA_T SET
     serverCode = data.SERVER_CODE,
     batchId = data.BATCH_ID,
     status = data.STATUS_CODE,
-    user = data,
+    user = data.LAST_UPDATE_BY,
     createDate = data.LAST_UPDATE_DATE
 }, transaction: transaction);
                 resultModel.Code = 0;

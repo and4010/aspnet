@@ -351,7 +351,7 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                 for (int i = 0; i < list.Count(); i++)
                 {
                     var data = list[i];
-                    var controlSt = ctrStUow.ControlStageRepository.GetBy(data.PROCESS_CODE, data.SERVER_CODE, data.BATCH_ID, pullingFlag: "In-S");
+                    var controlSt = ctrStUow.ControlStageRepository.GetBy(data.PROCESS_CODE, data.SERVER_CODE, data.BATCH_ID, pullingFlag: "InAck-S");
                     if (controlSt == null
                         || string.IsNullOrEmpty(data.PROCESS_CODE)
                         || string.IsNullOrEmpty(data.SERVER_CODE)

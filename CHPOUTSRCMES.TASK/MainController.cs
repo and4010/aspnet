@@ -103,7 +103,7 @@ namespace CHPOUTSRCMES.TASK
             configuration.TrfTaskInterval = Helpers.AppConfigHelper.GetInt("TrfTaskInterval");
 
             configuration.MasterTaskEnabled = Helpers.AppConfigHelper.GetInt("MasterTaskEnabled") == 1;
-            configuration.CtrTaskEnabled = Helpers.AppConfigHelper.GetInt("MasterTaskEnabled") == 1;
+            configuration.CtrTaskEnabled = Helpers.AppConfigHelper.GetInt("CtrTaskEnabled") == 1;
             configuration.DlvTaskEnabled = Helpers.AppConfigHelper.GetInt("DlvTaskEnabled") == 1;
             configuration.OspTaskEnabled = Helpers.AppConfigHelper.GetInt("OspTaskEnabled") == 1;
             configuration.TrfTaskEnabled = Helpers.AppConfigHelper.GetInt("TrfTaskEnabled") == 1;
@@ -311,8 +311,9 @@ namespace CHPOUTSRCMES.TASK
             AddTasker(new Tasker("進櫃轉檔程序", configuration.CtrTaskInterval, (tasker, token) => {
                 CtrStService service = new CtrStService(MesConnStr, ErpConnStr);
                 var task = Task.Run(() => service.ImportCtrSt(tasker, token));
-                var rvTask = task.ContinueWith(subTask => service.ExportCtrStRv(tasker, token), TaskContinuationOptions.OnlyOnRanToCompletion);
-                var statusTask = rvTask.ContinueWith(t => service.UpdateStatusCtrSt(tasker, token), TaskContinuationOptions.OnlyOnRanToCompletion);
+                var statusTask = task.ContinueWith(t => service.UpdateStatusCtrSt(tasker, token), TaskContinuationOptions.OnlyOnRanToCompletion);
+                var rvTask = statusTask.ContinueWith(subTask => service.ExportCtrStRv(tasker, token), TaskContinuationOptions.OnlyOnRanToCompletion);
+                
                 Task.WaitAll(task, rvTask, statusTask);
             }));
         }
@@ -351,14 +352,15 @@ namespace CHPOUTSRCMES.TASK
                 OspStService service = new OspStService(MesConnStr, ErpConnStr);
                 var task = service.ImportOspSt(tasker, token);
 
-                var rvStage1Task = task.ContinueWith(subTask => service.ExportOspStRvStage1(tasker, token), TaskContinuationOptions.OnlyOnRanToCompletion);
-                var rvStage1StatusCodeTask = rvStage1Task.ContinueWith(subTask => service.UpdateStatusOspStRvStage1(tasker, token), TaskContinuationOptions.OnlyOnRanToCompletion);
+                var rvStage1StatusCodeTask = task.ContinueWith(subTask => service.UpdateStatusOspStRvStage1(tasker, token), TaskContinuationOptions.OnlyOnRanToCompletion);
+                var rvStage1Task = rvStage1StatusCodeTask.ContinueWith(subTask => service.ExportOspStRvStage1(tasker, token), TaskContinuationOptions.OnlyOnRanToCompletion);
 
-                var rvStage2Task = rvStage1StatusCodeTask.ContinueWith(subTask => service.ExportOspStRvStage2(tasker, token), TaskContinuationOptions.OnlyOnRanToCompletion);
-                var rvStage2StatusCodeTask = rvStage2Task.ContinueWith(subTask => service.UpdateStatusOspStRvStage2(tasker, token), TaskContinuationOptions.OnlyOnRanToCompletion);
+                var rvStage2StatusCodeTask = rvStage1Task.ContinueWith(subTask => service.UpdateStatusOspStRvStage2(tasker, token), TaskContinuationOptions.OnlyOnRanToCompletion);
+                var rvStage2Task = rvStage2StatusCodeTask.ContinueWith(subTask => service.ExportOspStRvStage2(tasker, token), TaskContinuationOptions.OnlyOnRanToCompletion);
 
-                var rvStage3Task = rvStage2StatusCodeTask.ContinueWith(subTask => service.ExportOspStRvStage3(tasker, token), TaskContinuationOptions.OnlyOnRanToCompletion);
-                var rvStage3StatusCodeTask = rvStage3Task.ContinueWith(subTask => service.UpdateStatusOspStRvStage3(tasker, token), TaskContinuationOptions.OnlyOnRanToCompletion);
+                var rvStage3StatusCodeTask = rvStage2Task.ContinueWith(subTask => service.UpdateStatusOspStRvStage3(tasker, token), TaskContinuationOptions.OnlyOnRanToCompletion);
+                var rvStage3Task = rvStage3StatusCodeTask.ContinueWith(subTask => service.ExportOspStRvStage3(tasker, token), TaskContinuationOptions.OnlyOnRanToCompletion);
+                
                 Task.WaitAll(task, rvStage1Task, rvStage1StatusCodeTask, rvStage2Task, rvStage2StatusCodeTask, rvStage3Task, rvStage3StatusCodeTask);
 
                 //Task.WaitAll(task);
