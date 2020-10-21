@@ -1074,11 +1074,13 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
                             id.LastUpdateUserName = UserName;
                             id.LastUpdateDate = DateTime.Now;
                             OspPickedInTRepository.Update(id, true);
-                            var aft = InvestDTListId.RemainingQuantity ?? 0;
-                            var chg = stock.PrimaryTransactionQty - (InvestDTListId.RemainingQuantity ?? 0);
-                            if (stock.PrimaryTransactionQty >= aft)
+                            //var aft = InvestDTListId.RemainingQuantity ?? 0;
+                            var chg = stock.PrimaryAvailableQty - (InvestDTListId.RemainingQuantity ?? 0);
+                            var lockQty = (stock.PrimaryLockedQty ?? 0) + chg;
+                            var aft = stock.PrimaryAvailableQty - chg;
+                            if (stock.PrimaryAvailableQty >= aft)
                             {
-                                CheckStock(stock.StockId, UserId, aft, StockStatusCode.ProcessPicked);
+                                CheckStock(stock.StockId, UserId, aft, lockQty, StockStatusCode.ProcessPicked);
                                 StockRecord(id.StockId, aft, chg, 0, 0, CategoryCode.Process, ActionCode.Picked, header.BatchNo, UserId);
                                 txn.Commit();
                                 return new ResultModel(true, "");
@@ -1100,9 +1102,12 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
                         var header = OspHeaderTRepository.Get(x => x.OspHeaderId == id.OspHeaderId).SingleOrDefault();
                         if (id != null)
                         {
+                            var chg = id.PrimaryQuantity - (id.RemainingQuantity ?? 0);
+                            var lockQty = (stock.PrimaryLockedQty ?? 0) - chg;
+                            var aft = stock.PrimaryAvailableQty + chg;
+                            CheckStock(stock.StockId, UserId, aft, lockQty, StockStatusCode.InStock);
                             OspPickedInTRepository.Delete(id, true);
-                            CheckStock(stock.StockId, UserId, stock.PrimaryTransactionQty, StockStatusCode.InStock);
-                            StockRecord(id.StockId, stock.PrimaryTransactionQty, 0, 0, 0, CategoryCode.Process, ActionCode.Deleted, header.BatchNo, UserId);
+                            StockRecord(id.StockId, stock.PrimaryAvailableQty, 0, 0, 0, CategoryCode.Process, ActionCode.Deleted, header.BatchNo, UserId);
                             txn.Commit();
                             return new ResultModel(true, "");
                         }
@@ -1400,11 +1405,13 @@ AND ST.BARCODE = @BARCODE");
                         oSP_PICKED_IN_T.CreatedUserName = UserName;
                         oSP_PICKED_IN_T.CreationDate = DateTime.Now;
                         OspPickedInTRepository.Create(oSP_PICKED_IN_T, true);
-                        var aft = Remaining_Weight == "" ? 0 : decimal.Parse(Remaining_Weight);
+                        //var aft = Remaining_Weight == "" ? 0 : decimal.Parse(Remaining_Weight);
                         var chg = data.PrimaryAvailableQty - (Remaining_Weight == "" ? 0 : decimal.Parse(Remaining_Weight));
+                        var lockQty = (data.PrimaryLockedQty ?? 0) + chg;
+                        var aft = data.PrimaryAvailableQty - chg;
                         if (data.PrimaryAvailableQty >= aft)
                         {
-                            CheckStock(data.StockId, UserId, aft, StockStatusCode.ProcessPicked);
+                            CheckStock(data.StockId, UserId, aft, lockQty, StockStatusCode.ProcessPicked);
                             StockRecord(data.StockId, aft, chg, 0, 0, CategoryCode.Process, ActionCode.Picked, Header.BatchNo, UserId);
                             var delteRateResult = DeleteRateNoTransaction(oSP_PICKED_IN_T.OspHeaderId);
                             if (!delteRateResult.Success) throw new Exception(delteRateResult.Msg);
@@ -2489,7 +2496,7 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
         }
 
         /// <summary>
-        /// 轉入扣除產品庫存
+        /// 扣除投入庫存已揀量
         /// </summary>
         /// <param name="headerId"></param>
         /// <param name="statusCode"></param>
@@ -2646,13 +2653,13 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
         /// </summary>
         /// <param name="StockId"></param>
         /// <param name="userid"></param>
-        /// <param name="afg"></param>
+        /// <param name="chg 揀貨量"></param>
         /// <param name="StatusCode"></param>
-        public void CheckStock(long StockId, string userid, decimal aft, string StatusCode)
+        public void CheckStock(long StockId, string userid, decimal afterQty, decimal lockQty, string StatusCode)
         {
             var stockid = stockTRepository.Get(x => x.StockId == StockId).SingleOrDefault();
-            stockid.PrimaryAvailableQty = aft;
-            stockid.PrimaryLockedQty = stockid.PrimaryTransactionQty - aft;
+            stockid.PrimaryAvailableQty = afterQty;
+            stockid.PrimaryLockedQty = lockQty;
             stockid.StatusCode = StatusCode;
             stockid.LastUpdateBy = userid;
             stockid.LastUpdateDate = DateTime.Now;

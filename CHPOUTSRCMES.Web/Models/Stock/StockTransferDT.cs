@@ -1405,7 +1405,7 @@ namespace CHPOUTSRCMES.Web.Models.Stock
 
             #region 併板
 
-            public MergeBarcodeViewModel GetMergeBarcodeViewModel(TransferUOW uow, List<long> transferPickedIdList)
+        public MergeBarcodeViewModel GetMergeBarcodeViewModel(TransferUOW uow, List<long> transferPickedIdList)
         {
             MergeBarcodeViewModel vieModel = new MergeBarcodeViewModel();
             vieModel.WaitMergeBarcodeList = new List<TRF_INBOUND_PICKED_T>();
@@ -1418,6 +1418,15 @@ namespace CHPOUTSRCMES.Web.Models.Stock
             }
             return vieModel;
 
+        }
+
+        public ShipmentNumberViewModel GetShipmentNumberViewModel(TransferUOW uow)
+        {
+            ShipmentNumberViewModel vieModel = new ShipmentNumberViewModel();
+            vieModel.ShipmentNumber = "";
+            vieModel.CreateTypeList = uow.GetShipmnetNumberCreateTypeList();
+            vieModel.CreateType = "自動新增";
+            return vieModel;
         }
 
         public JsonResult GetMergeBarocdeStatus(TransferUOW uow, string MergeBarocde, List<long> waitMergeIDs)

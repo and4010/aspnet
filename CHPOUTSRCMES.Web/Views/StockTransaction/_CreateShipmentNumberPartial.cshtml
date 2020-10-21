@@ -1,0 +1,38 @@
+﻿
+@model CHPOUTSRCMES.Web.ViewModels.StockTransaction.ShipmentNumberViewModel
+
+<!-- Modal -->
+@*<script src="~/bower_components/bootstrap-filestyle/src/bootstrap-filestyle.min.js"></script>*@
+<div class="modal fade" id="CreateShipmentNumberModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h3 class="modal-title" id="exampleModalLabel">新增編號</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-5" style="margin-bottom:10px">
+                        <div class="form-inline" style="margin-bottom:10px">
+                            @Html.LabelFor(model => model.CreateType)
+                            @Html.DropDownListFor(model => model.CreateType, Model.CreateTypeList, new { @class = "form-control", id = "DialogDdlCreateType", autocomplete = "off" })
+                        </div>
+                        <div class="form-inline" style="margin-bottom:10px;display: none;" id="DialogTxtShipmentNumberArea">
+                            @Html.LabelFor(model => model.ShipmentNumber)
+                            @Html.TextBoxFor(model => model.ShipmentNumber, new { @class = "form-control input-lg", id = "DialogTxtShipmentNumber", placeholder = "請輸入出貨編號", autocomplete = "off" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" id="btnConfirm">確定</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" id="btnCancel">取消</button>
+            </div>
+        </div>
+    </div>
+</div>

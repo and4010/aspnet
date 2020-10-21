@@ -314,7 +314,7 @@
         }
         window.open("/StockTransaction/InboundFlatPickingReport/?shipmentNumber=" + shipmentNumber);
     });
-    
+
 
     $("#txtBARCODE").keydown(function (e) {
         if (e.keyCode == 13) {
@@ -460,8 +460,8 @@
                         $('#AutoCompleteItemNumber').focus();
                         return;
                     }
-                 
-                    
+
+
 
                     if (data.Data.NumberStatus == "1") {
                         //出貨編號已存檔
@@ -515,13 +515,13 @@
                                 $("#ddlInLocator").val(data.Data.TransferLocatorId);
                             }
 
-                            
+
                             $('#txtBARCODE').val("");
                             InBoundBarcodeDataTablesBody.ajax.reload();
                             InputClose();
                         }
-                        
-                        
+
+
                     } else {
                         //未存檔
                         selectedTransferHeaderId = data.Data.TransferHeaderId;
@@ -617,7 +617,7 @@
             url: "/StockTransaction/OutBoundToInbound",
             type: "POST",
             data: {
-                transferHeaderId : selectedTransferHeaderId
+                transferHeaderId: selectedTransferHeaderId
             },
             success: function (data) {
                 if (data.Success) {
@@ -636,7 +636,7 @@
                     //$('#txtBARCODE').val("");
                     //InBoundBarcodeDataTablesBody.ajax.reload();
                     //InputOpen();
-                   
+
                 } else {
                     swal.fire(data.Msg);
                 }
@@ -764,7 +764,7 @@
             "dataType": "json",
             contentType: 'application/json',
             "data": function (d) {
-               
+
                 var StockTransferBarcodeDTData = d.data;
                 var StockTransferBarcodeDTList = [];
                 var size = Object.keys(StockTransferBarcodeDTData).length;
@@ -944,7 +944,7 @@
             //{ data: "TransferDetailId", name: "項次", autoWidth: true },
             { data: "BARCODE", name: "條碼", autoWidth: true },
             {
-                data: "Status", name: "入庫狀態", autoWidth: true ,"mRender": function (data, type, full) {
+                data: "Status", name: "入庫狀態", autoWidth: true, "mRender": function (data, type, full) {
                     if (data != null) {
                         if (data == '0') {
                             return '待列印';
@@ -1409,7 +1409,7 @@
             url: "/StockTransaction/BarcodeInbound",
             type: "post",
             data: {
-                
+
                 transferHeaderId: getTransferHeaderId(),
                 barcode: $('#txtBARCODE').val()
             },
@@ -1438,7 +1438,7 @@
             event.preventDefault();
             return;
         }
-        
+
         swal.fire({
             title: "入庫存檔",
             text: "確定入庫存檔嗎?",
@@ -1623,24 +1623,27 @@
                 return;
             }
         }
+
         var shipmentNumber = $('#ddlShipmentNumber').val();
         if (shipmentNumber == "新增編號") {
-            swal.fire({
-                title: "新增編號",
-                text: "確定新增編號嗎?",
-                type: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#DD6B55",
-                confirmButtonText: "確定",
-                cancelButtonText: "取消"
-            }).then(function (result) {
-                if (result.value) {
-                    InboundCreateDetail();
+            CreateShipmnetNumber();
 
-                }
-            });
+            //swal.fire({
+            //    title: "新增編號",
+            //    text: "確定新增編號嗎?",
+            //    type: "warning",
+            //    showCancelButton: true,
+            //    confirmButtonColor: "#DD6B55",
+            //    confirmButtonText: "確定",
+            //    cancelButtonText: "取消"
+            //}).then(function (result) {
+            //    if (result.value) {
+            //        InboundCreateDetail();
+
+            //    }
+            //});
         } else {
-            InboundCreateDetail();
+            InboundCreateDetail(null, getShipmentNumber());
             //$.ajax({
             //    url: "/StockTransaction/InobundCheckShipmentNumberExist",
             //    type: "post",
@@ -1739,12 +1742,134 @@
         //});
     }
 
-    function InboundCreateDetail() {
+    function CreateShipmnetNumber() {
+
+        $.ajax({
+            url: '/StockTransaction/CreateShipmnetNumberDialog',
+            type: "POST",
+            data: {},
+            success: function (result) {
+                $('body').append(result);
+                OpenCreateShipmnetNumberDialog($('#CreateShipmentNumberModal'));
+            }
+        });
+    }
+
+    function OpenCreateShipmnetNumberDialog(modal_dialog) {
+        modal_dialog.modal({
+            backdrop: "static",
+            keyboard: true,
+            show: true
+        });
+
+        $('#DialogDdlCreateType').change(function () {
+            var createType = $("#DialogDdlCreateType option:selected").val();
+            if (createType == "手動輸入") {
+                $('#DialogTxtShipmentNumberArea').show();
+            } else {
+                $('#DialogTxtShipmentNumberArea').hide();
+                $('#DialogTxtShipmentNumber').val("");
+            }
+
+
+        })
+
+        modal_dialog.on('hidden.bs.modal', function (e) {
+            $("div").remove(modal_dialog.selector);
+        });
+
+        modal_dialog.on('show.bs.modal', function (e) {
+            $.validator.unobtrusive.parse('form');
+        });
+
+        //確認按鍵
+        modal_dialog.on('click', '#btnConfirm', function (e) {
+            var createType = $("#DialogDdlCreateType option:selected").val();
+            var shipmentNumber = "";
+
+            if (createType == "手動輸入") {
+                shipmentNumber = $('#DialogTxtShipmentNumber').val();
+                if (!(shipmentNumber.trim())) {
+                    swal.fire("請輸入出貨編號");
+                    return
+                }
+            }
+
+            if (createType == "新增編號") {
+                shipmentNumber = "新增編號";
+            }
+
+            if (shipmentNumber != "新增編號") {
+                $.ajax({
+                    url: "/StockTransaction/InobundCheckShipmentNumberExist",
+                    type: "post",
+                    data: {
+                        shipmentNumber: shipmentNumber
+                    },
+                    success: function (data) {
+                        if (data.Success) {
+                            if (data.Data == 0) {
+                                swal.fire({
+                                    title: "新增編號",
+                                    text: "確定新增編號嗎?",
+                                    type: "warning",
+                                    showCancelButton: true,
+                                    confirmButtonColor: "#DD6B55",
+                                    confirmButtonText: "確定",
+                                    cancelButtonText: "取消"
+                                }).then(function (result) {
+                                    if (result.value) {
+                                        InboundCreateDetail(modal_dialog, shipmentNumber);
+                                    }
+                                });
+                            } else if (data.Data == 1) {
+                                swal.fire("出貨編號已存在");
+                            } else {
+                                swal.fire(data.Msg);
+                            }
+                        } else {
+                            swal.fire(data.Msg);
+                        }
+
+                    },
+                    error: function () {
+                        swal.fire('檢查出貨編號失敗');
+                    },
+                    complete: function (data) {
+
+                    }
+
+                });
+            } else {
+                swal.fire({
+                    title: "新增編號",
+                    text: "確定新增編號嗎?",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "確定",
+                    cancelButtonText: "取消"
+                }).then(function (result) {
+                    if (result.value) {
+                        InboundCreateDetail(modal_dialog, shipmentNumber);
+                    }
+                });
+            }
+        });
+
+        modal_dialog.modal('show');
+
+    }
+
+    
+
+    function InboundCreateDetail(modal_dialog, shipmentNumber) {
+
         $.ajax({
             url: "/StockTransaction/InboundCreateDetail",
             type: "post",
             data: {
-                shipmentNumber: getShipmentNumber(),
+                shipmentNumber: shipmentNumber,
                 transferType: $("#ddlTransferType").val(),
                 itemNumber: $('#AutoCompleteItemNumber').val(),
                 outOrganizationId: getOutOrganizationId(),
@@ -1760,8 +1885,9 @@
             success: function (data) {
                 if (data.status) {
                     GetShipmentNumberList(data.transferHeaderId, data.shipmentNumber);
-
-
+                    if (modal_dialog) {
+                        $(modal_dialog.selector).modal('hide');
+                    }
                 } else {
                     swal.fire(data.result);
                 }
@@ -1907,7 +2033,7 @@
             var table = $('#ImportPaperRollTable').DataTable();
 
             var dd = table.rows().data().toArray();
- 
+
             var excelList = [];
             $.each(dd, function (index, value) {
                 var InboundImportExcelModel = {

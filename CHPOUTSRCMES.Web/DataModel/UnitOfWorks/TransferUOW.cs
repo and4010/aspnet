@@ -3755,6 +3755,16 @@ WHERE p.BARCODE = @Barcode
         }
 
         #endregion
+
+
+        public List<SelectListItem> GetShipmnetNumberCreateTypeList()
+        {
+            var list = new List<SelectListItem>();
+            list.Add(new SelectListItem() { Text = "自動新增", Value = "新增編號" });
+            list.Add(new SelectListItem() { Text = "手動輸入", Value = "手動輸入" });
+            return list;
+        }
+       
     }
 
 }

@@ -1145,5 +1145,20 @@ namespace CHPOUTSRCMES.Web.Controllers
         }
 
         #endregion
+
+        [HttpPost]
+        public ActionResult CreateShipmnetNumberDialog()
+        {
+            using (var context = new MesContext())
+            {
+                using (TransferUOW uow = new TransferUOW(context))
+                {
+                    ShipmentNumberViewModel vieModel = stockTransferData.GetShipmentNumberViewModel(uow);
+                    return PartialView("_CreateShipmentNumberPartial", vieModel);
+                }
+            }
+        }
+
+
     }
 }
