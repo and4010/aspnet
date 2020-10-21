@@ -9,7 +9,7 @@ $(document).ready(function () {
 
     status = 0;
     LoadTable();
-    onBtn();
+    btnDailog();
 
     $('#AccountTable tbody').on('click', '#btnStop', function (e) {
 
@@ -426,30 +426,125 @@ function LoadTable() {
     });
 }
 
+function btnDailog() {
+    $('#BtnchagnePassword').click(function () {
+        $.ajax({
+            url: '/Account/_ChangePassword',
+            type: "POST",
+            datatype: 'json',
+            success: function (result) {
+                $('body').append(result);
+                Open($('#changePasswordModal'));
+            }
+        });
+    });
+}
+
+//彈出dialog
+function Open(modal_dialog) {
+    modal_dialog.modal({
+        backdrop: "static",
+        keyboard: true,
+        show: true
+    });
+
+    modal_dialog.on('hidden.bs.modal', function (e) {
+        $("div").remove(modal_dialog.selector);
+    });
+
+    modal_dialog.on('show.bs.modal', function (e) {
+        $.validator.unobtrusive.parse('form');
+    });
+
+    //確認按鍵
+    modal_dialog.on('click', '#btnConfirm', function (e) {
+        var Id = $('#UserId').val()
+        var OldPassword = $('#OldPassword').val();
+        var NewPassword = $('#NewPassword').val();
+        var ConfirmPassword = $('#ConfirmPassword').val();
+        $.ajax({
+            url: '/Account/ChagnePassword',
+            type: "POST",
+            datatype: 'json',
+            data: {
+                Id: Id,
+                OldPassword: OldPassword,
+                NewPassword: NewPassword,
+                ConfirmPassword: ConfirmPassword
+            },
+            success: function (data) {
+                //if (data.status) {
+                //    swal.fire("更改成功");
+                //} else {
+                //    swal.fire("更改失敗");
+                //}
+            },
+            error: function () {
+                swal.fire("失敗");
+            }
+
+        });
+    });
+
+    modal_dialog.modal('show');
+
+}
+
+
+
+function ChangePasswordDialog() {
 
 
 
 
-//function LoadCheckBox() {
 
-//    $.ajax({
-//        url: '/Account/Subinventory',
-//        type: "POST",
-//        datatype: "json",
-//        data: {},
-//        success: function (data) {
-//            for (i = 0; i < data.length; i++) {
-//                var item = '<input style = "width:20px;height:20px font-size:20px"  type="checkbox" onclick ="checkboxclick()" id="' +
-//                    data[i].ORGANIZATION_ID + '" name="checkboxs" value="' +
-//                    data[i].SUBINVENTORY_CODE + "-" + data[i].SUBINVENTORY_NAME + '" /> <label for="' +
-//                    data[i].ORGANIZATION_ID + '">' +
-//                    data[i].SUBINVENTORY_CODE + '-' + data[i].SUBINVENTORY_NAME + '</label> &nbsp;';
-//                $('#checkboxlist').append(item);
-//            }
 
-//        }
-//    });
-//}
+    //var Id = $('#UserId').val();
+    //swal.fire({
+    //    title: '變更密碼',
+    //    text: '請輸入更改密碼',
+    //    input: 'text',
+    //    inputAttributes: {
+    //        autocapitalize: 'off'
+    //    },
+    //    showCancelButton: true,
+    //    confirmButtonText: '確定',
+    //    showLoaderOnConfirm: true,
+    //    allowOutsideClick: false,
+    //    confirmButtonColor: '#3085d6',
+    //    cancelButtonColor: '#d33',
+    //    preConfirm: function (result) {
+    //        if (result.length == 0) {
+    //            return
+    //        }
+    //    }
+    //}).then((Password) => {
+    //    if (Password.value) {
+    //        $.ajax({
+    //            url: '/Account/ChangePasswrod',
+    //            type: "POST",
+    //            data: {
+    //                Id: Id, Password: Password.value
+    //            },
+    //            success: function (data) {
+    //                if (data.status) {
+    //                    swal.fire("更改成功");
+    //                } else {
+    //                    swal.fire("更改失敗");
+    //                }
+    //            },
+    //            error: function () {
+    //                swal.fire("失敗");
+    //            }
+
+    //        });
+    //    } else {
+    //        swal.frie("不得空白");
+    //    }
+    //});
+
+}
+
 
 /*以下用不到*/
 function onBtn() {
@@ -531,41 +626,6 @@ function Insert() {
 
 }
 
-function password() {
-
-    var valid = $('#EditForm').valid();
-
-    if (valid == false) {
-        return;
-    }
-
-    var Password = $('#Password').val().trim();
-
-    //if (Password.length == 0) {
-    //    swal.fire("密碼不得空白")
-    //    return
-    //}
-
-    $.ajax({
-        url: '/Account/Password',
-        type: "POST",
-        data: { id: id, Password: Password },
-        success: function (data) {
-            if (data.status) {
-                swal.fire("更改成功");
-                LoadTable();
-                clearItem();
-                EnableInputPassword(false);
-            } else {
-                swal.fire("更改失敗");
-            }
-        },
-        error: function () {
-            swal.fire("失敗");
-        }
-
-    });
-}
 
 function Edit() {
 

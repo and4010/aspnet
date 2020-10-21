@@ -1,5 +1,8 @@
 ﻿@model IEnumerable<CHPOUTSRCMES.Web.Models.Navbar>
+@using Microsoft.AspNet.Identity;
+
 <script src="~/Scripts/Logout.js"></script>
+<script src="~/Scripts/Account/Account.js"></script>
 <header class="main-header">
     <!-- Logo -->
     <a href="~/home/index" class="logo" style="background-color: #148c4c;">
@@ -27,13 +30,15 @@
                         @Html.AntiForgeryToken()
 
                         <ul class="nav navbar-nav">
-                            <li>
-                                <a href="#" data-toggle="control-sidebar"><i class="fa fa-user" aria-hidden="true"></i>@this.User.Identity.Name</a>
-                            </li>
-                            <li>
-                                <a href="#" id="logout"><i class="fa fa-sign-out" aria-hidden="true"></i>登出</a>
+                            <li class="dropdown">
+                                <a class="dropdown-toggle" data-toggle="dropdown" href="#"><i class="fa fa-user" aria-hidden="true"></i>@this.User.Identity.Name</a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="#" id="BtnchagnePassword"><i class="" aria-hidden="true"></i>變更密碼</a></li>
+                                    <li><a href="#" id="logout"><i class="fa fa-sign-out" aria-hidden="true"></i>登出</a></li>
+                                </ul>
                             </li>
                         </ul>
+                        @Html.Hidden(User.Identity.GetUserId(),new { id="UserId"})
                     }
                 }
                 else
