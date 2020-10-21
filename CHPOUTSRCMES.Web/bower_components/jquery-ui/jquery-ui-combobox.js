@@ -113,7 +113,7 @@
 
             // Remove invalid value
             this.input
-              .val("")
+              //.val("")
               //.attr("title", value + " didn't match any item")
               .tooltip("open");
             this.element.val("");
