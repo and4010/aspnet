@@ -790,7 +790,7 @@ SELECT m.TRANSFER_INVENTORY_ID AS ID
                                 
                                 //產生異動紀錄
                                 var stkTxnT = CreateStockRecord(stock, null, null, null,
-                                null, CategoryCode.TransferInbound, ActionCode.StockTransfer, header.ShipmentNumber,
+                                null, CategoryCode.InventoryProfit, ActionCode.StockTransfer, header.ShipmentNumber,
                                 0, stock.PrimaryAvailableQty, stock.PrimaryAvailableQty, 0, stock.SecondaryAvailableQty, stock.SecondaryAvailableQty, StockStatusCode.InStock, userId, now);
                                 stkTxnTRepository.Create(stkTxnT);
                             }
