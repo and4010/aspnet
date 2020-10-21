@@ -1641,6 +1641,47 @@
             });
         } else {
             InboundCreateDetail();
+            //$.ajax({
+            //    url: "/StockTransaction/InobundCheckShipmentNumberExist",
+            //    type: "post",
+            //    data: {
+            //        shipmentNumber: getShipmentNumber()
+            //    },
+            //    success: function (data) {
+            //        if (data.Success) {
+            //            if (data.Data == 0) {
+            //                swal.fire({
+            //                    title: "新增編號",
+            //                    text: "確定新增此出貨編號" + shipmentNumber + "嗎?",
+            //                    type: "warning",
+            //                    showCancelButton: true,
+            //                    confirmButtonColor: "#DD6B55",
+            //                    confirmButtonText: "確定",
+            //                    cancelButtonText: "取消"
+            //                }).then(function (result) {
+            //                    if (result.value) {
+            //                        InboundCreateDetail();
+
+            //                    }
+            //                });
+            //            } else if (data.Data == 1) {
+            //                InboundCreateDetail();
+            //            } else {
+            //                swal.fire(data.Msg);
+            //            }
+            //        } else {
+            //            swal.fire(data.Msg);
+            //        }
+
+            //    },
+            //    error: function () {
+            //        swal.fire('檢查出貨編號失敗');
+            //    },
+            //    complete: function (data) {
+
+            //    }
+
+            //});
         }
 
 

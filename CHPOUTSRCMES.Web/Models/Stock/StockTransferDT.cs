@@ -602,6 +602,11 @@ namespace CHPOUTSRCMES.Web.Models.Stock
         //    return new ResultModel(true, "新增明細檢查正確");
         //}
 
+        public ResultModel InobundCheckShipmentNumberExist(TransferUOW uow, string shipmentNumber)
+        {
+           return uow.InobundCheckShipmentNumberExist(shipmentNumber);
+        }
+
         public ResultModel CheckNumber(string TransactionType, string OUT_SUBINVENTORY_CODE, string OUT_LOCATOR_ID, string IN_SUBINVENTORY_CODE, string IN_LOCATOR_ID,
             string Number)
         {

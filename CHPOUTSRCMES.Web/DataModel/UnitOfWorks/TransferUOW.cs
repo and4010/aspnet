@@ -475,7 +475,27 @@ SELECT [TRANSFER_PICKED_ID] as ID
             //return "(" + outSubinventoryCode + "-" + inSubinventoryCode + ")" + DateTime.Now.ToString("yyyyMMdd") + "-" + String.Format("{0:000}", randomList[0].ToString());
         }
 
-       
+        public ResultDataModel<int> InobundCheckShipmentNumberExist(string shipmentNumber)
+        {
+            try
+            {
+                var trfHeader = GetTrfHeader(shipmentNumber, TransferType.InBound);
+                if (trfHeader == null)
+                {
+                    return new ResultDataModel<int>(true, "沒有此出貨編號資料", 0);
+                }
+                else
+                {
+                    return new ResultDataModel<int>(true, "有此出貨編號資料", 1);
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(LogUtilities.BuildExceptionMessage(ex));
+                return new ResultDataModel<int>(false, "檢查出貨編號失敗:" + ex.Message, -1);
+            }           
+        }
+
 
         /// <summary>
         /// 新增明細
@@ -600,8 +620,12 @@ SELECT [TRANSFER_PICKED_ID] as ID
                 var result = GetShipmentNumber(outSubinventoryCode, inSubinventoryCode, now, createUser);
                 if (!result.Success) throw new Exception(result.Msg);
                 shipmentNumber = result.Data;
-              
-                trfHeaderTRepository.Create(new TRF_HEADER_T
+            }
+
+            var trfHeader = GetTrfHeader(shipmentNumber, TransferType.InBound);
+            if (trfHeader == null)
+            {
+                trfHeader = new TRF_HEADER_T
                 {
                     OrgId = outOrganization.OrgUnitId,
                     OrganizationId = outOrganizationId,
@@ -629,14 +653,54 @@ SELECT [TRANSFER_PICKED_ID] as ID
                     LastUpdateBy = null,
                     LastUpdateUserName = null,
                     LastUpdateDate = null
-                }, true);
+                };
+                trfHeaderTRepository.Create(trfHeader, true);
             }
 
-          
 
-            var trfHeader = GetTrfHeader(shipmentNumber, TransferType.InBound);
-            if (trfHeader == null) throw new Exception("找不到出貨編號資料");
-            
+
+            //if (shipmentNumber == DropDownListTypeValue.Add)
+            //{
+            //    var result = GetShipmentNumber(outSubinventoryCode, inSubinventoryCode, now, createUser);
+            //    if (!result.Success) throw new Exception(result.Msg);
+            //    shipmentNumber = result.Data;
+
+            //    trfHeaderTRepository.Create(new TRF_HEADER_T
+            //    {
+            //        OrgId = outOrganization.OrgUnitId,
+            //        OrganizationId = outOrganizationId,
+            //        OrganizationCode = outOrganization.OrganizationCode,
+            //        ShipmentNumber = shipmentNumber,
+            //        TransferCatalog = transferCatalog,
+            //        TransferType = TransferType.InBound,
+            //        NumberStatus = NumberStatus.NotSaved,
+            //        IsMes = IsMes.No,
+            //        SubinventoryCode = outSubinventoryCode,
+            //        LocatorId = outLocatorId,
+            //        LocatorCode = locatorCode,
+            //        TransactionDate = now,
+            //        TransactionTypeId = transactionTypeId,
+            //        TransactionTypeName = transactionType.TransactionTypeName,
+            //        TransferOrgId = inOrganization.OrgUnitId,
+            //        TransferOrganizationId = inOrganizationId,
+            //        TransferOrganizationCode = inOrganization.OrganizationCode,
+            //        TransferSubinventoryCode = inSubinventoryCode,
+            //        TransferLocatorId = inLocatorId,
+            //        TransferLocatorCode = transferLocatorCode,
+            //        CreatedBy = createUser,
+            //        CreatedUserName = createUserName,
+            //        CreationDate = now,
+            //        LastUpdateBy = null,
+            //        LastUpdateUserName = null,
+            //        LastUpdateDate = null
+            //    }, true);
+            //}
+
+
+
+            //var trfHeader = GetTrfHeader(shipmentNumber, TransferType.InBound);
+            //if (trfHeader == null) throw new Exception("找不到出貨編號資料");
+
             string headeroutOutLocatorSegment3 = "";
             if (trfHeader.LocatorId != null)
             {

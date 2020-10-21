@@ -2863,7 +2863,7 @@ and usb.UserId = @UserId
         {
             try
             {
-                decimal basicWeight = Convert.ToDecimal(sBasicWeight);
+                decimal basicWeight = Convert.ToDecimal(sBasicWeight) / 10;
                 using (var mesContext = new MesContext())
                 {
                     return yszmpckqTRepository.GetAll().AsNoTracking().FirstOrDefault(x => x.OrganizationId == organizationId &&

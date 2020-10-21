@@ -470,6 +470,18 @@ namespace CHPOUTSRCMES.Web.Controllers
             }
         }
 
+        [HttpPost, ActionName("InobundCheckShipmentNumberExist")]
+        public ActionResult InobundCheckShipmentNumberExist(string shipmentNumber)
+        {
+            using (var context = new MesContext())
+            {
+                using (TransferUOW uow = new TransferUOW(context))
+                {
+                    return new JsonResult { Data = stockTransferData.InobundCheckShipmentNumberExist(uow, shipmentNumber)};
+                }
+            }
+        }
+
         [HttpPost, ActionName("GetNumberStatus")]
         public JsonResult GetNumberStatus(string TransactionType, string OUT_SUBINVENTORY_CODE, string OUT_LOCATOR_ID, string IN_SUBINVENTORY_CODE, string IN_LOCATOR_ID, string Number)
         {
