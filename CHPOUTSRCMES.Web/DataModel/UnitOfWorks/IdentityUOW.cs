@@ -2,6 +2,7 @@
 using CHPOUTSRCMES.Web.DataModel.Entity.Information;
 using CHPOUTSRCMES.Web.DataModel.Managers;
 using CHPOUTSRCMES.Web.Models;
+using CHPOUTSRCMES.Web.Models.Information;
 using CHPOUTSRCMES.Web.Util;
 using CHPOUTSRCMES.Web.ViewModels.Account;
 using Microsoft.AspNet.Identity;
@@ -10,8 +11,13 @@ using Microsoft.Owin.Security;
 using NLog;
 using NPOI.SS.UserModel;
 using System;
+using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
+using System.Data.Entity;
+using System.Web.Mvc;
 
 namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
 {
@@ -49,7 +55,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             {
                 resultModel.Code = -1;
                 resultModel.Success = false;
-                resultModel.Msg ="帳號或密碼輸入錯誤!!";
+                resultModel.Msg = "帳號或密碼輸入錯誤!!";
                 resultModel.Data = null;
             }
             return resultModel;
@@ -60,6 +66,238 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             authenticationManager.SignOut();
         }
 
+
+        public async Task<ResultModel> ChangePassword(ManageUserViewModel manageUserViewModel, string UserId)
+        {
+            ResultModel resultModel = new ResultModel();
+            IdentityResult result = await userManager.ChangePasswordAsync(UserId, manageUserViewModel.OldPassword, manageUserViewModel.NewPassword);
+            if (result.Succeeded)
+            {
+                resultModel.Msg = "密碼變更成功";
+                resultModel.Success = true;
+            }
+            else
+            {
+                resultModel.Msg = result.Errors.First();
+                resultModel.Success = false;
+            }
+            return resultModel;
+        }
+
+        /// <summary>
+        /// 建立帳號
+        /// </summary>
+        /// <param name="accountModel"></param>
+        /// <param name="Subinventory"></param>
+        /// <param name="UserId"></param>
+        /// <returns></returns>
+        public async Task<ResultModel> CreateUser(AccountModel accountModel, List<UserSubinventory> Subinventory,string UserId)
+        {
+            ResultModel resultModel = new ResultModel();
+            using (var transaction = this.Context.Database.BeginTransaction())
+            {
+                try
+                {
+
+                    var user = await userManager.FindByNameAsync(accountModel.Account);
+                    if (user != null)
+                    {
+                        resultModel.Msg = "此使用者已存在!";
+                        resultModel.Success = false;
+                        return resultModel;
+                    }
+
+                    var createUser = new AppUser()
+                    {
+                        UserName = accountModel.Account,
+                        DisplayName = accountModel.Name,
+                        Email = accountModel.Email,
+                    };
+
+                    IdentityResult createIdentityResult = await userManager.CreateAsync(createUser, accountModel.Password);
+                    if (!createIdentityResult.Succeeded)
+                    {
+                        string error = "";
+                        foreach (var errors in createIdentityResult.Errors)
+                        {
+                            error = errors;
+                        }
+                        resultModel.Msg = "使用者:" + accountModel.Account + "產生失敗!" + error;
+                        resultModel.Success = false;
+                    }
+                    else
+                    {
+                        IdentityResult addRoleIdentityResult = await userManager.AddToRoleAsync(createUser.Id, accountModel.RoleName);
+                        if (!addRoleIdentityResult.Succeeded)
+                        {
+                            resultModel.Msg = "加入角色:" + accountModel.RoleName + "失敗!";
+                            resultModel.Success = false;
+                        }
+                        else
+                        {
+                            for(int i = 0; i < Subinventory.Count; i++)
+                            {
+                                USER_SUBINVENTORY_T uSER_SUBINVENTORY_T = new USER_SUBINVENTORY_T();
+                                uSER_SUBINVENTORY_T.UserId = createUser.Id;
+                                uSER_SUBINVENTORY_T.OrganizationId = Subinventory[i].ORGANIZATIONID;
+                                uSER_SUBINVENTORY_T.SubinventoryCode = Subinventory[i].SUBINVENTORY_CODE;
+                                uSER_SUBINVENTORY_T.CreatedBy = UserId;
+                                uSER_SUBINVENTORY_T.CreationDate = DateTime.Now;
+                                userSubinventoryTRepository.Create(uSER_SUBINVENTORY_T,true);
+                            }
+                            resultModel.Success = true;
+                            resultModel.Msg = "新增成功";
+                            transaction.Commit();
+                        }
+                    }
+
+                    return resultModel;
+                }
+
+
+                catch (Exception e)
+                {
+                    transaction.Rollback();
+                    return new ResultModel(false, e.Message);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 重設密碼
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async Task<ResultModel> ResetPassword(string id)
+        {
+            IdentityResult result = null;
+            try
+            {
+                string msg = "";
+                bool hasPassword = HasPassword(id);
+                if (hasPassword)
+                {
+                    result = await userManager.RemovePasswordAsync(id);
+
+                    if (!result.Succeeded)
+                    {
+                        msg = "重設密碼失敗, ";
+                        foreach (var error in result.Errors)
+                        {
+                            msg += error;
+                        }
+                        return new ResultModel(result.Succeeded, msg);
+                    }
+                }
+
+                result = await userManager.AddPasswordAsync(id, "000000");
+                if (!result.Succeeded)
+                {
+                    msg = "重設密碼失敗";
+                    foreach (var error in result.Errors)
+                    {
+                        msg += error;
+                    }
+                }
+                return new ResultModel(result.Succeeded, msg);
+            }
+            catch(Exception e)
+            {
+                return new ResultModel(false, e.Message);
+            }
+
+        }
+
+
+        /// <summary>
+        /// 取得table
+        /// </summary>
+        /// <returns></returns>
+        public List<AccountModel> GetTable()
+        {
+            try
+            {
+                using (var mesContext = new MesContext())
+                {
+                    List<SqlParameter> sqlParameterList = new List<SqlParameter>();
+                    List<string> cond = new List<string>();
+                    StringBuilder query = new StringBuilder();
+                    query.Append(
+@"
+SELECT 
+ut.Id as Id,
+rt.Name as RoleName,
+UserName as Account,
+DisplayName as Name,
+Email as Email,
+CAST(LockoutEnabled as nvarchar) as Status
+FROM USER_T ut
+join USER_ROLE_T urt on urt.UserId = ut.Id
+Join ROLE_T rt on rt.Id = urt.RoleId
+");
+                    string commandText = string.Format(query + "{0}{1}", cond.Count > 0 ? " where " : "", string.Join(" and ", cond.ToArray()));
+                    if (sqlParameterList.Count > 0)
+                    {
+                        return mesContext.Database.SqlQuery<AccountModel>(commandText, sqlParameterList.ToArray()).ToList();
+                    }
+                    else
+                    {
+                        return mesContext.Database.SqlQuery<AccountModel>(commandText).ToList();
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                logger.Error(LogUtilities.BuildExceptionMessage(e));
+                return new List<AccountModel>();
+            }
+        }
+
+
+        /// <summary>
+        /// 取得倉庫管理帳號
+        /// </summary>
+        /// <param name=""></param>
+        /// <returns></returns>
+        public List<UserSubinventory> GetSubinventories()
+        {
+            return subinventoryRepository
+                       .GetAll()
+                       .AsNoTracking()
+                       .Where(x => x.ControlFlag != ControlFlag.Deleted )
+                       .Join(organizationRepository.GetAll(), x=>x.OrganizationId, y=>y.OrganizationId, (x, y) => new UserSubinventory() {
+                           ORGANIZATIONID = y.OrganizationId,
+                           ORGANIZATION_CODE = y.OrganizationCode,
+                           SUBINVENTORY_CODE = x.SubinventoryCode,
+                           SUBINVENTORY_NAME = x.SubinventoryName
+                       })
+                       .ToList();
+        }
+
+        public List<SelectListItem> GetRoleNameList()
+        {
+            List<SelectListItem> roles = new List<SelectListItem>();
+            foreach (IdentityRole role in roleManager.Roles)
+            {
+                roles.Add(new SelectListItem()
+                {
+                    Text = role.Name,
+                    Value = role.Name,
+                    Selected = false,
+                });
+            }
+            return roles;
+        }
+
+        private bool HasPassword(string id)
+        {
+            var user = userManager.FindById(id);
+            if (user != null)
+            {
+                return user.PasswordHash != null;
+            }
+            return false;
+        }
 
         #region 測試資料產生
 
@@ -89,7 +327,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             this.Context.Configuration.AutoDetectChangesEnabled = true;
 
         }
-        
+
         public void Import(IWorkbook book)
         {
             //大量寫入資料時，請關閉AutoDetectChangesEnabled 功能來提高效能
@@ -205,13 +443,13 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                     //搜尋未執行 SaveChanges 的資料
                     var userSubinventory = this.Context.ChangeTracker.Entries<USER_SUBINVENTORY_T>()
                         .Where(x => x.Entity.UserId == user.Id && x.Entity.SubinventoryCode == subinventory.SubinventoryCode).FirstOrDefault();
-                    
+
                     var userSubinventory1 = userSubinventoryTRepository.Get(x => x.UserId == user.Id && x.SubinventoryCode == subinvenotryCode).FirstOrDefault();
-                    
+
 
                     //搜尋已執行 SaveChanges 的資料
                     //var org = transactionTypeRepository.Get(x => x.TransactionTypeId == TransactionTypeId).FirstOrDefault();
-                    if ((userSubinventory == null || userSubinventory.Entity.UserId.Length == 0) 
+                    if ((userSubinventory == null || userSubinventory.Entity.UserId.Length == 0)
                         && (userSubinventory1 == null || userSubinventory1.UserId.Length == 0))
                     {
                         var now = DateTime.Now;
@@ -275,7 +513,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                     var item1 = bcdMiscRepository.Get(x => x.SubinventoryCode == subinvenotryCode).FirstOrDefault();
                     //搜尋已執行 SaveChanges 的資料
                     //var org = transactionTypeRepository.Get(x => x.TransactionTypeId == TransactionTypeId).FirstOrDefault();
-                    if ((item == null || item.Entity.SubinventoryCode.Length == 0) 
+                    if ((item == null || item.Entity.SubinventoryCode.Length == 0)
                         && (item1 == null || item1.SubinventoryCode.Length == 0))
                     {
                         var now = DateTime.Now;

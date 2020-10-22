@@ -1,0 +1,162 @@
+﻿@model CHPOUTSRCMES.Web.Models.Information.AccountModel
+
+@{
+    ViewBag.Title = "新增使用者";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section scripts {
+
+    <script src="~/Scripts/Account/Account.js"></script>
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+    <script src="http://jqueryvalidation.org/files/dist/additional-methods.min.js"></script>
+}
+
+<div class="row">
+    <div class="col-md-12">
+
+        <div class="box box-success">
+            <div class="box-body">
+                <form role="form" class="col-md-6" id="EditForm" method="post">
+                    @Html.AntiForgeryToken()
+                    @Html.ValidationSummary(true)
+                    <fieldset>
+                        <div class="input-group col-md-12 row-mtd">
+                            <span class="input-group-addon">角色</span>
+                            @Html.DropDownListFor(model => model.GetRoleNameList, Model.GetRoleNameList, new { @class = "form-control", id = "ddlRoleName" })
+                            @*<select class="form-control" id="User">
+            <option value="1" selected="selected" onchange="selectUser">使用者</option>
+            <option value="2">華紙使用者</option>
+            <option value="3">系統管理員</option>
+        </select>*@
+                        </div>
+
+                        <div class="input-group col-md-12 row-mtd">
+                            <span class="input-group-addon">帳號</span>
+                            @Html.TextBoxFor(model => model.Account, new { placeholder = "請輸入帳號", @class = "form-control", id = "Account" })
+                            @*<input type="text" class="form-control" placeholder="請輸入帳號" id="Acount" required>*@
+                            @Html.ValidationMessageFor(model => model.Account, "", new { @class = "text-danger", autocomplete = "off" })
+                        </div>
+
+                        <div class="input-group col-md-12 row-mtd">
+                            <span class="input-group-addon">使用者</span>
+                            @Html.TextBoxFor(model => model.Name, new { placeholder = "請輸入姓名", @class = "form-control", id = "Name" })
+                            @*<input type="text" class="form-control" placeholder="請輸入姓名" id="Name" required>*@
+                            @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger", autocomplete = "off" })
+                        </div>
+
+                        <div class="input-group col-md-12 row-mtd">
+                            <span class="input-group-addon">信箱</span>
+                            @Html.TextBoxFor(model => model.Email, new { placeholder = "請輸入信箱", @class = "form-control", id = "Email" })
+                            @*<input type="text" class="form-control" placeholder="請輸入信箱" id="Email" required>*@
+                            @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger", autocomplete = "off" })
+                        </div>
+
+                        <div class="input-group col-md-12 row-mtd">
+                            <span class="input-group-addon">密碼</span>
+                            @Html.PasswordFor(model => model.Password, new { placeholder = "請輸入密碼", @class = "form-control", id = "Password" })
+                            @*<input type="text" class="form-control" placeholder="請輸入密碼" id="Password" required>*@
+                            @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger", autocomplete = "off" })
+                        </div>
+
+                    </fieldset>
+                </form>
+                <div class="row row-std col-md-12">
+                    <button class="btn btn-danger externalBtn col-sm-offset-4" id="BtnAccountSave">儲存</button>
+                    <button class="btn btn-dark externalBtn" id="BtnCancel">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-12">
+
+        <div class="box box-success">
+            <div class="box-body">
+                <form role="form" id="SubinventoryForm" method="post">
+                    @Html.AntiForgeryToken()
+                    @Html.ValidationSummary(true)
+                    <fieldset class="row-mtd">
+                        <div class="row-mtd">
+                            <h4>倉庫</h4>
+                            <div id="checkboxlist">
+                                @{
+                                    var groupModel = Model.GetSubinventories.ToList().GroupBy(x => x.ORGANIZATION_CODE);
+                                    foreach (var group in groupModel)
+                                    {
+                                        <div class="box-header">
+                                            <h4>@group.Key</h4>
+                                        </div>
+                                        <div id="@group.Key" class="box-body">
+                                            @foreach (var item in Model.GetSubinventories)
+                                            {
+                                                if (group.Key == item.ORGANIZATION_CODE)
+                                                {
+                                                    <input style="width: 15px; height: 15px ;font-size:15px" type="checkbox" onclick="checkboxclick"
+                                                           id="@item.ORGANIZATION_CODE-@item.SUBINVENTORY_CODE" name="checkboxs"
+                                                           value="@item.ORGANIZATIONID-@item.SUBINVENTORY_CODE @item.SUBINVENTORY_NAME" />
+                                                    <label for="@item.SUBINVENTORY_CODE">@item.SUBINVENTORY_CODE - @item.SUBINVENTORY_NAME</label>
+                                                }
+                                            }
+                                        </div>
+                                        <br />
+                                    }
+                                }
+                            </div>
+                            <label for="checkboxs" class="error" style="display:none ; color:red" id="checkboxs">至少選擇一種</label>
+                        </div>
+
+                    </fieldset>
+
+
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+@*<div class="row row-std col-md-6">
+    <div class="box-body">
+        <form role="form" id="SubinventoryForm" method="post">
+            @Html.AntiForgeryToken()
+            @Html.ValidationSummary(true)
+            <fieldset class="row-mtd">
+                <div class="row-mtd box box-success">
+                    <h4>倉庫</h4>
+                    <div id="checkboxlist">
+                        @{
+                            var groupModel = Model.GetSubinventories.ToList().GroupBy(x => x.ORGANIZATION_CODE);
+                            foreach (var group in groupModel)
+                            {
+                                <div class="box-header">
+                                    <h4>@group.Key</h4>
+                                </div>
+                                <div id="@group.Key" class="box-body">
+                                    @foreach (var item in Model.GetSubinventories)
+                                    {
+                                        if (group.Key == item.ORGANIZATION_CODE)
+                                        {
+                                            <input style="width: 15px; height: 15px ;font-size:15px" type="checkbox" onclick="checkboxclick"
+                                                   id="@item.ORGANIZATION_CODE-@item.SUBINVENTORY_CODE" name="checkboxs"
+                                                   value="@item.SUBINVENTORY_CODE @item.SUBINVENTORY_NAME" />
+                                            <label for="@item.SUBINVENTORY_CODE">@item.SUBINVENTORY_CODE - @item.SUBINVENTORY_NAME</label>
+                                        }
+                                    }
+                                </div>
+                                <br />
+                            }
+                        }
+                    </div>
+                    <label for="checkboxs" class="error" style="display:none ; color:red" id="checkboxs">至少選擇一種</label>
+                </div>
+
+            </fieldset>
+
+
+        </form>
+    </div>
+ 
+</div>*@

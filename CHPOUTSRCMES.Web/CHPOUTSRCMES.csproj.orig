@@ -510,10 +510,6 @@
     <Compile Include="Migrations\202010200935080_add_ctr_soa_field.Designer.cs">
       <DependentUpon>202010200935080_add_ctr_soa_field.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202010220340590_addUser.cs" />
-    <Compile Include="Migrations\202010220340590_addUser.Designer.cs">
-      <DependentUpon>202010220340590_addUser.cs</DependentUpon>
-    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Delivery\FlatEditBarcodeDT.cs" />
     <Compile Include="Models\Delivery\FlatEditDT.cs" />
@@ -2270,9 +2266,12 @@
     <Content Include="Views\Soa\Detail.cshtml" />
     <Content Include="Views\Soa\Index.cshtml" />
     <Content Include="Views\StockTransaction\_InBoundRollImport.cshtml" />
+<<<<<<< HEAD
     <Content Include="Views\StockTransaction\_CreateShipmentNumberPartial.cshtml" />
+=======
     <Content Include="Views\Account\_ChangePassword.cshtml" />
     <Content Include="Views\Account\Create.cshtml" />
+>>>>>>> origin/Eric
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -2365,9 +2364,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202010200935080_add_ctr_soa_field.resx">
       <DependentUpon>202010200935080_add_ctr_soa_field.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202010220340590_addUser.resx">
-      <DependentUpon>202010220340590_addUser.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

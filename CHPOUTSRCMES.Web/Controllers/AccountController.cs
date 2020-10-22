@@ -17,6 +17,7 @@ using Microsoft.Owin.Security;
 using CHPOUTSRCMES.Web.DataModel;
 using System.Security.Claims;
 using CHPOUTSRCMES.Web.DataModel.UnitOfWorks;
+using CHPOUTSRCMES.Web.DataModel.Entity.Information;
 
 namespace CHPOUTSRCMES.Web.Controllers
 {
@@ -35,6 +36,18 @@ namespace CHPOUTSRCMES.Web.Controllers
             identityUOW = new IdentityUOW(new MesContext());
         }
 
+        public ActionResult _ChangePassword()
+        {
+            return PartialView();
+        }
+
+        public ActionResult Create()
+        {
+            AccountModel accountModel = new AccountModel();
+            accountModel.GetSubinventories = identityUOW.GetSubinventories();
+            accountModel.GetRoleNameList = identityUOW.GetRoleNameList();
+            return View(accountModel);
+        }
 
         //
         // GET: /Account/
@@ -135,94 +148,42 @@ namespace CHPOUTSRCMES.Web.Controllers
             }
         }
 
-        [HttpPost, ActionName("AccountJson")]
-        public JsonResult AccountJson(DataTableAjaxPostViewModel data)
+        [Authorize(Roles = "系統管理員")]
+        [HttpPost]
+        public JsonResult LoadTable(DataTableAjaxPostViewModel data)
         {
 
-            if (AccountViewModel.model.Count == 0)
-            {
-                AccountViewModel.GetAccount();
-
-            }
-
-            List<AccountModel> model = AccountViewModel.model;
+            List<AccountModel> model = identityUOW.GetTable();
             model = AccountViewModel.Search(data, model);
             model = AccountViewModel.Order(data.Order, model).ToList();
             var data1 = model.Skip(data.Start).Take(data.Length).ToList();
             return Json(new { draw = data.Draw, recordsFiltered = model.Count, recordsTotal = model.Count, data = data1 }, JsonRequestBehavior.AllowGet);
         }
-
+        [HttpPost]
         public JsonResult Subinventory()
         {
-            List<SUBINVENTORY> model = new List<SUBINVENTORY>();
-            model.Add(new SUBINVENTORY
-            {
-                ORGANIZATION_ID = 1,
-                SUBINVENTORY_CODE = "TB2",
-                SUBINVENTORY_NAME = "測試倉庫",
-            });
-            model.Add(new SUBINVENTORY
-            {
-                ORGANIZATION_ID = 2,
-                SUBINVENTORY_CODE = "FTA",
-                SUBINVENTORY_NAME = "成品倉",
-            });
+            List<UserSubinventory> model = identityUOW.GetSubinventories();
+
             return Json(new { model }, JsonRequestBehavior.AllowGet);
         }
 
+        [HttpPost]
+        public async Task<JsonResult> ChangPasswordAsync(ManageUserViewModel manageUserViewModel)
+        {
+            var resultModel = new ResultModel();
+            resultModel = await identityUOW.ChangePassword(manageUserViewModel, this.User.Identity.GetUserId());
+            return Json(new { resultModel }, JsonRequestBehavior.AllowGet);
+        }
 
-        //[HttpPost]
-        //public ActionResult Create([Bind(Include = "RoleName,Account, Password, Name, Email")] AccountModel accountModel, string[] Subinventory)
-        //{
-        //    var result = new ResultModel();
-        //    var model = AccountViewModel.model;
-        //    string content = "";
-        //    string User = "";
-        //    if (ModelState.IsValid)
-        //    {
+        [Authorize(Roles = "系統管理員")]
+        [HttpPost]
+        public async Task<JsonResult> CreateUser([Bind(Include = "RoleName,Account, Password, Name, Email")] AccountModel accountModel, List<UserSubinventory> userSubinventory)
+        {
+            var resultModel = new ResultModel();
+            resultModel = await identityUOW.CreateUser(accountModel, userSubinventory, this.User.Identity.GetUserId());
+            return Json(new { resultModel }, JsonRequestBehavior.AllowGet);
 
-        //        for (int i = 0; i <= Subinventory.Length - 1; i++)
-        //        {
-        //            content = Subinventory[i] + " " + content;
-        //        }
-
-        //        if (accountModel.RoleName == "1")
-        //        {
-        //            User = "使用者";
-        //        }
-        //        else if (accountModel.RoleName == "2")
-        //        {
-        //            User = "華紙使用者";
-        //        }
-        //        else
-        //        {
-        //            User = "系統管理員";
-        //        }
-
-
-
-        //        model.Add(new AccountModel()
-        //        {
-
-        //            Id = model.Count + 1,
-        //            RoleId = 1,
-        //            RoleName = User,
-        //            Account = accountModel.Account,
-        //            Password = accountModel.Password,
-        //            Name = accountModel.Name,
-        //            Email = accountModel.Email,
-        //            Status = "啟用",
-        //            Subinventory = "1",
-
-        //        });
-        //        result.Success = true;
-        //        result.Msg = "成功";
-        //        return new JsonResult { Data = new { status = result.Success, message = result.Msg } };
-        //    }
-
-        //    return View();
-
-        //}
+        }
 
 
         [HttpPost]
@@ -262,24 +223,10 @@ namespace CHPOUTSRCMES.Web.Controllers
 
         [HttpPost]
         [Authorize(Roles ="系統管理員")]
-        public ActionResult DeafultPassword(string id)
+        public async Task<JsonResult> DeafultPassword(string id)
         {
-
-            var model = AccountViewModel.model;
             var result = new ResultModel();
-            var ID = model.First(r => r.Id.ToString() == id);
-            if (ID != null)
-            {
-                ID.Password = "00000";
-                result.Success = true;
-                result.Msg = "成功";
-            }
-            else
-            {
-                result.Success = false;
-                result.Msg = "失敗";
-            }
-
+            result = await identityUOW.ResetPassword(id);
             return new JsonResult { Data = new { status = result.Success, message = result.Msg } };
         }
 
@@ -366,7 +313,7 @@ namespace CHPOUTSRCMES.Web.Controllers
                 subinventoryDetails.Add(new SubinventoryDetail
                 {
         
-                    SubinventoryName = AccountEditor.AccountModel.Subinventory[i].SubinventoryName,
+                    //SubinventoryName = AccountEditor.AccountModel.Subinventory[i].SubinventoryName,
                 });
             }
 
@@ -390,7 +337,7 @@ namespace CHPOUTSRCMES.Web.Controllers
                 model.Add(new AccountModel()
                 {
 
-                    Id = model.Count + 1,
+                    Id = "",
                     RoleId = 1,
                     RoleName = User,
                     Account = AccountEditor.AccountModel.Account,
@@ -398,7 +345,7 @@ namespace CHPOUTSRCMES.Web.Controllers
                     Name = AccountEditor.AccountModel.Name,
                     Email = AccountEditor.AccountModel.Email,
                     Status = "啟用",
-                    Subinventory = subinventoryDetails,
+                    //Subinventory = subinventoryDetails,
 
                 });
                 result.Success = true;
@@ -427,7 +374,7 @@ namespace CHPOUTSRCMES.Web.Controllers
 
                     ID.RoleName = User;
                     ID.Name = AccountEditor.AccountModel.Name;
-                    ID.Subinventory = subinventoryDetails;
+                    //ID.Subinventory = subinventoryDetails;
                     result.Success = true;
                     result.Msg = "成功";
 
