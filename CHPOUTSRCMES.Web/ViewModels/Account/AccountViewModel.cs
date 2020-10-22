@@ -17,69 +17,6 @@ namespace CHPOUTSRCMES.Web.ViewModels.Account
         public static List<AccountModel> model = new List<AccountModel>();
 
         
-
-        public static List<AccountModel> GetAccount()
-        {
-            List<SubinventoryDetail> SubinventoryDetail = new List<SubinventoryDetail>();
-            SubinventoryDetail.Add(new SubinventoryDetail
-            {
-             
-                SubinventoryName = "TB2測試倉庫",
-            }) ;
-
-            model.Add(new AccountModel()
-            {
-                Id = 1,
-                RoleId = 1,
-                RoleName = "使用者",
-                Account = "0001",
-                Name = "一力星1號",
-                Email = "123@kk.com.tw",
-                Password = "0001",
-                Status = "啟用",
-                Subinventory = SubinventoryDetail
-            }) ;
-            model.Add(new AccountModel()
-            {
-                Id = 2,
-                RoleId = 2,
-                RoleName = "使用者",
-                Account = "0002",
-                Name = "一力星2號",
-                Email = "123@kk.com.tw",
-                Password = "0002",
-                Status = "啟用",
-                Subinventory = SubinventoryDetail
-            }) ;
-            model.Add(new AccountModel()
-            {
-                Id = 3,
-                RoleId = 3,
-                RoleName = "華紙使用者",
-                Account = "9999",
-                Name = "華紙1號",
-                Email = "123@kk.com.tw",
-                Password = "9999",
-                Status = "啟用",
-                Subinventory = SubinventoryDetail
-            });
-            model.Add(new AccountModel()
-            {
-                Id = 4,
-                RoleId = 4,
-                RoleName = "系統管理員",
-                Account = "adam",
-                Name = "華紙管理員",
-                Email = "123@kk.com.tw",
-                Password = "adam",
-                Status = "啟用",
-                Subinventory = SubinventoryDetail
-            });
-            return model;
-        }
-
-
-
         public static IOrderedEnumerable<AccountModel> Order(List<Order> orders, IEnumerable<AccountModel> models)
         {
             IOrderedEnumerable<AccountModel> orderedModel = null;
@@ -169,7 +106,7 @@ namespace CHPOUTSRCMES.Web.ViewModels.Account
                     || (!string.IsNullOrEmpty(p.Name) && p.Name.ToLower().Contains(search.ToLower()))
                     || (!string.IsNullOrEmpty(p.Email) && p.Email.ToLower().Contains(search.ToLower()))
                     || (!string.IsNullOrEmpty(p.Status) && p.Status.ToLower().Contains(search.ToLower()))
-                    || (!string.IsNullOrEmpty(p.Subinventory[0].SubinventoryName) && p.Subinventory[0].SubinventoryName.ToLower().Contains(search.ToLower()))
+                    //|| (!string.IsNullOrEmpty(p.Subinventory[0].UserSubinventory) && p.Subinventory[0].UserSubinventory.ToLower().Contains(search.ToLower()))
                     ).ToList();
             }
             return model;

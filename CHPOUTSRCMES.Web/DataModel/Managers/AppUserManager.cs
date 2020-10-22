@@ -3,6 +3,8 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
+using System;
+using System.Threading.Tasks;
 
 namespace CHPOUTSRCMES.Web.DataModel.Managers
 {
@@ -17,6 +19,5 @@ namespace CHPOUTSRCMES.Web.DataModel.Managers
 
             return manager;
         }
-
     }
 }

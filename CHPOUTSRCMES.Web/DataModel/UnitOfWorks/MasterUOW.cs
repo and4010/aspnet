@@ -2022,6 +2022,22 @@ select
         /// </summary>
         /// <param name="ORGANIZATION_ID"></param>
         /// <returns></returns>
+        public List<SUBINVENTORY_T> getSubinventories()
+        {
+            return subinventoryRepository
+                       .GetAll().AsNoTracking()
+                       .Where(x =>
+                       x.ControlFlag != ControlFlag.Deleted
+                       ).ToList();
+        }
+
+
+
+        /// <summary>
+        /// 取得倉庫SelectListItem
+        /// </summary>
+        /// <param name="ORGANIZATION_ID"></param>
+        /// <returns></returns>
         private List<SelectListItem> getSubinventoryList(string ORGANIZATION_ID)
         {
             long organizationId = 0;

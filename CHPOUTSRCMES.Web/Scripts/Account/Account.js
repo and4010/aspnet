@@ -2,6 +2,7 @@
 // 1 忘記密碼
 // 2 異動
 
+
 var status;
 var id;
 var EditorAccount;
@@ -10,6 +11,8 @@ $(document).ready(function () {
     status = 0;
     LoadTable();
     btnDailog();
+    onBtn();
+    LoadCheckbox();
 
     $('#AccountTable tbody').on('click', '#btnStop', function (e) {
 
@@ -96,25 +99,6 @@ $(document).ready(function () {
                 });
             }
         });
-
-
-
-
-        //clearItem()
-        //EnableAll(false)
-        //EnableInputPassword(true)
-        //$("#scrollbox").collapse('show');
-        //data.Subinventory
-
-        //selectToValue(data.RoleName)
-        //$('#Account').val(data.Account)
-        //$('#Name').val(data.Name)
-        //$('#Email').val(data.Email)
-
-        //status = 1
-        //id = Id
-
-
     })
 
     $('#AccountTable tbody').on('click', '#btnTrans', function (e) {
@@ -200,175 +184,43 @@ function checkboxclick() {
 }
 
 
-function LoadCheckbox() {
-    var optionsA = [];
-    $.ajax({
-        url: '/Account/Subinventory',
-        "type": "POST",
-        "datatype": "json",
-        success: function (data) {
-            var option = {};
-            for (i = 0; i < data.model.length; i++) {
-                option.id = data.model[i].SUBINVENTORY_CODE + data.model[i].SUBINVENTORY_NAME;
-                option.name = data.model[i].SUBINVENTORY_CODE + data.model[i].SUBINVENTORY_NAME;
-                option.label = data.model[i].SUBINVENTORY_CODE + data.model[i].SUBINVENTORY_NAME;
-                option.value = data.model[i].SUBINVENTORY_CODE + data.model[i].SUBINVENTORY_NAME;
-                optionsA.push(option);
-                option = {};
-            }
-            EditorAccount.field('Subinventory[].SubinventoryName').update(optionsA);
+//function LoadCheckbox() {
+//    $.ajax({
+//        url: '/Account/Subinventory',
+//        type: "POST",
+//        datatype: "json",
+//        success: function (data) {
 
-        }
-    });
-}
+//            //var UsbCode = data.model;
+//            //for (i = 0; i < UsbCode.length; i++) {
+//            //    // create a new div element 
+//            //    // and give it some content 
+//            //    var newDiv = document.createElement("div");
+//            //    //新增至新的div
+//            //    var newContent = document.createTextNode("Hi there and greetings!");
+//            //    newDiv.id = 'new_div';
+//            //    newDiv.appendChild(newContent); //add the text node to the newly created div. 
+//            //    // add the newly created element and its content into the DOM 
+//            //    var currentDiv = document.getElementById("checkboxlist");
+//            //    $('#checkboxlist').append(newDiv, currentDiv);
+//            //}
+
+        
+
+//            //for (i = 0; i < data.model.length; i++) {
+//            //    var item = '<input style = "vertical-align:middle width:20px;height:20px ;font-size:20px"  type="checkbox" onclick ="checkboxclick()" id="' +
+//            //        data.model[i].ORGANIZATION_CODE + '" name="checkboxs" value="' +
+//            //        data.model[i].SUBINVENTORY_CODE + "-" + data.model[i].SUBINVENTORY_NAME + '" /> <label for="' +
+//            //        data.model[i].ORGANIZATION_CODE + '">' +
+//            //        data.model[i].SUBINVENTORY_CODE + '-' + data.model[i].SUBINVENTORY_NAME + '</label> &nbsp;';
+//            //    $('#checkboxlist').append(item);
+//            //}
+//        }
+//    });
+//}
 
 function LoadTable() {
-    //仔入checkbox
-    LoadCheckbox();
-
-    EditorAccount = new $.fn.dataTable.Editor({
-        "language": {
-            "url": "/bower_components/datatables/language/zh-TW.json"
-        },
-        ajax: {
-            url: '/Account/EditorAccount',
-            type: "POST",
-            dataType: "json",
-            contentType: 'application/json',
-            data: function (d) {
-                var AccountModel;
-                $.each(d.data, function (key, value) {
-                    var SubinventoryDetail = [];
-                    var test = [];
-                    for (i = 0; i < value.Subinventory.length; i++) {
-                        test = value.Subinventory[i];
-                        SubinventoryDetail.push(test);
-                        test = {};
-                    };
-
-                    var accountModel = {
-                        'Id': d.data[key]['Id'],
-                        'RoleId': d.data[key]['RoleId'],
-                        'Account': d.data[key]['Account'],
-                        'Name': d.data[key]['Name'],
-                        'Email': d.data[key]['Email'],
-                        'Status': d.data[key]['Status'],
-                        'Subinventory': SubinventoryDetail
-                    };
-
-                    AccountModel = accountModel;
-                });
-                var data = {
-                    'Action': d.action,
-                    'AccountModel': AccountModel
-                };
-                return JSON.stringify(data);
-            },
-            success: function () {
-                LoadTable();
-                LoadCheckbox();
-            }
-        },
-        table: "#AccountTable",
-        idSrc: 'Id',
-        formOptions: {
-            main: {
-                onBackground: 'none'
-            }
-        },
-        fields: [
-            {
-                label: "角色:",
-                name: "RoleId",
-                type: "select",
-                options: [
-                    { label: "使用者", value: 1 },
-                    { label: "華紙使用者", value: 2 },
-                    { label: "系統管理員", value: 3 }
-                ]
-            },
-            {
-                label: "帳號",
-                name: "Account",
-            },
-            {
-                label: "使用者",
-                name: "Name",
-            },
-            {
-                label: "信箱",
-                name: "Email",
-                attr: {
-                    type: 'email',
-                    required: true,
-                    placeholder: 'email@mydomain.com'
-                }
-            },
-            {
-                label: "Id",
-                name: "Id",
-            },
-            {
-                name: "Subinventory[].SubinventoryName",
-                //separator: "|",
-                type: "checkbox"
-            }
-        ],
-        i18n: {
-            edit: {
-                button: "異動",
-                title: "更改異動",
-                submit: "確定"
-            },
-            create: {
-                button: "新增",
-                title: "新增",
-                submit: "確定"
-            }
-        }
-
-    });
-    EditorAccount.field('Id').hide();
-    EditorAccount.on('preSubmit', function (e, d) {
-        var RoleId
-        var Account
-        var Name
-        var Email
-        var Subinventory
-        $.each(d.data, function (key, values) {
-            RoleId = d.data[key]['RoleId']
-            Account = d.data[key]['Account']
-            Name = d.data[key]['Name']
-            Email = d.data[key]['Email']
-            Subinventory = d.data[key]['Subinventory']
-
-        });
-        if (RoleId.length == 0) {
-            this.field('RoleId').error('請勿空白');
-            return false;
-        }
-        if (Account.length == 0) {
-            this.field('Account').error('請勿空白');
-            return false;
-        }
-        if (Name.length == 0) {
-            this.field('Name').error('請勿空白');
-            return false;
-        }
-        if (Email.length == 0) {
-            this.field('Email').error('請勿空白');
-            return false;
-        }
-        if (Subinventory.length == 0) {
-            this.field('Subinventory[].SubinventoryName').error('至少選一個');
-            return false;
-        }
-        return true;
-    });
-
-    EditorAccount.on('close', function () {
-        LoadTable();
-    });
+    
     $('#AccountTable').DataTable({
         "language": {
             "url": "/bower_components/datatables/language/zh-TW.json"
@@ -378,12 +230,12 @@ function LoadTable() {
         serverSide: true,
         autoWidth: false,
         dom:
-            "<'row'<'col-sm-2'l><'col-sm-7'B><'col-sm-3'f>>" +
+            "<'row'<'col-sm-2'l><'col-sm-7'><'col-sm-3'f>>" +
             "<'row'<'col-sm-12'tr>>" +
             "<'row'<'col-sm-5'i><'col-sm-7'p>>",
         "lengthMenu": [[50, 100, 150, 200], [50, 100, 150, 200]],
         ajax: {
-            "url": "/Account/AccountJson",
+            "url": "/Account/LoadTable",
             "type": "POST",
             "datatype": "json",
             "data": {}
@@ -426,143 +278,20 @@ function LoadTable() {
     });
 }
 
-function btnDailog() {
-    $('#BtnchagnePassword').click(function () {
-        $.ajax({
-            url: '/Account/_ChangePassword',
-            type: "POST",
-            datatype: 'json',
-            success: function (result) {
-                $('body').append(result);
-                Open($('#changePasswordModal'));
-            }
-        });
-    });
-}
-
-//彈出dialog
-function Open(modal_dialog) {
-    modal_dialog.modal({
-        backdrop: "static",
-        keyboard: true,
-        show: true
-    });
-
-    modal_dialog.on('hidden.bs.modal', function (e) {
-        $("div").remove(modal_dialog.selector);
-    });
-
-    modal_dialog.on('show.bs.modal', function (e) {
-        $.validator.unobtrusive.parse('form');
-    });
-
-    //確認按鍵
-    modal_dialog.on('click', '#btnConfirm', function (e) {
-        var Id = $('#UserId').val()
-        var OldPassword = $('#OldPassword').val();
-        var NewPassword = $('#NewPassword').val();
-        var ConfirmPassword = $('#ConfirmPassword').val();
-        $.ajax({
-            url: '/Account/ChagnePassword',
-            type: "POST",
-            datatype: 'json',
-            data: {
-                Id: Id,
-                OldPassword: OldPassword,
-                NewPassword: NewPassword,
-                ConfirmPassword: ConfirmPassword
-            },
-            success: function (data) {
-                //if (data.status) {
-                //    swal.fire("更改成功");
-                //} else {
-                //    swal.fire("更改失敗");
-                //}
-            },
-            error: function () {
-                swal.fire("失敗");
-            }
-
-        });
-    });
-
-    modal_dialog.modal('show');
-
-}
-
-
-
-function ChangePasswordDialog() {
 
 
 
 
 
-
-    //var Id = $('#UserId').val();
-    //swal.fire({
-    //    title: '變更密碼',
-    //    text: '請輸入更改密碼',
-    //    input: 'text',
-    //    inputAttributes: {
-    //        autocapitalize: 'off'
-    //    },
-    //    showCancelButton: true,
-    //    confirmButtonText: '確定',
-    //    showLoaderOnConfirm: true,
-    //    allowOutsideClick: false,
-    //    confirmButtonColor: '#3085d6',
-    //    cancelButtonColor: '#d33',
-    //    preConfirm: function (result) {
-    //        if (result.length == 0) {
-    //            return
-    //        }
-    //    }
-    //}).then((Password) => {
-    //    if (Password.value) {
-    //        $.ajax({
-    //            url: '/Account/ChangePasswrod',
-    //            type: "POST",
-    //            data: {
-    //                Id: Id, Password: Password.value
-    //            },
-    //            success: function (data) {
-    //                if (data.status) {
-    //                    swal.fire("更改成功");
-    //                } else {
-    //                    swal.fire("更改失敗");
-    //                }
-    //            },
-    //            error: function () {
-    //                swal.fire("失敗");
-    //            }
-
-    //        });
-    //    } else {
-    //        swal.frie("不得空白");
-    //    }
-    //});
-
-}
-
-
-/*以下用不到*/
 function onBtn() {
 
+    //跳到使用者
+    $("#BtnCreate").click(function () {
+        window.location.href = "/Account/Create";
+    });
+
     $("#BtnAccountSave").click(function () {
-
-        if (status == 0) {
-            Insert();
-        }
-        if (status == 1) {
-            password();
-
-        }
-
-        if (status == 2) {
-            Edit();
-        }
-
+        Insert();
     });
 
 
@@ -578,48 +307,63 @@ function Insert() {
     var valid = $('#EditForm').valid();
 
     obj = document.getElementsByName("checkboxs");
-    Subinventory = [];
+    ORGANIZATIONID = [];
+    ORGANIZATION_CODE = [];
+    SUBINVENTORY_CODE = [];
+    userSubinventory = [];
     for (i in obj) {
-        if (obj[i].checked)
-            Subinventory.push(obj[i].value);
+        if (obj[i].checked) {
+            var checkValue = obj[i].id.indexOf("-");
+            var organiztionCode = obj[i].id.substr(0, checkValue);
+            ORGANIZATION_CODE.push(organiztionCode);
+            var subCode = obj[i].id.substr(checkValue+1);
+            SUBINVENTORY_CODE.push(subCode);
+            var organizationId = obj[i].value.substr(0, checkValue);
+            ORGANIZATIONID.push(organizationId);
+            userSubinventory.push({
+                ORGANIZATION_CODE: organiztionCode,
+                SUBINVENTORY_CODE: subCode,
+                ORGANIZATIONID: organizationId
+            })
+        }
     }
 
-
     if (valid == false) {
-        if (Subinventory.length == 0) {
+        if (SUBINVENTORY_CODE.length == 0) {
             document.getElementById("checkboxs").style.display = "block";
             return;
         }
         return;
     } else {
-        if (Subinventory.length == 0) {
+        if (SUBINVENTORY_CODE.length == 0) {
             document.getElementById("checkboxs").style.display = "block";
             return;
         }
     }
+    var rolename = $('#ddlRoleName').val();
 
     var accountModel = {
-        RoleName: User.value,
+        RoleName: rolename,
         Account: $('#Account').val().trim(),
         Name: $('#Name').val().trim(),
         Email: $('#Email').val().trim(),
-        Password: $('#Password').val().trim()
+        Password: $('#Password').val().trim(),
+        Subinventory:userSubinventory
     };
 
     accountModel.__RequestVerificationToken = $('input[name=__RequestVerificationToken]').val();
-
+    JSON.stringify
     $.ajax({
-        url: "/Account/Create",
-        type: "POST",
-        data: { accountModel: accountModel, Subinventory: Subinventory },
-        dataType: "JSON",
+        url: "/account/createuser",
+        type: "post",
+        data: { accountmodel: accountModel, userSubinventory: userSubinventory},
+        datatype: "json",
         success: function (data) {
-            if (data.status) {
-                swal.fire("新增成功");
-                LoadTable();
+            if (data.resultModel.Success) {
+                swal.fire(data.resultModel.Msg);
                 clearItem();
             } else {
-                swal.fire("新增失敗");
+                swal.fire(data.resultModel.Msg);
             }
         }
     });
@@ -652,7 +396,6 @@ function Edit() {
     }
 
     var strUser = User.value;
-
     var Name = $('#Name').val().trim();
 
 
@@ -685,7 +428,8 @@ function clearItem() {
     $('#Name').val("");
     $('#Email').val("");
     $('#Password').val("");
-    User.selectedIndex = 0;
+    var obj = document.getElementById("ddlRoleName");
+    obj.selectedIndex = 0;
     status = 0;
     id = null;
 
@@ -703,7 +447,7 @@ function EnableInputPassword(Boolean) {
     $('#Email').attr("disabled", Boolean);
 
     $('input:checkbox').attr({ disabled: Boolean });
-    $('#User').prop('disabled', Boolean);
+    $('#ddlRoleName').prop('disabled', Boolean);
 }
 
 

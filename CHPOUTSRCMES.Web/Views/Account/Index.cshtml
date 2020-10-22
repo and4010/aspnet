@@ -14,84 +14,9 @@
 }
 
 <div>
-    @*<div class="row">
-        <div class="col-md-12">
-            <div class="panel panel-default ">
-                <div class="panel-heading">
-                    <a data-toggle="collapse" data-target="#scrollbox" href="#scrollbox"><h3 class="panel-title">使用者登錄</h3></a>
-                </div>
-
-                <div class="panel-body panel-collapse collapse " id="scrollbox">
-                    <form role="form" class="col-md-6" id="EditForm" method="post">
-                        @Html.AntiForgeryToken()
-                        @Html.ValidationSummary(true)
-                        <fieldset>
-                            <div class="input-group col-md-12 row-mtd">
-                                <span class="input-group-addon">角色</span>
-                                <select class="form-control" id="User">
-                                    <option value="1" selected="selected" onchange="selectUser">使用者</option>
-                                    <option value="2">華紙使用者</option>
-                                    <option value="3">系統管理員</option>
-                                </select>
-                            </div>
-
-                            <div class="input-group col-md-12 row-mtd">
-                                <span class="input-group-addon">帳號</span>
-                                @Html.TextBoxFor(model => model.Account, new { placeholder = "請輸入帳號", @class = "form-control", id = "Account" })
-                                <input type="text" class="form-control" placeholder="請輸入帳號" id="Acount" required>
-                                @Html.ValidationMessageFor(model => model.Account, "", new { @class = "text-danger" })
-                            </div>
-
-                            <div class="input-group col-md-12 row-mtd">
-                                <span class="input-group-addon">使用者</span>
-                                @Html.TextBoxFor(model => model.Name, new { placeholder = "請輸入姓名", @class = "form-control", id = "Name" })
-                                <input type="text" class="form-control" placeholder="請輸入姓名" id="Name" required>
-                                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
-                            </div>
-
-                            <div class="input-group col-md-12 row-mtd">
-                                <span class="input-group-addon">信箱</span>
-                                @Html.TextBoxFor(model => model.Email, new { placeholder = "請輸入信箱", @class = "form-control", id = "Email" })
-                                <input type="text" class="form-control" placeholder="請輸入信箱" id="Email" required>
-                                @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
-                            </div>
-
-                            <div class="input-group col-md-12 row-mtd">
-                                <span class="input-group-addon">密碼</span>
-                                @Html.PasswordFor(model => model.Password, new { placeholder = "請輸入密碼", @class = "form-control", id = "Password" })
-                                <input type="text" class="form-control" placeholder="請輸入密碼" id="Password" required>
-                                @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
-                            </div>
-
-                        </fieldset>
-                    </form>
-
-
-                    <form role="form" class="col-md-6" id="SubinventoryForm" method="post">
-                        @Html.AntiForgeryToken()
-                        @Html.ValidationSummary(true)
-                        <fieldset class="col-md-12 row-mtd">
-                            <div class="form-group col-md-12 row-mtd">
-                                <h4>倉庫</h4>
-                                <div id="checkboxlist"></div>
-                                <label for="checkboxs" class="error" style="display:none ; color:red" id="checkboxs">至少選擇一種</label>
-                            </div>
-
-                        </fieldset>
-
-
-                    </form>
-
-
-                    <div class="row row-std col-md-12">
-                        <button class="btn btn-danger externalBtn col-sm-offset-4" id="BtnAccountSave">儲存</button>
-                        <button class="btn btn-dark externalBtn" id="BtnCancel">取消</button>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-    </div>*@
+    <div>
+        <button id="BtnCreate" class="btn btn btn-danger externalBtn">新增使用者</button>
+    </div>
     <div class="row">
         <div class="col-md-12">
             <table class="table table-striped table-bordered table-hover" id="AccountTable">
