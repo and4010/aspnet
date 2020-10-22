@@ -930,10 +930,12 @@ left JOIN OSP_HEADER_MOD_T HM ON HM.OSP_HEADER_ID = H.OSP_HEADER_ID
                         cond.Add("MACHINE_CODE = @MACHINE_CODE");
                         sqlParameterList.Add(new SqlParameter("@MACHINE_CODE", MachineNum));
                     }
-                    if (DueDate != "")
+                    DateTime dueDate = new DateTime();
+                    if (DueDate != "" && DateTime.TryParseExact(DueDate, "yyyy-MM-dd", null, System.Globalization.DateTimeStyles.NoCurrentDateDefault, out dueDate))
                     {
-                        cond.Add("H.DUE_DATE = @DUE_DATE");
-                        sqlParameterList.Add(new SqlParameter("@CUTTING_DATE_FROM", DueDate));
+                        cond.Add("H.DUE_DATE BETWEEN @DUE_DATE AND @DUE_END_DATE");
+                        sqlParameterList.Add(SqlParamHelper.GetDataTime("@DUE_DATE", dueDate, ParameterDirection.Input));
+                        sqlParameterList.Add(SqlParamHelper.GetDataTime("@DUE_END_DATE", dueDate.AddDays(1).AddMilliseconds(-1), ParameterDirection.Input));
                     }
                     if (CuttingDateFrom != "")
                     {
