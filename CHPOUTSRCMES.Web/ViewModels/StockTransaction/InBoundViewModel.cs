@@ -66,8 +66,8 @@ namespace CHPOUTSRCMES.Web.ViewModels.StockTransaction
         
         public bool Advanced { get; set; }
 
-
-
+        [Display(Name = "自訂編號")]
+        public bool CustomShipmentNumber { get; set; }
 
     }
 }

@@ -5,9 +5,15 @@
     var mergeBacrodeEditor;
     var selectedNumberStatus = "0";
     var selectedTransferHeaderId = 0;
+    
 
     function getShipmentNumber() {
-        return $('#ddlShipmentNumber option:selected').text();
+        if ($("#chkCustomShipmentNumber").prop("checked")) {
+            return $('#txtShipmentNumber').val();
+        } else {
+            return $('#ddlShipmentNumber option:selected').text();
+        }
+        
     }
 
     function getTransferHeaderId() {
@@ -45,6 +51,16 @@
             return null;
         }
     }
+
+    $("#chkCustomShipmentNumber").click(function () {
+        if ($("#chkCustomShipmentNumber").prop("checked")) {
+            $(".custom-combobox").hide(100);
+            $("#txtShipmentNumber").show();
+        } else {
+            $(".custom-combobox").show(100);
+            $("#txtShipmentNumber").hide();
+        }
+    });
 
     $('#ddlOutSubinventory').change(function () {
 
@@ -434,19 +450,17 @@
         var transferHeaderId = 0;
         if (getShipmentNumber() == "新增編號") {
             transferHeaderId = 0;
-            //InputOpen();
-            //$("#scrollbox").collapse('show');
-            //$('#AutoCompleteItemNumber').focus();
-            //return;
         } else {
             transferHeaderId = getTransferHeaderId();
         }
 
         $.ajax({
             url: "/StockTransaction/GetShipmentNumberData",
+            //url: "/StockTransaction/GetShipmentNumberDataForShipmentNumber",
             type: "post",
             data: {
                 transferHeaderId: transferHeaderId
+                //shipmentNumber = getShipmentNumber()
             },
             success: function (data) {
                 if (data.Success) {
@@ -1545,6 +1559,14 @@
 
     function CheckCreateInboundBarcode() {
 
+        //var a = $('#ddlShipmentNumber option:selected').text();
+
+        //var b = $('#ddlShipmentNumber').text();
+
+        //var c = $('#ddlShipmentNumber').val();
+
+        //var d = $('#ddlShipmentNumber option:selected').val();
+
         if (getOutSubinventoryCode() == "請選擇") {
             swal.fire('請選擇發貨倉庫');
             event.preventDefault();
@@ -1624,7 +1646,7 @@
             }
         }
 
-        var shipmentNumber = $('#ddlShipmentNumber').val();
+        var shipmentNumber = getShipmentNumber();
         if (shipmentNumber == "新增編號") {
             CreateShipmnetNumber();
 

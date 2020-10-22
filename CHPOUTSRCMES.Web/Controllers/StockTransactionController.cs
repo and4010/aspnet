@@ -400,7 +400,21 @@ namespace CHPOUTSRCMES.Web.Controllers
             }
         }
 
-       
+        [HttpPost, ActionName("GetShipmentNumberDataForShipmentNumber")]
+        public JsonResult GetShipmentNumberData(string shipmentNumber)
+        {
+            using (var context = new MesContext())
+            {
+                using (TransferUOW uow = new TransferUOW(context))
+                {
+
+                    return new JsonResult { Data = stockTransferData.GetShipmentNumberData(uow, shipmentNumber) };
+                }
+
+            }
+        }
+
+
         [HttpPost, ActionName("OutBoundToInbound")]
         public JsonResult OutBoundToInbound(long transferHeaderId)
         {
@@ -777,6 +791,23 @@ namespace CHPOUTSRCMES.Web.Controllers
                 }
             }
         }
+
+        //[HttpPost, ActionName("BarcodeInboundForShipmentNumber")]
+        //public JsonResult BarcodeInbound(string shipmentNumber, string barcode)
+        //{
+        //    using (var context = new MesContext())
+        //    {
+        //        using (TransferUOW uow = new TransferUOW(context))
+        //        {
+        //            //取得使用者ID
+        //            var id = this.User.Identity.GetUserId();
+        //            //取得使用者帳號
+        //            var name = this.User.Identity.GetUserName();
+        //            ResultModel result = stockTransferData.ChangeToAlreadyInBoundForShipmentNumber(uow, shipmentNumber, barcode, id, name);
+        //            return new JsonResult { Data = new { status = result.Success, result = result.Msg } };
+        //        }
+        //    }
+        //}
 
         [HttpPost, ActionName("DeleteBarcode")]
         public JsonResult DeleteBarcode(List<long> IDs)

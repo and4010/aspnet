@@ -209,6 +209,8 @@ namespace CHPOUTSRCMES.Web.Models.Stock
 
             viewModel.ShipmentNumberItems = uow.createDropDownList(MasterUOW.DropDownListType.Add);
 
+            viewModel.CustomShipmentNumber = false;
+
             if (roles != null && roles.Count > 0)
             {
                 foreach (Claim role in roles)
@@ -1218,6 +1220,24 @@ namespace CHPOUTSRCMES.Web.Models.Stock
             }
         }
 
+        public ResultDataModel<TRF_HEADER_T> GetShipmentNumberData(TransferUOW uow, string shipmentNumber)
+        {
+            if (string.IsNullOrEmpty(shipmentNumber))
+            {
+                return new ResultDataModel<TRF_HEADER_T>(true, "新增編號", null);
+            }
+
+            var trfHeader = uow.GetTrfHeader(shipmentNumber, TransferUOW.TransferType.InBound);
+            if (trfHeader == null)
+            {
+                return new ResultDataModel<TRF_HEADER_T>(false, "找不到出貨編號資料", null);
+            }
+            else
+            {
+                return new ResultDataModel<TRF_HEADER_T>(true, "找到出貨編號資料", trfHeader);
+            }
+        }
+
         public ResultModel GetNumberStatus(string TransactionType, string OUT_SUBINVENTORY_CODE, string OUT_LOCATOR_ID, string IN_SUBINVENTORY_CODE, string IN_LOCATOR_ID, string Number)
         {
             List<StockTransferDT> list = new List<StockTransferDT>();
@@ -1380,6 +1400,11 @@ namespace CHPOUTSRCMES.Web.Models.Stock
         {
             return uow.ChangeToAlreadyInBound(transferHeaderId, barcode, userId, userName);
         }
+
+        //public ResultModel ChangeToAlreadyInBoundForShipmentNumber(TransferUOW uow, string shipmentNumber, string barcode, string userId, string userName)
+        //{
+        //    return uow.ChangeToAlreadyInBoundForShipmnetNumber(shipmentNumber, barcode, userId, userName);
+        //}
 
         public ActionResult PrintInboundLabel(TransferUOW uow, List<long> transferPickedIdList, string userName)
         {

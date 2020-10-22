@@ -1357,6 +1357,32 @@ SELECT [TRANSFER_PICKED_ID] as ID
 
         }
 
+        //public ResultModel ChangeToAlreadyInBoundForShipmnetNumber(string shipmnetNumber, string barcode, string userId, string userName)
+        //{
+        //    var pick = trfInboundPickedTRepository.GetAll().FirstOrDefault(x => x.Barcode == barcode && x.sh == shipmnetNumber);
+        //    if (pick == null) return new ResultModel(false, "找不到揀貨資料");
+        //    if (pick.Status == InboundStatus.WaitPrint) return new ResultModel(false, "請先列印條碼");
+        //    if (pick.Status == InboundStatus.AlreadyInbound) return new ResultModel(false, "已經入庫");
+
+        //    using (var txn = this.Context.Database.BeginTransaction())
+        //    {
+        //        try
+        //        {
+        //            UpdateInboundPickStatus(pick, InboundStatus.AlreadyInbound, userId, userName, DateTime.Now);
+        //            trfInboundPickedTRepository.SaveChanges();
+        //            txn.Commit();
+        //            return new ResultModel(true, "待列印轉待入庫成功");
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            logger.Error(LogUtilities.BuildExceptionMessage(ex));
+        //            txn.Rollback();
+        //            return new ResultModel(false, "待列印轉待入庫失敗:" + ex.Message);
+        //        }
+        //    }
+
+        //}
+
         /// <summary>
         /// 更新入庫狀態 使用時要加Transaction
         /// </summary>
