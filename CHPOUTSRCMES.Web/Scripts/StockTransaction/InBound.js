@@ -17,15 +17,14 @@
     }
 
     function getTransferHeaderId() {
-        return $('#ddlShipmentNumber').val();
+        //return $('#ddlShipmentNumber').val();
+        return $('#TransferHeaderId').text();
     }
 
     function getOutOrganizationId() {
-        var a = $("#ddlOutSubinventory").val();
         return $("#ddlOutSubinventory").val();
     }
     function getInOrganizationId() {
-        var a = $("#ddlInSubinventory").val();
         return $("#ddlInSubinventory").val();
     }
 
@@ -85,6 +84,18 @@
                     $('#ddlOutLocatorArea').show();
                 }
 
+                if (getOutOrganizationId() != getInOrganizationId()) {
+                    $('#chkCustomShipmentNumber').show();
+                    $('#lblCustomShipmentNumber').show();
+                } else {
+                    $('#chkCustomShipmentNumber').hide();
+                    $('#lblCustomShipmentNumber').hide();
+                    $("#chkCustomShipmentNumber").prop("checked", false);
+                    $(".custom-combobox").show(100);
+                    $("#txtShipmentNumber").hide();
+                }
+                
+
                 //$('ddlOutLocator').html("");
 
 
@@ -136,7 +147,16 @@
                 } else {
                     $('#ddlInLocatorArea').show();
                 }
-
+                if (getOutOrganizationId() != getInOrganizationId()) {
+                    $('#chkCustomShipmentNumber').show();
+                    $('#lblCustomShipmentNumber').show();
+                } else {
+                    $('#chkCustomShipmentNumber').hide();
+                    $('#lblCustomShipmentNumber').hide();
+                    $("#chkCustomShipmentNumber").prop("checked", false);
+                    $(".custom-combobox").show(100);
+                    $("#txtShipmentNumber").hide();
+                }
             },
             error: function () {
                 swal.fire('更新收貨儲位失敗');
@@ -201,7 +221,11 @@
     //checkTransactionType();
 
     $("#btnExampleDownload").click(function () {
-        window.open('/Home/DownloadFile', '_blank');
+        window.open('/StockTransaction/DownloadExcelSampleFile', '_blank');
+    });
+
+    $("#btnExampleDownload2").click(function () {
+        window.open('/StockTransaction/DownloadExcelSampleFile2', '_blank');
     });
 
     $("#btnImportFile").click(function () {
@@ -331,6 +355,17 @@
         window.open("/StockTransaction/InboundFlatPickingReport/?shipmentNumber=" + shipmentNumber);
     });
 
+    $(".custom-combobox").keydown(function (e) {
+        if (e.keyCode == 13) {
+            SelectShipmentNumber();
+        }
+    });
+
+    $('#txtShipmentNumber').keydown(function (e) {
+        if (e.keyCode == 13) {
+            SelectShipmentNumber();
+        }
+    });
 
     $("#txtBARCODE").keydown(function (e) {
         if (e.keyCode == 13) {
@@ -447,20 +482,20 @@
     //});
 
     function SelectShipmentNumber() {
-        var transferHeaderId = 0;
-        if (getShipmentNumber() == "新增編號") {
-            transferHeaderId = 0;
-        } else {
-            transferHeaderId = getTransferHeaderId();
-        }
+        //var transferHeaderId = 0;
+        //if (getShipmentNumber() == "新增編號") {
+        //    transferHeaderId = 0;
+        //} else {
+        //    transferHeaderId = getTransferHeaderId();
+        //}
 
         $.ajax({
-            url: "/StockTransaction/GetShipmentNumberData",
-            //url: "/StockTransaction/GetShipmentNumberDataForShipmentNumber",
+            //url: "/StockTransaction/GetShipmentNumberData",
+            url: "/StockTransaction/GetShipmentNumberDataForShipmentNumber",
             type: "post",
             data: {
-                transferHeaderId: transferHeaderId
-                //shipmentNumber = getShipmentNumber()
+                //transferHeaderId: transferHeaderId
+                shipmentNumber : getShipmentNumber()
             },
             success: function (data) {
                 if (data.Success) {
@@ -554,8 +589,14 @@
                     }
 
                 } else {
-
-                    swal.fire(data.Msg);
+                    InputOpen();
+                    $('#txtBARCODE').val("");
+                    selectedTransferHeaderId = 0;
+                    selectedNumberStatus = "0";
+                    InBoundBarcodeDataTablesBody.ajax.reload();
+                    $("#scrollbox").collapse('show');
+                    $('#AutoCompleteItemNumber').focus();
+                    //swal.fire(data.Msg);
                 }
 
 
@@ -1420,11 +1461,13 @@
         }
 
         $.ajax({
-            url: "/StockTransaction/BarcodeInbound",
+            //url: "/StockTransaction/BarcodeInbound",
+            url: "/StockTransaction/BarcodeInboundForShipmentNumber",
             type: "post",
             data: {
 
-                transferHeaderId: getTransferHeaderId(),
+                //transferHeaderId: getTransferHeaderId(),
+                shipmentNumber: getShipmentNumber(),
                 barcode: $('#txtBARCODE').val()
             },
             success: function (data) {
@@ -1464,10 +1507,12 @@
         }).then(function (result) {
             if (result.value) {
                 $.ajax({
-                    url: "/StockTransaction/InBoundSaveTransfer",
+                    //url: "/StockTransaction/InBoundSaveTransfer",
+                    url: "/StockTransaction/InBoundSaveTransferForShipmentNumber",
                     type: "post",
                     data: {
-                        transferHeaderId: getTransferHeaderId()
+                        //transferHeaderId: getTransferHeaderId()
+                        shipmentNumber: getShipmentNumber()
                     },
                     success: function (data) {
                         if (data.status) {
@@ -1508,10 +1553,12 @@
         }).then(function (result) {
             if (result.value) {
                 $.ajax({
-                    url: "/StockTransaction/InBoundSaveTransferNoCheckStockStatus",
+                    //url: "/StockTransaction/InBoundSaveTransferNoCheckStockStatus",
+                    url: "/StockTransaction/InBoundSaveTransferNoCheckStockStatusForShipmentNumber",
                     type: "post",
                     data: {
-                        transferHeaderId: getTransferHeaderId()
+                        //transferHeaderId: getTransferHeaderId()
+                        shipmentNumber: getShipmentNumber()
                     },
                     success: function (data) {
                         if (data.status) {
@@ -1648,22 +1695,22 @@
 
         var shipmentNumber = getShipmentNumber();
         if (shipmentNumber == "新增編號") {
-            CreateShipmnetNumber();
+            //CreateShipmnetNumber();
 
-            //swal.fire({
-            //    title: "新增編號",
-            //    text: "確定新增編號嗎?",
-            //    type: "warning",
-            //    showCancelButton: true,
-            //    confirmButtonColor: "#DD6B55",
-            //    confirmButtonText: "確定",
-            //    cancelButtonText: "取消"
-            //}).then(function (result) {
-            //    if (result.value) {
-            //        InboundCreateDetail();
+            swal.fire({
+                title: "新增編號",
+                text: "確定新增編號嗎?",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "確定",
+                cancelButtonText: "取消"
+            }).then(function (result) {
+                if (result.value) {
+                    InboundCreateDetail(null, getShipmentNumber());
 
-            //    }
-            //});
+                }
+            });
         } else {
             InboundCreateDetail(null, getShipmentNumber());
             //$.ajax({
@@ -1906,6 +1953,11 @@
             },
             success: function (data) {
                 if (data.status) {
+                    if ($("#chkCustomShipmentNumber").prop("checked")) {
+                        $("#chkCustomShipmentNumber").prop("checked", false);
+                        $(".custom-combobox").show(100);
+                        $("#txtShipmentNumber").hide();
+                    }
                     GetShipmentNumberList(data.transferHeaderId, data.shipmentNumber);
                     if (modal_dialog) {
                         $(modal_dialog.selector).modal('hide');
@@ -2086,6 +2138,11 @@
                 },
                 success: function (data) {
                     if (data.status) {
+                        if ($("#chkCustomShipmentNumber").prop("checked")) {
+                            $("#chkCustomShipmentNumber").prop("checked", false);
+                            $(".custom-combobox").show(100);
+                            $("#txtShipmentNumber").hide();
+                        }
                         GetShipmentNumberList(data.transferHeaderId, data.shipmentNumber);
                     } else {
                         swal.fire(data.result);
@@ -2180,6 +2237,11 @@
                 },
                 success: function (data) {
                     if (data.status) {
+                        if ($("#chkCustomShipmentNumber").prop("checked")) {
+                            $("#chkCustomShipmentNumber").prop("checked", false);
+                            $(".custom-combobox").show(100);
+                            $("#txtShipmentNumber").hide();
+                        }
                         GetShipmentNumberList(data.transferHeaderId, data.shipmentNumber);
                     } else {
                         swal.fire(data.result);
@@ -2523,6 +2585,7 @@
                         $('#ddlShipmentNumber').append($('<option></option>').val(data.items[i].Value).html(data.items[i].Text));
                     }
                     $("#ddlShipmentNumber").combobox('autocomplete', selectValue, selectText);
+                    //$('#TransferHeaderId').text(selectValue);
                     //$('#ddlShipmentNumber option[text="' + selectText + '", value="' + selectValue + '"]').attr('selected', 'selected');
                     SelectShipmentNumber();
                 } else {

@@ -135,47 +135,7 @@ namespace CHPOUTSRCMES.Web.Controllers
 
         }
 
-        public void DownloadFile()
-        {
-            //用戶端的物件
-            System.Net.WebClient wc = new System.Net.WebClient();
-            byte[] file = null;
-            string filepath = Server.MapPath("../File/StockTransaction.zip");
-            try
-            {
-                //用戶端下載檔案到byte陣列
-                file = wc.DownloadData(filepath);
-            }
-            catch (Exception ex)
-            {
-                Response.Write("ASP.net禁止下載此敏感檔案(通常為：.cs、.vb、微軟資料庫mdb、mdf和config組態檔等)。<br/>檔案路徑：" + filepath + "<br/>錯誤訊息：" + ex.ToString());
-                return;
-            }
-            Response.ClearHeaders();
-            Response.Clear();
-            Response.Buffer = true;
-            string fileName = System.IO.Path.GetFileName(filepath);
-            //跳出視窗，讓用戶端選擇要儲存的地方                         //使用Server.UrlEncode()編碼中文字才不會下載時，檔名為亂碼
-            Response.AddHeader("Content-Disposition", "Attachment;FileName=" + System.Web.HttpUtility.UrlEncode(fileName, System.Text.Encoding.UTF8));
-            //設定MIME類型為二進位檔案
-            Response.ContentType = "Application/xls";
-
-            try
-            {
-                //檔案有各式各樣，所以用BinaryWrite
-                Response.BinaryWrite(file);
-
-            }
-            catch (Exception ex)
-            {
-                Response.Write("檔案輸出有誤，您可以在瀏覽器的URL網址貼上以下路徑嘗試看看。<br/>檔案路徑：" + filepath + "<br/>錯誤訊息：" + ex.ToString());
-                return;
-            }
-
-            //這是專門寫文字的
-            //HttpContext.Current.Response.Write();
-            Response.End();
-        }
+        
 
         public ActionResult CtrReport(string CtrHeaderId, string ItemCategory)
         {

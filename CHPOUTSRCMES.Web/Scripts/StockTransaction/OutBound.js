@@ -173,6 +173,12 @@ function OutBoundInit() {
     //    $(this).data('ui-autocomplete')._trigger('select', 'autocompleteselect', { item: { value: $(this).val() } });
     //});
 
+    $(".custom-combobox").keydown(function (e) {
+        if (e.keyCode == 13) {
+            SelectShipmentNumber();
+        }
+    });
+
     $('#txtInputTransactionQty').keydown(function (e) {
         if (e.keyCode == 13) {
             $('#txtRollReamQty').focus();

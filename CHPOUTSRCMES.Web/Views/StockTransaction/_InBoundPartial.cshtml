@@ -42,22 +42,23 @@
 
             <div class="row row-std col-md-12 form-inline" id="SHIPMENT_NUMBER_AREA">
                 <div class="col-md-8">
-                    <div style="display: none">
-                        <span id="TransferHeaderId"></span>
-                    </div>
                     @* <span id="TransactionType" class="input-group-addon" style="width: 53px;">編號</span>
-        <input class="form-control" type="text" id="AutoCompleteShipmentNumber" placeholder="請輸入編號" />*@
+                        <input class="form-control" type="text" id="AutoCompleteShipmentNumber" placeholder="請輸入編號" />*@
                     <label id="TransactionType" class="input-lg">出貨編號</label>
                     @Html.DropDownListFor(model => model.SelectedShipmentNumber, Model.ShipmentNumberItems, new { @class = "form-control", id = "ddlShipmentNumber", autocomplete = "off" })
                     <input class="form-control" type="text" id="txtShipmentNumber" placeholder="請輸入出貨編號" style="display: none;" />
                     @Html.CheckBoxFor(model => model.CustomShipmentNumber, new { id = "chkCustomShipmentNumber" })
-                    @Html.LabelFor(m => m.CustomShipmentNumber)
+                    @Html.LabelFor(m => m.CustomShipmentNumber, new { id = "lblCustomShipmentNumber" })
                     <span id="NumberStatus" style="display: none;"></span>
                     <input type="button" id="btnImportFile" value="紙捲匯入" class="btn btn-primary" />
                     <input type="button" id="btnImportFlatFile" value="平張匯入" class="btn btn-primary" />
                     <input type="button" id="btnExampleDownload" value="範例下載" class="btn btn-primary" />
                     <input type="button" id="btnPrintRollPick" value="紙捲入庫單" class="btn btn-primary" />
                     <input type="button" id="btnPrintFlatPick" value="平張入庫單" class="btn btn-primary" />
+                    @if (Model.Advanced)
+                    {
+                        <input type="button" id="btnExampleDownload2" value="期初範例下載" class="btn btn-primary" />
+                    }
                     <input type="button" id="btnMultiLable" value="列印全部標籤" class="btn btn-primary" style="display: none;" />
                 </div>
 
@@ -119,8 +120,8 @@
         </div>
 
         @*<div class="row col-md-12">
-            <h4 class="page-header">條碼驗收</h4>
-        </div>*@
+                <h4 class="page-header">條碼驗收</h4>
+            </div>*@
         <div class="box-body with-border">
             <div class="row row-std col-md-12 form-inline">
                 <div class="input-group col-md-3">
