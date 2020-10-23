@@ -1222,7 +1222,7 @@ namespace CHPOUTSRCMES.Web.Models.Stock
 
         public ResultDataModel<TRF_HEADER_T> GetShipmentNumberData(TransferUOW uow, string shipmentNumber)
         {
-            if (string.IsNullOrEmpty(shipmentNumber))
+            if (string.IsNullOrEmpty(shipmentNumber) || shipmentNumber == "新增編號")
             {
                 return new ResultDataModel<TRF_HEADER_T>(true, "新增編號", null);
             }
@@ -1315,13 +1315,21 @@ namespace CHPOUTSRCMES.Web.Models.Stock
             return uow.InBoundSaveTransfer(transferHeaderId, userId, userName, true);
         }
 
+        public ResultModel InBoundSaveTransferForShipmentNumber(TransferUOW uow, string shipmentNumber, string userId, string userName)
+        {
+            return uow.InBoundSaveTransferForShipmentNumber(shipmentNumber, userId, userName, true);
+        }
+
         public ResultModel InBoundSaveTransferNoCheckStockStatus(TransferUOW uow, long transferHeaderId, string userId, string userName)
         {
             return uow.InBoundSaveTransfer(transferHeaderId, userId, userName, false);
         }
 
-        
-        
+        public ResultModel InBoundSaveTransferNoCheckStockStatusForShipmentNumber(TransferUOW uow, string shipmentNumber, string userId, string userName)
+        {
+            return uow.InBoundSaveTransferForShipmentNumber(shipmentNumber, userId, userName, false);
+        }
+
 
         public ResultModel MergeBarcode(long ID, decimal PRIMARY_QUANTITY, decimal SECONDARY_QUANTITY, decimal addROLL_REAM_QTY)
         {
@@ -1401,10 +1409,10 @@ namespace CHPOUTSRCMES.Web.Models.Stock
             return uow.ChangeToAlreadyInBound(transferHeaderId, barcode, userId, userName);
         }
 
-        //public ResultModel ChangeToAlreadyInBoundForShipmentNumber(TransferUOW uow, string shipmentNumber, string barcode, string userId, string userName)
-        //{
-        //    return uow.ChangeToAlreadyInBoundForShipmnetNumber(shipmentNumber, barcode, userId, userName);
-        //}
+        public ResultModel ChangeToAlreadyInBoundForShipmentNumber(TransferUOW uow, string shipmentNumber, string barcode, string userId, string userName)
+        {
+            return uow.ChangeToAlreadyInBoundForShipmentNumber(shipmentNumber, barcode, userId, userName);
+        }
 
         public ActionResult PrintInboundLabel(TransferUOW uow, List<long> transferPickedIdList, string userName)
         {

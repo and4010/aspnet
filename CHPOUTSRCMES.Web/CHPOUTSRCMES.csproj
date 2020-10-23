@@ -2069,7 +2069,7 @@
     <Content Include="bower_components\editor\css\scss\processing.scss" />
     <Content Include="bower_components\editor\css\scss\upload.scss" />
     <Content Include="File\detail.xls" />
-    <Content Include="File\StockTransaction.zip" />
+    <Content Include="File\庫存移轉入庫範例.zip" />
     <Content Include="NLog.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -2091,6 +2091,7 @@
     <Content Include="bower_components\theme-login\fonts\Roboto\Roboto-Thin.ttf" />
     <Content Include="bower_components\theme-login\fonts\Roboto\Roboto-ThinItalic.ttf" />
     <Content Include="Data\Excel\MES_20200903.xlsx" />
+    <Content Include="File\期初開帳範例.zip" />
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>
