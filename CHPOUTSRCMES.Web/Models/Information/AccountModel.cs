@@ -40,7 +40,7 @@ namespace CHPOUTSRCMES.Web.Models.Information
         public string Status { get; set; }
 
         [Display(Name = "倉庫")]
-        public string Subinventory { get; set; }
+        public int SubinventoryCount { get; set; }
 
         /// <summary>
         /// 編輯時，使用倉庫

@@ -54,7 +54,7 @@ namespace CHPOUTSRCMES.Web.ViewModels.Account
                 case 8:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Status) : models.OrderBy(x => x.Status);
                 case 9:
-                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Subinventory) : models.OrderBy(x => x.Subinventory);
+                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.SubinventoryCount) : models.OrderBy(x => x.SubinventoryCount);
                 case 10:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Status) : models.OrderBy(x => x.Status);
 
@@ -84,7 +84,7 @@ namespace CHPOUTSRCMES.Web.ViewModels.Account
                 case 8:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Status) : models.OrderBy(x => x.Status);
                 case 9:
-                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Subinventory) : models.OrderBy(x => x.Subinventory);
+                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.SubinventoryCount) : models.OrderBy(x => x.SubinventoryCount);
                 case 10:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Status) : models.OrderBy(x => x.Status);
 
@@ -106,7 +106,7 @@ namespace CHPOUTSRCMES.Web.ViewModels.Account
                     || (!string.IsNullOrEmpty(p.Name) && p.Name.ToLower().Contains(search.ToLower()))
                     || (!string.IsNullOrEmpty(p.Email) && p.Email.ToLower().Contains(search.ToLower()))
                     || (!string.IsNullOrEmpty(p.Status) && p.Status.ToLower().Contains(search.ToLower()))
-                    //|| (!string.IsNullOrEmpty(p.Subinventory[0].UserSubinventory) && p.Subinventory[0].UserSubinventory.ToLower().Contains(search.ToLower()))
+                    || (!string.IsNullOrEmpty(p.SubinventoryCount.ToString()) && p.SubinventoryCount.ToString().ToLower().Contains(search.ToLower()))
                     ).ToList();
             }
             return model;

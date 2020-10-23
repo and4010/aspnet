@@ -33,9 +33,9 @@
                         </div>
 
                         <div class="input-group col-md-12 row-mtd">
-                        <span class="input-group-addon">帳號</span>
-                        @Html.TextBoxFor(model => model.Account, new { placeholder = "請輸入帳號", @class = "form-control", id = "Account", disabled = "disabled"})
-                        @Html.ValidationMessageFor(model => model.Account, "", new { @class = "text-danger", autocomplete = "off" })
+                            <span class="input-group-addon">帳號</span>
+                            @Html.TextBoxFor(model => model.Account, new { placeholder = "請輸入帳號", @class = "form-control", id = "Account", disabled = "disabled" })
+                            @Html.ValidationMessageFor(model => model.Account, "", new { @class = "text-danger", autocomplete = "off" })
                         </div>
 
                         <div class="input-group col-md-12 row-mtd">
@@ -63,7 +63,7 @@
                 </form>
                 <div class="row row-std col-md-12">
                     <button class="btn btn-danger externalBtn col-sm-offset-4" id="BtnAccountEdit">儲存</button>
-                    <button class="btn btn-dark externalBtn" id="BtnCancel">取消</button>
+                    @*<button class="btn btn-dark externalBtn" id="BtnCancel">取消</button>*@
                 </div>
             </div>
         </div>
@@ -92,10 +92,12 @@
                                             {
                                                 if (group.Key == item.ORGANIZATION_CODE)
                                                 {
-                                                    <input style="width: 15px; height: 15px ;font-size:15px" type="checkbox" onclick="checkboxclick"
-                                                           id="@item.ORGANIZATION_CODE-@item.SUBINVENTORY_CODE" name="checkboxs"
-                                                           value="@item.ORGANIZATIONID-@item.SUBINVENTORY_CODE @item.SUBINVENTORY_NAME" />
-                                                    <label for="@item.SUBINVENTORY_CODE">@item.SUBINVENTORY_CODE - @item.SUBINVENTORY_NAME</label>
+                                                    <div class="col-md-1">
+                                                        <input style="width: 15px; height: 15px ;font-size:15px" type="checkbox" onclick="checkboxclick"
+                                                               id="@item.ORGANIZATION_CODE-@item.SUBINVENTORY_CODE" name="checkboxs"
+                                                               value="@item.ORGANIZATIONID-@item.SUBINVENTORY_CODE @item.SUBINVENTORY_NAME" />
+                                                        <label for="@item.SUBINVENTORY_CODE">@item.SUBINVENTORY_CODE - @item.SUBINVENTORY_NAME</label>
+                                                    </div>
                                                 }
                                             }
                                         </div>

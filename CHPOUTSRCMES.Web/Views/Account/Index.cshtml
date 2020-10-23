@@ -13,52 +13,47 @@
     <script src="http://jqueryvalidation.org/files/dist/additional-methods.min.js"></script>
 }
 
-<div>
-    <div>
-        <button id="BtnCreate" class="btn btn btn-danger externalBtn">新增使用者</button>
-    </div>
-    <div class="row">
-        <div class="col-md-12">
-            <table class="table table-striped table-bordered table-hover" id="AccountTable">
-                <thead>
-                    <tr>
-                        <th>
-                            @Html.DisplayName("帳號")
-                        </th>
-                        <th>
-                            @Html.DisplayName("角色ID")
-                        </th>
-                        <th>
-                            @Html.DisplayName("角色")
-                        </th>
-                        <th>
-                            @Html.DisplayName("使用者")
-                        </th>
-                        <th>
-                            @Html.DisplayName("信箱")
-                        </th>
-                        <th>
-                            @Html.DisplayName("狀態")
-                        </th>
-                        <th>
-                            @Html.DisplayName("倉庫")
-                        </th>
-                        <th>
+<div class="row">
+    <div class="col-md-10">
+        <div class="box box-success">
+            <div class="box-body">
+                <table class="table table-striped table-bordered table-hover" id="AccountTable">
+                    <thead>
+                        <tr>
+                            <th>
+                                @Html.DisplayName("帳號")
+                            </th>
+                            <th>
+                                @Html.DisplayName("角色ID")
+                            </th>
+                            <th>
+                                @Html.DisplayName("角色")
+                            </th>
+                            <th>
+                                @Html.DisplayName("使用者")
+                            </th>
+                            <th>
+                                @Html.DisplayName("信箱")
+                            </th>
+                            <th>
+                                @Html.DisplayName("狀態")
+                            </th>
+                            <th>
+                                @Html.DisplayName("倉庫")
+                            </th>
+                            <th>
 
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
+                            </th>
+                            <th>
 
-
-            @*<div class="row row-mtd col-md-8 col-md-offset-9">
-                    <button class="btn btn btn-danger externalBtn">停用</button>
-                    <button class="btn btn btn-secondary externalBtn">忘記密碼</button>
-                    <button class="btn btn btn-warning externalBtn">異動</button>
-                </div>*@
-
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+         
 
         </div>
 

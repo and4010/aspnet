@@ -937,14 +937,17 @@ left JOIN OSP_HEADER_MOD_T HM ON HM.OSP_HEADER_ID = H.OSP_HEADER_ID
                         sqlParameterList.Add(SqlParamHelper.GetDataTime("@DUE_DATE", dueDate, ParameterDirection.Input));
                         sqlParameterList.Add(SqlParamHelper.GetDataTime("@DUE_END_DATE", dueDate.AddDays(1).AddMilliseconds(-1), ParameterDirection.Input));
                     }
+                    DateTime endDate = new DateTime();
                     if (CuttingDateFrom != "")
                     {
-                        cond.Add("H.CUTTING_DATE_FROM = @CUTTING_DATE_FROM");
+                        DateTime.TryParseExact(CuttingDateFrom, "yyyy-MM-dd", null, System.Globalization.DateTimeStyles.NoCurrentDateDefault, out endDate);
+                        cond.Add("H.CUTTING_DATE_FROM BETWEEN @CUTTING_DATE_FROM and  @DUE_END_DATE");
                         sqlParameterList.Add(new SqlParameter("@CUTTING_DATE_FROM", CuttingDateFrom));
+                        sqlParameterList.Add(SqlParamHelper.GetDataTime("@DUE_END_DATE", endDate.AddDays(1).AddMilliseconds(-1), ParameterDirection.Input));
                     }
                     if (CuttingDateTo != "")
                     {
-                        cond.Add("H.CUTTING_DATE_TO = @CUTTING_DATE_TO");
+                        cond.Add("H.CUTTING_DATE_TO BETWEEN '' and @CUTTING_DATE_TO");
                         sqlParameterList.Add(new SqlParameter("@CUTTING_DATE_TO", CuttingDateTo));
                     }
                     if (Subinventory != "*")

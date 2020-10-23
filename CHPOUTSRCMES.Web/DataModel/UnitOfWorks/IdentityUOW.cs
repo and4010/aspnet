@@ -42,6 +42,16 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             var user = await userManager.FindAsync(model.UserName, model.Password);
             if (user != null)
             {
+                var flag = user.Flag == null ? "" : user.Flag;
+                if (user.Status == "停用" || flag == "D")
+                {
+                    resultModel.Code = -1;
+                    resultModel.Success = false;
+                    resultModel.Msg = "帳號已停用或刪除";
+                    resultModel.Data = null;
+                    return resultModel;
+                }
+
                 authenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
                 var identity = await userManager.CreateIdentityAsync(user, DefaultAuthenticationTypes.ApplicationCookie);
                 authenticationManager.SignIn(new AuthenticationProperties() { IsPersistent = model.RememberMe }, identity);
@@ -359,10 +369,9 @@ UserName as Account,
 DisplayName as Name,
 Email as Email,
 ISNULL(Status,'啟用') AS Status,
-Subinventory = STUFF((SELECT ','+　SUBINVENTORY_CODE   
-FROM USER_SUBINVENTORY_T AS b    
-WHERE UserId = ut.Id
-FOR XML PATH('')),1,1,'')
+(SELECT (COUNT(cast(SUBINVENTORY_CODE as nvarchar)))
+FROM USER_SUBINVENTORY_T   
+WHERE UserId = ut.Id) as SubinventoryCount
 FROM USER_T ut
 join USER_ROLE_T urt on urt.UserId = ut.Id
 Join ROLE_T rt on rt.Id = urt.RoleId
@@ -440,7 +449,7 @@ where ISNULL(Flag,'') <> 'D'
                 {
                     StringBuilder query = new StringBuilder();
                     query.Append(
-    @"SELECT CAST(UST.ORGANIZATION_ID AS nvarchar) +'-'+ UST.SUBINVENTORY_CODE + ' ' + ST.SUBINVENTORY_NAME +',' AS [text()]
+@"SELECT CAST(UST.ORGANIZATION_ID AS nvarchar) +'-'+ UST.SUBINVENTORY_CODE + ' ' + ST.SUBINVENTORY_NAME +',' AS [text()]
 FROM USER_SUBINVENTORY_T UST
 JOIN SUBINVENTORY_T ST ON ST.SUBINVENTORY_CODE = UST.SUBINVENTORY_CODE
 WHERE UserId = @id
@@ -479,6 +488,32 @@ FOR XML PATH('')");
             else
             {
                 return new AccountModel();
+            }
+        }
+
+        public List<String> ViewUserSub(string id)
+        {
+            try
+            {
+                using (var mesContext = new MesContext())
+                {
+                    StringBuilder query = new StringBuilder();
+                    query.Append(
+@"SELECT 
+ot.ORGANIZATION_CODE +'-'+ UST.SUBINVENTORY_CODE + '-' + ST.SUBINVENTORY_NAME
+FROM USER_SUBINVENTORY_T UST
+JOIN SUBINVENTORY_T ST ON ST.SUBINVENTORY_CODE = UST.SUBINVENTORY_CODE
+join ORGANIZATION_T ot on ot.ORGANIZATION_ID = ust.ORGANIZATION_ID
+WHERE UserId = @id
+order by ot.ORGANIZATION_CODE");
+                    string commandText = string.Format(query.ToString());
+                    return mesContext.Database.SqlQuery<string>(commandText, new SqlParameter("@id", id)).ToList();
+                }
+            }
+            catch (Exception e)
+            {
+                logger.Error(e.Message.ToString());
+                return new List<string>();
             }
         }
 

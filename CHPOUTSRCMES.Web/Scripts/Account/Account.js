@@ -46,10 +46,6 @@
                 });
             }
         });
-
-
-
-
     });
 
     $('#AccountTable tbody').on('click', '#btnDefaultPassword', function (e) {
@@ -114,23 +110,6 @@
             }
         });
 
-
-
-        //clearItem()
-        //EnableAll(false)
-        //EnableEdit(true)
-        //$("#scrollbox").collapse('show');
-
-
-        //selectToValue(data.RoleName)
-        //$('#Account').val(data.Account)
-        //$('#Email').val(data.Email)
-        //$('#Password').val(data.Password)
-        //SetCheckBoxValue(data.Subinventory)
-
-
-        //status = 2
-        //id = Id
     })
 
     $('#AccountTable tbody').on('click', '#btnDelete', function (e) {
@@ -173,6 +152,48 @@
         });
     });
 
+    $('#AccountTable tbody').on('click', '#btnInform', function (e) {
+        var data = $('#AccountTable').DataTable().row($(this).parents('tr')).data();
+        var Id = data.Id;
+        if (data == null) {
+            return false;
+        };
+
+        $.ajax({
+            url: '/Account/GetViewUserSub/',
+            type: "POST",
+            data: { id: Id },
+            success: function (data) {
+                if (data.message != "") {
+                    var text = "";
+                    var i = 0;
+                    for (i = 0; i < data.message.length; i++) {
+                        text += data.message[i] + "<br />";
+                    }
+                    Swal.fire({
+                        title: "倉庫",
+                        html: text,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: '確定',
+                    }).then(function (result) {
+                        if (result.value) {
+
+                        }
+                    });
+                } else {
+                  
+                }
+
+            },
+            error: function () {
+                swal.fire("失敗")
+            }
+        });
+
+
+
+    });
 
 });
 
@@ -193,7 +214,7 @@ function LoadTable() {
         serverSide: true,
         autoWidth: false,
         dom:
-            "<'row'<'col-sm-2'l><'col-sm-7'><'col-sm-3'f>>" +
+            "<'row'<'col-sm-2'l><'col-sm-7'B><'col-sm-3'f>>" +
             "<'row'<'col-sm-12'tr>>" +
             "<'row'<'col-sm-5'i><'col-sm-7'p>>",
         "lengthMenu": [[50, 100, 150, 200], [50, 100, 150, 200]],
@@ -204,7 +225,7 @@ function LoadTable() {
             "data": {}
         },
         columnDefs: [{
-            orderable: false, targets: [7], width: "60px"
+            orderable: false, targets: [8], width: "60px"
         }],
         columns: [
             { data: "Account", "name": "帳號", "autoWidth": true, "className": "dt-body-center" },
@@ -214,14 +235,14 @@ function LoadTable() {
             { data: "Email", "name": "信箱", "autoWidth": true, "className": "dt-body-center" },
             { data: "Status", "name": "狀態", "autoWidth": true, "className": "dt-body-center" },
             {
-                data: "Subinventory", "name": "倉庫", "autoWidth": true, render: function (data) {
+                data: "SubinventoryCount", "name": "倉庫", "autoWidth": true, render: function (data) {
                     if (data) {
-                        return data;
+                        return '<a style="cursor:pointer" id = btnInform>' + '倉庫總數:' + data + '</a>'
                     }
 
                 }, "className": "dt-body-center"
             },
-            { data: "UserSubinventory", "name": "", "autoWidth": true, className: "dt-body-center" ,visible: false },
+            { data: "UserSubinventory", "name": "", "autoWidth": true, className: "dt-body-center", visible: false },
             {
                 data: "Status", "autoWidth": true, "render": function (data) {
                     if (data == "啟用") {
@@ -238,27 +259,27 @@ function LoadTable() {
 
                 }
             }
-        ]
+        ],
+        buttons: [
+            {
+                text: '新增使用者',
+                //className: 'btn-danger',
+                action: function () {
+                    window.location.href = "/Account/Create";
+                }
+            },
+        ],
     });
 }
 
 
 function onBtn() {
 
-    //跳到使用者
-    $("#BtnCreate").click(function () {
-        window.location.href = "/Account/Create";
-    });
 
     $("#BtnAccountSave").click(function () {
         Insert();
     });
 
-
-    $("#BtnCancel").click(function () {
-        clearItem();
-        EnableAll(false);
-    })
 
 }
 
@@ -331,57 +352,6 @@ function Insert() {
 }
 
 
-function Edit() {
-
-    var valid = $('#EditForm').valid();
-
-    obj = document.getElementsByName("checkboxs");
-    Subinventory = [];
-    for (i in obj) {
-        if (obj[i].checked)
-            Subinventory.push(obj[i].value);
-    }
-
-    if (valid == false) {
-        if (Subinventory.length == 0) {
-            document.getElementById("checkboxs").style.display = "block";
-            return;
-        }
-        return;
-    } else {
-        if (Subinventory.length == 0) {
-            document.getElementById("checkboxs").style.display = "block";
-            return;
-        }
-    }
-
-    var strUser = User.value;
-    var Name = $('#Name').val().trim();
-
-
-    $.ajax({
-        url: '/Account/Edit',
-        type: "POST",
-        data: { id: id, strUser: strUser, Name: Name, Subinventory: Subinventory },
-        success: function (data) {
-            if (data.status) {
-                swal.fire("更改成功");
-                LoadTable();
-                clearItem();
-                EnableEdit(false);
-            } else {
-                swal.fire("更改失敗");
-            }
-        },
-        error: function () {
-            swal.fire("失敗");
-        }
-
-    });
-}
-
-
-
 function clearItem() {
     //清除欄位資料
     $('#Account').val("");
@@ -397,52 +367,6 @@ function clearItem() {
     for (var i = 0; i < obj.length; i++) {
         obj[i].checked = obj.checked;
     }
-}
-
-
-function EnableInputPassword(Boolean) {
-
-    $('#Account').attr("disabled", Boolean);
-    $('#Name').attr("disabled", Boolean);
-    $('#Email').attr("disabled", Boolean);
-
-    $('input:checkbox').attr({ disabled: Boolean });
-    $('#ddlRoleName').prop('disabled', Boolean);
-}
-
-
-function EnableEdit(Boolean) {
-
-    $('#Account').attr("disabled", Boolean);
-    $('#Email').attr("disabled", Boolean);
-    $('#Password').attr("disabled", Boolean);
-
-}
-
-function EnableAll(Boolean) {
-    $('#User').prop('disabled', Boolean);
-    $('#Account').attr("disabled", Boolean);
-    $('#Name').attr("disabled", Boolean);
-    $('#Email').attr("disabled", Boolean);
-    $('#Password').attr("disabled", Boolean);
-    $('input:checkbox').attr({ disabled: Boolean });
-}
-
-
-function selectToValue(RoleName) {
-    switch (RoleName) {
-        case "使用者":
-            document.getElementById("User").value = 1;
-            break;
-        case "華紙使用者":
-            document.getElementById("User").value = 2;
-            break;
-        case "系統管理員":
-            document.getElementById("User").value = 3;
-            break;
-    }
-
-
 }
 
 

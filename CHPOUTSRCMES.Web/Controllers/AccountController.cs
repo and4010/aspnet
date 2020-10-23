@@ -115,7 +115,7 @@ namespace CHPOUTSRCMES.Web.Controllers
 
                 if (!result.Success)
                 {
-                    ModelState.AddModelError("", "帳號或密碼有誤!");
+                    ModelState.AddModelError("", result.Msg);
                 }
                 else
                 {
@@ -267,90 +267,13 @@ namespace CHPOUTSRCMES.Web.Controllers
             return new JsonResult { Data = new { status = result.Success, message = result.Msg } };
         }
 
-
         [HttpPost]
-        public JsonResult EditorAccount(AccountEditor AccountEditor)
+        public ActionResult GetViewUserSub(string id)
         {
-
-            var result = new ResultModel();
-            var model = AccountViewModel.model;
-            string User = "";
-
-
-            if (AccountEditor.Action == "create")
-            {
-                
-                if (AccountEditor.AccountModel.RoleId == 1)
-                {
-                    User = "使用者";
-                }
-                else if (AccountEditor.AccountModel.RoleId == 2)
-                {
-                    User = "華紙使用者";
-                }
-                else
-                {
-                    User = "系統管理員";
-                }
-
-                model.Add(new AccountModel()
-                {
-
-                    Id = "",
-                    RoleId = 1,
-                    RoleName = User,
-                    Account = AccountEditor.AccountModel.Account,
-                    Password = AccountEditor.AccountModel.Password,
-                    Name = AccountEditor.AccountModel.Name,
-                    Email = AccountEditor.AccountModel.Email,
-                    Status = "啟用",
-                    //Subinventory = subinventoryDetails,
-
-                });
-                result.Success = true;
-                result.Msg = "成功";
-            }
-
-
-            if (AccountEditor.Action == "edit")
-            {
-                var ID = model.First(r => r.Id == AccountEditor.AccountModel.Id);
-                if (ID != null)
-                {
-
-                    if (AccountEditor.AccountModel.RoleId == 1)
-                    {
-                        User = "使用者";
-                    }
-                    else if (AccountEditor.AccountModel.RoleId == 2)
-                    {
-                        User = "華紙使用者";
-                    }
-                    else
-                    {
-                        User = "系統管理員";
-                    }
-
-                    ID.RoleName = User;
-                    ID.Name = AccountEditor.AccountModel.Name;
-                    //ID.Subinventory = subinventoryDetails;
-                    result.Success = true;
-                    result.Msg = "成功";
-
-                }
-                else
-                {
-                    result.Success = true;
-                    result.Msg = "失敗";
-
-                }
-            }
-
-
-
-            return Json(new { status = result.Success, message = result.Msg }, JsonRequestBehavior.AllowGet);
-
+            var UserSub =  identityUOW.ViewUserSub(id);
+            return new JsonResult { Data = new { message = UserSub } };
         }
+       
 
 
         public class AccountEditor
