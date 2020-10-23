@@ -1663,6 +1663,7 @@
     <Content Include="pngtree.jpg" />
     <Content Include="ReportViewerWebForm.aspx" />
     <Content Include="Scripts\Account\ChangePassword.js" />
+    <Content Include="Scripts\Account\Edit.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="bower_components\bootstrap-social\.bower.json" />
@@ -2273,6 +2274,7 @@
     <Content Include="Views\StockTransaction\_CreateShipmentNumberPartial.cshtml" />
     <Content Include="Views\Account\_ChangePassword.cshtml" />
     <Content Include="Views\Account\Create.cshtml" />
+    <Content Include="Views\Account\Edit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

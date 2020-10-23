@@ -1,18 +1,9 @@
-﻿// 0 一般儲存
-// 1 忘記密碼
-// 2 異動
+﻿$(document).ready(function () {
 
-
-var status;
-var id;
-var EditorAccount;
-$(document).ready(function () {
-
-    status = 0;
+   
     LoadTable();
     btnDailog();
     onBtn();
-    LoadCheckbox();
 
     $('#AccountTable tbody').on('click', '#btnStop', function (e) {
 
@@ -23,12 +14,12 @@ $(document).ready(function () {
         };
         if (data.Status == "停用") {
             var title = "帳號啟用";
-            var text = "確定要帳號啟用嗎?";
+            var text = "確定要帳號啟用" + data.Account + "嗎?";
 
         }
         if (data.Status == "啟用") {
             var title = "帳號停用";
-            var text = "確定要帳號停用嗎?";
+            var text = "確定要帳號停用" + data.Account + "嗎?";
         }
 
         swal.fire({
@@ -71,7 +62,7 @@ $(document).ready(function () {
 
         swal.fire({
             title: "密碼重設",
-            text: "確定要重設密碼嗎?",
+            text: "確定要重設密碼" + data.Account + "嗎?",
             type: "warning",
             showCancelButton: true,
             confirmButtonColor: "#DD6B55",
@@ -104,19 +95,26 @@ $(document).ready(function () {
     $('#AccountTable tbody').on('click', '#btnTrans', function (e) {
 
         var data = $('#AccountTable').DataTable().row($(this).parents('tr')).data();
-        var Id = data.Id;
+        var id = data.Id;
         if (data == null) {
             return false;
         };
 
-        e.preventDefault();
-        EditorAccount.field('RoleId').hide();
-        EditorAccount.field('Account').hide();
-        EditorAccount.field('Email').hide();
-        EditorAccount.edit($(this).closest('tr'), {
-            title: '編輯',
-            buttons: '確定'
+        swal.fire({
+            title: "異動資料",
+            text: "確定要異動資料" + data.Account + "嗎?",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "確定",
+            cancelButtonText: "取消"
+        }).then(function (result) {
+            if (result.value) {
+                window.location.href = "/Account/Edit/" + id;
+            }
         });
+
+
 
         //clearItem()
         //EnableAll(false)
@@ -145,7 +143,7 @@ $(document).ready(function () {
 
         Swal.fire({
             title: '刪除?',
-            text: "確定要刪除?" + data.Account,
+            text: "確定要刪除" + data.Account+ "嗎?",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
@@ -184,41 +182,6 @@ function checkboxclick() {
 }
 
 
-//function LoadCheckbox() {
-//    $.ajax({
-//        url: '/Account/Subinventory',
-//        type: "POST",
-//        datatype: "json",
-//        success: function (data) {
-
-//            //var UsbCode = data.model;
-//            //for (i = 0; i < UsbCode.length; i++) {
-//            //    // create a new div element 
-//            //    // and give it some content 
-//            //    var newDiv = document.createElement("div");
-//            //    //新增至新的div
-//            //    var newContent = document.createTextNode("Hi there and greetings!");
-//            //    newDiv.id = 'new_div';
-//            //    newDiv.appendChild(newContent); //add the text node to the newly created div. 
-//            //    // add the newly created element and its content into the DOM 
-//            //    var currentDiv = document.getElementById("checkboxlist");
-//            //    $('#checkboxlist').append(newDiv, currentDiv);
-//            //}
-
-        
-
-//            //for (i = 0; i < data.model.length; i++) {
-//            //    var item = '<input style = "vertical-align:middle width:20px;height:20px ;font-size:20px"  type="checkbox" onclick ="checkboxclick()" id="' +
-//            //        data.model[i].ORGANIZATION_CODE + '" name="checkboxs" value="' +
-//            //        data.model[i].SUBINVENTORY_CODE + "-" + data.model[i].SUBINVENTORY_NAME + '" /> <label for="' +
-//            //        data.model[i].ORGANIZATION_CODE + '">' +
-//            //        data.model[i].SUBINVENTORY_CODE + '-' + data.model[i].SUBINVENTORY_NAME + '</label> &nbsp;';
-//            //    $('#checkboxlist').append(item);
-//            //}
-//        }
-//    });
-//}
-
 function LoadTable() {
     
     $('#AccountTable').DataTable({
@@ -250,9 +213,17 @@ function LoadTable() {
             { data: "Name", "name": "姓名", "autoWidth": true, "className": "dt-body-center" },
             { data: "Email", "name": "信箱", "autoWidth": true, "className": "dt-body-center" },
             { data: "Status", "name": "狀態", "autoWidth": true, "className": "dt-body-center" },
-            { data: "Subinventory", "name": "倉庫", "autoWidth": true, render: "[,].SubinventoryName", "className": "dt-body-center" },
             {
-                data: "Status", "width": "350px", "render": function (data) {
+                data: "Subinventory", "name": "倉庫", "autoWidth": true, render: function (data) {
+                    if (data) {
+                        return data;
+                    }
+
+                }, "className": "dt-body-center"
+            },
+            { data: "UserSubinventory", "name": "", "autoWidth": true, className: "dt-body-center" ,visible: false },
+            {
+                data: "Status", "autoWidth": true, "render": function (data) {
                     if (data == "啟用") {
                         return '<button class="btn btn-danger btn-sm" id = "btnStop">停用</button>'
                             + '&nbsp|&nbsp' + '<button class="btn btn-primary btn-sm" id="btnDefaultPassword">預設密碼</button>' +
@@ -267,20 +238,9 @@ function LoadTable() {
 
                 }
             }
-        ],
-        buttons: [
-            {
-                extend: "create",
-                text: '新增',
-                editor: EditorAccount
-            },
         ]
     });
 }
-
-
-
-
 
 
 function onBtn() {
@@ -352,7 +312,7 @@ function Insert() {
     };
 
     accountModel.__RequestVerificationToken = $('input[name=__RequestVerificationToken]').val();
-    JSON.stringify
+    
     $.ajax({
         url: "/account/createuser",
         type: "post",
@@ -485,22 +445,4 @@ function selectToValue(RoleName) {
 
 }
 
-
-//預設checkbox 勾選
-function SetCheckBoxValue(Subinventory) {
-    var value = Subinventory;
-    if (value != null) {
-        sarray = [];
-        sarray = value.split(" ");
-        obj = document.getElementsByName("checkboxs");
-        for (var i = 0; i < sarray.length; i++) {
-            for (var j = 0; j < obj.length; j++) {
-                if (obj[j].value == sarray[i]) {
-                    obj[j].checked = true;
-                }
-            }
-        }
-    }
-
-}
 

@@ -49,6 +49,15 @@ namespace CHPOUTSRCMES.Web.Controllers
             return View(accountModel);
         }
 
+        public ActionResult Edit(string id)
+        {
+            AccountModel accountModel = new AccountModel();
+            accountModel.Id = id;
+            accountModel.GetSubinventories = identityUOW.GetSubinventories();
+            accountModel.GetRoleNameList = identityUOW.GetRoleNameList();
+            return View(accountModel);
+        }
+
         //
         // GET: /Account/
         [Authorize(Roles="系統管理員, 華紙使用者")]
@@ -190,33 +199,8 @@ namespace CHPOUTSRCMES.Web.Controllers
         public ActionResult AccountDisable(string id)
         {
 
-            var model = AccountViewModel.model;
             var result = new ResultModel();
-            var ID = model.First(r => r.Id.ToString() == id);
-
-            if (ID != null)
-            {
-                if (ID.Status == "啟用")
-                {
-                    ID.Status = "停用";
-                    result.Success = true;
-                    result.Msg = "成功";
-                }
-                else
-                {
-                    ID.Status = "啟用";
-                    result.Success = true;
-                    result.Msg = "成功";
-                }
-
-            }
-            else
-            {
-                result.Success = false;
-                result.Msg = "失敗";
-            }
-
-
+            result = identityUOW.AccountDisable(id);
             return new JsonResult { Data = new { status = result.Success, message = result.Msg } };
         }
 
@@ -230,73 +214,58 @@ namespace CHPOUTSRCMES.Web.Controllers
             return new JsonResult { Data = new { status = result.Success, message = result.Msg } };
         }
 
-
+        /// <summary>
+        /// 刪除註記
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult Delete(string id)
         {
-            var model = AccountViewModel.model;
             var result = new ResultModel();
-            try
-            {
-                var ID = model.First(r => r.Id.ToString() == id);
-                model.Remove(ID);
-                result.Success = true;
-                result.Msg = "成功";
-            }
-            catch (Exception e)
-            {
-                result.Success = false;
-                result.Msg = e.Message;
-            }
-
+            result = identityUOW.Delete(id);
             return new JsonResult { Data = new { status = result.Success, message = result.Msg } };
         }
 
-        //[HttpPost]
-        //public ActionResult Edit(string id, string strUser, string Name, string[] Subinventory)
-        //{
-        //    var result = new ResultModel();
-        //    var model = AccountViewModel.model;
-        //    string content = "";
-        //    string User = "";
-        //    var ID = model.First(r => r.Id.ToString() == id);
-        //    if (ID != null)
-        //    {
-        //        for (int i = 0; i <= Subinventory.Length - 1; i++)
-        //        {
-        //            content = Subinventory[i] + " " + content;
-        //        }
+        /// <summary>
+        /// 取得預設checkbox
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult GetCheckboxValue(string id)
+        {
+            var result = new ResultModel();
+            var checkboxValue = identityUOW.GetCheckboxValue(id);
+            return new JsonResult { Data = new { message = checkboxValue } };
+        }
 
-        //        if (strUser == "1")
-        //        {
-        //            User = "使用者";
-        //        }
-        //        else if (strUser == "2")
-        //        {
-        //            User = "華紙使用者";
-        //        }
-        //        else
-        //        {
-        //            User = "系統管理員";
-        //        }
+        /// <summary>
+        /// 取得預設使用者
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult GetUserValue(string id)
+        {
+            var result = new ResultModel();
+            var checkboxValue = identityUOW.GetUserValue(id);
+            return new JsonResult { Data = new { message = checkboxValue } };
+        }
 
-        //        ID.RoleName = User;
-        //        ID.Name = Name;
-        //        ID.Subinventory = content;
-        //        result.Success = true;
-        //        result.Msg = "成功";
-
-        //    }
-        //    else
-        //    {
-        //        result.Success = true;
-        //        result.Msg = "失敗";
-
-        //    }
-
-
-        //    return new JsonResult { Data = new { status = result.Success, message = result.Msg } };
-        //}
+        /// <summary>
+        /// 編輯使用者
+        /// </summary>
+        /// <param name="accountModel"></param>
+        /// <param name="userSubinventory"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<ActionResult> Edit(AccountModel accountModel, List<UserSubinventory> userSubinventory)
+        {
+            var result = new ResultModel();
+            result = await identityUOW.Edit(accountModel, userSubinventory, this.User.Identity.GetUserId());
+            return new JsonResult { Data = new { status = result.Success, message = result.Msg } };
+        }
 
 
         [HttpPost]
@@ -306,16 +275,6 @@ namespace CHPOUTSRCMES.Web.Controllers
             var result = new ResultModel();
             var model = AccountViewModel.model;
             string User = "";
-
-            List<SubinventoryDetail> subinventoryDetails = new List<SubinventoryDetail>();
-            for (int i = 0; i < AccountEditor.AccountModel.Subinventory.Count; i++)
-            {
-                subinventoryDetails.Add(new SubinventoryDetail
-                {
-        
-                    //SubinventoryName = AccountEditor.AccountModel.Subinventory[i].SubinventoryName,
-                });
-            }
 
 
             if (AccountEditor.Action == "create")

@@ -91,7 +91,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
         /// <param name="Subinventory"></param>
         /// <param name="UserId"></param>
         /// <returns></returns>
-        public async Task<ResultModel> CreateUser(AccountModel accountModel, List<UserSubinventory> Subinventory,string UserId)
+        public async Task<ResultModel> CreateUser(AccountModel accountModel, List<UserSubinventory> Subinventory, string UserId)
         {
             ResultModel resultModel = new ResultModel();
             using (var transaction = this.Context.Database.BeginTransaction())
@@ -112,6 +112,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                         UserName = accountModel.Account,
                         DisplayName = accountModel.Name,
                         Email = accountModel.Email,
+                        Status = "啟用"
                     };
 
                     IdentityResult createIdentityResult = await userManager.CreateAsync(createUser, accountModel.Password);
@@ -135,7 +136,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                         }
                         else
                         {
-                            for(int i = 0; i < Subinventory.Count; i++)
+                            for (int i = 0; i < Subinventory.Count; i++)
                             {
                                 USER_SUBINVENTORY_T uSER_SUBINVENTORY_T = new USER_SUBINVENTORY_T();
                                 uSER_SUBINVENTORY_T.UserId = createUser.Id;
@@ -143,7 +144,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                                 uSER_SUBINVENTORY_T.SubinventoryCode = Subinventory[i].SUBINVENTORY_CODE;
                                 uSER_SUBINVENTORY_T.CreatedBy = UserId;
                                 uSER_SUBINVENTORY_T.CreationDate = DateTime.Now;
-                                userSubinventoryTRepository.Create(uSER_SUBINVENTORY_T,true);
+                                userSubinventoryTRepository.Create(uSER_SUBINVENTORY_T, true);
                             }
                             resultModel.Success = true;
                             resultModel.Msg = "新增成功";
@@ -154,6 +155,76 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                     return resultModel;
                 }
 
+
+                catch (Exception e)
+                {
+                    transaction.Rollback();
+                    return new ResultModel(false, e.Message);
+                }
+            }
+        }
+
+        public async Task<ResultModel> Edit(AccountModel accountModel, List<UserSubinventory> Subinventory, string UserId)
+        {
+            ResultModel resultModel = new ResultModel();
+            using (var transaction = this.Context.Database.BeginTransaction())
+            {
+                try
+                {
+                    //先全部刪除再新增
+                    var ust = userSubinventoryTRepository.Get(x => x.UserId == accountModel.Id).ToList();
+                    foreach (USER_SUBINVENTORY_T data in ust)
+                    {
+                        userSubinventoryTRepository.Delete(data, true);
+                    }
+
+                    var user = await userManager.FindByIdAsync(accountModel.Id);
+                    if (user == null)
+                    {
+                        return new ResultModel (false,"此使用者不存在!");
+                    }
+
+                    if (!await roleManager.RoleExistsAsync(accountModel.RoleName))
+                    {
+                        return new ResultModel(false, "角色:" + accountModel.RoleName + "不存在!");
+                    }
+
+                    user.DisplayName = accountModel.Name;
+                    user.Email = accountModel.Email;
+
+                    IdentityResult updateIdentityResult = await userManager.UpdateAsync(user);
+                    if (!updateIdentityResult.Succeeded)
+                    {
+                        return new ResultModel (false,  "使用者:" + accountModel.Name + "更新失敗!");
+                    }
+
+                    var rolename = userManager.GetRoles(user.Id).FirstOrDefault();
+                    if (rolename.CompareTo(accountModel.RoleName) != 0)
+                    {
+                        IdentityResult removeRoleIdentityResult = await userManager.RemoveFromRoleAsync(user.Id, rolename);
+                        if (!removeRoleIdentityResult.Succeeded)
+                        {
+                            return new ResultModel (false,"移除角色:" + rolename + "失敗!");
+                        }
+                        IdentityResult addRoleIdentityResult = await userManager.AddToRoleAsync(user.Id, accountModel.RoleName);
+                        if (!addRoleIdentityResult.Succeeded)
+                        {
+                            return new ResultModel (false,"加入角色:" + accountModel.RoleName + "失敗!" );
+                        }
+                    }
+                    for (int i = 0; i < Subinventory.Count; i++)
+                    {
+                        USER_SUBINVENTORY_T uSER_SUBINVENTORY_T = new USER_SUBINVENTORY_T();
+                        uSER_SUBINVENTORY_T.UserId = accountModel.Id;
+                        uSER_SUBINVENTORY_T.OrganizationId = Subinventory[i].ORGANIZATIONID;
+                        uSER_SUBINVENTORY_T.SubinventoryCode = Subinventory[i].SUBINVENTORY_CODE;
+                        uSER_SUBINVENTORY_T.CreatedBy = UserId;
+                        uSER_SUBINVENTORY_T.CreationDate = DateTime.Now;
+                        userSubinventoryTRepository.Create(uSER_SUBINVENTORY_T, true);
+                    }
+                    transaction.Commit();
+                    return new ResultModel(true, "更新成功");
+                }
 
                 catch (Exception e)
                 {
@@ -201,13 +272,70 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                 }
                 return new ResultModel(result.Succeeded, msg);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return new ResultModel(false, e.Message);
             }
 
         }
 
+        /// <summary>
+        /// 註記帳號刪除
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public ResultModel Delete(string id)
+        {
+            try
+            {
+                var user = userManager.FindById(id);
+                if (user != null)
+                {
+                    user.Flag = "D";
+                    userManager.Update(user);
+                    return new ResultModel(true, "成功");
+                }
+                return new ResultModel(false, "找不到ID");
+            }
+            catch (Exception e)
+            {
+                return new ResultModel(false, e.Message);
+            }
+
+        }
+
+        /// <summary>
+        /// 帳號狀態
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public ResultModel AccountDisable(string id)
+        {
+            try
+            {
+                var user = userManager.FindById(id);
+                if (user != null)
+                {
+                    if (user.Status == "啟用")
+                    {
+                        user.Status = "停用";
+                        userManager.Update(user);
+                        return new ResultModel(true, "成功");
+                    }
+                    else
+                    {
+                        user.Status = "啟用";
+                        userManager.Update(user);
+                        return new ResultModel(true, "成功");
+                    }
+                }
+                return new ResultModel(false, "找不到ID");
+            }
+            catch (Exception e)
+            {
+                return new ResultModel(false, e.Message);
+            }
+        }
 
         /// <summary>
         /// 取得table
@@ -230,10 +358,15 @@ rt.Name as RoleName,
 UserName as Account,
 DisplayName as Name,
 Email as Email,
-CAST(LockoutEnabled as nvarchar) as Status
+ISNULL(Status,'啟用') AS Status,
+Subinventory = STUFF((SELECT ','+　SUBINVENTORY_CODE   
+FROM USER_SUBINVENTORY_T AS b    
+WHERE UserId = ut.Id
+FOR XML PATH('')),1,1,'')
 FROM USER_T ut
 join USER_ROLE_T urt on urt.UserId = ut.Id
 Join ROLE_T rt on rt.Id = urt.RoleId
+where ISNULL(Flag,'') <> 'D'
 ");
                     string commandText = string.Format(query + "{0}{1}", cond.Count > 0 ? " where " : "", string.Join(" and ", cond.ToArray()));
                     if (sqlParameterList.Count > 0)
@@ -264,8 +397,8 @@ Join ROLE_T rt on rt.Id = urt.RoleId
             return subinventoryRepository
                        .GetAll()
                        .AsNoTracking()
-                       .Where(x => x.ControlFlag != ControlFlag.Deleted )
-                       .Join(organizationRepository.GetAll(), x=>x.OrganizationId, y=>y.OrganizationId, (x, y) => new UserSubinventory() {
+                       .Where(x => x.ControlFlag != ControlFlag.Deleted)
+                       .Join(organizationRepository.GetAll(), x => x.OrganizationId, y => y.OrganizationId, (x, y) => new UserSubinventory() {
                            ORGANIZATIONID = y.OrganizationId,
                            ORGANIZATION_CODE = y.OrganizationCode,
                            SUBINVENTORY_CODE = x.SubinventoryCode,
@@ -274,6 +407,10 @@ Join ROLE_T rt on rt.Id = urt.RoleId
                        .ToList();
         }
 
+        /// <summary>
+        /// 取得角色
+        /// </summary>
+        /// <returns></returns>
         public List<SelectListItem> GetRoleNameList()
         {
             List<SelectListItem> roles = new List<SelectListItem>();
@@ -287,6 +424,62 @@ Join ROLE_T rt on rt.Id = urt.RoleId
                 });
             }
             return roles;
+        }
+
+        /// <summary>
+        /// 取得預設checkbox
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public string GetCheckboxValue(string id)
+        {
+
+            try
+            {
+                using (var mesContext = new MesContext())
+                {
+                    StringBuilder query = new StringBuilder();
+                    query.Append(
+    @"SELECT CAST(UST.ORGANIZATION_ID AS nvarchar) +'-'+ UST.SUBINVENTORY_CODE + ' ' + ST.SUBINVENTORY_NAME +',' AS [text()]
+FROM USER_SUBINVENTORY_T UST
+JOIN SUBINVENTORY_T ST ON ST.SUBINVENTORY_CODE = UST.SUBINVENTORY_CODE
+WHERE UserId = @id
+FOR XML PATH('')");
+                    string commandText = string.Format(query.ToString());
+                    return mesContext.Database.SqlQuery<string>(commandText, new SqlParameter("@id", id)).FirstOrDefault();
+                }
+            }
+            catch (Exception e)
+            {
+                logger.Error(e.Message.ToString());
+                return "";
+            }
+
+
+        }
+
+        /// <summary>
+        /// 取得預設user
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public AccountModel GetUserValue(string id)
+        {
+            var user = userManager.FindById(id);
+            var rolename = userManager.GetRoles(id).FirstOrDefault();
+            if (user != null)
+            {
+                AccountModel accountModel = new AccountModel();
+                accountModel.RoleName = rolename;
+                accountModel.Name = user.DisplayName;
+                accountModel.Account = user.UserName;
+                accountModel.Email = user.Email;
+                return accountModel;
+            }
+            else
+            {
+                return new AccountModel();
+            }
         }
 
         private bool HasPassword(string id)
