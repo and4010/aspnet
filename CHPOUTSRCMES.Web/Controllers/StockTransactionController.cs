@@ -118,6 +118,34 @@ namespace CHPOUTSRCMES.Web.Controllers
             }
         }
 
+        [HttpPost, ActionName("GetSubinventoryListForUserId")]
+        public JsonResult GetSubinventoryListForUserId(string ORGANIZATION_ID)
+        {
+            using (var context = new MesContext())
+            {
+                using (MasterUOW uow = new MasterUOW(context))
+                {
+                    var id = this.User.Identity.GetUserId();
+                    List<SelectListItem> items = stockTransferData.getSubinventoryListForUserId(uow, id, ORGANIZATION_ID, MasterUOW.DropDownListType.Choice).ToList();
+                    return Json(items, JsonRequestBehavior.AllowGet);
+                }
+            }
+        }
+
+        [HttpPost, ActionName("GetSubinventoryList")]
+        public JsonResult GetSubinventoryList(string ORGANIZATION_ID)
+        {
+            using (var context = new MesContext())
+            {
+                using (MasterUOW uow = new MasterUOW(context))
+                {
+                    var id = this.User.Identity.GetUserId();
+                    List<SelectListItem> items = stockTransferData.getSubinventoryList(uow, ORGANIZATION_ID, MasterUOW.DropDownListType.Choice).ToList();
+                    return Json(items, JsonRequestBehavior.AllowGet);
+                }
+            }
+        }
+
         [HttpPost, ActionName("GetLocatorListForUserId")]
         public JsonResult GetLocatorList(string SUBINVENTORY_CODE)
         {

@@ -9,6 +9,14 @@ namespace CHPOUTSRCMES.Web.ViewModels.StockTransaction
 {
     public class InBoundViewModel
     {
+        public IEnumerable<SelectListItem> OutOrganizationItems { set; get; }
+        [Display(Name = "發貨組織")]
+        public string SelectedOutOrganization { set; get; }
+
+        public IEnumerable<SelectListItem> InOrganizationItems { set; get; }
+        [Display(Name = "收貨組織")]
+        public string SelectedInOrganization { set; get; }
+
         public IEnumerable<SelectListItem> OutSubinventoryItems { set; get; }
         [Display(Name = "發貨倉庫")]
         public string SelectedOutSubinventory { set; get; }

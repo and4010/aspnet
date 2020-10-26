@@ -20,6 +20,10 @@
             <div class="row row-std">
                 <div class="col-md-12 form-inline">
                     <div class="form-group col col-md-4">
+                        @Html.LabelFor(model => model.SelectedOutOrganization, new { @class = "input-lg" })
+                        @Html.DropDownListFor(model => model.SelectedOutOrganization, Model.OutOrganizationItems, new { @class = "form-control", id = "ddlOutOrganization", autocomplete = "off" })
+                    </div>
+                    <div class="form-group col col-md-4">
                         @Html.LabelFor(model => model.SelectedOutSubinventory, new { @class = "input-lg" })
                         @Html.DropDownListFor(model => model.SelectedOutSubinventory, Model.OutSubinventoryItems, new { @class = "form-control", id = "ddlOutSubinventory", autocomplete = "off" })
                     </div>
@@ -29,6 +33,10 @@
                     </div>
                 </div>
                 <div class="col-md-12 form-inline">
+                    <div class="form-group col col-md-4">
+                        @Html.LabelFor(model => model.SelectedInOrganization, new { @class = "input-lg" })
+                        @Html.DropDownListFor(model => model.SelectedInOrganization, Model.InOrganizationItems, new { @class = "form-control", id = "ddlInOrganization", autocomplete = "off" })
+                    </div>
                     <div class="form-group col col-md-4">
                         @Html.LabelFor(model => model.SelectedInSubinventory, new { @class = "input-lg" })
                         @Html.DropDownListFor(model => model.SelectedInSubinventory, Model.InSubinventoryItems, new { @class = "form-control", id = "ddlInSubinventory", autocomplete = "off" })

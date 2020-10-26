@@ -152,10 +152,14 @@ namespace CHPOUTSRCMES.Web.Models.Stock
         {
             OutBoundViewModel viewModel = new OutBoundViewModel();
 
+            viewModel.OutOrganizationItems = uow.GetOrganizationDropDownListForUserId(userId, MasterUOW.DropDownListType.Choice);
+
             viewModel.OutSubinventoryItems = orgData.GetSubinventoryListForUserId(uow, userId, MasterUOW.DropDownListType.Choice);
 
             //viewModel.OutLocatorItems = orgData.GetLocatorList(uow, "265", viewModel.SelectedOutSubinventory, MasterUOW.DropDownListType.Choice);
             viewModel.OutLocatorItems = uow.createDropDownList(MasterUOW.DropDownListType.Choice);
+
+            viewModel.InOrganizationItems = uow.GetOrganizationDropDownList(MasterUOW.DropDownListType.Choice);
 
             viewModel.InSubinventoryItems = orgData.GetSubinventoryList(uow, "*", MasterUOW.DropDownListType.Choice);
 
@@ -197,10 +201,14 @@ namespace CHPOUTSRCMES.Web.Models.Stock
         {
             InBoundViewModel viewModel = new InBoundViewModel();
 
+            viewModel.OutOrganizationItems = uow.GetOrganizationDropDownList(MasterUOW.DropDownListType.Choice);
+
             viewModel.OutSubinventoryItems = orgData.GetSubinventoryList(uow, "*", MasterUOW.DropDownListType.Choice);
 
             //viewModel.OutLocatorItems = orgData.GetLocatorList(uow, "*", viewModel.SelectedOutSubinventory, MasterUOW.DropDownListType.Choice);
             viewModel.OutLocatorItems = uow.createDropDownList(MasterUOW.DropDownListType.Choice);
+
+            viewModel.InOrganizationItems = uow.GetOrganizationDropDownListForUserId(userId, MasterUOW.DropDownListType.Choice);
 
             viewModel.InSubinventoryItems = orgData.GetSubinventoryListForUserId(uow, userId, MasterUOW.DropDownListType.Choice);
 
@@ -238,6 +246,16 @@ namespace CHPOUTSRCMES.Web.Models.Stock
             return viewModel;
         }
 
+
+        public List<SelectListItem> getSubinventoryListForUserId(MasterUOW uow, string userId, string ORGANIZATION_ID, MasterUOW.DropDownListType type)
+        {
+            return uow.GetSubinventoryDropDownListForUserId2(userId, ORGANIZATION_ID, type);
+        }
+
+        public List<SelectListItem> getSubinventoryList(MasterUOW uow, string ORGANIZATION_ID, MasterUOW.DropDownListType type)
+        {
+            return uow.GetSubinventoryDropDownList(ORGANIZATION_ID, type);
+        }
 
 
         public List<SelectListItem> GetLocatorListForUserId(MasterUOW uow, string userId, string SUBINVENTORY_CODE, MasterUOW.DropDownListType type)

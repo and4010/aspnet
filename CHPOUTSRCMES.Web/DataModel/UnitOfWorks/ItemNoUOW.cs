@@ -43,7 +43,9 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                      {
                          Text = x.Key,
                          Value = x.Key,
-                     }).ToList();
+                     })
+                    .OrderBy(x => x.Value)
+                    .ToList();
                 SpecList.Add(new SelectListItem() { Text = "全部", Value = "*" });
                 SpecList.AddRange(tempList);
             }
@@ -71,7 +73,9 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                      {
                          Text = x.Key,
                          Value = x.Key,
-                     }).ToList();
+                     })
+                    .OrderBy(x => x.Value)
+                    .ToList();
                 TypeList.Add(new SelectListItem() { Text = "全部", Value = "*" });
                 TypeList.AddRange(tempList);
             }

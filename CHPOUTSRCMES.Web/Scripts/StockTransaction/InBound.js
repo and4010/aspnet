@@ -22,10 +22,13 @@
     }
 
     function getOutOrganizationId() {
-        return $("#ddlOutSubinventory").val();
+        //return $("#ddlOutSubinventory").val();
+        return $("#ddlOutOrganization").val();
     }
+
     function getInOrganizationId() {
-        return $("#ddlInSubinventory").val();
+        //return $("#ddlInSubinventory").val();
+        return $("#ddlInOrganization").val();
     }
 
     function getOutSubinventoryCode() {
@@ -61,6 +64,83 @@
         }
     });
 
+
+    $('#ddlOutOrganization').change(function () {
+
+        $.ajax({
+            url: "/StockTransaction/GetSubinventoryList",
+            type: "post",
+            data: {
+                ORGANIZATION_ID: getOutOrganizationId()
+            },
+            success: function (data) {
+                $('#ddlOutSubinventory').html("");
+
+                for (var i = 0; i < data.length; i++) {
+                    $('#ddlOutSubinventory').append($('<option></option>').val(data[i].Value).html(data[i].Text));
+                }
+
+                if (getOutOrganizationId() != getInOrganizationId()) {
+                    $('#chkCustomShipmentNumber').show();
+                    $('#lblCustomShipmentNumber').show();
+                } else {
+                    $('#chkCustomShipmentNumber').hide();
+                    $('#lblCustomShipmentNumber').hide();
+                    $("#chkCustomShipmentNumber").prop("checked", false);
+                    $(".custom-combobox").show(100);
+                    $("#txtShipmentNumber").hide();
+                }
+
+            },
+            error: function () {
+                swal.fire('更新發貨組織失敗');
+            },
+            complete: function () {
+                
+            }
+
+        });
+
+    })
+
+    $('#ddlInOrganization').change(function () {
+
+        $.ajax({
+            url: "/StockTransaction/GetSubinventoryListForUserId",
+            type: "post",
+            data: {
+                ORGANIZATION_ID: getInOrganizationId()
+            },
+            success: function (data) {
+                $('#ddlInSubinventory').html("");
+
+                for (var i = 0; i < data.length; i++) {
+                    $('#ddlInSubinventory').append($('<option></option>').val(data[i].Value).html(data[i].Text));
+                }
+
+                if (getOutOrganizationId() != getInOrganizationId()) {
+                    $('#chkCustomShipmentNumber').show();
+                    $('#lblCustomShipmentNumber').show();
+                } else {
+                    $('#chkCustomShipmentNumber').hide();
+                    $('#lblCustomShipmentNumber').hide();
+                    $("#chkCustomShipmentNumber").prop("checked", false);
+                    $(".custom-combobox").show(100);
+                    $("#txtShipmentNumber").hide();
+                }
+
+            },
+            error: function () {
+                swal.fire('更新收貨組織失敗');
+            },
+            complete: function () {
+                
+            }
+
+        });
+
+    })
+
     $('#ddlOutSubinventory').change(function () {
 
         var SUBINVENTORY_CODE = getOutSubinventoryCode();
@@ -84,21 +164,7 @@
                     $('#ddlOutLocatorArea').show();
                 }
 
-                if (getOutOrganizationId() != getInOrganizationId()) {
-                    $('#chkCustomShipmentNumber').show();
-                    $('#lblCustomShipmentNumber').show();
-                } else {
-                    $('#chkCustomShipmentNumber').hide();
-                    $('#lblCustomShipmentNumber').hide();
-                    $("#chkCustomShipmentNumber").prop("checked", false);
-                    $(".custom-combobox").show(100);
-                    $("#txtShipmentNumber").hide();
-                }
-                
-
                 //$('ddlOutLocator').html("");
-
-
 
                 //var optionCount = ddl[0].length;
                 //if (optionCount == 2) {
@@ -128,6 +194,7 @@
     })
 
 
+
     $('#ddlInSubinventory').change(function () {
 
         var SUBINVENTORY_CODE = getInSubinventoryCode();
@@ -147,16 +214,7 @@
                 } else {
                     $('#ddlInLocatorArea').show();
                 }
-                if (getOutOrganizationId() != getInOrganizationId()) {
-                    $('#chkCustomShipmentNumber').show();
-                    $('#lblCustomShipmentNumber').show();
-                } else {
-                    $('#chkCustomShipmentNumber').hide();
-                    $('#lblCustomShipmentNumber').hide();
-                    $("#chkCustomShipmentNumber").prop("checked", false);
-                    $(".custom-combobox").show(100);
-                    $("#txtShipmentNumber").hide();
-                }
+                
             },
             error: function () {
                 swal.fire('更新收貨儲位失敗');
@@ -1606,13 +1664,17 @@
 
     function CheckCreateInboundBarcode() {
 
-        //var a = $('#ddlShipmentNumber option:selected').text();
+        if (getOutOrganizationId() == "請選擇") {
+            swal.fire('請選擇發貨組織');
+            event.preventDefault();
+            return;
+        }
 
-        //var b = $('#ddlShipmentNumber').text();
-
-        //var c = $('#ddlShipmentNumber').val();
-
-        //var d = $('#ddlShipmentNumber option:selected').val();
+        if (getInOrganizationId() == "請選擇") {
+            swal.fire('請選擇收貨組織');
+            event.preventDefault();
+            return;
+        }
 
         if (getOutSubinventoryCode() == "請選擇") {
             swal.fire('請選擇發貨倉庫');
