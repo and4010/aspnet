@@ -60,7 +60,7 @@ namespace CHPOUTSRCMES.Web.Controllers
 
         //
         // GET: /Account/
-        [Authorize(Roles="系統管理員, 華紙使用者")]
+        [Authorize(Roles="系統管理員")]
         public ActionResult Index()
         {
             //取得使用者ID

@@ -29,7 +29,7 @@ namespace CHPOUTSRCMES.Web.Domain
 
 
             //基本資料 (第二層選單)
-            if(role.CompareTo("系統管理員") == 0 || role.CompareTo("華紙使用者") == 0)
+            if(role.CompareTo("系統管理員") == 0)
                 menu.Add(new Navbar { Id = 501, nameOption = "使用者", controller = "Account", action = "Index", status = true, isParent = false, parentId = 5 });
             menu.Add(new Navbar { Id = 502, nameOption = "貨故原因", controller = "Reason", action = "Index", status = true, isParent = false, parentId = 5 });
             menu.Add(new Navbar { Id = 503, nameOption = "料號", controller = "PartNo", action = "Index", status = true, isParent = false, parentId = 5 });

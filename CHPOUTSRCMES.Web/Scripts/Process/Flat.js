@@ -663,18 +663,21 @@ function FlatProductionDetail(Production_Roll_Ream_Qty, Production_Roll_Ream_Wt,
         "data": {
             Production_Roll_Ream_Qty: Production_Roll_Ream_Qty,
             Production_Roll_Ream_Wt: Production_Roll_Ream_Wt,
+            Cotangent: 0,
             OspDetailOutId: OspDetailOutId,
+            OspDetailInId: 0,
             OspHeaderId: OspHeaderId
         },
         success: function (data) {
-            if (data.resultModel.Success) {
-                LoadFlatProductionDataTable();
-                ClearRateLoss();
-            } else {
-                swal.fire(data.resultModel.Msg);
+            if (data != null) {
+                if (data.resultModel.Success) {
+                    LoadFlatProductionDataTable();
+                } else {
+                    swal.fire(data.resultModel.Msg);
+                }
             }
         }
-    })
+    });
 
 }
 ///產出條碼待入庫
