@@ -71,7 +71,7 @@ namespace CHPOUTSRCMES.Web.ViewModels.StockQuery
             using var masterUow = new CHPOUTSRCMES.Web.DataModel.UnitOfWorks.MasterUOW(mesContext);
             try
             {
-                return masterUow.GetLocatorDropDownListForUserId(userId, "", MasterUOW.DropDownListType.All);
+                return masterUow.GetLocatorDropDownListForUserId(userId, subinventory, MasterUOW.DropDownListType.All);
             }
             catch (Exception ex)
             {

@@ -2337,7 +2337,7 @@ select
                      {
                          Text = x.Segment2 + "." + x.Segment3,
                          Value = x.LocatorId.ToString()
-                     }).ToList();
+                     }).OrderByDescending(x => x.Value).ToList();
         }
 
         public List<SelectListItem> getLocatorListForUserId(string userId, string SUBINVENTORY_CODE, long? selectedLocatorId )
