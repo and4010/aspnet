@@ -1833,7 +1833,7 @@ select
         /// <summary>
         /// 取得組織下拉選單,
         /// 條件: CONTROL_FLAG不為D,
-        /// 適用作業: 組織倉庫
+        /// 適用作業: 組織倉庫、庫存移轉出入庫
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
@@ -1847,7 +1847,7 @@ select
         /// <summary>
         /// 取得使用者組織下拉選單,
         /// 條件: 使用者Id 和 CONTROL_FLAG不為D,
-        /// 適用作業: 板令對照、餘切規格
+        /// 適用作業: 板令對照、餘切規格、、庫存移轉出入庫
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
@@ -1883,6 +1883,20 @@ select
         {
             var subinventoryList = createDropDownList(type);
             subinventoryList.AddRange(getSubinventoryListForUserId2(userId));
+            return subinventoryList;
+        }
+
+        /// <summary>
+        /// 取得使用者倉庫下拉選單 Value為組織Id
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="organizationId"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public List<SelectListItem> GetSubinventoryDropDownListForUserId2(string userId, string ORGANIZATION_ID, DropDownListType type)
+        {
+            var subinventoryList = createDropDownList(type);
+            subinventoryList.AddRange(getSubinventoryListForUserId2(userId, ORGANIZATION_ID));
             return subinventoryList;
         }
 
@@ -2124,6 +2138,83 @@ select
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
+        private List<SelectListItem> getSubinventoryListForUserId2(string userId, string ORGANIZATION_ID)
+        {
+            long organizationId = 0;
+            try
+            {
+                if (ORGANIZATION_ID != "*")
+                {
+                    organizationId = Convert.ToInt64(ORGANIZATION_ID);
+                }
+            }
+            catch
+            {
+                ORGANIZATION_ID = "*";
+            }
+
+            var subinventoryList = new List<SelectListItem>();
+            if (ORGANIZATION_ID == "*")
+            {
+                var tempList = userSubinventoryTRepository.GetAll().AsNoTracking()
+                .Join(subinventoryRepository.GetAll().AsNoTracking(),
+                us => new { us.OrganizationId, us.SubinventoryCode },
+                s => new { s.OrganizationId, s.SubinventoryCode },
+                (us, s) => new
+                {
+                    UserId = us.UserId,
+                    OrganizationId = us.OrganizationId,
+                    SubinventoryCode = us.SubinventoryCode,
+                    OspFlag = s.OspFlag,
+                    ControlFlag = s.ControlFlag,
+                })
+                .Where(x => x.UserId == userId &&
+                x.OspFlag == OspFlag.IsProcessingPlant &&
+                x.ControlFlag != ControlFlag.Deleted)
+               .OrderBy(x => x.SubinventoryCode)
+               .Select(x => new SelectListItem()
+               {
+                   Text = x.SubinventoryCode,
+                   Value = x.OrganizationId.ToString()
+               }).ToList();
+                subinventoryList.AddRange(tempList);
+            }
+            else
+            {
+                var tempList = userSubinventoryTRepository.GetAll().AsNoTracking()
+                .Join(subinventoryRepository.GetAll().AsNoTracking(),
+                us => new { us.OrganizationId, us.SubinventoryCode },
+                s => new { s.OrganizationId, s.SubinventoryCode },
+                (us, s) => new
+                {
+                    UserId = us.UserId,
+                    OrganizationId = us.OrganizationId,
+                    SubinventoryCode = us.SubinventoryCode,
+                    OspFlag = s.OspFlag,
+                    ControlFlag = s.ControlFlag,
+                })
+                .Where(x => x.UserId == userId &&
+                x.OspFlag == OspFlag.IsProcessingPlant &&
+                x.ControlFlag != ControlFlag.Deleted &&
+                x.OrganizationId == organizationId)
+               .OrderBy(x => x.SubinventoryCode)
+               .Select(x => new SelectListItem()
+               {
+                   Text = x.SubinventoryCode,
+                   Value = x.OrganizationId.ToString()
+               }).ToList();
+                subinventoryList.AddRange(tempList);
+            }
+
+            return subinventoryList;
+            
+        }
+
+        /// <summary>
+        /// 取得使用者的倉庫SelectListItem Value為組織Id
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         private List<SelectListItem> getSubinventoryListForUserId2(string userId)
         {
             return userSubinventoryTRepository.GetAll().AsNoTracking()
@@ -2337,7 +2428,7 @@ select
                      {
                          Text = x.Segment2 + "." + x.Segment3,
                          Value = x.LocatorId.ToString()
-                     }).ToList();
+                     }).OrderByDescending(x => x.Value).ToList();
         }
 
         public List<SelectListItem> getLocatorListForUserId(string userId, string SUBINVENTORY_CODE, long? selectedLocatorId )

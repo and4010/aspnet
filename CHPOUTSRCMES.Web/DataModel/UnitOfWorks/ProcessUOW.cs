@@ -986,11 +986,11 @@ left JOIN OSP_HEADER_MOD_T HM ON HM.OSP_HEADER_ID = H.OSP_HEADER_ID
 
                     if (sqlParameterList.Count > 0)
                     {
-                        return mesContext.Database.SqlQuery<CHP_PROCESS_T>(commandText, sqlParameterList.ToArray()).ToList();
+                        return mesContext.Database.SqlQuery<CHP_PROCESS_T>(commandText + "order by BatchNo", sqlParameterList.ToArray()).ToList();
                     }
                     else
                     {
-                        return mesContext.Database.SqlQuery<CHP_PROCESS_T>(commandText).ToList();
+                        return mesContext.Database.SqlQuery<CHP_PROCESS_T>(commandText + "order by BatchNo").ToList();
                     }
                 }
             }
