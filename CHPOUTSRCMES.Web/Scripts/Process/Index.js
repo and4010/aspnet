@@ -1,4 +1,4 @@
-﻿var rowData
+﻿var rowData;
 var ProcessDataTables
 /// <summary>
 /// 待排單
@@ -148,7 +148,7 @@ function ProcessLoadTable(Status, BatchNo, MachineNum, DueDate, CuttingDateFrom,
             }
         },
         select: {
-            style: 'single',
+            style: 'multi',
             selector: 'td:first-child'
         },
         buttons: [
@@ -391,29 +391,45 @@ function BtnEvent() {
 
 
     $('#BtnCutReceipt').click(function () {
-        if (rowData.pluck('Status')[0] == CloseBatch) {
-            swal.fire("關帳，無法列印。");
-            return;
-        }
         if (rowData.pluck('Status')[0] == WaitBatch) {
             swal.fire("請先排單，再列印裁切單。");
             return;
         }
-        var OspHeaderId = rowData.pluck('OspHeaderId')[0]
-        window.open("/Home/OspCutReceiptReport/?OspHeaderId=" + OspHeaderId);
-
-    });
-    $('#BtnCutMaterial').click(function () {
+        if (rowData.pluck('Status')[0] == CompletedBatch) {
+            swal.fire("已完工，無法列印");
+            return;
+        }
         if (rowData.pluck('Status')[0] == CloseBatch) {
             swal.fire("關帳，無法列印。");
             return;
         }
+        var selectRowData = ProcessDataTables.rows('.selected').data();
+        var OspHeaderId = rowData.pluck('OspHeaderId')
+        for (i = 0; i < selectRowData.length; i++) {
+            window.open("/Home/OspCutReceiptReport/?OspHeaderId=" + selectRowData.pluck('OspHeaderId')[i]);
+        }
+        //window.open("/Home/OspCutReceiptReport/?OspHeaderId=" + OspHeaderId);
+
+    });
+    $('#BtnCutMaterial').click(function () {
         if (rowData.pluck('Status')[0] == WaitBatch) {
             swal.fire("請先排單，再列印領料單。");
             return;
         }
-        var OspHeaderId = rowData.pluck('OspHeaderId')[0]
-        window.open("/Home/OspReport/?OspHeaderId=" + OspHeaderId);
+        if (rowData.pluck('Status')[0] == CompletedBatch) {
+            swal.fire("已完工，無法列印");
+            return;
+        }
+        if (rowData.pluck('Status')[0] == CloseBatch) {
+            swal.fire("關帳，無法列印。");
+            return;
+        }
+        var selectRowData = ProcessDataTables.rows('.selected').data();
+        var OspHeaderId = rowData.pluck('OspHeaderId')
+        for (i = 0; i < selectRowData.length; i++) {
+            window.open("/Home/OspReport/?OspHeaderId=" + selectRowData.pluck('OspHeaderId')[i]);
+        }
+       
     });
 }
 

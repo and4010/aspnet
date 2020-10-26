@@ -2,6 +2,12 @@
    
     $('#btnSearch').click(loadTable2);
 
+    $('#date').datepicker({
+        dateFormat: 'yy-mm-dd',
+        changeMonth: true,
+        changeYear: true
+    });
+
     $('#SubinvenotoryCode1').on('change', function (e) {
         var valueSelected = this.value;
         loadLocator(valueSelected, $('#LocatorId'));
@@ -40,12 +46,13 @@ function loadTable2() {
     var itemCategory = $("#ItemCategory option:selected").val();
     var itemNo = $("#ItemNumber").val();
     var barcode = $("#Barcode").val();
+    var date = $("#date").val();
 
-    loadTable(subinventory, locatorId, itemCategory, itemNo, barcode);
+    loadTable(subinventory, locatorId, itemCategory, itemNo, barcode, date);
 }
 
 
-function loadTable(subinventory, locatorId, itemCategory, itemNo, barcode) {
+function loadTable(subinventory, locatorId, itemCategory, itemNo, barcode, date) {
 
     $('#QueryTable').DataTable({
         "language": {
@@ -70,6 +77,7 @@ function loadTable(subinventory, locatorId, itemCategory, itemNo, barcode) {
                 'itemCategory': itemCategory,
                 'itemNo': itemNo,
                 'barcode': barcode, 
+                'date': date,
                 '__RequestVerificationToken': $('input[name=__RequestVerificationToken]').val()
             }
         },
@@ -145,6 +153,7 @@ function loadLocator(subinventory, option) {
                     option.append($('<option></option>').val(item.Value).text(item.Text));
                 });
             }
+            $('#LocatorId').val()
         },
         error: function () {
             alert('無法取得儲位清單');

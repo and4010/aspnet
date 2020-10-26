@@ -5,6 +5,7 @@ using CHPOUTSRCMES.Web.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Data;
 using System.Data.Entity;
 using System.Data.SqlClient;
 using System.Linq;
@@ -94,7 +95,7 @@ namespace CHPOUTSRCMES.Web.Models.StockQuery
 
 
         public static DataTableJsonResultModel<StockTxnQueryModel> getModels(DataTableAjaxPostViewModel data,
-            string subinventory, string locator, string itemCategory, string itemNo, string barcode, string userId)
+            string subinventory, string locator, string itemCategory, string itemNo, string barcode, string date,string userId)
         {
             var paramList = new List<SqlParameter>();
             using var mesContext = new MesContext();
@@ -182,6 +183,12 @@ OR S.DST_SUBINVENTORY_CODE IN (SELECT SUBINVENTORY_CODE FROM USER_SUBINVENTORY_T
                 {
                     builder.AppendLine(" AND S.BARCODE= @barcode");
                     paramList.Add(SqlParamHelper.R.Barcode("@barcode", barcode));
+                }
+
+                if (!string.IsNullOrEmpty(date))
+                {
+                    builder.AppendLine("AND S.CREATION_DATE BETWEEN '' and @date");
+                    paramList.Add(SqlParamHelper.R.Barcode("@date", date));
                 }
 
                 var models = mesContext.Database.SqlQuery<StockTxnQueryModel>(builder.ToString(), paramList.ToArray()).ToList();
