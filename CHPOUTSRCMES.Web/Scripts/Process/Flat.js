@@ -184,7 +184,7 @@ function init() {
 
 function onBtnClick() {
 
-        //投入驗證單號
+    //投入驗證單號
     $('#BtnProcess_Batch_no').click(function (e) {
         var BatchNo = $('#ProcessBatchNo').val();
         var OspHeaderId = $('#OspHeaderId').val();
@@ -283,7 +283,7 @@ function onBtnClick() {
         FlatProductionDetail(Flat_Production_Roll_Ream_Qty, Flat_Production_Roll_Ream_Wt, OspDetailOutId, OspHeaderId);
 
     })
-      //產出入庫
+    //產出入庫
     $('#BtnFlatBarcodeSave').click(function () {
         var Production_Barcode = $('#Flat_Production_Barcode').val();
         var table = $('#FlatProductionDataTables').DataTable();
@@ -466,14 +466,10 @@ function LoadFlatInvestTable() {
         buttons: [
             'selectAll',
             'selectNone',
-            buttons: [
-                'selectAll',
-                'selectNone',
-                {
-                    extend: 'excel',
-                    text: '匯出Excel'
-                },
-            ],
+            {
+                extend: 'excel',
+                text: '匯出Excel'
+            },
         ],
         columnDefs: [{
             orderable: false, targets: [0, 6], width: "60px",
@@ -488,9 +484,9 @@ function LoadFlatInvestTable() {
             },
             { data: "OspPickedInId", "name": "ID", "autoWidth": true, "className": "dt-body-center", visible: false },
             { data: "StockId", "name": "ID", "autoWidth": true, "className": "dt-body-center", visible: false },
-            { data: "Barcode", "name": "條碼號", "autoWidth": true, "className": "dt-body-center"},
-            { data: "InventoryItemNumber", "name": "料號", "autoWidth": true, "className": "dt-body-left"},
-            { data: "SecondaryQuantity", "name": "令數(RE)", "autoWidth": true, "className": "dt-body-right"},
+            { data: "Barcode", "name": "條碼號", "autoWidth": true, "className": "dt-body-center" },
+            { data: "InventoryItemNumber", "name": "料號", "autoWidth": true, "className": "dt-body-left" },
+            { data: "SecondaryQuantity", "name": "令數(RE)", "autoWidth": true, "className": "dt-body-right" },
             {
                 data: "", "autoWidth": true, "render": function (data) {
                     return '<button class = "btn btn-danger btn-sm" id = "btnDelete">刪除</button>';
@@ -507,7 +503,7 @@ function FlatInvestSaveBarcode(Barcode, Remnant, Remaining_Weight, OspDetailInId
         "url": "/Process/SaveInvestBarcode",
         "type": "POST",
         "datatype": "json",
-        "data": { Barcode: Barcode, Remnant: Remnant, Remaining_Weight:Remaining_Weight,OspDetailInId: OspDetailInId},
+        "data": { Barcode: Barcode, Remnant: Remnant, Remaining_Weight: Remaining_Weight, OspDetailInId: OspDetailInId },
         success: function (data) {
             if (data.resultModel.Success) {
                 LoadFlatInvestTable();
@@ -605,14 +601,10 @@ function LoadFlatProductionDataTable() {
         buttons: [
             'selectAll',
             'selectNone',
-            buttons: [
-                'selectAll',
-                'selectNone',
-                {
-                    extend: 'excel',
-                    text: '匯出Excel'
-                },
-            ],
+            {
+                extend: 'excel',
+                text: '匯出Excel'
+            },
         ],
         columnDefs: [{
             orderable: false, targets: [0, 9], width: "60px",
@@ -626,7 +618,7 @@ function LoadFlatProductionDataTable() {
                 targets: 0
             },
             { data: "OspPickedOutId", "name": "條碼號", "autoWidth": true, "className": "dt-body-center", visible: false },
-            { data: "Barcode", "name": "條碼號", "autoWidth": true, "className": "dt-body-center"},
+            { data: "Barcode", "name": "條碼號", "autoWidth": true, "className": "dt-body-center" },
             { data: "Product_Item", "name": "料號", "autoWidth": true, "className": "dt-body-left" },
             { data: "PrimaryQuantity", "name": "重量", "autoWidth": true, "className": "dt-body-right" },
             {
@@ -634,7 +626,7 @@ function LoadFlatProductionDataTable() {
                     return 'KG';
                 }
             },
-            { data: "SecondaryQuantity", "name": "令數", "autoWidth": true, "className": "dt-body-right"},
+            { data: "SecondaryQuantity", "name": "令數", "autoWidth": true, "className": "dt-body-right" },
             {
                 data: "SecondaryUom", "name": "單位", "autoWidth": true, "className": "dt-body-center", render: function () {
                     return 'RE';
@@ -652,7 +644,7 @@ function LoadFlatProductionDataTable() {
             {
                 data: "", "autoWidth": true, "render": function (data) {
                     return '<button class = "btn btn-primary btn-sm" id = "btnEdit">編輯</button>' +
-                        '&nbsp|&nbsp'+ '<button class = "btn btn-danger btn-sm" id = "btnDeleteFlatProductionTable">刪除</button>';
+                        '&nbsp|&nbsp' + '<button class = "btn btn-danger btn-sm" id = "btnDeleteFlatProductionTable">刪除</button>';
                 }
             }
         ],
@@ -724,7 +716,7 @@ function FlatDispalyText(data) {
 }
 
 function FlatClearText() {
- 
+
     $('#Flat_Invest_Barcode').val('');
 }
 
@@ -787,7 +779,7 @@ function DisplayInvestFlatEnable(boolean) {
     $('#BtnFlat_ProcessSave').attr('disabled', boolean);
     $('#BtnRePrint').attr('disabled', boolean);
 
-    
+
 }
 
 function DisplayProductionFlatEnable(boolean) {
