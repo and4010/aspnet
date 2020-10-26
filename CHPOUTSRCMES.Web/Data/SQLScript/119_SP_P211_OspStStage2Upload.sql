@@ -288,6 +288,7 @@ BEGIN
 			RAISERROR(@message, 16, @success)
 		END
 
+		/*  不再計算總捲重
 		SET @success = @success + 1
 		UPDATE D SET TRANSACTION_QUANTITY = A.PQTY, SECONDARY_TRANSACTION_QUANTITY = A.SQTY
 		FROM @dstTable D 
@@ -307,6 +308,7 @@ BEGIN
 			+ @batchId + ' OSP_HEADER_ID:' + CONVERT(varchar, @ospHeaderId) + ' 更新數量'
 			RAISERROR(@message, 16, @success)
 		END
+		*/
 
 		INSERT INTO dbo.XXIF_CHP_P211_IN_MMT_PROD_ST ( 
 			  PROCESS_CODE, SERVER_CODE, BATCH_ID, BATCH_LINE_ID, STATUS_CODE
