@@ -793,6 +793,7 @@
         $('#btnImportFile').attr('disabled', false);
         $('#btnImportFlatFile').attr('disabled', false);
         $('#btnExampleDownload').attr('disabled', false);
+        $('#btnExampleDownload2').attr('disabled', false);
         $('#btnPrintRollPick').attr('disabled', false);
         $('#btnPrintFlatPick').attr('disabled', false);
         $('#btnMultiLable').attr('disabled', false);
@@ -812,6 +813,7 @@
         $('#btnImportFile').attr('disabled', true);
         $('#btnImportFlatFile').attr('disabled', true);
         $('#btnExampleDownload').attr('disabled', true);
+        $('#btnExampleDownload2').attr('disabled', true);
         $('#btnPrintRollPick').attr('disabled', true);
         $('#btnPrintFlatPick').attr('disabled', true);
         $('#btnMultiLable').attr('disabled', true);
@@ -2081,6 +2083,7 @@
                     //$('#txtBARCODE').attr('disabled', true);
                     //$('#btnImportFile').attr('disabled', true);
                     //$('#btnExampleDownload').attr('disabled', true);
+                    //$('#btnExampleDownload2').attr('disabled', true);
                     //$('#btnPrintRollPick').attr('disabled', true);
                     //$('#btnMultiLable').attr('disabled', true);
                     //$('#btnSaveBarcode').attr('disabled', true);

@@ -1,4 +1,5 @@
 ﻿using CHPOUTSRCMES.Web.DataModel.UnitOfWorks;
+using CHPOUTSRCMES.Web.Models;
 using CHPOUTSRCMES.Web.Models.Process;
 using CHPOUTSRCMES.Web.ViewModels;
 using CHPOUTSRCMES.Web.ViewModels.Process;
@@ -240,6 +241,17 @@ namespace CHPOUTSRCMES.Web.Controllers
         }
 
         [HttpPost]
+        public JsonResult AllDelete(long[] OspPickedInId)
+        {
+            //取得使用者ID
+            var Userid = this.User.Identity.GetUserId();
+            ProcessViewModel procesViewModel = new ProcessViewModel();
+            var resultModel = procesViewModel.AllDelete(OspPickedInId, Userid);
+
+            return Json(new { resultModel }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
         public JsonResult ProductionLoadDataTables(DataTableAjaxPostViewModel data, long OspHeaderId)
         {
             ProcessViewModel viewModel = new ProcessViewModel();
@@ -272,7 +284,7 @@ namespace CHPOUTSRCMES.Web.Controllers
         }
 
         /// <summary>
-        /// 加工Editor
+        /// 加工產出Editor
         /// </summary>
         /// <param name="ProductionDTEditor"></param>
         /// <returns></returns>
@@ -285,6 +297,30 @@ namespace CHPOUTSRCMES.Web.Controllers
             //取得使用者帳號
             var name = this.User.Identity.GetUserName();
             var resultModel =  viewModel.SetProductionEditor(ProductionDTEditor, id, name);
+            return Json(new { resultModel }, JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
+        /// 加工產出選取刪除
+        /// </summary>
+        /// <param name="ProductionDTEditor"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public JsonResult ProductionChooseDelete(long[] OspPickedOutId)
+        {
+            ProcessViewModel viewModel = new ProcessViewModel();
+            //取得使用者ID
+            var id = this.User.Identity.GetUserId();
+            //取得使用者帳號
+            var name = this.User.Identity.GetUserName();
+            var resultModel = viewModel.ProductionChooseDelete(OspPickedOutId);
+            return Json(new { resultModel }, JsonRequestBehavior.AllowGet);
+        }
+        [HttpPost]
+        public JsonResult CotangentChooseDelete(long[] OspCotangentId)
+        {
+            ProcessViewModel viewModel = new ProcessViewModel();
+            var resultModel = viewModel.CotangentChooseDelete(OspCotangentId);
             return Json(new { resultModel }, JsonRequestBehavior.AllowGet);
         }
 

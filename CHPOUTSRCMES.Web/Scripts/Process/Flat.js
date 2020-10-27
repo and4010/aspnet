@@ -32,7 +32,7 @@ $(document).ready(function () {
         $('#BtnProcess_Batch_no').hide();
         $("#BtnSave").hide();
         $('#BtnEdit').show();
-        $('#BtnApprove').show();
+        //$('#BtnApprove').show();
         $('#OutputBathNoArea').hide();
         ///隱藏按鈕
         FlatInvestTable.column(6).visible(false);
@@ -423,7 +423,7 @@ function LoadFlatInvestTable() {
                 return JSON.stringify(data);
             },
             success: function () {
-                LoadFlatInvestTable();
+                FlatInvestTable.ajax.reload(null, false);
             }
         },
         table: "#FlatInvestDataTables",
@@ -470,6 +470,53 @@ function LoadFlatInvestTable() {
                 extend: 'excel',
                 text: '匯出Excel'
             },
+            {
+                text: '刪除',
+                className: "BtnAllDelete",
+                enabled: false,
+                name: 'delete',
+                action: function () {
+                    var selectRowData = FlatInvestTable.rows('.selected').data();
+                    if (selectRowData.length == 0) {
+                        swal.fire("請先選取刪除項目")
+                        return;
+                    }
+                    var OspPickedInId = [];
+                    var barcode = [];
+                    for (i = 0; i < selectRowData.length; i++) {
+                        OspPickedInId.push(selectRowData.pluck('OspPickedInId')[i]);
+                        barcode.push(selectRowData.pluck('Barcode')[i])
+                    }
+                    swal.fire({
+                        title: '刪除',
+                        text: '確定要刪除??' + barcode,
+                        type: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#DD6B55",
+                        confirmButtonText: "確定",
+                        cancelButtonText: "取消"
+                    }).then(function (result) {
+                        if (result.value) {
+                            $.ajax({
+                                url: '/Process/AllDelete',
+                                datatype: 'json',
+                                type: "POST",
+                                data: { OspPickedInId: OspPickedInId },
+                                success: function (data) {
+                                    if (data.resultModel.Success) {
+                                        LoadPaperRollInvestDataTable();
+                                    } else {
+                                        swal.fire(data.resultModel.Msg);
+                                    }
+                                },
+                                error: function () {
+
+                                }
+                            });
+                        }
+                    });
+                }
+            }
         ],
         columnDefs: [{
             orderable: false, targets: [0, 6], width: "60px",
@@ -506,7 +553,7 @@ function FlatInvestSaveBarcode(Barcode, Remnant, Remaining_Weight, OspDetailInId
         "data": { Barcode: Barcode, Remnant: Remnant, Remaining_Weight: Remaining_Weight, OspDetailInId: OspDetailInId },
         success: function (data) {
             if (data.resultModel.Success) {
-                LoadFlatInvestTable();
+                FlatInvestTable.ajax.reload(null, false);
                 ClearRateLoss();
             } else {
                 swal.fire(data.resultModel.Msg);
@@ -550,7 +597,7 @@ function LoadFlatProductionDataTable() {
                 return JSON.stringify(data);
             },
             success: function () {
-                LoadFlatProductionDataTable();
+                FlatProductionDataTables.ajax.reload(null, false);
             }
         },
         table: "#FlatProductionDataTables",
@@ -605,6 +652,53 @@ function LoadFlatProductionDataTable() {
                 extend: 'excel',
                 text: '匯出Excel'
             },
+            {
+                text: '刪除',
+                className: "BtnProductionAllDelete",
+                enabled: false,
+                name: 'delete',
+                action: function () {
+                    var selectRowData = FlatProductionDataTables.rows('.selected').data();
+                    if (selectRowData.length == 0) {
+                        swal.fire("請先選取刪除項目")
+                        return;
+                    }
+                    var OspPickedOutId = [];
+                    var barcode = [];
+                    for (i = 0; i < selectRowData.length; i++) {
+                        OspPickedOutId.push(selectRowData.pluck('OspPickedOutId')[i]);
+                        barcode.push(selectRowData.pluck('Barcode')[i])
+                    }
+                    swal.fire({
+                        title: '刪除',
+                        text: '確定要刪除??' + barcode,
+                        type: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#DD6B55",
+                        confirmButtonText: "確定",
+                        cancelButtonText: "取消"
+                    }).then(function (result) {
+                        if (result.value) {
+                            $.ajax({
+                                url: '/Process/ProductionChooseDelete',
+                                datatype: 'json',
+                                type: "POST",
+                                data: { OspPickedOutId: OspPickedOutId },
+                                success: function (data) {
+                                    if (data.resultModel.Success) {
+                                        LoadPaperRollProductionDataTable();
+                                    } else {
+                                        swal.fire(data.resultModel.Msg);
+                                    }
+                                },
+                                error: function () {
+
+                                }
+                            });
+                        }
+                    });
+                }
+            }
         ],
         columnDefs: [{
             orderable: false, targets: [0, 9], width: "60px",
@@ -671,7 +765,7 @@ function FlatProductionDetail(Production_Roll_Ream_Qty, Production_Roll_Ream_Wt,
         success: function (data) {
             if (data != null) {
                 if (data.resultModel.Success) {
-                    LoadFlatProductionDataTable();
+                    FlatProductionDataTables.ajax.reload(null, false);
                 } else {
                     swal.fire(data.resultModel.Msg);
                 }
@@ -689,7 +783,7 @@ function ChangeFlatProductionStauts(Production_Barcode, OspDetailOutId) {
         "data": { Production_Barcode: Production_Barcode, OspDetailOutId: OspDetailOutId },
         success: function (data) {
             if (data.resultModel.Success) {
-                LoadFlatProductionDataTable();
+                FlatProductionDataTables.ajax.reload(null, false);
             } else {
                 swal.fire(data.resultModel.Msg);
             }

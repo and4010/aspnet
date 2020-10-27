@@ -1,4 +1,6 @@
-﻿var InvestDataTables
+﻿
+
+var InvestDataTables
 var ProductionTables
 var CotangentDataTable
 var EditorCotangent
@@ -35,13 +37,14 @@ $(document).ready(function () {
         $('#BtnCheckBatchNo').hide()
         $('#BtnSave').hide();
         $('#BtnEdit').show()
-        $('#BtnApprove').show()
+        //$('#BtnApprove').show()
         $('#OutputBathNoArea').hide();
         //$('#BtnCheckProductionBatchNo').hide()
         //$('#ProductForm').hide();
         InvestDataTables.column(11).visible(false);
         ProductionTables.column(9).visible(false);
         CotangentDataTable.column(9).visible(false);
+
     }
     else if (Status == PendingBatch) {
         DisplayInvestEnable(true);
@@ -50,6 +53,7 @@ $(document).ready(function () {
         $('#BtnEdit').hide();
         $('#BtnApprove').show();
         $('#BtnSave').hide();
+
     }
     else if (Status == Modified) {
         DisplayInvestEnable(true);
@@ -57,6 +61,7 @@ $(document).ready(function () {
         InvestDataTables.column(11).visible(false);
         ProductionTables.column(9).visible(false);
         CotangentDataTable.column(9).visible(false);
+
 
         $('#BtnSave').hide();
         $('#InputBathNoArea').hide();
@@ -546,7 +551,7 @@ function LoadInvestDataTable() {
             },
             success: function (data) {
                 if (data.resultModel.Success) {
-                    LoadInvestDataTable();
+                    InvestDataTables.ajax.reload(null, false);
                 } else {
                     swal.fire(data.resultModel.Msg);
                 }
@@ -665,6 +670,53 @@ function LoadInvestDataTable() {
                 extend: 'excel',
                 text: '匯出Excel'
             },
+            {
+                text: '刪除',
+                className: "BtnAllDelete",
+                enabled: false,
+                name:'delete',
+                action: function () {
+                    var selectRowData = InvestDataTables.rows('.selected').data();
+                    if (selectRowData.length == 0) {
+                        swal.fire("請先選取刪除項目")
+                        return;
+                    }
+                    var OspPickedInId = [];
+                    var barcode = [];
+                    for (i = 0; i < selectRowData.length; i++) {
+                        OspPickedInId.push(selectRowData.pluck('OspPickedInId')[i]);
+                        barcode.push(selectRowData.pluck('Barcode')[i])
+                    }
+                    swal.fire({
+                        title: '刪除',
+                        text: '確定要刪除??' + barcode,
+                        type: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#DD6B55",
+                        confirmButtonText: "確定",
+                        cancelButtonText: "取消"
+                    }).then(function (result) {
+                        if (result.value) {
+                            $.ajax({
+                                url: '/Process/AllDelete',
+                                datatype: 'json',
+                                type: "POST",
+                                data: { OspPickedInId: OspPickedInId },
+                                success: function (data) {
+                                    if (data.resultModel.Success) {
+                                        InvestDataTables.ajax.reload(null, false);
+                                    } else {
+                                        swal.fire(data.resultModel.Msg);
+                                    }
+                                },
+                                error: function () {
+
+                                }
+                            });
+                        }
+                    });
+                }
+            },
         ],
         columns: [
             {
@@ -703,7 +755,7 @@ function InvestSaveBarcode(Barcode, Remnant, Remaining_Weight, OspDetailInId) {
         "data": { Barcode: Barcode, Remnant: Remnant, Remaining_Weight: Remaining_Weight, OspDetailInId: OspDetailInId },
         success: function (data) {
             if (data.resultModel.Success) {
-                LoadInvestDataTable();
+                InvestDataTables.ajax.reload(null, false);
                 ClearRateLoss();
             } else {
                 swal.fire(data.resultModel.Msg);
@@ -747,8 +799,8 @@ function LoadProductionDataTable() {
                 return JSON.stringify(data);
             },
             success: function () {
-                LoadProductionDataTable();
-                CotangentDataTables();
+                ProductionTables.ajax.reload(null, false);
+                CotangentDataTable.ajax.reload(null, false);
             }
         },
         table: "#ProductionDataTables",
@@ -820,6 +872,53 @@ function LoadProductionDataTable() {
                 extend: 'excel',
                 text: '匯出Excel'
             },
+            {
+                text: '刪除',
+                className: "BtnProductionAllDelete",
+                enabled: false,
+                name: 'delete',
+                action: function () {
+                    var selectRowData = ProductionTables.rows('.selected').data();
+                    if (selectRowData.length == 0) {
+                        swal.fire("請先選取刪除項目")
+                        return;
+                    }
+                    var OspPickedOutId = [];
+                    var barcode = [];
+                    for (i = 0; i < selectRowData.length; i++) {
+                        OspPickedOutId.push(selectRowData.pluck('OspPickedOutId')[i]);
+                        barcode.push(selectRowData.pluck('Barcode')[i])
+                    }
+                    swal.fire({
+                        title: '刪除',
+                        text: '確定要刪除??' + barcode,
+                        type: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#DD6B55",
+                        confirmButtonText: "確定",
+                        cancelButtonText: "取消"
+                    }).then(function (result) {
+                        if (result.value) {
+                            $.ajax({
+                                url: '/Process/ProductionChooseDelete',
+                                datatype: 'json',
+                                type: "POST",
+                                data: { OspPickedOutId: OspPickedOutId },
+                                success: function (data) {
+                                    if (data.resultModel.Success) {
+                                        ProductionTables.ajax.reload(null, false);
+                                    } else {
+                                        swal.fire(data.resultModel.Msg);
+                                    }
+                                },
+                                error: function () {
+
+                                }
+                            });
+                        }
+                    });
+                }
+            },
         ],
         columnDefs: [{
             orderable: false, targets: [0, 9], width: "60px",
@@ -886,8 +985,8 @@ function CreateProduct(Production_Roll_Ream_Qty, Production_Roll_Ream_Wt, Cotang
         success: function (data) {
             if (data != null) {
                 if (data.resultModel.Success) {
-                    LoadProductionDataTable();
-                    CotangentDataTables();
+                    ProductionTables.ajax.reload(null, false);
+                    CotangentDataTable.ajax.reload(null, false);
                     ClearRateLoss();
                 } else {
                     swal.fire(data.resultModel.Msg);
@@ -907,7 +1006,7 @@ function ChangeProductionStauts(Production_Barcode, OspDetailOutId) {
         "data": { Production_Barcode: Production_Barcode, OspDetailOutId: OspDetailOutId },
         success: function (data) {
             if (data.resultModel.Success) {
-                LoadProductionDataTable();
+                ProductionTables.ajax.reload(null, false);
             } else {
                 swal.fire(data.resultModel.Msg);
             }
@@ -948,8 +1047,8 @@ function CotangentDataTables() {
                 return JSON.stringify(data);
             },
             success: function () {
-                LoadProductionDataTable();
-                CotangentDataTables();
+                ProductionTables.ajax.reload(null, false);
+                CotangentDataTable.ajax.reload(null, false);
             }
         },
         table: "#CotangentDataTables",
@@ -1030,6 +1129,53 @@ function CotangentDataTables() {
                 extend: 'excel',
                 text: '匯出Excel'
             },
+            {
+                text: '勾選刪除',
+                className: "BtnCotangentDelete",
+                enabled: false,
+                name: 'delete',
+                action: function () {
+                    var selectRowData = CotangentDataTable.rows('.selected').data();
+                    if (selectRowData.length == 0) {
+                        swal.fire("請先選取刪除項目")
+                        return;
+                    }
+                    var OspCotangentId = [];
+                    var barcode = [];
+                    for (i = 0; i < selectRowData.length; i++) {
+                        OspCotangentId.push(selectRowData.pluck('OspCotangentId')[i]);
+                        barcode.push(selectRowData.pluck('Barcode')[i])
+                    }
+                    swal.fire({
+                        title: '刪除',
+                        text: '確定要刪除??' + barcode,
+                        type: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#DD6B55",
+                        confirmButtonText: "確定",
+                        cancelButtonText: "取消"
+                    }).then(function (result) {
+                        if (result.value) {
+                            $.ajax({
+                                url: '/Process/CotangentChooseDelete',
+                                datatype: 'json',
+                                type: "POST",
+                                data: { OspCotangentId: OspCotangentId },
+                                success: function (data) {
+                                    if (data.resultModel.Success) {
+                                        CotangentDataTable.ajax.reload(null, false);
+                                    } else {
+                                        swal.fire(data.resultModel.Msg);
+                                    }
+                                },
+                                error: function () {
+
+                                }
+                            });
+                        }
+                    });
+                }
+            },
         ],
         columnDefs: [{
             orderable: false, targets: [0, 9], width: "60px",
@@ -1086,7 +1232,7 @@ function ChagneCotangent(CotangentBarcode, OspDetailOutId) {
         "data": { CotangentBarcode: CotangentBarcode, OspDetailOutId: OspDetailOutId },
         success: function (data) {
             if (data.resultModel.Success) {
-                CotangentDataTables();
+                CotangentDataTable.ajax.reload(null, false);
             } else {
                 swal.fire(data.resultModel.Msg);
             }
@@ -1230,7 +1376,7 @@ function DisplayInvestEnable(boolean) {
     $('#Invest_Remnant').attr('disabled', boolean);
     $('#BtnProcessSave').attr('disabled', boolean);
     $('#BtnRePrint').attr('disabled', boolean);
-
+    InvestDataTables.button(3).enable(!boolean);
 }
 
 //驗證disable產出
@@ -1247,6 +1393,8 @@ function DisplayProductionEnable(boolean) {
     $('#BtnCalculate').attr('disabled', boolean);
     $('#BtnLabel').attr('disabled', boolean);
     $('#BtnPurchase').attr('disabled', boolean);
+    ProductionTables.button(3).enable(!boolean);
+    CotangentDataTable.button(3).enable(!boolean);
 }
 
 

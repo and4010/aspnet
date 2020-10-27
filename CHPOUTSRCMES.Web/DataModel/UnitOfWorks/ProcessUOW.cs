@@ -933,21 +933,30 @@ left JOIN OSP_HEADER_MOD_T HM ON HM.OSP_HEADER_ID = H.OSP_HEADER_ID
                     DateTime dueDate = new DateTime();
                     if (DueDate != "" && DateTime.TryParseExact(DueDate, "yyyy-MM-dd", null, System.Globalization.DateTimeStyles.NoCurrentDateDefault, out dueDate))
                     {
-                        cond.Add("H.DUE_DATE BETWEEN @DUE_DATE AND @DUE_END_DATE");
+                        cond.Add("H.DUE_DATE >= @DUE_DATE");
                         sqlParameterList.Add(SqlParamHelper.GetDataTime("@DUE_DATE", dueDate, ParameterDirection.Input));
                         sqlParameterList.Add(SqlParamHelper.GetDataTime("@DUE_END_DATE", dueDate.AddDays(1).AddMilliseconds(-1), ParameterDirection.Input));
                     }
-                    DateTime endDate = new DateTime();
-                    if (CuttingDateFrom != "")
+
+                    if (CuttingDateFrom != "" && CuttingDateTo != "")
                     {
-                        DateTime.TryParseExact(CuttingDateFrom, "yyyy-MM-dd", null, System.Globalization.DateTimeStyles.NoCurrentDateDefault, out endDate);
-                        cond.Add("H.CUTTING_DATE_FROM BETWEEN @CUTTING_DATE_FROM and  @DUE_END_DATE");
+
+                        cond.Add("((H.CUTTING_DATE_FROM >= @CUTTING_DATE_FROM AND H.CUTTING_DATE_TO <= @CUTTING_DATE_TO) or " +
+"(H.CUTTING_DATE_FROM >= @CUTTING_DATE_FROM AND H.CUTTING_DATE_TO <= @CUTTING_DATE_TO) or" +
+"(H.CUTTING_DATE_FROM >= @CUTTING_DATE_FROM AND H.CUTTING_DATE_TO <= @CUTTING_DATE_TO))");
                         sqlParameterList.Add(new SqlParameter("@CUTTING_DATE_FROM", CuttingDateFrom));
-                        sqlParameterList.Add(SqlParamHelper.GetDataTime("@DUE_END_DATE", endDate.AddDays(1).AddMilliseconds(-1), ParameterDirection.Input));
+                        sqlParameterList.Add(new SqlParameter("@CUTTING_DATE_TO", CuttingDateTo));
                     }
-                    if (CuttingDateTo != "")
+
+                    if (CuttingDateFrom != "" && CuttingDateTo == "")
                     {
-                        cond.Add("H.CUTTING_DATE_TO BETWEEN '' and @CUTTING_DATE_TO");
+                        cond.Add("H.CUTTING_DATE_FROM >= @CUTTING_DATE_FROM");
+                        sqlParameterList.Add(new SqlParameter("@CUTTING_DATE_FROM", CuttingDateFrom));
+                    }
+
+                    if (CuttingDateTo != "" && CuttingDateFrom == "")
+                    {
+                        cond.Add("H.CUTTING_DATE_TO <= @CUTTING_DATE_TO");
                         sqlParameterList.Add(new SqlParameter("@CUTTING_DATE_TO", CuttingDateTo));
                     }
                     if (Subinventory != "*")
@@ -1080,13 +1089,18 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
                             id.LastUpdateDate = DateTime.Now;
                             OspPickedInTRepository.Update(id, true);
                             //var aft = InvestDTListId.RemainingQuantity ?? 0;
+                            var bef = stock.PrimaryAvailableQty;
                             var chg = stock.PrimaryAvailableQty - (InvestDTListId.RemainingQuantity ?? 0);
                             var lockQty = (stock.PrimaryLockedQty ?? 0) + chg;
                             var aft = stock.PrimaryAvailableQty - chg;
                             if (stock.PrimaryAvailableQty >= aft)
                             {
                                 CheckStock(stock.StockId, UserId, aft, lockQty, StockStatusCode.ProcessPicked);
-                                StockRecord(id.StockId, aft, chg, 0, 0, CategoryCode.Process, ActionCode.Picked, header.BatchNo, UserId);
+                                var m1 = StockRecord(id.StockId, bef, aft, -1*chg, 0, 0, 0, CategoryCode.Process, ActionCode.Picked, header.BatchNo, UserId);
+                                if (!m1.Success)
+                                {
+                                    throw new Exception($"CODE:{m1.Code} MSG:{m1.Msg}");
+                                }
                                 txn.Commit();
                                 return new ResultModel(true, "");
                             }
@@ -1107,12 +1121,17 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
                         var header = OspHeaderTRepository.Get(x => x.OspHeaderId == id.OspHeaderId).SingleOrDefault();
                         if (id != null)
                         {
+                            var bef = stock.PrimaryAvailableQty;
                             var chg = id.PrimaryQuantity - (id.RemainingQuantity ?? 0);
                             var lockQty = (stock.PrimaryLockedQty ?? 0) - chg;
                             var aft = stock.PrimaryAvailableQty + chg;
                             CheckStock(stock.StockId, UserId, aft, lockQty, StockStatusCode.InStock);
                             OspPickedInTRepository.Delete(id, true);
-                            StockRecord(id.StockId, stock.PrimaryAvailableQty, 0, 0, 0, CategoryCode.Process, ActionCode.Deleted, header.BatchNo, UserId);
+                            var m1 = StockRecord(id.StockId, bef, aft, chg, 0, 0, 0, CategoryCode.Process, ActionCode.Deleted, header.BatchNo, UserId);
+                            if (!m1.Success)
+                            {
+                                throw new Exception($"CODE:{m1.Code} MSG:{m1.Msg}");
+                            }
                             txn.Commit();
                             return new ResultModel(true, "");
                         }
@@ -1127,6 +1146,51 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
                     return new ResultModel(false, e.Message);
                 }
             }
+        }
+
+        /// <summary>
+        /// 加工投入勾選刪除
+        /// </summary>
+        /// <returns></returns>
+        public ResultModel ChooseDelete(long[] OspPickedInId, string UserId)
+        {
+            using (var txn = this.Context.Database.BeginTransaction())
+            {
+                try
+                {
+                    for (int i = 0; i < OspPickedInId.Length; i++)
+                    {
+                        var OspPickedInId1 = OspPickedInId[i];
+                        var id = OspPickedInTRepository.Get(x => x.OspPickedInId == OspPickedInId1).SingleOrDefault();
+                        var stock = stockTRepository.Get(x => x.StockId == id.StockId).SingleOrDefault();
+                        var header = OspHeaderTRepository.Get(x => x.OspHeaderId == id.OspHeaderId).SingleOrDefault();
+                        if (id != null)
+                        {
+                            var bef = stock.PrimaryAvailableQty;
+                            var chg = id.PrimaryQuantity - (id.RemainingQuantity ?? 0);
+                            var lockQty = (stock.PrimaryLockedQty ?? 0) - chg;
+                            var aft = stock.PrimaryAvailableQty + chg;
+                            CheckStock(stock.StockId, UserId, aft, lockQty, StockStatusCode.InStock);
+                            OspPickedInTRepository.Delete(id, true);
+                            var m1 = StockRecord(id.StockId, bef, stock.PrimaryAvailableQty, chg, 0, 0, 0, CategoryCode.Process, ActionCode.Deleted, header.BatchNo, UserId);
+                            if (!m1.Success)
+                            {
+                                throw new Exception($"CODE:{m1.Code} MSG:{m1.Msg}");
+                            }
+                        }
+                    }
+                    txn.Commit();
+                    return new ResultModel(true, "");
+                }
+                catch (Exception e)
+                {
+                    txn.Rollback();
+                    logger.Error(LogUtilities.BuildExceptionMessage(e));
+                    return new ResultModel(false, e.Message);
+                }
+
+            }
+
         }
 
         /// <summary>
@@ -1411,13 +1475,18 @@ AND ST.BARCODE = @BARCODE");
                         oSP_PICKED_IN_T.CreationDate = DateTime.Now;
                         OspPickedInTRepository.Create(oSP_PICKED_IN_T, true);
                         //var aft = Remaining_Weight == "" ? 0 : decimal.Parse(Remaining_Weight);
+                        var bef = data.PrimaryAvailableQty;
                         var chg = data.PrimaryAvailableQty - (Remaining_Weight == "" ? 0 : decimal.Parse(Remaining_Weight));
                         var lockQty = (data.PrimaryLockedQty ?? 0) + chg;
                         var aft = data.PrimaryAvailableQty - chg;
                         if (data.PrimaryAvailableQty >= aft)
                         {
                             CheckStock(data.StockId, UserId, aft, lockQty, StockStatusCode.ProcessPicked);
-                            StockRecord(data.StockId, aft, chg, 0, 0, CategoryCode.Process, ActionCode.Picked, Header.BatchNo, UserId);
+                            var m1 = StockRecord(data.StockId, bef, aft, -1*chg, 0, 0, 0, CategoryCode.Process, ActionCode.Picked, Header.BatchNo, UserId);
+                            if (!m1.Success)
+                            {
+                                throw new Exception($"CODE:{m1.Code} MSG:{m1.Msg}");
+                            }
                             var delteRateResult = DeleteRateNoTransaction(oSP_PICKED_IN_T.OspHeaderId);
                             if (!delteRateResult.Success) throw new Exception(delteRateResult.Msg);
                             txn.Commit();
@@ -1861,6 +1930,42 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
         }
 
         /// <summary>
+        /// 產出選擇刪除
+        /// </summary>
+        /// <param name="ProductionDTEditor"></param>
+        /// <param name="UserId"></param>
+        /// <param name="UserName"></param>
+        /// <returns></returns>
+        public ResultModel ProductionChooseDelete(long[] OspPickedOutId)
+        {
+            using (var txn = this.Context.Database.BeginTransaction())
+            {
+                try
+                {
+                    for(int i=0; i < OspPickedOutId.Length; i++)
+                    {
+                        var OspPickedOutId1 = OspPickedOutId[i];
+                        var id = OspPickedOutTRepository.Get(r => r.OspPickedOutId == OspPickedOutId1).SingleOrDefault();
+                        if (id == null)
+                        {
+                            return new ResultModel(false, "找不到ID");
+                        }
+                        OspPickedOutTRepository.Delete(id, true);
+                    }
+                    txn.Commit();
+                    return new ResultModel(true, "");
+                }
+                catch (Exception e)
+                {
+                    txn.Rollback();
+                    logger.Error(LogUtilities.BuildExceptionMessage(e));
+                    return new ResultModel(false, e.Message);
+                }
+
+            }
+        }
+
+        /// <summary>
         /// 代紙紙捲產出Editor
         /// </summary>
         /// <param name="ProductionDTEditor"></param>
@@ -1978,6 +2083,39 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
                     {
                         return new ResultModel(false, "無法識別作業項目");
                     }
+                }
+                catch (Exception e)
+                {
+                    txn.Rollback();
+                    logger.Error(LogUtilities.BuildExceptionMessage(e));
+                    return new ResultModel(false, e.Message);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 餘切選擇刪除
+        /// </summary>
+        /// <param name="OspCotangentId"></param>
+        /// <returns></returns>
+        public ResultModel CotangentChooseDelete(long[] OspCotangentId)
+        {
+            using (var txn = this.Context.Database.BeginTransaction())
+            {
+                try
+                {
+                    for(int i=0;i< OspCotangentId.Length; i++)
+                    {
+                        var OspCotangentId1 = OspCotangentId[i];
+                        var id = OspCotangenTRepository.Get(r => r.OspCotangentId == OspCotangentId1).SingleOrDefault();
+                        if (id == null)
+                        {
+                            return new ResultModel(false, "找不到ID");
+                        }
+                        OspCotangenTRepository.Delete(id, true);
+                    }
+                    txn.Commit();
+                    return new ResultModel(true, "");
                 }
                 catch (Exception e)
                 {
@@ -2450,7 +2588,13 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
                         headerMod.OspHeaderId = newHeader.OspHeaderId;
                         OspHeaderModTRepository.Create(headerMod, true);
 
-                        if (DeleteStock(OspHeaderId) <= 0)
+                        var m1 = ReturnInvestStock(header.OspHeaderId, StockStatusCode.InStock, StockStatusCode.ProcessPicked, CategoryCode.Process, ActionCode.ProcessEditStored, header.BatchNo, userId);
+                        if (!m1.Success)
+                        {
+                            throw new Exception($"OSP_HEADER_ID:{OspHeaderId} CODE:{m1.Code} MSG:{m1.Msg}");
+                        }
+
+                        if (DeleteStock(OspHeaderId, userId) <= 0)
                         {
                             throw new Exception($"OSP_HEADER_ID:{OspHeaderId} 刪除產品庫存資料失敗");
                         }
@@ -2521,6 +2665,43 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
             var pUser = SqlParamHelper.GetNVarChar("@user", userId, 128);
 
             this.Context.Database.ExecuteSqlCommand("[SP_SaveOspPickedIn] @headerId, @inStockStatusCode, @processPickedStatusCode, @category, @action, @doc, @code output, @message output, @user",
+                pHeaderId, pInStockStatusCode, pProcessPickedStatusCode, pCategory, pAction, pDoc, pCode, pMsg, pUser);
+
+            if (pCode.Value != DBNull.Value)
+            {
+                resultModel.Code = Convert.ToInt32(pCode.Value);
+                resultModel.Success = resultModel.Code == ResultModel.CODE_SUCCESS;
+            }
+
+            if (pMsg.Value != DBNull.Value)
+            {
+                resultModel.Msg = Convert.ToString(pMsg.Value);
+            }
+
+            return resultModel;
+        }
+
+        /// <summary>
+        /// 還原投入庫存已揀量
+        /// </summary>
+        /// <param name="headerId"></param>
+        /// <param name="statusCode"></param>
+        public ResultModel ReturnInvestStock(long headerId, string statusInStockCode, string statusProcessPicked, string Category, string Action, string Doc, string userId)
+        {
+            var resultModel = new ResultModel(false, "");
+
+            var pHeaderId = SqlParamHelper.GetBigInt("@headerId", headerId);
+            var pInStockStatusCode = SqlParamHelper.GetNVarChar("@inStockStatusCode", statusInStockCode);
+            var pProcessPickedStatusCode = SqlParamHelper.GetNVarChar("@processPickedStatusCode", statusProcessPicked);
+
+            var pCategory = SqlParamHelper.GetNVarChar("@category", categoryCode.GetDesc(Category));
+            var pAction = SqlParamHelper.GetNVarChar("@action", actionCode.GetDesc(Action));
+            var pDoc = SqlParamHelper.GetNVarChar("@doc", Doc);
+            var pCode = SqlParamHelper.GetInt("@code", 0, System.Data.ParameterDirection.Output);
+            var pMsg = SqlParamHelper.GetNVarChar("@message", "", 500, System.Data.ParameterDirection.Output);
+            var pUser = SqlParamHelper.GetNVarChar("@user", userId, 128);
+
+            this.Context.Database.ExecuteSqlCommand("[SP_ReturnOspPickedIn] @headerId, @inStockStatusCode, @processPickedStatusCode, @category, @action, @doc, @code output, @message output, @user",
                 pHeaderId, pInStockStatusCode, pProcessPickedStatusCode, pCategory, pAction, pDoc, pCode, pMsg, pUser);
 
             if (pCode.Value != DBNull.Value)
@@ -2631,13 +2812,16 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
         /// 庫存異動紀錄
         /// </summary>
         /// <param name="Barcode"></param>
-        public void StockRecord(long StockId, decimal PryAftQty, decimal PryChgQty, decimal SecAftQty, decimal SecChgQty,
+        public ResultModel StockRecord(long StockId, decimal PryBefQty , decimal PryAftQty, decimal PryChgQty, decimal SecBefQty, decimal SecAftQty, decimal SecChgQty,
             string Category, string Action, string Doc, string Createdby)
         {
+            var resultModel = new ResultModel(false, "");
 
             var pStockId = SqlParamHelper.GetBigInt("@StockId", StockId);
+            var pPryBefQty = SqlParamHelper.GetDecimal("@PRY_BEF_QTY", PryBefQty);
             var pPryAftQty = SqlParamHelper.GetDecimal("@PRY_AFT_QTY", PryAftQty);
             var pPryChgQty = SqlParamHelper.GetDecimal("@PRY_CHG_QTY", PryChgQty);
+            var pSecBefQty = SqlParamHelper.GetDecimal("@SEC_BEF_QTY", SecBefQty);
             var pSecAftQty = SqlParamHelper.GetDecimal("@SEC_AFT_QTY", SecAftQty);
             var pSecChgQty = SqlParamHelper.GetDecimal("@SEC_CHG_QTY", SecChgQty);
             var pCategory = SqlParamHelper.GetNVarChar("@CATEGORY", categoryCode.GetDesc(Category));
@@ -2647,10 +2831,22 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
             var pCode = SqlParamHelper.GetInt("@code", 0, System.Data.ParameterDirection.Output);
             var pMsg = SqlParamHelper.GetNVarChar("@message", "", 500, System.Data.ParameterDirection.Output);
             var pUser = SqlParamHelper.GetNVarChar("@user", "", 128);
-            Context.Database.ExecuteSqlCommand("[SP_ProcessSaveStkTxn] @StockId, @PRY_AFT_QTY ,@PRY_CHG_QTY,@SEC_AFT_QTY,@SEC_CHG_QTY," +
+            Context.Database.ExecuteSqlCommand("[SP_ProcessSaveStkTxn] @StockId, @PRY_BEF_QTY, @PRY_AFT_QTY ,@PRY_CHG_QTY, @SEC_BEF_QTY, @SEC_AFT_QTY,@SEC_CHG_QTY," +
                 "@CATEGORY,@ACTION,@DOC,@CREATED_BY,@code output, @message output, @user",
-                pStockId, pPryAftQty, pPryChgQty, pSecAftQty, pSecChgQty, pCategory, pAction, pDoc, pCreatedby, pCode, pMsg, pUser);
+                pStockId, pPryBefQty, pPryAftQty, pPryChgQty, pSecBefQty, pSecAftQty, pSecChgQty, pCategory, pAction, pDoc, pCreatedby, pCode, pMsg, pUser);
 
+            if (pCode.Value != DBNull.Value)
+            {
+                resultModel.Code = Convert.ToInt32(pCode.Value);
+                resultModel.Success = resultModel.Code == ResultModel.CODE_SUCCESS;
+            }
+
+            if (pMsg.Value != DBNull.Value)
+            {
+                resultModel.Msg = Convert.ToString(pMsg.Value);
+            }
+
+            return resultModel;
         }
 
         /// <summary>
@@ -3128,29 +3324,83 @@ WHERE Y.OSP_HEADER_ID = @OSP_HEADER_ID
         /// 歷史轉修改資料庫存資料刪除
         /// </summary>
         /// <param name="OSP_HEADER_ID"></param>
-        public int DeleteStock(long ospHeaderId)
+        public int DeleteStock(long ospHeaderId, string userId)
         {
-            return DeleteStockFromOspPickedHT(ospHeaderId) + DeleteStockFromOspContangetHT(ospHeaderId);
+            return DeleteStockFromOspPickedHT(ospHeaderId, userId) + DeleteStockFromOspContangetHT(ospHeaderId, userId);
         }
 
-        public int DeleteStockFromOspPickedHT(long ospHeaderId)
+        public int DeleteStockFromOspPickedHT(long ospHeaderId, string userId)
         {
-            return Context.Database.ExecuteSqlCommand(
+            int createStockRecord = Context.Database.ExecuteSqlCommand(
+            @"INSERT INTO[dbo].[STK_TXN_T]
+            ([STOCK_ID],[ORGANIZATION_ID],[ORGANIZATION_CODE],[SUBINVENTORY_CODE]
+       ,[LOCATOR_ID],[DST_ORGANIZATION_ID],[DST_ORGANIZATION_CODE],[DST_SUBINVENTORY_CODE],[DST_LOCATOR_ID]
+       ,[INVENTORY_ITEM_ID],[ITEM_NUMBER],[ITEM_DESCRIPTION],[ITEM_CATEGORY],[LOT_NUMBER]
+       ,[BARCODE],[PRY_UOM_CODE],[PRY_BEF_QTY],[PRY_AFT_QTY],[PRY_CHG_QTY]
+       ,[SEC_UOM_CODE],[SEC_BEF_QTY],[SEC_CHG_QTY],[SEC_AFT_QTY],[CATEGORY]
+       ,[DOC],[ACTION],[NOTE],[STATUS_CODE],[CREATED_BY]
+       ,[CREATION_DATE],[LAST_UPDATE_BY],[LAST_UPDATE_DATE])
+SELECT T.[STOCK_ID],T.[ORGANIZATION_ID] ,T.[ORGANIZATION_CODE],[SUBINVENTORY_CODE]
+        ,T.[LOCATOR_ID],''  ,'','' ,''
+        ,T.[INVENTORY_ITEM_ID],[ITEM_NUMBER],[ITEM_DESCRIPTION] ,T.[ITEM_CATEGORY] ,T.[LOT_NUMBER]
+        ,T.[BARCODE],PRIMARY_UOM_CODE ,PRIMARY_AVAILABLE_QTY,0,-1*PRIMARY_AVAILABLE_QTY
+        ,SECONDARY_UOM_CODE,SECONDARY_AVAILABLE_QTY,-1*SECONDARY_AVAILABLE_QTY,0,@CATEGORY
+        ,H.BATCH_NO,@ACTION,T.[NOTE],[STATUS_CODE],@CREATED_BY
+        ,GETDATE(),NULL,NULL
+FROM STOCK_T T
+JOIN OSP_PICKED_OUT_HT POH ON POH.STOCK_ID = T.STOCK_ID
+JOIN OSP_HEADER_T H ON H.OSP_HEADER_ID = POH.OSP_HEADER_ID
+WHERE POH.OSP_HEADER_ID = @OSP_HEADER_ID",
+            new SqlParameter("@OSP_HEADER_ID", ospHeaderId),
+            new SqlParameter("@CATEGORY", categoryCode.GetDesc(CategoryCode.Process)),
+            new SqlParameter("@ACTION", actionCode.GetDesc(ActionCode.ProcessEditDeleted)),
+            new SqlParameter("@CREATED_BY", userId));
+
+            int delStock = Context.Database.ExecuteSqlCommand(
 @"DELETE ST FROM STOCK_T ST
 JOIN OSP_PICKED_OUT_HT POH ON POH.STOCK_ID = ST.STOCK_ID
 WHERE POH.OSP_HEADER_ID = @OSP_HEADER_ID"
                     , new SqlParameter("@OSP_HEADER_ID", ospHeaderId)
                 );
+
+            return createStockRecord + delStock;
         }
 
-        public int DeleteStockFromOspContangetHT(long ospHeaderId)
+        public int DeleteStockFromOspContangetHT(long ospHeaderId, string userId)
         {
-            return Context.Database.ExecuteSqlCommand(
+            int createStockRecord = Context.Database.ExecuteSqlCommand(
+            @"INSERT INTO[dbo].[STK_TXN_T]
+            ([STOCK_ID],[ORGANIZATION_ID],[ORGANIZATION_CODE],[SUBINVENTORY_CODE]
+       ,[LOCATOR_ID],[DST_ORGANIZATION_ID],[DST_ORGANIZATION_CODE],[DST_SUBINVENTORY_CODE],[DST_LOCATOR_ID]
+       ,[INVENTORY_ITEM_ID],[ITEM_NUMBER],[ITEM_DESCRIPTION],[ITEM_CATEGORY],[LOT_NUMBER]
+       ,[BARCODE],[PRY_UOM_CODE],[PRY_BEF_QTY],[PRY_AFT_QTY],[PRY_CHG_QTY]
+       ,[SEC_UOM_CODE],[SEC_BEF_QTY],[SEC_CHG_QTY],[SEC_AFT_QTY],[CATEGORY]
+       ,[DOC],[ACTION],[NOTE],[STATUS_CODE],[CREATED_BY]
+       ,[CREATION_DATE],[LAST_UPDATE_BY],[LAST_UPDATE_DATE])
+SELECT T.[STOCK_ID],T.[ORGANIZATION_ID] ,T.[ORGANIZATION_CODE],[SUBINVENTORY_CODE]
+        ,T.[LOCATOR_ID],''  ,'','' ,''
+        ,T.[INVENTORY_ITEM_ID],[ITEM_NUMBER],[ITEM_DESCRIPTION] ,T.[ITEM_CATEGORY] ,T.[LOT_NUMBER]
+        ,T.[BARCODE],PRIMARY_UOM_CODE ,PRIMARY_AVAILABLE_QTY,0,-1*PRIMARY_AVAILABLE_QTY
+        ,SECONDARY_UOM_CODE,SECONDARY_AVAILABLE_QTY,-1*SECONDARY_AVAILABLE_QTY,0,@CATEGORY
+        ,H.BATCH_NO,@ACTION,T.[NOTE],[STATUS_CODE],@CREATED_BY
+        ,GETDATE(),NULL,NULL
+FROM STOCK_T T
+JOIN OSP_COTANGENT_HT CHT ON CHT.STOCK_ID = T.STOCK_ID
+JOIN OSP_HEADER_T H ON H.OSP_HEADER_ID = CHT.OSP_HEADER_ID
+WHERE CHT.OSP_HEADER_ID = @OSP_HEADER_ID",
+            new SqlParameter("@OSP_HEADER_ID", ospHeaderId),
+            new SqlParameter("@CATEGORY", categoryCode.GetDesc(CategoryCode.Process)),
+            new SqlParameter("@ACTION", actionCode.GetDesc(ActionCode.ProcessEditDeleted)),
+            new SqlParameter("@CREATED_BY", userId));
+
+            int delStock = Context.Database.ExecuteSqlCommand(
 @"DELETE ST FROM STOCK_T ST
 JOIN OSP_COTANGENT_HT CHT ON CHT.STOCK_ID = ST.STOCK_ID
 WHERE CHT.OSP_HEADER_ID = @OSP_HEADER_ID"
                     , new SqlParameter("@OSP_HEADER_ID", ospHeaderId)
                 );
+
+            return createStockRecord + delStock;
         }
 
 
