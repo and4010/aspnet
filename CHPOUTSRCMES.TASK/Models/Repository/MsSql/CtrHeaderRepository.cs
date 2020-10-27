@@ -33,7 +33,7 @@ namespace CHPOUTSRCMES.TASK.Models.Repository.MsSql
             return (await Connection.QueryAsync<CTR_HEADER_T>(
 $@"SELECT t.* FROM {tableName} t 
 LEFT JOIN CTR_SOA_T s ON s.{IdField} = t.{IdField}
-WHERE s.{IdField} IS NULL AND t.STATUS =0
+WHERE (s.STATUS_CODE IS NULL OR s.STATUS_CODE = 'R') AND t.STATUS =0
 ", transaction: transaction)).ToList();
         }
 

@@ -3,7 +3,7 @@
 -- Create date: 2020/08/31
 -- Description:	SOA DELIVERY_ST 資料接收
 -- =============================================
-CREATE PROCEDURE [dbo].[SP_P220_DlvStCreateNew]
+ALTER PROCEDURE [dbo].[SP_P220_DlvStCreateNew]
 	@processCode NVARCHAR(20),
 	@serverCode NVARCHAR(20),
 	@batchId NVARCHAR(20),
@@ -86,7 +86,6 @@ BEGIN
 		  LEFT JOIN LOCATOR_T l ON l.LOCATOR_ID = c.LOCATOR_ID AND l.SUBINVENTORY_CODE = c.SUBINVENTORY_CODE 
 		  LEFT JOIN OSP_HEADER_T p ON p.BATCH_NO = c.BATCH_NO
 		  LEFT JOIN ITEMS_T m ON m.ITEM_NUMBER = c.INVENTORY_ITEM_NUMBER
-		  --LEFT JOIN DLV_HEADER_T h ON h.TRIP_ID = c.TRIP_ID
 		  WHERE ctl.PROCESS_CODE = @processCode 
 		  AND ctl.SERVER_CODE = @serverCode
 		  AND ctl.BATCH_ID = @batchId
@@ -153,7 +152,7 @@ BEGIN
 			CLOSE csr
 			DEALLOCATE csr
 
-			--主檔
+			--主檔 ，排除已貨的航程號
 			INSERT INTO DLV_ORG_T (
 				PROCESS_CODE, SERVER_CODE, BATCH_ID, BATCH_LINE_ID
 				, ORG_ID, ORG_NAME, ORGANIZATION_ID, ORGANIZATION_CODE, TRIP_CAR

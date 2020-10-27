@@ -72,27 +72,34 @@
     <div class="col-md-12">
 
         <div class="box box-success">
+            <div class="box-header with-border">
+                倉庫設定
+                <div class="box-tools pull-right">
+                    <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="" data-original-title="Collapse">
+                        <i class="fa fa-minus"></i>
+                    </button>
+                </div>
+            </div>
             <div class="box-body">
                 <form role="form" id="SubinventoryForm" method="post">
                     @Html.AntiForgeryToken()
                     @Html.ValidationSummary(true)
                     <fieldset class="row-mtd">
                         <div class="row-mtd">
-                            <h4>倉庫</h4>
                             <div id="checkboxlist">
                                 @{
                                     var groupModel = Model.GetSubinventories.ToList().GroupBy(x => x.ORGANIZATION_CODE);
                                     foreach (var group in groupModel)
                                     {
-                                        <div class="box-header">
+                                        <div>
                                             <h4>@group.Key</h4>
                                         </div>
-                                        <div id="@group.Key" class="box-body">
+                                        <div id="@group.Key">
                                             @foreach (var item in Model.GetSubinventories)
                                             {
                                                 if (group.Key == item.ORGANIZATION_CODE)
                                                 {
-                                                    <div class="col-md-1">
+                                                    <div class="col-md-2">
                                                         <input style="width: 15px; height: 15px ;font-size:15px" type="checkbox" onclick="checkboxclick"
                                                                id="@item.ORGANIZATION_CODE-@item.SUBINVENTORY_CODE" name="checkboxs"
                                                                value="@item.ORGANIZATIONID-@item.SUBINVENTORY_CODE @item.SUBINVENTORY_NAME" />
@@ -101,7 +108,6 @@
                                                 }
                                             }
                                         </div>
-                                        <br />
                                     }
                                 }
                             </div>

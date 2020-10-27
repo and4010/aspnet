@@ -17,6 +17,14 @@
     <div class="col-md-12">
 
         <div class="box box-success">
+            <div class="box-header with-border">
+                使用者資料
+                <div class="box-tools pull-right">
+                    <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="" data-original-title="Collapse">
+                        <i class="fa fa-minus"></i>
+                    </button>
+                </div>
+            </div>
             <div class="box-body">
                 <form role="form" class="col-md-6" id="EditForm" method="post">
                     @Html.AntiForgeryToken()
@@ -26,10 +34,10 @@
                             <span class="input-group-addon">角色</span>
                             @Html.DropDownListFor(model => model.GetRoleNameList, Model.GetRoleNameList, new { @class = "form-control", id = "ddlRoleName" })
                             @*<select class="form-control" id="User">
-                                    <option value="1" selected="selected" onchange="selectUser">使用者</option>
-                                    <option value="2">華紙使用者</option>
-                                    <option value="3">系統管理員</option>
-                                </select>*@
+                            <option value="1" selected="selected" onchange="selectUser">使用者</option>
+                            <option value="2">華紙使用者</option>
+                            <option value="3">系統管理員</option>
+                        </select>*@
                         </div>
 
                         <div class="input-group col-md-12 row-mtd">
@@ -73,39 +81,44 @@
     <div class="col-md-12">
 
         <div class="box box-success">
+            <div class="box-header with-border">
+                倉庫設定
+                <div class="box-tools pull-right">
+                    <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="" data-original-title="Collapse">
+                        <i class="fa fa-minus"></i>
+                    </button>
+                </div>
+            </div>
             <div class="box-body">
                 <form role="form" id="SubinventoryForm" method="post">
                     @Html.AntiForgeryToken()
                     @Html.ValidationSummary(true)
                     <fieldset class="row-mtd">
                         <div class="row-mtd">
-                            <h4>倉庫</h4>
                             <div id="checkboxlist">
                                 @{
                                     var groupModel = Model.GetSubinventories.ToList().GroupBy(x => x.ORGANIZATION_CODE);
                                     foreach (var group in groupModel)
                                     {
-                                        <div class="box-header">
-                                            <h4>@group.Key</h4>
-                                        </div>
-                                        <div id="@group.Key" class="box-body">
+                                        <h4>@group.Key</h4>
+                                        <div id="@group.Key" class="col col-md-12">
                                             @foreach (var item in Model.GetSubinventories)
                                             {
                                                 if (group.Key == item.ORGANIZATION_CODE)
                                                 {
-                                                    <div class="col-md-1">
-                                                        <input style="width: 15px; height: 15px ;font-size:15px" type="checkbox" onclick="checkboxclick"
+                                                    <div class="col col-md-2">
+                                                        <input style="font-size:15px" type="checkbox" onclick="checkboxclick"
                                                                id="@item.ORGANIZATION_CODE-@item.SUBINVENTORY_CODE" name="checkboxs"
                                                                value="@item.ORGANIZATIONID-@item.SUBINVENTORY_CODE @item.SUBINVENTORY_NAME" />
                                                         <label for="@item.SUBINVENTORY_CODE">@item.SUBINVENTORY_CODE - @item.SUBINVENTORY_NAME</label>
+
                                                     </div>
 
                                                 }
                                             }
                                         </div>
-                                        <br />
+                                        }
                                     }
-                                }
                             </div>
                             <label for="checkboxs" class="error" style="display:none ; color:red" id="checkboxs">至少選擇一種</label>
                         </div>

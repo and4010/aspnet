@@ -237,7 +237,7 @@ function LoadTable() {
             {
                 data: "SubinventoryCount", "name": "倉庫", "autoWidth": true, render: function (data) {
                     if (data) {
-                        return '<a style="cursor:pointer" id = btnInform>' + '倉庫總數:' + data + '</a>'
+                        return '<a style="cursor:pointer" id = "btnInform">' + data + ' <i class="fa fa-eye" aria-hidden="true"></i></a>'
                     }
 
                 }, "className": "dt-body-center"
@@ -251,7 +251,7 @@ function LoadTable() {
                             '&nbsp|&nbsp' + '<button class = "btn btn btn-warning btn-sm" id ="btnTrans" >異動</button>' +
                             '&nbsp|&nbsp' + '<button class = "btn btn btn-danger btn-sm" id= "btnDelete" >刪除</button>';
                     } else {
-                        return '<button class="btn btn-danger btn-sm" id = "btnStop">啟用</button>'
+                        return '<button class="btn btn-primary btn-sm" id = "btnStop">啟用</button>'
                             + '&nbsp|&nbsp' + '<button class="btn btn-primary btn-sm" id="btnDefaultPassword">預設密碼</button>' +
                             '&nbsp|&nbsp' + '<button class = "btn btn btn-warning btn-sm" id ="btnTrans" >異動</button>' +
                             '&nbsp|&nbsp' + '<button class = "btn btn btn-danger btn-sm" id= "btnDelete" >刪除</button>';

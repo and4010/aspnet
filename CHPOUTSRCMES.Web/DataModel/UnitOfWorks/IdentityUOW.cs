@@ -406,7 +406,7 @@ where ISNULL(Flag,'') <> 'D'
             return subinventoryRepository
                        .GetAll()
                        .AsNoTracking()
-                       .Where(x => x.ControlFlag != ControlFlag.Deleted)
+                       .Where(x => x.ControlFlag != ControlFlag.Deleted && x.OspFlag == "Y")
                        .Join(organizationRepository.GetAll(), x => x.OrganizationId, y => y.OrganizationId, (x, y) => new UserSubinventory() {
                            ORGANIZATIONID = y.OrganizationId,
                            ORGANIZATION_CODE = y.OrganizationCode,
