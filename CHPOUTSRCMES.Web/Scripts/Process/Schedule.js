@@ -35,7 +35,7 @@ $(document).ready(function () {
         $('#BtnCheckBatchNo').hide()
         $('#BtnSave').hide();
         $('#BtnEdit').show()
-        $('#BtnApprove').show()
+        //$('#BtnApprove').show()
         $('#OutputBathNoArea').hide();
         //$('#BtnCheckProductionBatchNo').hide()
         //$('#ProductForm').hide();

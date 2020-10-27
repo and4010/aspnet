@@ -35,7 +35,7 @@ $(document).ready(function () {
         $('#BtnProcess_Batch_no').hide();
         $("#BtnSave").hide();
         $('#BtnEdit').show();
-        $('#BtnApprove').show();
+        //$('#BtnApprove').show();
         $('#OutputBathNoArea').hide();
         ///隱藏按鈕
         PaperRollInvestDataTables.column(9).visible(false);

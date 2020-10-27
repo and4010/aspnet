@@ -385,6 +385,10 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
 
             public const string ProcessPicked = "A6";
 
+            public const string ProcessEditStored = "A7";
+
+            public const string ProcessEditDeleted = "A8";
+
             public string GetDesc(string category)
             {
                 switch (category)
@@ -403,6 +407,10 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                         return "加工入庫";
                     case ProcessPicked:
                         return "加工領料";
+                    case ProcessEditStored:
+                        return "加工修改入庫";
+                    case ProcessEditDeleted:
+                        return "加工修改扣帳";
                     default:
                         return "";
                 }
