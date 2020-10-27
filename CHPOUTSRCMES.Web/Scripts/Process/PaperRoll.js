@@ -448,7 +448,7 @@ function LoadPaperRollInvestDataTable() {
                 return JSON.stringify(data);
             },
             success: function () {
-                LoadPaperRollInvestDataTable();
+                PaperRollInvestDataTables.ajax.reload(null, false);
             }
         },
         table: "#PaperRollInvestDataTables",
@@ -593,7 +593,7 @@ function LoadPaperRollInvestDataTable() {
                                 data: { OspPickedInId: OspPickedInId },
                                 success: function (data) {
                                     if (data.resultModel.Success) {
-                                        LoadPaperRollInvestDataTable();
+                                        PaperRollInvestDataTables.ajax.reload(null, false);
                                     } else {
                                         swal.fire(data.resultModel.Msg);
                                     }
@@ -650,7 +650,7 @@ function PaperInvestSaveBarcode(Barcode, Remnant, Remaining_Weight, OspDetailInI
         "data": { Barcode: Barcode, Remnant: Remnant, Remaining_Weight: Remaining_Weight, OspDetailInId: OspDetailInId },
         success: function (data) {
             if (data.resultModel.Success) {
-                LoadPaperRollInvestDataTable();
+                PaperRollInvestDataTables.ajax.reload(null, false);
                 ClearRateLoss();
             } else {
                 swal.fire(data.resultModel.Msg);
@@ -691,7 +691,7 @@ function LoadPaperRollProductionDataTable() {
                 return JSON.stringify(data);
             },
             success: function () {
-                LoadPaperRollProductionDataTable();
+                PaperRollProductionDataTables.ajax.reload(null, false);
             }
         },
         table: "#PaperRollProductionDataTables",
@@ -783,7 +783,7 @@ function LoadPaperRollProductionDataTable() {
                                 data: { OspPickedOutId: OspPickedOutId },
                                 success: function (data) {
                                     if (data.resultModel.Success) {
-                                        LoadPaperRollProductionDataTable();
+                                        PaperRollProductionDataTables.ajax.reload(null, false);
                                     } else {
                                         swal.fire(data.resultModel.Msg);
                                     }
@@ -854,7 +854,7 @@ function PaperRollProductionDetail(PaperRoll_Weight, PaperRoll_Lot_Number, OspDe
         success: function (data) {
             if (data != null) {
                 if (data.resultModel.Success) {
-                    LoadPaperRollProductionDataTable();
+                    PaperRollProductionDataTables.ajax.reload(null, false);
                     ClearRateLoss();
                 } else {
                     swal.fire(data.resultModel.Msg);
@@ -875,7 +875,7 @@ function PaperRollChangeProductionStauts(Production_Barcode, OspDetailOutId) {
         "data": { Production_Barcode: Production_Barcode, OspDetailOutId: OspDetailOutId },
         success: function (data) {
             if (data.resultModel.Success) {
-                LoadPaperRollProductionDataTable();
+                PaperRollProductionDataTables.ajax.reload(null, false);
             } else {
                 swal.fire(data.resultModel.Msg);
             }

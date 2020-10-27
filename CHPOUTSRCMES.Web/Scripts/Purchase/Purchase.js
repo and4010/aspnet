@@ -116,6 +116,10 @@ $(document).ready(function () {
 
     //列印標籤紙捲
     $('#PaperRollLabel').on('click', function (e) {
+        if (Status == 0) {
+            swal.fire("已入庫無法列印");
+            return;
+        }
         if (PaperRollerRowData == null) {
             swal.fire("請先選擇要列印標籤");
             return;
@@ -126,6 +130,10 @@ $(document).ready(function () {
 
     //列印標籤平張
     $('#FlatLabel').on('click', function (e) {
+        if (Status == 0) {
+            swal.fire("已入庫無法列印");
+            return;
+        }
         if (FlatRowData == null) {
             swal.fire("請先選擇要列印標籤");
             return;

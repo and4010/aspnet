@@ -551,7 +551,7 @@ function LoadInvestDataTable() {
             },
             success: function (data) {
                 if (data.resultModel.Success) {
-                    LoadInvestDataTable();
+                    InvestDataTables.ajax.reload(null, false);
                 } else {
                     swal.fire(data.resultModel.Msg);
                 }
@@ -704,7 +704,7 @@ function LoadInvestDataTable() {
                                 data: { OspPickedInId: OspPickedInId },
                                 success: function (data) {
                                     if (data.resultModel.Success) {
-                                        LoadInvestDataTable();
+                                        InvestDataTables.ajax.reload(null, false);
                                     } else {
                                         swal.fire(data.resultModel.Msg);
                                     }
@@ -755,7 +755,7 @@ function InvestSaveBarcode(Barcode, Remnant, Remaining_Weight, OspDetailInId) {
         "data": { Barcode: Barcode, Remnant: Remnant, Remaining_Weight: Remaining_Weight, OspDetailInId: OspDetailInId },
         success: function (data) {
             if (data.resultModel.Success) {
-                LoadInvestDataTable();
+                InvestDataTables.ajax.reload(null, false);
                 ClearRateLoss();
             } else {
                 swal.fire(data.resultModel.Msg);
@@ -799,8 +799,8 @@ function LoadProductionDataTable() {
                 return JSON.stringify(data);
             },
             success: function () {
-                LoadProductionDataTable();
-                CotangentDataTables();
+                ProductionTables.ajax.reload(null, false);
+                CotangentDataTable.ajax.reload(null, false);
             }
         },
         table: "#ProductionDataTables",
@@ -906,7 +906,7 @@ function LoadProductionDataTable() {
                                 data: { OspPickedOutId: OspPickedOutId },
                                 success: function (data) {
                                     if (data.resultModel.Success) {
-                                        LoadProductionDataTable();
+                                        ProductionTables.ajax.reload(null, false);
                                     } else {
                                         swal.fire(data.resultModel.Msg);
                                     }
@@ -985,8 +985,8 @@ function CreateProduct(Production_Roll_Ream_Qty, Production_Roll_Ream_Wt, Cotang
         success: function (data) {
             if (data != null) {
                 if (data.resultModel.Success) {
-                    LoadProductionDataTable();
-                    CotangentDataTables();
+                    ProductionTables.ajax.reload(null, false);
+                    CotangentDataTable.ajax.reload(null, false);
                     ClearRateLoss();
                 } else {
                     swal.fire(data.resultModel.Msg);
@@ -1006,7 +1006,7 @@ function ChangeProductionStauts(Production_Barcode, OspDetailOutId) {
         "data": { Production_Barcode: Production_Barcode, OspDetailOutId: OspDetailOutId },
         success: function (data) {
             if (data.resultModel.Success) {
-                LoadProductionDataTable();
+                ProductionTables.ajax.reload(null, false);
             } else {
                 swal.fire(data.resultModel.Msg);
             }
@@ -1047,8 +1047,8 @@ function CotangentDataTables() {
                 return JSON.stringify(data);
             },
             success: function () {
-                LoadProductionDataTable();
-                CotangentDataTables();
+                ProductionTables.ajax.reload(null, false);
+                CotangentDataTable.ajax.reload(null, false);
             }
         },
         table: "#CotangentDataTables",
@@ -1163,7 +1163,7 @@ function CotangentDataTables() {
                                 data: { OspCotangentId: OspCotangentId },
                                 success: function (data) {
                                     if (data.resultModel.Success) {
-                                        CotangentDataTables();
+                                        CotangentDataTable.ajax.reload(null, false);
                                     } else {
                                         swal.fire(data.resultModel.Msg);
                                     }
@@ -1232,7 +1232,7 @@ function ChagneCotangent(CotangentBarcode, OspDetailOutId) {
         "data": { CotangentBarcode: CotangentBarcode, OspDetailOutId: OspDetailOutId },
         success: function (data) {
             if (data.resultModel.Success) {
-                CotangentDataTables();
+                CotangentDataTable.ajax.reload(null, false);
             } else {
                 swal.fire(data.resultModel.Msg);
             }
