@@ -1166,12 +1166,17 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
                         var header = OspHeaderTRepository.Get(x => x.OspHeaderId == id.OspHeaderId).SingleOrDefault();
                         if (id != null)
                         {
+                            var bef = stock.PrimaryAvailableQty;
                             var chg = id.PrimaryQuantity - (id.RemainingQuantity ?? 0);
                             var lockQty = (stock.PrimaryLockedQty ?? 0) - chg;
                             var aft = stock.PrimaryAvailableQty + chg;
                             CheckStock(stock.StockId, UserId, aft, lockQty, StockStatusCode.InStock);
                             OspPickedInTRepository.Delete(id, true);
-                            StockRecord(id.StockId, stock.PrimaryAvailableQty, 0, 0, 0, CategoryCode.Process, ActionCode.Deleted, header.BatchNo, UserId);
+                            var m1 = StockRecord(id.StockId, bef, stock.PrimaryAvailableQty, chg, 0, 0, 0, CategoryCode.Process, ActionCode.Deleted, header.BatchNo, UserId);
+                            if (!m1.Success)
+                            {
+                                throw new Exception($"CODE:{m1.Code} MSG:{m1.Msg}");
+                            }
                         }
                     }
                     txn.Commit();
