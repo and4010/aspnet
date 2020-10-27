@@ -312,6 +312,11 @@ function ProcessLoadTable(Status, BatchNo, MachineNum, DueDate, CuttingDateFrom,
 
 function BtnEvent() {
     $('#BtnStatus').click(function () {
+        var selectRowData = ProcessDataTables.rows('.selected').data();
+        if (selectRowData.length > 1) {
+            swal.fire("排單只能選擇一項");
+            return;
+        }
         if (rowData == null) {
             swal.fire("請先選擇一項");
             return;
@@ -352,6 +357,11 @@ function BtnEvent() {
     });
 
     $('#BtnCloss').click(function () {
+        var selectRowData = ProcessDataTables.rows('.selected').data();
+        if (selectRowData.length > 1) {
+            swal.fire("關帳只能選擇一項");
+            return;
+        }
         if (rowData == null) {
             swal.fire("請先選擇一項")
             return;
@@ -370,6 +380,11 @@ function BtnEvent() {
     });
 
     $('#BtnEdit').click(function () {
+        var selectRowData = ProcessDataTables.rows('.selected').data();
+        if (selectRowData.length > 1) {
+            swal.fire("排單只能選擇一項");
+            return;
+        }
         if (rowData == null) {
             swal.fire("請先選擇一項");
             return;

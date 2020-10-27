@@ -120,6 +120,20 @@ namespace CHPOUTSRCMES.Web.ViewModels.Process
                 return new ProcessUOW(context).SetEditor(InvestDTList, UserId, UserName);
             }
         }
+        
+        /// <summary>
+        /// 加工投入選取刪除
+        /// </summary>
+        /// <param name="OspPickedInId"></param>
+        /// <param name="UserId"></param>
+        /// <returns></returns>
+        public ResultModel AllDelete(long[] OspPickedInId, string UserId)
+        {
+            using(var context = new MesContext())
+            {
+                return new ProcessUOW(context).ChooseDelete(OspPickedInId, UserId);
+            }
+        }
 
         /// <summary>
         /// 檢查工單號
@@ -241,6 +255,19 @@ namespace CHPOUTSRCMES.Web.ViewModels.Process
         }
 
         /// <summary>
+        /// 產出條碼選擇刪除
+        /// </summary>
+        /// <param name="OspPickedOutId"></param>
+        /// <returns></returns>
+        public ResultModel ProductionChooseDelete(long[] OspPickedOutId)
+        {
+            using (var context = new MesContext())
+            {
+                return new ProcessUOW(context).ProductionChooseDelete(OspPickedOutId);
+            }
+        }
+
+        /// <summary>
         /// 代紙紙捲產出Editor
         /// </summary>
         /// <param name="ProductionDTEditor"></param>
@@ -263,6 +290,19 @@ namespace CHPOUTSRCMES.Web.ViewModels.Process
             using (var context = new MesContext())
             {
                 return new ProcessUOW(context).SetCotangentEditor(cotangentDTEditor, UserId, UserName);
+            }
+        }
+
+        /// <summary>
+        /// 餘切選擇刪除
+        /// </summary>
+        /// <param name="OspCotangentId"></param>
+        /// <returns></returns>
+        public ResultModel CotangentChooseDelete(long[] OspCotangentId)
+        {
+            using (var context = new MesContext())
+            {
+                return new ProcessUOW(context).CotangentChooseDelete(OspCotangentId);
             }
         }
 

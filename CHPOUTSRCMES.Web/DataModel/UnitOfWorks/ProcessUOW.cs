@@ -933,21 +933,30 @@ left JOIN OSP_HEADER_MOD_T HM ON HM.OSP_HEADER_ID = H.OSP_HEADER_ID
                     DateTime dueDate = new DateTime();
                     if (DueDate != "" && DateTime.TryParseExact(DueDate, "yyyy-MM-dd", null, System.Globalization.DateTimeStyles.NoCurrentDateDefault, out dueDate))
                     {
-                        cond.Add("H.DUE_DATE BETWEEN @DUE_DATE AND @DUE_END_DATE");
+                        cond.Add("H.DUE_DATE >= @DUE_DATE");
                         sqlParameterList.Add(SqlParamHelper.GetDataTime("@DUE_DATE", dueDate, ParameterDirection.Input));
                         sqlParameterList.Add(SqlParamHelper.GetDataTime("@DUE_END_DATE", dueDate.AddDays(1).AddMilliseconds(-1), ParameterDirection.Input));
                     }
-                    DateTime endDate = new DateTime();
-                    if (CuttingDateFrom != "")
+
+                    if (CuttingDateFrom != "" && CuttingDateTo != "")
                     {
-                        DateTime.TryParseExact(CuttingDateFrom, "yyyy-MM-dd", null, System.Globalization.DateTimeStyles.NoCurrentDateDefault, out endDate);
-                        cond.Add("H.CUTTING_DATE_FROM BETWEEN @CUTTING_DATE_FROM and  @DUE_END_DATE");
+
+                        cond.Add("((H.CUTTING_DATE_FROM >= @CUTTING_DATE_FROM AND H.CUTTING_DATE_TO <= @CUTTING_DATE_TO) or " +
+"(H.CUTTING_DATE_FROM >= @CUTTING_DATE_FROM AND H.CUTTING_DATE_TO <= @CUTTING_DATE_TO) or" +
+"(H.CUTTING_DATE_FROM >= @CUTTING_DATE_FROM AND H.CUTTING_DATE_TO <= @CUTTING_DATE_TO))");
                         sqlParameterList.Add(new SqlParameter("@CUTTING_DATE_FROM", CuttingDateFrom));
-                        sqlParameterList.Add(SqlParamHelper.GetDataTime("@DUE_END_DATE", endDate.AddDays(1).AddMilliseconds(-1), ParameterDirection.Input));
+                        sqlParameterList.Add(new SqlParameter("@CUTTING_DATE_TO", CuttingDateTo));
                     }
-                    if (CuttingDateTo != "")
+
+                    if (CuttingDateFrom != "" && CuttingDateTo == "")
                     {
-                        cond.Add("H.CUTTING_DATE_TO BETWEEN '' and @CUTTING_DATE_TO");
+                        cond.Add("H.CUTTING_DATE_FROM >= @CUTTING_DATE_FROM");
+                        sqlParameterList.Add(new SqlParameter("@CUTTING_DATE_FROM", CuttingDateFrom));
+                    }
+
+                    if (CuttingDateTo != "" && CuttingDateFrom == "")
+                    {
+                        cond.Add("H.CUTTING_DATE_TO <= @CUTTING_DATE_TO");
                         sqlParameterList.Add(new SqlParameter("@CUTTING_DATE_TO", CuttingDateTo));
                     }
                     if (Subinventory != "*")
@@ -1137,6 +1146,46 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
                     return new ResultModel(false, e.Message);
                 }
             }
+        }
+
+        /// <summary>
+        /// 加工投入勾選刪除
+        /// </summary>
+        /// <returns></returns>
+        public ResultModel ChooseDelete(long[] OspPickedInId, string UserId)
+        {
+            using (var txn = this.Context.Database.BeginTransaction())
+            {
+                try
+                {
+                    for (int i = 0; i < OspPickedInId.Length; i++)
+                    {
+                        var OspPickedInId1 = OspPickedInId[i];
+                        var id = OspPickedInTRepository.Get(x => x.OspPickedInId == OspPickedInId1).SingleOrDefault();
+                        var stock = stockTRepository.Get(x => x.StockId == id.StockId).SingleOrDefault();
+                        var header = OspHeaderTRepository.Get(x => x.OspHeaderId == id.OspHeaderId).SingleOrDefault();
+                        if (id != null)
+                        {
+                            var chg = id.PrimaryQuantity - (id.RemainingQuantity ?? 0);
+                            var lockQty = (stock.PrimaryLockedQty ?? 0) - chg;
+                            var aft = stock.PrimaryAvailableQty + chg;
+                            CheckStock(stock.StockId, UserId, aft, lockQty, StockStatusCode.InStock);
+                            OspPickedInTRepository.Delete(id, true);
+                            StockRecord(id.StockId, stock.PrimaryAvailableQty, 0, 0, 0, CategoryCode.Process, ActionCode.Deleted, header.BatchNo, UserId);
+                        }
+                    }
+                    txn.Commit();
+                    return new ResultModel(true, "");
+                }
+                catch (Exception e)
+                {
+                    txn.Rollback();
+                    logger.Error(LogUtilities.BuildExceptionMessage(e));
+                    return new ResultModel(false, e.Message);
+                }
+
+            }
+
         }
 
         /// <summary>
@@ -1876,6 +1925,42 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
         }
 
         /// <summary>
+        /// 產出選擇刪除
+        /// </summary>
+        /// <param name="ProductionDTEditor"></param>
+        /// <param name="UserId"></param>
+        /// <param name="UserName"></param>
+        /// <returns></returns>
+        public ResultModel ProductionChooseDelete(long[] OspPickedOutId)
+        {
+            using (var txn = this.Context.Database.BeginTransaction())
+            {
+                try
+                {
+                    for(int i=0; i < OspPickedOutId.Length; i++)
+                    {
+                        var OspPickedOutId1 = OspPickedOutId[i];
+                        var id = OspPickedOutTRepository.Get(r => r.OspPickedOutId == OspPickedOutId1).SingleOrDefault();
+                        if (id == null)
+                        {
+                            return new ResultModel(false, "找不到ID");
+                        }
+                        OspPickedOutTRepository.Delete(id, true);
+                    }
+                    txn.Commit();
+                    return new ResultModel(true, "");
+                }
+                catch (Exception e)
+                {
+                    txn.Rollback();
+                    logger.Error(LogUtilities.BuildExceptionMessage(e));
+                    return new ResultModel(false, e.Message);
+                }
+
+            }
+        }
+
+        /// <summary>
         /// 代紙紙捲產出Editor
         /// </summary>
         /// <param name="ProductionDTEditor"></param>
@@ -1993,6 +2078,39 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
                     {
                         return new ResultModel(false, "無法識別作業項目");
                     }
+                }
+                catch (Exception e)
+                {
+                    txn.Rollback();
+                    logger.Error(LogUtilities.BuildExceptionMessage(e));
+                    return new ResultModel(false, e.Message);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 餘切選擇刪除
+        /// </summary>
+        /// <param name="OspCotangentId"></param>
+        /// <returns></returns>
+        public ResultModel CotangentChooseDelete(long[] OspCotangentId)
+        {
+            using (var txn = this.Context.Database.BeginTransaction())
+            {
+                try
+                {
+                    for(int i=0;i< OspCotangentId.Length; i++)
+                    {
+                        var OspCotangentId1 = OspCotangentId[i];
+                        var id = OspCotangenTRepository.Get(r => r.OspCotangentId == OspCotangentId1).SingleOrDefault();
+                        if (id == null)
+                        {
+                            return new ResultModel(false, "找不到ID");
+                        }
+                        OspCotangenTRepository.Delete(id, true);
+                    }
+                    txn.Commit();
+                    return new ResultModel(true, "");
                 }
                 catch (Exception e)
                 {
