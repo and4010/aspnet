@@ -138,7 +138,7 @@ $(document).ready(function () {
         });
     });
 
-    
+
 })
 
 function init() {
@@ -189,7 +189,7 @@ function init() {
         }
     });
 
- 
+
 
 
     $("#Process_Batch_no").keyup(function (event) {
@@ -308,7 +308,7 @@ function onclick() {
         var PaperRoll_Lot_Number = $('#PaperRoll_Lot_Number').val().trim();
         var PaperRollInvestDataTables = $('#PaperRollInvestDataTables').DataTable().data();
         var OspDetailOutId = $("#OspDetailOutId").val();
-        
+
 
         if (PaperRollInvestDataTables.length == 0) {
             swal.fire("請先新增投入條碼。");
@@ -555,9 +555,56 @@ function LoadPaperRollInvestDataTable() {
         buttons: [
             'selectAll',
             'selectNone',
-             {
+            {
                 extend: 'excel',
                 text: '匯出Excel'
+            },
+            {
+                text: '刪除',
+                className: "BtnAllDelete",
+                enabled: false,
+                name: 'delete',
+                action: function () {
+                    var selectRowData = PaperRollInvestDataTables.rows('.selected').data();
+                    if (selectRowData.length == 0) {
+                        swal.fire("請先選取刪除項目")
+                        return;
+                    }
+                    var OspPickedInId = [];
+                    var barcode = [];
+                    for (i = 0; i < selectRowData.length; i++) {
+                        OspPickedInId.push(selectRowData.pluck('OspPickedInId')[i]);
+                        barcode.push(selectRowData.pluck('Barcode')[i])
+                    }
+                    swal.fire({
+                        title: '刪除',
+                        text: '確定要刪除??' + barcode,
+                        type: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#DD6B55",
+                        confirmButtonText: "確定",
+                        cancelButtonText: "取消"
+                    }).then(function (result) {
+                        if (result.value) {
+                            $.ajax({
+                                url: '/Process/AllDelete',
+                                datatype: 'json',
+                                type: "POST",
+                                data: { OspPickedInId: OspPickedInId },
+                                success: function (data) {
+                                    if (data.resultModel.Success) {
+                                        LoadPaperRollInvestDataTable();
+                                    } else {
+                                        swal.fire(data.resultModel.Msg);
+                                    }
+                                },
+                                error: function () {
+
+                                }
+                            });
+                        }
+                    });
+                }
             },
         ],
         columnDefs: [{
@@ -573,17 +620,17 @@ function LoadPaperRollInvestDataTable() {
             },
             { data: "OspPickedInId", "name": "ID", "autoWidth": true, "className": "dt-body-center", visible: false },
             { data: "StockId", "name": "ID", "autoWidth": true, "className": "dt-body-center", visible: false },
-            { data: "Barcode", "name": "條碼號", "autoWidth": true, "className": "dt-body-center"},
-            { data: "BasicWeight", "name": "基重", "autoWidth": true, "className": "dt-body-center"},
-            { data: "Specification", "name": "規格", "autoWidth": true, "className": "dt-body-center"},
-            { data: "LotNumber", "name": "捲號", "autoWidth": true, "className": "dt-body-center"},
-            { data: "PaperType", "name": "紙別", "autoWidth": true, "className": "dt-body-center"},
-            { data: "PrimaryQuantity", "name": "原重", "autoWidth": true, "className": "dt-body-right"},
+            { data: "Barcode", "name": "條碼號", "autoWidth": true, "className": "dt-body-center" },
+            { data: "BasicWeight", "name": "基重", "autoWidth": true, "className": "dt-body-center" },
+            { data: "Specification", "name": "規格", "autoWidth": true, "className": "dt-body-center" },
+            { data: "LotNumber", "name": "捲號", "autoWidth": true, "className": "dt-body-center" },
+            { data: "PaperType", "name": "紙別", "autoWidth": true, "className": "dt-body-center" },
+            { data: "PrimaryQuantity", "name": "原重", "autoWidth": true, "className": "dt-body-right" },
             {
                 data: "", "autoWidth": true, "render": function (data) {
                     return '<button class = "btn btn-danger btn-sm" id = "btnDelete">刪除</button>';
                     //'<button class="btn btn-primary btn-sm" id= "btnEdit">編輯</button>' +
-                        //'&nbsp|&nbsp' +
+                    //'&nbsp|&nbsp' +
                 }
             }
         ],
@@ -702,6 +749,53 @@ function LoadPaperRollProductionDataTable() {
                 extend: 'excel',
                 text: '匯出Excel'
             },
+            {
+                text: '刪除',
+                className: "BtnProductionAllDelete",
+                enabled: false,
+                name: 'delete',
+                action: function () {
+                    var selectRowData = PaperRollProductionDataTables.rows('.selected').data();
+                    if (selectRowData.length == 0) {
+                        swal.fire("請先選取刪除項目")
+                        return;
+                    }
+                    var OspPickedOutId = [];
+                    var barcode = [];
+                    for (i = 0; i < selectRowData.length; i++) {
+                        OspPickedOutId.push(selectRowData.pluck('OspPickedOutId')[i]);
+                        barcode.push(selectRowData.pluck('Barcode')[i])
+                    }
+                    swal.fire({
+                        title: '刪除',
+                        text: '確定要刪除??' + barcode,
+                        type: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#DD6B55",
+                        confirmButtonText: "確定",
+                        cancelButtonText: "取消"
+                    }).then(function (result) {
+                        if (result.value) {
+                            $.ajax({
+                                url: '/Process/ProductionChooseDelete',
+                                datatype: 'json',
+                                type: "POST",
+                                data: { OspPickedOutId: OspPickedOutId },
+                                success: function (data) {
+                                    if (data.resultModel.Success) {
+                                        LoadPaperRollProductionDataTable();
+                                    } else {
+                                        swal.fire(data.resultModel.Msg);
+                                    }
+                                },
+                                error: function () {
+
+                                }
+                            });
+                        }
+                    });
+                }
+            }
         ],
         columnDefs: [{
             orderable: false, targets: [0, 8], width: "60px",
@@ -715,8 +809,8 @@ function LoadPaperRollProductionDataTable() {
                 targets: 0
             },
             { data: "OspPickedOutId", "name": "", "autoWidth": true, "className": "dt-body-center", visible: false },
-            { data: "Barcode", "name": "條碼號", "autoWidth": true, "className": "dt-body-center"},
-            { data: "Product_Item", "name": "料號", "autoWidth": true, "className": "dt-body-left"},
+            { data: "Barcode", "name": "條碼號", "autoWidth": true, "className": "dt-body-center" },
+            { data: "Product_Item", "name": "料號", "autoWidth": true, "className": "dt-body-left" },
             { data: "LotNumber", "name": "捲數", "autoWidth": true, "className": "dt-body-center" },
             { data: "PrimaryQuantity", "name": "重量", "autoWidth": true, "className": "dt-body-right" },
             {
@@ -736,7 +830,7 @@ function LoadPaperRollProductionDataTable() {
             {
                 data: "", "autoWidth": true, "render": function (data) {
                     return '<button class="btn btn-primary btn-sm" id= "btnEdit">編輯</button>' + '&nbsp|&nbsp' +
-                        '<button class = "btn btn-danger btn-sm" id = "btnDeleteProductionTable">刪除</button>' ;
+                        '<button class = "btn btn-danger btn-sm" id = "btnDeleteProductionTable">刪除</button>';
                 }
             }
         ],
@@ -914,7 +1008,7 @@ function DisplayInvestPaperRollEnable(boolean) {
     $('#PaperRoll_Invest_Barcode').attr('disabled', boolean);
     $('#Btn_PaperRoll_ProcessSave').attr('disabled', boolean);
     $('#BtnRePrint').attr('disabled', boolean);
-    
+    PaperRollInvestDataTables.button(3).enable(!boolean);
 }
 
 function DisplayProductionPaperRollEnable(boolean) {
@@ -927,8 +1021,8 @@ function DisplayProductionPaperRollEnable(boolean) {
     $('#BtnCalculate').attr('disabled', boolean);
     $('#BtnLabel').attr('disabled', boolean);
     $('#BtnPurchase').attr('disabled', boolean);
+    PaperRollProductionDataTables.button(3).enable(!boolean);
 
-    
 }
 
 
