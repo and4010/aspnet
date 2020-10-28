@@ -1,4 +1,5 @@
 ﻿using CHPOUTSRCMES.Web.DataModel.UnitOfWorks;
+using CHPOUTSRCMES.Web.Models;
 using CHPOUTSRCMES.Web.Models.StockQuery;
 using CHPOUTSRCMES.Web.ViewModels;
 using CHPOUTSRCMES.Web.ViewModels.StockQuery;
@@ -19,10 +20,20 @@ namespace CHPOUTSRCMES.Web.Controllers
             return View();
         }
 
-        public ActionResult PhotoView()
+        public ActionResult PhotoView(string Id)
         {
-            return View();
+            StockDetailQueryModel stockDetailQueryModel = new StockDetailQueryModel();
+            stockDetailQueryModel.StockId = System.Int64.Parse(Id);
+            return View(stockDetailQueryModel);
         }
+
+        public JsonResult GetPhoto(long STOCK_ID)
+        {
+            StockDetailQueryModel stockDetailQueryModel = new StockDetailQueryModel();
+            var photo = stockDetailQueryModel.GetPhoto(STOCK_ID);
+            return Json(new { photo }, JsonRequestBehavior.AllowGet);
+        }
+
         /// <summary>
         /// 庫存查詢
         /// </summary>

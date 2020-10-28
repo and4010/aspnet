@@ -2138,6 +2138,7 @@
     <Content Include="Scripts\OspRelated.js" />
     <Content Include="Scripts\SoaQuery.js" />
     <Content Include="Scripts\SoaQueryDetail.js" />
+    <Content Include="Scripts\StockQueryDetailPhotoView.js" />
     <Content Include="Scripts\StockTxnQuery.js" />
     <Content Include="Scripts\StockQueryDetail.js" />
     <Content Include="Scripts\StockQuery.js" />

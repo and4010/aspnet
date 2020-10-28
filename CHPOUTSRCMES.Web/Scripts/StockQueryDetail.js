@@ -17,33 +17,6 @@ $(document).ready(function () {
         };
 
         window.location = "/Stock/PhotoView/" + Id;
-        //$.ajax({
-        //    "url": "/Stock/GetPhoto",
-        //    "type": "POST",
-        //    "datatype": "json",
-        //    "data": { id: id },
-        //    success: function (data) {
-        //        if (data.Code == 0) {
-        //            VimgSrc.push("data:image/jpeg;base64," + data.Result);
-        //        }
-        //        else {
-        //            swal.fire(data.Msg);
-        //        }
-
-        //        if (final) addContent($('#saveBox'));
-        //    },
-        //    error: function (data) {
-        //        if (final) addContent($('#saveBox'));
-        //        swal.fire(data);
-        //    },
-        //});
-
-
-
-
-
-
-
 
     })
 
@@ -140,7 +113,7 @@ function loadTable(subinventory, locatorId, itemId, itemCategory) {
             { data: "Note", "name": "備註", "autoWidth": true, "className": "dt-body-center" },      
             {
                 data: "", "autoWidth": true, "render": function (data) {
-                    return '<button class="btn btn-danger btn-sm" id = "btnViewPhoto">檢視照片</button>'
+                    return '<button class="btn btn-primary btn-sm" id = "btnViewPhoto">檢視照片</button>'
                 }, orderable: false,
             }
         ]

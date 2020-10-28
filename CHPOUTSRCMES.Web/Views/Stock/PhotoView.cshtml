@@ -1,12 +1,23 @@
-﻿
+﻿@model CHPOUTSRCMES.Web.Models.StockQuery.StockDetailQueryModel
 @{
     ViewBag.Title = "照片顯示";
 }
+<link href="@Url.Content("~/Content/photo.css")" rel="stylesheet" type="text/css" />
+@section scripts {
+    <script src="~/Scripts/StockQueryDetailPhotoView.js"></script>
+}
+
+@Html.HiddenFor(m =>m.StockId,new { @id = "StockId" })
 
 <div class="row">
-    <div class="box box-success">
-        <div class="box-body">
-      
+    <div class="col col-md-12">
+        <div class="box box-success">
+            <div class="box-body">
+                <div class="col-md-4" id="saveBox">
+
+                </div>
+            </div>
         </div>
     </div>
+
 </div>

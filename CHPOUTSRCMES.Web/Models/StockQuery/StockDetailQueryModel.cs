@@ -75,10 +75,10 @@ namespace CHPOUTSRCMES.Web.Models.StockQuery
         [Display(Name = "櫃號")]
         public string ContainerNo { set; get; }
 
-        [Display(Name = "貨故原因")]
+        [Display(Name = "備註")]
         public string Note { set; get; }
 
-        [Display(Name = "備註")]
+        [Display(Name = "貨故原因")]
         public string ReasonDesc { set; get; }
 
         public static DataTableJsonResultModel<StockDetailQueryModel> getModels(DataTableAjaxPostViewModel data,
@@ -149,9 +149,10 @@ ORDER BY S.SUBINVENTORY_CODE, S.LOCATOR_ID, S.INVENTORY_ITEM_ID
         public List<string> GetPhoto(long STOCK_ID)
         {
             NLog.ILogger logger = LogManager.GetCurrentClassLogger();
+            List<string> vs = new List<string>();
             try
             {
-                List<string> vs = new List<string>();
+               
                 using var mesContext = new MesContext();
                 StringBuilder query = new StringBuilder();
                 query.Append(
@@ -172,7 +173,6 @@ where st.STOCK_ID = @STOCK_ID");
 
                 StringBuilder trfs = new StringBuilder();
                 trfs.Append(@"SELECT 
-ST.STOCK_ID,
 TF.FILE_INSTANCE
 FROM STOCK_T ST
 join TRF_REASON_HT TRH ON TRH.STOCK_ID = ST.STOCK_ID
@@ -183,7 +183,7 @@ where st.STOCK_ID = @STOCK_ID");
                 var trf = mesContext.Database.SqlQuery<byte[]>(trfcommandText, new SqlParameter("@STOCK_ID", STOCK_ID)).ToList();
                 for (int i = 0; i < trf.Count; i++)
                 {
-                    vs.Add(Convert.ToBase64String(ctr[i]));
+                    vs.Add(Convert.ToBase64String(trf[i]));
                 }
 
                 return vs;
