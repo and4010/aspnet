@@ -1,4 +1,5 @@
 ﻿using CHPOUTSRCMES.Web.DataModel.Entity.Information;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -65,5 +66,13 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Temp
         [Required(AllowEmptyStrings = true)]
         [Column("CONTROL_FLAG", TypeName = "char")]
         public string ControlFlag { set; get; }
+
+        /// <summary>
+        /// 倉庫終止日期
+        /// </summary>
+        /// 
+        [Column("SUBINVENTORY_DISABLE_DATE")]
+        [DataType(DataType.Date)]
+        public DateTime? SubinventoryDisableDate { set; get; }
     }
 }
