@@ -514,6 +514,10 @@
     <Compile Include="Migrations\202010220340590_addUser.Designer.cs">
       <DependentUpon>202010220340590_addUser.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202010280613409_addSubinventoryDisableDate.cs" />
+    <Compile Include="Migrations\202010280613409_addSubinventoryDisableDate.Designer.cs">
+      <DependentUpon>202010280613409_addSubinventoryDisableDate.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Delivery\FlatEditBarcodeDT.cs" />
     <Compile Include="Models\Delivery\FlatEditDT.cs" />
@@ -2372,6 +2376,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202010220340590_addUser.resx">
       <DependentUpon>202010220340590_addUser.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202010280613409_addSubinventoryDisableDate.resx">
+      <DependentUpon>202010280613409_addSubinventoryDisableDate.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

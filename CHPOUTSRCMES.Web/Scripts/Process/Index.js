@@ -294,14 +294,15 @@ function ProcessLoadTable(Status, BatchNo, MachineNum, DueDate, CuttingDateFrom,
                         if (row.OrgOspHeaderId > 0) {
                             temp.push('<button class="btn btn-primary btn-sm" id = "btnBefRecord">前完工紀錄</button>');
                         }
-                        temp.push('<button class="btn btn-primary btn-sm" id = "btnRecord">完工紀錄</button>');
-
+                        
+                        if (row.Status == PendingBatch) {
+                            temp.push('<button class="btn btn-danger btn-sm" id = "btnReEdit">修改</button>');
+                        }
+                        else {
+                            temp.push('<button class="btn btn-primary btn-sm" id = "btnRecord">完工紀錄</button>');
+                        }
                         //content = '<button class="btn btn-primary btn-sm" id = "btnRecord">完工紀錄</button>';
                     }
-
-                    //if (row.Status == PendingBatch) {
-                    //    temp.push('<button class="btn btn-danger btn-sm" id = "btnReEdit">修改</button>');
-                    //}
 
                     if (row.Status == DwellBatch || row.Status == PendingBatch) {
                         temp.push('<button class="btn btn-primary btn-sm" id = "btnEdit">編輯備註</button>');
