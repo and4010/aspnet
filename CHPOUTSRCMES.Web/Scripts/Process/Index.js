@@ -61,6 +61,26 @@ $(document).ready(function () {
             return false;
         }
         if (BatchType == "OSP") {
+            window.location.href = '/Process/Schedule/' + data.OspHeaderId;
+        }
+        if (BatchType == "REP") {
+            if (data.PackingType == "" || data.PackingType == null) {
+                window.location.href = '/Process/PaperRoll/' + data.OspHeaderId;
+            } else {
+                window.location.href = '/Process/Flat/' + data.OspHeaderId;
+            }
+        }
+
+    });
+
+    ProcessDataTables.on('click', '#btnBefRecord', function (e) {
+
+        var data = ProcessDataTables.row($(this).parents('tr')).data();
+        var BatchType = data.BatchType;
+        if (data == null) {
+            return false;
+        }
+        if (BatchType == "OSP") {
             window.location.href = '/Process/Schedule/' + data.OrgOspHeaderId;
         }
         if (BatchType == "REP") {
@@ -271,13 +291,17 @@ function ProcessLoadTable(Status, BatchNo, MachineNum, DueDate, CuttingDateFrom,
                     var temp = [];
 
                     if (row.Status == CompletedBatch || row.Status == PendingBatch || row.Status == CloseBatch || row.Status == Modified) {
+                        if (row.OrgOspHeaderId > 0) {
+                            temp.push('<button class="btn btn-primary btn-sm" id = "btnBefRecord">前完工紀錄</button>');
+                        }
                         temp.push('<button class="btn btn-primary btn-sm" id = "btnRecord">完工紀錄</button>');
+
                         //content = '<button class="btn btn-primary btn-sm" id = "btnRecord">完工紀錄</button>';
                     }
 
-                    if (row.Status == PendingBatch) {
-                        temp.push('<button class="btn btn-danger btn-sm" id = "btnReEdit">修改</button>');
-                    }
+                    //if (row.Status == PendingBatch) {
+                    //    temp.push('<button class="btn btn-danger btn-sm" id = "btnReEdit">修改</button>');
+                    //}
 
                     if (row.Status == DwellBatch || row.Status == PendingBatch) {
                         temp.push('<button class="btn btn-primary btn-sm" id = "btnEdit">編輯備註</button>');

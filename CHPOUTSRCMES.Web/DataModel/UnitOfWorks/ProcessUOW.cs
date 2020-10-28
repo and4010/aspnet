@@ -908,7 +908,7 @@ DI.CREATED_BY AS Createdby,
 DI.CREATION_DATE AS Creationdate,
 DI.LAST_UPDATE_BY AS LastUpdatedBy,
 DI.LAST_UPDATE_DATE AS LastUpdateDate,
-CASE WHEN HM.ORG_OSP_HEADER_ID IS NOT NULL THEN HM.ORG_OSP_HEADER_ID ELSE H.OSP_HEADER_ID END AS OrgOspHeaderId
+ISNULL(HM.ORG_OSP_HEADER_ID, 0) AS OrgOspHeaderId
 FROM [OSP_HEADER_T] H
 JOIN OSP_DETAIL_IN_T DI ON DI.OSP_HEADER_ID = H.OSP_HEADER_ID
 JOIN OSP_DETAIL_OUT_T DO ON DO.OSP_HEADER_ID = H.OSP_HEADER_ID
@@ -1082,6 +1082,10 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
                         var header = OspHeaderTRepository.Get(x => x.OspHeaderId == id.OspHeaderId).SingleOrDefault();
                         if (id != null)
                         {
+                            if (InvestDTListId.HasRemaint == "有" && (InvestDTListId.RemainingQuantity ?? 0) <= 0)
+                            {
+                                return new ResultModel(false, "請輸入餘重");
+                            }
                             id.HasRemaint = InvestDTListId.HasRemaint;
                             id.RemainingQuantity = InvestDTListId.RemainingQuantity;
                             id.LastUpdateBy = UserId;
@@ -1093,7 +1097,7 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
                             var chg = stock.PrimaryAvailableQty - (InvestDTListId.RemainingQuantity ?? 0);
                             var lockQty = (stock.PrimaryLockedQty ?? 0) + chg;
                             var aft = stock.PrimaryAvailableQty - chg;
-                            if (stock.PrimaryAvailableQty >= aft)
+                            if (id.PrimaryQuantity > aft)
                             {
                                 CheckStock(stock.StockId, UserId, aft, lockQty, StockStatusCode.ProcessPicked);
                                 var m1 = StockRecord(id.StockId, bef, aft, -1*chg, 0, 0, 0, CategoryCode.Process, ActionCode.Picked, header.BatchNo, UserId);
@@ -1107,7 +1111,7 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
                             else
                             {
                                 txn.Rollback();
-                                return new ResultModel(false, "庫存數量不對");
+                                return new ResultModel(false, "餘重須小於原重量");
                             }
 
 

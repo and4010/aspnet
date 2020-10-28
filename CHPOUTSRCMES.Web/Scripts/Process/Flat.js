@@ -32,7 +32,7 @@ $(document).ready(function () {
         $('#BtnProcess_Batch_no').hide();
         $("#BtnSave").hide();
         $('#BtnEdit').show();
-        //$('#BtnApprove').show();
+        $('#BtnApprove').hide();
         $('#OutputBathNoArea').hide();
         ///隱藏按鈕
         FlatInvestTable.column(6).visible(false);
