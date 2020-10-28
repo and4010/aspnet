@@ -1740,7 +1740,8 @@ CAST(PT.PAPER_TYPE AS nvarchar) AS PapaerType,
 CAST(PT.BASIC_WEIGHT AS nvarchar) AS BasicWeight,
 CAST(PT.SPECIFICATION AS nvarchar) AS Specification,
 CAST(FORMAT(PT.PRIMARY_QUANTITY,'0.##########') AS nvarchar) AS Qty,
-CAST(PT.PRIMARY_UOM AS nvarchar) AS Unit
+CAST(PT.PRIMARY_UOM AS nvarchar) AS Unit,
+CAST(PT.LOT_NUMBER AS nvarchar) as LotNumber
 --CAST(CT.CONTAINER_NO AS nvarchar) AS BatchNo
 FROM [CTR_PICKED_T] PT
 join CTR_HEADER_T CT ON CT.CTR_HEADER_ID = PT.CTR_HEADER_ID

@@ -3460,7 +3460,8 @@ CAST(ST.PAPER_TYPE AS nvarchar) AS PapaerType,
 CAST(ST.BASIC_WEIGHT AS nvarchar) AS BasicWeight,
 CAST(ST.SPECIFICATION AS nvarchar) AS Specification,
 CAST(FORMAT(ST.PRIMARY_TRANSACTION_QTY,'0.##########') AS nvarchar) AS Qty,
-CAST(ST.PRIMARY_UOM_CODE AS nvarchar) AS Unit
+CAST(ST.PRIMARY_UOM_CODE AS nvarchar) AS Unit,
+CAST(ST.LOT_NUMBER AS nvarchar) as LotNumber
 --CAST(CT.CONTAINER_NO AS nvarchar) AS BatchNo
 FROM STOCK_T ST
 join ITEMS_T tt on tt.INVENTORY_ITEM_ID = ST.INVENTORY_ITEM_ID
@@ -3617,7 +3618,8 @@ CAST(OPO.PAPER_TYPE AS nvarchar) AS PapaerType,
 CAST(OPO.BASIC_WEIGHT AS nvarchar) AS BasicWeight,
 CAST(OPO.SPECIFICATION AS nvarchar) AS Specification,
 CAST(FORMAT(OPO.PRIMARY_QUANTITY,'0.##########') AS nvarchar) AS Qty,
-CAST(OPO.PRIMARY_UOM AS nvarchar) AS Unit
+CAST(OPO.PRIMARY_UOM AS nvarchar) AS Unit,
+CAST(OPO.LOT_NUMBER AS nvarchar) as LotNumber
 --CAST(OH.BATCH_NO AS nvarchar) AS BatchNo
 FROM OSP_PICKED_OUT_T OPO
 join OSP_HEADER_T OH ON OH.OSP_HEADER_ID = OPO.OSP_HEADER_ID
