@@ -1130,7 +1130,7 @@ function CotangentDataTables() {
                 text: '匯出Excel'
             },
             {
-                text: '勾選刪除',
+                text: '刪除',
                 className: "BtnCotangentDelete",
                 enabled: false,
                 name: 'delete',

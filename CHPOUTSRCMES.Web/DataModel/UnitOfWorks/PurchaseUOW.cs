@@ -531,9 +531,14 @@ and d.ITEM_CATEGORY = N'捲筒'");
         /// 取得行事曆資料
         /// </summary>
         /// <returns></returns>
-        public List<FullCalendarEventModel> getFullCalenderList(string Subinventory)
+        public List<FullCalendarEventModel> getFullCalenderList(string Subinventory, string status)
         {
             var header = ctrHeaderTRepository.Get(x => x.Subinventory == Subinventory).GroupBy(x => x.ContainerNo).Select(x => x.FirstOrDefault()).ToList();
+            if (status != "*")
+            {
+                long status1 = Int64.Parse(status);
+                header = ctrHeaderTRepository.Get(x => x.Subinventory == Subinventory && x.Status == status1).GroupBy(x => x.ContainerNo).Select(x => x.FirstOrDefault()).ToList();
+            }
 
             List<FullCalendarEventModel> fullCalendarEventModel = new List<FullCalendarEventModel>();
             UrlHelper objUrlHelper = new UrlHelper(HttpContext.Current.Request.RequestContext);
@@ -594,6 +599,28 @@ and d.ITEM_CATEGORY = N'捲筒'");
             }
 
             return fullCalendarEventModel;
+        }
+
+        /// <summary>
+        /// 日歷搜尋櫃號
+        /// </summary>
+        /// <param name="CabinetNumber"></param>
+        /// <returns></returns>
+        public ResultModel SearchCabinetNumber(string CabinetNumber)
+        {
+            var header = ctrHeaderTRepository.Get(x => x.ContainerNo == CabinetNumber).SingleOrDefault();
+            if(header == null)
+            {
+                return new ResultModel(false, "無此櫃號");
+            }
+            if (header.Status == 2)
+            {
+                return new ResultModel(false, "此櫃號已取消");
+            }
+            else
+            {
+                return new ResultModel(true, "header.HeaderId");
+            }
         }
 
         /// <summary>
@@ -1624,7 +1651,7 @@ WHERE P.CTR_HEADER_ID = @CTR_HEADER_ID");
         /// <param name="userName"></param>
         /// <param name="Status"></param>
         /// <returns></returns>
-        public ResultDataModel<List<LabelModel>> GetFlatLabels(List<long> PICKED_IDs,string userId, string userName, string Status)
+        public ResultDataModel<List<LabelModel>> GetFlatLabels(List<long> PICKED_IDs, string userId, string userName, string Status)
         {
             try
             {
@@ -1683,7 +1710,7 @@ AND pt.CTR_PICKED_ID = @CTR_PICKED_ID";
 
 
         }
-        
+
         /// <summary>
         /// 列印紙捲標籤
         /// </summary>
@@ -1799,6 +1826,33 @@ AND (lt.LOCATOR_DISABLE_DATE >= GETDATE() OR lt.LOCATOR_DISABLE_DATE is null)
                 return new List<SelectListItem>();
             }
         }
+
+        /// <summary>
+        /// 取的日曆下拉狀態
+        /// </summary>
+        /// <returns></returns>
+        public List<SelectListItem> GetStatus()
+        {
+            List<SelectListItem> Locatorlist = new List<SelectListItem>();
+            Locatorlist.Add(new SelectListItem
+            {
+                Text = "待入庫",
+                Value = "1",
+            });
+            Locatorlist.Add(new SelectListItem
+            {
+                Text = "已入庫",
+                Value = "0",
+            });
+            Locatorlist.Add(new SelectListItem
+            {
+                Text = "取消",
+                Value = "2",
+            });
+            Locatorlist.Insert(0, new SelectListItem { Text = "全部", Value = "*" });
+            return Locatorlist;
+        }
+
 
         /// <summary>
         /// 設定原因
@@ -2112,7 +2166,7 @@ SELECT [TRANSFER_REASON_ID]
                 }
             }
 
-            
+
         }
 
         public ResultDataModel<int> GetCtrPendingCount()

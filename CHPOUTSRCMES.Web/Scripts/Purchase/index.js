@@ -8,7 +8,8 @@ function padLeft(str, len) {
 
 
 $(document).ready(function () {
-
+    //預設值
+    $('#select-Status').val("*");
     var calendarEl = document.getElementById('calendar');
     var sy = document.getElementById("select-year");
     var sm = document.getElementById("select-month");
@@ -54,7 +55,8 @@ $(document).ready(function () {
         };
 
 
-        calendar.addEventSource('/Purchase/GetEvents/' + sw.options[sw.selectedIndex].value);
+        var status = $('#select-Status').val();
+        calendar.addEventSource('/Purchase/GetEvents?id=' + sw.options[sw.selectedIndex].value + "&status=" + status);
         calendar.gotoDate(date);
 
 
@@ -82,7 +84,8 @@ $(document).ready(function () {
             calendar.getEventSources()[0].remove();
         }
 
-        calendar.addEventSource('/Purchase/GetEvents/' + sw.options[sw.selectedIndex].value);
+        var status = $('#select-Status').val();
+        calendar.addEventSource('/Purchase/GetEvents?id=' + sw.options[sw.selectedIndex].value + "&status=" + status);
         calendar.gotoDate(date);
 
         //var date = selectedYear + "-" + "12" + "-01";
@@ -113,7 +116,8 @@ $(document).ready(function () {
         if (calendar.getEventSources()[0] != null) {
             calendar.getEventSources()[0].remove();
         };
-        calendar.addEventSource('/Purchase/GetEvents/' + warehouse);
+        var status = $('#select-Status').val();
+        calendar.addEventSource('/Purchase/GetEvents?id=' + warehouse + "&status=" + status);
         //calendar.events = '/Purchase/GetEvents';
         //calendar.refetchEvents();
         calendar.gotoDate(date);
@@ -137,18 +141,36 @@ $(document).ready(function () {
         if (calendar.getEventSources()[0] != null) {
             calendar.getEventSources()[0].remove();
         };
-        calendar.addEventSource('/Purchase/GetEvents/' + warehouse);
+        var status = $('#select-Status').val();
+        calendar.addEventSource('/Purchase/GetEvents?id=' + warehouse + "&status=" + status);
         //calendar.events = '/Purchase/GetEvents';
         //calendar.refetchEvents();
         calendar.gotoDate(date);
         //});
     });
 
+    $("#select-Status").on('change', function () {
+        var year = sy.options[sy.selectedIndex].value;
 
+        var month = sm.options[sm.selectedIndex].value;
 
-    calendarinit(calendar, sy, sm, sw);
+        var warehouse = sw.options[sw.selectedIndex].value;
 
+        var date = year + "-" + month + "-01";
 
+        if (calendar.getEventSources()[0] != null) {
+            calendar.getEventSources()[0].remove();
+        };
+
+        var status = $('#select-Status').val();
+        calendar.addEventSource('/Purchase/GetEvents?id=' + warehouse + "&status=" + status);
+        calendar.gotoDate(date);
+    });
+
+    //calendarinit(calendar, sy, sm, sw);
+
+    
+    serach();
 })
 
 function calendarinit(calendar, sy, sm, sw) {
@@ -190,3 +212,30 @@ function setSelectedValue(selectObj, valueToSet) {
     };
 }
 
+function serach() {
+    $('#btnSearch').click(function () {
+
+        var CabinetNumber = $('#InputCabinetNumber').val();
+        if (CabinetNumber.trim().length == 0) {
+            swal.fire("貴號不得空白");
+            return;
+        }
+
+
+        $.ajax({
+            url: '/Purchase/SearchCabinetNumber',
+            type: 'POST',
+            datatype: 'json',
+            data: { CabinetNumber: CabinetNumber },
+            success: function (data) {
+                if (data.resultModel.Success) {
+                    window.location.href = '/Purchase/Detail/' + data.resultModel.Msg;
+                } else {
+                    swal.fire(data.resultModel.Msg);
+                }
+            }
+        });
+    });
+  
+
+}

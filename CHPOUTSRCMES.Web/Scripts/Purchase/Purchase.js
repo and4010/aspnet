@@ -9,12 +9,12 @@ $(document).ready(function () {
     EnableBarcode(true)
     LoadPaperRollHeard();
     LoadFlatHeader();
-
+    onclick();
     ////取得狀態
     var Status = $("#Status").val();
     //if (Status == "0") {
-        PaperRolldataTablesBody();
-        FlatdataTablesBody();
+    PaperRolldataTablesBody();
+    FlatdataTablesBody();
     //} else {
     //    PaperRolldataTablesBody(Status);
     //    FlatdataTablesBody(Status);
@@ -49,7 +49,7 @@ $(document).ready(function () {
             return false;
         }
         var CtrHeaderId = $('#CtrHeaderId').val();
-        window.location.href = "/Purchase/RollEdit?CtrPickedId=" + CtrPickedId + "&CtrHeaderId=" + CtrHeaderId; 
+        window.location.href = "/Purchase/RollEdit?CtrPickedId=" + CtrPickedId + "&CtrHeaderId=" + CtrHeaderId;
 
     })
 
@@ -62,8 +62,8 @@ $(document).ready(function () {
             return false;
         }
         var CtrHeaderId = $('#CtrHeaderId').val();
-  
-        window.location.href = "/Purchase/RollView?CtrPickedId=" + CtrPickedId + "&CtrHeaderId=" + CtrHeaderId; 
+
+        window.location.href = "/Purchase/RollView?CtrPickedId=" + CtrPickedId + "&CtrHeaderId=" + CtrHeaderId;
 
     })
 
@@ -76,7 +76,7 @@ $(document).ready(function () {
             return false;
         }
         var CtrHeaderId = $('#CtrHeaderId').val();
-        window.location.href = "/Purchase/FlatEdit?CtrPickedId=" + CtrPickedId + "&CtrHeaderId=" + CtrHeaderId; 
+        window.location.href = "/Purchase/FlatEdit?CtrPickedId=" + CtrPickedId + "&CtrHeaderId=" + CtrHeaderId;
 
     })
     //平張表身檢視事件
@@ -88,7 +88,7 @@ $(document).ready(function () {
             return false;
         }
         var CtrHeaderId = $('#CtrHeaderId').val();
-        window.location.href = "/Purchase/FlatView?CtrPickedId=" + CtrPickedId + "&CtrHeaderId=" + CtrHeaderId; 
+        window.location.href = "/Purchase/FlatView?CtrPickedId=" + CtrPickedId + "&CtrHeaderId=" + CtrHeaderId;
 
     });
 
@@ -113,7 +113,10 @@ $(document).ready(function () {
     });
 
 
+    CheckCabinetNumber(Status, false);
+});
 
+function onclick() {
     //列印標籤紙捲
     $('#PaperRollLabel').on('click', function (e) {
         if (Status == 0) {
@@ -125,7 +128,10 @@ $(document).ready(function () {
             return;
         }
         PrintLableParameter($('#PaperRolldataTablesBody').DataTable(), "/Purchase/PrintPaperRollLabel", "1", $("#Status").val());
-        PaperRolldataTablesBodys.ajax.reload(null, false);
+        //暫時解決未印轉待入庫問題
+        setTimeout(function () {
+            PaperRolldataTablesBodys.ajax.reload(null, false);
+        }, 1000)
     });
 
     //列印標籤平張
@@ -139,8 +145,11 @@ $(document).ready(function () {
             return;
         }
         PrintLableParameter($('#FlatdataTablesBody').DataTable(), "/Purchase/PrintFlatLabel", "1", $("#Status").val());
-        FlatdataTablesBodys.ajax.reload(null, false);
-      
+        //暫時解決未印轉待入庫問題
+        setTimeout(function () {
+            FlatdataTablesBodys.ajax.reload(null, false)
+        }, 1000);
+
     });
 
 
@@ -154,7 +163,7 @@ $(document).ready(function () {
             return;
         }
         var CtrHeaderId = $("#CtrHeaderId").val()
-        window.open("/Home/CtrReport/?CtrHeaderId=" + CtrHeaderId + "&ItemCategory=" +"捲筒");
+        window.open("/Home/CtrReport/?CtrHeaderId=" + CtrHeaderId + "&ItemCategory=" + "捲筒");
     });
 
     $('#BtnFlatReport').click(function () {
@@ -170,8 +179,7 @@ $(document).ready(function () {
         window.open("/Home/CtrReport/?CtrHeaderId=" + CtrHeaderId + "&ItemCategory=" + "平版");
     });
 
-    CheckCabinetNumber(Status, false);
-});
+}
 
 function CheckCabinetNumber(status, showDialog) {
     var InputCabinetNumber = $('#CheckCabinetNumber').val();
@@ -422,7 +430,7 @@ function init(status) {
             url: '/Purchase/ReturnIndex',
             type: 'POST',
             datatype: 'json',
-            data: { id: CtrHeaderId},
+            data: { id: CtrHeaderId },
             success: function (data) {
                 if (data.resultModel.Success) {
                     window.location.href = '/Purchase/Index';
@@ -456,10 +464,10 @@ function InsertPaperRollBarcode(barcode, CtrHeaderId) {
         "url": "/Purchase/RollSaveBarcode",
         "type": "POST",
         "datatype": "json",
-        "data": { barcode: barcode, id: CtrHeaderId},
+        "data": { barcode: barcode, id: CtrHeaderId },
         success: function (data) {
             if (data.resultModel.Success) {
-              
+
             } else {
                 swal.fire(data.resultModel.Msg);
             }
@@ -476,10 +484,10 @@ function InsertFlatBarocde(barcode, CtrHeaderId) {
         "url": "/Purchase/FlatSaveBarcode",
         "type": "POST",
         "datatype": "json",
-        "data": { barcode: barcode, id: CtrHeaderId},
+        "data": { barcode: barcode, id: CtrHeaderId },
         success: function (data) {
             if (data.resultModel.Success) {
-              
+
             } else {
                 swal.fire(data.resultModel.Msg);
             }
@@ -761,7 +769,7 @@ function LoadFlatHeader() {
             "url": "/Purchase/FlatHeader",
             "type": "POST",
             "datatype": "json",
-            "data": { id: CtrHeaderId},
+            "data": { id: CtrHeaderId },
         },
         columns: [
             { data: "Id", "name": "項次", "autoWidth": true, "className": "dt-body-center", visible: false },
@@ -774,7 +782,7 @@ function LoadFlatHeader() {
                     }
                     var locator = data.split(".");
                     if (locator.length < 3) {
-                       return data;
+                        return data;
                     } else {
                         return locator[2];
                     }
@@ -829,7 +837,7 @@ function PaperRolldataTablesBody() {
             "url": "/Purchase/RollBody",
             "type": "POST",
             "datatype": "json",
-            "data": {  id: CtrHeaderId }
+            "data": { id: CtrHeaderId }
         },
         columns: [
             {
@@ -853,7 +861,7 @@ function PaperRolldataTablesBody() {
                     } else {
                         return locator[2];
                     }
-                    
+
                 }
             },
             { data: "Barcode", "name": "條碼號", "autoWidth": true, "className": "dt-body-center" },
@@ -896,7 +904,7 @@ function PaperRolldataTablesBody() {
 function FlatdataTablesBody() {
     var CtrHeaderId = $("#CtrHeaderId").val();
     var Status = $("#Status").val();
-    FlatdataTablesBodys =  $('#FlatdataTablesBody').DataTable({
+    FlatdataTablesBodys = $('#FlatdataTablesBody').DataTable({
         "language": {
             "url": "/bower_components/datatables/language/zh-TW.json"
         },
