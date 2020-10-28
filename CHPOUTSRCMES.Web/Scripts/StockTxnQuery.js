@@ -2,11 +2,18 @@
    
     $('#btnSearch').click(loadTable2);
 
-    $('#date').datepicker({
+    $('#dateFrom').datepicker({
         dateFormat: 'yy-mm-dd',
         changeMonth: true,
         changeYear: true
     });
+
+    $('#dateTo').datepicker({
+        dateFormat: 'yy-mm-dd',
+        changeMonth: true,
+        changeYear: true
+    });
+  
 
     $('#SubinvenotoryCode1').on('change', function (e) {
         var valueSelected = this.value;
@@ -46,13 +53,14 @@ function loadTable2() {
     var itemCategory = $("#ItemCategory option:selected").val();
     var itemNo = $("#ItemNumber").val();
     var barcode = $("#Barcode").val();
-    var date = $("#date").val();
+    var dateFrom = $("#dateFrom").val();
+    var dateTo = $("#dateTo").val();
 
-    loadTable(subinventory, locatorId, itemCategory, itemNo, barcode, date);
+    loadTable(subinventory, locatorId, itemCategory, itemNo, barcode, dateFrom, dateTo);
 }
 
 
-function loadTable(subinventory, locatorId, itemCategory, itemNo, barcode, date) {
+function loadTable(subinventory, locatorId, itemCategory, itemNo, barcode, dateFrom, dateTo) {
 
     $('#QueryTable').DataTable({
         "language": {
@@ -77,7 +85,8 @@ function loadTable(subinventory, locatorId, itemCategory, itemNo, barcode, date)
                 'itemCategory': itemCategory,
                 'itemNo': itemNo,
                 'barcode': barcode, 
-                'date': date,
+                'dateFrom': dateFrom,
+                'dateTo': dateTo,
                 '__RequestVerificationToken': $('input[name=__RequestVerificationToken]').val()
             }
         },

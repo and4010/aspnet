@@ -44,17 +44,25 @@ namespace CHPOUTSRCMES.Web.Controllers
             ViewBag.MonthItems = model.GetMonths();
             ViewBag.YearItems = model.GetYears();
             ViewBag.SubinventoryItems = model.GetSubinventoryList(id,"");
-
+            ViewBag.StatusItems = model.GetStatus();
             return View(model);
         }
 
+        public JsonResult SearchCabinetNumber(string CabinetNumber)
+        {
+            PurchaseViewModel purchaseViewModel = new PurchaseViewModel();
+            var resultModel = purchaseViewModel.SearchCabinetNumber(CabinetNumber);
+            return Json(resultModel, JsonRequestBehavior.AllowGet);
+
+        }
+
         [NoCache]
-        public JsonResult GetEvents(string id)
+        public JsonResult GetEvents(string id, string status)
         {
             ///清除cache fullcalendar才能在執行
             
             PurchaseViewModel purchaseViewModel = new PurchaseViewModel();
-            var fullcalendar = purchaseViewModel.GetFullCalendarModel(id);
+            var fullcalendar = purchaseViewModel.GetFullCalendarModel(id, status);
             return Json(fullcalendar.ToArray(), JsonRequestBehavior.AllowGet);
         }
 

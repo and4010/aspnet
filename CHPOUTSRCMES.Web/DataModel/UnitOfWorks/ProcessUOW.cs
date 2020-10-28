@@ -940,12 +940,13 @@ left JOIN OSP_HEADER_MOD_T HM ON HM.OSP_HEADER_ID = H.OSP_HEADER_ID
 
                     if (CuttingDateFrom != "" && CuttingDateTo != "")
                     {
-
+                        DateTime dueDate1 = new DateTime();
+                        DateTime.TryParseExact(CuttingDateTo, "yyyy-MM-dd", null, System.Globalization.DateTimeStyles.NoCurrentDateDefault, out dueDate1);
                         cond.Add("((H.CUTTING_DATE_FROM >= @CUTTING_DATE_FROM AND H.CUTTING_DATE_TO <= @CUTTING_DATE_TO) or " +
 "(H.CUTTING_DATE_FROM >= @CUTTING_DATE_FROM AND H.CUTTING_DATE_TO <= @CUTTING_DATE_TO) or" +
 "(H.CUTTING_DATE_FROM >= @CUTTING_DATE_FROM AND H.CUTTING_DATE_TO <= @CUTTING_DATE_TO))");
                         sqlParameterList.Add(new SqlParameter("@CUTTING_DATE_FROM", CuttingDateFrom));
-                        sqlParameterList.Add(new SqlParameter("@CUTTING_DATE_TO", CuttingDateTo));
+                        sqlParameterList.Add(SqlParamHelper.GetDataTime("@CUTTING_DATE_TO", dueDate1.AddDays(1).AddMilliseconds(-1), ParameterDirection.Input));
                     }
 
                     if (CuttingDateFrom != "" && CuttingDateTo == "")
@@ -956,8 +957,10 @@ left JOIN OSP_HEADER_MOD_T HM ON HM.OSP_HEADER_ID = H.OSP_HEADER_ID
 
                     if (CuttingDateTo != "" && CuttingDateFrom == "")
                     {
+                        DateTime dueDate1 = new DateTime();
+                        DateTime.TryParseExact(CuttingDateTo, "yyyy-MM-dd", null, System.Globalization.DateTimeStyles.NoCurrentDateDefault, out dueDate1);
                         cond.Add("H.CUTTING_DATE_TO <= @CUTTING_DATE_TO");
-                        sqlParameterList.Add(new SqlParameter("@CUTTING_DATE_TO", CuttingDateTo));
+                        sqlParameterList.Add(SqlParamHelper.GetDataTime("@CUTTING_DATE_TO", dueDate1.AddDays(1).AddMilliseconds(-1), ParameterDirection.Input));
                     }
                     if (Subinventory != "*")
                     {
@@ -988,18 +991,18 @@ left JOIN OSP_HEADER_MOD_T HM ON HM.OSP_HEADER_ID = H.OSP_HEADER_ID
                     }
 
                     cond.Add("H.STATUS <> '5'");
-
+                    
                     string commandText = string.Format(query + "{0}{1}", cond.Count > 0 ? " where " : "", string.Join(" and ", cond.ToArray()));
 
                     commandText = string.Concat(commandText, " UNION ", commandText.Replace("OSP_DETAIL_IN_T", "OSP_DETAIL_IN_HT").Replace("OSP_DETAIL_OUT_T", "OSP_DETAIL_OUT_HT"));
 
                     if (sqlParameterList.Count > 0)
                     {
-                        return mesContext.Database.SqlQuery<CHP_PROCESS_T>(commandText + "order by BatchNo", sqlParameterList.ToArray()).ToList();
+                        return mesContext.Database.SqlQuery<CHP_PROCESS_T>(commandText, sqlParameterList.ToArray()).ToList();
                     }
                     else
                     {
-                        return mesContext.Database.SqlQuery<CHP_PROCESS_T>(commandText + "order by BatchNo").ToList();
+                        return mesContext.Database.SqlQuery<CHP_PROCESS_T>(commandText).ToList();
                     }
                 }
             }

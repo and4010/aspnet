@@ -2426,17 +2426,17 @@ select
                     && (x.LocatorDisableDate == null || x.LocatorDisableDate > DateTime.Now)
                     );
 
-            if (!string.IsNullOrEmpty(SUBINVENTORY_CODE))
+            if (SUBINVENTORY_CODE != "*" && SUBINVENTORY_CODE != "")
             {
                 tmp = tmp.Where(x => x.SubinventoryCode == SUBINVENTORY_CODE);
             }
 
-            return tmp.OrderBy(x => x.Segment3)
+            return tmp.OrderBy(x => x.Segment2).ThenBy(x =>x.Segment3)
                      .Select(x => new SelectListItem()
                      {
                          Text = x.Segment2 + "." + x.Segment3,
                          Value = x.LocatorId.ToString()
-                     }).OrderByDescending(x => x.Value).ToList();
+                     }).ToList();
         }
 
         public List<SelectListItem> getLocatorListForUserId(string userId, string SUBINVENTORY_CODE, long? selectedLocatorId )

@@ -95,7 +95,7 @@ namespace CHPOUTSRCMES.Web.Models.StockQuery
 
 
         public static DataTableJsonResultModel<StockTxnQueryModel> getModels(DataTableAjaxPostViewModel data,
-            string subinventory, string locator, string itemCategory, string itemNo, string barcode, string date,string userId)
+            string subinventory, string locator, string itemCategory, string itemNo, string barcode, string dateFrom, string dateTo, string userId)
         {
             var paramList = new List<SqlParameter>();
             using var mesContext = new MesContext();
@@ -185,10 +185,29 @@ OR S.DST_SUBINVENTORY_CODE IN (SELECT SUBINVENTORY_CODE FROM USER_SUBINVENTORY_T
                     paramList.Add(SqlParamHelper.R.Barcode("@barcode", barcode));
                 }
 
-                if (!string.IsNullOrEmpty(date))
+                if (dateFrom != "" && dateTo != "")
                 {
-                    builder.AppendLine("AND S.CREATION_DATE BETWEEN '' and @date");
-                    paramList.Add(SqlParamHelper.R.Barcode("@date", date));
+                    DateTime dueDate1 = new DateTime();
+                    DateTime.TryParseExact(dateTo, "yyyy-MM-dd", null, System.Globalization.DateTimeStyles.NoCurrentDateDefault, out dueDate1);
+                    builder.AppendLine("and ((CREATION_DATE >= @dateFrom AND CREATION_DATE <= @dateTo) or " +
+"(CREATION_DATE >= @dateFrom AND CREATION_DATE <= @dateTo) or" +
+"(CREATION_DATE >= @dateFrom AND CREATION_DATE <= @dateTo))");
+                    paramList.Add(new SqlParameter("@dateFrom", dateFrom));
+                    paramList.Add(SqlParamHelper.GetDataTime("@dateTo", dueDate1.AddDays(1).AddMilliseconds(-1),ParameterDirection.Input));
+                }
+
+                if (dateFrom != "" && dateTo == "")
+                {
+                    builder.AppendLine("and CREATION_DATE >= @dateFrom");
+                    paramList.Add(new SqlParameter("@dateFrom", dateFrom));
+                }
+
+                if (dateTo != "" && dateFrom == "")
+                {
+                    DateTime dueDate1 = new DateTime();
+                    DateTime.TryParseExact(dateTo, "yyyy-MM-dd", null, System.Globalization.DateTimeStyles.NoCurrentDateDefault, out dueDate1);
+                    builder.AppendLine("and CREATION_DATE <= @dateTo");
+                    paramList.Add(SqlParamHelper.GetDataTime("@dateTo", dueDate1.AddDays(1).AddMilliseconds(-1), ParameterDirection.Input));
                 }
 
                 var models = mesContext.Database.SqlQuery<StockTxnQueryModel>(builder.ToString(), paramList.ToArray()).ToList();

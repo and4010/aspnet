@@ -48,11 +48,19 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
         public DetailModel.RollDetailModel RollDetailModel { set; get; }
         public DetailModel.FlatDetailModel FlatDetailModel { set; get; }
 
-        public List<FullCalendarEventModel> GetFullCalendarModel(string Subinventory)
+        public List<FullCalendarEventModel> GetFullCalendarModel(string Subinventory, string status)
         {
             using (var context = new MesContext())
             {
-                return new PurchaseUOW(context).getFullCalenderList(Subinventory);
+                return new PurchaseUOW(context).getFullCalenderList(Subinventory, status);
+            }
+        }
+
+        public ResultModel SearchCabinetNumber(string CabinetNumber)
+        {
+            using (var context = new MesContext())
+            {
+                return new PurchaseUOW(context).SearchCabinetNumber(CabinetNumber);
             }
         }
 
@@ -492,6 +500,14 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
                 return new PurchaseUOW(context).GetSubinventory(UserId, OspFlag);
             }
 
+        }
+
+        public List<SelectListItem> GetStatus()
+        {
+            using (var context = new MesContext())
+            {
+                return new PurchaseUOW(context).GetStatus();
+            }
         }
 
         /// <summary>
