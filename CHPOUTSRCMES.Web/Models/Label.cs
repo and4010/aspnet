@@ -28,6 +28,8 @@ namespace CHPOUTSRCMES.Web.Models
 
         public string PrintBy { get; set; }
 
+        public string LotNumber { get; set; }
+
         public LabelModel()
         {
         }

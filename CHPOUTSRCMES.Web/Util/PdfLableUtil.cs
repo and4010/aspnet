@@ -343,8 +343,8 @@ namespace CHPOUTSRCMES.Web.Util
                         int y = 0;
                         xPath = new XGraphicsPath();
                         y += 0;
-                        xPath.AddString("條碼:" + lable.Barocde, new XFontFamily("Arial"), XFontStyle.Regular, 8, new XPoint(XUnit.FromMillimeter(60), XUnit.FromMillimeter(y)), XStringFormats.TopLeft);
-                        y += 3;
+                        //xPath.AddString("條碼:" + lable.Barocde, new XFontFamily("Arial"), XFontStyle.Regular, 8, new XPoint(XUnit.FromMillimeter(60), XUnit.FromMillimeter(y)), XStringFormats.TopLeft);
+                        //y += 3;
                         xPath.AddString("中文品名:" + lable.BarocdeName, new XFontFamily("Arial"), XFontStyle.Regular, 16, new XPoint(XUnit.FromMillimeter(5), XUnit.FromMillimeter(y)), XStringFormats.TopLeft);
                         y += 7;
                         xPath.AddString("紙別:" + lable.PapaerType, new XFontFamily("Arial"), XFontStyle.Regular, 12, new XPoint(XUnit.FromMillimeter(10), XUnit.FromMillimeter(y)), XStringFormats.TopLeft);
@@ -376,7 +376,14 @@ namespace CHPOUTSRCMES.Web.Util
                         BarCode39.Size = BARCODE_SIZE;
                         Gfx.DrawBarCode(BarCode39, XBrushes.Black, fontBARCODE, new XPoint(XUnit.FromMillimeter(7.5), XUnit.FromMillimeter(y)));
 
-
+                        y += 13;
+                        xPath = new XGraphicsPath();
+                        xPath.AddString("條碼:" + lable.Barocde, new XFontFamily("Arial"), XFontStyle.Regular, 12, new XPoint(XUnit.FromMillimeter(8), XUnit.FromMillimeter(y)), XStringFormats.TopLeft);
+                        if (!string.IsNullOrEmpty(lable.LotNumber))
+                        {
+                            xPath.AddString("捲號:" + lable.LotNumber, new XFontFamily("Arial"), XFontStyle.Regular, 12, new XPoint(XUnit.FromMillimeter(50), XUnit.FromMillimeter(y)), XStringFormats.TopLeft);
+                        }
+                        Gfx.DrawPath(Pen, Brush, xPath);
                         //PdfSharp.Drawing.BarCodes.Code3of9Standard BarCode39 = new PdfSharp.Drawing.BarCodes.Code3of9Standard();
                         //BarCode39.TextLocation = new PdfSharp.Drawing.BarCodes.TextLocation();
                         //BarCode39.Text = lable.Barocde;//value of code to draw on page
@@ -393,11 +400,11 @@ namespace CHPOUTSRCMES.Web.Util
                         //副BAR CODE
                         if (string.IsNullOrEmpty(lable.OspBatchNo))
                         {
-                            y += 21 + 5; //補回工單號碼高度
+                            y += 11 + 5; //補回工單號碼高度
                         }
                         else
                         {
-                            y += 21;
+                            y += 11;
                         }
 
                         int columnHeight = (lableHeight - y) / 4;
@@ -420,10 +427,10 @@ namespace CHPOUTSRCMES.Web.Util
                                 formGfx.DrawBarCode(BarCode39, XBrushes.Black, fontBARCODE, new XPoint(XUnit.FromMillimeter(7.5), XUnit.FromMillimeter(2)));
                                 xPath = new XGraphicsPath();
                                 xPath.AddString("條碼:" + lable.Barocde, new XFontFamily("Arial"), XFontStyle.Regular, 8, new XPoint(XUnit.FromMillimeter(10), XUnit.FromMillimeter(15)), XStringFormats.TopLeft);
-                                xPath.AddString("數量:" + lable.Qty + lable.Unit, new XFontFamily("Arial"), XFontStyle.Regular, 8, new XPoint(XUnit.FromMillimeter(80), XUnit.FromMillimeter(15)), XStringFormats.TopLeft);
+                                xPath.AddString("數量:" + lable.Qty + " " + lable.Unit, new XFontFamily("Arial"), XFontStyle.Regular, 8, new XPoint(XUnit.FromMillimeter(50), XUnit.FromMillimeter(15)), XStringFormats.TopLeft);
                                 xPath.AddString("紙別:" + lable.PapaerType, new XFontFamily("Arial"), XFontStyle.Regular, 8, new XPoint(XUnit.FromMillimeter(10), XUnit.FromMillimeter(18)), XStringFormats.TopLeft);
                                 xPath.AddString("基重:" + lable.BasicWeight, new XFontFamily("Arial"), XFontStyle.Regular, 8, new XPoint(XUnit.FromMillimeter(30), XUnit.FromMillimeter(18)), XStringFormats.TopLeft);
-                                xPath.AddString("規格:" + lable.Specification, new XFontFamily("Arial"), XFontStyle.Regular, 8, new XPoint(XUnit.FromMillimeter(45), XUnit.FromMillimeter(18)), XStringFormats.TopLeft);
+                                xPath.AddString("規格:" + lable.Specification, new XFontFamily("Arial"), XFontStyle.Regular, 8, new XPoint(XUnit.FromMillimeter(50), XUnit.FromMillimeter(18)), XStringFormats.TopLeft);
                                 formGfx.DrawPath(Pen, Brush, xPath);
                                 formGfx.Restore(state);
 
