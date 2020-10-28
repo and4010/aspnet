@@ -4020,6 +4020,7 @@ SELECT p.BARCODE as Barocde
                                     cmd.Append(@"
 ,i.SECONDARY_UOM_CODE as Unit
 ,FORMAT(p.SECONDARY_QUANTITY,'0.##########') as Qty
+,p.LOT_NUMBER as LotNumber
 FROM [TRF_INBOUND_PICKED_T] p
 INNER JOIN ITEMS_T i ON p.INVENTORY_ITEM_ID = i.INVENTORY_ITEM_ID
 WHERE p.BARCODE = @Barcode
@@ -4031,6 +4032,7 @@ WHERE p.BARCODE = @Barcode
                                     cmd.Append(@"
 ,i.PRIMARY_UOM_CODE as Unit
 ,FORMAT(p.PRIMARY_QUANTITY,'0.##########') as Qty
+,p.LOT_NUMBER as LotNumber
 FROM [TRF_INBOUND_PICKED_T] p
 INNER JOIN ITEMS_T i ON p.INVENTORY_ITEM_ID = i.INVENTORY_ITEM_ID
 WHERE p.BARCODE = @Barcode
@@ -4058,6 +4060,7 @@ SELECT p.BARCODE as Barocde
 ,s.OSP_BATCH_NO as BatchNo
 ,s.SECONDARY_UOM_CODE as Unit
 ,FORMAT((s.SECONDARY_AVAILABLE_QTY + p.SECONDARY_QUANTITY),'0.##########') as Qty
+,p.LOT_NUMBER as LotNumber
 FROM [TRF_INBOUND_PICKED_T] p
 INNER JOIN STOCK_T s ON p.BARCODE = s.BARCODE
 WHERE p.BARCODE = @Barcode
@@ -4110,6 +4113,7 @@ SELECT p.BARCODE as Barocde
                                         cmd.Append(@"
 ,s.SECONDARY_UOM_CODE as Unit
 ,FORMAT(p.SECONDARY_QUANTITY,'0.##########') as Qty
+,p.LOT_NUMBER as LotNumber
 FROM [TRF_INBOUND_PICKED_T] p
 INNER JOIN STOCK_T s ON p.BARCODE = s.BARCODE
 WHERE p.BARCODE = @Barcode
@@ -4121,6 +4125,7 @@ WHERE p.BARCODE = @Barcode
                                         cmd.Append(@"
 ,s.SECONDARY_UOM_CODE as Unit
 ,FORMAT(p.SECONDARY_QUANTITY,'0.##########') as Qty
+,p.LOT_NUMBER as LotNumber
 FROM [TRF_INBOUND_PICKED_T] p
 INNER JOIN STOCK_T s ON p.SPLIT_FROM_BARCODE = s.BARCODE
 WHERE p.BARCODE = @Barcode
@@ -4134,6 +4139,7 @@ WHERE p.BARCODE = @Barcode
                                     cmd.Append(@"
 ,s.PRIMARY_UOM_CODE as Unit
 ,FORMAT(p.PRIMARY_QUANTITY,'0.##########') as Qty
+,p.LOT_NUMBER as LotNumber
 FROM [TRF_INBOUND_PICKED_T] p
 INNER JOIN STOCK_T s ON p.BARCODE = s.BARCODE
 WHERE p.BARCODE = @Barcode
@@ -4153,6 +4159,7 @@ WHERE p.BARCODE = @Barcode
                                     cmd.Append(@"
 ,s.SECONDARY_UOM_CODE as Unit
 ,FORMAT((s.SECONDARY_AVAILABLE_QTY + p.SECONDARY_QUANTITY),'0.##########') as Qty
+,p.LOT_NUMBER as LotNumber
 FROM [TRF_INBOUND_PICKED_T] p
 INNER JOIN STOCK_T s ON p.BARCODE = s.BARCODE
 WHERE p.BARCODE = @Barcode
@@ -4207,6 +4214,7 @@ SELECT p.BARCODE as Barocde
                                 cmd.Append(@"
 ,i.SECONDARY_UOM_CODE as Unit
 ,FORMAT(p.SECONDARY_QUANTITY,'0.##########') as Qty
+,p.LOT_NUMBER as LotNumber
 FROM [TRF_INBOUND_PICKED_T] p
 INNER JOIN ITEMS_T i ON p.INVENTORY_ITEM_ID = i.INVENTORY_ITEM_ID
 WHERE p.BARCODE = @Barcode
@@ -4218,6 +4226,7 @@ WHERE p.BARCODE = @Barcode
                                 cmd.Append(@"
 ,i.PRIMARY_UOM_CODE as Unit
 ,FORMAT(p.PRIMARY_QUANTITY,'0.##########') as Qty
+,p.LOT_NUMBER as LotNumber
 FROM [TRF_INBOUND_PICKED_T] p
 INNER JOIN ITEMS_T i ON p.INVENTORY_ITEM_ID = i.INVENTORY_ITEM_ID
 WHERE p.BARCODE = @Barcode
@@ -4245,6 +4254,7 @@ SELECT p.BARCODE as Barocde
 ,s.OSP_BATCH_NO as BatchNo
 ,s.SECONDARY_UOM_CODE as Unit
 ,FORMAT((s.SECONDARY_AVAILABLE_QTY + p.SECONDARY_QUANTITY),'0.##########') as Qty
+,p.LOT_NUMBER as LotNumber
 FROM [TRF_INBOUND_PICKED_T] p
 INNER JOIN STOCK_T s ON p.BARCODE = s.BARCODE
 WHERE p.BARCODE = @Barcode
@@ -4313,6 +4323,7 @@ SELECT p.BARCODE as Barocde
                             cmd.Append(@"
 ,s.SECONDARY_UOM_CODE as Unit
 ,FORMAT(s.SECONDARY_AVAILABLE_QTY,'0.##########') as Qty
+,p.LOT_NUMBER as LotNumber
 FROM [TRF_OUTBOUND_PICKED_T] p
 INNER JOIN STOCK_T s ON p.BARCODE = s.BARCODE
 WHERE p.BARCODE = @Barcode
@@ -4336,6 +4347,7 @@ WHERE p.BARCODE = @Barcode
                             cmd.Append(@"
 ,s.SECONDARY_UOM_CODE as Unit
 ,FORMAT(p.SECONDARY_QUANTITY,'0.##########') as Qty
+,p.LOT_NUMBER as LotNumber
 FROM [TRF_OUTBOUND_PICKED_T] p
 INNER JOIN STOCK_T s ON p.BARCODE = s.BARCODE
 WHERE p.BARCODE = @Barcode
@@ -4347,6 +4359,7 @@ WHERE p.BARCODE = @Barcode
                             cmd.Append(@"
 ,s.PRIMARY_UOM_CODE as Unit
 ,FORMAT(p.PRIMARY_QUANTITY,'0.##########') as Qty
+,p.LOT_NUMBER as LotNumber
 FROM [TRF_OUTBOUND_PICKED_T] p
 INNER JOIN STOCK_T s ON p.BARCODE = s.BARCODE
 WHERE p.BARCODE = @Barcode
