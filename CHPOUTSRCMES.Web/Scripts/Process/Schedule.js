@@ -36,8 +36,8 @@ $(document).ready(function () {
         DisplayProductionEnable(true);
         $('#BtnCheckBatchNo').hide()
         $('#BtnSave').hide();
-        $('#BtnEdit').show()
-        //$('#BtnApprove').show()
+        $('#BtnEdit').show();
+        $('#BtnApprove').hide();
         $('#OutputBathNoArea').hide();
         //$('#BtnCheckProductionBatchNo').hide()
         //$('#ProductForm').hide();
