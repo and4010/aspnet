@@ -759,6 +759,7 @@ DI.OSP_DETAIL_IN_ID AS OspDetailInId,
 DO.OSP_DETAIL_OUT_ID AS OspDetailOutId,
 H.STATUS AS Status,
 H.BATCH_NO AS BatchNo,
+H.PLAN_START_DATE AS PlanStartDate,
 H.BATCH_TYPE AS BatchType,
 H.DUE_DATE AS DueDate,
 H.CUTTING_DATE_FROM AS CuttingDateFrom,
@@ -855,7 +856,7 @@ WHERE DI.OSP_HEADER_ID = @OSP_HEADER_ID");
         /// <param name="CuttingDateTo"></param>
         /// <param name="Subinventory"></param>
         /// <returns></returns>
-        public List<CHP_PROCESS_T> GetTable(string Status, string BatchNo, string MachineNum, string DueDate, string CuttingDateFrom, string CuttingDateTo, string Subinventory, string UserId)
+        public List<CHP_PROCESS_T> GetTable(string Status, string BatchNo, string MachineNum, string DueDateFrom, string DueDateTo, string CuttingDateFrom, string CuttingDateTo, string Subinventory, string UserId)
         {
             try
             {
@@ -871,6 +872,7 @@ DI.OSP_DETAIL_IN_ID AS OspDetailInId,
 DO.OSP_DETAIL_OUT_ID AS OspDetailOutId,
 H.STATUS AS Status,
 H.BATCH_NO AS BatchNo,
+H.PLAN_START_DATE AS PlanStartDate,
 H.BATCH_TYPE AS BatchType,
 H.DUE_DATE AS DueDate,
 H.CUTTING_DATE_FROM AS CuttingDateFrom,
@@ -930,12 +932,18 @@ left JOIN OSP_HEADER_MOD_T HM ON HM.OSP_HEADER_ID = H.OSP_HEADER_ID
                         cond.Add("MACHINE_CODE = @MACHINE_CODE");
                         sqlParameterList.Add(new SqlParameter("@MACHINE_CODE", MachineNum));
                     }
-                    DateTime dueDate = new DateTime();
-                    if (DueDate != "" && DateTime.TryParseExact(DueDate, "yyyy-MM-dd", null, System.Globalization.DateTimeStyles.NoCurrentDateDefault, out dueDate))
+                    DateTime dueDateFrom = new DateTime();
+                    if (DueDateFrom != "" && DateTime.TryParseExact(DueDateFrom, "yyyy-MM-dd", null, System.Globalization.DateTimeStyles.NoCurrentDateDefault, out dueDateFrom))
                     {
                         cond.Add("H.DUE_DATE >= @DUE_DATE");
-                        sqlParameterList.Add(SqlParamHelper.GetDataTime("@DUE_DATE", dueDate, ParameterDirection.Input));
-                        sqlParameterList.Add(SqlParamHelper.GetDataTime("@DUE_END_DATE", dueDate.AddDays(1).AddMilliseconds(-1), ParameterDirection.Input));
+                        sqlParameterList.Add(SqlParamHelper.GetDataTime("@DUE_DATE", dueDateFrom, ParameterDirection.Input));
+                    }
+
+                    DateTime dueDateTo= new DateTime();
+                    if (DueDateTo != "" && DateTime.TryParseExact(DueDateTo, "yyyy-MM-dd", null, System.Globalization.DateTimeStyles.NoCurrentDateDefault, out dueDateTo))
+                    {
+                        cond.Add("H.DUE_DATE <= @DUE_END_DATE");
+                        sqlParameterList.Add(SqlParamHelper.GetDataTime("@DUE_END_DATE", dueDateTo.AddDays(1).AddMilliseconds(-1), ParameterDirection.Input));
                     }
 
                     if (CuttingDateFrom != "" && CuttingDateTo != "")

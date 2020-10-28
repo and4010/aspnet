@@ -23,6 +23,12 @@ namespace CHPOUTSRCMES.Web.Models.Process
         [Display(Name = "工單號")] //BATCH_NO
         public string BatchNo { set; get; }
 
+        /// <summary>
+        /// 計劃開工日期
+        /// </summary>
+        [Display(Name = "計劃開工日期")] //PLAN_START_DATE
+        public DateTime PlanStartDate { set; get; }
+
         [Display(Name = "工單類別")]
         public string BatchType { set;get; }
 

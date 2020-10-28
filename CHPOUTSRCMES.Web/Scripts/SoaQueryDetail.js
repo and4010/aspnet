@@ -20,18 +20,20 @@ $(document).ready(function () {
             if (result.value) {
 
                 $.ajax({
-                    url: '/Soa/LogOff',
+                    url: '/Soa/ClearSoaStage',
                     type: "POST",
                     datatype: "json",
                     data: {
                         '__RequestVerificationToken': $('input[name=__RequestVerificationToken]').val(),
-                        'ProcessCode': '',
-                        'ServerCode': '',
-                        'BatchId' : ''
+                        'ProcessCode': $('#ProcessCode').val(),
+                        'ServerCode': $('#ServerCode').val(),
+                        'BatchId': $('#BatchId').val()
                     },
-                    success: function (response) {
-                        if (response.status) {
+                    success: function (data) {
+                        if (data.Success) {
                             location.reload();
+                        } else {
+                            Swal.fire(data.Msg);
                         }
                     },
                     error: function () {

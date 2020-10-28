@@ -33,7 +33,12 @@ $(document).ready(function () {
     $('#MachineNum').combobox();
     $('#Subinventory').combobox();
     //初始化日期
-    $('#DueDate').datepicker({
+    $('#DueDateFrom').datepicker({
+        dateFormat: 'yy-mm-dd',
+        changeMonth: true,
+        changeYear: true
+    });
+    $('#DueDateTo').datepicker({
         dateFormat: 'yy-mm-dd',
         changeMonth: true,
         changeYear: true
@@ -141,7 +146,7 @@ $(document).ready(function () {
 
 })
 
-function ProcessLoadTable(Status, BatchNo, MachineNum, DueDate, CuttingDateFrom, CuttingDateTo, Subinventory) {
+function ProcessLoadTable(Status, BatchNo, MachineNum, DueDateFrom, DueDateTo, CuttingDateFrom, CuttingDateTo, Subinventory) {
 
     ProcessDataTables = $('#ProcessDataTables').DataTable({
         "language": {
@@ -162,9 +167,14 @@ function ProcessLoadTable(Status, BatchNo, MachineNum, DueDate, CuttingDateFrom,
             "type": "POST",
             "datatype": "json",
             "data": {
-                Status: Status, BatchNo: BatchNo,
-                MachineNum: MachineNum, DueDate: DueDate, CuttingDateFrom: CuttingDateFrom,
-                CuttingDateTo: CuttingDateTo, Subinventory: Subinventory
+                Status: Status,
+                BatchNo: BatchNo,
+                MachineNum: MachineNum,
+                DueDateFrom: DueDateFrom,
+                DueDateTo: DueDateTo,
+                CuttingDateFrom: CuttingDateFrom,
+                CuttingDateTo: CuttingDateTo,
+                Subinventory: Subinventory
             }
         },
         select: {
@@ -177,7 +187,7 @@ function ProcessLoadTable(Status, BatchNo, MachineNum, DueDate, CuttingDateFrom,
                 text: '匯出Excel'
             },
         ],
-        "order": [[4, "acs"]], //單號排序
+        "order": [[5, "desc"]], //單號排序
         columnDefs: [{
             orderable: false, targets: [0, 24], width: "60px",
         }],
@@ -224,6 +234,17 @@ function ProcessLoadTable(Status, BatchNo, MachineNum, DueDate, CuttingDateFrom,
                 }, "className": "dt-body-center"
             },
             { data: "BatchNo", "name": "工單號", "autoWidth": true, "className": "dt-body-center" },
+            {
+                data: "PlanStartDate", "name": "計畫開始日期", "autoWidth": true, "mRender": function (data, type, full) {
+                    if (data != null) {
+                        var dtStart = new Date(parseInt(data.substr(6)));
+                        var dtStartWrapper = moment(dtStart);
+                        return dtStartWrapper.format('YYYY-MM-DD');
+                    } else {
+                        return '';
+                    }
+                }, "className": "dt-body-center"
+            },
             { data: "MachineNum", "name": "機台", "autoWidth": true, "className": "dt-body-center" },
             {
                 data: "Status", "name": "狀態", "autoWidth": true, "render": function (data, type, row) {
@@ -431,7 +452,7 @@ function BtnEvent() {
     });
 
 
-    $('#BtnCutReceipt').click(function () {
+    $('#BtnCutReceipt').click(async function () {
         if (rowData.pluck('Status')[0] == WaitBatch) {
             swal.fire("請先排單，再列印裁切單。");
             return;
@@ -445,9 +466,12 @@ function BtnEvent() {
             return;
         }
         var selectRowData = ProcessDataTables.rows('.selected').data();
-        var OspHeaderId = rowData.pluck('OspHeaderId')
+        var millisecondsToWait = 500;
         for (i = 0; i < selectRowData.length; i++) {
-            window.open("/Home/OspCutReceiptReport/?OspHeaderId=" + selectRowData.pluck('OspHeaderId')[i]);
+            await sleep(millisecondsToWait);
+            var ospHeaderId = selectRowData.pluck('OspHeaderId')[i];
+            window.open("/Home/OspCutReceiptReport/?OspHeaderId=" + ospHeaderId);
+            //millisecondsToWait = millisecondsToWait + 1000;
         }
         //window.open("/Home/OspCutReceiptReport/?OspHeaderId=" + OspHeaderId);
 
@@ -474,6 +498,12 @@ function BtnEvent() {
     });
 }
 
+function sleep(time) {
+    return new Promise((resolve) => {
+        setTimeout(resolve, time || 1000);
+    });
+}
+
 //排單
 function orderProcess(PaperType, OspHeaderId, BatchType) {
     $.ajax({
@@ -493,12 +523,13 @@ function search() {
         var Status = $("#Status").val();
         var BatchNo = $("#BatchNo").val();
         var MachineNum = $("#MachineNum").val();
-        var DueDate = $("#DueDate").val();
+        var DueDateTo = $("#DueDateTo").val();
+        var DueDateFrom = $("#DueDateFrom").val();
         var CuttingDateFrom = $("#CuttingDateFrom").val();
         var CuttingDateTo = $("#CuttingDateTo").val();
         var Subinventory = $("#Subinventory").val();
 
-        ProcessLoadTable(Status, BatchNo, MachineNum, DueDate, CuttingDateFrom, CuttingDateTo, Subinventory);
+        ProcessLoadTable(Status, BatchNo, MachineNum, DueDateFrom, DueDateTo, CuttingDateFrom, CuttingDateTo, Subinventory);
 
 
     });
@@ -609,12 +640,13 @@ function firstLoad() {
     var Status = $("#Status").val();
     var BatchNo = $("#BatchNo").val();
     var MachineNum = $("#MachineNum").val();
-    var DueDate = $("#DueDate").val();
+    var DueDateFrom = $("#DueDateFrom").val();
+    var DueDateTo = $("#DueDateTo").val();
     var CuttingDateFrom = $("#CuttingDateFrom").val();
     var CuttingDateTo = $("#CuttingDateTo").val();
     var Subinventory = $("#Subinventory").val();
 
-    ProcessLoadTable(Status, BatchNo, MachineNum, DueDate, CuttingDateFrom, CuttingDateTo, Subinventory);
+    ProcessLoadTable(Status, BatchNo, MachineNum, DueDateFrom, DueDateTo, CuttingDateFrom, CuttingDateTo, Subinventory);
 }
 
 

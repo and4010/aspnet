@@ -298,5 +298,43 @@ FROM XXIF_CHP_P222_SUB_TRANSFER_ST C ";
 
         }
 
+
+        public static ResultModel ClearSoaStage(
+            string processCode, string serverCode, string batchId, string userId)
+        {
+            var model = new ResultModel(false, "");
+            
+            
+            try
+            {
+                using var mesContext = new MesContext();
+                using var transaction = mesContext.Database.BeginTransaction();
+
+                var paramProcessCode = SqlParamHelper.GetVarChar("@processCode", processCode, 20);
+                var paramServerCode = SqlParamHelper.GetVarChar("@serverCode", serverCode, 20);
+                var paramBatchId = SqlParamHelper.GetVarChar("@batchId", batchId, 20);
+                var paramCode = SqlParamHelper.GetInt("@code", 0, System.Data.ParameterDirection.Output);
+                var paramMessage = SqlParamHelper.GetNVarChar("@message", "", 500, System.Data.ParameterDirection.Output);
+                var paramUser = SqlParamHelper.GetNVarChar("@user", userId, 128);
+
+                mesContext.Database.ExecuteSqlCommand("[SP_ClearSoaStage] @processCode, @serverCode, @batchId, @code output, @message output, @user"
+                    , paramProcessCode, paramServerCode, paramBatchId, paramCode, paramMessage, paramUser);
+
+                var code = Convert.ToInt32(paramCode.Value);
+                var message = Convert.ToString(paramMessage.Value);
+
+                model = new ResultModel(code, message);
+
+                if (model.Success) transaction.Commit();
+                else transaction.Rollback();
+            }
+            catch (Exception ex)
+            {
+                model = new ResultModel(-999, $"重新傳送時出現錯誤!! {ex.Message}");
+            }
+
+            return model;
+        }
+
     }
 }

@@ -85,12 +85,12 @@ namespace CHPOUTSRCMES.Web.ViewModels.Process
         /// <param name="CuttingDateTo"></param>
         /// <param name="Subinventory"></param>
         /// <returns></returns>
-        public List<CHP_PROCESS_T> Search(string Status, string BatchNo, string MachineNum, string DueDate, string CuttingDateFrom, string CuttingDateTo, string Subinventory, string UserId)
+        public List<CHP_PROCESS_T> Search(string Status, string BatchNo, string MachineNum, string DueDateFrom, string DueDateTo, string CuttingDateFrom, string CuttingDateTo, string Subinventory, string UserId)
         {
        
             using (var context = new MesContext())
             {
-                return new ProcessUOW(context).GetTable(Status, BatchNo, MachineNum, DueDate, CuttingDateFrom, CuttingDateTo, Subinventory, UserId);
+                return new ProcessUOW(context).GetTable(Status, BatchNo, MachineNum, DueDateFrom, DueDateTo, CuttingDateFrom, CuttingDateTo, Subinventory, UserId);
             }
 
         }
@@ -619,65 +619,53 @@ namespace CHPOUTSRCMES.Web.ViewModels.Process
                 {
                     default:
                     case 1:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.OspHeaderId) : models.OrderBy(x => x.OspHeaderId);
+                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.DueDate) : models.OrderBy(x => x.DueDate);
                     case 2:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.OspDetailInId) : models.OrderBy(x => x.OspDetailInId);
+                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.CuttingDateFrom) : models.OrderBy(x => x.CuttingDateFrom);
                     case 3:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Status) : models.OrderBy(x => x.Status);
+                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.CuttingDateTo) : models.OrderBy(x => x.CuttingDateTo);
                     case 4:
                         return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.BatchNo) : models.OrderBy(x => x.BatchNo);
                     case 5:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.DueDate) : models.OrderBy(x => x.DueDate);
+                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.PlanStartDate) : models.OrderBy(x => x.PlanStartDate);
                     case 6:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.CuttingDateFrom) : models.OrderBy(x => x.CuttingDateFrom);
-                    case 7:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.CuttingDateTo) : models.OrderBy(x => x.CuttingDateTo);
-                    case 8:
                         return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.MachineNum) : models.OrderBy(x => x.MachineNum);
-                    case 9:
+                    case 7:
+                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Status) : models.OrderBy(x => x.Status);
+                    case 8:
                         return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.CustomerName) : models.OrderBy(x => x.CustomerName);
+                    case 9:
+                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.DoPaperType) : models.OrderBy(x => x.DoPaperType);
                     case 10:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.OrderNumber) : models.OrderBy(x => x.OrderNumber);
+                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.DoBasicWeight) : models.OrderBy(x => x.DoBasicWeight);
                     case 11:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.OrderLineNumber) : models.OrderBy(x => x.OrderLineNumber);
+                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.DoSpecification) : models.OrderBy(x => x.DoSpecification);
                     case 12:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.BasicWeight) : models.OrderBy(x => x.BasicWeight);
-                    case 13:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Specification) : models.OrderBy(x => x.Specification);
-                    case 14:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.GrainDirection) : models.OrderBy(x => x.GrainDirection);
-                    case 15:
                         return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.OrderWeight) : models.OrderBy(x => x.OrderWeight);
-                    case 16:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.ReamWt) : models.OrderBy(x => x.ReamWt);
-                    case 17:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.PrimaryQuantity) : models.OrderBy(x => x.PrimaryQuantity);
-                    case 18:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.PrimaryUom) : models.OrderBy(x => x.PrimaryUom);
-                    case 19:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.PackingType) : models.OrderBy(x => x.PackingType);
-                    case 20:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.OspRemark) : models.OrderBy(x => x.OspRemark);
-                    case 21:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Loss) : models.OrderBy(x => x.Loss);
-                    case 22:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.SelectedInventoryItemNumber) : models.OrderBy(x => x.SelectedInventoryItemNumber);
-                    case 23:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Product_Item) : models.OrderBy(x => x.Product_Item);
-                    case 24:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Note) : models.OrderBy(x => x.Note);
-                    case 25:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Subinventory) : models.OrderBy(x => x.Subinventory);
-                    case 26:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Createdby) : models.OrderBy(x => x.Createdby);
-                    case 27:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Creationdate) : models.OrderBy(x => x.Creationdate);
-                    case 28:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.LastUpdatedBy) : models.OrderBy(x => x.LastUpdatedBy);
-                    case 29:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.LastUpdateDate) : models.OrderBy(x => x.LastUpdateDate);
-                    case 30:
+                    case 13:
+                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.DoGrainDirection) : models.OrderBy(x => x.DoGrainDirection);
+                    case 14:
+                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.DoReamWt) : models.OrderBy(x => x.DoReamWt);
+                    case 15:
                         return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.TransactionUom) : models.OrderBy(x => x.TransactionUom);
+                    case 16:
+                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.PrimaryQuantity) : models.OrderBy(x => x.PrimaryQuantity);
+                    case 17:
+                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.PrimaryUom) : models.OrderBy(x => x.PrimaryUom);
+                    case 18:
+                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.DoPackingType) : models.OrderBy(x => x.DoPackingType);
+                    case 19:
+                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.OspRemark) : models.OrderBy(x => x.OspRemark);
+                    case 20:
+                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Note) : models.OrderBy(x => x.Note);
+                    case 21:
+                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.SelectedInventoryItemNumber) : models.OrderBy(x => x.SelectedInventoryItemNumber);
+                    case 22:
+                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Product_Item) : models.OrderBy(x => x.Product_Item);
+                    case 23:
+                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.OrderNumber) : models.OrderBy(x => x.OrderNumber);
+                    case 24:
+                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.OrderLineNumber) : models.OrderBy(x => x.OrderLineNumber);
                 }
             }
 
@@ -687,65 +675,53 @@ namespace CHPOUTSRCMES.Web.ViewModels.Process
                 {
                     default:
                     case 1:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.OspHeaderId) : models.OrderBy(x => x.OspHeaderId);
+                        return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.DueDate) : models.ThenBy(x => x.DueDate);
                     case 2:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.OspDetailInId) : models.OrderBy(x => x.OspDetailInId);
+                        return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.CuttingDateFrom) : models.ThenBy(x => x.CuttingDateFrom);
                     case 3:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Status) : models.OrderBy(x => x.Status);
+                        return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.CuttingDateTo) : models.ThenBy(x => x.CuttingDateTo);
                     case 4:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.BatchNo) : models.OrderBy(x => x.BatchNo);
+                        return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.BatchNo) : models.ThenBy(x => x.BatchNo);
                     case 5:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.DueDate) : models.OrderBy(x => x.DueDate);
+                        return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.PlanStartDate) : models.ThenBy(x => x.PlanStartDate);
                     case 6:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.CuttingDateFrom) : models.OrderBy(x => x.CuttingDateFrom);
+                        return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.MachineNum) : models.ThenBy(x => x.MachineNum);
                     case 7:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.CuttingDateTo) : models.OrderBy(x => x.CuttingDateTo);
+                        return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.Status) : models.ThenBy(x => x.Status);
                     case 8:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.MachineNum) : models.OrderBy(x => x.MachineNum);
+                        return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.CustomerName) : models.ThenBy(x => x.CustomerName);
                     case 9:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.CustomerName) : models.OrderBy(x => x.CustomerName);
+                        return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.DoPaperType) : models.ThenBy(x => x.DoPaperType);
                     case 10:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.OrderNumber) : models.OrderBy(x => x.OrderNumber);
+                        return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.DoBasicWeight) : models.ThenBy(x => x.DoBasicWeight);
                     case 11:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.OrderLineNumber) : models.OrderBy(x => x.OrderLineNumber);
+                        return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.DoSpecification) : models.ThenBy(x => x.DoSpecification);
                     case 12:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.BasicWeight) : models.OrderBy(x => x.BasicWeight);
+                        return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.OrderWeight) : models.ThenBy(x => x.OrderWeight);
                     case 13:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Specification) : models.OrderBy(x => x.Specification);
+                        return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.DoGrainDirection) : models.ThenBy(x => x.DoGrainDirection);
                     case 14:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.GrainDirection) : models.OrderBy(x => x.GrainDirection);
+                        return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.DoReamWt) : models.ThenBy(x => x.DoReamWt);
                     case 15:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.OrderWeight) : models.OrderBy(x => x.OrderWeight);
+                        return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.TransactionUom) : models.ThenBy(x => x.TransactionUom);
                     case 16:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.ReamWt) : models.OrderBy(x => x.ReamWt);
+                        return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.PrimaryQuantity) : models.ThenBy(x => x.PrimaryQuantity);
                     case 17:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.PrimaryQuantity) : models.OrderBy(x => x.PrimaryQuantity);
+                        return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.PrimaryUom) : models.ThenBy(x => x.PrimaryUom);
                     case 18:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.PrimaryUom) : models.OrderBy(x => x.PrimaryUom);
+                        return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.DoPackingType) : models.ThenBy(x => x.DoPackingType);
                     case 19:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.PackingType) : models.OrderBy(x => x.PackingType);
+                        return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.OspRemark) : models.ThenBy(x => x.OspRemark);
                     case 20:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.OspRemark) : models.OrderBy(x => x.OspRemark);
+                        return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.Note) : models.ThenBy(x => x.Note);
                     case 21:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Loss) : models.OrderBy(x => x.Loss);
+                        return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.SelectedInventoryItemNumber) : models.ThenBy(x => x.SelectedInventoryItemNumber);
                     case 22:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.SelectedInventoryItemNumber) : models.OrderBy(x => x.SelectedInventoryItemNumber);
+                        return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.Product_Item) : models.ThenBy(x => x.Product_Item);
                     case 23:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Product_Item) : models.OrderBy(x => x.Product_Item);
+                        return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.OrderNumber) : models.ThenBy(x => x.OrderNumber);
                     case 24:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Note) : models.OrderBy(x => x.Note);
-                    case 25:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Subinventory) : models.OrderBy(x => x.Subinventory);
-                    case 26:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Createdby) : models.OrderBy(x => x.Createdby);
-                    case 27:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Creationdate) : models.OrderBy(x => x.Creationdate);
-                    case 28:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.LastUpdatedBy) : models.OrderBy(x => x.LastUpdatedBy);
-                    case 29:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.LastUpdateDate) : models.OrderBy(x => x.LastUpdateDate);
-                    case 30:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.TransactionUom) : models.OrderBy(x => x.TransactionUom);
+                        return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.OrderLineNumber) : models.ThenBy(x => x.OrderLineNumber);
                 }
             }
 
@@ -760,6 +736,7 @@ namespace CHPOUTSRCMES.Web.ViewModels.Process
                         || (!string.IsNullOrEmpty(p.OspDetailInId.ToString()) && p.OspDetailInId.ToString().ToLower().Contains(search.ToLower()))
                         || (!string.IsNullOrEmpty(p.Status) && p.Status.ToLower().Contains(search.ToLower()))
                         || (!string.IsNullOrEmpty(p.BatchNo) && p.BatchNo.ToLower().Contains(search.ToLower()))
+                        || (!string.IsNullOrEmpty(p.PlanStartDate.ToString()) && p.PlanStartDate.ToString().Contains(search.ToLower()))
                         || (!string.IsNullOrEmpty(p.DueDate.ToString()) && p.DueDate.ToString().Contains(search.ToLower()))
                         || (!string.IsNullOrEmpty(p.CuttingDateFrom.ToString()) && p.CuttingDateFrom.ToString().Contains(search.ToLower()))
                         || (!string.IsNullOrEmpty(p.CuttingDateTo.ToString()) && p.CuttingDateTo.ToString().Contains(search.ToLower()))

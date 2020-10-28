@@ -45,6 +45,24 @@ namespace CHPOUTSRCMES.Web.Controllers
             return RedirectToAction("Index");
         }
 
+        /// <summary>
+        /// 清除上傳資料註記
+        /// </summary>
+        /// <param name="data">DataTableAjaxPostViewModel</param>
+        /// <param name="processCode">傳輸類型</param>
+        /// <param name="processDate">傳輸日期</param>
+        /// <param name="hasError">錯誤訊息</param>
+        /// <returns></returns>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public JsonResult ClearSoaStage(string processCode, string serverCode, string batchId)
+        {
+            var userId = User.Identity.GetUserId();
+            var model = SoaDetailQueryModel.ClearSoaStage(processCode, serverCode, batchId, userId);
+
+            return Json(model, JsonRequestBehavior.AllowGet);
+        }
+
 
         /// <summary>
         /// 傳輸記錄查詢
