@@ -619,7 +619,7 @@ and d.ITEM_CATEGORY = N'捲筒'");
             }
             else
             {
-                return new ResultModel(true, "header.HeaderId");
+                return new ResultModel(true, header.CtrHeaderId.ToString());
             }
         }
 

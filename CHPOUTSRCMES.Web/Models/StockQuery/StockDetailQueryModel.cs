@@ -2,16 +2,20 @@
 using CHPOUTSRCMES.Web.DataModel.UnitOfWorks;
 using CHPOUTSRCMES.Web.Util;
 using CHPOUTSRCMES.Web.ViewModels;
+using Microsoft.Extensions.Logging;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Data.Entity;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Text;
 using System.Web.UI.WebControls;
 
 namespace CHPOUTSRCMES.Web.Models.StockQuery
 {
+
     public class StockDetailQueryModel
     {
         [Display(Name = "庫存ID")]
@@ -71,6 +75,12 @@ namespace CHPOUTSRCMES.Web.Models.StockQuery
         [Display(Name = "櫃號")]
         public string ContainerNo { set; get; }
 
+        [Display(Name = "貨故原因")]
+        public string Note { set; get; }
+
+        [Display(Name = "備註")]
+        public string ReasonDesc { set; get; }
+
         public static DataTableJsonResultModel<StockDetailQueryModel> getModels(DataTableAjaxPostViewModel data,
             string subinventory, long locatorId, long itemId, string userId)
         {
@@ -101,6 +111,8 @@ S.STOCK_ID AS StockId
 , ISNULL(S.SECONDARY_UOM_CODE, '') AS SecondaryUomCode
 , ISNULL(S.SECONDARY_AVAILABLE_QTY, 0) AS SecondaryAvailableQty
 , ISNULL(S.CONTAINER_NO, '') AS ContainerNo
+, S.NOTE AS Note
+, S.REASON_DESC as ReasonDesc
 FROM STOCK_T S
 JOIN USER_SUBINVENTORY_T U ON U.SUBINVENTORY_CODE = S.SUBINVENTORY_CODE
 JOIN SUBINVENTORY_T B ON B.SUBINVENTORY_CODE = S.SUBINVENTORY_CODE AND B.ORGANIZATION_ID = S.ORGANIZATION_ID
@@ -132,6 +144,55 @@ ORDER BY S.SUBINVENTORY_CODE, S.LOCATOR_ID, S.INVENTORY_ITEM_ID
             }
 
             return new DataTableJsonResultModel<StockDetailQueryModel>(data.Draw, 0, new List<StockDetailQueryModel>());
+        }
+
+        public List<string> GetPhoto(long STOCK_ID)
+        {
+            NLog.ILogger logger = LogManager.GetCurrentClassLogger();
+            try
+            {
+                List<string> vs = new List<string>();
+                using var mesContext = new MesContext();
+                StringBuilder query = new StringBuilder();
+                query.Append(
+                @"SELECT 
+CF.FILE_INSTANCE
+FROM STOCK_T ST
+join CTR_PICKED_HT CPH ON CPH.STOCK_ID = ST.STOCK_ID
+join CTR_FILEINFO_T CFT ON CFT.CTR_PICKED_ID = CPH.CTR_PICKED_ID
+join CTR_FILES_T CF ON CF.CTR_FILE_ID = CFT.CTR_FILE_ID
+where st.STOCK_ID = @STOCK_ID");
+                string commandText = string.Format(query.ToString());
+                var ctr = mesContext.Database.SqlQuery<byte[]>(commandText, new SqlParameter("@STOCK_ID", STOCK_ID)).ToList();
+                for(int i = 0; i < ctr.Count; i++)
+                {
+                    vs.Add(Convert.ToBase64String(ctr[i]));
+                }
+
+
+                StringBuilder trfs = new StringBuilder();
+                trfs.Append(@"SELECT 
+ST.STOCK_ID,
+TF.FILE_INSTANCE
+FROM STOCK_T ST
+join TRF_REASON_HT TRH ON TRH.STOCK_ID = ST.STOCK_ID
+join TRF_FILEINFO_T TFT ON TFT.TRANSFER_REASON_ID = TRH.TRANSFER_REASON_ID
+join TRF_FILES_T TF ON TF.TRF_FILE_ID = TFT.TRF_FILE_ID
+where st.STOCK_ID = @STOCK_ID");
+                string trfcommandText = string.Format(trfs.ToString());
+                var trf = mesContext.Database.SqlQuery<byte[]>(trfcommandText, new SqlParameter("@STOCK_ID", STOCK_ID)).ToList();
+                for (int i = 0; i < trf.Count; i++)
+                {
+                    vs.Add(Convert.ToBase64String(ctr[i]));
+                }
+
+                return vs;
+            }
+            catch (Exception e)
+            {
+                logger.Error(e.Message.ToString());
+                return new List<string>();
+            }
         }
 
         public static IOrderedEnumerable<StockDetailQueryModel> Order(List<Order> orders, IEnumerable<StockDetailQueryModel> models)

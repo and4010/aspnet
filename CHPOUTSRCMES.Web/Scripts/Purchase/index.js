@@ -169,7 +169,7 @@ $(document).ready(function () {
 
     //calendarinit(calendar, sy, sm, sw);
 
-    
+
     serach();
 })
 
@@ -215,27 +215,42 @@ function setSelectedValue(selectObj, valueToSet) {
 function serach() {
     $('#btnSearch').click(function () {
 
-        var CabinetNumber = $('#InputCabinetNumber').val();
-        if (CabinetNumber.trim().length == 0) {
-            swal.fire("貴號不得空白");
-            return;
-        }
-
-
-        $.ajax({
-            url: '/Purchase/SearchCabinetNumber',
-            type: 'POST',
-            datatype: 'json',
-            data: { CabinetNumber: CabinetNumber },
-            success: function (data) {
-                if (data.resultModel.Success) {
-                    window.location.href = '/Purchase/Detail/' + data.resultModel.Msg;
-                } else {
-                    swal.fire(data.resultModel.Msg);
+        Swal.fire({
+            title: '請輸入櫃號',
+            input: 'text',
+            inputAttributes: {
+                autocapitalize: 'off'
+            },
+            showCancelButton: true,
+            cancelButtonText: '取消',
+            confirmButtonText: '確認',
+            showLoaderOnConfirm: true,
+            preConfirm: (text) => {
+                if (text == "") {
+                    Swal.showValidationMessage(
+                        '櫃號不得空白'
+                    )
                 }
+            },
+            allowOutsideClick: false
+        }).then((result) => {
+            if (result.value) {
+                $.ajax({
+                    url: '/Purchase/SearchCabinetNumber',
+                    type: 'POST',
+                    datatype: 'json',
+                    data: { CabinetNumber: result.value },
+                    success: function (data) {
+                        if (data.Success) {
+                            window.location.href = '/Purchase/Detail/' + data.Msg;
+                        } else {
+                            swal.fire(data.Msg);
+                        }
+                    }
+                });
             }
-        });
+        })
+
     });
-  
 
 }

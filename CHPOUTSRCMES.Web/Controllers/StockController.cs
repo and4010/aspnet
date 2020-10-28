@@ -19,6 +19,10 @@ namespace CHPOUTSRCMES.Web.Controllers
             return View();
         }
 
+        public ActionResult PhotoView()
+        {
+            return View();
+        }
         /// <summary>
         /// 庫存查詢
         /// </summary>

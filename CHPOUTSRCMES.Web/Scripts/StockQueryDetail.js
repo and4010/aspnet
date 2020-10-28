@@ -7,6 +7,46 @@ $(document).ready(function () {
         $('#ItemCategory').val()
     );
 
+
+    $('#QueryTable tbody').on('click', '#btnViewPhoto', function (e) {
+
+        var data = $('#QueryTable').DataTable().row($(this).parents('tr')).data();
+        var Id = data.StockId;
+        if (data == null) {
+            return false;
+        };
+
+        window.location = "/Stock/PhotoView/" + Id;
+        //$.ajax({
+        //    "url": "/Stock/GetPhoto",
+        //    "type": "POST",
+        //    "datatype": "json",
+        //    "data": { id: id },
+        //    success: function (data) {
+        //        if (data.Code == 0) {
+        //            VimgSrc.push("data:image/jpeg;base64," + data.Result);
+        //        }
+        //        else {
+        //            swal.fire(data.Msg);
+        //        }
+
+        //        if (final) addContent($('#saveBox'));
+        //    },
+        //    error: function (data) {
+        //        if (final) addContent($('#saveBox'));
+        //        swal.fire(data);
+        //    },
+        //});
+
+
+
+
+
+
+
+
+    })
+
 });
 
 
@@ -96,6 +136,13 @@ function loadTable(subinventory, locatorId, itemId, itemCategory) {
             { data: "ReamWeight", "name": "令重", "autoWidth": true, "className": "dt-body-right", "visible": itemCategory == '平版' },
             { data: "PackingType", "name": "包裝方式", "autoWidth": true, "className": "dt-body-center", "visible": itemCategory == '平版' },
             { data: "ContainerNo", "name": "櫃號", "autoWidth": true, "className": "dt-body-center", "visible": itemCategory == '捲筒' },
+            { data: "ReasonDesc", "name": "貨故原因", "autoWidth": true, "className": "dt-body-center" },
+            { data: "Note", "name": "備註", "autoWidth": true, "className": "dt-body-center" },      
+            {
+                data: "", "autoWidth": true, "render": function (data) {
+                    return '<button class="btn btn-danger btn-sm" id = "btnViewPhoto">檢視照片</button>'
+                }, orderable: false,
+            }
         ]
 
     });
@@ -114,3 +161,4 @@ function printlabel() {
 
     PrintLable(table, "/Stock/PrintLabel", "1");
 }
+

@@ -2281,6 +2281,7 @@
     <Content Include="Views\Account\_ChangePassword.cshtml" />
     <Content Include="Views\Account\Create.cshtml" />
     <Content Include="Views\Account\Edit.cshtml" />
+    <Content Include="Views\Stock\PhotoView.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
