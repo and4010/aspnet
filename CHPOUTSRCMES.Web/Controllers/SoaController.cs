@@ -36,7 +36,13 @@ namespace CHPOUTSRCMES.Web.Controllers
             var model = new SoaQueryDetailViewModel();
             model.HeaderField = SoaQueryModel.getModel(processCode, serverCode, batchId);
             model.TableFields = new SoaDetailQueryModel();
-            return View(model);
+
+            if(model.HeaderField != null)
+            {
+                return View(model);
+            }
+
+            return RedirectToAction("Index");
         }
 
 

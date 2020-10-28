@@ -17,79 +17,93 @@
                 <h3 class="fa fa-caret-right"><i></i>傳輸主檔</h3>
             </div>
             <div class="box-body" style="overflow:auto;">
-                @using (Html.BeginForm("SoaDetailQuery", "Soa", FormMethod.Post, new { @id = "QueryForm", role = "form" }))
+                @if (@Model.HeaderField.StatusCode != null && string.Compare(Model.HeaderField.StatusCode, "E", true) == 0)
                 {
-                    @Html.AntiForgeryToken()
-                    @Html.HiddenFor(x => x.HeaderField.ProcessCode, new { id = "ProcessCode" })
-                    @Html.HiddenFor(x => x.HeaderField.ServerCode, new { id = "ServerCode" })
-                    @Html.HiddenFor(x => x.HeaderField.BatchId, new { id = "BatchId" })
-
-                    <table class="table table-primary table-striped table-bordered dataTable">
-                        <thead>
-                            <tr>
-                                <th>
-                                    @Html.DisplayNameFor(model => model.HeaderField.ProcessName)
-                                </th>
-                                <th>
-                                    @Html.DisplayNameFor(model => model.HeaderField.ProcessName)
-                                </th>
-                                <th>
-                                    @Html.DisplayNameFor(model => model.HeaderField.BatchId)
-                                </th>
-                                <th>
-                                    @Html.DisplayNameFor(model => model.HeaderField.RowNum)
-                                </th>
-                                <th>
-                                    @Html.DisplayNameFor(model => model.HeaderField.StatusCode)
-                                </th>
-                                <th>
-                                    @Html.DisplayNameFor(model => model.HeaderField.ErrorMsg)
-                                </th>
-                                <th>
-                                    @Html.DisplayNameFor(model => model.HeaderField.SoaPullingFlag)
-                                </th>
-                                <th>
-                                    @Html.DisplayNameFor(model => model.HeaderField.SoaErrorMsg)
-                                </th>
-                                <th>
-                                    @Html.DisplayNameFor(model => model.HeaderField.SoaProcessCode)
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>
-                                    @Html.DisplayTextFor(model => model.HeaderField.ProcessName)
-                                </td>
-                                <td>
-                                    @Html.DisplayTextFor(model => model.HeaderField.ProcessName)
-                                </td>
-                                <td>
-                                    @Html.DisplayTextFor(model => model.HeaderField.BatchId)
-                                </td>
-                                <td>
-                                    @Html.DisplayTextFor(model => model.HeaderField.RowNum)
-                                </td>
-                                <td>
-                                    @Html.DisplayTextFor(model => model.HeaderField.StatusCode)
-                                </td>
-                                <td>
-                                    @Html.DisplayTextFor(model => model.HeaderField.ErrorMsg)
-                                </td>
-                                <td>
-                                    @Html.DisplayTextFor(model => model.HeaderField.SoaPullingFlag)
-                                </td>
-                                <td>
-                                    @Html.DisplayTextFor(model => model.HeaderField.SoaErrorMsg)
-                                </td>
-                                <td>
-                                    @Html.DisplayTextFor(model => model.HeaderField.SoaProcessCode)
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-
+                    using (Html.BeginForm("Resend", "Soa", FormMethod.Post, new { @id = "ResendForm", role = "form" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        <div class="row" style="margin:30px;">
+                            <button type="button" id="btnResend" class="btn btn-primary externalBtn" style="min-width:200px;">重新傳送</button>
+                        </div>
+                    }
                 }
+
+                <div class="row">
+                    @using (Html.BeginForm("SoaDetailQuery", "Soa", FormMethod.Post, new { @id = "QueryForm", role = "form" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.HiddenFor(x => x.HeaderField.ProcessCode, new { id = "ProcessCode" })
+                        @Html.HiddenFor(x => x.HeaderField.ServerCode, new { id = "ServerCode" })
+                        @Html.HiddenFor(x => x.HeaderField.BatchId, new { id = "BatchId" })
+
+                        <table class="table table-primary table-striped table-bordered dataTable">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.HeaderField.ProcessName)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.HeaderField.ProcessName)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.HeaderField.BatchId)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.HeaderField.RowNum)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.HeaderField.StatusCode)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.HeaderField.ErrorMsg)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.HeaderField.SoaPullingFlag)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.HeaderField.SoaErrorMsg)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.HeaderField.SoaProcessCode)
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        @Html.DisplayTextFor(model => model.HeaderField.ProcessName)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayTextFor(model => model.HeaderField.ProcessName)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayTextFor(model => model.HeaderField.BatchId)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayTextFor(model => model.HeaderField.RowNum)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayTextFor(model => model.HeaderField.StatusCode)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayTextFor(model => model.HeaderField.ErrorMsg)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayTextFor(model => model.HeaderField.SoaPullingFlag)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayTextFor(model => model.HeaderField.SoaErrorMsg)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayTextFor(model => model.HeaderField.SoaProcessCode)
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    }
+                </div>
+
+
             </div>
 
             <div class="box-header with-border" style="margin-top:20px;">

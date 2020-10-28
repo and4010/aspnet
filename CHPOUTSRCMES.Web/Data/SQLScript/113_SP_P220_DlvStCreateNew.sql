@@ -3,7 +3,7 @@
 -- Create date: 2020/08/31
 -- Description:	SOA DELIVERY_ST 資料接收
 -- =============================================
-ALTER PROCEDURE [dbo].[SP_P220_DlvStCreateNew]
+CREATE PROCEDURE [dbo].[SP_P220_DlvStCreateNew]
 	@processCode NVARCHAR(20),
 	@serverCode NVARCHAR(20),
 	@batchId NVARCHAR(20),

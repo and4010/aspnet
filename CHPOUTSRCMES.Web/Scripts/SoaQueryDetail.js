@@ -6,6 +6,46 @@ $(document).ready(function () {
         $('#BatchId').val()
     );
 
+    $('#btnResend').click(function (e) {
+        e.preventDefault();
+        swal.fire({
+            title: '重送資料?',
+            text: "您是否確定要將資料重新送回ERP?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: '傳送!'
+        }).then(function (result) {
+            if (result.value) {
+
+                $.ajax({
+                    url: '/Soa/LogOff',
+                    type: "POST",
+                    datatype: "json",
+                    data: {
+                        '__RequestVerificationToken': $('input[name=__RequestVerificationToken]').val(),
+                        'ProcessCode': '',
+                        'ServerCode': '',
+                        'BatchId' : ''
+                    },
+                    success: function (response) {
+                        if (response.status) {
+                            location.reload();
+                        }
+                    },
+                    error: function () {
+                        Swal.fire("發現未預期錯誤!!");
+                    }
+
+                });
+            }
+        });
+
+
+
+    })
+
 });
 
 
@@ -23,7 +63,7 @@ function loadTable(processCode, serverCode, batchId) {
             "<'row'<'col-sm-2'l><'col-sm-3'f>>" +
             "<'row'<'col-sm-12'tr>>" +
             "<'row'<'col-sm-5'i><'col-sm-7'p>>",
-        "lengthMenu": [[50, 100, 200, 500], [50, 100, 200, 500]],
+        "lengthMenu": [[100, 150, 200, 500], [100, 150, 200, 500]],
         ajax: {
             "url": "/Soa/SoaDetailQuery",
             "type": "POST",
