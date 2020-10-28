@@ -932,6 +932,8 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
 
                 stock.LastUpdateBy = lastUpdatedBy;
                 stock.LastUpdateDate = now;
+                stkTxnT.PryAftQty = stock.PrimaryAvailableQty;
+                stkTxnT.SecAftQty = stock.SecondaryAvailableQty;
                 stkTxnT.CreatedBy = lastUpdatedBy;
                 stkTxnT.CreationDate = now;
                 stkTxnT.LastUpdateBy = null;
