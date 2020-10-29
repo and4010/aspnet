@@ -531,7 +531,7 @@ function ProfitLoadProfitDetailDT() {
                             title: '刪除',
                             message: rows.length === 1 ?
                                 '你確定要刪除這筆資料?' :
-                                '請注意，您一次選擇多個不同的備註，此次異動將會變成同樣的備註！',
+                                '你確定要刪除這些資料?',
                             buttons:
                             {
                                 text: '刪除',

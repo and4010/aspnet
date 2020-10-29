@@ -1294,7 +1294,6 @@ SELECT d.BARCODE as Barocde
                             cmd.Append(@"
 ,i.SECONDARY_UOM_CODE as Unit
 ,FORMAT(d.TRANSFER_SECONDARY_QUANTITY,'0.##########') as Qty
-,d.LOT_NUMBER as LotNumber
 FROM [TRF_INVENTORY_T] d 
 INNER JOIN ITEMS_T i ON d.INVENTORY_ITEM_ID = i.INVENTORY_ITEM_ID
 WHERE d.BARCODE = @Barcode
@@ -1337,8 +1336,7 @@ SELECT s.BARCODE as Barocde
                             //平板 數量為明細的次單位異動量
                             cmd.Append(@"
 ,s.SECONDARY_UOM_CODE as Unit
-,FORMAT(d.AFTER_SECONDARY_QUANTITY,'0.##########') as Qty
-,d.LOT_NUMBER as LotNumber
+,FORMAT(d.TRANSFER_SECONDARY_QUANTITY,'0.##########') as Qty
 FROM [TRF_INVENTORY_T] d
 INNER JOIN TRF_INVENTORY_HEADER_T h ON d.TRANSFER_INVENTORY_HEADER_ID = h.TRANSFER_INVENTORY_HEADER_ID
 INNER JOIN STOCK_T s ON d.INVENTORY_ITEM_ID = s.INVENTORY_ITEM_ID
@@ -1350,7 +1348,7 @@ WHERE d.BARCODE = @Barcode  AND h.TRANSACTION_TYPE_ID = @TransactionTypeId
                             //捲筒 數量為明細的主單位異動量
                             cmd.Append(@"
 ,s.PRIMARY_UOM_CODE as Unit
-,FORMAT(d.AFTER_PRIMARY_QUANTITY,'0.##########') as Qty
+,FORMAT(d.TRANSFER_PRIMARY_QUANTITY,'0.##########') as Qty
 ,d.LOT_NUMBER as LotNumber
 FROM [TRF_INVENTORY_T] d
 INNER JOIN TRF_INVENTORY_HEADER_T h ON d.TRANSFER_INVENTORY_HEADER_ID = h.TRANSFER_INVENTORY_HEADER_ID
