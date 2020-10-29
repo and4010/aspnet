@@ -225,7 +225,7 @@ function serach() {
             cancelButtonText: '取消',
             confirmButtonText: '確認',
             showLoaderOnConfirm: true,
-            preConfirm: (text) => {
+            preConfirm: function (text){
                 if (text == "") {
                     Swal.showValidationMessage(
                         '櫃號不得空白'
@@ -233,7 +233,7 @@ function serach() {
                 }
             },
             allowOutsideClick: false
-        }).then((result) => {
+        }).then(function (result) {
             if (result.value) {
                 $.ajax({
                     url: '/Purchase/SearchCabinetNumber',

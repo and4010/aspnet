@@ -340,7 +340,7 @@ function ProcessLoadTable(Status, BatchNo, MachineNum, DueDateFrom, DueDateTo, C
 
                     return content;
 
-                }
+                }, orderable:false,
             }
         ],
 

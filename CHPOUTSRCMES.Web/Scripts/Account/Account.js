@@ -287,7 +287,8 @@ function Insert() {
 
     var valid = $('#EditForm').valid();
 
-    obj = document.getElementsByName("checkboxs");
+    //obj = document.getElementsByName("checkboxs");
+    obj = document.querySelectorAll('input[type=checkbox]');
     ORGANIZATIONID = [];
     ORGANIZATION_CODE = [];
     SUBINVENTORY_CODE = [];
@@ -310,13 +311,13 @@ function Insert() {
     }
 
     if (valid == false) {
-        if (SUBINVENTORY_CODE.length == 0) {
+        if (userSubinventory.length == 0) {
             document.getElementById("checkboxs").style.display = "block";
             return;
         }
         return;
     } else {
-        if (SUBINVENTORY_CODE.length == 0) {
+        if (userSubinventory.length == 0) {
             document.getElementById("checkboxs").style.display = "block";
             return;
         }
@@ -368,5 +369,4 @@ function clearItem() {
         obj[i].checked = obj.checked;
     }
 }
-
 
