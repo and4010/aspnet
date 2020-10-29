@@ -1643,6 +1643,10 @@
     <Content Include="Data\SQLScript\132_SP_P222_TrfMiscStSummarize.sql" />
     <Content Include="Data\SQLScript\133_SP_P222_TrfObsStSummarize.sql" />
     <Content Include="Data\SQLScript\134_SP_P221_ShipConfirmSummarize.sql" />
+    <Content Include="Data\SQLScript\135_SP_P219_CheckOspBatchSt.sql" />
+    <Content Include="Data\SQLScript\136_SP_P210_InMmtIngrStSummarize.sql" />
+    <Content Include="Data\SQLScript\137_SP_P211_InMmtProdStSummarize.sql" />
+    <Content Include="Data\SQLScript\138_SP_ClearSoaStage.sql" />
     <Content Include="Data\SQLScript\201_XXIF_CHP_CONTROL_ST.sql" />
     <Content Include="Data\SQLScript\202_XXIF_CHP_P217_CONTAINER_ST.sql" />
     <Content Include="Data\SQLScript\203_XXIF_CHP_P218_CONTAINER_RV_ST.sql" />
