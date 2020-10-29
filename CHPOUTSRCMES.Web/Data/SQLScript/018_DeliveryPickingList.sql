@@ -22,122 +22,122 @@ RETURNS @myTable TABLE(
 )
 AS
 BEGIN
---定義Cursor並打開
-DECLARE MyCursor Cursor FOR --宣告，名稱為MyCursor
+	--定義Cursor並打開
+	DECLARE MyCursor Cursor FOR --宣告，名稱為MyCursor
 
-SELECT
-CASE d.ITEM_CATEGORY WHEN '平版' then
-CEILING(CEILING(d.REQUESTED_SECONDARY_QUANTITY / ISNULL(y.PIECES_QTY,10)) / 2)
-else
-CEILING(CEILING(d.REQUESTED_PRIMARY_QUANTITY / 400)/2)
-end AS ROW_COUNT,
-CASE d.ITEM_CATEGORY WHEN '平版' then
-CEILING(d.REQUESTED_SECONDARY_QUANTITY / ISNULL(y.PIECES_QTY,10))
-else
-CEILING(d.REQUESTED_PRIMARY_QUANTITY / 400)
-end AS ROLL_REAM_QTY
- FROM DLV_DETAIL_T d
-join DLV_HEADER_T h  on h.DLV_HEADER_ID = d.DLV_HEADER_ID
-left join [YSZMPCKQ_T] y on
-CAST(d.BASIC_WEIGHT AS Decimal)  >= y.BWETDN AND CAST(d.BASIC_WEIGHT AS Decimal) <= y.BWETUP AND
-d.PAPER_TYPE = y.PSTYP AND 
- h.SUBINVENTORY_CODE = y.OSP_SUBINVENTORY
-WHERE h.TRIP_NAME = @TRIP_NAME
+	SELECT
+	CASE d.ITEM_CATEGORY WHEN '平版' then
+	CEILING(CEILING(d.REQUESTED_SECONDARY_QUANTITY / ISNULL(y.PIECES_QTY,10)) / 2)
+	else
+	CEILING(CEILING(d.REQUESTED_PRIMARY_QUANTITY / 400)/2)
+	end AS ROW_COUNT,
+	CASE d.ITEM_CATEGORY WHEN '平版' then
+	CEILING(d.REQUESTED_SECONDARY_QUANTITY / ISNULL(y.PIECES_QTY,10))
+	else
+	CEILING(d.REQUESTED_PRIMARY_QUANTITY / 400)
+	end AS ROLL_REAM_QTY
+	 FROM DLV_DETAIL_T d
+	join DLV_HEADER_T h  on h.DLV_HEADER_ID = d.DLV_HEADER_ID
+	left join [YSZMPCKQ_T] y on
+	CAST(d.BASIC_WEIGHT AS Decimal)  >= y.BWETDN AND CAST(d.BASIC_WEIGHT AS Decimal) <= y.BWETUP AND
+	d.PAPER_TYPE = y.PSTYP AND 
+	 h.SUBINVENTORY_CODE = y.OSP_SUBINVENTORY
+	WHERE h.TRIP_NAME = @TRIP_NAME
 
-Open MyCursor 
+	Open MyCursor 
 
---print @@CURSOR_rows --查看總筆數
+	--print @@CURSOR_rows --查看總筆數
 
-DECLARE @tempTable TABLE
-(
-PAGE_ID  [bigint]  NULL,
-GROUP_ID [bigint]  NULL,
-VISABLE [bigint]  NULL,
-ROLL_REAM_QTY [bigint] NULL
-)
+	DECLARE @tempTable TABLE
+	(
+	PAGE_ID  [bigint]  NULL,
+	GROUP_ID [bigint]  NULL,
+	VISABLE [bigint]  NULL,
+	ROLL_REAM_QTY [bigint] NULL
+	)
 
---定義ID變數
---declare @id bigint --用來存放ID的變數
-declare @rowCount bigint --ROW數
-declare @ROLL_REAM_QTY bigint --板捲數
-DECLARE @groupId INT = 1 --目前次數
-DECLARE @pageId INT = 1, @seqId INT = 1 --目前次數
-DECLARE @pageCount INT = 6
+	--定義ID變數
+	--declare @id bigint --用來存放ID的變數
+	declare @rowCount bigint --ROW數
+	declare @ROLL_REAM_QTY bigint --板捲數
+	DECLARE @groupId INT = 1 --目前次數
+	DECLARE @pageId INT = 1, @seqId INT = 1 --目前次數
+	DECLARE @pageCount INT = 6
 
---開始迴圈跑Cursor Start
-Fetch NEXT FROM MyCursor INTO @rowCount, @ROLL_REAM_QTY 
-While @@FETCH_STATUS = 0
-	BEGIN
-	DECLARE @Num INT  --目前ROW數
-	SET @Num =1
-	WHILE @Num <= @rowCount + 1
+	--開始迴圈跑Cursor Start
+	Fetch NEXT FROM MyCursor INTO @rowCount, @ROLL_REAM_QTY 
+	While @@FETCH_STATUS = 0
 		BEGIN
-		IF @Num = 1 --每個群組的第一筆
-		BEGIN
-			IF (@seqId = @pageCount and @pageId = 1)
+		DECLARE @Num INT  --目前ROW數
+		SET @Num =1
+		WHILE @Num <= @rowCount + 1
 			BEGIN
-				set @pageId = @pageId + 1
-				set @pageCount = 5
-				SET @seqId = 0
-			END
-			ELSE IF (@seqId = (@pageCount - 1))
+			IF @Num = 1 --每個群組的第一筆
 			BEGIN
-				set @pageId = @pageId + 1
-				set @pageCount = 5
-				SET @seqId = 0
+				IF (@seqId = @pageCount and @pageId = 1)
+				BEGIN
+					set @pageId = @pageId + 1
+					set @pageCount = 5
+					SET @seqId = 0
+				END
+				ELSE IF (@seqId = (@pageCount - 1))
+				BEGIN
+					set @pageId = @pageId + 1
+					set @pageCount = 5
+					SET @seqId = 0
+				END
+				INSERT INTO @tempTable (PAGE_ID, GROUP_ID, VISABLE, ROLL_REAM_QTY) VALUES (@pageId, @groupId, 1, @ROLL_REAM_QTY)
 			END
-			INSERT INTO @tempTable (PAGE_ID, GROUP_ID, VISABLE, ROLL_REAM_QTY) VALUES (@pageId, @groupId, 1, @ROLL_REAM_QTY)
+			ELSE
+			BEGIN
+				IF (@seqId >= @pageCount)
+				BEGIN
+					set @pageId = @pageId + 1
+					set @pageCount = 5
+					SET @seqId = 0
+					
+				END
+				INSERT INTO @tempTable (PAGE_ID, GROUP_ID, VISABLE, ROLL_REAM_QTY) VALUES (@pageId, @groupId, 0, @ROLL_REAM_QTY)
+			END
+			--設定目前次數+1
+			SET @Num = @Num + 1
+			SET @seqId = @seqId + 1
 		END
-		ELSE
-		BEGIN
-			IF (@seqId >= @pageCount)
-			BEGIN
-				set @pageId = @pageId + 1
-				set @pageCount = 5
-				SET @seqId = 0
-				
-			END
-			INSERT INTO @tempTable (PAGE_ID, GROUP_ID, VISABLE, ROLL_REAM_QTY) VALUES (@pageId, @groupId, 0, @ROLL_REAM_QTY)
-		END
-		--設定目前次數+1
-		SET @Num = @Num + 1
-		SET @seqId = @seqId + 1
+		SET @groupId = @groupId + 1
+	Fetch NEXT FROM MyCursor INTO @rowCount, @ROLL_REAM_QTY
 	END
-	SET @groupId = @groupId + 1
-Fetch NEXT FROM MyCursor INTO @rowCount, @ROLL_REAM_QTY
-END
---開始迴圈跑Cursor End
+	--開始迴圈跑Cursor End
 
---關閉&釋放cursor
-CLOSE MyCursor
-DEALLOCATE MyCursor
-INSERT @myTable
-SELECT  ROW_NUMBER() OVER(ORDER BY A.GROUP_ID) AS SUB_ID,
-B.PAGE_ID, B.VISABLE, A.*,B.ROLL_REAM_QTY
- FROM 
-(
-SELECT
-ROW_NUMBER() OVER(ORDER BY h.DLV_HEADER_ID) AS GROUP_ID,
-h.TRIP_NAME AS TRIP_NAME,
-h.FREIGHT_TERMS_NAME AS FREIGHT_TERMS_NAME,
-h.DELIVERY_NAME AS DELIVERY_NAME,
-h.CUSTOMER_NAME AS CUSTOMER_NAME,
-d.PAPER_TYPE AS PAPER_TYPE,
-d.BASIC_WEIGHT AS BASIC_WEIGHT,
-d.SPECIFICATION AS SPECIFICATION,
-d.GRAIN_DIRECTION AS GRAIN_DIRECTION,
-d.PACKING_TYPE AS PACKING_TYPE,
-d.REQUESTED_SECONDARY_QUANTITY AS REQUESTED_SECONDARY_QUANTITY,
-d.REQUESTED_SECONDARY_UOM AS REQUESTED_SECONDARY_UOM,
-d.REQUESTED_PRIMARY_QUANTITY AS REQUESTED_PRIMARY_QUANTITY,
-d.REQUESTED_PRIMARY_UOM AS REQUESTED_PRIMARY_UOM,
-h.NOTE AS NOTE
-FROM DLV_HEADER_T h
-INNER JOIN DLV_DETAIL_T d on h.DLV_HEADER_ID = d.DLV_HEADER_ID
-WHERE h.TRIP_NAME = @TRIP_NAME
-) A
-left JOIN @tempTable B ON A.GROUP_ID = B.GROUP_ID
-RETURN
+	--關閉&釋放cursor
+	CLOSE MyCursor
+	DEALLOCATE MyCursor
+	INSERT @myTable
+	SELECT  ROW_NUMBER() OVER(ORDER BY A.GROUP_ID) AS SUB_ID,
+	B.PAGE_ID, B.VISABLE, A.*,B.ROLL_REAM_QTY
+	 FROM 
+	(
+	SELECT
+	ROW_NUMBER() OVER(ORDER BY h.DLV_HEADER_ID) AS GROUP_ID,
+	h.TRIP_NAME AS TRIP_NAME,
+	h.FREIGHT_TERMS_NAME AS FREIGHT_TERMS_NAME,
+	h.DELIVERY_NAME AS DELIVERY_NAME,
+	h.CUSTOMER_NAME AS CUSTOMER_NAME,
+	d.PAPER_TYPE AS PAPER_TYPE,
+	d.BASIC_WEIGHT AS BASIC_WEIGHT,
+	d.SPECIFICATION AS SPECIFICATION,
+	d.GRAIN_DIRECTION AS GRAIN_DIRECTION,
+	d.PACKING_TYPE AS PACKING_TYPE,
+	d.REQUESTED_SECONDARY_QUANTITY AS REQUESTED_SECONDARY_QUANTITY,
+	d.REQUESTED_SECONDARY_UOM AS REQUESTED_SECONDARY_UOM,
+	d.REQUESTED_PRIMARY_QUANTITY AS REQUESTED_PRIMARY_QUANTITY,
+	d.REQUESTED_PRIMARY_UOM AS REQUESTED_PRIMARY_UOM,
+	h.NOTE AS NOTE
+	FROM DLV_HEADER_T h
+	INNER JOIN DLV_DETAIL_T d on h.DLV_HEADER_ID = d.DLV_HEADER_ID
+	WHERE h.TRIP_NAME = @TRIP_NAME
+	) A
+	left JOIN @tempTable B ON A.GROUP_ID = B.GROUP_ID
+	RETURN
 END
-GO
+
 

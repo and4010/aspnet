@@ -452,7 +452,7 @@ namespace CHPOUTSRCMES.TASK.Models.Service
         /// <returns></returns>
         internal ResultModel ReimportItem(SqlConnection sqlConn, SqlTransaction trans, MasterUOW masterUOW, string tableName, string spName, string mapTableName, string mapSpName)
         {
-            long dividedCount = 5000;
+            long dividedCount = 300000;
 
             BulkCopier bCopier = new BulkCopier(sqlConn, trans);
 
