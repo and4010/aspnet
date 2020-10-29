@@ -10,7 +10,7 @@ var GlobalFunc = {
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
             confirmButtonText: '登出!'
-        }).then((result) => {
+        }).then(function (result){
             if (result.value) {
                 
                 $.ajax({

@@ -15,7 +15,8 @@ function Edit() {
 
     var valid = $('#EditForm').valid();
 
-    obj = document.getElementsByName("checkboxs");
+    //obj = document.getElementsByName("checkbox");
+    obj = document.querySelectorAll('input[type=checkbox]');
     ORGANIZATIONID = [];
     ORGANIZATION_CODE = [];
     SUBINVENTORY_CODE = [];
@@ -37,18 +38,23 @@ function Edit() {
         }
     }
 
+
     if (valid == false) {
-        if (SUBINVENTORY_CODE.length == 0) {
+        if (userSubinventory.length == 0) {
             document.getElementById("checkboxs").style.display = "block";
             return;
         }
         return;
     } else {
-        if (SUBINVENTORY_CODE.length == 0) {
+        if (userSubinventory.length == 0) {
             document.getElementById("checkboxs").style.display = "block";
             return;
         }
     }
+
+
+
+
     var rolename = $('#ddlRoleName').val();
 
     var accountModel = {

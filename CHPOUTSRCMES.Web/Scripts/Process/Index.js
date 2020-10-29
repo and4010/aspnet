@@ -187,7 +187,6 @@ function ProcessLoadTable(Status, BatchNo, MachineNum, DueDateFrom, DueDateTo, C
                 text: '匯出Excel'
             },
         ],
-        "order": [[5, "desc"]], //單號排序
         columnDefs: [{
             orderable: false, targets: [0, 24], width: "60px",
         }],
