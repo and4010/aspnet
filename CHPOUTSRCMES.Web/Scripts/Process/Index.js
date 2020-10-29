@@ -364,19 +364,19 @@ function BtnEvent() {
             swal.fire("排單只能選擇一項");
             return;
         }
-        if (rowData == null) {
+        if (selectRowData.length >1 ) {
             swal.fire("請先選擇一項");
             return;
         }
-        var Status = rowData.pluck('Status')[0]
+        var Status = selectRowData.pluck('Status')[0]
         if (Status != WaitBatch) {
             swal.fire("加工狀態不正確，重新選擇");
             return;
         }
-        var OspHeaderId = rowData.pluck('OspHeaderId')[0]
-        var PaperType = rowData.pluck('PaperType')[0]
-        var SrcOspHeaderId = rowData.pluck('SrcOspHeaderId')[0]
-        var BatchType = rowData.pluck('BatchType')[0]
+        var OspHeaderId = selectRowData.pluck('OspHeaderId')[0]
+        var PaperType = selectRowData.pluck('PaperType')[0]
+        var SrcOspHeaderId = selectRowData.pluck('SrcOspHeaderId')[0]
+        var BatchType = selectRowData.pluck('BatchType')[0]
 
         
         if (BatchType == "REP" && SrcOspHeaderId) {
@@ -409,13 +409,13 @@ function BtnEvent() {
             swal.fire("關帳只能選擇一項");
             return;
         }
-        if (rowData == null) {
+        if (selectRowData == null) {
             swal.fire("請先選擇一項")
             return;
         }
         var BtnCloss = CloseBatch;
-        var Status = rowData.pluck('Status')[0]
-        var OspHeaderId = rowData.pluck('OspHeaderId')[0]
+        var Status = selectRowData.pluck('Status')[0]
+        var OspHeaderId = selectRowData.pluck('OspHeaderId')[0]
         if (Status == CompletedBatch) {
             changeStatus(OspHeaderId, BtnCloss);
         } else {
@@ -432,14 +432,14 @@ function BtnEvent() {
             swal.fire("排單只能選擇一項");
             return;
         }
-        if (rowData == null) {
+        if (selectRowData == null) {
             swal.fire("請先選擇一項");
             return;
         }
-        var Status = rowData.pluck('Status')[0]
-        var OspHeaderId = rowData.pluck('OspHeaderId')[0]
-        var PaperType = rowData.pluck('PaperType')[0]
-        var BatchType = rowData.pluck('BatchType')[0]
+        var Status = selectRowData.pluck('Status')[0]
+        var OspHeaderId = selectRowData.pluck('OspHeaderId')[0]
+        var PaperType = selectRowData.pluck('PaperType')[0]
+        var BatchType = selectRowData.pluck('BatchType')[0]
         if (Status == DwellBatch) {
             orderProcess(PaperType, OspHeaderId, BatchType);
 
@@ -478,7 +478,7 @@ function BtnEvent() {
 
         var millisecondsToWait = 500;
         for (i = 0; i < headerList.length; i++) {
-            
+   
             window.open("/Home/OspCutReceiptReport/?OspHeaderId=" + headerList[i]);
         }
 
@@ -514,7 +514,7 @@ function cutMaterial_onclick() {
     }
 
     for (i = 0; i < headerList.length; i++) {
-        sleep(millisecondsToWait);
+   
         window.open("/Home/OspReport/?OspHeaderId=" + headerList[i]);
     }
 
