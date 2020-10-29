@@ -7,11 +7,17 @@
     <script src="~/Scripts/StockQueryDetailPhotoView.js"></script>
 }
 
-@Html.HiddenFor(m =>m.StockId,new { @id = "StockId" })
+@Html.HiddenFor(m => m.StockId, new { @id = "StockId" })
 
 <div class="row">
     <div class="col col-md-12">
         <div class="box box-success">
+            <div class="box-header with-border">
+                <h4>
+                    @Html.LabelFor(m => m.ItemNumber, new { @class = "", })
+                    @Html.DisplayFor(m => m.ItemNumber, new { @class = "", })
+                </h4>
+            </div>
             <div class="box-body">
                 <div class="col-md-4" id="saveBox">
 

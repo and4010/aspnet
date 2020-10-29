@@ -16,8 +16,7 @@ $(document).ready(function () {
             return false;
         };
 
-        window.location = "/Stock/PhotoView/" + Id;
-
+        window.location = "/Stock/PhotoView?Id=" + Id +"&ItemNumber=" + data.ItemNumber;
     })
 
 });

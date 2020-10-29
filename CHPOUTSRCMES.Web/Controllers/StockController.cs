@@ -20,10 +20,11 @@ namespace CHPOUTSRCMES.Web.Controllers
             return View();
         }
 
-        public ActionResult PhotoView(string Id)
+        public ActionResult PhotoView(string Id , string ItemNumber)
         {
             StockDetailQueryModel stockDetailQueryModel = new StockDetailQueryModel();
             stockDetailQueryModel.StockId = System.Int64.Parse(Id);
+            stockDetailQueryModel.ItemNumber = ItemNumber;
             return View(stockDetailQueryModel);
         }
 
