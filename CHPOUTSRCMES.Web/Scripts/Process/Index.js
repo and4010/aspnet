@@ -478,7 +478,7 @@ function BtnEvent() {
 
         var millisecondsToWait = 500;
         for (i = 0; i < headerList.length; i++) {
-            
+   
             window.open("/Home/OspCutReceiptReport/?OspHeaderId=" + headerList[i]);
         }
 
@@ -514,7 +514,7 @@ function cutMaterial_onclick() {
     }
 
     for (i = 0; i < headerList.length; i++) {
-        sleep(millisecondsToWait);
+   
         window.open("/Home/OspReport/?OspHeaderId=" + headerList[i]);
     }
 
