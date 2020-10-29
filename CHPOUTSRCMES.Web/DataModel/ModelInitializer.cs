@@ -1,4 +1,5 @@
 ﻿using CHPOUTSRCMES.Web.DataModel.UnitOfWorks;
+using CHPOUTSRCMES.Web.Migrations;
 using NLog;
 using NPOI.HSSF.UserModel;
 using NPOI.OpenXmlFormats.Dml;
@@ -10,24 +11,24 @@ using System.IO;
 
 namespace CHPOUTSRCMES.Web.DataModel
 {
-    internal class ModelInitializer : CreateDatabaseIfNotExists<MesContext>
+    internal class ModelInitializer : MigrateDatabaseToLatestVersion<MesContext, Configuration>
     {
 
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
-        protected override void Seed(MesContext context)
-        {
+        //protected override void Seed(MesContext context)
+        //{
 
-            executeSqlScript(context);
-            //readUsersXls(context);
-            //readFromXls(context);
-            //new PurchaseUOW(context).generateTestData();
-            //new DeliveryUOW(context).generateTestData();
-            //new MasterUOW(context).generateStockTestData();
-            //new ProcessUOW(context).generateTestData();
-            base.Seed(context);
+        //    executeSqlScript(context);
+        //    //readUsersXls(context);
+        //    //readFromXls(context);
+        //    //new PurchaseUOW(context).generateTestData();
+        //    //new DeliveryUOW(context).generateTestData();
+        //    //new MasterUOW(context).generateStockTestData();
+        //    //new ProcessUOW(context).generateTestData();
+        //    base.Seed(context);
 
-        }
+        //}
 
         internal static void executeSqlScript(MesContext context)
         {

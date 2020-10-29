@@ -417,6 +417,11 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Jsons\Requests\AutoCompletedItem.cs" />
+    <Compile Include="Migrations\202010291223592_init_build.cs" />
+    <Compile Include="Migrations\202010291223592_init_build.Designer.cs">
+      <DependentUpon>202010291223592_init_build.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Delivery\FlatEditBarcodeDT.cs" />
     <Compile Include="Models\Delivery\FlatEditDT.cs" />
     <Compile Include="Models\Delivery\PaperRollEditBarcodeDT.cs" />
@@ -1983,7 +1988,7 @@
     <Content Include="bower_components\adminlte\css\.DS_Store" />
     <Content Include="bower_components\adminlte\css\skins\.DS_Store" />
     <Content Include="bower_components\adminlte\js\.DS_Store" />
-    <Content Include="Data\Excel\ERP_20200807.xlsx" />
+    <None Include="Data\Excel\ERP_20200807.xlsx" />
     <Content Include="bower_components\theme-login\fonts\Roboto\Roboto-Regular.ttf" />
     <Content Include="bower_components\theme-login\fonts\Roboto\Roboto-Black.ttf" />
     <Content Include="bower_components\theme-login\fonts\Roboto\Roboto-BlackItalic.ttf" />
@@ -1996,7 +2001,7 @@
     <Content Include="bower_components\theme-login\fonts\Roboto\Roboto-MediumItalic.ttf" />
     <Content Include="bower_components\theme-login\fonts\Roboto\Roboto-Thin.ttf" />
     <Content Include="bower_components\theme-login\fonts\Roboto\Roboto-ThinItalic.ttf" />
-    <Content Include="Data\Excel\MES_20200903.xlsx" />
+    <None Include="Data\Excel\MES_20200903.xlsx" />
     <Content Include="File\期初開帳範例.zip" />
     <Content Include="ReportViewerWebForm.aspx" />
     <None Include="NLog.xsd">
@@ -2013,6 +2018,8 @@
     <Content Include="Report\DeliveryPickingList.rdlc" />
     <Content Include="Report\InboundFlatPickingList.rdlc" />
     <Content Include="Report\InboundRollPickingList.rdlc" />
+    <None Include="Properties\PublishProfiles\元譯環境發佈.pubxml" />
+    <None Include="Properties\PublishProfiles\華紙環境發佈.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\Delivery\DetailViewHeader.js" />
     <Content Include="Scripts\Delivery\FlatEdit.js" />
@@ -2207,6 +2214,11 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\202010291223592_init_build.resx">
+      <DependentUpon>202010291223592_init_build.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
