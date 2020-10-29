@@ -187,7 +187,7 @@ function table() {
         buttons: [
             {
                 extend: 'create',
-                editor: editor
+                editor: editor,
             },
             {
                 extend: "selected",

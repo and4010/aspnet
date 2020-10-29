@@ -119,6 +119,7 @@ $(document).ready(function () {
 function onclick() {
     //列印標籤紙捲
     $('#PaperRollLabel').on('click', function (e) {
+        var Status = $("#Status").val();
         if (Status == 0) {
             swal.fire("已入庫無法列印");
             return;
@@ -136,6 +137,7 @@ function onclick() {
 
     //列印標籤平張
     $('#FlatLabel').on('click', function (e) {
+        var Status = $("#Status").val();
         if (Status == 0) {
             swal.fire("已入庫無法列印");
             return;
@@ -154,6 +156,7 @@ function onclick() {
 
 
     $('#BtnPaperRollReport').click(function () {
+        var Status = $("#Status").val();
         if (Status == 0) {
             swal.fire("已入庫無法列印");
             return;
@@ -167,6 +170,7 @@ function onclick() {
     });
 
     $('#BtnFlatReport').click(function () {
+        var Status = $("#Status").val();
         if (Status == 0) {
             swal.fire("已入庫無法列印");
             return;
