@@ -452,56 +452,72 @@ function BtnEvent() {
     });
 
 
-    $('#BtnCutReceipt').click(async function () {
-        if (rowData.pluck('Status')[0] == WaitBatch) {
-            swal.fire("請先排單，再列印裁切單。");
-            return;
-        }
-        if (rowData.pluck('Status')[0] == CompletedBatch) {
-            swal.fire("已完工，無法列印");
-            return;
-        }
-        if (rowData.pluck('Status')[0] == CloseBatch) {
-            swal.fire("關帳，無法列印。");
-            return;
-        }
+    $('#BtnCutReceipt').click(function () {
+
+        var headerList = []
+
         var selectRowData = ProcessDataTables.rows('.selected').data();
-        var millisecondsToWait = 500;
+
         for (i = 0; i < selectRowData.length; i++) {
-            await sleep(millisecondsToWait);
-            var ospHeaderId = selectRowData.pluck('OspHeaderId')[i];
-            window.open("/Home/OspCutReceiptReport/?OspHeaderId=" + ospHeaderId);
-            //millisecondsToWait = millisecondsToWait + 1000;
+            switch (selectRowData.pluck('Status')[i]) {
+                case WaitBatch:
+                    swal.fire(selectRowData.pluck('BatchNo')[i] + "請先排單，再列印裁切單。");
+                    return;
+                case CompletedBatch:
+                    swal.fire(selectRowData.pluck('BatchNo')[i] + "已完工，無法列印");
+                    return;
+                case CloseBatch:
+                    swal.fire(selectRowData.pluck('BatchNo')[i] + "已關帳，無法列印。");
+                    return;
+            }
+
+            if (selectRowData.pluck('BatchType')[i] == "OSP") {
+                headerList.push(selectRowData.pluck('OspHeaderId')[i]);
+            }
         }
-        //window.open("/Home/OspCutReceiptReport/?OspHeaderId=" + OspHeaderId);
+
+        var millisecondsToWait = 500;
+        for (i = 0; i < headerList.length; i++) {
+            
+            window.open("/Home/OspCutReceiptReport/?OspHeaderId=" + headerList[i]);
+        }
 
     });
-    $('#BtnCutMaterial').click(function () {
-        if (rowData.pluck('Status')[0] == WaitBatch) {
-            swal.fire("請先排單，再列印領料單。");
-            return;
-        }
-        if (rowData.pluck('Status')[0] == CompletedBatch) {
-            swal.fire("已完工，無法列印");
-            return;
-        }
-        if (rowData.pluck('Status')[0] == CloseBatch) {
-            swal.fire("關帳，無法列印。");
-            return;
-        }
-        var selectRowData = ProcessDataTables.rows('.selected').data();
-        var OspHeaderId = rowData.pluck('OspHeaderId')
-        for (i = 0; i < selectRowData.length; i++) {
-            window.open("/Home/OspReport/?OspHeaderId=" + selectRowData.pluck('OspHeaderId')[i]);
-        }
-       
-    });
+    $('#BtnCutMaterial').click(cutMaterial_onclick);
 }
 
 function sleep(time) {
-    return new Promise((resolve) => {
+    return new Promise( function (resolve) {
         setTimeout(resolve, time || 1000);
-    });
+    } );
+}
+
+function cutMaterial_onclick() {
+    var headerList = []
+
+    var selectRowData = ProcessDataTables.rows('.selected').data();
+
+    for (i = 0; i < selectRowData.length; i++) {
+        switch (selectRowData.pluck('Status')[i]) {
+            case WaitBatch:
+                swal.fire(selectRowData.pluck('BatchNo')[i] + "請先排單，再列印領料單。");
+                return;
+            case CompletedBatch:
+                swal.fire(selectRowData.pluck('BatchNo')[i] + "已完工，無法列印");
+                return;
+            case CloseBatch:
+                swal.fire(selectRowData.pluck('BatchNo')[i] + "已關帳，無法列印。");
+                return;
+        }
+        headerList.push(selectRowData.pluck('OspHeaderId')[i]);
+        
+    }
+
+    for (i = 0; i < headerList.length; i++) {
+        sleep(millisecondsToWait);
+        window.open("/Home/OspReport/?OspHeaderId=" + headerList[i]);
+    }
+
 }
 
 //排單

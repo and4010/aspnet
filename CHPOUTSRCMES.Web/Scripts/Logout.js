@@ -13,7 +13,8 @@ function logout() {
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
-        confirmButtonText: '登出!'
+        confirmButtonText: '登出!',
+        cancelButtonText: '取消',
     }).then(function (result) {
         if (result.value) {
 

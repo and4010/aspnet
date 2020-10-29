@@ -281,6 +281,8 @@ namespace CHPOUTSRCMES.Web.Controllers
             report.ServerReport.ReportServerUrl = new Uri("http://rs.yfy.com/ReportServer");
             report.ServerReport.SetParameters(paramList);
             report.ServerReport.Refresh();
+            report.ServerReport.Timeout = 120;
+            report.KeepSessionAlive = true;
             ViewBag.ReportViewer = report;
             return View("Report");
         }

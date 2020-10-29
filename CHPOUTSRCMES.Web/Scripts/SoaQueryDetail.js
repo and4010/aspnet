@@ -15,6 +15,7 @@ $(document).ready(function () {
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
+            cancelButtonText: '取消',
             confirmButtonText: '傳送!'
         }).then(function (result) {
             if (result.value) {
@@ -31,6 +32,7 @@ $(document).ready(function () {
                     },
                     success: function (data) {
                         if (data.Success) {
+
                             location.reload();
                         } else {
                             Swal.fire(data.Msg);

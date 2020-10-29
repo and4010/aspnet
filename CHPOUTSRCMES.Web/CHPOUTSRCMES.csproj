@@ -1666,7 +1666,6 @@
     <Content Include="Img\login_1.jpg" />
     <Content Include="Img\paper2.png" />
     <Content Include="pngtree.jpg" />
-    <Content Include="ReportViewerWebForm.aspx" />
     <Content Include="Scripts\Account\ChangePassword.js" />
     <Content Include="Scripts\Account\Edit.js" />
     <Content Include="Scripts\bootstrap.js" />
@@ -2097,6 +2096,7 @@
     <Content Include="bower_components\theme-login\fonts\Roboto\Roboto-ThinItalic.ttf" />
     <Content Include="Data\Excel\MES_20200903.xlsx" />
     <Content Include="File\期初開帳範例.zip" />
+    <Content Include="ReportViewerWebForm.aspx" />
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>
