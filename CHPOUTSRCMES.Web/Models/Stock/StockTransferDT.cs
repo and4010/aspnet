@@ -1670,6 +1670,7 @@ namespace CHPOUTSRCMES.Web.Models.Stock
         {
             try
             {
+                string KeyName = System.Web.Configuration.WebConfigurationManager.AppSettings["reportServerUrl"];
                 List<ReportParameter> paramList = new List<ReportParameter>();
                 paramList.Add(new ReportParameter("SHIPMENT_NUMBER", shipmentNumber, false));
 
@@ -1679,7 +1680,7 @@ namespace CHPOUTSRCMES.Web.Models.Stock
                 report.SizeToReportContent = true;
                 report.BorderWidth = 1;
                 report.BorderStyle = BorderStyle.Solid;
-                report.ServerReport.ReportPath = "/開發區/CHPOUSMES/OutboundPickingList";
+                report.ServerReport.ReportPath = KeyName + "/OutboundPickingList";
                 report.ServerReport.ReportServerUrl = new Uri("http://rs.yfy.com/ReportServer");
                 report.ServerReport.SetParameters(paramList);
                 report.ServerReport.Refresh();
@@ -1733,6 +1734,7 @@ namespace CHPOUTSRCMES.Web.Models.Stock
         {
             try
             {
+                string KeyName = System.Web.Configuration.WebConfigurationManager.AppSettings["reportServerUrl"];
                 List<ReportParameter> paramList = new List<ReportParameter>();
                 paramList.Add(new ReportParameter("SHIPMENT_NUMBER", shipmentNumber, false));
 
@@ -1742,7 +1744,7 @@ namespace CHPOUTSRCMES.Web.Models.Stock
                 report.SizeToReportContent = true;
                 report.BorderWidth = 1;
                 report.BorderStyle = BorderStyle.Solid;
-                report.ServerReport.ReportPath = "/開發區/CHPOUSMES/InboundRollPickingList";
+                report.ServerReport.ReportPath = KeyName + "/InboundRollPickingList";
                 report.ServerReport.ReportServerUrl = new Uri("http://rs.yfy.com/ReportServer");
                 report.ServerReport.SetParameters(paramList);
                 report.ServerReport.Refresh();
@@ -1796,6 +1798,7 @@ namespace CHPOUTSRCMES.Web.Models.Stock
         {
             try
             {
+                string KeyName = System.Web.Configuration.WebConfigurationManager.AppSettings["reportServerUrl"];
                 List<ReportParameter> paramList = new List<ReportParameter>();
                 paramList.Add(new ReportParameter("SHIPMENT_NUMBER", shipmentNumber, false));
 
@@ -1805,7 +1808,7 @@ namespace CHPOUTSRCMES.Web.Models.Stock
                 report.SizeToReportContent = true;
                 report.BorderWidth = 1;
                 report.BorderStyle = BorderStyle.Solid;
-                report.ServerReport.ReportPath = "/開發區/CHPOUSMES/InboundFlatPickingList";
+                report.ServerReport.ReportPath = KeyName + "/InboundFlatPickingList";
                 report.ServerReport.ReportServerUrl = new Uri("http://rs.yfy.com/ReportServer");
                 report.ServerReport.SetParameters(paramList);
                 report.ServerReport.Refresh();

@@ -195,6 +195,7 @@ namespace CHPOUTSRCMES.Web.Controllers
 
         public ActionResult RemoteReport(string CtrHeaderId, string ItemCategory)
         {
+            string KeyName = System.Web.Configuration.WebConfigurationManager.AppSettings["reportServerUrl"];
             List<ReportParameter> paramList = new List<ReportParameter>();
             paramList.Add(new ReportParameter("CTR_HEADER_ID", CtrHeaderId, false));
             paramList.Add(new ReportParameter("ITEM_CATEGORY", ItemCategory, false));
@@ -206,11 +207,11 @@ namespace CHPOUTSRCMES.Web.Controllers
             report.BackColor = Color.LightGray;
             if (ItemCategory == Flat)
             {
-                report.ServerReport.ReportPath = "/開發區/CHPOUSMES/PurchaseFlat";
+                report.ServerReport.ReportPath = KeyName + "/PurchaseFlat";
             }
             else
             {
-                report.ServerReport.ReportPath = "/開發區/CHPOUSMES/PurchasePaperRoll";
+                report.ServerReport.ReportPath = KeyName + "/PurchasePaperRoll";
             }
             report.ServerReport.ReportServerUrl = new Uri("http://rs.yfy.com/ReportServer");
             report.ServerReport.SetParameters(paramList);
@@ -269,6 +270,7 @@ namespace CHPOUTSRCMES.Web.Controllers
 
         public ActionResult OspRemoteReport(string OspHeaderId)
         {
+            string KeyName = System.Web.Configuration.WebConfigurationManager.AppSettings["reportServerUrl"];
             List<ReportParameter> paramList = new List<ReportParameter>();
             paramList.Add(new ReportParameter("OSP_HEADER_ID", OspHeaderId, false));
             var report = new ReportViewer();
@@ -277,7 +279,7 @@ namespace CHPOUTSRCMES.Web.Controllers
             report.BorderStyle = BorderStyle.Solid;
             report.BorderWidth = 1;
             report.BackColor = Color.LightGray;
-            report.ServerReport.ReportPath = "/開發區/CHPOUSMES/ProcessCutMaterial";
+            report.ServerReport.ReportPath = KeyName + "/ProcessCutMaterial";
             report.ServerReport.ReportServerUrl = new Uri("http://rs.yfy.com/ReportServer");
             report.ServerReport.SetParameters(paramList);
             report.ServerReport.Refresh();
@@ -351,6 +353,7 @@ namespace CHPOUTSRCMES.Web.Controllers
             {
                 using (ProcessUOW uow = new ProcessUOW(context))
                 {
+                    string KeyName = System.Web.Configuration.WebConfigurationManager.AppSettings["reportServerUrl"];
                     if (!long.TryParse(OspHeaderId, out long ospHeaderId))
                     {
                         throw new ArgumentException("HEADER ID ERROR");
@@ -366,7 +369,7 @@ namespace CHPOUTSRCMES.Web.Controllers
                     report.BorderStyle = BorderStyle.Solid;
                     report.BorderWidth = 1;
                     report.BackColor = Color.LightGray;
-                    report.ServerReport.ReportPath = "/開發區/CHPOUSMES/ProcessCutReceipt";
+                    report.ServerReport.ReportPath = KeyName + "/ProcessCutReceipt";
                     report.ServerReport.ReportServerUrl = new Uri("http://rs.yfy.com/ReportServer");
                     report.ServerReport.SetParameters(paramList);
                     report.ServerReport.Refresh();
@@ -430,6 +433,7 @@ namespace CHPOUTSRCMES.Web.Controllers
 
         public ActionResult OspRemoteStockReport(string OspHeaderId)
         {
+            string KeyName = System.Web.Configuration.WebConfigurationManager.AppSettings["reportServerUrl"];
             List<ReportParameter> paramList = new List<ReportParameter>();
             paramList.Add(new ReportParameter("OSP_HEADER_ID", OspHeaderId, false));
             var report = new ReportViewer();
@@ -438,7 +442,7 @@ namespace CHPOUTSRCMES.Web.Controllers
             report.BorderStyle = BorderStyle.Solid;
             report.BorderWidth = 1;
             report.BackColor = Color.LightGray;
-            report.ServerReport.ReportPath = "/開發區/CHPOUSMES/CutStock";
+            report.ServerReport.ReportPath = KeyName + "/CutStock";
             report.ServerReport.ReportServerUrl = new Uri("http://rs.yfy.com/ReportServer");
             report.ServerReport.SetParameters(paramList);
             report.ServerReport.Refresh();
@@ -496,6 +500,7 @@ namespace CHPOUTSRCMES.Web.Controllers
 
         public ActionResult OspRemotePaperRollerStockReport(string OspHeaderId)
         {
+            string KeyName = System.Web.Configuration.WebConfigurationManager.AppSettings["reportServerUrl"];
             List<ReportParameter> paramList = new List<ReportParameter>();
             paramList.Add(new ReportParameter("OSP_HEADER_ID", OspHeaderId, false));
             var report = new ReportViewer();
@@ -504,7 +509,7 @@ namespace CHPOUTSRCMES.Web.Controllers
             report.BorderStyle = BorderStyle.Solid;
             report.BorderWidth = 1;
             report.BackColor = Color.LightGray;
-            report.ServerReport.ReportPath = "/開發區/CHPOUSMES/OspCutPaperRollStock";
+            report.ServerReport.ReportPath = KeyName + "/OspCutPaperRollStock";
             report.ServerReport.ReportServerUrl = new Uri("http://rs.yfy.com/ReportServer");
             report.ServerReport.SetParameters(paramList);
             report.ServerReport.Refresh();
@@ -562,6 +567,7 @@ namespace CHPOUTSRCMES.Web.Controllers
 
         public ActionResult OspRemoteFlatStockReport(string OspHeaderId)
         {
+            string KeyName = System.Web.Configuration.WebConfigurationManager.AppSettings["reportServerUrl"];
             List<ReportParameter> paramList = new List<ReportParameter>();
             paramList.Add(new ReportParameter("OSP_HEADER_ID", OspHeaderId, false));
             var report = new ReportViewer();
@@ -570,7 +576,7 @@ namespace CHPOUTSRCMES.Web.Controllers
             report.BorderStyle = BorderStyle.Solid;
             report.BorderWidth = 1;
             report.BackColor = Color.LightGray;
-            report.ServerReport.ReportPath = "/開發區/CHPOUSMES/OspReplaceFlatStock";
+            report.ServerReport.ReportPath = KeyName + "/OspReplaceFlatStock";
             report.ServerReport.ReportServerUrl = new Uri("http://rs.yfy.com/ReportServer");
             report.ServerReport.SetParameters(paramList);
             report.ServerReport.Refresh();

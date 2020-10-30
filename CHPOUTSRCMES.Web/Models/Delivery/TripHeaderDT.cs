@@ -541,6 +541,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
         {
             try
             {
+                string KeyName = System.Web.Configuration.WebConfigurationManager.AppSettings["reportServerUrl"];
                 List<ReportParameter> paramList = new List<ReportParameter>();
                 paramList.Add(new ReportParameter("TRIP_NAME", tripName, false));
 
@@ -550,7 +551,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
                 report.SizeToReportContent = true;
                 report.BorderWidth = 1;
                 report.BorderStyle = BorderStyle.Solid;
-                report.ServerReport.ReportPath = "/開發區/CHPOUSMES/DeliveryPickingList";
+                report.ServerReport.ReportPath = KeyName + "/DeliveryPickingList";
                 report.ServerReport.ReportServerUrl = new Uri("http://rs.yfy.com/ReportServer");
                 report.ServerReport.SetParameters(paramList);
                 report.ServerReport.Refresh();                
