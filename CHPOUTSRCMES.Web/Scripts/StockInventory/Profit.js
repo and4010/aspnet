@@ -595,6 +595,9 @@ function ProfitLoadProfitDetailDT() {
                 {
                     text: '編輯備註',
                     className: 'btn-danger',
+                    init: function (api, node, config) {
+                        $(node).removeClass('btn-default')
+                    },
                     action: function (e, dt, node, config) {
                         var count = dt.rows({ selected: true }).count();
 
