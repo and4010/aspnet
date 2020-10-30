@@ -3,6 +3,8 @@ var editor;
 var StockDT;
 
 $(document).ready(function () {
+    //$.fn.dataTable.Buttons.defaults.dom.button.className = 'btn'; //datatable button 預設的class btn btn-default 改為 btn
+    //$.fn.dataTable.Editor.classes.form.button = 'btn'; //editor button 預設的class btn btn-default 改為 btn
 
     GetTop();
 
