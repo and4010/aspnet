@@ -413,16 +413,21 @@
         window.open("/StockTransaction/InboundFlatPickingReport/?shipmentNumber=" + shipmentNumber);
     });
 
-    $(".custom-combobox").keydown(function (e) {
-        if (e.keyCode == 13) {
-            SelectShipmentNumber();
-        }
-    });
+    //$(".custom-combobox").keydown(function (e) {
+    //    if (e.keyCode == 13) {
+    //        SelectShipmentNumber();
+    //    }
+    //});
 
-    $('#txtShipmentNumber').keydown(function (e) {
-        if (e.keyCode == 13) {
-            SelectShipmentNumber();
-        }
+    //$('#txtShipmentNumber').keydown(function (e) {
+    //    if (e.keyCode == 13) {
+    //        SelectShipmentNumber();
+    //    }
+    //});
+
+    //離開自訂編號欄位自動選擇自訂編號
+    $('#txtShipmentNumber').blur(function () {
+        SelectShipmentNumber();
     });
 
     $("#txtBARCODE").keydown(function (e) {
@@ -570,9 +575,9 @@
 
 
 
-                    if (data.Data.NumberStatus == "1") {
+                     
                         //出貨編號已存檔
-                        if (data.Data.IsMes == "1" && data.Data.TransferType == "O") {
+                        if (data.Data.IsMes == "1" && data.Data.TransferType == "O" && data.Data.NumberStatus == "1") {
                             //對方是MES出庫
                             swal.fire({
                                 title: "出庫轉入庫",
@@ -610,7 +615,7 @@
                             });
 
                         } else {
-                            //非MES入庫 已存檔
+                            //非MES入庫 已存檔 
                             selectedTransferHeaderId = data.Data.TransferHeaderId;
                             selectedNumberStatus = data.Data.NumberStatus;
 
@@ -625,26 +630,17 @@
 
                             $('#txtBARCODE').val("");
                             InBoundBarcodeDataTablesBody.ajax.reload();
-                            InputClose();
+                            if (data.Data.NumberStatus == "1") {
+                                InputClose();
+                            } else {
+                                InputOpen();
+                            }
+                            
+                            
                         }
 
 
-                    } else {
-                        //未存檔
-                        selectedTransferHeaderId = data.Data.TransferHeaderId;
-                        selectedNumberStatus = data.Data.NumberStatus;
-
-                        if ($('#ddlOutLocatorArea').is(":visible")) {
-                            $("#ddlOutLocator").val(data.Data.LocatorId);
-                        }
-
-                        if ($('#ddlInLocatorArea').is(":visible")) {
-                            $("#ddlInLocator").val(data.Data.TransferLocatorId);
-                        }
-                        $('#txtBARCODE').val("");
-                        InBoundBarcodeDataTablesBody.ajax.reload();
-                        InputOpen();
-                    }
+                    
 
                 } else {
                     InputOpen();

@@ -293,6 +293,15 @@ AND TRANSFER_SUBINVENTORY_CODE = @trfSubCode AND TRANSFER_ORGANIZATION_ID = @trf
             x.TransferType == transferType);
         }
 
+        public TRF_HEADER_T GetTrfHeaderForInbound(string shipmentNumber)
+        {
+            return trfHeaderTRepository.GetAll().AsNoTracking()
+                .Where(x => x.ShipmentNumber == shipmentNumber )
+                .OrderBy(x => x.TransferType)
+                .FirstOrDefault();
+        }
+
+
         public TRF_HEADER_T GetTrfHeader(long transferHeaderId)
         {
             return trfHeaderTRepository.GetAll().AsNoTracking().FirstOrDefault(x =>
@@ -1360,7 +1369,7 @@ SELECT [TRANSFER_PICKED_ID] as ID
 
         public ResultModel ChangeToAlreadyInBoundForShipmentNumber(string shipmnetNumber, string barcode, string userId, string userName)
         {
-            var header = trfHeaderTRepository.GetAll().AsNoTracking().FirstOrDefault(x => x.ShipmentNumber == shipmnetNumber);
+            var header = GetTrfHeaderForInbound(shipmnetNumber);
             if (header == null) return new ResultModel(false, "找不到出貨編號資料");
             var pick = trfInboundPickedTRepository.GetAll().FirstOrDefault(x => x.Barcode == barcode && x.TransferHeaderId == header.TransferHeaderId);
             if (pick == null) return new ResultModel(false, "找不到揀貨資料");
@@ -1752,7 +1761,7 @@ SELECT [TRANSFER_PICKED_ID] as ID
         }
 
         /// <summary>
-        /// 入庫存檔
+        /// 入庫存檔(沒用到)
         /// </summary>
         /// <param name="transferHeaderId"></param>
         /// <param name="userId"></param>
@@ -1783,6 +1792,7 @@ SELECT [TRANSFER_PICKED_ID] as ID
                     header.LastUpdateBy = userId;
                     header.LastUpdateUserName = userName;
                     header.LastUpdateDate = now;
+                    trfHeaderTRepository.Update(header);
                     trfHeaderTRepository.SaveChanges();
 
 
@@ -1917,7 +1927,7 @@ SELECT [TRANSFER_PICKED_ID] as ID
                                 {
                                     if (string.IsNullOrEmpty(pick.SplitFromBarcode))
                                     {
-                                        //整版 非從拆板轉來 更新庫存位置
+                                        //整版 非從拆板轉來 更新庫存位置和主次數量
                                         var stock = stockTRepository.GetAll().FirstOrDefault(x => x.StockId == pick.StockId);
                                         if (stock == null) throw new Exception("找不到庫存資料");
 
@@ -1930,6 +1940,8 @@ SELECT [TRANSFER_PICKED_ID] as ID
                                         stock.SubinventoryCode = header.TransferSubinventoryCode;
                                         stock.LocatorId = header.TransferLocatorId;
                                         stock.LocatorSegments = header.TransferLocatorCode;
+                                        stock.PrimaryAvailableQty = pick.PrimaryQuantity;
+                                        stock.SecondaryAvailableQty = pick.SecondaryQuantity;
                                         if (string.IsNullOrEmpty(stock.Note))
                                         {
                                             stock.Note = pick.Note;
@@ -2447,7 +2459,7 @@ SELECT [TRANSFER_PICKED_ID]
             {
                 try
                 {
-                    var header = trfHeaderTRepository.GetAll().FirstOrDefault(x => x.ShipmentNumber == shipmentNumber);
+                    var header = GetTrfHeaderForInbound(shipmentNumber);
                     if (header == null) throw new Exception("找不到出貨編號資料");
 
                     var pickList = trfInboundPickedTRepository.GetAll().Where(x => x.TransferHeaderId == header.TransferHeaderId).ToList();
@@ -2467,7 +2479,7 @@ SELECT [TRANSFER_PICKED_ID]
                     header.LastUpdateBy = userId;
                     header.LastUpdateUserName = userName;
                     header.LastUpdateDate = now;
-                    trfHeaderTRepository.SaveChanges();
+                    trfHeaderTRepository.Update(header, true);
 
 
 
@@ -2531,6 +2543,9 @@ SELECT [TRANSFER_PICKED_ID]
                                     stock.LastUpdateBy = null;
                                     stock.LastUpdateDate = null;
                                     stockTRepository.Create(stock, true);
+
+                                    pick.StockId = stock.StockId;
+                                    trfInboundPickedTRepository.Update(pick, true);
 
                                     //產生異動紀錄
                                     var stkTxnT = CreateStockRecord(stock, header.OrganizationId, header.OrganizationCode, header.SubinventoryCode, header.LocatorId,
@@ -2609,11 +2624,15 @@ SELECT [TRANSFER_PICKED_ID]
                                         //if (detail == null) throw new Exception("找不到明細資料");
 
                                         //產生異動紀錄
+                                        decimal pryBefQty = stock.PrimaryAvailableQty;
+                                        decimal? secBefQty = stock.SecondaryAvailableQty;
                                         stock.OrganizationId = (long)header.TransferOrganizationId;
                                         stock.OrganizationCode = header.TransferOrganizationCode;
                                         stock.SubinventoryCode = header.TransferSubinventoryCode;
                                         stock.LocatorId = header.TransferLocatorId;
                                         stock.LocatorSegments = header.TransferLocatorCode;
+                                        stock.PrimaryAvailableQty = pick.PrimaryQuantity;
+                                        stock.SecondaryAvailableQty = pick.SecondaryQuantity;
                                         if (string.IsNullOrEmpty(stock.Note))
                                         {
                                             stock.Note = pick.Note;
@@ -2630,7 +2649,7 @@ SELECT [TRANSFER_PICKED_ID]
                                         var stkTxnT = CreateStockRecord(stock, header.OrganizationId, header.OrganizationCode, header.SubinventoryCode, header.LocatorId,
                                             header.TransferOrganizationId, header.TransferOrganizationCode, header.TransferSubinventoryCode,
                                         header.TransferLocatorId, CategoryCode.TransferInbound, ActionCode.StockTransfer, header.ShipmentNumber,
-                                        stock.PrimaryAvailableQty, 0, stock.PrimaryAvailableQty, stock.SecondaryAvailableQty, 0, stock.SecondaryAvailableQty, StockStatusCode.InStock, userId, now);
+                                        pryBefQty, stock.PrimaryAvailableQty, stock.PrimaryAvailableQty, secBefQty, stock.SecondaryAvailableQty, stock.SecondaryAvailableQty, StockStatusCode.InStock, userId, now);
                                         stkTxnTRepository.Create(stkTxnT);
                                     }
                                     else
@@ -2676,6 +2695,9 @@ SELECT [TRANSFER_PICKED_ID]
                                         stock.LastUpdateBy = null;
                                         stock.LastUpdateDate = null;
                                         stockTRepository.Create(stock, true);
+
+                                        pick.StockId = stock.StockId;
+                                        trfInboundPickedTRepository.Update(pick, true);
 
                                         //產生異動紀錄
                                         var stkTxnT = CreateStockRecord(stock, header.OrganizationId, header.OrganizationCode, header.SubinventoryCode, header.LocatorId,
@@ -2803,6 +2825,9 @@ SELECT [TRANSFER_PICKED_ID]
                                 stock.LastUpdateBy = null;
                                 stock.LastUpdateDate = null;
                                 stockTRepository.Create(stock, true);
+
+                                pick.StockId = stock.StockId;
+                                trfInboundPickedTRepository.Update(pick, true);
 
                                 //產生異動紀錄
                                 var stkTxnT = CreateStockRecord(stock, header.OrganizationId, header.OrganizationCode, header.SubinventoryCode, header.LocatorId,
