@@ -24,7 +24,7 @@ using NLog;
 
 namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
 {
-    public class TransferUOW : MasterUOW
+    public partial class TransferUOW : MasterUOW
     {
         private ILogger logger = LogManager.GetCurrentClassLogger();
 

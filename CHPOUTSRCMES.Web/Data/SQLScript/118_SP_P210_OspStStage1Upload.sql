@@ -116,10 +116,10 @@ BEGIN
 	DECLARE @count INT = 0
 	SELECT @message = 'OSP_HEADER_ID:' + CONVERT(varchar, @ospHeaderId)
 
-	DECLARE @txnDate DATETIME = GETDATE(), @orgOspHeaderId BIGINT = 0
+	DECLARE @orgOspHeaderId BIGINT = 0
 	SET @processCode = 'XXIFP210'
 	SET @serverCode = 'FTY'
-	SET @batchId = FORMAT(@txnDate, 'yyyyMMddHHmmssffffff')
+	SET @batchId = FORMAT(SYSDATETIME(), 'yyyyMMddHHmmssffffff')
 	
 	BEGIN TRY
 		SET @success = @success + 1

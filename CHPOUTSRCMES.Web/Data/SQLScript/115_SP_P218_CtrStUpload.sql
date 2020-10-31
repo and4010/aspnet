@@ -26,7 +26,7 @@ BEGIN
 
 	DECLARE @txnDate DATETIME = GETDATE()
 	DECLARE @processCode VARCHAR(20) = 'XXIFP218', @serverCode VARCHAR(20) = 'FTY'
-	DECLARE @batchId VARCHAR(20) = FORMAT(@txnDate, 'yyyyMMddHHmmssffffff')
+	DECLARE @batchId VARCHAR(20) = FORMAT(SYSDATETIME(), 'yyyyMMddHHmmssffffff')
 
 	BEGIN TRY
 		

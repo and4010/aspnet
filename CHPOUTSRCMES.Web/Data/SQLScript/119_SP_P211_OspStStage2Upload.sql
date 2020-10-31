@@ -264,7 +264,7 @@ BEGIN
 
 	SET @processCode = 'XXIFP211'
 	SET @serverCode = 'FTY'
-	SET @batchId = FORMAT(GETDATE(), 'yyyyMMddHHmmssffffff')
+	SET @batchId = FORMAT(SYSDATETIME(), 'yyyyMMddHHmmssffffff')
 
 	BEGIN TRY
 		

@@ -9,6 +9,7 @@ using CHPOUTSRCMES.Web.ViewModels.Account;
 using CHPOUTSRCMES.Web.ViewModels.Inventory;
 using CHPOUTSRCMES.Web.ViewModels.Process;
 using CHPOUTSRCMES.Web.ViewModels.Purchase;
+using Microsoft.AspNet.Identity;
 using Microsoft.Reporting.WebForms;
 using System;
 using System.Collections.Generic;
@@ -616,6 +617,36 @@ namespace CHPOUTSRCMES.Web.Controllers
             var model = purchaseUOW.GetCtrPendingCount();
 
             return Json(model, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public ActionResult massPrint(long id)
+        {
+            string paperType = "";
+            try
+            {
+                switch (id)
+                {
+                    case 1:
+                        paperType = "平版";
+                        break;
+                    default:
+                        paperType = "捲筒";
+
+                        break;
+                }
+
+                var name = this.User.Identity.GetUserName();
+                using var mesContext = new MesContext();
+                using var transferUow = new TransferUOW(mesContext);
+                return transferUow.PrintMassLabel(transferUow, id, paperType, name);
+            }
+            catch(Exception ex)
+            {
+
+            }
+
+            return RedirectToAction("Index");
         }
 
     }

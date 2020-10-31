@@ -26,10 +26,9 @@ BEGIN
 	DECLARE @count INT = 0
 	SELECT @message = 'TRIP_ID:' + CONVERT(varchar, @tripId)
 
-	DECLARE @txnDate DATETIME = GETDATE()
 	SET @processCode = 'XXIFP221'
 	SET @serverCode = 'FTY'
-	SET @batchId = FORMAT(@txnDate, 'yyyyMMddHHmmssffffff')
+	SET @batchId = FORMAT(SYSDATETIME(), 'yyyyMMddHHmmssffffff')
 
 	BEGIN TRY
 		

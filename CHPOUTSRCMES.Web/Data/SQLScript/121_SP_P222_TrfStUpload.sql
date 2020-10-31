@@ -29,10 +29,9 @@ BEGIN
 	DECLARE @count INT = 0
 	SELECT @message = 'TRANSFER_HEADER_ID:' + CONVERT(varchar, @trfHeaderId)
 	DECLARE @trfType NVARCHAR(10) = ''
-	DECLARE @txnDate DATETIME = GETDATE()
 	SET @processCode = 'XXIFP222'
 	SET @serverCode = 'FTY'
-	SET @batchId = FORMAT(@txnDate, 'yyyyMMddHHmmssffffff')
+	SET @batchId = FORMAT(SYSDATETIME(), 'yyyyMMddHHmmssffffff')
 
 	BEGIN TRY
 

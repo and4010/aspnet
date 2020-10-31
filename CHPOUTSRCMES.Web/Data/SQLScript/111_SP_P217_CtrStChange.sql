@@ -214,11 +214,26 @@ BEGIN
 			LEFT JOIN ITEMS_T i ON i.INVENTORY_ITEM_ID = o.INVENTORY_ITEM_ID
 			WHERE o.CTR_ORG_ID IN (SELECT CTR_ORG_ID FROM @table)
 
-			IF (@@ROWCOUNT <= 0 AND @@ERROR <> 0)
+			IF (@@ROWCOUNT <= 0 OR @@ERROR <> 0)
 			BEGIN
 				SET @message = 'PROCESS_CODE:' + @processCode + ' SERVER_CODE:' + @serverCode + ' BATCH_ID:' + @batchId + ' 寫入進櫃明細失敗'
 				RAISERROR(@message, 16, @success)
 			END
+
+			--檔頭
+			SET @success = @success + 1
+			UPDATE H SET [STATUS] = 1
+			FROM CTR_ORG_T O
+			JOIN CTR_DETAIL_T D ON D.PROCESS_CODE = O.PROCESS_CODE AND D.SERVER_CODE = O.SERVER_CODE AND D.BATCH_ID = O.BATCH_ID AND D.BATCH_LINE_ID = O.BATCH_LINE_ID
+			JOIN CTR_HEADER_T H ON H.CTR_HEADER_ID = D.CTR_HEADER_ID
+			WHERE O.CTR_ORG_ID IN (SELECT CTR_ORG_ID FROM @table)
+
+			IF (@@ROWCOUNT <= 0 OR @@ERROR <> 0)
+			BEGIN
+				SET @message = 'PROCESS_CODE:' + @processCode + ' SERVER_CODE:' + @serverCode + ' BATCH_ID:' + @batchId + ' 寫入進櫃檔頭失敗'
+				RAISERROR(@message, 16, @success)
+			END
+
 		END
 		
 		--處理完成回寫 XXIF_CHP_P217_CONTAINER_ST 
