@@ -2175,10 +2175,10 @@ SELECT [TRANSFER_REASON_ID]
             var resultDataModel = new ResultDataModel<int>(false, "", 0);
             try
             {
-                resultDataModel.Data = ctrHeaderTRepository.GetAll()
-                .Where(x => x.Status != PurchaseStatusCode.GetCode(PurchaseStatusCode.Cancel)
-                    && x.Status != PurchaseStatusCode.GetCode(PurchaseStatusCode.Already))
-                .Count();
+                var code = PurchaseStatusCode.GetCode(PurchaseStatusCode.Pending);
+                resultDataModel.Data = ctrHeaderTRepository.GetAll().AsNoTracking()
+                    .Where(x => x.Status == code).Count();
+
                 resultDataModel.Code = ResultModel.CODE_SUCCESS;
                 resultDataModel.Msg = "";
             }

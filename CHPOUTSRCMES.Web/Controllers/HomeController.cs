@@ -11,6 +11,7 @@ using CHPOUTSRCMES.Web.ViewModels.Process;
 using CHPOUTSRCMES.Web.ViewModels.Purchase;
 using Microsoft.AspNet.Identity;
 using Microsoft.Reporting.WebForms;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -619,35 +620,27 @@ namespace CHPOUTSRCMES.Web.Controllers
             return Json(model, JsonRequestBehavior.AllowGet);
         }
 
-        [HttpGet]
-        public ActionResult massPrint(long id)
-        {
-            string paperType = "";
-            try
-            {
-                switch (id)
-                {
-                    case 1:
-                        paperType = "平版";
-                        break;
-                    default:
-                        paperType = "捲筒";
+        //[HttpGet]
+        //public ActionResult massPrint(long id)
+        //{
+        //    string paperType = "";
 
-                        break;
-                }
+        //    switch (id)
+        //    {
+        //        case 1:
+        //            paperType = "平版";
+        //            break;
+        //        default:
+        //            paperType = "捲筒";
 
-                var name = this.User.Identity.GetUserName();
-                using var mesContext = new MesContext();
-                using var transferUow = new TransferUOW(mesContext);
-                return transferUow.PrintMassLabel(transferUow, id, paperType, name);
-            }
-            catch(Exception ex)
-            {
+        //            break;
+        //    }
 
-            }
-
-            return RedirectToAction("Index");
-        }
+        //    var name = this.User.Identity.GetUserName();
+        //    using var mesContext = new MesContext();
+        //    using var transferUow = new TransferUOW(mesContext);
+        //    return transferUow.PrintMassLabel(transferUow, id, paperType, name);
+        //}
 
     }
 }

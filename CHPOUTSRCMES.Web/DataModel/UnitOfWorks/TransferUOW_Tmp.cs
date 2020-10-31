@@ -38,9 +38,9 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                 {
                     case "平版":
                         cmd = @"select
-st.BARCODE as Barcode,
+st.BARCODE as Barocde,
 CAST(tt.ITEM_DESC_TCH AS nvarchar) AS BarocdeName,
-CAST(st.PAPER_TYPE AS nvarchar) AS PaperType,
+CAST(st.PAPER_TYPE AS nvarchar) AS PapaerType,
 CAST(st.BASIC_WEIGHT AS nvarchar) AS BasicWeight,
 CAST(st.SPECIFICATION AS nvarchar) AS Specification,
 CAST(FORMAT(st.ROLL_REAM_WT, '0.##########') AS nvarchar) AS Qty,
@@ -58,9 +58,9 @@ ORDER BY t.id";
                     default:
                     case "捲筒":
                         cmd = @"SELECT
-st.BARCODE as Barcode,
+st.BARCODE as Barocde,
 CAST(tt.ITEM_DESC_TCH AS nvarchar) AS BarocdeName,
-CAST(st.PAPER_TYPE AS nvarchar) AS PaperType,
+CAST(st.PAPER_TYPE AS nvarchar) AS PapaerType,
 CAST(st.BASIC_WEIGHT AS nvarchar) AS BasicWeight,
 CAST(st.SPECIFICATION AS nvarchar) AS Specification,
 CAST(FORMAT(st.PRIMARY_TRANSACTION_QTY, '0.##########') AS nvarchar) AS Qty,
