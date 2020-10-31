@@ -787,7 +787,10 @@ SELECT m.TRANSFER_INVENTORY_ID AS ID
                                 stock.LastUpdateBy = null;
                                 stock.LastUpdateDate = null;
                                 stockTRepository.Create(stock, true);
-                                
+
+                                detail.StockId = stock.StockId;
+                                trfInventoryTRepository.Update(detail, true);
+
                                 //產生異動紀錄
                                 var stkTxnT = CreateStockRecord(stock, null, null, null,
                                 null, CategoryCode.InventoryProfit, ActionCode.StockTransfer, header.ShipmentNumber,

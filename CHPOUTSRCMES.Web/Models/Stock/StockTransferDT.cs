@@ -1245,7 +1245,7 @@ namespace CHPOUTSRCMES.Web.Models.Stock
                 return new ResultDataModel<TRF_HEADER_T>(true, "新增編號", null);
             }
 
-            var trfHeader = uow.GetTrfHeader(shipmentNumber, TransferUOW.TransferType.Outbound);
+            var trfHeader = uow.GetTrfHeaderForInbound(shipmentNumber);
             if (trfHeader == null)
             {
                 return new ResultDataModel<TRF_HEADER_T>(false, "找不到出貨編號資料", null);
