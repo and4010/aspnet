@@ -977,16 +977,7 @@ left JOIN OSP_HEADER_MOD_T HM ON HM.OSP_HEADER_ID = H.OSP_HEADER_ID
                     }
                     else
                     {
-                        var subinventoryCodeList = subinventoryRepository.GetAll().AsNoTracking().Join(
-                             userSubinventoryTRepository.GetAll().AsNoTracking(),
-                             s => new { s.SubinventoryCode },
-                             us => new { us.SubinventoryCode },
-                             (s, us) => new
-                             {
-                                 UserId = us.UserId,
-                                 SubinventoryCode = s.SubinventoryCode,
-                                 OspFlag = s.OspFlag
-                             }).Where(x => x.UserId == UserId && x.OspFlag == "Y").Select(x => x.SubinventoryCode).ToList();
+                        var subinventoryCodeList = GetSubinventoryListForUser(UserId);
 
                         string temp = "";
                         foreach (string subinventoryCode in subinventoryCodeList)

@@ -66,12 +66,12 @@ function OutBoundInit() {
             return 0;
         }
 
-        
+
     }
 
     SubinventoryInit();
 
-    
+
 
     //jQuery.ui.autocomplete.prototype._resizeMenu = function () {
     //    var ul = this.menu.element;
@@ -89,7 +89,7 @@ function OutBoundInit() {
     //});
 
 
-    
+
 
     $('.custom-combobox-input').css('width', '200px');
     $('#btnPrintPick').css('margin-left', '28px');
@@ -206,9 +206,9 @@ function OutBoundInit() {
     });
 
     $("#txtBARCODE").on(
-          "input propertychange paste", function () {
-              $("#txtSECONDARY_QUANTITY").val("");
-          });
+        "input propertychange paste", function () {
+            $("#txtSECONDARY_QUANTITY").val("");
+        });
 
     $('#txtSECONDARY_QUANTITY').keydown(function (e) {
         if (e.keyCode == 13) {
@@ -386,7 +386,7 @@ function OutBoundInit() {
 
 
 
-      
+
     }
 
 
@@ -485,7 +485,7 @@ function OutBoundInit() {
         //}
     }
 
-    
+
 
     detailEditor = new $.fn.dataTable.Editor({
         "language": {
@@ -569,13 +569,13 @@ function OutBoundInit() {
             }
         },
         columns: [
-         { data: null, defaultContent: '', className: 'select-checkbox', orderable: false, width: "40px" },
-         { data: "SUB_ID", name: "項次", autoWidth: true },
-         { data: "ITEM_NUMBER", name: "料號", autoWidth: true, className: "dt-body-left" },
-         { data: "PACKING_TYPE", name: "包裝方式", autoWidth: true },
-         { data: "ROLL_REAM_QTY", name: "捲數/板數", autoWidth: true },
-         { data: "ROLL_REAM_UOM", name: "捲/板", autoWidth: true },
-         { data: "REQUESTED_QUANTITY", name: "預計出庫量", autoWidth: true, className: "dt-body-right" },
+            { data: null, defaultContent: '', className: 'select-checkbox', orderable: false, width: "40px" },
+            { data: "SUB_ID", name: "項次", autoWidth: true },
+            { data: "ITEM_NUMBER", name: "料號", autoWidth: true, className: "dt-body-left" },
+            { data: "PACKING_TYPE", name: "包裝方式", autoWidth: true },
+            { data: "ROLL_REAM_QTY", name: "捲數/板數", autoWidth: true },
+            { data: "ROLL_REAM_UOM", name: "捲/板", autoWidth: true },
+            { data: "REQUESTED_QUANTITY", name: "預計出庫量", autoWidth: true, className: "dt-body-right" },
             {
                 data: "PICKED_QUANTITY", name: "出庫已揀數量", autoWidth: true, className: "dt-body-right", "mRender": function (data, type, full) {
                     if (data != null) {
@@ -588,32 +588,32 @@ function OutBoundInit() {
                     }
                 }
             },
-         { data: "REQUESTED_QUANTITY_UOM", name: "庫存單位", autoWidth: true },
-         {
-             data: "REQUESTED_QUANTITY2", name: "預計出庫輔數量", autoWidth: true, className: "dt-body-right", "mRender": function (data, type, full) {
-                 if (data != null) {
-                     if (data == 0) {
-                         return '';
-                     }
-                     return data;
-                 } else {
-                     return '';
-                 }
-             }
-         },
-         {
-             data: "PICKED_QUANTITY2", name: "出庫已揀輔數量", autoWidth: true, className: "dt-body-right", "mRender": function (data, type, full) {
-                 if (data != null) {
-                     if (data == 0) {
-                         return '';
-                     }
-                     return data;
-                 } else {
-                     return '';
-                 }
-             }
-         },
-         { data: "REQUESTED_QUANTITY_UOM2", name: "輔單位", autoWidth: true }
+            { data: "REQUESTED_QUANTITY_UOM", name: "庫存單位", autoWidth: true },
+            {
+                data: "REQUESTED_QUANTITY2", name: "預計出庫輔數量", autoWidth: true, className: "dt-body-right", "mRender": function (data, type, full) {
+                    if (data != null) {
+                        if (data == 0) {
+                            return '';
+                        }
+                        return data;
+                    } else {
+                        return '';
+                    }
+                }
+            },
+            {
+                data: "PICKED_QUANTITY2", name: "出庫已揀輔數量", autoWidth: true, className: "dt-body-right", "mRender": function (data, type, full) {
+                    if (data != null) {
+                        if (data == 0) {
+                            return '';
+                        }
+                        return data;
+                    } else {
+                        return '';
+                    }
+                }
+            },
+            { data: "REQUESTED_QUANTITY_UOM2", name: "輔單位", autoWidth: true }
         ],
 
         "order": [[1, 'asc']],
@@ -633,7 +633,7 @@ function OutBoundInit() {
                 //}
             },
             buttons: [
-                  
+
                 'selectNone',
                 {
                     extend: "remove",
@@ -668,32 +668,32 @@ function OutBoundInit() {
                         })
                     }
                 },
-                  //{
-                  //    text: '刪除',
-                  //    className: 'btn-danger',
-                  //    action: function () {
-                  //        var selectedData = OutBoundDataTablesBody.rows('.selected').data();
-                  //        if (selectedData.length == 0) {
-                  //            swal.fire("請選擇要刪除的項目");
-                  //            return;
-                  //        }
+                //{
+                //    text: '刪除',
+                //    className: 'btn-danger',
+                //    action: function () {
+                //        var selectedData = OutBoundDataTablesBody.rows('.selected').data();
+                //        if (selectedData.length == 0) {
+                //            swal.fire("請選擇要刪除的項目");
+                //            return;
+                //        }
 
-                  //        swal.fire({
-                  //            title: "資料刪除",
-                  //            text: "將刪除此項目所有條碼資料，確定刪除嗎?",
-                  //            type: "warning",
-                  //            showCancelButton: true,
-                  //            confirmButtonColor: "#DD6B55",
-                  //            confirmButtonText: "確定",
-                  //            cancelButtonText: "取消"
-                  //        }).then(function (result) {
-                  //            if (result.value) {
-                  //                DeleteItemNumber(selectedData);
-                  //            }
-                  //        });
+                //        swal.fire({
+                //            title: "資料刪除",
+                //            text: "將刪除此項目所有條碼資料，確定刪除嗎?",
+                //            type: "warning",
+                //            showCancelButton: true,
+                //            confirmButtonColor: "#DD6B55",
+                //            confirmButtonText: "確定",
+                //            cancelButtonText: "取消"
+                //        }).then(function (result) {
+                //            if (result.value) {
+                //                DeleteItemNumber(selectedData);
+                //            }
+                //        });
 
-                  //    }
-                  //}
+                //    }
+                //}
 
             ]
         },
@@ -725,7 +725,7 @@ function OutBoundInit() {
             $('#PACKING_TYPE2').text(PACKING_TYPE);
 
             var rowsData = OutBoundDataTablesBody.rows({ page: 'current' }).data();
-            for (i = 0 ; i < rowsData.length; i++) {
+            for (i = 0; i < rowsData.length; i++) {
                 for (j = 0; j < selected.length; j++) {
                     if (selected[j] == rowsData[i].ID) {
                         selected.splice(j, 1);
@@ -872,27 +872,27 @@ function OutBoundInit() {
         },
         columns: [
             { data: null, defaultContent: '', className: 'select-checkbox', orderable: false, width: "40px" },
-         { data: "SUB_ID", name: "項次", autoWidth: true },
-          { data: "BARCODE", name: "條碼", autoWidth: true },
+            { data: "SUB_ID", name: "項次", autoWidth: true },
+            { data: "BARCODE", name: "條碼", autoWidth: true },
             { data: "ITEM_NUMBER", name: "料號", autoWidth: true, className: "dt-body-left" },
             //{ data: "LOT_NUMBER", name: "捲號", autoWidth: true, className: "dt-body-left" },
-         { data: "PACKING_TYPE", name: "包裝方式", autoWidth: true },
-         { data: "PRIMARY_QUANTITY", name: "主要數量", autoWidth: true, className: "dt-body-right" },
-         { data: "PRIMARY_UOM", name: "主要單位", autoWidth: true },
-         {
-             data: "SECONDARY_QUANTITY", name: "次要數量", autoWidth: true, className: "dt-body-right", "mRender": function (data, type, full) {
-                 if (data != null) {
-                     if (data == 0) {
-                         return '';
-                     }
-                     return data;
-                 } else {
-                     return '';
-                 }
-             }
-         },
-         { data: "SECONDARY_UOM", name: "次要單位", autoWidth: true },
-         { data: "REMARK", name: "備註", autoWidth: true, className: "dt-body-left" },
+            { data: "PACKING_TYPE", name: "包裝方式", autoWidth: true },
+            { data: "PRIMARY_QUANTITY", name: "主要數量", autoWidth: true, className: "dt-body-right" },
+            { data: "PRIMARY_UOM", name: "主要單位", autoWidth: true },
+            {
+                data: "SECONDARY_QUANTITY", name: "次要數量", autoWidth: true, className: "dt-body-right", "mRender": function (data, type, full) {
+                    if (data != null) {
+                        if (data == 0) {
+                            return '';
+                        }
+                        return data;
+                    } else {
+                        return '';
+                    }
+                }
+            },
+            { data: "SECONDARY_UOM", name: "次要單位", autoWidth: true },
+            { data: "REMARK", name: "備註", autoWidth: true, className: "dt-body-left" },
             { data: "ID", name: "ID", autoWidth: true, visible: false },
         ],
 
@@ -948,32 +948,32 @@ function OutBoundInit() {
                         })
                     }
                 },
-                 //{
-                 //    text: '刪除',
-                 //    className: 'btn-danger',
-                 //    action: function () {
-                 //        var selectedData = OutBoundBarcodeDataTablesBody.rows('.selected').data();
-                 //        if (selectedData.length == 0) {
-                 //            swal.fire("請選擇要刪除的條碼");
-                 //            return;
-                 //        }
+                //{
+                //    text: '刪除',
+                //    className: 'btn-danger',
+                //    action: function () {
+                //        var selectedData = OutBoundBarcodeDataTablesBody.rows('.selected').data();
+                //        if (selectedData.length == 0) {
+                //            swal.fire("請選擇要刪除的條碼");
+                //            return;
+                //        }
 
-                 //        swal.fire({
-                 //            title: "條碼資料刪除",
-                 //            text: "確定刪除嗎?",
-                 //            type: "warning",
-                 //            showCancelButton: true,
-                 //            confirmButtonColor: "#DD6B55",
-                 //            confirmButtonText: "確定",
-                 //            cancelButtonText: "取消"
-                 //        }).then(function (result) {
-                 //            if (result.value) {
-                 //                DeleteBarcode(selectedData);
-                 //            }
-                 //        });
+                //        swal.fire({
+                //            title: "條碼資料刪除",
+                //            text: "確定刪除嗎?",
+                //            type: "warning",
+                //            showCancelButton: true,
+                //            confirmButtonColor: "#DD6B55",
+                //            confirmButtonText: "確定",
+                //            cancelButtonText: "取消"
+                //        }).then(function (result) {
+                //            if (result.value) {
+                //                DeleteBarcode(selectedData);
+                //            }
+                //        });
 
-                 //    }
-                 //},
+                //    }
+                //},
                 {
                     text: '<span class="glyphicon glyphicon-print"></span>&nbsp列印標籤',
                     //className: 'btn-default btn-sm',
@@ -999,7 +999,7 @@ function OutBoundInit() {
                                 confirmButtonColor: "#DD6B55",
                                 confirmButtonText: "確定",
                             }).then(function (result) {
-                                if (result.value) {  
+                                if (result.value) {
                                     PrintLable(OutBoundBarcodeDataTablesBody, "/StockTransaction/PrintOutboundLabel", "10");
                                 }
                             });
@@ -1037,14 +1037,14 @@ function OutBoundInit() {
                         }
 
                         pickEditor.edit(OutBoundBarcodeDataTablesBody.rows({ selected: true }).indexes())
-                        .title('編輯備註')
-                        .buttons({
-                            text: '確定',
-                            action: function () {
-                                this.submit();
-                            },
-                            className: 'btn-danger'
-                        });
+                            .title('編輯備註')
+                            .buttons({
+                                text: '確定',
+                                action: function () {
+                                    this.submit();
+                                },
+                                className: 'btn-danger'
+                            });
                     }
                 }
             ],
@@ -1159,7 +1159,7 @@ function OutBoundInit() {
                 transferHeaderId: transferHeaderId
             },
             success: function (data) {
-                if (data.Success) { 
+                if (data.Success) {
                     //$('#AutoCompleteItemNumber').focus();
                     $('#txtBARCODE').val("");
                     $('#txtInputTransactionQty').val("");
@@ -1190,7 +1190,7 @@ function OutBoundInit() {
                         //出貨編號已存檔
                         inputClose();
                     } else {
-                        
+
                     }
 
                 } else {
@@ -1345,7 +1345,7 @@ function OutBoundInit() {
         GetStockItemData($('#AutoCompleteItemNumber').val(), false);
     });
 
-    
+
 
     function CheckSaveStockTransferDT() {
 
@@ -1444,20 +1444,22 @@ function OutBoundInit() {
 
         var shipmentNumber = $('#ddlShipmentNumber').val();
         if (shipmentNumber == "新增編號") {
-            swal.fire({
-                title: "新增編號",
-                text: "確定新增編號嗎?",
-                type: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#DD6B55",
-                confirmButtonText: "確定",
-                cancelButtonText: "取消"
-            }).then(function (result) {
-                if (result.value) {
-                    OutboundCreateDetail();
+            setTimeout(function () {
+                swal.fire({
+                    title: "新增編號",
+                    text: "確定新增編號嗎?",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "確定",
+                    cancelButtonText: "取消"
+                }).then(function (result) {
+                    if (result.value) {
+                        OutboundCreateDetail();
 
-                }
-            });
+                    }
+                });
+            }, 10)
         } else {
             OutboundCreateDetail();
         }
@@ -1480,7 +1482,7 @@ function OutBoundInit() {
                 inLocatorId: getInLocatorId(),
                 requestedQty: $('#txtInputTransactionQty').val(),
                 rollReamQty: $('#txtRollReamQty').val()
-                
+
             },
             success: function (data) {
                 if (data.status) {
@@ -1616,7 +1618,7 @@ function OutBoundInit() {
 
 
     function OutboundCreatePick() {
-       
+
         var DetailId = $('#DetailId').text();
         if (!DetailId) {
             swal.fire('請選擇料號');
@@ -1624,11 +1626,27 @@ function OutBoundInit() {
             return false;
         }
 
+        if ($('#txtBARCODE').is(":visible")) {
+            if ($('#txtBARCODE').val() == "") {
+                swal.fire('請輸入條碼');
+                event.preventDefault();
+                return;
+            }
+        }
+
+        if ($('#txtSECONDARY_QUANTITY').is(":visible")) {
+            if ($('#txtSECONDARY_QUANTITY').val() == "") {
+                swal.fire('請輸入令數');
+                event.preventDefault();
+                return;
+            }
+        }
+
         $.ajax({
             url: "/StockTransaction/OutboundCreatePick",
             type: "post",
             data: {
-                transferHeaderId : getTransferHeaderId(),
+                transferHeaderId: getTransferHeaderId(),
                 transferDetailId: DetailId,
                 barcode: $('#txtBARCODE').val(),
                 reamQty: getReamQty()
@@ -1656,7 +1674,7 @@ function OutBoundInit() {
 
 
         var list = [];
-        for (i = 0 ; i < selectedData.length; i++) {
+        for (i = 0; i < selectedData.length; i++) {
             list.push(selectedData[i].ID);
         }
 
@@ -1792,12 +1810,14 @@ function OutBoundInit() {
 
     function GetShipmentNumberList(selectValue, selectText) {
 
+        var OutOrganizationId = getOutOrganizationId();
+        var InOrganizationId = getInOrganizationId();
         var InSubinventoryCode = getInSubinventoryCode();
         //var InLocator = $("#ddlInLocator").val();
         var OutSubinventoryCode = getOutSubinventoryCode();
         //var OutLocator = $("#ddlOutLocator").val();
 
-        if (InSubinventoryCode == "請選擇" || OutSubinventoryCode == "請選擇") {
+        if (InSubinventoryCode == "請選擇" || OutSubinventoryCode == "請選擇" || OutOrganizationId == "請選擇" || InOrganizationId == "請選擇") {
             return;
         }
 
@@ -1805,9 +1825,9 @@ function OutBoundInit() {
             url: "/StockTransaction/GetOutboundShipmentNumberList",
             type: "post",
             data: {
-                outOrganizationId: getOutOrganizationId(),
+                outOrganizationId: OutOrganizationId,
                 outSubinventoryCode: OutSubinventoryCode,
-                inOrganizationId: getInOrganizationId(),
+                inOrganizationId: InOrganizationId,
                 inSubinventoryCode: InSubinventoryCode
             },
             success: function (data) {

@@ -2492,13 +2492,28 @@ select
         }
 
         /// <summary>
-        /// 取得倉庫資料
+        /// 取得SubinventoryCodeList
         /// </summary>
-        /// <param name="subinventoryCode"></param>
+        /// <param name="userId"></param>
+        /// <param name="ospFlag"></param>
         /// <returns></returns>
-        public List<SUBINVENTORY_T> GetSubinventoryT(string subinventoryCode)
+        public List<string> GetSubinventoryListForUser(string userId, string ospFlag = OspFlag.IsProcessingPlant)
         {
-            return subinventoryRepository.GetAll().AsNoTracking().Where(x => x.SubinventoryCode == subinventoryCode).ToList();
+            return subinventoryRepository.GetAll().AsNoTracking().Join(
+                             userSubinventoryTRepository.GetAll().AsNoTracking(),
+                             s => new { s.SubinventoryCode },
+                             us => new { us.SubinventoryCode },
+                             (s, us) => new
+                             {
+                                 UserId = us.UserId,
+                                 SubinventoryCode = s.SubinventoryCode,
+                                 OspFlag = s.OspFlag,
+                                 ControlFlag = s.ControlFlag
+                             }).Where(x => x.UserId == userId &&
+                             x.OspFlag == OspFlag.IsProcessingPlant &&
+                              x.ControlFlag != ControlFlag.Deleted
+                             )
+                             .Select(x => x.SubinventoryCode).ToList();
         }
 
         public bool CompareOrganization(string outSubinventoryCode, string inSubinventoryCode)

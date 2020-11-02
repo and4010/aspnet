@@ -868,19 +868,33 @@ GROUP BY d.DLV_DETAIL_ID";
             var tripNameList = new List<SelectListItem>();
             try
             {
-                var tempList = dlvHeaderTRepository
-                            .GetAll().AsNoTracking()
-                            .Join(userSubinventoryTRepository.GetAll(), x=>x.SubinventoryCode, y => y.SubinventoryCode, (x, y) => new { user = y.UserId, header = x })
-                            .Where(x=>x.user == userId)
-                            .OrderByDescending(x => x.header.TripId)
-                            .Take(1000)
-                            .GroupBy(x => x.header.TripId)
-                            .Select(x => new SelectListItem()
-                            {
-                                Text = x.FirstOrDefault().header.TripName,
-                                Value = x.FirstOrDefault().header.TripId.ToString()
-                            });
-                tripNameList.AddRange(tempList);
+                //var tempList = dlvHeaderTRepository
+                //            .GetAll().AsNoTracking()
+                //            .Join(userSubinventoryTRepository.GetAll(), x=>x.SubinventoryCode, y => y.SubinventoryCode, (x, y) => new { user = y.UserId, header = x })
+                //            .Where(x=>x.user == userId)
+                //            .OrderByDescending(x => x.header.TripId)
+                //            .Take(1000)
+                //            .GroupBy(x => x.header.TripId)
+                //            .Select(x => new SelectListItem()
+                //            {
+                //                Text = x.FirstOrDefault().header.TripName,
+                //                Value = x.FirstOrDefault().header.TripId.ToString()
+                //            });
+                //tripNameList.AddRange(tempList);
+
+                string cmd = @"
+SELECT TOP 1000 CONVERT(varchar(10), t.TRIP_ID) as Value
+,t.TRIP_NAME as Text
+FROM DLV_HEADER_T t
+JOIN USER_SUBINVENTORY_T ut on t.SUBINVENTORY_CODE = ut.SUBINVENTORY_CODE
+WHERE 
+ut.UserId = @userId AND
+DateDiff(dd, t.CREATION_DATE ,getdate())<=365
+GROUP BY t.TRIP_ID, t.TRIP_NAME
+ORDER BY t.TRIP_ID DESC";
+
+                tripNameList = this.Context.Database.SqlQuery<SelectListItem>(cmd,
+                    new SqlParameter("@userId", userId)).ToList();
             }
             catch (Exception ex)
             {
@@ -964,6 +978,19 @@ JOIN USER_SUBINVENTORY_T s ON s.SUBINVENTORY_CODE = h.SUBINVENTORY_CODE";
             {
                 cond.Add("h.SUBINVENTORY_CODE = @SelectedSubinventory");
                 sqlParameterList.Add(SqlParamHelper.R.SubinventoryCode("@SelectedSubinventory", SelectedSubinventory));
+            }
+            else
+            {
+                var subinventoryCodeList = GetSubinventoryListForUser(userId);
+
+                string temp = "";
+                foreach (string subinventoryCode in subinventoryCodeList)
+                {
+                    temp += "'" + subinventoryCode + "'" + ',';
+                }
+                temp = temp.TrimEnd(',');
+                temp = string.Format("h.SUBINVENTORY_CODE IN({0})", temp);
+                cond.Add(temp);
             }
             if (SelectedTrip != "*")
             {
