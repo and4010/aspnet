@@ -168,6 +168,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
 
                 catch (Exception e)
                 {
+                    logger.Error(LogUtilities.BuildExceptionMessage(e));
                     transaction.Rollback();
                     return new ResultModel(false, e.Message);
                 }
@@ -238,6 +239,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
 
                 catch (Exception e)
                 {
+                    logger.Error(LogUtilities.BuildExceptionMessage(e));
                     transaction.Rollback();
                     return new ResultModel(false, e.Message);
                 }
@@ -284,6 +286,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             }
             catch (Exception e)
             {
+                logger.Error(LogUtilities.BuildExceptionMessage(e));
                 return new ResultModel(false, e.Message);
             }
 
@@ -309,6 +312,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             }
             catch (Exception e)
             {
+                logger.Error(LogUtilities.BuildExceptionMessage(e));
                 return new ResultModel(false, e.Message);
             }
 
@@ -343,6 +347,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             }
             catch (Exception e)
             {
+                logger.Error(LogUtilities.BuildExceptionMessage(e));
                 return new ResultModel(false, e.Message);
             }
         }

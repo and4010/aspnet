@@ -38,26 +38,17 @@ namespace CHPOUTSRCMES.Web.ViewModels.Account
             {
                 default:
                 case 1:
-                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Id) : models.OrderBy(x => x.Id);
-                case 2:
-                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.RoleId) : models.OrderBy(x => x.RoleId);
-                case 3:
-                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.RoleName) : models.OrderBy(x => x.RoleName);
-                case 4:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Account) : models.OrderBy(x => x.Account);
-                case 5:
-                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Password) : models.OrderBy(x => x.Password);
-                case 6:
+                case 2:
+                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.RoleName) : models.OrderBy(x => x.RoleName);
+                case 3:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Name) : models.OrderBy(x => x.Name);
-                case 7:
+                case 4:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Email) : models.OrderBy(x => x.Email);
-                case 8:
+                case 5:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Status) : models.OrderBy(x => x.Status);
-                case 9:
+                case 6:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.SubinventoryCount) : models.OrderBy(x => x.SubinventoryCount);
-                case 10:
-                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Status) : models.OrderBy(x => x.Status);
-
 
             }
         }
@@ -68,27 +59,18 @@ namespace CHPOUTSRCMES.Web.ViewModels.Account
             {
                 default:
                 case 1:
-                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Id) : models.OrderBy(x => x.Id);
+                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Account) : models.ThenBy(x => x.Account);
                 case 2:
-                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.RoleId) : models.OrderBy(x => x.RoleId);
+                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.RoleName) : models.ThenBy(x => x.RoleName);
                 case 3:
-                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.RoleName) : models.OrderBy(x => x.RoleName);
+                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Name) : models.ThenBy(x => x.Name);
                 case 4:
-                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Account) : models.OrderBy(x => x.Account);
+                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Email) : models.ThenBy(x => x.Email);
                 case 5:
-                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Password) : models.OrderBy(x => x.Password);
+                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Status) : models.ThenBy(x => x.Status);
                 case 6:
-                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Name) : models.OrderBy(x => x.Name);
-                case 7:
-                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Email) : models.OrderBy(x => x.Email);
-                case 8:
-                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Status) : models.OrderBy(x => x.Status);
-                case 9:
-                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.SubinventoryCount) : models.OrderBy(x => x.SubinventoryCount);
-                case 10:
-                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Status) : models.OrderBy(x => x.Status);
-
-
+                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.SubinventoryCount) : models.ThenBy(x => x.SubinventoryCount);
+  
             }
         }
 
