@@ -71,6 +71,7 @@ function Edit() {
     $.ajax({
         url: '/Account/Edit',
         type: "POST",
+        datatype: 'json',
         data: { accountModel: accountModel, userSubinventory: userSubinventory },
         success: function (data) {
             if (data.status) {

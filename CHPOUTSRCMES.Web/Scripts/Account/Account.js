@@ -25,7 +25,6 @@
         swal.fire({
             title: title,
             text: text,
-            type: "warning",
             showCancelButton: true,
             confirmButtonColor: "#DD6B55",
             confirmButtonText: "確定",
@@ -35,9 +34,15 @@
                 $.ajax({
                     url: '/Account/AccountDisable/',
                     type: "POST",
+                    datatype: 'json',
                     data: { id: id },
-                    success: function () {
-                        LoadTable();
+                    success: function (data) {
+                        if (data.status) {
+                            LoadTable();
+                        } else {
+                            swal.fire(data.message);
+                        }
+                        
                     },
                     error: function () {
                         swal.fire("失敗");
@@ -59,7 +64,6 @@
         swal.fire({
             title: "密碼重設",
             text: "確定要重設密碼" + data.Account + "嗎?",
-            type: "warning",
             showCancelButton: true,
             confirmButtonColor: "#DD6B55",
             confirmButtonText: "確定",
@@ -69,6 +73,7 @@
                 $.ajax({
                     url: '/Account/DeafultPassword/',
                     type: "POST",
+                    datatype: 'json',
                     data: { Id: Id },
                     success: function (data) {
                         if (data.status) {
@@ -99,7 +104,6 @@
         swal.fire({
             title: "異動資料",
             text: "確定要異動資料" + data.Account + "嗎?",
-            type: "warning",
             showCancelButton: true,
             confirmButtonColor: "#DD6B55",
             confirmButtonText: "確定",
@@ -134,6 +138,7 @@
                 $.ajax({
                     url: '/Account/Delete/',
                     type: "POST",
+                    datatype: 'json',
                     data: { id: Id },
                     success: function (data) {
                         if (data.status) {
