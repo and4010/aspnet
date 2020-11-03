@@ -161,6 +161,8 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                         LogError($"[{tasker.Name}]-{tasker.Unit}-ExportOspStRvStage1-錯誤-(OSP_HEADER_ID:{list[i]})-{ex.Message}-{ex.StackTrace}");
                         transaction.Rollback();
                     }
+
+                    Thread.Sleep(100); //避免出現同一個BATCH_ID
                 }
 
 
@@ -225,7 +227,7 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                         data.LAST_UPDATE_DATE = DateTime.Now;
                         var model = ospStUow.OspSoaS1Repository.UpdateStatusCode(data, transaction);
                         
-                        LogInfo($"[{tasker.Name}]-{tasker.Unit}-UpdateStatusOspStRvStage1 (OSP_HEADER_ID:{data.OSP_HEADER_ID}, PROCESS_CODE:{data.PROCESS_CODE}, SERVER_CODE:{data.SERVER_CODE}, BATCH_ID:{data.BATCH_ID})-{model}");
+                        LogInfo($"[{tasker.Name}]-{tasker.Unit}-UpdateStatusOspStRvStage1 (OSP_HEADER_ID:{data.OSP_HEADER_ID}, PROCESS_CODE:{data.PROCESS_CODE}, SERVER_CODE:{data.SERVER_CODE}, BATCH_ID:{data.BATCH_ID}, STATUS_CODE:{controlSt.STATUS_CODE})-{model}");
                         if (!model.Success)
                         {
                             throw new Exception(model.Msg);
@@ -306,6 +308,8 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                         LogError($"[{tasker.Name}]-{tasker.Unit}-ExportOspStRvStage2-錯誤-(OSP_HEADER_ID:{list[i]})-{ex.Message}-{ex.StackTrace}");
                         transaction.Rollback();
                     }
+
+                    Thread.Sleep(100); //避免出現同一個BATCH_ID
                 }
 
 
@@ -371,7 +375,7 @@ namespace CHPOUTSRCMES.TASK.Models.Service
 
                         var model = ospStUow.OspSoaS2Repository.UpdateStatusCode(data, transaction);
 
-                        LogInfo($"[{tasker.Name}]-{tasker.Unit}-UpdateStatusOspStRvStage2 (OSP_HEADER_ID:{data.OSP_HEADER_ID}, PROCESS_CODE:{data.PROCESS_CODE}, SERVER_CODE:{data.SERVER_CODE}, BATCH_ID:{data.BATCH_ID})-{model}");
+                        LogInfo($"[{tasker.Name}]-{tasker.Unit}-UpdateStatusOspStRvStage2 (OSP_HEADER_ID:{data.OSP_HEADER_ID}, PROCESS_CODE:{data.PROCESS_CODE}, SERVER_CODE:{data.SERVER_CODE}, BATCH_ID:{data.BATCH_ID}, STATUS_CODE:{controlSt.STATUS_CODE})-{model}");
                         if (!model.Success)
                         {
                             throw new Exception(model.Msg);
@@ -450,6 +454,8 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                         LogError($"[{tasker.Name}]-{tasker.Unit}-ExportOspStRvStage3-錯誤-(OSP_HEADER_ID:{list[i]})-{ex.Message}-{ex.StackTrace}");
                         transaction.Rollback();
                     }
+
+                    Thread.Sleep(100); //避免出現同一個BATCH_ID
                 }
 
 
@@ -496,9 +502,9 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                 for (int i = 0; i < list.Count(); i++)
                 {
                     var data = list[i];
-                    var controlsSt = ospStUow.ControlStageRepository.GetBy(data.PROCESS_CODE, data.SERVER_CODE, data.BATCH_ID, pullingFlag: "InAck-S");
+                    var controlSt = ospStUow.ControlStageRepository.GetBy(data.PROCESS_CODE, data.SERVER_CODE, data.BATCH_ID, pullingFlag: "InAck-S");
 
-                    if (controlsSt == null
+                    if (controlSt == null
                         || string.IsNullOrEmpty(data.PROCESS_CODE)
                         || string.IsNullOrEmpty(data.SERVER_CODE)
                         || string.IsNullOrEmpty(data.BATCH_ID))
@@ -509,13 +515,13 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                     using var transaction = sqlConn.BeginTransaction();
                     try
                     {
-                        data.STATUS_CODE = controlsSt.STATUS_CODE;
+                        data.STATUS_CODE = controlSt.STATUS_CODE;
                         data.LAST_UPDATE_BY = userId;
                         data.LAST_UPDATE_DATE = DateTime.Now;
                         
                         var model = ospStUow.OspSoaS3Repository.UpdateStatusCode(data, transaction);
 
-                        LogInfo($"[{tasker.Name}]-{tasker.Unit}-UpdateStatusOspStRvStage3 (OSP_HEADER_ID:{data.OSP_HEADER_ID}, PROCESS_CODE:{data.PROCESS_CODE}, SERVER_CODE:{data.SERVER_CODE}, BATCH_ID:{data.BATCH_ID})-{model}");
+                        LogInfo($"[{tasker.Name}]-{tasker.Unit}-UpdateStatusOspStRvStage3 (OSP_HEADER_ID:{data.OSP_HEADER_ID}, PROCESS_CODE:{data.PROCESS_CODE}, SERVER_CODE:{data.SERVER_CODE}, BATCH_ID:{data.BATCH_ID}, STATUS_CODE:{controlSt.STATUS_CODE})-{model}");
                         if (!model.Success)
                         {
                             throw new Exception(model.Msg);
