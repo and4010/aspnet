@@ -305,7 +305,8 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                         LogError($"[{tasker.Name}]-{tasker.Unit}-ExportCtrStRv-錯誤-(CTR_HEADER_ID:{list[i].CTR_HEADER_ID})-{ex.Message}-{ex.StackTrace}");
                         transaction.Rollback();
                     }
-                    Thread.Sleep(100);
+
+                    Thread.Sleep(100); //避免出現同一個BATCH_ID
                 }
             }
             catch (OperationCanceledException)

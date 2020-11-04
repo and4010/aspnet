@@ -154,6 +154,8 @@ namespace CHPOUTSRCMES.TASK.Models.Service
                         LogError($"[{tasker.Name}]-{tasker.Unit}-ExportDlvStRv-錯誤-(TRIP_ID:{list[i]})-{ex.Message}-{ex.StackTrace}");
                         transaction.Rollback();
                     }
+
+                    Thread.Sleep(100); //避免出現同一個BATCH_ID
                 }
 
             }
