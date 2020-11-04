@@ -36,7 +36,7 @@ namespace CHPOUTSRCMES.Web.Models.Report
         [Display(Name = "噸數")]
         public decimal DoQty { set; get; }
 
-        [Display(Name = "得率")]
+        [Display(Name = "得率%")]
         public decimal Yield { set; get; }
 
 
@@ -52,16 +52,26 @@ namespace CHPOUTSRCMES.Web.Models.Report
             {
                 var dateFormStatus = DateTime.TryParseExact(cuttingDateFrom, "yyyy-MM-dd", null, System.Globalization.DateTimeStyles.NoCurrentDateDefault, out dateFrom);
                 var dateToStatus = DateTime.TryParseExact(cuttingDateTo, "yyyy-MM-dd", null, System.Globalization.DateTimeStyles.NoCurrentDateDefault, out dateTo);
+                if (!dateFormStatus) dateFrom = new DateTime(1900, 1, 1);
+                if (!dateToStatus) dateTo = new DateTime(9999, 12, 31);
 
                 string prefixCmd = @"
 SELECT h.BATCH_NO AS BatchNo,
-h.STATUS AS Status,
+CASE h.STATUS
+	WHEN '0' THEN '待排單'
+	WHEN '1' THEN '已排單'
+	WHEN '2' THEN '待核准'
+	WHEN '3' THEN '已完工'
+	WHEN '4' THEN '已關帳'
+	WHEN '5' THEN '已修改'
+	WHEN '6' THEN '已取消'
+END AS Status,
 iht.INVENTORY_ITEM_NUMBER AS DiItemNumber,
-yht.DETAIL_IN_QUANTITY / 1000 AS DiQty,
+ROUND(ISNULL(yht.DETAIL_IN_QUANTITY, 0) / 1000, 5) AS DiQty,
 oht.INVENTORY_ITEM_NUMBER AS DoItemNumber,
 (SELECT ISNULL(SUM(SECONDARY_QUANTITY), 0) FROM OSP_PICKED_OUT_HT WHERE OSP_HEADER_ID = h.OSP_HEADER_ID) AS DoReQty,
-yht.DETAIL_OUT_QUANTITY /1000 AS DoQty,
-yht.RATE AS Yield
+ROUND(ISNULL(yht.DETAIL_OUT_QUANTITY, 0) /1000, 5) AS DoQty,
+ROUND(yht.RATE, 2) AS Yield
 FROM OSP_HEADER_T h
 JOIN OSP_YIELD_VARIANCE_HT yht on h.OSP_HEADER_ID = yht.OSP_HEADER_ID
 JOIN OSP_DETAIL_IN_HT iht on h.OSP_HEADER_ID = iht.OSP_HEADER_ID
@@ -76,7 +86,7 @@ JOIN USER_SUBINVENTORY_T us ON us.ORGANIZATION_ID = h.ORGANIZATION_ID AND us.SUB
                     sqlParameterList.Add(SqlParamHelper.GetVarChar("@userId", userId, 128));
                 }
 
-                cond.Add("(h.STATUS = '3' OR h.STATUS = '4')");
+                //cond.Add("(h.STATUS = '3' OR h.STATUS = '4')");
 
 
                 if (dateFormStatus || dateToStatus)
@@ -85,12 +95,6 @@ JOIN USER_SUBINVENTORY_T us ON us.ORGANIZATION_ID = h.ORGANIZATION_ID AND us.SUB
                     sqlParameterList.Add(SqlParamHelper.GetDataTime("@CUTTING_DATE_FROM", dateFrom));
                     sqlParameterList.Add(SqlParamHelper.GetDataTime("@CUTTING_DATE_TO", dateTo));
                 }
-
-                //if (dateTo != false)
-                //{
-                //    cond.Add("TRIP_ACTUAL_SHIP_DATE <= @shipEndDate");
-                //    sqlParameterList.Add(SqlParamHelper.GetDataTime("@shipEndDate", shipEndDate));
-                //}
 
                 if (batchNo != "*")
                 {
@@ -198,14 +202,14 @@ JOIN USER_SUBINVENTORY_T us ON us.ORGANIZATION_ID = h.ORGANIZATION_ID AND us.SUB
             if (string.IsNullOrEmpty(search)) return models;
 
             return models.Where(x =>
-                    (!string.IsNullOrEmpty(x.BatchNo.ToLower()) && x.BatchNo.Contains(search.ToLower()))
-                    || (!string.IsNullOrEmpty(x.Status.ToLower()) && x.Status.Contains(search.ToLower()))
-                    || (!string.IsNullOrEmpty(x.DiItemNumber.ToLower()) && x.DiItemNumber.Contains(search.ToLower()))
-                    || (!string.IsNullOrEmpty(x.DiQty.ToString().ToLower()) && x.DiQty.ToString().Contains(search.ToLower()))
-                    || (!string.IsNullOrEmpty(x.DoItemNumber.ToLower()) && x.DoItemNumber.Contains(search.ToLower()))
-                    || (!string.IsNullOrEmpty(x.DoReQty.ToString().ToLower()) && x.DoReQty.ToString().Contains(search.ToLower()))
-                    || (!string.IsNullOrEmpty(x.DoQty.ToString().ToLower()) && x.DoQty.ToString().Contains(search.ToLower()))
-                    || (!string.IsNullOrEmpty(x.Yield.ToString().ToLower()) && x.Yield.ToString().Contains(search.ToLower()))
+                    (!string.IsNullOrEmpty(x.BatchNo) && x.BatchNo.ToLower().Contains(search.ToLower()))
+                    || (!string.IsNullOrEmpty(x.Status) && x.Status.ToLower().Contains(search.ToLower()))
+                    || (!string.IsNullOrEmpty(x.DiItemNumber) && x.DiItemNumber.ToLower().Contains(search.ToLower()))
+                    || (!string.IsNullOrEmpty(x.DiQty.ToString()) && x.DiQty.Normalize().ToString().ToLower().Contains(search.ToLower()))
+                    || (!string.IsNullOrEmpty(x.DoItemNumber.ToLower()) && x.DoItemNumber.ToLower().Contains(search.ToLower()))
+                    || (!string.IsNullOrEmpty(x.DoReQty.ToString()) && x.DoReQty.Normalize().ToString().ToLower().Contains(search.ToLower()))
+                    || (!string.IsNullOrEmpty(x.DoQty.ToString()) && x.DoQty.Normalize().ToString().ToLower().Contains(search.ToLower()))
+                    || (!string.IsNullOrEmpty(x.Yield.ToString()) && x.Yield.Normalize().ToString().ToLower().Contains(search.ToLower()))
                 );
         }
     }

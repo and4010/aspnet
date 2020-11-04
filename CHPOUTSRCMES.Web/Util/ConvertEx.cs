@@ -6,7 +6,7 @@ using System.Web;
 
 namespace CHPOUTSRCMES.Web.Util
 {
-    public class ConvertEx
+    public static class ConvertEx
     {
         /// <summary>
         /// string轉decimal
@@ -25,6 +25,16 @@ namespace CHPOUTSRCMES.Web.Util
             {
                 return new ResultDataModel<decimal>(result, "轉換失敗", i);
             }
+        }
+
+        /// <summary>
+        /// 去掉decimal尾數無用的0
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static decimal Normalize(this decimal value)
+        {
+            return value / 1.000000000000000000000000000000000m;
         }
     }
 }

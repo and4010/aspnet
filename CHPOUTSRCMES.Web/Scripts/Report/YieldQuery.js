@@ -1,5 +1,6 @@
 ﻿var QueryTable;
 
+
 $(document).ready(function () {
 
     $('#BatchNo').combobox();
