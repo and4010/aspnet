@@ -292,6 +292,7 @@
     <Compile Include="DataModel\Entity\Inventory\TRF_INVENTORY_HT.cs" />
     <Compile Include="DataModel\Entity\Inventory\TRF_INVENTORY_HEADER_T.cs" />
     <Compile Include="DataModel\Entity\Inventory\TRF_INVENTORY_T.cs" />
+    <Compile Include="DataModel\Entity\LOG_ENTRY_TASK_T.cs" />
     <Compile Include="DataModel\Entity\Miscellaneous\TRF_MISCELLANEOUS_SOA_T.cs" />
     <Compile Include="DataModel\Entity\Miscellaneous\TRF_MISCELLANEOUS_HEADER_T.cs" />
     <Compile Include="DataModel\Entity\Miscellaneous\TRF_MISCELLANEOUS_HT.cs" />

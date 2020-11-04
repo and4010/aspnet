@@ -7,14 +7,14 @@ using System.Web;
 
 namespace CHPOUTSRCMES.Web.DataModel.Entity
 {
-    [Table("LOG_ENTRY_T")]
-    public class LOG_ENTRY_T
+    [Table("LOG_ENTRY_TASK_T")]
+    public class LOG_ENTRY_TASK_T
     {
         public int Id { get; set; }
         [Index("SEARCH_INDEX", Order = 2)]
         [StringLength(5000)]
         public string CallSite { get; set; }
-        [Index("SEARCH_INDEX", Order = 1)] 
+        [Index("SEARCH_INDEX", Order = 1)]
         [StringLength(30)]
         public string Date { get; set; }
         [StringLength(5000)]

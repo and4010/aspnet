@@ -159,6 +159,10 @@ namespace CHPOUTSRCMES.Web.DataModel
         /// NLOG
         /// </summary>
         public DbSet<LOG_ENTRY_T> LogEntries { set; get; }
+        /// <summary>
+        /// TASK 排程程式LOG
+        /// </summary>
+        public DbSet<LOG_ENTRY_TASK_T> TaskLogEntries { set; get; }
 
         public DbSet<USER_SUBINVENTORY_T> USER_SUBINVENTORY_Ts { set; get; }
 
