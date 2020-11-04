@@ -423,6 +423,10 @@
     <Compile Include="Migrations\202010291223592_init_build.Designer.cs">
       <DependentUpon>202010291223592_init_build.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202011040335088_add_log_entry.cs" />
+    <Compile Include="Migrations\202011040335088_add_log_entry.Designer.cs">
+      <DependentUpon>202011040335088_add_log_entry.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Delivery\FlatEditBarcodeDT.cs" />
     <Compile Include="Models\Delivery\FlatEditDT.cs" />
@@ -2220,6 +2224,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\202010291223592_init_build.resx">
       <DependentUpon>202010291223592_init_build.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202011040335088_add_log_entry.resx">
+      <DependentUpon>202011040335088_add_log_entry.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
