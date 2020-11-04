@@ -370,18 +370,16 @@ namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
                 {
                     continue;
                 }
-
+                var header = OspHeaderRepository.GetByPeBatchId(peBatchId: list[i].PE_BATCH_ID, transaction: transaction);
 
                 switch (list[i].BATCH_STATUS)
                 {
+                    default:
                     case 2:
-                        result = OspBatchStCreateNow(list[i], trans);
+                        result = (header != null) ? OspBatchStChange(list[i], trans) : OspBatchStCreateNow(list[i], trans);
                         break;
                     case -1:
                         result = OspBatchStCancel(list[i], trans);
-                        break;
-                    default:
-                        result = OspBatchStChange(list[i], trans);
                         break;
                 }
 
