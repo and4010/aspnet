@@ -19,7 +19,7 @@ namespace CHPOUTSRCMES.Web.Domain
             menu.Add(new Navbar { Id = 4, nameOption = "查詢", imageClass = "fa fa-table", status = true, isParent = true, parentId = 0 });
             menu.Add(new Navbar { Id = 5, nameOption = "基本資料", imageClass = "fa fa-briefcase", status = true, isParent = true, parentId = 0 });
             menu.Add(new Navbar { Id = 6, nameOption = "庫存異動", imageClass = "fa fa-pie-chart", status = true, isParent = true, parentId = 0 });
-            //menu.Add(new Navbar { Id = 7, nameOption = "報表", imageClass = "fa fa-table", status = false, isParent = true, parentId = 0 });
+            menu.Add(new Navbar { Id = 7, nameOption = "報表", imageClass = "fa fa-table", status = true, isParent = true, parentId = 0 });
 
             //查詢 (第二層選單)
             menu.Add(new Navbar { Id = 401, nameOption = "庫存查詢", controller = "Stock", action = "Query", status = true, isParent = false, parentId = 4 });
@@ -45,7 +45,7 @@ namespace CHPOUTSRCMES.Web.Domain
             menu.Add(new Navbar { Id = 601, nameOption = "存貨報廢", controller = "Obsolete", action = "Index", status = true, isParent = false, parentId = 6 });
 
             //報表 (第二層選單)
-            //menu.Add(new Navbar { Id = 701, nameOption = "工單得率報表", controller = "Home", action = "Icons", status = false, isParent = false, parentId = 7 });
+            menu.Add(new Navbar { Id = 701, nameOption = "工單得率報表", controller = "Report", action = "Yield", status = true, isParent = false, parentId = 7 });
             //menu.Add(new Navbar { Id = 702, nameOption = "裁切加工報表", controller = "Home", action = "Icons", status = false, isParent = false, parentId = 7 });
             return menu.ToList();
         }

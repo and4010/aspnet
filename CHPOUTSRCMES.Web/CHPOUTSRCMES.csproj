@@ -278,6 +278,7 @@
     <Compile Include="Controllers\PurchaseController.cs" />
     <Compile Include="Controllers\NavbarController.cs" />
     <Compile Include="Controllers\ReasonController.cs" />
+    <Compile Include="Controllers\ReportController.cs" />
     <Compile Include="Controllers\SoaController.cs" />
     <Compile Include="Controllers\StockController.cs" />
     <Compile Include="Controllers\StockInventoryController.cs" />
@@ -452,6 +453,7 @@
     <Compile Include="Models\Navbar.cs" />
     <Compile Include="Models\Purchase\DetailModel.cs" />
     <Compile Include="Models\Information\ReasonModel.cs" />
+    <Compile Include="Models\Report\YieldQueryModel.cs" />
     <Compile Include="Models\ResultModel.cs" />
     <Compile Include="Models\CHP_SUBINVENTORY_T\LOCATOR.cs" />
     <Compile Include="Models\CHP_SUBINVENTORY_T\ORGANIZATION.cs" />
@@ -497,6 +499,7 @@
     <Compile Include="ViewModels\OrgSubinventoryViewModel.cs" />
     <Compile Include="ViewModels\OspRelatedViewModel.cs" />
     <Compile Include="ViewModels\HomeViewModel.cs" />
+    <Compile Include="ViewModels\Report\YieldViewModel.cs" />
     <Compile Include="ViewModels\SoaQuery\SoaQueryDetailViewModel.cs" />
     <Compile Include="ViewModels\SoaQuery\SoaQueryViewModel.cs" />
     <Compile Include="ViewModels\StockQuery\QueryDetailViewModel.cs" />
@@ -2051,6 +2054,7 @@
     <Content Include="Scripts\Obsolete\Obsolete.js" />
     <Content Include="Scripts\OrgSubinventory.js" />
     <Content Include="Scripts\OspRelated.js" />
+    <Content Include="Scripts\Report\YieldQuery.js" />
     <Content Include="Scripts\SoaQuery.js" />
     <Content Include="Scripts\SoaQueryDetail.js" />
     <Content Include="Scripts\StockQueryDetailPhotoView.js" />
@@ -2198,6 +2202,7 @@
     <Content Include="Views\Account\Create.cshtml" />
     <Content Include="Views\Account\Edit.cshtml" />
     <Content Include="Views\Stock\PhotoView.cshtml" />
+    <Content Include="Views\Report\Yield.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
