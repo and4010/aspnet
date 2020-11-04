@@ -11,7 +11,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity
     public class LOG_ENTRY_TASK_T
     {
         public int Id { get; set; }
-        [Index("SEARCH_INDEX", Order = 2)]
         [StringLength(5000)]
         public string CallSite { get; set; }
         [Index("SEARCH_INDEX", Order = 1)]

@@ -7,13 +7,13 @@ namespace CHPOUTSRCMES.Web.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.2.0-61023")]
-    public sealed partial class add_log_entry : IMigrationMetadata
+    public sealed partial class fix_log_entry : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(add_log_entry));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(fix_log_entry));
         
         string IMigrationMetadata.Id
         {
-            get { return "202011040335088_add_log_entry"; }
+            get { return "202011040354502_fix_log_entry"; }
         }
         
         string IMigrationMetadata.Source

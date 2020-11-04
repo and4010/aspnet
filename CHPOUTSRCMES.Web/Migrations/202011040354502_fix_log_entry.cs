@@ -3,7 +3,7 @@ namespace CHPOUTSRCMES.Web.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class add_log_entry : DbMigration
+    public partial class fix_log_entry : DbMigration
     {
         public override void Up()
         {
@@ -24,9 +24,9 @@ namespace CHPOUTSRCMES.Web.Migrations
                         Username = c.String(maxLength: 300),
                     })
                 .PrimaryKey(t => t.Id)
-                .Index(t => new { t.Date, t.CallSite }, name: "SEARCH_INDEX");
+                .Index(t => t.Date, name: "SEARCH_INDEX");
             
-            CreateIndex("dbo.LOG_ENTRY_T", new[] { "Date", "CallSite" }, name: "SEARCH_INDEX");
+            CreateIndex("dbo.LOG_ENTRY_T", "Date", name: "SEARCH_INDEX");
         }
         
         public override void Down()
