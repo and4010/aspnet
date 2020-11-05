@@ -1575,6 +1575,8 @@
     <Content Include="Data\SQLScript\110_SP_P217_CtrStCreateNew.sql" />
     <Content Include="Data\SQLScript\111_SP_P217_CtrStChange.sql" />
     <Content Include="Data\SQLScript\112_SP_P217_CtrStCancel.sql" />
+    <Content Include="Data\SQLScript\028_GetOspStatusNameByCode.sql" />
+    <Content Include="Data\SQLScript\029_SP_OspYieldReport.sql" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -2029,6 +2031,7 @@
     <Content Include="Report\InboundRollPickingList.rdlc" />
     <None Include="Properties\PublishProfiles\元譯環境發佈.pubxml" />
     <None Include="Properties\PublishProfiles\華紙環境發佈.pubxml" />
+    <Content Include="Report\OspYield.rdlc" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\Delivery\DetailViewHeader.js" />
     <Content Include="Scripts\Delivery\FlatEdit.js" />
@@ -2203,6 +2206,7 @@
     <Content Include="Views\Account\Edit.cshtml" />
     <Content Include="Views\Stock\PhotoView.cshtml" />
     <Content Include="Views\Report\Yield.cshtml" />
+    <Content Include="Views\Report\Report.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

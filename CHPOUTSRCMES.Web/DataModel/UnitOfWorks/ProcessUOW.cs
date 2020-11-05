@@ -4126,6 +4126,113 @@ AND OPO.OSP_PICKED_OUT_ID = @OSP_PICKED_OUT_ID
 
         }
 
+       
+        public ResultDataModel<ReportDataSource> GetOspYieldReportDataSource(string cuttingDateFrom, string cuttingDateTo, string batchNo, string machineNum, string userId)
+        {
+
+            using (SqlConnection connection = new SqlConnection(WebConfigurationManager.ConnectionStrings["MesContext"].ConnectionString.ToString()))
+            {
+                try
+                {
+                    string cmd = @"EXEC dbo.SP_OspYieldReport 
+@cuttingDateFrom, @cuttingDateTo, @batchNo, @machineNum, @dateFormStatus, @dateToStatus, @code, @message, @user
+";
+                    connection.Open();
+                    SqlCommand command = new SqlCommand(cmd, connection);
+                    DataSet dataset = new DataSet("OSP");
+                    command.Parameters.AddRange(GetOspYieldSqlParameterList(cuttingDateFrom, cuttingDateTo, batchNo, machineNum, userId).ToArray());
+                    SqlDataAdapter salesOrderAdapter = new SqlDataAdapter(command);
+                    salesOrderAdapter.Fill(dataset, "DataSet1");
+                    ReportDataSource dataSource = new ReportDataSource();
+                    dataSource.Name = "DataSet1";
+                    dataSource.Value = dataset.Tables["DataSet1"];
+
+                    connection.Close();
+
+                    return new ResultDataModel<ReportDataSource>(true, "取得工單得率報表資料來源成功", dataSource);
+                }
+                catch (Exception ex)
+                {
+                    logger.Error(LogUtilities.BuildExceptionMessage(ex));
+                    return new ResultDataModel<ReportDataSource>(false, "取得工單得率報表資料來源失敗:" + ex.Message, null);
+                }
+            }
+
+        }
+
+        public List<SqlParameter> GetOspYieldSqlParameterList(string cuttingDateFrom, string cuttingDateTo, string batchNo, string machineNum, string userId)
+        {
+            DateTime dateFrom = new DateTime();
+            DateTime dateTo = new DateTime();
+            string sDateFormStatus = "1";
+            string sDateToStatus = "1";
+
+            var dateFormStatus = DateTime.TryParseExact(cuttingDateFrom, "yyyy-MM-dd", null, System.Globalization.DateTimeStyles.NoCurrentDateDefault, out dateFrom);
+            var dateToStatus = DateTime.TryParseExact(cuttingDateTo, "yyyy-MM-dd", null, System.Globalization.DateTimeStyles.NoCurrentDateDefault, out dateTo);
+            if (!dateFormStatus)
+            {
+                cuttingDateFrom = "1900-01-01";
+                sDateFormStatus = "0";
+            }
+            if (!dateToStatus)
+            {
+                cuttingDateTo = "9999-12-31";
+                sDateToStatus = "0";
+            }
+
+            List<SqlParameter> sqlParameterList = new List<SqlParameter>();
+            sqlParameterList.Add(SqlParamHelper.GetVarChar("@cuttingDateFrom", cuttingDateFrom, 30));
+            sqlParameterList.Add(SqlParamHelper.GetVarChar("@cuttingDateTo", cuttingDateTo, 30));
+            sqlParameterList.Add(SqlParamHelper.GetVarChar("@batchNo", batchNo, 32));
+            sqlParameterList.Add(SqlParamHelper.GetVarChar("@machineNum", machineNum, 30));
+            //sqlParameterList.Add(new SqlParameter("@dateFormStatus", dateFormStatus));
+            //sqlParameterList.Add(new SqlParameter("@dateToStatus", dateToStatus));
+            sqlParameterList.Add(SqlParamHelper.GetVarChar("@dateFormStatus", sDateFormStatus, 1));
+            sqlParameterList.Add(SqlParamHelper.GetVarChar("@dateToStatus", sDateToStatus, 1));
+            sqlParameterList.Add(SqlParamHelper.GetInt("@code", 0, System.Data.ParameterDirection.Output));
+            sqlParameterList.Add(SqlParamHelper.GetNVarChar("@message", "", 500, System.Data.ParameterDirection.Output));
+            sqlParameterList.Add(SqlParamHelper.GetVarChar("@user", userId, 128));
+
+            return sqlParameterList;
+        }
+
+        public List<ReportParameter> GetOspYieldReportParameterList(string cuttingDateFrom, string cuttingDateTo, string batchNo, string machineNum, string userId)
+        {
+            DateTime dateFrom = new DateTime();
+            DateTime dateTo = new DateTime();
+            string sDateFormStatus = "1";
+            string sDateToStatus = "1";
+
+            var dateFormStatus = DateTime.TryParseExact(cuttingDateFrom, "yyyy-MM-dd", null, System.Globalization.DateTimeStyles.NoCurrentDateDefault, out dateFrom);
+            var dateToStatus = DateTime.TryParseExact(cuttingDateTo, "yyyy-MM-dd", null, System.Globalization.DateTimeStyles.NoCurrentDateDefault, out dateTo);
+            if (!dateFormStatus)
+            {
+                cuttingDateFrom = "1900-01-01";
+                sDateFormStatus = "0";
+            }
+            if (!dateToStatus)
+            {
+                cuttingDateTo = "9999-12-31";
+                sDateToStatus = "0";
+            }
+
+            List<ReportParameter> reportParameterList = new List<ReportParameter>();
+            reportParameterList.Add(new ReportParameter("cuttingDateFrom", cuttingDateFrom, false));
+            reportParameterList.Add(new ReportParameter("cuttingDateTo", cuttingDateTo, false));
+            reportParameterList.Add(new ReportParameter("batchNo", batchNo, false));
+            reportParameterList.Add(new ReportParameter("machineNum", machineNum, false));
+            //reportParameterList.Add(new ReportParameter("@dateFormStatus", dateFormStatus.ToString(), false));
+            //reportParameterList.Add(new ReportParameter("@dateToStatus", dateToStatus.ToString(), false));
+            reportParameterList.Add(new ReportParameter("dateFormStatus", sDateFormStatus, false));
+            reportParameterList.Add(new ReportParameter("dateToStatus", sDateToStatus, false));
+            reportParameterList.Add(new ReportParameter("code", "0", false));
+            reportParameterList.Add(new ReportParameter("message", "", false));
+            reportParameterList.Add(new ReportParameter("user", userId, false));
+
+            return reportParameterList;
+        }
+
+
         /// <summary>
         /// 取得deatialOut資料
         /// </summary>

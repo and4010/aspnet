@@ -11,9 +11,15 @@ $(document).ready(function () {
     });
 
     $('#btnPrint').click(function () {
-
+        //var shipmentNumber = getShipmentNumber();
+        //if (shipmentNumber == "新增編號") {
+        //    swal.fire('請選擇出貨編號');
+        //    event.preventDefault();
+        //    return;
+        //}
+        window.open("/Report/OspYieldReport/?cuttingDateFrom=" + getCuttingDateFrom() + "&cuttingDateTo=" + getCuttingDateTo() + "&batchNo=" + getBatchNo() + "&machineNum=" + getMachineNum());
     });
-
+    
     $('#dateFrom').datepicker({
         dateFormat: 'yy-mm-dd',
         changeMonth: true,

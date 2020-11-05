@@ -8,6 +8,10 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
 using NLog;
+using Microsoft.Reporting.WebForms;
+using CHPOUTSRCMES.Web.DataModel.UnitOfWorks;
+using System.Drawing;
+using System.Web.UI.WebControls;
 
 namespace CHPOUTSRCMES.Web.Models.Report
 {
@@ -57,15 +61,7 @@ namespace CHPOUTSRCMES.Web.Models.Report
 
                 string prefixCmd = @"
 SELECT h.BATCH_NO AS BatchNo,
-CASE h.STATUS
-	WHEN '0' THEN '待排單'
-	WHEN '1' THEN '已排單'
-	WHEN '2' THEN '待核准'
-	WHEN '3' THEN '已完工'
-	WHEN '4' THEN '已關帳'
-	WHEN '5' THEN '已修改'
-	WHEN '6' THEN '已取消'
-END AS Status,
+dbo.GetOspStatusNameByCode(h.STATUS) AS Status,
 iht.INVENTORY_ITEM_NUMBER AS DiItemNumber,
 ROUND(ISNULL(yht.DETAIL_IN_QUANTITY, 0) / 1000, 5) AS DiQty,
 oht.INVENTORY_ITEM_NUMBER AS DoItemNumber,
@@ -212,5 +208,68 @@ JOIN USER_SUBINVENTORY_T us ON us.ORGANIZATION_ID = h.ORGANIZATION_ID AND us.SUB
                     || (!string.IsNullOrEmpty(x.Yield.ToString()) && x.Yield.Normalize().ToString().ToLower().Contains(search.ToLower()))
                 );
         }
+
+
+        public ResultDataModel<ReportViewer> LocalOspYieldReportViewer(ProcessUOW uow, string cuttingDateFrom, string cuttingDateTo, string batchNo, string machineNum, string userId)
+        {
+            try
+            {
+                var report = new ReportViewer();
+                // Set the processing mode for the ReportViewer to Local  
+                report.ProcessingMode = ProcessingMode.Local;
+                report.BackColor = Color.LightGray;
+                report.SizeToReportContent = true;
+                report.BorderWidth = 1;
+                report.BorderStyle = BorderStyle.Solid;
+
+                LocalReport localReport = report.LocalReport;
+                localReport.ReportPath = "Report/OspYield.rdlc";
+
+                var reportDataSourceResult = uow.GetOspYieldReportDataSource(cuttingDateFrom, cuttingDateTo, batchNo, machineNum, userId);
+                if (!reportDataSourceResult.Success) return new ResultDataModel<ReportViewer>(false, reportDataSourceResult.Msg, null);
+                localReport.DataSources.Add(reportDataSourceResult.Data);
+
+                // Set the report parameters for the report  
+                localReport.SetParameters(uow.GetOspYieldReportParameterList(cuttingDateFrom, cuttingDateTo, batchNo, machineNum, userId));
+
+                report.LocalReport.Refresh();
+
+                return new ResultDataModel<ReportViewer>(true, "取得工單得率報表成功", report);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(LogUtilities.BuildExceptionMessage(ex));
+                return new ResultDataModel<ReportViewer>(false, "取得工單得率報表失敗:" + ex.Message, null);
+            }
+        }
+
+
+        public ResultDataModel<ReportViewer> RemoteOspYieldReportViewer(ProcessUOW uow, string cuttingDateFrom, string cuttingDateTo, string batchNo, string machineNum, string userId)
+        {
+            try
+            {
+                string KeyName = System.Web.Configuration.WebConfigurationManager.AppSettings["reportServerUrl"];
+               
+
+                var report = new ReportViewer();
+                report.ProcessingMode = ProcessingMode.Remote;
+                report.BackColor = Color.LightGray;
+                report.SizeToReportContent = true;
+                report.BorderWidth = 1;
+                report.BorderStyle = BorderStyle.Solid;
+                report.ServerReport.ReportPath = KeyName + "/OspYield";
+                report.ServerReport.ReportServerUrl = new Uri("http://rs.yfy.com/ReportServer");
+                report.ServerReport.SetParameters(uow.GetOspYieldReportParameterList(cuttingDateFrom, cuttingDateTo, batchNo, machineNum, userId));
+                report.ServerReport.Refresh();
+
+                return new ResultDataModel<ReportViewer>(true, "取得工單得率報表成功", report);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(LogUtilities.BuildExceptionMessage(ex));
+                return new ResultDataModel<ReportViewer>(false, "取得工單得率報表失敗:" + ex.Message, null);
+            }
+        }
+
     }
 }
