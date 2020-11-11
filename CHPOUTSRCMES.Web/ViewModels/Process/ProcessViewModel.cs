@@ -156,7 +156,7 @@ namespace CHPOUTSRCMES.Web.ViewModels.Process
         /// <param name="Barcode"></param>
         /// <param name="OspDetailInId"></param>
         /// <returns></returns>
-        public ResultDataModel<STOCK_T> CheckStockBarcode(string Barcode, string OspDetailInId)
+        public ResultDataModel<STOCK_T> CheckStockBarcode(string Barcode, long OspDetailInId)
         {
             using (var context = new MesContext())
             {

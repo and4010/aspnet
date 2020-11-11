@@ -1311,7 +1311,7 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
         /// <param name="Barcode"></param>
         /// <param name="OspDetailInId"></param>
         /// <returns></returns>
-        public ResultDataModel<STOCK_T> CheckStockBarcode(string Barcode, string OspDetailInId)
+        public ResultDataModel<STOCK_T> CheckStockBarcode(string Barcode, long OspDetailInId)
         {
             try
             {
@@ -1367,13 +1367,18 @@ AND ST.BARCODE = @BARCODE");
                     var data = mesContext.Database.SqlQuery<STOCK_T>(query.ToString(), sqlParameterList.ToArray()).SingleOrDefault();
                     if (data == null)
                     {
-                        return new ResultDataModel<STOCK_T>(false, "無條碼資料", data);
-                    }
-                    else
-                    {
-                        return new ResultDataModel<STOCK_T>(true, "", data);
+                        return new ResultDataModel<STOCK_T>(false, "無條碼資料", null);
                     }
 
+                    var detailin = OspDetailInTRepository.Get(x => x.OspDetailInId == OspDetailInId).SingleOrDefault();
+                    if (detailin == null) return new ResultDataModel<STOCK_T>(false, "沒有加工投入明細資料", null);
+
+                    if (detailin.LocatorId != null && data.LocatorId != detailin.LocatorId)
+                    {
+                        return new ResultDataModel<STOCK_T>(false, "請投入儲位為" + detailin.LocatorCode + "的條碼", null);
+                    }
+
+                    return new ResultDataModel<STOCK_T>(true, "", data);
                 }
             }
             catch (Exception e)
@@ -1452,10 +1457,18 @@ AND ST.BARCODE = @BARCODE");
                         return new ResultModel(false, "無條碼資料");
                     }
 
+                    var detailin = OspDetailInTRepository.Get(x => x.OspDetailInId == OspDetailInId).SingleOrDefault();
+                    if (detailin == null) return new ResultModel(false, "沒有加工投入明細資料");
+
+                    if (detailin.LocatorId != null && data.LocatorId != detailin.LocatorId)
+                    {
+                        return new ResultModel(false, "請投入儲位為" + detailin.LocatorCode + "的條碼");
+                    }
+
                     var OspPickIn = OspPickedInTRepository.Get(x => x.Barcode == Barcode && x.OspDetailInId == OspDetailInId).SingleOrDefault();
                     if (OspPickIn == null)
                     {
-                        var detailin = OspDetailInTRepository.Get(x => x.OspDetailInId == OspDetailInId).SingleOrDefault();
+                        //var detailin = OspDetailInTRepository.Get(x => x.OspDetailInId == OspDetailInId).SingleOrDefault();
                         var Header = OspHeaderTRepository.Get(x => x.OspHeaderId == detailin.OspHeaderId).SingleOrDefault();
                         OSP_PICKED_IN_T oSP_PICKED_IN_T = new OSP_PICKED_IN_T();
                         oSP_PICKED_IN_T.OspDetailInId = OspDetailInId;
@@ -2569,6 +2582,26 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
                     {
                         return new ResultDataModel<long>(false, "僅完工狀態可進行修改!!", 0);
                     }
+
+                    var notInStockBarocdeList = OspPickedInHTRepository.GetAll().AsNoTracking().Join(
+                        stockTRepository.GetAll().AsNoTracking(),
+                        o => new { o.StockId },
+                        s => new { s.StockId },
+                        (o, s) => new
+                        {
+                            OspHeaderId = o.OspHeaderId,
+                            Barcode = s.Barcode,
+                            StatusCode = s.StatusCode
+                        })
+                        .Where(x => x.OspHeaderId == OspHeaderId && x.StatusCode != StockStatusCode.InStock)
+                        .Select(x => x.Barcode)
+                        .ToList();
+                     
+                    if (notInStockBarocdeList != null && notInStockBarocdeList.Count > 0)
+                    {
+                        return new ResultDataModel<long>(false, "以下條碼不在庫無法修改:" + string.Join(",", notInStockBarocdeList), 0);
+                    }
+                    
 
                     var newHeader = OspHeaderTRepository.GetAll().Where(x => x.OspHeaderId == OspHeaderId).AsNoTracking().FirstOrDefault();
                     if (newHeader.Status == ProcessStatusCode.CompletedBatch)

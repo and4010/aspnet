@@ -197,7 +197,7 @@ namespace CHPOUTSRCMES.Web.Controllers
         }
 
         [HttpPost]
-        public JsonResult CheckStockBarcode(string Barcode, string OspDetailInId)
+        public JsonResult CheckStockBarcode(string Barcode, long OspDetailInId)
         {
 
             ProcessViewModel procesViewModel = new ProcessViewModel();
