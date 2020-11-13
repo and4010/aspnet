@@ -30,7 +30,7 @@ namespace CHPOUTSRCMES.TASK.Models.Repository.MsSql
 
         public OSP_HEADER_T GetByPeBatchId(long peBatchId, IDbTransaction transaction = null)
         {
-            return Connection.QueryFirst<OSP_HEADER_T>($@"SELECT * FROM OSP_HEADER_T WHERE PE_BATCH_ID = @peBatchId", param: new { peBatchId = peBatchId }, transaction: transaction);
+            return Connection.Query<OSP_HEADER_T>($@"SELECT * FROM OSP_HEADER_T WHERE PE_BATCH_ID = @peBatchId", param: new { peBatchId = peBatchId }, transaction: transaction).FirstOrDefault();
         }
 
 
