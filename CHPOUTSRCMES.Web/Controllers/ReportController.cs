@@ -42,8 +42,8 @@ namespace CHPOUTSRCMES.Web.Controllers
             {
                 using (ProcessUOW uow = new ProcessUOW(context))
                 {
-#if DEBUG
                     var userId = User.Identity.GetUserId();
+#if DEBUG
                     var result = yieldQueryModel.LocalOspYieldReportViewer(uow, cuttingDateFrom, cuttingDateTo, batchNo, machineNum, userId);
                     if (result.Success)
                     {
@@ -57,7 +57,7 @@ namespace CHPOUTSRCMES.Web.Controllers
 }
 
 #else
-                    
+
                     var result = yieldQueryModel.RemoteOspYieldReportViewer(uow, cuttingDateFrom, cuttingDateTo, batchNo, machineNum, userId);
                     if (result.Success)
                     {
