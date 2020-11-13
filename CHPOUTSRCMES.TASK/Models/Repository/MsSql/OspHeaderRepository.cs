@@ -28,6 +28,12 @@ namespace CHPOUTSRCMES.TASK.Models.Repository.MsSql
 
         #endregion
 
+        public OSP_HEADER_T GetByPeBatchId(long peBatchId, IDbTransaction transaction = null)
+        {
+            return Connection.Query<OSP_HEADER_T>($@"SELECT * FROM OSP_HEADER_T WHERE PE_BATCH_ID = @peBatchId", param: new { peBatchId = peBatchId }, transaction: transaction).FirstOrDefault();
+        }
+
+
         public async Task<List<long>> GetStage1List(IDbTransaction transaction = null)
         {
             return (await Connection.QueryAsync<long>(

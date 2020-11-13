@@ -371,17 +371,16 @@ namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
                     continue;
                 }
 
+                var header = OspHeaderRepository.GetByPeBatchId(peBatchId: list[i].PE_BATCH_ID, transaction: trans);
 
                 switch (list[i].BATCH_STATUS)
                 {
+                    default:
                     case 2:
-                        result = OspBatchStCreateNow(list[i], trans);
+                        result = (header != null) ? OspBatchStChange(list[i], trans) : OspBatchStCreateNow(list[i], trans);
                         break;
                     case -1:
                         result = OspBatchStCancel(list[i], trans);
-                        break;
-                    default:
-                        result = OspBatchStChange(list[i], trans);
                         break;
                 }
 
@@ -409,6 +408,7 @@ namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
                 OspBatchStRepository.UpdateStatus(list[i]);
                 System.Threading.Thread.Sleep(100);
             }
+
             
             return OspBatchStSummarize(controlStage, transaction);
 
@@ -442,7 +442,7 @@ namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
             {
                 resultModel.Code = -99;
                 resultModel.Success = false;
-                resultModel.Msg = ex.Message;
+                resultModel.Msg = "OspBatchStCreateNow :" + ex.Message;
             }
             return resultModel;
         }
