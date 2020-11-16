@@ -167,7 +167,7 @@ $(document).ready(function () {
         calendar.gotoDate(date);
     });
 
-    //calendarinit(calendar, sy, sm, sw);
+    calendarinit(calendar, sy, sm, sw);
 
 
     serach();
@@ -187,7 +187,8 @@ function calendarinit(calendar, sy, sm, sw) {
         calendar.getEventSources()[0].remove();
     };
 
-    calendar.addEventSource('/Purchase/GetEvents/' + warehouse);
+    var status = $('#select-Status').val();
+    calendar.addEventSource('/Purchase/GetEvents?id=' + warehouse + "&status=" + status);
     //calendar.gotoDate(year + "-" + month + "-01");
 
     //var date = calendar.getDate()
