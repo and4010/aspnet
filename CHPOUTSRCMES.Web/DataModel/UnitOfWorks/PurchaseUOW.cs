@@ -533,11 +533,15 @@ and d.ITEM_CATEGORY = N'捲筒'");
         /// <returns></returns>
         public List<FullCalendarEventModel> getFullCalenderList(string Subinventory, string status)
         {
-            var header = ctrHeaderTRepository.Get(x => x.Subinventory == Subinventory).GroupBy(x => x.ContainerNo).Select(x => x.FirstOrDefault()).ToList();
-            if (status != "*")
+            var header = new List<CTR_HEADER_T>();
+            if (status == "*")
+            {
+                header = ctrHeaderTRepository.Get(x => x.Subinventory == Subinventory).GroupBy(x => x.ContainerNo).Select(x => x.FirstOrDefault()).OrderBy(x => x.MvContainerDate).ToList();
+            }
+            else
             {
                 long status1 = Int64.Parse(status);
-                header = ctrHeaderTRepository.Get(x => x.Subinventory == Subinventory && x.Status == status1).GroupBy(x => x.ContainerNo).Select(x => x.FirstOrDefault()).ToList();
+                header = ctrHeaderTRepository.Get(x => x.Subinventory == Subinventory && x.Status == status1).GroupBy(x => x.ContainerNo).Select(x => x.FirstOrDefault()).OrderBy(x => x.MvContainerDate).ToList();
             }
 
             List<FullCalendarEventModel> fullCalendarEventModel = new List<FullCalendarEventModel>();

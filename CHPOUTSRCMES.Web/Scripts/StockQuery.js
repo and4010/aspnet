@@ -83,6 +83,7 @@ function loadTable(subinventory, locatorId, itemCategory, itemNo) {
                 text: '匯出Excel'
             },
         ],
+        order: [[0, 'asc'], [1, 'asc'], [2, 'asc']],
         columns: [
             { data: "SubinventoryCode", "name": "倉庫", "autoWidth": true, "className": "dt-body-center"},
             { data: "LocatorSegments", "name": "儲位", "autoWidth": true, "className": "dt-body-center"},

@@ -332,6 +332,20 @@ $(document).ready(function () {
             //{ data: "REQUESTED_QUANTITY", name: "預計出庫量", "autoWidth": true },
             //{ data: "REQUESTED_QUANTITY_UOM", name: "庫存單位(KG)", "autoWidth": true },
             { data: "SUBINVENTORY_CODE", name: "出貨倉庫", "autoWidth": true },
+            { data: "RP_SUM", name: "主單位需求量總和", "autoWidth": true },
+            { data: "REQUESTED_PRIMARY_UOM", name: "主單位", "autoWidth": true },
+            {
+                data: "RS_SUM", name: "次單位需求量總和", "autoWidth": true, "mRender": function (data, type, full) {
+                    if (data != null) {
+                        if (data == 0) {
+                            return '';
+                        }
+                        return data;
+                    } else {
+                        return '';
+                    }
+                }},
+            { data: "REQUESTED_SECONDARY_UOM", name: "次單位", "autoWidth": true },
             {
                 data: "TRIP_ACTUAL_SHIP_DATE", name: "組車日", "autoWidth": true, "mRender": function (data, type, full) {
                     if (data != null) {

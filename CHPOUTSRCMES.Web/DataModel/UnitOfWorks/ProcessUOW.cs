@@ -1457,6 +1457,11 @@ AND ST.BARCODE = @BARCODE");
                         return new ResultModel(false, "無條碼資料");
                     }
 
+                    if (data.StatusCode != StockStatusCode.InStock)
+                    {
+                        return new ResultModel(false, "條碼狀態須為在庫才可投入");
+                    }
+
                     var detailin = OspDetailInTRepository.Get(x => x.OspDetailInId == OspDetailInId).SingleOrDefault();
                     if (detailin == null) return new ResultModel(false, "沒有加工投入明細資料");
 

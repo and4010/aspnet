@@ -96,6 +96,7 @@ function loadTable(subinventory, locatorId, itemCategory, itemNo, barcode, dateF
                 text: '匯出Excel'
             }
         ],
+        order: [[0, 'desc']],
         columns: [
             {
                 data: "CreateDate", "name": "時間", "autoWidth": true, "className": "dt-body-center", "mRender": function (data, type, full) {

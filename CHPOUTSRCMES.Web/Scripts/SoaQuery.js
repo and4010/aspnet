@@ -16,7 +16,7 @@
         changeMonth: true,
         changeYear: true
     });
-
+    $("#ProcessDate").val($.datepicker.formatDate("yy-mm-dd", new Date()));
     //$('#QueryTable tbody').on('click', '.available-query', function () {
     //    var data = $('#QueryTable').DataTable().row($(this).parents('tr')).data();
 
@@ -61,6 +61,7 @@ function loadTable(processCode, processDate, hasError) {
                 text: '匯出Excel'
             },
         ],
+        "order": [[2, 'desc']],
         columns: [
             { data: "Id", "name": "項次", "autoWidth": true, "className": "dt-body-center" },
             { data: "ProcessName", "name": "傳輸類型", "autoWidth": true, "className": "dt-body-center" },

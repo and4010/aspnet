@@ -40,12 +40,11 @@
                         @Html.LabelFor(model => model.Month, new { @class = "input-lg" })
                     </div>
 
-                    <div class="form-group col-md-2">
+                    <div class="form-group col-md-3">
                         @Html.LabelFor(model => model.Subinventory, new { @class = "input-lg" })
                         @Html.DropDownListFor(model => model.Subinventory, SubinventoryItems, new { @class = "form-control input-lg", id = "select-warehouse" })
-
                     </div>
-                    <div class="form-group col-md-2">
+                    <div class="form-group col-md-3">
                         @Html.LabelFor(model => model.Status, new { @class = "input-lg" })
                         @Html.DropDownListFor(model => model.Status, StatusItems, new { @class = "form-control input-lg", id = "select-Status" })
                     </div>

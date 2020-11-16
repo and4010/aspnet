@@ -109,11 +109,11 @@ WHERE 1=1
 
 
                 var list = Search(models, data.Search.Value);
-                list = Order(data.Order, models);
+                list = Order(data.Order, list);
 
                 list = list.Skip(data.Start).Take(data.Length);
 
-                return new DataTableJsonResultModel<SoaQueryModel>(data.Draw, models.Count, list.ToList());
+                return new DataTableJsonResultModel<SoaQueryModel>(data.Draw, 0, list.ToList());
 
             }
             catch (Exception ex)
@@ -202,7 +202,7 @@ WHERE 1=1
         {
             if (string.IsNullOrEmpty(search)) return models;
 
-            return models.Where(x => 
+            return models.Where(x =>
                     (!string.IsNullOrEmpty(x.ProcessName) && x.ProcessName.Contains(search))
                     || (!string.IsNullOrEmpty(x.BatchId) && x.BatchId.Contains(search))
                     || (!string.IsNullOrEmpty(x.StatusCode) && x.StatusCode.Contains(search))
@@ -211,6 +211,9 @@ WHERE 1=1
                     || (!string.IsNullOrEmpty(x.SoaErrorMsg) && x.SoaErrorMsg.Contains(search))
                     || (!string.IsNullOrEmpty(x.SoaProcessCode) && x.SoaProcessCode.Contains(search))
                 );
+            return models.Where(x =>
+                    (!string.IsNullOrEmpty(x.BatchId) && x.BatchId.Contains(search))
+                    );
         }
 
         public static SoaQueryModel getModel(string processCode, string serverCode, string batchId)

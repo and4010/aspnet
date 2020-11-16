@@ -58,11 +58,11 @@ namespace CHPOUTSRCMES.Web.Models.SoaQuery
                 //var count = models.Count();
 
                 var list = Search(models, data.Search.Value);
-                list = Order(data.Order, models);
+                list = Order(data.Order, list);
 
                 list = list.Skip(data.Start).Take(data.Length);
 
-                return new DataTableJsonResultModel<SoaDetailQueryModel>(data.Draw, models.Count, list.ToList());
+                return new DataTableJsonResultModel<SoaDetailQueryModel>(data.Draw, 0, list.ToList());
             }
             catch (Exception ex)
             {

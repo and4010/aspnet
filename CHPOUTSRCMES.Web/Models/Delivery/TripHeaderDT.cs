@@ -146,6 +146,16 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
 
         [Display(Name = "車次")]
         public string TRIP_CAR { get; set; }
+
+        [Display(Name = "主單位需求量總和")]
+        public decimal RP_SUM { get; set; }
+
+        [Display(Name = "次單位需求量總和")]
+        public decimal RS_SUM { get; set; }
+        
+        public string REQUESTED_PRIMARY_UOM { get; set; }
+
+        public string REQUESTED_SECONDARY_UOM { get; set; }
     }
 
 
