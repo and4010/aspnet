@@ -24,14 +24,18 @@ const CloseBatch = "4";
 /// 已修改
 /// </summary>
 const Modified = "5";
+/// <summary>
+/// 已取消
+/// </summary>
+const Canceled ="6";
 
 $(document).ready(function () {
     BtnEvent();
     search();
-    $('#Status').combobox();
-    $('#BatchNo').combobox();
-    $('#MachineNum').combobox();
-    $('#Subinventory').combobox();
+    //$('#Status').combobox();
+    //$('#BatchNo').combobox();
+    //$('#MachineNum').combobox();
+    //$('#Subinventory').combobox();
     //初始化日期
     $('#DueDateFrom').datepicker({
         dateFormat: 'yy-mm-dd',
@@ -184,7 +188,12 @@ function ProcessLoadTable(Status, BatchNo, MachineNum, DueDateFrom, DueDateTo, C
         buttons: [
             {
                 extend: 'excel',
-                text: '匯出Excel'
+                text: '匯出Excel',
+                filename: function () {
+                    var d = new Date();
+                    var n = d.getTime();
+                    return 'myfile' + d;
+                }
             },
         ],
         "order": [[5, "desc"]], //單號排序
@@ -451,8 +460,10 @@ function BtnEvent() {
 
     });
 
+   
+    
 
-    $('#BtnCutReceipt').click(function () {
+    $('#BtnCutReceipt').click(function (e) {
 
         var headerList = []
 
@@ -469,6 +480,9 @@ function BtnEvent() {
                 case CloseBatch:
                     swal.fire(selectRowData.pluck('BatchNo')[i] + "已關帳，無法列印。");
                     return;
+                case Canceled:
+                    swal.fire(selectRowData.pluck('BatchNo')[i] + "已取消，無法列印。");
+                    return;
             }
 
             if (selectRowData.pluck('BatchType')[i] == "OSP") {
@@ -476,14 +490,24 @@ function BtnEvent() {
             }
         }
 
-        var millisecondsToWait = 500;
+        var millisecondsToWait = 0;
         for (i = 0; i < headerList.length; i++) {
-   
-            window.open("/Home/OspCutReceiptReport/?OspHeaderId=" + headerList[i]);
+            var url = "/Home/OspCutReceiptReport/?OspHeaderId=" + headerList[i];
+            setTimeout(windowOpen, millisecondsToWait, url);
+            millisecondsToWait += 5000;
         }
 
     });
+
+    
+
     $('#BtnCutMaterial').click(cutMaterial_onclick);
+}
+
+
+function windowOpen(url) {
+    var wi = window.open('about:blank', '_blank');
+    wi.location.href = url;
 }
 
 function sleep(time) {
@@ -508,14 +532,24 @@ function cutMaterial_onclick() {
             case CloseBatch:
                 swal.fire(selectRowData.pluck('BatchNo')[i] + "已關帳，無法列印。");
                 return;
+            case Canceled:
+                swal.fire(selectRowData.pluck('BatchNo')[i] + "已取消，無法列印。");
+                return;
         }
         headerList.push(selectRowData.pluck('OspHeaderId')[i]);
         
     }
 
-    for (i = 0; i < headerList.length; i++) {
+    //for (i = 0; i < headerList.length; i++) {
    
-        window.open("/Home/OspReport/?OspHeaderId=" + headerList[i]);
+    //    window.open("/Home/OspReport/?OspHeaderId=" + headerList[i]);
+    //}
+
+    var millisecondsToWait = 0;
+    for (i = 0; i < headerList.length; i++) {
+        var url = "/Home/OspReport/?OspHeaderId=" + headerList[i];
+        setTimeout(windowOpen, millisecondsToWait, url);
+        millisecondsToWait += 5000;
     }
 
 }
@@ -544,6 +578,11 @@ function search() {
         var CuttingDateFrom = $("#CuttingDateFrom").val();
         var CuttingDateTo = $("#CuttingDateTo").val();
         var Subinventory = $("#Subinventory").val();
+
+        if (BatchNo &&  BatchNo.length < 4) {
+            swal.fire("工單號須輸入4碼以上");
+            return;
+        }
 
         ProcessLoadTable(Status, BatchNo, MachineNum, DueDateFrom, DueDateTo, CuttingDateFrom, CuttingDateTo, Subinventory);
 
@@ -661,6 +700,11 @@ function firstLoad() {
     var CuttingDateFrom = $("#CuttingDateFrom").val();
     var CuttingDateTo = $("#CuttingDateTo").val();
     var Subinventory = $("#Subinventory").val();
+
+    if (BatchNo && BatchNo.length < 4) {
+        swal.fire("工單號須輸入4碼以上");
+        return;
+    }
 
     ProcessLoadTable(Status, BatchNo, MachineNum, DueDateFrom, DueDateTo, CuttingDateFrom, CuttingDateTo, Subinventory);
 }

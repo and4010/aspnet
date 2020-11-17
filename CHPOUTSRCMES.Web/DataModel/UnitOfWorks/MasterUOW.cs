@@ -2734,7 +2734,7 @@ left join LOCATOR_T l on s.ORGANIZATION_ID = l.ORGANIZATION_ID and s.SUBINVENTOR
                 cmd.AppendLine(
 @"SELECT 
 CAST(T.BARCODE AS nvarchar) AS Barocde,
-U.DisplayName as PrintBy,
+U.UserName as PrintBy,
 CAST(I.ITEM_DESC_TCH AS nvarchar) AS BarocdeName, 
 CAST(T.PAPER_TYPE AS nvarchar) AS PapaerType,
 CAST(T.BASIC_WEIGHT AS nvarchar) AS BasicWeight,
@@ -2747,7 +2747,8 @@ CASE ITEM_CATEGORY
 WHEN '捲筒' THEN CAST(T.PRIMARY_UOM_CODE AS nvarchar) 
 ELSE  CAST(T.SECONDARY_UOM_CODE AS nvarchar) 
 END AS Unit,
-CAST(T.LOT_NUMBER AS nvarchar) AS LotNumber
+CAST(T.LOT_NUMBER AS nvarchar) AS LotNumber,
+CAST(T.OSP_BATCH_NO AS nvarchar) AS OspBatchNo
 FROM STOCK_T T
 JOIN ITEMS_T I on I.INVENTORY_ITEM_ID = T.INVENTORY_ITEM_ID
 JOIN USER_T U ON U.Id = @userId 

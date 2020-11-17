@@ -30,6 +30,8 @@ namespace CHPOUTSRCMES.Web.Models
 
         public string LotNumber { get; set; }
 
+        public string SubId { get; set; }
+
         public LabelModel()
         {
         }

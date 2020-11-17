@@ -56,7 +56,7 @@ namespace CHPOUTSRCMES.Web.Controllers
 
         }
 
-        [NoCache]
+       
         public JsonResult GetEvents(string id, string status)
         {
             ///清除cache fullcalendar才能在執行

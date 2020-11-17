@@ -171,6 +171,24 @@ $(document).ready(function () {
 
 
     serach();
+
+    $(window).on('pageshow', function () {
+        var year = sy.options[sy.selectedIndex].value;
+
+        var month = sm.options[sm.selectedIndex].value;
+
+        var warehouse = sw.options[sw.selectedIndex].value;
+
+        var date = year + "-" + month + "-01";
+
+        if (calendar.getEventSources()[0] != null) {
+            calendar.getEventSources()[0].remove();
+        };
+        var status = $('#select-Status').val();
+        calendar.addEventSource('/Purchase/GetEvents?id=' + warehouse + "&status=" + status);
+        calendar.gotoDate(date);
+    });
+
 })
 
 function calendarinit(calendar, sy, sm, sw) {

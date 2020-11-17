@@ -352,6 +352,10 @@ namespace CHPOUTSRCMES.Web.Util
                         y += 5;
                         xPath.AddString("規格:" + lable.Specification, new XFontFamily("Arial"), XFontStyle.Regular, 12, new XPoint(XUnit.FromMillimeter(10), XUnit.FromMillimeter(y)), XStringFormats.TopLeft);
                         xPath.AddString("數量:" + lable.Qty, new XFontFamily("Arial"), XFontStyle.Regular, 12, new XPoint(XUnit.FromMillimeter(50), XUnit.FromMillimeter(y)), XStringFormats.TopLeft);
+                        if (!string.IsNullOrEmpty(lable.SubId))
+                        {
+                            xPath.AddString(lable.SubId, new XFontFamily("Arial"), XFontStyle.Regular, 30, new XPoint(XUnit.FromMillimeter(85), XUnit.FromMillimeter(y-5)), XStringFormats.TopLeft);
+                        }
                         if (!string.IsNullOrEmpty(lable.OspBatchNo))
                         {
                             y += 5;

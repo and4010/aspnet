@@ -217,11 +217,6 @@ function init() {
         }
     });
 
-    $("#InputBatchNo").keyup(function (event) {
-        if (event.keyCode === 13) {
-            $("#BtnCheckBatchNo").click();
-        }
-    });
 
     $("#Cotangent_Barcode").keyup(function (event) {
         if (event.keyCode === 13) {

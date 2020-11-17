@@ -922,11 +922,13 @@ left JOIN OSP_HEADER_MOD_T HM ON HM.OSP_HEADER_ID = H.OSP_HEADER_ID
                         cond.Add("H.STATUS = @STATUS");
                         sqlParameterList.Add(new SqlParameter("@STATUS", Status));
                     }
-                    if (BatchNo != "*")
+                    
+                    if (!string.IsNullOrEmpty(BatchNo))
                     {
-                        cond.Add("H.BATCH_NO = @BATCH_NO");
-                        sqlParameterList.Add(new SqlParameter("@BATCH_NO", BatchNo));
+                        cond.Add("H.BATCH_NO LIKE @BATCH_NO");
+                        sqlParameterList.Add(new SqlParameter("@BATCH_NO", BatchNo + '%'));
                     }
+
                     if (MachineNum != "*")
                     {
                         cond.Add("MACHINE_CODE = @MACHINE_CODE");
@@ -3477,7 +3479,8 @@ CAST(ST.PAPER_TYPE AS nvarchar) AS PapaerType,
 CAST(ST.BASIC_WEIGHT AS nvarchar) AS BasicWeight,
 CAST(ST.SPECIFICATION AS nvarchar) AS Specification,
 CAST(FORMAT(ST.SECONDARY_TRANSACTION_QTY,'0.##########') AS nvarchar) AS Qty,
-CAST(ST.SECONDARY_UOM_CODE AS nvarchar) AS Unit
+CAST(ST.SECONDARY_UOM_CODE AS nvarchar) AS Unit,
+CAST(ST.OSP_BATCH_NO AS nvarchar) AS OspBatchNo
 --CAST(CT.CONTAINER_NO AS nvarchar) AS BatchNo
 FROM STOCK_T ST
 join ITEMS_T tt on tt.INVENTORY_ITEM_ID = ST.INVENTORY_ITEM_ID
@@ -3551,7 +3554,8 @@ CAST(OPO.PAPER_TYPE AS nvarchar) AS PapaerType,
 CAST(OPO.BASIC_WEIGHT AS nvarchar) AS BasicWeight,
 CAST(OPO.SPECIFICATION AS nvarchar) AS Specification,
 CAST(FORMAT(OPO.SECONDARY_QUANTITY,'0.##########') AS nvarchar) AS Qty,
-CAST(OPO.SECONDARY_UOM AS nvarchar) AS Unit
+CAST(OPO.SECONDARY_UOM AS nvarchar) AS Unit,
+CAST(OH.BATCH_NO AS nvarchar) AS OspBatchNo
 --CAST(OH.BATCH_NO AS nvarchar) AS BatchNo
 FROM OSP_PICKED_OUT_T OPO
 join OSP_HEADER_T OH ON OH.OSP_HEADER_ID = OPO.OSP_HEADER_ID
@@ -3603,7 +3607,8 @@ CAST(OCT.PAPER_TYPE AS nvarchar) AS PapaerType,
 CAST(OCT.BASIC_WEIGHT AS nvarchar) AS BasicWeight,
 CAST(OCT.SPECIFICATION AS nvarchar) AS Specification,
 CAST(FORMAT(OCT.SECONDARY_QUANTITY,'0.##########') AS nvarchar) AS Qty,
-CAST(OCT.SECONDARY_UOM AS nvarchar) AS Unit
+CAST(OCT.SECONDARY_UOM AS nvarchar) AS Unit,
+CAST(OH.BATCH_NO AS nvarchar) AS OspBatchNo
 --CAST(OH.BATCH_NO AS nvarchar) AS BatchNo
 FROM OSP_COTANGENT_T OCT
 join OSP_HEADER_T OH ON OH.OSP_HEADER_ID = OCT.OSP_HEADER_ID
@@ -3821,6 +3826,12 @@ AND OPO.OSP_PICKED_OUT_ID = @OSP_PICKED_OUT_ID
                 {
                     Text = "關帳",
                     Value = "4",
+                    Selected = false,
+                },
+                 new SelectListItem()
+                {
+                    Text = "已取消",
+                    Value = "6",
                     Selected = false,
                 }
             };
