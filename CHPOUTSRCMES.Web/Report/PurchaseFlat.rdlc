@@ -612,7 +612,7 @@ ToString("yyyy/MM/dd HH:mm:ss")</Value>
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Fields!REAM_WEIGHT.Value</Value>
+                                  <Value>=Fields!BASIC_WEIGHT.Value</Value>
                                   <Style />
                                 </TextRun>
                               </TextRuns>
