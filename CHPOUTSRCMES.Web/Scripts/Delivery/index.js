@@ -306,6 +306,28 @@ $(document).ready(function () {
         },
         columns: [
             { data: null, defaultContent: '', className: 'select-checkbox', orderable: false, width: "40px" },
+            {
+                data: null, "autoWidth": true, orderable: false,
+                render: function (data, type, row, meta) {
+                    if (data.DELIVERY_STATUS == null || data.DELIVERY_STATUS == "已取消") {
+                        return null
+                    }
+                    if (data.DELIVERY_STATUS == "未印") {
+                        return '<button class="btn btn-primary btn-sm btn-print"><i class="glyphicon glyphicon-print"></i>備貨單</button>'
+                    }
+                    if (data.DELIVERY_STATUS == "未印" || data.DELIVERY_STATUS == "待出") {
+                        return '<button class="btn btn-danger btn-sm btn-edit"><i class="fa fa-pencil"></i>出貨</button>' + '&nbsp|&nbsp' + '<button class="btn btn-primary btn-sm btn-print"><i class="glyphicon glyphicon-print"></i>備貨單</button>'
+                    }
+                    if (data.DELIVERY_STATUS == "已揀") {
+                        //return '<a href="' + data.DELIVERY_NAME + '">出貨</a>';
+                        return '<button class="btn btn-danger btn-sm btn-edit"><i class="fa fa-pencil"></i>出貨</button>'
+                    }
+                    if (data.DELIVERY_STATUS == "待核准" || data.DELIVERY_STATUS == "已出貨") {
+                        //return '<a href="' + data.DELIVERY_NAME + '">紀錄</a>';
+                        return '<button class="btn btn-primary btn-sm btn-view"><i class="glyphicon glyphicon-eye-open"></i>紀錄</button>'
+                    }
+                }
+            },
             { data: "SUB_ID", name: "項次", "autoWidth": true },
             { data: "FREIGHT_TERMS_NAME", name: "內銷地區別", "autoWidth": true },
             { data: "TRIP_CAR", name: "車次", "autoWidth": true },
@@ -314,23 +336,6 @@ $(document).ready(function () {
             { data: "DetailType", name: "作業別", "autoWidth": true },
             { data: "DELIVERY_STATUS", name: "狀態", "autoWidth": true },
             { data: "CUSTOMER_NAME", name: "客戶", "autoWidth": true },
-            //{ data: "CUSTOMER_LOCATION_CODE", name: "送貨地點", "autoWidth": true },
-            { data: "SHIP_CUSTOMER_NAME", name: "送貨客戶名稱", "autoWidth": true },
-            //{ data: "ORDER_NUMBER", name: "訂單", "autoWidth": true },
-            //{ data: "ORDER_SHIP_NUMBER", name: "訂單行號", "autoWidth": true },
-            //{ data: "ITEM_DESCRIPTION", name: "料號名稱", "autoWidth": true },
-            //{ data: "PAPER_TYPE", name: "紙別", "autoWidth": true },
-            //{ data: "BASIC_WEIGHT", name: "基重", "autoWidth": true },
-
-            //{ data: "SPECIFICATION", name: "規格", "autoWidth": true },
-            //{ data: "GRAIN_DIRECTION", name: "絲向", "autoWidth": true },
-            //{ data: "PACKING_TYPE", name: "包裝方式", "autoWidth": true },
-            //{ data: "SRC_REQUESTED_QUANTITY", name: "訂單原始數量", "autoWidth": true },
-            //{ data: "SRC_REQUESTED_QUANTITY_UOM", name: "訂單主單位", "autoWidth": true },
-            //{ data: "REQUESTED_QUANTITY2", name: "預計出庫輔數量", "autoWidth": true },
-            //{ data: "SRC_REQUESTED_QUANTITY_UOM2", name: "輔單位(RE)", "autoWidth": true },
-            //{ data: "REQUESTED_QUANTITY", name: "預計出庫量", "autoWidth": true },
-            //{ data: "REQUESTED_QUANTITY_UOM", name: "庫存單位(KG)", "autoWidth": true },
             { data: "SUBINVENTORY_CODE", name: "出貨倉庫", "autoWidth": true },
             { data: "RP_SUM", name: "主單位需求量總和", "autoWidth": true },
             { data: "REQUESTED_PRIMARY_UOM", name: "主單位", "autoWidth": true },
@@ -346,6 +351,8 @@ $(document).ready(function () {
                     }
                 }},
             { data: "REQUESTED_SECONDARY_UOM", name: "次單位", "autoWidth": true },
+            { data: "NOTE", name: "備註", "autoWidth": true, className: "dt-body-left" },
+            { data: "SHIP_CUSTOMER_NAME", name: "送貨客戶名稱", "autoWidth": true },
             {
                 data: "TRIP_ACTUAL_SHIP_DATE", name: "組車日", "autoWidth": true, "mRender": function (data, type, full) {
                     if (data != null) {
@@ -372,34 +379,13 @@ $(document).ready(function () {
             {
                 data: "AUTHORIZE_DATE", name: "出貨核准日", "autoWidth": true,
             },
-            { data: "NOTE", name: "備註", "autoWidth": true, className: "dt-body-left" },
+            
 
-            {
-                data: null, "autoWidth": true, orderable: false,
-                render: function (data, type, row, meta) {
-                    if (data.DELIVERY_STATUS == null || data.DELIVERY_STATUS == "已取消") {
-                        return null
-                    }
-                    if (data.DELIVERY_STATUS == "未印") {
-                        return '<button class="btn btn-primary btn-sm btn-print"><i class="glyphicon glyphicon-print"></i>備貨單</button>'
-                    }
-                    if (data.DELIVERY_STATUS == "未印" || data.DELIVERY_STATUS == "待出") {
-                        return '<button class="btn btn-danger btn-sm btn-edit"><i class="fa fa-pencil"></i>出貨</button>' + '&nbsp|&nbsp' + '<button class="btn btn-primary btn-sm btn-print"><i class="glyphicon glyphicon-print"></i>備貨單</button>'
-                    }
-                    if (data.DELIVERY_STATUS == "已揀") {
-                        //return '<a href="' + data.DELIVERY_NAME + '">出貨</a>';
-                        return '<button class="btn btn-danger btn-sm btn-edit"><i class="fa fa-pencil"></i>出貨</button>'
-                    }
-                    if (data.DELIVERY_STATUS == "待核准" || data.DELIVERY_STATUS == "已出貨") {
-                        //return '<a href="' + data.DELIVERY_NAME + '">紀錄</a>';
-                        return '<button class="btn btn-primary btn-sm btn-view"><i class="glyphicon glyphicon-eye-open"></i>紀錄</button>'
-                    }
-                }
-            }
+            
 
         ],
 
-        "order": [[1, 'asc']],
+        "order": [[2, 'asc']],
         select: {
             style: 'multi',
             //blurable: true,

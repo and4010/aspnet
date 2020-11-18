@@ -14,6 +14,7 @@ using CHPOUTSRCMES.Web.DataModel.UnitOfWorks;
 using Microsoft.AspNet.Identity;
 using CHPOUTSRCMES.Web.DataModel.Entity.Delivery;
 using System.Security.Claims;
+using CHPOUTSRCMES.Web.Util;
 
 namespace CHPOUTSRCMES.Web.Controllers
 {
@@ -82,6 +83,10 @@ namespace CHPOUTSRCMES.Web.Controllers
                             || (!string.IsNullOrEmpty(p.DetailType) && p.DetailType.ToLower().Contains(search.ToLower()))
                             || (!string.IsNullOrEmpty(p.DELIVERY_STATUS) && p.DELIVERY_STATUS.ToLower().Contains(search.ToLower()))
                             || (!string.IsNullOrEmpty(p.NOTE) && p.NOTE.ToLower().Contains(search.ToLower()))
+                            || (!string.IsNullOrEmpty(p.RP_SUM.ToString()) && p.RP_SUM.Normalize().ToString().ToLower().Contains(search.ToLower()))
+                            || (!string.IsNullOrEmpty(p.RS_SUM.ToString()) && p.RS_SUM.Normalize().ToString().ToLower().Contains(search.ToLower()))
+                            || (!string.IsNullOrEmpty(p.REQUESTED_PRIMARY_UOM) && p.REQUESTED_PRIMARY_UOM.ToLower().Contains(search.ToLower()))
+                            || (!string.IsNullOrEmpty(p.REQUESTED_SECONDARY_UOM) && p.REQUESTED_SECONDARY_UOM.ToLower().Contains(search.ToLower()))
                             ).ToList();
                     }
 

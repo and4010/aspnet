@@ -105,7 +105,6 @@ namespace CHPOUTSRCMES.Web.DataModel.Entity.Process
         /// 
         [StringLength(80)]
         [Column("LOT_NUMBER")]
-        [Required(AllowEmptyStrings = true)]
         public string LotNumber { set; get; }
 
         /// <summary>

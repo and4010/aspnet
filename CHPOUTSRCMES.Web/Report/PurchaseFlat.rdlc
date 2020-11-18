@@ -227,7 +227,7 @@ ToString("yyyy/MM/dd HH:mm:ss")</Value>
             <TablixBody>
               <TablixColumns>
                 <TablixColumn>
-                  <Width>36.426mm</Width>
+                  <Width>25.5087mm</Width>
                 </TablixColumn>
               </TablixColumns>
               <TablixRows>
@@ -297,7 +297,7 @@ ToString("yyyy/MM/dd HH:mm:ss")</Value>
             <Top>49.87675mm</Top>
             <Left>2.40059mm</Left>
             <Height>12.66548mm</Height>
-            <Width>36.426mm</Width>
+            <Width>25.5087mm</Width>
             <ZIndex>3</ZIndex>
             <Style>
               <Border>

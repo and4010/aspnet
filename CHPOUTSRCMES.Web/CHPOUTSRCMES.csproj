@@ -428,6 +428,10 @@
     <Compile Include="Migrations\202011040354502_fix_log_entry.Designer.cs">
       <DependentUpon>202011040354502_fix_log_entry.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202011181014520_lotNumber_allow_null.cs" />
+    <Compile Include="Migrations\202011181014520_lotNumber_allow_null.Designer.cs">
+      <DependentUpon>202011181014520_lotNumber_allow_null.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Delivery\FlatEditBarcodeDT.cs" />
     <Compile Include="Models\Delivery\FlatEditDT.cs" />
@@ -2236,6 +2240,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202011040354502_fix_log_entry.resx">
       <DependentUpon>202011040354502_fix_log_entry.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202011181014520_lotNumber_allow_null.resx">
+      <DependentUpon>202011181014520_lotNumber_allow_null.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

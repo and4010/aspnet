@@ -89,6 +89,10 @@
           <DataField>REAM_WEIGHT</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
+        <Field Name="BARCODE">
+          <DataField>BARCODE</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
       </Fields>
     </DataSet>
     <DataSet Name="Reason">
@@ -243,7 +247,7 @@ ToString("yyyy/MM/dd HH:mm:ss")</Value>
             <TablixBody>
               <TablixColumns>
                 <TablixColumn>
-                  <Width>3.18587cm</Width>
+                  <Width>2.55087cm</Width>
                 </TablixColumn>
               </TablixColumns>
               <TablixRows>
@@ -311,7 +315,7 @@ ToString("yyyy/MM/dd HH:mm:ss")</Value>
             <Top>4.82106cm</Top>
             <Left>0.00427cm</Left>
             <Height>1.19917cm</Height>
-            <Width>3.18587cm</Width>
+            <Width>2.55087cm</Width>
             <ZIndex>4</ZIndex>
             <Style>
               <Border>
@@ -651,8 +655,10 @@ ToString("yyyy/MM/dd HH:mm:ss")</Value>
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Fields!PAPER_TYPE.Value</Value>
-                                  <Style />
+                                  <Value>=Fields!BARCODE.Value</Value>
+                                  <Style>
+                                    <FontFamily>Arial</FontFamily>
+                                  </Style>
                                 </TextRun>
                               </TextRuns>
                               <Style>
@@ -672,72 +678,11 @@ ToString("yyyy/MM/dd HH:mm:ss")</Value>
                             <PaddingBottom>2pt</PaddingBottom>
                           </Style>
                         </Textbox>
+                        <ColSpan>3</ColSpan>
                       </CellContents>
                     </TablixCell>
-                    <TablixCell>
-                      <CellContents>
-                        <Textbox Name="Textbox151">
-                          <CanGrow>true</CanGrow>
-                          <KeepTogether>true</KeepTogether>
-                          <Paragraphs>
-                            <Paragraph>
-                              <TextRuns>
-                                <TextRun>
-                                  <Value>=Fields!BASIC_WEIGHT.Value</Value>
-                                  <Style />
-                                </TextRun>
-                              </TextRuns>
-                              <Style>
-                                <TextAlign>Center</TextAlign>
-                              </Style>
-                            </Paragraph>
-                          </Paragraphs>
-                          <rd:DefaultName>Textbox151</rd:DefaultName>
-                          <Style>
-                            <Border>
-                              <Style>Solid</Style>
-                            </Border>
-                            <VerticalAlign>Middle</VerticalAlign>
-                            <PaddingLeft>2pt</PaddingLeft>
-                            <PaddingRight>2pt</PaddingRight>
-                            <PaddingTop>2pt</PaddingTop>
-                            <PaddingBottom>2pt</PaddingBottom>
-                          </Style>
-                        </Textbox>
-                      </CellContents>
-                    </TablixCell>
-                    <TablixCell>
-                      <CellContents>
-                        <Textbox Name="SPECIFICATION">
-                          <CanGrow>true</CanGrow>
-                          <KeepTogether>true</KeepTogether>
-                          <Paragraphs>
-                            <Paragraph>
-                              <TextRuns>
-                                <TextRun>
-                                  <Value>=Fields!SPECIFICATION.Value</Value>
-                                  <Style />
-                                </TextRun>
-                              </TextRuns>
-                              <Style>
-                                <TextAlign>Center</TextAlign>
-                              </Style>
-                            </Paragraph>
-                          </Paragraphs>
-                          <rd:DefaultName>SPECIFICATION</rd:DefaultName>
-                          <Style>
-                            <Border>
-                              <Style>Solid</Style>
-                            </Border>
-                            <VerticalAlign>Middle</VerticalAlign>
-                            <PaddingLeft>2pt</PaddingLeft>
-                            <PaddingRight>2pt</PaddingRight>
-                            <PaddingTop>2pt</PaddingTop>
-                            <PaddingBottom>2pt</PaddingBottom>
-                          </Style>
-                        </Textbox>
-                      </CellContents>
-                    </TablixCell>
+                    <TablixCell />
+                    <TablixCell />
                   </TablixCells>
                 </TablixRow>
                 <TablixRow>
@@ -815,8 +760,10 @@ ToString("yyyy/MM/dd HH:mm:ss")</Value>
                           <Paragraph>
                             <TextRuns>
                               <TextRun>
-                                <Value>紙別</Value>
-                                <Style />
+                                <Value>條碼</Value>
+                                <Style>
+                                  <FontFamily>Arial</FontFamily>
+                                </Style>
                               </TextRun>
                             </TextRuns>
                             <Style>
@@ -858,116 +805,11 @@ ToString("yyyy/MM/dd HH:mm:ss")</Value>
                       </Textbox>
                     </CellContents>
                   </TablixHeader>
-                </TablixMember>
-                <TablixMember>
-                  <TablixHeader>
-                    <Size>0.6cm</Size>
-                    <CellContents>
-                      <Textbox Name="Textbox33">
-                        <CanGrow>true</CanGrow>
-                        <KeepTogether>true</KeepTogether>
-                        <Paragraphs>
-                          <Paragraph>
-                            <TextRuns>
-                              <TextRun>
-                                <Value>基重</Value>
-                                <Style />
-                              </TextRun>
-                            </TextRuns>
-                            <Style>
-                              <TextAlign>Center</TextAlign>
-                            </Style>
-                          </Paragraph>
-                        </Paragraphs>
-                        <rd:DefaultName>Textbox33</rd:DefaultName>
-                        <Style>
-                          <Border>
-                            <Style>Solid</Style>
-                          </Border>
-                          <TopBorder>
-                            <Color>Black</Color>
-                            <Style>Solid</Style>
-                            <Width>1pt</Width>
-                          </TopBorder>
-                          <BottomBorder>
-                            <Color>Black</Color>
-                            <Style>Solid</Style>
-                            <Width>1pt</Width>
-                          </BottomBorder>
-                          <LeftBorder>
-                            <Color>Black</Color>
-                            <Style>Solid</Style>
-                            <Width>1pt</Width>
-                          </LeftBorder>
-                          <RightBorder>
-                            <Color>Black</Color>
-                            <Style>Solid</Style>
-                            <Width>1pt</Width>
-                          </RightBorder>
-                          <VerticalAlign>Middle</VerticalAlign>
-                          <PaddingLeft>2pt</PaddingLeft>
-                          <PaddingRight>2pt</PaddingRight>
-                          <PaddingTop>2pt</PaddingTop>
-                          <PaddingBottom>2pt</PaddingBottom>
-                        </Style>
-                      </Textbox>
-                    </CellContents>
-                  </TablixHeader>
-                </TablixMember>
-                <TablixMember>
-                  <TablixHeader>
-                    <Size>0.6cm</Size>
-                    <CellContents>
-                      <Textbox Name="Textbox93">
-                        <CanGrow>true</CanGrow>
-                        <KeepTogether>true</KeepTogether>
-                        <Paragraphs>
-                          <Paragraph>
-                            <TextRuns>
-                              <TextRun>
-                                <Value>寬幅</Value>
-                                <Style />
-                              </TextRun>
-                            </TextRuns>
-                            <Style>
-                              <TextAlign>Center</TextAlign>
-                            </Style>
-                          </Paragraph>
-                        </Paragraphs>
-                        <rd:DefaultName>Textbox93</rd:DefaultName>
-                        <Style>
-                          <Border>
-                            <Style>Solid</Style>
-                          </Border>
-                          <TopBorder>
-                            <Color>Black</Color>
-                            <Style>Solid</Style>
-                            <Width>1pt</Width>
-                          </TopBorder>
-                          <BottomBorder>
-                            <Color>Black</Color>
-                            <Style>Solid</Style>
-                            <Width>1pt</Width>
-                          </BottomBorder>
-                          <LeftBorder>
-                            <Color>Black</Color>
-                            <Style>Solid</Style>
-                            <Width>1pt</Width>
-                          </LeftBorder>
-                          <RightBorder>
-                            <Color>Black</Color>
-                            <Style>Solid</Style>
-                            <Width>1pt</Width>
-                          </RightBorder>
-                          <VerticalAlign>Middle</VerticalAlign>
-                          <PaddingLeft>2pt</PaddingLeft>
-                          <PaddingRight>2pt</PaddingRight>
-                          <PaddingTop>2pt</PaddingTop>
-                          <PaddingBottom>2pt</PaddingBottom>
-                        </Style>
-                      </Textbox>
-                    </CellContents>
-                  </TablixHeader>
+                  <TablixMembers>
+                    <TablixMember />
+                    <TablixMember />
+                    <TablixMember />
+                  </TablixMembers>
                 </TablixMember>
               </TablixMembers>
             </TablixColumnHierarchy>

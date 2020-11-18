@@ -35,8 +35,8 @@ $(document).ready(function () {
         },
         color: '#05ABBD',
         navLinks: false, // can click day/week names to navigate views
-        displayEventTime: false
-
+        displayEventTime: false,
+        eventOrder: 'title'
     });
 
     calendar.render();
