@@ -1,14 +1,7 @@
 ﻿$(document).ready(function () {
    
     $('#btnSearch').click(function () {
-
-        var subinventory = $("#SubinvenotoryCode option:selected").val(); 
-        var locatorId = $("#LocatorId option:selected").val();
-        var itemCategory = $("#ItemCategory option:selected").val();
-        var itemNo = $("#ItemNumber").val();
-
-        loadTable(subinventory, locatorId, itemCategory, itemNo);
-
+        loadTable();
     });
 
     $('#SubinvenotoryCode').on('change', function (e) {
@@ -47,10 +40,21 @@
 
     //    window.open("/Stock/Detail/" + subinventoryCode + "/" + locatorId + "/" + itemId);
     //});
+    loadTable();
+
+    function loadTable() {
+        var subinventory = $("#SubinvenotoryCode option:selected").val();
+        var locatorId = $("#LocatorId option:selected").val();
+        var itemCategory = $("#ItemCategory option:selected").val();
+        var itemNo = $("#ItemNumber").val();
+
+        initTable(subinventory, locatorId, itemCategory, itemNo);
+    }
 });
 
 
-function loadTable(subinventory, locatorId, itemCategory, itemNo) {
+
+function initTable(subinventory, locatorId, itemCategory, itemNo) {
 
     $('#QueryTable').DataTable({
         "language": {
@@ -80,7 +84,10 @@ function loadTable(subinventory, locatorId, itemCategory, itemNo) {
         buttons: [
             {
                 extend: 'excel',
-                text: '匯出Excel'
+                text: '匯出Excel',
+                filename: function () {
+                    return moment().format("YYYYMMDDHHmmss");
+                }
             },
         ],
         order: [[0, 'asc'], [1, 'asc'], [2, 'asc']],

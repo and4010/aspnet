@@ -411,6 +411,9 @@ $(document).ready(function () {
                     className: 'btn-primary',
                     init: function (api, node, config) {
                         $(node).removeClass('btn-default')
+                    },
+                    filename: function () {
+                        return moment().format("YYYYMMDDHHmmss");
                     }
                 },
                 //{

@@ -37,3 +37,28 @@
 .text-align-center {
     text-align: center;
 }
+
+.customBody {
+    font-family: Arial,'\u9ed1\u9ad4\u002d\u7e41','\u5fae\u8edf\u6b63\u9ed1\u9ad4', sans-serif;
+    font-size: medium;
+}
+
+.dataTable tbody tr:hover {
+    background-color: #93f9cb;
+}
+
+/*.dataTable tbody tr:hover > .sorting_1 {
+        background-color: #93f9cb;
+}*/
+
+table.table-bordered {
+    border: 1px solid #dbdbdb;
+}
+
+    table.table-bordered > thead > tr > th {
+        border: 1px solid #dbdbdb;
+    }
+
+    table.table-bordered > tbody > tr > td {
+        border: 1px solid #dbdbdb;
+    }

@@ -58,7 +58,10 @@ function loadTable(processCode, processDate, hasError) {
         buttons: [
             {
                 extend: 'excel',
-                text: '匯出Excel'
+                text: '匯出Excel',
+                filename: function () {
+                    return moment().format("YYYYMMDDHHmmss");
+                }
             },
         ],
         "order": [[2, 'desc']],

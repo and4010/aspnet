@@ -468,7 +468,10 @@ function LoadFlatInvestTable() {
             'selectNone',
             {
                 extend: 'excel',
-                text: '匯出Excel'
+                text: '匯出Excel',
+                filename: function () {
+                    return moment().format("YYYYMMDDHHmmss");
+                }
             },
             {
                 text: '刪除',
@@ -650,7 +653,10 @@ function LoadFlatProductionDataTable() {
             'selectNone',
             {
                 extend: 'excel',
-                text: '匯出Excel'
+                text: '匯出Excel',
+                filename: function () {
+                    return moment().format("YYYYMMDDHHmmss");
+                }
             },
             {
                 text: '刪除',

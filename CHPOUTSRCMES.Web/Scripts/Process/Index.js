@@ -190,9 +190,7 @@ function ProcessLoadTable(Status, BatchNo, MachineNum, DueDateFrom, DueDateTo, C
                 extend: 'excel',
                 text: '匯出Excel',
                 filename: function () {
-                    var d = new Date();
-                    var n = d.getTime();
-                    return 'myfile' + d;
+                    return moment().format("YYYYMMDDHHmmss");
                 }
             },
         ],

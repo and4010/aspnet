@@ -32,8 +32,10 @@ function LoadTable(Catalog_elem_val_050, Catalog_elem_val_020, Catalog_elem_val_
         buttons: [
             {
                 extend: 'excel',
-                text: '匯出Excel'
-
+                text: '匯出Excel',
+                filename: function () {
+                    return moment().format("YYYYMMDDHHmmss");
+                }
             },
         ],
         columns: [

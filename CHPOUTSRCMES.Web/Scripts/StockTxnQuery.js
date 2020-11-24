@@ -93,7 +93,10 @@ function loadTable(subinventory, locatorId, itemCategory, itemNo, barcode, dateF
         buttons: [
             {
                 extend: 'excel',
-                text: '匯出Excel'
+                text: '匯出Excel',
+                filename: function () {
+                    return moment().format("YYYYMMDDHHmmss");
+                }
             }
         ],
         order: [[0, 'desc']],

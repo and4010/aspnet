@@ -663,7 +663,10 @@ function LoadInvestDataTable() {
             'selectNone',
             {
                 extend: 'excel',
-                text: '匯出Excel'
+                text: '匯出Excel',
+                filename: function () {
+                    return moment().format("YYYYMMDDHHmmss");
+                }
             },
             {
                 text: '刪除',
@@ -865,7 +868,10 @@ function LoadProductionDataTable() {
             'selectNone',
             {
                 extend: 'excel',
-                text: '匯出Excel'
+                text: '匯出Excel',
+                filename: function () {
+                    return moment().format("YYYYMMDDHHmmss");
+                }
             },
             {
                 text: '刪除',
@@ -1122,7 +1128,10 @@ function CotangentDataTables() {
             'selectNone',
             {
                 extend: 'excel',
-                text: '匯出Excel'
+                text: '匯出Excel',
+                filename: function () {
+                    return moment().format("YYYYMMDDHHmmss");
+                }
             },
             {
                 text: '刪除',
