@@ -23,94 +23,79 @@
 }
 
 
+<div class="customBody row">
+    <div class="col col-md-12">
+        <div class="box box-success" style="padding:20px;">
 
-<div class="row row-std">
-    <div class="col-md-12">
-        <div class="box box-success">
-            <div class="box-body">
-
-
-                <div class="row row-std">
-                    @*狀態*@
-                    <div class="form-inline col col-md-1 text-right">
-                        @Html.LabelFor(model => model.Status)
-                    </div>
-
-                    <div class="form-inline col col-md-2 ">
-                        @Html.DropDownListFor(model => model.Status, Process_Status, new { @class = "form-control input-sm", id = "Status" })
-                    </div>
-
-                    @*工單號*@
-                    <div class="form-inline col col-md-1 text-right">
-                        @Html.LabelFor(model => model.BatchNo)
-                    </div>
-
-                    <div class="form-inline col col-md-2">
-                        @*@Html.DropDownListFor(model => model.BatchNo, Process_Batch_no, new { @class = "form-control input-sm", id = "BatchNo" })*@
-                        @Html.TextBoxFor(model => model.BatchNo, new { @class = "form-control input-sm form-inline", id = "BatchNo", autocomplete = "off" })
-                    </div>
-
-                    @*機台*@
-                    <div class="form-inline col col-md-1 text-right">
-                        @Html.LabelFor(model => model.MachineNum)
-                    </div>
-
-                    <div class="form-inline col col-md-2 ">
-                        @Html.DropDownListFor(model => model.MachineNum, Manchine_Num, new { @class = "form-control input-sm", id = "MachineNum" })
-                    </div>
-
-                    @* 倉庫 *@
-                    <div class="form-inline col col-md-1 text-right">
-                        @Html.LabelFor(model => model.Subinventory)
-                    </div>
-
-                    <div class="form-inline col col-md-2">
-                        @Html.DropDownListFor(model => model.Subinventory, Subinventory, new { @class = "form-control input-sm", id = "Subinventory" })
-                    </div>
-                </div>
-
-
-                <div class="row row-std">
-                    @*需球日期(起)*@
-                    <div class="form-group col col-md-1 text-right">
-                        @Html.Label("需求日期(起)")
-                    </div>
-
-                    <div class="form-group col col-md-2">
-                        @Html.TextBoxFor(model => model.DueDate, new { @class = "form-control input-sm form-inline", id = "DueDateFrom", autocomplete = "off" })
-                    </div>
-
-                    @*需球日期(迄)*@
-                    <div class="form-group col col-md-1 text-right">
-                        @Html.Label("需求日期(迄)")
-                    </div>
-
-                    <div class="form-group col col-md-2">
-                        @Html.TextBoxFor(model => model.DueDate, new { @class = "form-control input-sm form-inline", id = "DueDateTo", autocomplete = "off" })
-                    </div>
-
-                    @*裁切日期*@
-                    <div class="form-group col col-md-1 text-right">
-                        @Html.LabelFor(model => model.CuttingDateFrom)
-                    </div>
-
-                    <div class="form-group col col-md-2 ">
-                        @Html.TextBoxFor(model => model.CuttingDateFrom, new { @class = "form-control input-sm", id = "CuttingDateFrom", autocomplete = "off" })
-                    </div>
-
-                    @*裁切日期*@
-                    <div class="form-group col col-md-1 text-right">
-                        @Html.LabelFor(model => model.CuttingDateTo)
-                    </div>
-
-                    <div class="form-group col col-md-2 ">
-                        @Html.TextBoxFor(model => model.CuttingDateTo, new { @class = "form-control input-sm", id = "CuttingDateTo", autocomplete = "off" })
-                    </div>
-
-                </div>
+            <table style=" border-spacing:20px 5px">
+                <tr>
+                    <td style="text-align: right;">
+                        <label style='font-weight:bolder;'>
+                            需求日期
+                        </label>
+                    </td>
+                    <td class="input-lg" colspan="3">
+                        @Html.TextBoxFor(model => model.DueDate, new { @class = "customTextBox", id = "DueDateFrom", style = "width:100px;", autocomplete = "off" })
+                        ~
+                        @Html.TextBoxFor(model => model.DueDate, new { @class = "customTextBox", id = "DueDateTo", style = "width:100px;", autocomplete = "off" })
+                    </td>
+                    <td style="text-align: right;">
+                        <label style='font-weight:bolder;'>
+                            加工狀態
+                        </label>
+                    </td>
+                    <td class="input-lg" style='width: 100px'>@Html.DropDownListFor(model => model.Status, Process_Status, new { @class = "customDropDownList", id = "Status", autocomplete = "off" })</td>
+                    <td style="text-align: right;">
+                        <label style='font-weight:bolder;'>
+                            機台
+                        </label>
+                    </td>
+                    <td class="input-lg" style='width: 100px'>@Html.DropDownListFor(model => model.MachineNum, Manchine_Num, new { @class = "customDropDownList", id = "MachineNum", autocomplete = "off" })</td>
+                </tr>
+                <tr>
+                    <td style="text-align: right;">
+                        <label style='font-weight:bolder;'>
+                            裁切日期
+                        </label>
+                    </td>
+                    <td class="input-lg" colspan="3">
+                        @Html.TextBoxFor(model => model.CuttingDateFrom, new { @class = "customTextBox", id = "CuttingDateFrom", style = "width:100px;", autocomplete = "off" })
+                        ~
+                        @Html.TextBoxFor(model => model.CuttingDateTo, new { @class = "customTextBox", id = "CuttingDateTo", style = "width:100px;", autocomplete = "off" })
+                    </td>
+                    <td style="text-align: right;">
+                        <label style='font-weight:bolder;'>
+                            工單號
+                        </label>
+                    </td>
+                    <td class="input-lg">
+                        @Html.TextBoxFor(model => model.BatchNo, new { @class = "customTextBox", id = "BatchNo", style = "width:140px;", autocomplete = "off" })
+                    </td>
+                    <td style="text-align: right;">
+                        <label style='font-weight:bolder;'>
+                            倉庫
+                        </label>
+                    </td>
+                    <td class="input-lg" style='width: 100px'>@Html.DropDownListFor(model => model.Subinventory, Subinventory, new { @class = "customDropDownList", id = "Subinventory", autocomplete = "off" })</td>
+                </tr>
+                <tr>
+                    <td style="text-align: right;">
+                        <label style='font-weight:bolder;'>
+                            計畫開始時間
+                        </label>
+                    </td>
+                    <td class="input-lg" colspan="3">
+                        <input class="customTextBox" type="text" id="PlanStartDateFrom" tabindex="3" style="width:100px;" autocomplete="off" />
+                        ~
+                        <input class="customTextBox" type="text" id="PlanStartDateTo" tabindex="3" style="width:100px;" autocomplete="off" />
+                    </td>
+                    
+                </tr>
+            </table>
 
 
-            </div>
+
+
 
             <div class="box-footer">
                 <div class="row row-std">
@@ -134,63 +119,65 @@
             </div>
 
         </div>
-    </div>
 
-</div>
-
-<div class="box box-success" style="padding: 15px; overflow-y:auto">
-    <div class="row row-std">
-        <div class="col-md-12">
-            <div class="nav-tabs-custom">
-                <div class="tab-content">
-                    <table class="table table-striped table-bordered table-hover display nowrap" id="ProcessDataTables" style="width:100%">
-                        <thead>
-                            <tr>
-                                <th rowspan="2" colspan="1"></th>
-                                <th rowspan="2" colspan="1">需求日</th>
-                                <th rowspan="2" colspan="1">裁切日(起)</th>
-                                <th rowspan="2" colspan="1">裁切日(迄)</th>
-                                <th rowspan="2" colspan="1">工單號</th>
-                                <th rowspan="2" colspan="1">計劃開始時間</th>
-                                <th rowspan="2" colspan="1">機台</th>
-                                <th rowspan="2" colspan="1">狀態</th>
-                                <th rowspan="2" colspan="1">客戶名稱</th>
-                                <th rowspan="2" colspan="1">紙別</th>
-                                <th rowspan="2" colspan="1">基重</th>
-                                <th rowspan="2" colspan="1">規格</th>
-                                <th rowspan="2" colspan="1">令重</th>
-                                <th rowspan="2" colspan="1">絲向</th>
-                                <th rowspan="1" colspan="2">交易單位</th>
-                                <th rowspan="1" colspan="2">主單位</th>
-                                <th rowspan="2" colspan="1">包裝方式</th>
-                                <th rowspan="2" colspan="1">委外工單備註</th>
-                                <th rowspan="2" colspan="1">生產備註</th>
-                                <th rowspan="2" colspan="1">組成成份料號</th>
-                                <th rowspan="2" colspan="1">產品料號</th>
-                                <th rowspan="2" colspan="1">訂單編號</th>
-                                <th rowspan="2" colspan="1">明細行</th>
-                                <th rowspan="2" colspan="1"></th>
-                            </tr>
-                            <tr>
-                                <th>
-                                    @Html.DisplayName("令數")
-                                </th>
-                                <th>
-                                    @Html.DisplayName("單位")
-                                </th>
-                                <th>
-                                    @Html.DisplayName("重量")
-                                </th>
-                                <th>
-                                    @Html.DisplayName("單位")
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
+        <div class="customBody box box-success" style="padding: 20px; overflow-y:auto">
+            <div class="row row-std">
+                <div class="col-md-12">
+                    <div class="nav-tabs-custom">
+                        @*<div class="tab-content">*@
+                            <table class="table table-striped table-bordered table-hover display nowrap" id="ProcessDataTables" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th rowspan="2" colspan="1"></th>
+                                        <th rowspan="2" colspan="1"></th>
+                                        <th rowspan="2" colspan="1">需求日</th>
+                                        <th rowspan="2" colspan="1">裁切日(起)</th>
+                                        <th rowspan="2" colspan="1">裁切日(迄)</th>
+                                        <th rowspan="2" colspan="1">工單號</th>
+                                        <th rowspan="2" colspan="1">機台</th>
+                                        <th rowspan="2" colspan="1">狀態</th>
+                                        <th rowspan="2" colspan="1">客戶名稱</th>
+                                        <th rowspan="2" colspan="1">紙別</th>
+                                        <th rowspan="2" colspan="1">基重</th>
+                                        <th rowspan="2" colspan="1">規格</th>
+                                        <th rowspan="2" colspan="1">令重</th>
+                                        <th rowspan="2" colspan="1">絲向</th>
+                                        <th rowspan="1" colspan="2">交易單位</th>
+                                        <th rowspan="1" colspan="2">主單位</th>
+                                        <th rowspan="2" colspan="1">包裝方式</th>
+                                        <th rowspan="2" colspan="1">委外工單備註</th>
+                                        <th rowspan="2" colspan="1">生產備註</th>
+                                        <th rowspan="2" colspan="1">組成成份料號</th>
+                                        <th rowspan="2" colspan="1">產品料號</th>
+                                        <th rowspan="2" colspan="1">計劃開始時間</th>
+                                        <th rowspan="2" colspan="1">訂單編號</th>
+                                        <th rowspan="2" colspan="1">明細行</th>
+                                    </tr>
+                                    <tr>
+                                        <th>
+                                            @Html.DisplayName("令數")
+                                        </th>
+                                        <th>
+                                            @Html.DisplayName("單位")
+                                        </th>
+                                        <th>
+                                            @Html.DisplayName("重量")
+                                        </th>
+                                        <th>
+                                            @Html.DisplayName("單位")
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        @*</div>*@
+                    </div>
                 </div>
             </div>
         </div>
+
     </div>
+
 </div>
+

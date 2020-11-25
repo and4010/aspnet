@@ -2211,6 +2211,7 @@
     <Content Include="Views\Stock\PhotoView.cshtml" />
     <Content Include="Views\Report\Yield.cshtml" />
     <Content Include="Views\Report\Report.cshtml" />
+    <Content Include="Views\Shared\_ReportPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -22,13 +22,13 @@
                                 倉庫
                             </label>
                         </td>
-                        <td class="input-lg" style='min-width: 100px'>@Html.DropDownListFor(model => model.SubinvenotoryList, Model.SubinvenotoryList, new { id = "SubinvenotoryCode", autocomplete = "off" })</td>
+                        <td class="input-lg" style='width: 100px'>@Html.DropDownListFor(model => model.SubinvenotoryList, Model.SubinvenotoryList, new { @class = "customDropDownList", id = "SubinvenotoryCode", autocomplete = "off" })</td>
                         <td style="text-align: right;">
                             <label style='font-weight:bolder;'>
                                 儲位
                             </label>
                         </td>
-                        <td class="input-lg" style='min-width: 100px'>@Html.DropDownListFor(model => model.locatorList, Model.locatorList, new { id = "LocatorId", autocomplete = "off" })</td>
+                        <td class="input-lg" style='width: 100px'>@Html.DropDownListFor(model => model.locatorList, Model.locatorList, new { @class = "customDropDownList", id = "LocatorId", autocomplete = "off" })</td>
                     </tr>
 
                     <tr>
@@ -37,19 +37,19 @@
                                 捲筒/平版
                             </label>
                         </td>
-                        <td class="input-lg" style='min-width: 100px'>@Html.DropDownListFor(model => model.ItemCategoryList, Model.ItemCategoryList, new { id = "ItemCategory", autocomplete = "off" })</td>
+                        <td class="input-lg" style='width: 100px'>@Html.DropDownListFor(model => model.ItemCategoryList, Model.ItemCategoryList, new { @class = "customDropDownList", id = "ItemCategory", autocomplete = "off" })</td>
                         <td style="text-align: right;">
                             <label style='font-weight:bolder;'>
                                 料號
                             </label>
                         </td>
                         <td class="input-lg">
-                            <input class="ItemNumber" type="text" id="ItemNumber" tabindex="3" style="min-width:250px;" />
+                            <input class="ItemNumber customTextBox" type="text" id="ItemNumber" tabindex="3" style="width:250px;" />
                         </td>
                     </tr>
                     <tr>
                         <td class="input-lg" colspan="4" style=" text-align: right;">
-                            <button type="button" id="btnSearch" class="btn btn-primary externalBtn" style="min-width: 100px;">查詢</button>
+                            <button type="button" id="btnSearch" class="btn btn-primary externalBtn" style="width: 100px;">查詢</button>
                         </td>
                     </tr>
                 </table>

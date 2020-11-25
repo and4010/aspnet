@@ -21,7 +21,7 @@ namespace CHPOUTSRCMES.Web.Controllers
         {
             YieldViewModel yieldViewModel = new YieldViewModel();
             ProcessViewModel processViewModel = new ProcessViewModel();
-            yieldViewModel.BathNoList = processViewModel.GetBatchNo();
+            //yieldViewModel.BathNoList = processViewModel.GetBatchNo();
             yieldViewModel.MachineCodeList = processViewModel.GetManchine();
             return View(yieldViewModel);
         }
@@ -48,7 +48,7 @@ namespace CHPOUTSRCMES.Web.Controllers
                     if (result.Success)
                     {
                         ViewBag.ReportViewer = result.Data;
-                        return View("Report");
+                        return PartialView ("_ReportPartial");
     }
                     else
                     {

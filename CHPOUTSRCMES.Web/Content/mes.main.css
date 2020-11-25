@@ -41,6 +41,7 @@
 .customBody {
     font-family: Arial,'\u9ed1\u9ad4\u002d\u7e41','\u5fae\u8edf\u6b63\u9ed1\u9ad4', sans-serif;
     font-size: medium;
+/*    white-space: nowrap !important;*/
 }
 
 .dataTable tbody tr:hover {
@@ -62,3 +63,13 @@ table.table-bordered {
     table.table-bordered > tbody > tr > td {
         border: 1px solid #dbdbdb;
     }
+
+.customDropDownList {
+    border: 1px solid #dbdbdb;
+    height: 30px;
+}
+
+.customTextBox {
+    border: 1px solid #dbdbdb;
+    height: 30px;
+}

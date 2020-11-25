@@ -3,21 +3,38 @@
 
 $(document).ready(function () {
 
-    $('#BatchNo').combobox();
-    $('#MachineNum').combobox();
+    //$('#BatchNo').combobox();
+    //$('#MachineNum').combobox();
 
     $('#btnSearch').click(function () {
         QueryTable.ajax.reload();
     });
 
     $('#btnPrint').click(function () {
-        //var shipmentNumber = getShipmentNumber();
-        //if (shipmentNumber == "新增編號") {
-        //    swal.fire('請選擇出貨編號');
-        //    event.preventDefault();
-        //    return;
-        //}
-        window.open("/Report/OspYieldReport/?cuttingDateFrom=" + getCuttingDateFrom() + "&cuttingDateTo=" + getCuttingDateTo() + "&batchNo=" + getBatchNo() + "&machineNum=" + getMachineNum());
+        //window.open("/Report/OspYieldReport/?cuttingDateFrom=" + getCuttingDateFrom() + "&cuttingDateTo=" + getCuttingDateTo() + "&batchNo=" + getBatchNo() + "&machineNum=" + getMachineNum());
+        var batchNo = getBatchNo();
+        if (batchNo && batchNo.length < 4) {
+            swal.fire("工單號須輸入4碼以上");
+            return;
+        }
+        $('#ReportBox').show();
+
+        $.ajax({
+            url: "/Report/OspYieldReport",
+            type: "post",
+            data: {
+                cuttingDateFrom: getCuttingDateFrom(),
+                cuttingDateTo: getCuttingDateTo(),
+                batchNo: batchNo,
+                machineNum: getMachineNum()
+            },
+            success: function (model) {
+                $("#ReportPartial").html(model);
+            },
+            error: function () {
+                swal.fire('更新報表失敗');
+            }
+        });
     });
     
     $('#dateFrom').datepicker({

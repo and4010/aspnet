@@ -53,8 +53,8 @@ IF (@dateFormStatus = 1) OR (@dateToStatus = 1)
 	set @cmd = @cmd + 'AND ((h.CUTTING_DATE_FROM BETWEEN ''' + @cuttingDateFrom + '''' + ' AND ''' + @cuttingDateTo + '''' + ') OR (h.CUTTING_DATE_TO BETWEEN ''' + @cuttingDateFrom + '''' + ' AND ''' + @cuttingDateTo + '''' + '))'
 
 SET @success = @success + 1
-IF (@batchNo <> '*')
-	set @cmd = @cmd + 'AND h.BATCH_NO =''' + @batchNo + ''''
+IF (@batchNo IS NOT NULL AND LEN(@batchNo) > 0)
+	set @cmd = @cmd + 'AND h.BATCH_NO LIKE ''' + @batchNo + '%' + ''''
 
 SET @success = @success + 1
 IF (@machineNum <> '*')

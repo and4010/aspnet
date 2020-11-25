@@ -207,6 +207,41 @@ function ProcessLoadTable(Status, BatchNo, MachineNum, DueDateFrom, DueDateTo, C
                 targets: 0
             },
             {
+                data: "", "autoWidth": true, "render": function (data, type, row) {
+                    var content = '';
+                    var temp = [];
+
+                    if (row.Status == CompletedBatch || row.Status == PendingBatch || row.Status == CloseBatch || row.Status == Modified) {
+                        if (row.OrgOspHeaderId > 0) {
+                            temp.push('<button class="btn btn-primary btn-sm" id = "btnBefRecord">前完工紀錄</button>');
+                        }
+
+                        if (row.Status == PendingBatch) {
+                            temp.push('<button class="btn btn-danger btn-sm" id = "btnReEdit">修改</button>');
+                        }
+                        else {
+                            temp.push('<button class="btn btn-primary btn-sm" id = "btnRecord">完工紀錄</button>');
+                        }
+                        //content = '<button class="btn btn-primary btn-sm" id = "btnRecord">完工紀錄</button>';
+                    }
+
+                    if (row.Status == DwellBatch || row.Status == PendingBatch) {
+                        temp.push('<button class="btn btn-primary btn-sm" id = "btnEdit">編輯備註</button>');
+                        //content = content + '<button class="btn btn-primary btn-sm" id = "btnEdit">編輯</button>';
+                    }
+
+                    for (i = 0; i < temp.length; i++) {
+                        content = content + temp[i];
+                        if (i + 1 < temp.length) {
+                            content = content + '&nbsp|&nbsp';
+                        }
+                    }
+
+                    return content;
+
+                }, orderable: false,
+            },
+            {
                 data: "DueDate", "name": "需求日", "autoWidth": true, "mRender": function (data, type, full) {
                     if (data != null) {
                         var dtStart = new Date(parseInt(data.substr(6)));
@@ -241,17 +276,6 @@ function ProcessLoadTable(Status, BatchNo, MachineNum, DueDateFrom, DueDateTo, C
                 }, "className": "dt-body-center"
             },
             { data: "BatchNo", "name": "工單號", "autoWidth": true, "className": "dt-body-center" },
-            {
-                data: "PlanStartDate", "name": "計畫開始日期", "autoWidth": true, "mRender": function (data, type, full) {
-                    if (data != null) {
-                        var dtStart = new Date(parseInt(data.substr(6)));
-                        var dtStartWrapper = moment(dtStart);
-                        return dtStartWrapper.format('YYYY-MM-DD');
-                    } else {
-                        return '';
-                    }
-                }, "className": "dt-body-center"
-            },
             { data: "MachineNum", "name": "機台", "autoWidth": true, "className": "dt-body-center" },
             {
                 data: "Status", "name": "狀態", "autoWidth": true, "render": function (data, type, row) {
@@ -291,13 +315,32 @@ function ProcessLoadTable(Status, BatchNo, MachineNum, DueDateFrom, DueDateTo, C
             { data: "DoGrainDirection", "name": "絲向", "autoWidth": true, "className": "dt-body-center" },
             { data: "DoReamWt", "name": "令數", "autoWidth": true, "className": "dt-body-right" },
             { data: "TransactionUom", "name": "交易單位", "autoWidth": true, "className": "dt-body-center" },
-            { data: "PrimaryQuantity", "name": "重量", "autoWidth": true, "className": "dt-body-right" },
+            {
+                data: "PrimaryQuantity", "name": "重量", "autoWidth": true, "className": "dt-body-right", "mRender": function(data, type, row) {
+                    if (data == null || data == 0) {
+                        return "";
+                    } else {
+                        return Math.round(data * 1000) / 1000;
+                    } 
+                }
+            },
             { data: "PrimaryUom", "name": "主要單位", "autoWidth": true, "className": "dt-body-center" },
             { data: "DoPackingType", "name": "包裝方式", "autoWidth": true, "className": "dt-body-center" },
             { data: "OspRemark", "name": "委外工單備註", "autoWidth": true, "className": "dt-body-center" },
             { data: "Note", "name": "生產備註", "autoWidth": true, "className": "dt-body-center" },
             { data: "SelectedInventoryItemNumber", "name": "組成成份料號", "autoWidth": true, "className": "dt-body-center" },
             { data: "Product_Item", "name": "產品料號", "autoWidth": true, "className": "dt-body-center" },
+            {
+                data: "PlanStartDate", "name": "計畫開始日期", "autoWidth": true, "mRender": function (data, type, full) {
+                    if (data != null) {
+                        var dtStart = new Date(parseInt(data.substr(6)));
+                        var dtStartWrapper = moment(dtStart);
+                        return dtStartWrapper.format('YYYY-MM-DD HH:mm:ss');
+                    } else {
+                        return '';
+                    }
+                }, "className": "dt-body-center"
+            },
             {
                 data: "OrderNumber", "name": "訂單編號", "autoWidth": true, "className": "dt-body-center", "render": function (data, type, row) {
                     if (data != "0") {
@@ -313,42 +356,8 @@ function ProcessLoadTable(Status, BatchNo, MachineNum, DueDateFrom, DueDateTo, C
                     }
                     return "";
                 }
-            },
-            {
-                data: "", "autoWidth": true, "render": function (data, type, row) {
-                    var content = '';
-                    var temp = [];
-
-                    if (row.Status == CompletedBatch || row.Status == PendingBatch || row.Status == CloseBatch || row.Status == Modified) {
-                        if (row.OrgOspHeaderId > 0) {
-                            temp.push('<button class="btn btn-primary btn-sm" id = "btnBefRecord">前完工紀錄</button>');
-                        }
-                        
-                        if (row.Status == PendingBatch) {
-                            temp.push('<button class="btn btn-danger btn-sm" id = "btnReEdit">修改</button>');
-                        }
-                        else {
-                            temp.push('<button class="btn btn-primary btn-sm" id = "btnRecord">完工紀錄</button>');
-                        }
-                        //content = '<button class="btn btn-primary btn-sm" id = "btnRecord">完工紀錄</button>';
-                    }
-
-                    if (row.Status == DwellBatch || row.Status == PendingBatch) {
-                        temp.push('<button class="btn btn-primary btn-sm" id = "btnEdit">編輯備註</button>');
-                        //content = content + '<button class="btn btn-primary btn-sm" id = "btnEdit">編輯</button>';
-                    }
-
-                    for (i = 0; i < temp.length; i++) {
-                        content = content + temp[i];
-                        if (i + 1 < temp.length) {
-                            content = content + '&nbsp|&nbsp';
-                        }
-                    }
-
-                    return content;
-
-                }, orderable:false,
             }
+            
         ],
 
     });

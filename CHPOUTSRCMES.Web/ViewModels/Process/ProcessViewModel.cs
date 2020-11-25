@@ -618,16 +618,14 @@ namespace CHPOUTSRCMES.Web.ViewModels.Process
                 switch (column)
                 {
                     default:
-                    case 1:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.DueDate) : models.OrderBy(x => x.DueDate);
                     case 2:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.CuttingDateFrom) : models.OrderBy(x => x.CuttingDateFrom);
+                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.DueDate) : models.OrderBy(x => x.DueDate);
                     case 3:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.CuttingDateTo) : models.OrderBy(x => x.CuttingDateTo);
+                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.CuttingDateFrom) : models.OrderBy(x => x.CuttingDateFrom);
                     case 4:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.BatchNo) : models.OrderBy(x => x.BatchNo);
+                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.CuttingDateTo) : models.OrderBy(x => x.CuttingDateTo);
                     case 5:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.PlanStartDate) : models.OrderBy(x => x.PlanStartDate);
+                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.BatchNo) : models.OrderBy(x => x.BatchNo);
                     case 6:
                         return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.MachineNum) : models.OrderBy(x => x.MachineNum);
                     case 7:
@@ -663,8 +661,10 @@ namespace CHPOUTSRCMES.Web.ViewModels.Process
                     case 22:
                         return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.Product_Item) : models.OrderBy(x => x.Product_Item);
                     case 23:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.OrderNumber) : models.OrderBy(x => x.OrderNumber);
+                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.PlanStartDate) : models.OrderBy(x => x.PlanStartDate);
                     case 24:
+                        return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.OrderNumber) : models.OrderBy(x => x.OrderNumber);
+                    case 25:
                         return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.OrderLineNumber) : models.OrderBy(x => x.OrderLineNumber);
                 }
             }
@@ -674,16 +674,14 @@ namespace CHPOUTSRCMES.Web.ViewModels.Process
                 switch (column)
                 {
                     default:
-                    case 1:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.DueDate) : models.ThenBy(x => x.DueDate);
                     case 2:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.CuttingDateFrom) : models.ThenBy(x => x.CuttingDateFrom);
+                        return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.DueDate) : models.ThenBy(x => x.DueDate);
                     case 3:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.CuttingDateTo) : models.ThenBy(x => x.CuttingDateTo);
+                        return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.CuttingDateFrom) : models.ThenBy(x => x.CuttingDateFrom);
                     case 4:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.BatchNo) : models.ThenBy(x => x.BatchNo);
+                        return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.CuttingDateTo) : models.ThenBy(x => x.CuttingDateTo);
                     case 5:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.PlanStartDate) : models.ThenBy(x => x.PlanStartDate);
+                        return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.BatchNo) : models.ThenBy(x => x.BatchNo);
                     case 6:
                         return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.MachineNum) : models.ThenBy(x => x.MachineNum);
                     case 7:
@@ -719,8 +717,10 @@ namespace CHPOUTSRCMES.Web.ViewModels.Process
                     case 22:
                         return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.Product_Item) : models.ThenBy(x => x.Product_Item);
                     case 23:
-                        return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.OrderNumber) : models.ThenBy(x => x.OrderNumber);
+                        return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.PlanStartDate) : models.ThenBy(x => x.PlanStartDate);
                     case 24:
+                        return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.OrderNumber) : models.ThenBy(x => x.OrderNumber);
+                    case 25:
                         return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.OrderLineNumber) : models.ThenBy(x => x.OrderLineNumber);
                 }
             }
