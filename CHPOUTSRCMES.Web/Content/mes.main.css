@@ -73,3 +73,17 @@ table.table-bordered {
     border: 1px solid #dbdbdb;
     height: 30px;
 }
+
+.dataTableBtn {
+/*    display: inline-block;*/
+    /*padding: 150px;*/
+/*    white-space: nowrap !important;*/
+}
+
+.width-s {
+    width: 200px;
+}
+
+.margin-left-s {
+    margin-left: 50px;
+}

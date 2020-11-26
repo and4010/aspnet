@@ -163,11 +163,11 @@ namespace CHPOUTSRCMES.Web.Controllers
 
         [HttpPost]
         public JsonResult TableResult(DataTableAjaxPostViewModel data, string Status, string BatchNo, 
-            string MachineNum, string DueDateFrom, string DueDateTo, string CuttingDateFrom, string CuttingDateTo, string Subinventory)
+            string MachineNum, string DueDateFrom, string DueDateTo, string CuttingDateFrom, string CuttingDateTo, string PlanStartDateFrom, string PlanStartDateTo, string Subinventory)
         {
             ProcessViewModel viewModel = new ProcessViewModel();
             var Userid = this.User.Identity.GetUserId();
-            List<CHP_PROCESS_T> model = viewModel.Search(Status, BatchNo, MachineNum, DueDateFrom, DueDateTo, CuttingDateFrom, CuttingDateTo, Subinventory, Userid);
+            List<CHP_PROCESS_T> model = viewModel.Search(Status, BatchNo, MachineNum, DueDateFrom, DueDateTo, CuttingDateFrom, CuttingDateTo, Subinventory, PlanStartDateFrom, PlanStartDateTo, Userid);
             model = ProcessViewModel.ChpProcessModelDTOrder.Search(data, model);
             model = ProcessViewModel.ChpProcessModelDTOrder.Order(data.Order, model).ToList();
             var model1 = model.Skip(data.Start).Take(data.Length).ToList();

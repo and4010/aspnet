@@ -85,12 +85,12 @@ namespace CHPOUTSRCMES.Web.ViewModels.Process
         /// <param name="CuttingDateTo"></param>
         /// <param name="Subinventory"></param>
         /// <returns></returns>
-        public List<CHP_PROCESS_T> Search(string Status, string BatchNo, string MachineNum, string DueDateFrom, string DueDateTo, string CuttingDateFrom, string CuttingDateTo, string Subinventory, string UserId)
+        public List<CHP_PROCESS_T> Search(string Status, string BatchNo, string MachineNum, string DueDateFrom, string DueDateTo, string CuttingDateFrom, string CuttingDateTo, string Subinventory, string PlanStartDateFrom, string PlanStartDateTo, string UserId)
         {
        
             using (var context = new MesContext())
             {
-                return new ProcessUOW(context).GetTable(Status, BatchNo, MachineNum, DueDateFrom, DueDateTo, CuttingDateFrom, CuttingDateTo, Subinventory, UserId);
+                return new ProcessUOW(context).GetTable(Status, BatchNo, MachineNum, DueDateFrom, DueDateTo, CuttingDateFrom, CuttingDateTo, Subinventory, PlanStartDateFrom, PlanStartDateTo, UserId);
             }
 
         }

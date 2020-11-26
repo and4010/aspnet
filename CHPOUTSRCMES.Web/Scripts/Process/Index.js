@@ -58,6 +58,16 @@ $(document).ready(function () {
         changeYear: true
     });
 
+    $("#PlanStartDateFrom").datepicker({
+        dateFormat: 'yy-mm-dd',
+        changeMonth: true,
+        changeYear: true
+    });
+    $("#PlanStartDateTo").datepicker({
+        dateFormat: 'yy-mm-dd',
+        changeMonth: true,
+        changeYear: true
+    });
 
     firstLoad();
 
@@ -150,7 +160,7 @@ $(document).ready(function () {
 
 })
 
-function ProcessLoadTable(Status, BatchNo, MachineNum, DueDateFrom, DueDateTo, CuttingDateFrom, CuttingDateTo, Subinventory) {
+function ProcessLoadTable(Status, BatchNo, MachineNum, DueDateFrom, DueDateTo, CuttingDateFrom, CuttingDateTo, PlanStartDateFrom, PlanStartDateTo, Subinventory) {
 
     ProcessDataTables = $('#ProcessDataTables').DataTable({
         "language": {
@@ -163,7 +173,7 @@ function ProcessLoadTable(Status, BatchNo, MachineNum, DueDateFrom, DueDateTo, C
         serverSide: true,
         autoWidth: false,
         dom:
-            "<'row'<'col-sm-2'l><'col-sm-7'B><'col-sm-3'f>>" +
+            "<'row'<'col-sm-3 width-s'l><'col-sm-6'B><'col-sm-3'f>>" +
             "<'row'<'col-sm-12'tr>>" +
             "<'row'<'col-sm-5'i><'col-sm-7'p>>",
         ajax: {
@@ -178,22 +188,82 @@ function ProcessLoadTable(Status, BatchNo, MachineNum, DueDateFrom, DueDateTo, C
                 DueDateTo: DueDateTo,
                 CuttingDateFrom: CuttingDateFrom,
                 CuttingDateTo: CuttingDateTo,
-                Subinventory: Subinventory
+                Subinventory: Subinventory,
+                PlanStartDateFrom: PlanStartDateFrom,
+                PlanStartDateTo: PlanStartDateTo
             }
         },
         select: {
             style: 'multi',
             selector: 'td:first-child'
         },
-        buttons: [
-            {
-                extend: 'excel',
-                text: '匯出Excel',
-                filename: function () {
-                    return moment().format("YYYYMMDDHHmmss");
-                }
+        buttons: {
+            dom: {
+                container: {
+                    className: 'dt-buttons '
+                },
             },
-        ],
+            buttons: [
+                {
+                    extend: 'excel',
+                    text: '匯出Excel',
+                    filename: function () {
+                        return moment().format("YYYYMMDDHHmmss");
+                    }
+                },
+                {
+                    text: '排單',
+                    className: 'margin-left-s btn-danger',
+                    action: function () {
+                        status_onclick();
+                    },
+                    init: function (api, node, config) {
+                        $(node).removeClass('btn-default')
+                    }
+                },
+                {
+                    text: '更改排單日',
+                    className: 'btn-danger',
+                    action: function () {
+                        edit_onclick();
+                    },
+                    init: function (api, node, config) {
+                        $(node).removeClass('btn-default')
+                    }
+                },
+                {
+                    text: '關帳',
+                    className: 'btn-danger',
+                    action: function () {
+                        closs_onclick();
+                    },
+                    init: function (api, node, config) {
+                        $(node).removeClass('btn-default')
+                    }
+                },
+                {
+                    text: '裁切單',
+                    className: 'margin-left-s btn-primary',
+                    action: function () {
+                        cutReceipt_onclick();
+                    },
+                    init: function (api, node, config) {
+                        $(node).removeClass('btn-default')
+                    }
+                },
+                {
+                    text: '領料單',
+                    className: 'btn-primary',
+                    action: function () {
+                        cutMaterial_onclick();
+                    },
+                    init: function (api, node, config) {
+                        $(node).removeClass('btn-default')
+                    }
+                },
+            ]
+        },
+      
         "order": [[5, "desc"]], //單號排序
         columnDefs: [{
             orderable: false, targets: [0, 24], width: "60px",
@@ -374,139 +444,13 @@ function ProcessLoadTable(Status, BatchNo, MachineNum, DueDateFrom, DueDateTo, C
 
 
 function BtnEvent() {
-    $('#BtnStatus').click(function () {
-        var selectRowData = ProcessDataTables.rows('.selected').data();
-        if (selectRowData.length > 1) {
-            swal.fire("排單只能選擇一項");
-            return;
-        }
-        if (selectRowData.length >1 ) {
-            swal.fire("請先選擇一項");
-            return;
-        }
-        var Status = selectRowData.pluck('Status')[0]
-        if (Status != WaitBatch) {
-            swal.fire("加工狀態不正確，重新選擇");
-            return;
-        }
-        var OspHeaderId = selectRowData.pluck('OspHeaderId')[0]
-        var PaperType = selectRowData.pluck('PaperType')[0]
-        var SrcOspHeaderId = selectRowData.pluck('SrcOspHeaderId')[0]
-        var BatchType = selectRowData.pluck('BatchType')[0]
+    $('#BtnStatus').click(status_onclick);
 
-        
-        if (BatchType == "REP" && SrcOspHeaderId) {
-            //又裁又代 須檢查來源裁切工單是否完工
-            $.ajax({
-                "url": "/Process/CheckInsteadPaperOrderProcess",
-                "type": "POST",
-                "datatype": "json",
-                "data": {
-                    SrcOspHeaderId: SrcOspHeaderId
-                },
-                success: function (data) {
-                    if (data != null) {
-                        if (data.resultModel.Success) {
-                            orderProcess(PaperType, OspHeaderId, BatchType);
-                        } else {
-                            swal.fire(data.resultModel.Msg);
-                        }
-                    }
-                }
-            })
-        } else {
-            orderProcess(PaperType, OspHeaderId, BatchType);
-        }
-    });
+    $('#BtnCloss').click(closs_onclick);
 
-    $('#BtnCloss').click(function () {
-        var selectRowData = ProcessDataTables.rows('.selected').data();
-        if (selectRowData.length > 1) {
-            swal.fire("關帳只能選擇一項");
-            return;
-        }
-        if (selectRowData == null) {
-            swal.fire("請先選擇一項")
-            return;
-        }
-        var BtnCloss = CloseBatch;
-        var Status = selectRowData.pluck('Status')[0]
-        var OspHeaderId = selectRowData.pluck('OspHeaderId')[0]
-        if (Status == CompletedBatch) {
-            changeStatus(OspHeaderId, BtnCloss);
-        } else {
-            swal.fire("加工狀態不正確，重新選擇");
-            return;
-        }
+    $('#BtnEdit').click(edit_onclick);
 
-
-    });
-
-    $('#BtnEdit').click(function () {
-        var selectRowData = ProcessDataTables.rows('.selected').data();
-        if (selectRowData.length > 1) {
-            swal.fire("排單只能選擇一項");
-            return;
-        }
-        if (selectRowData == null) {
-            swal.fire("請先選擇一項");
-            return;
-        }
-        var Status = selectRowData.pluck('Status')[0]
-        var OspHeaderId = selectRowData.pluck('OspHeaderId')[0]
-        var PaperType = selectRowData.pluck('PaperType')[0]
-        var BatchType = selectRowData.pluck('BatchType')[0]
-        if (Status == DwellBatch) {
-            orderProcess(PaperType, OspHeaderId, BatchType);
-
-        } else {
-            swal.fire("加工狀態不正確，重新選擇");
-            return;
-        }
-
-
-    });
-
-   
-    
-
-    $('#BtnCutReceipt').click(function (e) {
-
-        var headerList = []
-
-        var selectRowData = ProcessDataTables.rows('.selected').data();
-
-        for (i = 0; i < selectRowData.length; i++) {
-            switch (selectRowData.pluck('Status')[i]) {
-                case WaitBatch:
-                    swal.fire(selectRowData.pluck('BatchNo')[i] + "請先排單，再列印裁切單。");
-                    return;
-                case CompletedBatch:
-                    swal.fire(selectRowData.pluck('BatchNo')[i] + "已完工，無法列印");
-                    return;
-                case CloseBatch:
-                    swal.fire(selectRowData.pluck('BatchNo')[i] + "已關帳，無法列印。");
-                    return;
-                case Canceled:
-                    swal.fire(selectRowData.pluck('BatchNo')[i] + "已取消，無法列印。");
-                    return;
-            }
-
-            if (selectRowData.pluck('BatchType')[i] == "OSP") {
-                headerList.push(selectRowData.pluck('OspHeaderId')[i]);
-            }
-        }
-
-        var millisecondsToWait = 0;
-        for (i = 0; i < headerList.length; i++) {
-            var url = "/Home/OspCutReceiptReport/?OspHeaderId=" + headerList[i];
-            setTimeout(windowOpen, millisecondsToWait, url);
-            millisecondsToWait += 5000;
-        }
-
-    });
-
-    
+    $('#BtnCutReceipt').click(cutReceipt_onclick);
 
     $('#BtnCutMaterial').click(cutMaterial_onclick);
 }
@@ -521,6 +465,129 @@ function sleep(time) {
     return new Promise( function (resolve) {
         setTimeout(resolve, time || 1000);
     } );
+}
+
+function status_onclick() {
+    var selectRowData = ProcessDataTables.rows('.selected').data();
+    if (selectRowData.length > 1) {
+        swal.fire("排單只能選擇一項");
+        return;
+    }
+    if (selectRowData.length > 1) {
+        swal.fire("請先選擇一項");
+        return;
+    }
+    var Status = selectRowData.pluck('Status')[0]
+    if (Status != WaitBatch) {
+        swal.fire("加工狀態不正確，重新選擇");
+        return;
+    }
+    var OspHeaderId = selectRowData.pluck('OspHeaderId')[0]
+    var PaperType = selectRowData.pluck('PaperType')[0]
+    var SrcOspHeaderId = selectRowData.pluck('SrcOspHeaderId')[0]
+    var BatchType = selectRowData.pluck('BatchType')[0]
+
+
+    if (BatchType == "REP" && SrcOspHeaderId) {
+        //又裁又代 須檢查來源裁切工單是否完工
+        $.ajax({
+            "url": "/Process/CheckInsteadPaperOrderProcess",
+            "type": "POST",
+            "datatype": "json",
+            "data": {
+                SrcOspHeaderId: SrcOspHeaderId
+            },
+            success: function (data) {
+                if (data != null) {
+                    if (data.resultModel.Success) {
+                        orderProcess(PaperType, OspHeaderId, BatchType);
+                    } else {
+                        swal.fire(data.resultModel.Msg);
+                    }
+                }
+            }
+        })
+    } else {
+        orderProcess(PaperType, OspHeaderId, BatchType);
+    }
+}
+
+function closs_onclick() {
+    var selectRowData = ProcessDataTables.rows('.selected').data();
+    if (selectRowData.length > 1) {
+        swal.fire("關帳只能選擇一項");
+        return;
+    }
+    if (selectRowData == null) {
+        swal.fire("請先選擇一項")
+        return;
+    }
+    var BtnCloss = CloseBatch;
+    var Status = selectRowData.pluck('Status')[0]
+    var OspHeaderId = selectRowData.pluck('OspHeaderId')[0]
+    if (Status == CompletedBatch) {
+        changeStatus(OspHeaderId, BtnCloss);
+    } else {
+        swal.fire("加工狀態不正確，重新選擇");
+        return;
+    }
+}
+
+function edit_onclick() {
+    var selectRowData = ProcessDataTables.rows('.selected').data();
+    if (selectRowData.length > 1) {
+        swal.fire("排單只能選擇一項");
+        return;
+    }
+    if (selectRowData == null) {
+        swal.fire("請先選擇一項");
+        return;
+    }
+    var Status = selectRowData.pluck('Status')[0]
+    var OspHeaderId = selectRowData.pluck('OspHeaderId')[0]
+    var PaperType = selectRowData.pluck('PaperType')[0]
+    var BatchType = selectRowData.pluck('BatchType')[0]
+    if (Status == DwellBatch) {
+        orderProcess(PaperType, OspHeaderId, BatchType);
+
+    } else {
+        swal.fire("加工狀態不正確，重新選擇");
+        return;
+    }
+}
+
+function cutReceipt_onclick() {
+    var headerList = []
+
+    var selectRowData = ProcessDataTables.rows('.selected').data();
+
+    for (i = 0; i < selectRowData.length; i++) {
+        switch (selectRowData.pluck('Status')[i]) {
+            case WaitBatch:
+                swal.fire(selectRowData.pluck('BatchNo')[i] + "請先排單，再列印裁切單。");
+                return;
+            case CompletedBatch:
+                swal.fire(selectRowData.pluck('BatchNo')[i] + "已完工，無法列印");
+                return;
+            case CloseBatch:
+                swal.fire(selectRowData.pluck('BatchNo')[i] + "已關帳，無法列印。");
+                return;
+            case Canceled:
+                swal.fire(selectRowData.pluck('BatchNo')[i] + "已取消，無法列印。");
+                return;
+        }
+
+        if (selectRowData.pluck('BatchType')[i] == "OSP") {
+            headerList.push(selectRowData.pluck('OspHeaderId')[i]);
+        }
+    }
+
+    var millisecondsToWait = 0;
+    for (i = 0; i < headerList.length; i++) {
+        var url = "/Home/OspCutReceiptReport/?OspHeaderId=" + headerList[i];
+        setTimeout(windowOpen, millisecondsToWait, url);
+        millisecondsToWait += 5000;
+    }
 }
 
 function cutMaterial_onclick() {
@@ -585,13 +652,15 @@ function search() {
         var CuttingDateFrom = $("#CuttingDateFrom").val();
         var CuttingDateTo = $("#CuttingDateTo").val();
         var Subinventory = $("#Subinventory").val();
-
+        var PlanStartDateFrom = $("#PlanStartDateFrom").val();
+        var PlanStartDateTo = $("#PlanStartDateTo").val();
+        
         if (BatchNo &&  BatchNo.length < 4) {
             swal.fire("工單號須輸入4碼以上");
             return;
         }
 
-        ProcessLoadTable(Status, BatchNo, MachineNum, DueDateFrom, DueDateTo, CuttingDateFrom, CuttingDateTo, Subinventory);
+        ProcessLoadTable(Status, BatchNo, MachineNum, DueDateFrom, DueDateTo, CuttingDateFrom, CuttingDateTo, PlanStartDateFrom, PlanStartDateTo, Subinventory);
 
 
     });
@@ -707,13 +776,15 @@ function firstLoad() {
     var CuttingDateFrom = $("#CuttingDateFrom").val();
     var CuttingDateTo = $("#CuttingDateTo").val();
     var Subinventory = $("#Subinventory").val();
+    var PlanStartDateFrom = $("#PlanStartDateFrom").val();
+    var PlanStartDateTo = $("#PlanStartDateTo").val();
 
     if (BatchNo && BatchNo.length < 4) {
         swal.fire("工單號須輸入4碼以上");
         return;
     }
 
-    ProcessLoadTable(Status, BatchNo, MachineNum, DueDateFrom, DueDateTo, CuttingDateFrom, CuttingDateTo, Subinventory);
+    ProcessLoadTable(Status, BatchNo, MachineNum, DueDateFrom, DueDateTo, CuttingDateFrom, CuttingDateTo, PlanStartDateFrom, PlanStartDateTo, Subinventory);
 }
 
 

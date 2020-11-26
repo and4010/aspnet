@@ -856,7 +856,8 @@ WHERE DI.OSP_HEADER_ID = @OSP_HEADER_ID");
         /// <param name="CuttingDateTo"></param>
         /// <param name="Subinventory"></param>
         /// <returns></returns>
-        public List<CHP_PROCESS_T> GetTable(string Status, string BatchNo, string MachineNum, string DueDateFrom, string DueDateTo, string CuttingDateFrom, string CuttingDateTo, string Subinventory, string UserId)
+        public List<CHP_PROCESS_T> GetTable(string Status, string BatchNo, string MachineNum, string DueDateFrom, string DueDateTo,
+            string CuttingDateFrom, string CuttingDateTo, string Subinventory,string PlanStartDateFrom, string PlanStartDateTo, string UserId)
         {
             try
             {
@@ -989,6 +990,20 @@ left JOIN OSP_HEADER_MOD_T HM ON HM.OSP_HEADER_ID = H.OSP_HEADER_ID
                         temp = temp.TrimEnd(',');
                         temp = string.Format("DI.SUBINVENTORY IN({0})", temp);
                         cond.Add(temp);
+                    }
+
+                    DateTime planStartDateFrom = new DateTime();
+                    if (PlanStartDateFrom != "" && DateTime.TryParseExact(PlanStartDateFrom, "yyyy-MM-dd", null, System.Globalization.DateTimeStyles.NoCurrentDateDefault, out planStartDateFrom))
+                    {
+                        cond.Add("H.PLAN_START_DATE >= @PLAN_START_DATE_FROM");
+                        sqlParameterList.Add(SqlParamHelper.GetDataTime("@PLAN_START_DATE_FROM", planStartDateFrom, ParameterDirection.Input));
+                    }
+
+                    DateTime planStartDateTo = new DateTime();
+                    if (PlanStartDateTo != "" && DateTime.TryParseExact(PlanStartDateTo, "yyyy-MM-dd", null, System.Globalization.DateTimeStyles.NoCurrentDateDefault, out planStartDateTo))
+                    {
+                        cond.Add("H.PLAN_START_DATE <= @PLAN_START_DATE_TO");
+                        sqlParameterList.Add(SqlParamHelper.GetDataTime("@PLAN_START_DATE_TO", planStartDateTo.AddDays(1).AddMilliseconds(-1), ParameterDirection.Input));
                     }
 
                     cond.Add("H.STATUS <> '5'");

@@ -31,7 +31,7 @@ else
 @Html.HiddenFor(model => model.CHP_PROCESS_T.OspDetailOutId, new { id = "OspDetailOutId" })
 @Html.HiddenFor(model => model.CHP_PROCESS_T.OspHeaderId, new { id = "OspHeaderId" })
 
-<div class="row">
+<div class="customBody row">
     <div class="col-md-12">
         <div class="box box-success">
             <div class="box-body">
@@ -228,21 +228,21 @@ else
                 </div>
 
                 <div class="row row-std" id="InputBathNoArea">
-
-                    <form class="bs-example bs-example-form col-md-3" id="form" onsubmit="return false">
-                        <div class="input-group form-row">
-                            <span class="input-group-addon">請輸入工單號</span>
-                            <input type="text" class="form-control" placeholder="請輸入工單號" id="InputBatchNo" autocomplete="off">
+                    <form class="bs-example bs-example-form col col-md-12" id="form" onsubmit="return false">
+                        <div class="form-group form-inline">
+                            <label class="col-md-1 text-right font-weight:bolder;">工單號</label>
+                            <div class="col-md-11">
+                                <input type="text" class="form-control" placeholder="請輸入工單號" id="InputBatchNo" autocomplete="off">
+                                <button class="btn btn-danger" type="button" id="BtnCheckBatchNo">比對</button>
+                                <button class="btn btn-danger" type="button" id="BtnEdit">修改</button>
+                                @if (Model.Authority)
+                                {
+                                    <button class="btn btn-danger" type="button" id="BtnApprove">核准</button>
+                                }
+                            </div>
                         </div>
                     </form>
-                    <button class="btn btn-danger" type="button" id="BtnCheckBatchNo">比對</button>
-                    <button class="btn btn-danger" type="button" id="BtnEdit">修改</button>
-                    @if (Model.Authority)
-                    {
-                        <button class="btn btn-danger" type="button" id="BtnApprove">核准</button>
-                    }
                 </div>
-
 
                 <div class="row row-std">
 
@@ -421,17 +421,20 @@ else
 
 
                 <div class="row row-std" id="OutputBathNoArea">
-
-                    <form class="bs-example bs-example-form col-md-3" id="form" onsubmit="return false">
-                        <div class="input-group form-row" id="ProductForm">
-                            <span class="input-group-addon">請輸入工單號</span>
-                            <input type="text" class="form-control" placeholder="請輸入工單號" id="OutBatchNo" autocomplete="off">
+                    <form class="bs-example bs-example-form col-md-12" id="form" onsubmit="return false">
+                        <div class="form-group form-inline">
+                            <label class="col-md-1 text-right font-weight:bolder;">工單號</label>
+                            <div class="col-md-11">
+                                <input type="text" class="form-control" placeholder="請輸入工單號" id="OutBatchNo" autocomplete="off">
+                                <button class="btn btn-danger" type="button" id="BtnCheckProductionBatchNo">比對</button>
+                            </div>
+                            @*<div class="input-group form-row" id="ProductForm">
+                                <span class="input-group-addon">工單號</span>
+                                <input type="text" class="form-control" placeholder="請輸入工單號" id="OutBatchNo" autocomplete="off">
+                            </div>*@
                         </div>
                     </form>
-                    <button class="btn btn-danger" type="button" id="BtnCheckProductionBatchNo">比對</button>
                 </div>
-
-
 
                 <div class="row col-md-12 ">
 
