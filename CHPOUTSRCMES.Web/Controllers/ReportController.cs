@@ -62,7 +62,7 @@ namespace CHPOUTSRCMES.Web.Controllers
                     if (result.Success)
                     {
                         ViewBag.ReportViewer = result.Data;
-                        return View("Report");
+                        return PartialView("_ReportPartial");
                     }
                     else
                     {

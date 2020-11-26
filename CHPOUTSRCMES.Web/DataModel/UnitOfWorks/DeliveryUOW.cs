@@ -123,9 +123,12 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                 return new ResultModel(false, "此條碼的儲位" + stockLocatorSegment3 + "不符合出貨儲位" + detailLocatorSegment3);
             }
 
-            var pickData = dlvPickedTRepository.GetAll().AsNoTracking().Where(x => x.Barcode == barcode && x.DlvHeaderId == dlvHeaderId).ToList();
-            if (pickData.Count > 0) return new ResultModel(false, "條碼重複輸入");
-
+            //平版且為令包時 不檢查條碼重複
+            if (detailData.ItemCategory == ItemCategory.Roll || (detailData.ItemCategory == ItemCategory.Flat && detailData.PackingType == PackingType.NoReam))
+            {
+                var pickData = dlvPickedTRepository.GetAll().AsNoTracking().Where(x => x.Barcode == barcode && x.DlvHeaderId == dlvHeaderId).ToList();
+                if (pickData.Count > 0) return new ResultModel(false, "條碼重複輸入");
+            }
 
             using (var txn = this.Context.Database.BeginTransaction())
             {
@@ -306,18 +309,37 @@ GROUP BY d.DLV_DETAIL_ID";
                 }
                 else
                 {
-                    if (list[0] == 1)
+                    
+                    foreach(var status in list)
                     {
-                        return new ResultDataModel<string>(false, "已揀數量超過需求量", null);
+                        if (status == 1)
+                        {
+                            return new ResultDataModel<string>(false, "已揀數量超過需求量", null);
+                        }
+                        else if (status == -1)
+                        {
+                            return new ResultDataModel<string>(true, "檢查是否揀畢成功", DeliveryStatusCode.UnPicked);
+                        }
+                        else
+                        {
+                            //此dtail為已揀，繼續檢查下一筆dtail
+                        }
                     }
-                    else if (list[0] == -1)
-                    {
-                        return new ResultDataModel<string>(true, "檢查是否揀畢成功", DeliveryStatusCode.UnPicked);
-                    }
-                    else
-                    {
-                        return new ResultDataModel<string>(true, "檢查是否揀畢成功", DeliveryStatusCode.Picked);
-                    }
+                    //全部detail為已揀，回傳已揀
+                    return new ResultDataModel<string>(true, "檢查是否揀畢成功", DeliveryStatusCode.Picked);
+
+                    //if (list[0] == 1)
+                    //{
+                    //    return new ResultDataModel<string>(false, "已揀數量超過需求量", null);
+                    //}
+                    //else if (list[0] == -1)
+                    //{
+                    //    return new ResultDataModel<string>(true, "檢查是否揀畢成功", DeliveryStatusCode.UnPicked);
+                    //}
+                    //else
+                    //{
+                    //    return new ResultDataModel<string>(true, "檢查是否揀畢成功", DeliveryStatusCode.Picked);
+                    //}
                     
                 }
             }

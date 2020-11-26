@@ -4279,7 +4279,7 @@ AND OPO.OSP_PICKED_OUT_ID = @OSP_PICKED_OUT_ID
                 cuttingDateTo = "9999-12-31";
                 sDateToStatus = "0";
             }
-
+            
             List<ReportParameter> reportParameterList = new List<ReportParameter>();
             reportParameterList.Add(new ReportParameter("cuttingDateFrom", cuttingDateFrom, false));
             reportParameterList.Add(new ReportParameter("cuttingDateTo", cuttingDateTo, false));

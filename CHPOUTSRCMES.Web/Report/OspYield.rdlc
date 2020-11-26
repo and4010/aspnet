@@ -905,6 +905,7 @@
           <Value>*</Value>
         </Values>
       </DefaultValue>
+      <AllowBlank>true</AllowBlank>
       <Prompt>batch No</Prompt>
     </ReportParameter>
     <ReportParameter Name="machineNum">
