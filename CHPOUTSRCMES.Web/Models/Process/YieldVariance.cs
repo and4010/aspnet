@@ -17,7 +17,7 @@ namespace CHPOUTSRCMES.Web.Models.Process
         [DisplayFormat(DataFormatString = "{0:0.#####}", ApplyFormatInEditMode = true)]
         public decimal LossWeight { set; get; }
 
-        [DisplayName("得率百分比(%)")]
+        [DisplayName("得率(%)")]
         public decimal Rate { set; get; }
 
         [DisplayName("總用紙重(KG)")]

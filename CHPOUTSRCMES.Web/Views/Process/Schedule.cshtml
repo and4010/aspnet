@@ -498,21 +498,18 @@ else
             </div>
             <div class="box-footer">
 
+                <div class="row row-std col-md-12">
+                    <div class="form-group form-inline">
+                        <label class="col-md-1 text-right font-weight:bolder;">條碼</label>
+                        <div class="col-md-11">
+                            <input type="text" class="form-control" placeholder="請輸入條碼" id="Production_Barcode" autocomplete="off">
+                            <button class="btn btn-danger" type="button" id="BtnProductionSave">轉已入庫</button>
+                        </div>
+                    </div>
+                </div>
 
                 @* 產出table *@
                 <div class="row col-md-12">
-
-                    <div class="row form-inline col-md-12 form-group">
-                        <div class="input-group form-row col col-md-3">
-                            <span class="input-group-addon">條碼</span>
-                            <input type="text" class="form-control" placeholder="請輸入條碼" id="Production_Barcode" autocomplete="off">
-
-                        </div>
-                        <button class="btn btn-danger" type="button" id="BtnProductionSave">轉已入庫</button>
-                    </div>
-
-
-
                     <div class="row row-std">
                         <div class="dataTable_wrapper">
                             <div class="col-sm-12 col-md-12">
@@ -550,16 +547,8 @@ else
                         </div>
                     </div>
                 </div>
-
-
-
-
             </div>
-
-
         </div>
-
-
     </div>
 
 
@@ -568,20 +557,29 @@ else
         <div class="box box-success">
 
             <div class="box-body">
-
+                <div class="row row-std col-md-12">
+                    <h4>餘切</h4>
+                    <div class="form-group form-inline">
+                        <label class="col-md-1 text-right font-weight:bolder;">條碼</label>
+                        <div class="col-md-11">
+                            <input type="text" class="form-control" placeholder="請輸入條碼" id="Cotangent_Barcode" autocomplete="off">
+                            <button class="btn btn-danger" type="button" id="BtnCotangentSave">轉已入庫</button>
+                        </div>
+                    </div>
+                </div>
 
                 @* 餘切table *@
                 <div class="row col-md-12">
-                    <h4>餘切</h4>
+                   @* <h4>餘切</h4>*@
 
-                    <div class="row form-inline col-md-12  form-group">
+                    @*<div class="row form-inline col-md-12  form-group">
                         <div class="input-group form-row col col-md-3">
                             <span class="input-group-addon">條碼</span>
                             <input type="text" class="form-control" placeholder="請輸入條碼" id="Cotangent_Barcode" autocomplete="off">
 
                         </div>
                         <button class="btn btn-danger" type="button" id="BtnCotangentSave">轉已入庫</button>
-                    </div>
+                    </div>*@
 
 
 
