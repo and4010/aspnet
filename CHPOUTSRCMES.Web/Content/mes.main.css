@@ -48,9 +48,9 @@
     background-color: #93f9cb;
 }
 
-/*.dataTable tbody tr:hover > .sorting_1 {
+.dataTable tbody tr:hover > .sorting_1 {
         background-color: #93f9cb;
-}*/
+}
 
 table.table-bordered {
     border: 1px solid #dbdbdb;
@@ -74,16 +74,15 @@ table.table-bordered {
     height: 30px;
 }
 
-.dataTableBtn {
-/*    display: inline-block;*/
-    /*padding: 150px;*/
-/*    white-space: nowrap !important;*/
-}
-
 .width-s {
     width: 200px;
 }
 
 .margin-left-s {
     margin-left: 50px;
+}
+
+
+.noborder td, .noborder th {
+    border: none !important;
 }

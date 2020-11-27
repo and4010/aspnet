@@ -690,9 +690,14 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             {
                 return new ResultDataModel<STOCK_T>(false, "查無庫存", stock);
             }
-            if (qty != null) //判斷是否為拆板(包裝方式為令包時)
+
+            if (qty != null && stock.ItemCategory == ItemCategory.Flat && stock.PackingType == PackingType.Ream) //判斷是否為拆板(拆板會有令包數量且包裝方式為令包)
             {
-                //為拆板，須檢查拆板的數量
+                //為拆板，以qty檢查庫存量
+                if (stock.StatusCode != StockStatusCode.InStock)
+                {
+                    return new ResultDataModel<STOCK_T>(false, "不在庫", stock);
+                }
                 if (stock.SecondaryAvailableQty + qty >= 0) //揀貨時為負qty，刪除時為正qty。刪除時不須檢查庫存
                 {
                     return new ResultDataModel<STOCK_T>(true, "庫存足夠", stock);
@@ -704,11 +709,25 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             }
             else
             {
-                //非拆板，不須檢查庫存
-                return new ResultDataModel<STOCK_T>(true, "非拆板，不須檢查庫存", stock);
+                //非拆板(沒有令包數量)
+                if (stock.StatusCode != StockStatusCode.InStock)
+                {
+                    return new ResultDataModel<STOCK_T>(false, "不在庫", null);
+                }
+                if (stock.ItemCategory == ItemCategory.Roll && stock.PrimaryAvailableQty == 0)
+                {
+                    return new ResultDataModel<STOCK_T>(false, "沒有庫存量", null);
+                }
+                if (stock.ItemCategory == ItemCategory.Flat && stock.SecondaryAvailableQty == 0)
+                {
+                    return new ResultDataModel<STOCK_T>(false, "沒有庫存量", null);
+                }
+                if (stock.ItemCategory != ItemCategory.Roll && stock.ItemCategory != ItemCategory.Flat)
+                {
+                    return new ResultDataModel<STOCK_T>(false, "無法識別貨品類別", null);
+                }
+                return new ResultDataModel<STOCK_T>(true, "有庫存", stock);
             }
-
-
         }
 
         /// <summary>
