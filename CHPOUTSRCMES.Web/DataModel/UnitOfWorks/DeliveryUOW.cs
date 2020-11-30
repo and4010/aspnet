@@ -96,22 +96,31 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             if (!checkResult.Success) return new ResultModel(checkResult.Success, checkResult.Msg);
             var stock = checkResult.Data;
             var detailData = dlvDetailTRepository.GetAll().AsNoTracking().FirstOrDefault(x => x.DlvDetailId == dlvDetailId);
-            if (detailData.OspBatchId == null && detailData.TmpItemId == null)
+            if (detailData == null) return new ResultModel(false, "找不到明細資料");
+            if (string.IsNullOrEmpty(detailData.ItemNumber)) return new ResultModel(false, "找不到明細料號");
+            if (string.IsNullOrEmpty(stock.ItemNumber)) return new ResultModel(false, "找不到條碼料號");
+
+            if (stock.ItemNumber != detailData.ItemNumber)
             {
-                if (stock.ItemNumber != detailData.ItemNumber)
-                {
-                    return new ResultModel(false, "此條碼不符合已選擇的料號");
-                }
+               return new ResultModel(false, "此條碼不符合已選擇的料號");
             }
-            else
-            {
-                //代紙
-                if (stock.ItemNumber != detailData.TmpItemNumber)
-                {
-                    return new ResultModel(false, "此條碼不符合已選擇的料號");
-                }
-            }
-            
+
+            //if (detailData.OspBatchId == null && detailData.TmpItemId == null)
+            //{
+            //    if (stock.ItemNumber != detailData.ItemNumber)
+            //    {
+            //        return new ResultModel(false, "此條碼不符合已選擇的料號");
+            //    }
+            //}
+            //else
+            //{
+            //    //代紙
+            //    if (stock.ItemNumber != detailData.TmpItemNumber)
+            //    {
+            //        return new ResultModel(false, "此條碼不符合已選擇的料號");
+            //    }
+            //}
+
             if (detailData.LocatorId != null && detailData.LocatorId != stock.LocatorId)
             {
                 var stockLocator = locatorTRepository.GetAll().FirstOrDefault(x => x.LocatorId == stock.LocatorId);

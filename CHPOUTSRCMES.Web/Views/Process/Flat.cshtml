@@ -27,186 +27,108 @@ else
 @Html.HiddenFor(model => model.CHP_PROCESS_T.OspDetailInId, new { id = "OspDetailInId" })
 @Html.HiddenFor(model => model.CHP_PROCESS_T.OspDetailOutId, new { id = "OspDetailOutId" })
 @Html.HiddenFor(model => model.CHP_PROCESS_T.OspHeaderId, new { id = "OspHeaderId" })
-<div class="row">
-
+<div class="customBody row" style="white-space: nowrap !important;">
     <div class="col-md-12">
         <div class="box box-success">
             <div class="box-body">
-                <div class="col-md-12">
-
-                    @*工單號*@
-                    <div class="form-inline col-md-1 text-right">
-                        @Html.LabelFor(model => model.CHP_PROCESS_T.BatchNo)
-
-                    </div>
-
-                    <div class="form-inline col-md-2">
-                        <span id="Flat_Process_Batch_No">@Html.DisplayFor(model => model.CHP_PROCESS_T.BatchNo)</span>
-                    </div>
-
-
-
-
-                    @* 訂單編號 *@
-                    <div class="form-inline col-md-1 text-right">
-                        @Html.LabelFor(model => model.CHP_PROCESS_T.OrderNumber)
-
-                    </div>
-
-                    <div class="form-inline col-md-2">
-                        @Html.DisplayFor(model => model.CHP_PROCESS_T.OrderNumber)
-                    </div>
-
-
-                    @*客戶名稱*@
-                    <div class="form-inline col-md-1 text-right">
-                        @Html.LabelFor(model => model.CHP_PROCESS_T.CustomerName)
-
-                    </div>
-
-                    <div class="form-inline col-md-2">
-                        @Html.DisplayFor(model => model.CHP_PROCESS_T.CustomerName)
-                    </div>
-
-
-                </div>
-
-                <div class="col-md-12">
-
-                    @*需求日*@
-                    <div class="form-inline col-md-1 text-right">
-                        @Html.LabelFor(model => model.CHP_PROCESS_T.DueDate)
-
-                    </div>
-
-                    <div class="form-inline col-md-2">
-                        @Html.DisplayFor(model => model.CHP_PROCESS_T.DueDate)
-                    </div>
-
-                    @*裁切日*@
-                    <div class="form-inline col-md-1 text-right">
-                        @Html.LabelFor(model => model.CHP_PROCESS_T.CuttingDateFrom)
-
-                    </div>
-
-                    <div class="form-inline col-md-2 ">
-                        @Html.DisplayFor(model => model.CHP_PROCESS_T.CuttingDateFrom)
-                    </div>
-
-                    @*裁切日*@
-                    <div class="form-inline col-md-1 text-right">
-                        @Html.LabelFor(model => model.CHP_PROCESS_T.CuttingDateTo)
-
-                    </div>
-
-                    <div class="form-inline col-md-2">
-                        @Html.DisplayFor(model => model.CHP_PROCESS_T.CuttingDateTo)
-                    </div>
-
-                </div>
-
-                <div class="col-md-12">
-
-
-                    @* 產品料號 *@
-                    <div class="form-inline col-md-1 text-right">
-                        @Html.LabelFor(model => model.CHP_PROCESS_T.Product_Item)
-
-                    </div>
-
-                    <div class="form-inline col-md-2">
-                        @Html.DisplayFor(model => model.CHP_PROCESS_T.Product_Item)
-                    </div>
-
-
-                    @* 規格 *@
-                    <div class="form-inline col-md-1 text-right">
-                        @Html.LabelFor(model => model.CHP_PROCESS_T.DoSpecification)
-
-                    </div>
-
-                    <div class="form-inline col-md-2">
-                        @Html.DisplayFor(model => model.CHP_PROCESS_T.DoSpecification)
-                    </div>
-
-                    @* 紙別 *@
-                    <div class="form-inline col-md-1 text-right">
-                        @Html.LabelFor(model => model.CHP_PROCESS_T.DoPaperType)
-
-                    </div>
-
-                    <div class="form-inline col-md-2">
-                        @Html.DisplayFor(model => model.CHP_PROCESS_T.DoPaperType)
-                    </div>
-
-
-                    @* 絲向 *@
-                    <div class="form-inline col-md-1 text-right">
-                        @Html.LabelFor(model => model.CHP_PROCESS_T.DoGrainDirection)
-
-                    </div>
-
-                    <div class="form-inline col-md-2">
-                        @Html.DisplayFor(model => model.CHP_PROCESS_T.DoGrainDirection)
-                    </div>
-
-                </div>
-
-
-                <div class="col-md-12">
-
-
-                    @* 基重 *@
-                    <div class="form-inline col-md-1 text-right">
-                        @Html.LabelFor(model => model.CHP_PROCESS_T.DoBasicWeight)
-
-                    </div>
-
-                    <div class="form-inline col-md-2">
-                        @Html.DisplayFor(model => model.CHP_PROCESS_T.DoBasicWeight)
-                    </div>
-
-                    @* 重量 *@
-                    <div class="form-inline col-md-1 text-right">
-                        @Html.LabelFor(model => model.CHP_PROCESS_T.DoPrimaryQuantity)
-
-                    </div>
-
-                    <div class="form-inline col-md-2">
-                        @Html.DisplayFor(model => model.CHP_PROCESS_T.DoPrimaryQuantity)
-                    </div>
-
-                    @* 令數 *@
-                    <div class="form-inline col-md-1 text-right">
-                        @Html.LabelFor(model => model.CHP_PROCESS_T.DoReamWt)
-
-                    </div>
-
-                    <div class="form-inline col-md-2">
-                        @Html.DisplayFor(model => model.CHP_PROCESS_T.DoReamWt)
-                    </div>
-
-                    @* 包裝方式 *@
-                    <div class="form-inline col-md-1 text-right">
-                        @Html.LabelFor(model => model.CHP_PROCESS_T.DoPackingType)
-
-                    </div>
-
-                    <div class="form-inline col-md-2">
-                        @Html.DisplayFor(model => model.CHP_PROCESS_T.DoPackingType)
-                    </div>
-
-                </div>
-
+                <table class="table table-sm noborder" style="width:90%">
+                    <tbody>
+                        <tr>
+                            <td style="text-align: right;">
+                                @Html.LabelFor(model => model.CHP_PROCESS_T.BatchNo)
+                            </td>
+                            <td>
+                                <span id="Flat_Process_Batch_No">@Html.DisplayFor(model => model.CHP_PROCESS_T.BatchNo)</span>
+                            </td>
+                            <td style="text-align: right;">
+                                @Html.LabelFor(model => model.CHP_PROCESS_T.OrderNumber)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(model => model.CHP_PROCESS_T.OrderNumber)
+                            </td>
+                            <td style="text-align: right;">
+                                @Html.LabelFor(model => model.CHP_PROCESS_T.CustomerName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(model => model.CHP_PROCESS_T.CustomerName)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: right;">
+                                @Html.LabelFor(model => model.CHP_PROCESS_T.DueDate)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(model => model.CHP_PROCESS_T.DueDate)
+                            </td>
+                            <td style="text-align: right;">
+                                @Html.LabelFor(model => model.CHP_PROCESS_T.CuttingDateFrom)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(model => model.CHP_PROCESS_T.CuttingDateFrom)
+                            </td>
+                            <td style="text-align: right;">
+                                @Html.LabelFor(model => model.CHP_PROCESS_T.CuttingDateTo)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(model => model.CHP_PROCESS_T.CuttingDateTo)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: right;">
+                                @Html.LabelFor(model => model.CHP_PROCESS_T.Product_Item)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(model => model.CHP_PROCESS_T.Product_Item)
+                            </td>
+                            <td style="text-align: right;">
+                                @Html.LabelFor(model => model.CHP_PROCESS_T.DoSpecification)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(model => model.CHP_PROCESS_T.DoSpecification)
+                            </td>
+                            <td style="text-align: right;">
+                                @Html.LabelFor(model => model.CHP_PROCESS_T.DoPaperType)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(model => model.CHP_PROCESS_T.DoPaperType)
+                            </td>
+                            <td style="text-align: right;">
+                                @Html.LabelFor(model => model.CHP_PROCESS_T.DoGrainDirection)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(model => model.CHP_PROCESS_T.DoGrainDirection)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: right;">
+                                @Html.LabelFor(model => model.CHP_PROCESS_T.DoBasicWeight)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(model => model.CHP_PROCESS_T.DoBasicWeight)
+                            </td>
+                            <td style="text-align: right;">
+                                @Html.LabelFor(model => model.CHP_PROCESS_T.DoPrimaryQuantity)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(model => model.CHP_PROCESS_T.DoPrimaryQuantity)
+                            </td>
+                            <td style="text-align: right;">
+                                @Html.LabelFor(model => model.CHP_PROCESS_T.DoReamWt)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(model => model.CHP_PROCESS_T.DoReamWt)
+                            </td>
+                            <td style="text-align: right;">
+                                @Html.LabelFor(model => model.CHP_PROCESS_T.DoPackingType)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(model => model.CHP_PROCESS_T.DoPackingType)
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
-
-
-
         </div>
-
-
-
-
     </div>
 
 
@@ -223,23 +145,22 @@ else
                         </h3>
                     </div>
                 </div>
-
                 <div class="row row-std" id="InputBathNoArea">
-
-                    <form class="bs-example bs-example-form col-md-3" id="form" onsubmit="return false">
-                        <div class="input-group form-row">
-                            <span class="input-group-addon">請輸入工單號</span>
-                            <input type="text" class="form-control" placeholder="請輸入工單號" id="ProcessBatchNo" autocomplete="off">
+                    <form class="bs-example bs-example-form col col-md-12" id="form" onsubmit="return false">
+                        <div class="form-group form-inline">
+                            <label class="col-md-1 text-right font-weight:bolder;">工單號</label>
+                            <div class="col-md-11">
+                                <input type="text" class="form-control" placeholder="請輸入工單號" id="ProcessBatchNo" autocomplete="off">
+                                <button class="btn btn-danger" type="button" id="BtnProcess_Batch_no">比對</button>
+                                <button class="btn btn-danger" type="button" id="BtnEdit">修改</button>
+                                @if (Model.Authority)
+                                {
+                                    <button class="btn btn-danger" type="button" id="BtnApprove">核准</button>
+                                }
+                            </div>
                         </div>
                     </form>
-                    <button class="btn btn-danger" type="button" id="BtnProcess_Batch_no">比對</button>
-                    <button class="btn btn-danger" type="button" id="BtnEdit">修改</button>
-                    @if (Model.Authority)
-                    {
-                        <button class="btn btn-danger" type="button" id="BtnApprove">核准</button>
-                    }
                 </div>
-
 
                 <div class="row col-md-12">
                     <div class="form-group col-md-1 text-right">
@@ -311,10 +232,8 @@ else
 
     <div class="col-md-12">
         <div class="box box-success">
-
             <div class="box-body">
                 @* 產出 *@
-
                 <div class="row col-md-12">
                     <div class="row row-std col-md-12">
                         <h3 class="page-header">
@@ -322,19 +241,17 @@ else
                         </h3>
                     </div>
                 </div>
-
-
                 <div class="row row-std" id="OutputBathNoArea">
-
-                    <form class="bs-example bs-example-form col-md-3" id="form" onsubmit="return false">
-                        <div class="input-group form-row">
-                            <span class="input-group-addon">請輸入工單號</span>
-                            <input type="text" class="form-control" placeholder="請輸入工單號" id="ProcessProductionBatchNo" autocomplete="off">
+                    <form class="bs-example bs-example-form col-md-12" id="form" onsubmit="return false">
+                        <div class="form-group form-inline">
+                            <label class="col-md-1 text-right font-weight:bolder;">工單號</label>
+                            <div class="col-md-11">
+                                <input type="text" class="form-control" placeholder="請輸入工單號" id="ProcessProductionBatchNo" autocomplete="off">
+                                <button class="btn btn-danger" type="button" id="BtnProcess_Production_Batch_no">比對</button>
+                            </div>
                         </div>
                     </form>
-                    <button class="btn btn-danger" type="button" id="BtnProcess_Production_Batch_no">比對</button>
                 </div>
-
 
                 <div class="row col-md-12">
                     @* 料號 *@
@@ -379,21 +296,19 @@ else
             </div>
 
             <div class="box-footer">
+                @* 條碼編號 *@
+                <div class="row row-std col-md-12">
+                    <div class="form-group form-inline">
+                        <label class="col-md-1 text-right font-weight:bolder;">條碼</label>
+                        <div class="col-md-11">
+                            <input type="text" class="form-control" placeholder="請輸入條碼" id="Flat_Production_Barcode" autocomplete="off">
+                            <button class="btn btn-danger" type="button" id="BtnFlatBarcodeSave">轉已入庫</button>
+                        </div>
+                    </div>
+                </div>
+
                 @* 產出table *@
                 <div class="row col-md-12">
-
-                    @* 條碼編號 *@
-                    <div class="row form-inline col-md-12  form-group">
-                        <div class="input-group form-row col col-md-3">
-                            <span class="input-group-addon">條碼</span>
-                            <input type="text" class="form-control" placeholder="請輸入條碼" id="Flat_Production_Barcode" autocomplete="off">
-
-                        </div>
-                        <button class="btn btn-danger" type="button" id="BtnFlatBarcodeSave">轉已入庫</button>
-
-                    </div>
-
-
                     <div class="row row-std">
                         <div class="dataTable_wrapper">
                             <div class="col-sm-12 col-md-12">
@@ -411,12 +326,12 @@ else
                                         </tr>
                                         <tr>
                                             @*<th></th>
-                                    <th>
-                                        @Html.DisplayName("條碼號")
-                                    </th>
-                                    <th>
-                                        @Html.DisplayName("料號")
-                                    </th>*@
+                                                <th>
+                                                    @Html.DisplayName("條碼號")
+                                                </th>
+                                                <th>
+                                                    @Html.DisplayName("料號")
+                                                </th>*@
                                             <th>
                                                 @Html.DisplayName("重量")
                                             </th>
@@ -430,11 +345,11 @@ else
                                                 @Html.DisplayName("單位")
                                             </th>
                                             @*<th>
-                                        @Html.DisplayName("狀態")
-                                    </th>
-                                    <th>
+                                                    @Html.DisplayName("狀態")
+                                                </th>
+                                                <th>
 
-                                    </th>*@
+                                                </th>*@
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -471,42 +386,51 @@ else
                     </div>
                 </div>
                 <div class="row col-md-12">
-                    <div class="form-inline col col-md-1">
-                        @Html.LabelFor(model => model.YieldVariance.InvestWeight)
-                        <label id="InvestWeight">@Html.DisplayFor(model => model.YieldVariance.InvestWeight)</label>
-                    </div>
-                    <div class="form-inline col col-md-1">
-                        @Html.LabelFor(model => model.YieldVariance.ProductWeight)
-                        <label id="ProductWeight">@Html.DisplayFor(model => model.YieldVariance.ProductWeight)</label>
-                    </div>
-                    <div class="form-inline col col-md-1">
-                        @Html.LabelFor(model => model.YieldVariance.LossWeight)
-                        <label id="Production_Loss">@Html.DisplayFor(model => model.YieldVariance.LossWeight)</label>
-                    </div>
-                    <div class="form-inline col col-md-1">
-                        @Html.LabelFor(model => model.YieldVariance.Rate)
-                        <label id="Rate">@Html.DisplayFor(model => model.YieldVariance.Rate)</label>
-                    </div>
-                    <div class="col-md-2">
-                        @Html.HiddenFor(model => model.CHP_PROCESS_T.Loss, new { id = "Loss" })
-                        <button class="btn btn-primary" type="button" id="BtnCalculate">計算</button>
-                    </div>
-
+                    <table class="table table-sm noborder" style="width:50%">
+                        <thead>
+                            <tr>
+                                <th>
+                                    @Html.LabelFor(model => model.YieldVariance.InvestWeight)
+                                </th>
+                                <th>
+                                    @Html.LabelFor(model => model.YieldVariance.ProductWeight)
+                                </th>
+                                <th>
+                                    @Html.LabelFor(model => model.YieldVariance.LossWeight)
+                                </th>
+                                <th>
+                                    @Html.LabelFor(model => model.YieldVariance.Rate)
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <label id="InvestWeight">@Html.DisplayFor(model => model.YieldVariance.InvestWeight)</label>
+                                </td>
+                                <td>
+                                    <label id="ProductWeight">@Html.DisplayFor(model => model.YieldVariance.ProductWeight)</label>
+                                </td>
+                                <td>
+                                    <label id="Production_Loss">@Html.DisplayFor(model => model.YieldVariance.LossWeight)</label>
+                                </td>
+                                <td>
+                                    <label id="Rate">@Html.DisplayFor(model => model.YieldVariance.Rate)</label>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    @Html.HiddenFor(model => model.CHP_PROCESS_T.Loss, new { id = "Loss" })
+                    <button class="btn btn-primary" type="button" id="BtnCalculate">計算</button>
                 </div>
             </div>
-
-
             <div class="box-footer">
-
                 <div class="row col-md-12 col-lg-12 col-sm-12" id="User">
                     <div>
-
                         <button class="btn btn-danger" type="button" id="BtnSave">完工存檔</button>
                     </div>
-
                 </div>
             </div>
-
         </div>
     </div>
 
