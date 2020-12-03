@@ -2,9 +2,8 @@
 @using ReportViewerForMvc;
 
 <div>
-    @if (ViewBag.ReportViewer != null)
+    @if (ViewBag.ReportViewer != null && ViewBag.Style != null)
     {
-        @Html.ReportViewer(ViewBag.ReportViewer as Microsoft.Reporting.WebForms.ReportViewer
-        , new { scrolling = "Yes", width = "100%", height = "100%", style = "border:none;" })
+        @Html.ReportViewer(ViewBag.ReportViewer as Microsoft.Reporting.WebForms.ReportViewer, ViewBag.Style as Object)
     }
 </div>

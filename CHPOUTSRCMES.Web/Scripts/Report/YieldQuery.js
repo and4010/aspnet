@@ -26,7 +26,10 @@ $(document).ready(function () {
                 cuttingDateFrom: getCuttingDateFrom(),
                 cuttingDateTo: getCuttingDateTo(),
                 batchNo: batchNo,
-                machineNum: getMachineNum()
+                machineNum: getMachineNum(),
+                itemNumber: getItemNumber(),
+                barcode: getBarcode(),
+                subinventory: getSubinventory()
             },
             success: function (model) {
                 $("#ReportPartial").html(model);
@@ -66,6 +69,18 @@ function getBatchNo() {
 
 function getMachineNum() {
     return $("#MachineNum").val();
+}
+
+function getItemNumber() {
+    return $("#ItemNumber").val();
+}
+
+function getBarcode() {
+    return $("#Barcode").val();
+}
+
+function getSubinventory() {
+    return $("#Subinventory").val();
 }
 
 function initQueryTable() {

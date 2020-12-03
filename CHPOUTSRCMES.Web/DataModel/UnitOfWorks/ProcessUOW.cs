@@ -2258,7 +2258,7 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
         }
 
         /// <summary>
-        /// 計算損號
+        /// 計算損耗
         /// </summary>
         /// <param name="OspDetailInId"></param>
         /// <param name="OspDetailOutId"></param>
@@ -2272,10 +2272,17 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
                 var DetailIn = OspDetailInTRepository.Get(x => x.OspDetailInId == OspDetailInId).SingleOrDefault();
                 var DetailOut = OspDetailOutTRepository.Get(x => x.OspDetailOutId == OspDetailOutId).SingleOrDefault();
                 var Cotangent = OspCotangenTRepository.Get(x => x.OspDetailOutId == OspDetailOutId).ToList();
-                var PickOutWeight = 0M;
+                var PickOutWeight = 0M; //產出主單位重量
+                var PickOutSecondaryQty = 0M; //產出次單位數量
                 var RemainWeight = 0M;
                 var PickInWeight = 0M;
-                var CotangetnWeight = 0M;
+                var CotangetnWeight = 0M; //餘切主單位重量
+                var CotangetnSecondaryQty = 0M; //餘切次單位數量
+                var InvestSecondaryQty = 0M; //投入次單位數量
+                string CotangentPrimaryUom = null;
+                string CotangentSecondaryUom = null;
+                string CotangentItemNumber = null;
+
                 for (int i = 0; i < PickOut.Count; i++)
                 {
                     var status = PickOut[i].Status;
@@ -2284,9 +2291,13 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
                         return new ResultDataModel<YieldVariance>(false, "產出請先入庫", null);
                     }
                     PickOutWeight += +PickOut[i].PrimaryQuantity;
+                    PickOutSecondaryQty += PickOut[i].SecondaryQuantity ?? 0;
                 }
                 if (Cotangent != null && Cotangent.Count > 0)
                 {
+                    CotangentItemNumber = Cotangent[0].InventoryItemNumber;
+                    CotangentPrimaryUom = Cotangent[0].PrimaryUom;
+                    CotangentSecondaryUom = Cotangent[0].SecondaryUom;
                     for (int i = 0; i < Cotangent.Count; i++)
                     {
                         if (Cotangent[i].SecondaryQuantity == 0M || Cotangent[i].SecondaryQuantity == null)
@@ -2299,18 +2310,28 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
                             return new ResultDataModel<YieldVariance>(false, "餘切請先入庫", null);
                         }
                         CotangetnWeight += Cotangent[i].PrimaryQuantity;
+                        CotangetnSecondaryQty += Cotangent[i].SecondaryQuantity ?? 0;
                     }
                 }
-                //產出重量：訂單+餘切重量
+                //總產出重量：產出重量+餘切重量
                 var ProductWeight = PickOutWeight + CotangetnWeight;
 
                 for (int i = 0; i < PickIn.Count; i++)
                 {
                     RemainWeight += PickIn[i].RemainingQuantity ?? 0;
                     PickInWeight += PickIn[i].PrimaryQuantity;
+                    InvestSecondaryQty += PickIn[i].SecondaryQuantity ?? 0;
                 }
                 //投入重量：領料量 - 餘捲
                 var investWeight = PickInWeight - RemainWeight;
+
+                //var investItem = itemsTRepository.GetAll().AsNoTracking().FirstOrDefault(x => x.InventoryItemId == DetailIn.InventoryItemId);
+                //if (investItem == null) { throw new Exception("找不到投入料號資料"); }
+
+                //if (investItem.CatalogElemVal070 == ItemCategory.)
+                //var investUomConversionResult = uomConversion.Convert(DetailIn.InventoryItemId, investWeight, DetailIn.PrimaryUom, DetailIn.SecondaryUom);
+                //if (!investUomConversionResult.Success) throw new Exception(investUomConversionResult.Msg);
+
                 //var Totle = Math.Round(investWeight - ProductWeight, 2);
                 //var rate = Math.Round((ProductWeight / investWeight * 100), 2);
                 var Totle = investWeight - ProductWeight;
@@ -2320,10 +2341,26 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
                 {
                     OSP_YIELD_VARIANCE_T oSP_YIELD_VARIANCE_T = new OSP_YIELD_VARIANCE_T();
                     oSP_YIELD_VARIANCE_T.OspHeaderId = DetailOut.OspHeaderId;
+                    oSP_YIELD_VARIANCE_T.DetailInItemNumber = DetailIn.InventoryItemNumber;
                     oSP_YIELD_VARIANCE_T.DetailInQuantity = investWeight;
-                    oSP_YIELD_VARIANCE_T.CotangentQuantity = CotangetnWeight;
+                    oSP_YIELD_VARIANCE_T.DetailInSecondaryQuantity = InvestSecondaryQty;
+                    oSP_YIELD_VARIANCE_T.DetailInPrimaryUom = DetailIn.PrimaryUom;
+                    oSP_YIELD_VARIANCE_T.DetailInSecondaryUom = DetailIn.SecondaryUom;
+
+                    oSP_YIELD_VARIANCE_T.DetailOutItemNumber = DetailOut.InventoryItemNumber;
                     oSP_YIELD_VARIANCE_T.DetailOutQuantity = ProductWeight;
-                    oSP_YIELD_VARIANCE_T.PrimaryUom = "KG";
+                    oSP_YIELD_VARIANCE_T.DetailOutPrimaryQuantity = PickOutWeight;
+                    oSP_YIELD_VARIANCE_T.DetailOutSecondaryQuantity = PickOutSecondaryQty;
+                    oSP_YIELD_VARIANCE_T.DetailOutPrimaryUom = DetailOut.PrimaryUom;
+                    oSP_YIELD_VARIANCE_T.DetailOutSecondaryUom = DetailOut.SecondaryUom;
+
+                    oSP_YIELD_VARIANCE_T.CotangentItemNumber = CotangentItemNumber;
+                    oSP_YIELD_VARIANCE_T.CotangentQuantity = CotangetnWeight;
+                    oSP_YIELD_VARIANCE_T.CotangentSecondaryQuantity = CotangetnSecondaryQty;
+                    oSP_YIELD_VARIANCE_T.CotangentPrimaryUom = CotangentPrimaryUom;
+                    oSP_YIELD_VARIANCE_T.CotangentSecondaryUom = CotangentSecondaryUom;
+
+                    //oSP_YIELD_VARIANCE_T.PrimaryUom = "KG";
                     oSP_YIELD_VARIANCE_T.LossWeight = Totle;
                     oSP_YIELD_VARIANCE_T.Rate = rate;
                     oSP_YIELD_VARIANCE_T.CreatedBy = UserId;
@@ -2344,8 +2381,24 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
                 else
                 {
                     loss.DetailInQuantity = investWeight;
-                    loss.CotangentQuantity = CotangetnWeight;
+                    loss.DetailInItemNumber = DetailIn.InventoryItemNumber;
+                    loss.DetailInSecondaryQuantity = InvestSecondaryQty;
+                    loss.DetailInPrimaryUom = DetailIn.PrimaryUom;
+                    loss.DetailInSecondaryUom = DetailIn.SecondaryUom;
+
+                    loss.DetailOutItemNumber = DetailOut.InventoryItemNumber;
                     loss.DetailOutQuantity = ProductWeight;
+                    loss.DetailOutPrimaryQuantity = PickOutWeight;
+                    loss.DetailOutSecondaryQuantity = PickOutSecondaryQty;
+                    loss.DetailOutPrimaryUom = DetailOut.PrimaryUom;
+                    loss.DetailOutSecondaryUom = DetailOut.SecondaryUom;
+
+                    loss.CotangentItemNumber = CotangentItemNumber;
+                    loss.CotangentQuantity = CotangetnWeight;
+                    loss.CotangentSecondaryQuantity = CotangetnSecondaryQty;
+                    loss.CotangentPrimaryUom = CotangentPrimaryUom;
+                    loss.CotangentSecondaryUom = CotangentSecondaryUom;
+
                     loss.LossWeight = Totle;
                     loss.Rate = rate;
                     loss.LastUpdateBy = UserId;
@@ -2393,7 +2446,6 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
 [OSP_YIELD_VARIANCE_ID] as OspYieldVarianceId,
 [OSP_HEADER_ID] as OspHeaderId,
 ROUND([LOSS_WEIGHT], 5) as LossWeight,
-[PRIMARY_UOM],
 ROUND([RATE], 2) as Rate,
 ROUND([DETAIL_IN_QUANTITY], 5) as InvestWeight,
 ROUND([DETAIL_OUT_QUANTITY], 5) as ProductWeight
@@ -3105,17 +3157,65 @@ Delete OSP_COTANGENT_T WHERE OSP_HEADER_ID = @OSP_HEADER_ID
         {
             StringBuilder query = new StringBuilder();
             query.Append(
-@"INSERT INTO [OSP_YIELD_VARIANCE_HT]
-([OSP_YIELD_VARIANCE_ID],[OSP_HEADER_ID],[DETAIL_IN_QUANTITY],[COTANGENT_QUANTITY],[DETAIL_OUT_QUANTITY],
-[LOSS_WEIGHT],[PRIMARY_UOM],[RATE],[CREATED_BY],[CREATED_USER_NAME],
-[CREATION_DATE],[LAST_UPDATE_BY],[LAST_UPDATE_DATE],[LAST_UPDATE_USER_NAME])
+@"
+INSERT INTO [OSP_YIELD_VARIANCE_HT]
+([OSP_YIELD_VARIANCE_ID]
+,[OSP_HEADER_ID]
+      ,[DETAIL_IN_QUANTITY]
+      ,[COTANGENT_QUANTITY]
+      ,[DETAIL_OUT_QUANTITY]
+      ,[LOSS_WEIGHT]
+      ,[RATE]
+      ,[CREATED_BY]
+      ,[CREATED_USER_NAME]
+      ,[CREATION_DATE]
+      ,[LAST_UPDATE_BY]
+      ,[LAST_UPDATE_DATE]
+      ,[LAST_UPDATE_USER_NAME]
+      ,[DETAIL_IN_SECONDARY_QUANTITY]
+      ,[DETAIL_IN_PRIMARY_UOM]
+      ,[DETAIL_IN_SECONDARY_UOM]
+      ,[DETAIL_OUT_PRIMARY_QUANTITY]
+      ,[DETAIL_OUT_SECONDARY_QUANTITY]
+      ,[DETAIL_OUT_PRIMARY_UOM]
+      ,[DETAIL_OUT_SECONDARY_UOM]
+      ,[COTANGENT_SECONDARY_QUANTITY]
+      ,[COTANGENT_PRIMARY_UOM]
+      ,[COTANGENT_SECONDARY_UOM]
+      ,[DETAIL_IN_ITEM_NUMBER]
+      ,[DETAIL_OUT_ITEM_NUMBER]
+      ,[COTANGENT_ITEM_NUMBER])
 SELECT
-[OSP_YIELD_VARIANCE_ID],[OSP_HEADER_ID],[DETAIL_IN_QUANTITY],[COTANGENT_QUANTITY],[DETAIL_OUT_QUANTITY],
-[LOSS_WEIGHT],[PRIMARY_UOM],[RATE],[CREATED_BY],[CREATED_USER_NAME],
-[CREATION_DATE],[LAST_UPDATE_BY],[LAST_UPDATE_DATE],[LAST_UPDATE_USER_NAME]
+[OSP_YIELD_VARIANCE_ID]
+,[OSP_HEADER_ID]
+      ,[DETAIL_IN_QUANTITY]
+      ,[COTANGENT_QUANTITY]
+      ,[DETAIL_OUT_QUANTITY]
+      ,[LOSS_WEIGHT]
+      ,[RATE]
+      ,[CREATED_BY]
+      ,[CREATED_USER_NAME]
+      ,[CREATION_DATE]
+      ,[LAST_UPDATE_BY]
+      ,[LAST_UPDATE_DATE]
+      ,[LAST_UPDATE_USER_NAME]
+      ,[DETAIL_IN_SECONDARY_QUANTITY]
+      ,[DETAIL_IN_PRIMARY_UOM]
+      ,[DETAIL_IN_SECONDARY_UOM]
+      ,[DETAIL_OUT_PRIMARY_QUANTITY]
+      ,[DETAIL_OUT_SECONDARY_QUANTITY]
+      ,[DETAIL_OUT_PRIMARY_UOM]
+      ,[DETAIL_OUT_SECONDARY_UOM]
+      ,[COTANGENT_SECONDARY_QUANTITY]
+      ,[COTANGENT_PRIMARY_UOM]
+      ,[COTANGENT_SECONDARY_UOM]
+      ,[DETAIL_IN_ITEM_NUMBER]
+      ,[DETAIL_OUT_ITEM_NUMBER]
+      ,[COTANGENT_ITEM_NUMBER]
 FROM [OSP_YIELD_VARIANCE_T]
 WHERE OSP_HEADER_ID = @OSP_HEADER_ID
-Delete OSP_YIELD_VARIANCE_T WHERE OSP_HEADER_ID = @OSP_HEADER_ID");
+Delete OSP_YIELD_VARIANCE_T WHERE OSP_HEADER_ID = @OSP_HEADER_ID
+");
             Context.Database.ExecuteSqlCommand(query.ToString(), new SqlParameter("@OSP_HEADER_ID", OSP_HEADER_ID));
         }
 
@@ -3356,13 +3456,57 @@ WHERE C.OSP_HEADER_ID = @OSP_HEADER_ID"
             return Context.Database.ExecuteSqlCommand(
 @"
 INSERT INTO [OSP_YIELD_VARIANCE_T]
-([OSP_HEADER_ID],[DETAIL_IN_QUANTITY],[COTANGENT_QUANTITY],[DETAIL_OUT_QUANTITY],
-[LOSS_WEIGHT],[PRIMARY_UOM],[RATE],[CREATED_BY],[CREATED_USER_NAME],
-[CREATION_DATE],[LAST_UPDATE_BY],[LAST_UPDATE_DATE],[LAST_UPDATE_USER_NAME])
+([OSP_HEADER_ID]
+      ,[DETAIL_IN_QUANTITY]
+      ,[COTANGENT_QUANTITY]
+      ,[DETAIL_OUT_QUANTITY]
+      ,[LOSS_WEIGHT]
+      ,[RATE]
+      ,[CREATED_BY]
+      ,[CREATED_USER_NAME]
+      ,[CREATION_DATE]
+      ,[LAST_UPDATE_BY]
+      ,[LAST_UPDATE_DATE]
+      ,[LAST_UPDATE_USER_NAME]
+      ,[DETAIL_IN_SECONDARY_QUANTITY]
+      ,[DETAIL_IN_PRIMARY_UOM]
+      ,[DETAIL_IN_SECONDARY_UOM]
+      ,[DETAIL_OUT_PRIMARY_QUANTITY]
+      ,[DETAIL_OUT_SECONDARY_QUANTITY]
+      ,[DETAIL_OUT_PRIMARY_UOM]
+      ,[DETAIL_OUT_SECONDARY_UOM]
+      ,[COTANGENT_SECONDARY_QUANTITY]
+      ,[COTANGENT_PRIMARY_UOM]
+      ,[COTANGENT_SECONDARY_UOM]
+      ,[DETAIL_IN_ITEM_NUMBER]
+      ,[DETAIL_OUT_ITEM_NUMBER]
+      ,[COTANGENT_ITEM_NUMBER])
 SELECT
-M.OSP_HEADER_ID,[DETAIL_IN_QUANTITY],[COTANGENT_QUANTITY],[DETAIL_OUT_QUANTITY],
-[LOSS_WEIGHT],[PRIMARY_UOM],[RATE],[CREATED_BY],[CREATED_USER_NAME],
-[CREATION_DATE],[LAST_UPDATE_BY],[LAST_UPDATE_DATE],[LAST_UPDATE_USER_NAME]
+M.OSP_HEADER_ID
+,[DETAIL_IN_QUANTITY]
+      ,[COTANGENT_QUANTITY]
+      ,[DETAIL_OUT_QUANTITY]
+      ,[LOSS_WEIGHT]
+      ,[RATE]
+      ,[CREATED_BY]
+      ,[CREATED_USER_NAME]
+      ,[CREATION_DATE]
+      ,[LAST_UPDATE_BY]
+      ,[LAST_UPDATE_DATE]
+      ,[LAST_UPDATE_USER_NAME]
+      ,[DETAIL_IN_SECONDARY_QUANTITY]
+      ,[DETAIL_IN_PRIMARY_UOM]
+      ,[DETAIL_IN_SECONDARY_UOM]
+      ,[DETAIL_OUT_PRIMARY_QUANTITY]
+      ,[DETAIL_OUT_SECONDARY_QUANTITY]
+      ,[DETAIL_OUT_PRIMARY_UOM]
+      ,[DETAIL_OUT_SECONDARY_UOM]
+      ,[COTANGENT_SECONDARY_QUANTITY]
+      ,[COTANGENT_PRIMARY_UOM]
+      ,[COTANGENT_SECONDARY_UOM]
+      ,[DETAIL_IN_ITEM_NUMBER]
+      ,[DETAIL_OUT_ITEM_NUMBER]
+      ,[COTANGENT_ITEM_NUMBER]
 FROM [OSP_YIELD_VARIANCE_HT] Y
 JOIN OSP_HEADER_MOD_T M ON M.ORG_OSP_HEADER_ID = Y.OSP_HEADER_ID
 WHERE Y.OSP_HEADER_ID = @OSP_HEADER_ID
@@ -4191,7 +4335,7 @@ AND OPO.OSP_PICKED_OUT_ID = @OSP_PICKED_OUT_ID
         }
 
        
-        public ResultDataModel<ReportDataSource> GetOspYieldReportDataSource(string cuttingDateFrom, string cuttingDateTo, string batchNo, string machineNum, string userId)
+        public ResultDataModel<ReportDataSource> GetOspYieldReportDataSource(string cuttingDateFrom, string cuttingDateTo, string batchNo, string machineNum, string itemNumber, string barcode, string subinventory, string userId)
         {
 
             using (SqlConnection connection = new SqlConnection(WebConfigurationManager.ConnectionStrings["MesContext"].ConnectionString.ToString()))
@@ -4199,12 +4343,12 @@ AND OPO.OSP_PICKED_OUT_ID = @OSP_PICKED_OUT_ID
                 try
                 {
                     string cmd = @"EXEC dbo.SP_OspYieldReport 
-@cuttingDateFrom, @cuttingDateTo, @batchNo, @machineNum, @dateFormStatus, @dateToStatus, @code, @message, @user
+@cuttingDateFrom, @cuttingDateTo, @batchNo, @machineNum, @itemNumber, @barcode, @subinventory, @dateFormStatus, @dateToStatus, @code, @message, @user
 ";
                     connection.Open();
                     SqlCommand command = new SqlCommand(cmd, connection);
                     DataSet dataset = new DataSet("OSP");
-                    command.Parameters.AddRange(GetOspYieldSqlParameterList(cuttingDateFrom, cuttingDateTo, batchNo, machineNum, userId).ToArray());
+                    command.Parameters.AddRange(GetOspYieldSqlParameterList(cuttingDateFrom, cuttingDateTo, batchNo, machineNum, itemNumber, barcode, subinventory, userId).ToArray());
                     SqlDataAdapter salesOrderAdapter = new SqlDataAdapter(command);
                     salesOrderAdapter.Fill(dataset, "DataSet1");
                     ReportDataSource dataSource = new ReportDataSource();
@@ -4224,7 +4368,7 @@ AND OPO.OSP_PICKED_OUT_ID = @OSP_PICKED_OUT_ID
 
         }
 
-        public List<SqlParameter> GetOspYieldSqlParameterList(string cuttingDateFrom, string cuttingDateTo, string batchNo, string machineNum, string userId)
+        public List<SqlParameter> GetOspYieldSqlParameterList(string cuttingDateFrom, string cuttingDateTo, string batchNo, string machineNum, string itemNumber, string barcode, string subinventory, string userId)
         {
             DateTime dateFrom = new DateTime();
             DateTime dateTo = new DateTime();
@@ -4249,8 +4393,9 @@ AND OPO.OSP_PICKED_OUT_ID = @OSP_PICKED_OUT_ID
             sqlParameterList.Add(SqlParamHelper.GetVarChar("@cuttingDateTo", cuttingDateTo, 30));
             sqlParameterList.Add(SqlParamHelper.GetVarChar("@batchNo", batchNo, 32));
             sqlParameterList.Add(SqlParamHelper.GetVarChar("@machineNum", machineNum, 30));
-            //sqlParameterList.Add(new SqlParameter("@dateFormStatus", dateFormStatus));
-            //sqlParameterList.Add(new SqlParameter("@dateToStatus", dateToStatus));
+            sqlParameterList.Add(SqlParamHelper.R.ItemNo("@itemNumber", itemNumber));
+            sqlParameterList.Add(SqlParamHelper.R.Barcode("@barcode", barcode));
+            sqlParameterList.Add(SqlParamHelper.R.SubinventoryCode("@subinventory", subinventory));
             sqlParameterList.Add(SqlParamHelper.GetVarChar("@dateFormStatus", sDateFormStatus, 1));
             sqlParameterList.Add(SqlParamHelper.GetVarChar("@dateToStatus", sDateToStatus, 1));
             sqlParameterList.Add(SqlParamHelper.GetInt("@code", 0, System.Data.ParameterDirection.Output));
@@ -4260,7 +4405,7 @@ AND OPO.OSP_PICKED_OUT_ID = @OSP_PICKED_OUT_ID
             return sqlParameterList;
         }
 
-        public List<ReportParameter> GetOspYieldReportParameterList(string cuttingDateFrom, string cuttingDateTo, string batchNo, string machineNum, string userId)
+        public List<ReportParameter> GetOspYieldReportParameterList(string cuttingDateFrom, string cuttingDateTo, string batchNo, string machineNum, string itemNumber, string barcode, string subinventory, string userId)
         {
             DateTime dateFrom = new DateTime();
             DateTime dateTo = new DateTime();
@@ -4285,8 +4430,9 @@ AND OPO.OSP_PICKED_OUT_ID = @OSP_PICKED_OUT_ID
             reportParameterList.Add(new ReportParameter("cuttingDateTo", cuttingDateTo, false));
             reportParameterList.Add(new ReportParameter("batchNo", batchNo, false));
             reportParameterList.Add(new ReportParameter("machineNum", machineNum, false));
-            //reportParameterList.Add(new ReportParameter("@dateFormStatus", dateFormStatus.ToString(), false));
-            //reportParameterList.Add(new ReportParameter("@dateToStatus", dateToStatus.ToString(), false));
+            reportParameterList.Add(new ReportParameter("itemNumber", itemNumber, false));
+            reportParameterList.Add(new ReportParameter("barcode", barcode, false));
+            reportParameterList.Add(new ReportParameter("subinventory", subinventory, false));
             reportParameterList.Add(new ReportParameter("dateFormStatus", sDateFormStatus, false));
             reportParameterList.Add(new ReportParameter("dateToStatus", sDateToStatus, false));
             reportParameterList.Add(new ReportParameter("code", "0", false));
@@ -4328,16 +4474,31 @@ AND OPO.OSP_PICKED_OUT_ID = @OSP_PICKED_OUT_ID
             return new ResultModel(true, "可以排單");
         }
 
-        public ResultDataModel<int> GetOspPendingCount()
+        public ResultDataModel<int> GetOspPendingCount(string userId)
         {
             var resultDataModel = new ResultDataModel<int>(false, "", 0);
             try
             {
-                resultDataModel.Data = OspHeaderTRepository.GetAll()
+                var subinventoryList = GetSubinventoryListForUser(userId);
+                if (subinventoryList == null || subinventoryList.Count == 0)
+                {
+                    throw new Exception("找不到使用者倉庫");
+                }
+
+                resultDataModel.Data = OspHeaderTRepository.GetAll().AsNoTracking().Join(
+                    OspDetailInTRepository.GetAll().AsNoTracking(),
+                    h => new { h.OspHeaderId },
+                    i => new { i.OspHeaderId },
+                    (h, i) => new
+                    {
+                        Status = h.Status,
+                        Subinventory = i.Subinventory
+                    })
                     .Where(x => x.Status != ProcessStatusCode.Modified
                         && x.Status != ProcessStatusCode.Canceled
                         && x.Status != ProcessStatusCode.CompletedBatch
-                        && x.Status != ProcessStatusCode.CloseBatch)
+                        && x.Status != ProcessStatusCode.CloseBatch
+                        && subinventoryList.Contains(x.Subinventory))
                     .Count();
                 resultDataModel.Code = ResultModel.CODE_SUCCESS;
                 resultDataModel.Msg = "";

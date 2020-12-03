@@ -28,7 +28,7 @@ namespace CHPOUTSRCMES.Web.Models.Information
         public string Password { get; set; }
 
         [Required(ErrorMessage = "需輸入姓名")]
-        [StringLength(6, ErrorMessage = "只能輸入{1}")]
+        [StringLength(10, ErrorMessage = "只能輸入{1}")]
         public string Name { get; set; }
 
 

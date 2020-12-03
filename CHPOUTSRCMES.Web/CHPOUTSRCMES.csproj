@@ -432,6 +432,22 @@
     <Compile Include="Migrations\202011181014520_lotNumber_allow_null.Designer.cs">
       <DependentUpon>202011181014520_lotNumber_allow_null.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202012010325355_osp_yield_add.cs" />
+    <Compile Include="Migrations\202012010325355_osp_yield_add.Designer.cs">
+      <DependentUpon>202012010325355_osp_yield_add.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202012010337107_osp_yield_ht_add.cs" />
+    <Compile Include="Migrations\202012010337107_osp_yield_ht_add.Designer.cs">
+      <DependentUpon>202012010337107_osp_yield_ht_add.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202012010604289_osp_yield_add_item_number.cs" />
+    <Compile Include="Migrations\202012010604289_osp_yield_add_item_number.Designer.cs">
+      <DependentUpon>202012010604289_osp_yield_add_item_number.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202012020542043_osp_yield_ht_add_item_number.cs" />
+    <Compile Include="Migrations\202012020542043_osp_yield_ht_add_item_number.Designer.cs">
+      <DependentUpon>202012020542043_osp_yield_ht_add_item_number.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Delivery\FlatEditBarcodeDT.cs" />
     <Compile Include="Models\Delivery\FlatEditDT.cs" />
@@ -2244,6 +2260,18 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202011181014520_lotNumber_allow_null.resx">
       <DependentUpon>202011181014520_lotNumber_allow_null.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202012010325355_osp_yield_add.resx">
+      <DependentUpon>202012010325355_osp_yield_add.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202012010337107_osp_yield_ht_add.resx">
+      <DependentUpon>202012010337107_osp_yield_ht_add.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202012010604289_osp_yield_add_item_number.resx">
+      <DependentUpon>202012010604289_osp_yield_add_item_number.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202012020542043_osp_yield_ht_add_item_number.resx">
+      <DependentUpon>202012020542043_osp_yield_ht_add_item_number.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

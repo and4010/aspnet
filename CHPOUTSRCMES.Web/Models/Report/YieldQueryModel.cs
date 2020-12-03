@@ -210,7 +210,7 @@ JOIN USER_SUBINVENTORY_T us ON us.ORGANIZATION_ID = h.ORGANIZATION_ID AND us.SUB
         }
 
 
-        public ResultDataModel<ReportViewer> LocalOspYieldReportViewer(ProcessUOW uow, string cuttingDateFrom, string cuttingDateTo, string batchNo, string machineNum, string userId)
+        public ResultDataModel<ReportViewer> LocalOspYieldReportViewer(ProcessUOW uow, string cuttingDateFrom, string cuttingDateTo, string batchNo, string machineNum, string itemNumber, string barcode, string subinventory, string userId)
         {
             try
             {
@@ -225,12 +225,12 @@ JOIN USER_SUBINVENTORY_T us ON us.ORGANIZATION_ID = h.ORGANIZATION_ID AND us.SUB
                 LocalReport localReport = report.LocalReport;
                 localReport.ReportPath = "Report/OspYield.rdlc";
 
-                var reportDataSourceResult = uow.GetOspYieldReportDataSource(cuttingDateFrom, cuttingDateTo, batchNo, machineNum, userId);
+                var reportDataSourceResult = uow.GetOspYieldReportDataSource(cuttingDateFrom, cuttingDateTo, batchNo, machineNum, itemNumber, barcode, subinventory, userId);
                 if (!reportDataSourceResult.Success) return new ResultDataModel<ReportViewer>(false, reportDataSourceResult.Msg, null);
                 localReport.DataSources.Add(reportDataSourceResult.Data);
 
                 // Set the report parameters for the report  
-                localReport.SetParameters(uow.GetOspYieldReportParameterList(cuttingDateFrom, cuttingDateTo, batchNo, machineNum, userId));
+                localReport.SetParameters(uow.GetOspYieldReportParameterList(cuttingDateFrom, cuttingDateTo, batchNo, machineNum, itemNumber, barcode, subinventory, userId));
 
                 report.LocalReport.Refresh();
 
@@ -244,7 +244,7 @@ JOIN USER_SUBINVENTORY_T us ON us.ORGANIZATION_ID = h.ORGANIZATION_ID AND us.SUB
         }
 
 
-        public ResultDataModel<ReportViewer> RemoteOspYieldReportViewer(ProcessUOW uow, string cuttingDateFrom, string cuttingDateTo, string batchNo, string machineNum, string userId)
+        public ResultDataModel<ReportViewer> RemoteOspYieldReportViewer(ProcessUOW uow, string cuttingDateFrom, string cuttingDateTo, string batchNo, string machineNum, string itemNumber, string barcode, string subinventory, string userId)
         {
             try
             {
@@ -259,7 +259,7 @@ JOIN USER_SUBINVENTORY_T us ON us.ORGANIZATION_ID = h.ORGANIZATION_ID AND us.SUB
                 report.BorderStyle = BorderStyle.Solid;
                 report.ServerReport.ReportPath = KeyName + "/OspYield";
                 report.ServerReport.ReportServerUrl = new Uri("http://rs.yfy.com/ReportServer");
-                report.ServerReport.SetParameters(uow.GetOspYieldReportParameterList(cuttingDateFrom, cuttingDateTo, batchNo, machineNum, userId));
+                report.ServerReport.SetParameters(uow.GetOspYieldReportParameterList(cuttingDateFrom, cuttingDateTo, batchNo, machineNum, itemNumber, barcode, subinventory, userId));
                 report.ServerReport.Refresh();
 
                 return new ResultDataModel<ReportViewer>(true, "取得工單得率報表成功", report);

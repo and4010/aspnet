@@ -21,10 +21,15 @@ namespace CHPOUTSRCMES.Web.ViewModels.Report
         [Display(Name = "機台")]
         public string MachineNum { set; get; }
 
+        [Display(Name = "倉庫")]
+        public string Subinventory { set; get; }
+
         public YieldQueryModel Fields { set; get; }
 
         public IEnumerable<SelectListItem> BathNoList { set; get; }
 
         public IEnumerable<SelectListItem> MachineCodeList { set; get; }
+
+        public IEnumerable<SelectListItem> SubinventoryList { set; get; }
     }
 }

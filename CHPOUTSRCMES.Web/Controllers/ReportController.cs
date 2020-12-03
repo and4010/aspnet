@@ -19,12 +19,15 @@ namespace CHPOUTSRCMES.Web.Controllers
         // GET: Report
         public ActionResult Yield()
         {
+            var id = this.User.Identity.GetUserId();
             YieldViewModel yieldViewModel = new YieldViewModel();
             ProcessViewModel processViewModel = new ProcessViewModel();
             //yieldViewModel.BathNoList = processViewModel.GetBatchNo();
             yieldViewModel.MachineCodeList = processViewModel.GetManchine();
+            yieldViewModel.SubinventoryList = processViewModel.GetSubinventory(id, "Y");
             return View(yieldViewModel);
         }
+        
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -36,7 +39,7 @@ namespace CHPOUTSRCMES.Web.Controllers
         }
 
 
-        public ActionResult OspYieldReport(string cuttingDateFrom, string cuttingDateTo, string batchNo, string machineNum)
+        public ActionResult OspYieldReport(string cuttingDateFrom, string cuttingDateTo, string batchNo, string machineNum, string itemNumber, string barcode, string subinventory)
         {
             using (var context = new MesContext())
             {
@@ -44,10 +47,11 @@ namespace CHPOUTSRCMES.Web.Controllers
                 {
                     var userId = User.Identity.GetUserId();
 #if DEBUG
-                    var result = yieldQueryModel.LocalOspYieldReportViewer(uow, cuttingDateFrom, cuttingDateTo, batchNo, machineNum, userId);
+                    var result = yieldQueryModel.LocalOspYieldReportViewer(uow, cuttingDateFrom, cuttingDateTo, batchNo, machineNum, itemNumber, barcode, subinventory, userId);
                     if (result.Success)
                     {
                         ViewBag.ReportViewer = result.Data;
+                        ViewBag.Style = new { scrolling = "Yes", width = "125%", height = "100%", style = "border:none;" };
                         return PartialView ("_ReportPartial");
     }
                     else
@@ -58,10 +62,11 @@ namespace CHPOUTSRCMES.Web.Controllers
 
 #else
 
-                    var result = yieldQueryModel.RemoteOspYieldReportViewer(uow, cuttingDateFrom, cuttingDateTo, batchNo, machineNum, userId);
+                    var result = yieldQueryModel.RemoteOspYieldReportViewer(uow, cuttingDateFrom, cuttingDateTo, batchNo, machineNum, itemNumber, barcode, subinventory, userId);
                     if (result.Success)
                     {
                         ViewBag.ReportViewer = result.Data;
+                        ViewBag.Style = new { scrolling = "Yes", width = "120%", height = "100%", style = "border:none;" };
                         return PartialView("_ReportPartial");
                     }
                     else

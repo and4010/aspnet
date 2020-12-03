@@ -34,6 +34,7 @@ namespace CHPOUTSRCMES.Web.Controllers
 
         public ActionResult Index()
         {
+            var id = this.User.Identity.GetUserId();
             using var mesContext = new MesContext();
             using var processUow = new ProcessUOW(mesContext);
             using var purchaseUow = new PurchaseUOW(mesContext);
@@ -42,7 +43,7 @@ namespace CHPOUTSRCMES.Web.Controllers
             HomeViewModel viewModel = new HomeViewModel();
             var model1 = purchaseUow.GetCtrPendingCount();
             var model2 = deliveryUow.GetDlvPendingCount();
-            var model3 = processUow.GetOspPendingCount();
+            var model3 = processUow.GetOspPendingCount(id);
             viewModel.CtrPendingCount = model1.Data;
             viewModel.DlvPendingCount = model2.Data;
             viewModel.OspPendingCount = model3.Data;
@@ -586,17 +587,17 @@ namespace CHPOUTSRCMES.Web.Controllers
             return View("Report");
         }
 
-        [HttpPost]
-        public JsonResult GetOspCount()
-        {
+        //[HttpPost]
+        //public JsonResult GetOspCount()
+        //{
             
-            using var mesContext = new MesContext();
-            using var processUow = new ProcessUOW(mesContext);
+        //    using var mesContext = new MesContext();
+        //    using var processUow = new ProcessUOW(mesContext);
 
-            var model = processUow.GetOspPendingCount();
+        //    var model = processUow.GetOspPendingCount();
 
-            return Json(model, JsonRequestBehavior.AllowGet);
-        }
+        //    return Json(model, JsonRequestBehavior.AllowGet);
+        //}
 
         [HttpPost]
         public JsonResult GetDlvCount()
