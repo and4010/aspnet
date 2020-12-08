@@ -129,9 +129,9 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
                 case 4:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.OSP_BATCH_NO) : models.OrderBy(x => x.OSP_BATCH_NO);
                 case 5:
-                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.TMP_ITEM_NUMBER) : models.OrderBy(x => x.TMP_ITEM_NUMBER);
-                case 6:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.ITEM_NUMBER) : models.OrderBy(x => x.ITEM_NUMBER);
+                case 6:
+                    return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.TMP_ITEM_NUMBER) : models.OrderBy(x => x.TMP_ITEM_NUMBER);
                 case 7:
                     return string.Compare(dir, "DESC", true) == 0 ? models.OrderByDescending(x => x.REAM_WEIGHT) : models.OrderBy(x => x.REAM_WEIGHT);
                 case 8:
@@ -174,9 +174,9 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
                 case 4:
                     return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.OSP_BATCH_NO) : models.ThenBy(x => x.OSP_BATCH_NO);
                 case 5:
-                    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.TMP_ITEM_NUMBER) : models.ThenBy(x => x.TMP_ITEM_NUMBER);
-                case 6:
                     return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.ITEM_NUMBER) : models.ThenBy(x => x.ITEM_NUMBER);
+                case 6:
+                    return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.TMP_ITEM_NUMBER) : models.ThenBy(x => x.TMP_ITEM_NUMBER);
                 case 7:
                     return string.Compare(dir, "DESC", true) == 0 ? models.ThenByDescending(x => x.REAM_WEIGHT) : models.ThenBy(x => x.REAM_WEIGHT);
                 case 8:

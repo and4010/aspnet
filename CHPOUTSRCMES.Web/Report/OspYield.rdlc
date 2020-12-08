@@ -245,7 +245,7 @@
             <rd:DefaultName>ReportTitle</rd:DefaultName>
             <Top>0mm</Top>
             <Height>12.7mm</Height>
-            <Width>475.15833mm</Width>
+            <Width>471.95417mm</Width>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -264,7 +264,7 @@
                   <Width>12.56458mm</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>22.49579mm</Width>
+                  <Width>29.5292mm</Width>
                 </TablixColumn>
                 <TablixColumn>
                   <Width>9.125mm</Width>
@@ -318,7 +318,7 @@
                   <Width>17.0625mm</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>77.65208mm</Width>
+                  <Width>67.15409mm</Width>
                 </TablixColumn>
               </TablixColumns>
               <TablixRows>
@@ -1148,7 +1148,6 @@
                             <PaddingBottom>2pt</PaddingBottom>
                           </Style>
                         </Textbox>
-                        <rd:Selected>true</rd:Selected>
                       </CellContents>
                     </TablixCell>
                     <TablixCell>
@@ -1226,7 +1225,7 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Fields!DiPriQty.Value</Value>
+                                  <Value>=iif(Fields!DiPriQty.Value&gt;0,Fields!DiPriQty.Value,"")</Value>
                                   <Style>
                                     <FontFamily>Arial</FontFamily>
                                     <Format>f2</Format>
@@ -1332,7 +1331,7 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Fields!DoSecQty.Value</Value>
+                                  <Value>=iif(Fields!DoSecQty.Value&gt;0,Fields!DoSecQty.Value,"")</Value>
                                   <Style>
                                     <FontFamily>Arial</FontFamily>
                                   </Style>
@@ -1402,7 +1401,7 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Fields!DoPriQty.Value</Value>
+                                  <Value>=iif(Fields!DoPriQty.Value&gt;0,Fields!DoPriQty.Value,"")</Value>
                                   <Style>
                                     <FontFamily>Arial</FontFamily>
                                     <Format>f2</Format>
@@ -1508,7 +1507,7 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Fields!CotSecQty.Value</Value>
+                                  <Value>=iif(Fields!CotSecQty.Value&gt;0,Fields!CotSecQty.Value,"")</Value>
                                   <Style>
                                     <FontFamily>Arial</FontFamily>
                                   </Style>
@@ -1578,7 +1577,7 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Fields!CotPriQty.Value</Value>
+                                  <Value>=iif(Fields!CotPriQty.Value&gt;0,Fields!CotPriQty.Value,"")</Value>
                                   <Style>
                                     <FontFamily>Arial</FontFamily>
                                     <Format>f2</Format>
@@ -1740,7 +1739,11 @@
             </TablixColumnHierarchy>
             <TablixRowHierarchy>
               <TablixMembers>
-                <TablixMember />
+                <TablixMember>
+                  <FixedData>true</FixedData>
+                  <KeepWithGroup>After</KeepWithGroup>
+                  <RepeatOnNewPage>true</RepeatOnNewPage>
+                </TablixMember>
                 <TablixMember>
                   <Group Name="詳細資料" />
                 </TablixMember>
@@ -1750,7 +1753,7 @@
             <Top>16.37242mm</Top>
             <Left>0mm</Left>
             <Height>12mm</Height>
-            <Width>475.41875mm</Width>
+            <Width>471.95417mm</Width>
             <ZIndex>1</ZIndex>
             <Style>
               <Border>
@@ -2207,7 +2210,7 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Sum(Fields!DiPriQty.Value)</Value>
+                                  <Value>=iif(Sum(Fields!DiPriQty.Value)&gt;0,Sum(Fields!DiPriQty.Value),"")</Value>
                                   <Style>
                                     <FontFamily>Arial</FontFamily>
                                     <Format>f2</Format>
@@ -2276,7 +2279,7 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Sum(Fields!DoPriQty.Value)</Value>
+                                  <Value>=iif(Sum(Fields!DoPriQty.Value)&gt;0,Sum(Fields!DoPriQty.Value),"")</Value>
                                   <Style>
                                     <FontFamily>Arial</FontFamily>
                                     <Format>f2</Format>
@@ -2347,7 +2350,7 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Sum(Fields!CotPriQty.Value)</Value>
+                                  <Value>=iif(Sum(Fields!CotPriQty.Value)&gt;0,Sum(Fields!CotPriQty.Value),"")</Value>
                                   <Style>
                                     <FontFamily>Arial</FontFamily>
                                     <Format>f2</Format>
@@ -2463,7 +2466,9 @@
                   <TablixMembers>
                     <TablixMember />
                   </TablixMembers>
+                  <FixedData>true</FixedData>
                   <KeepWithGroup>After</KeepWithGroup>
+                  <RepeatOnNewPage>true</RepeatOnNewPage>
                 </TablixMember>
                 <TablixMember>
                   <Group Name="MachineNum">
@@ -2572,29 +2577,19 @@
             </Style>
           </Textbox>
         </ReportItems>
-        <Height>53.85504mm</Height>
+        <Height>51.5703mm</Height>
         <Style>
           <Border>
             <Style>None</Style>
           </Border>
         </Style>
       </Body>
-      <Width>475.41875mm</Width>
+      <Width>47.19542cm</Width>
       <Page>
-        <PageFooter>
-          <Height>11.43mm</Height>
-          <PrintOnFirstPage>true</PrintOnFirstPage>
-          <PrintOnLastPage>true</PrintOnLastPage>
-          <Style>
-            <Border>
-              <Style>None</Style>
-            </Border>
-          </Style>
-        </PageFooter>
-        <PageHeight>29.7cm</PageHeight>
-        <PageWidth>50cm</PageWidth>
-        <LeftMargin>1cm</LeftMargin>
-        <RightMargin>1cm</RightMargin>
+        <PageHeight>21cm</PageHeight>
+        <PageWidth>49cm</PageWidth>
+        <LeftMargin>0.5cm</LeftMargin>
+        <RightMargin>0.5cm</RightMargin>
         <TopMargin>1cm</TopMargin>
         <BottomMargin>1cm</BottomMargin>
         <ColumnSpacing>0.13cm</ColumnSpacing>

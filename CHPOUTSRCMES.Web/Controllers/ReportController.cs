@@ -51,7 +51,7 @@ namespace CHPOUTSRCMES.Web.Controllers
                     if (result.Success)
                     {
                         ViewBag.ReportViewer = result.Data;
-                        ViewBag.Style = new { scrolling = "Yes", width = "125%", height = "100%", style = "border:none;" };
+                        ViewBag.Style = new { scrolling = "Yes", width = "100%", height = "100%", style = "border:none;" };
                         return PartialView ("_ReportPartial");
     }
                     else
@@ -66,7 +66,7 @@ namespace CHPOUTSRCMES.Web.Controllers
                     if (result.Success)
                     {
                         ViewBag.ReportViewer = result.Data;
-                        ViewBag.Style = new { scrolling = "Yes", width = "120%", height = "100%", style = "border:none;" };
+                        ViewBag.Style = new { scrolling = "auto", width = "100%", height = "100%", style = "border:none;" };
                         return PartialView("_ReportPartial");
                     }
                     else

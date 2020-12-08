@@ -2194,14 +2194,22 @@ SELECT [TRANSFER_REASON_ID]
 
         }
 
-        public ResultDataModel<int> GetCtrPendingCount()
+        public ResultDataModel<int> GetCtrPendingCount(string userId)
         {
             var resultDataModel = new ResultDataModel<int>(false, "", 0);
             try
             {
+                var subinventoryList = GetSubinventoryListForUser(userId);
+                if (subinventoryList == null || subinventoryList.Count == 0)
+                {
+                    throw new Exception("找不到使用者倉庫");
+                }
+
                 var code = PurchaseStatusCode.GetCode(PurchaseStatusCode.Pending);
                 resultDataModel.Data = ctrHeaderTRepository.GetAll().AsNoTracking()
-                    .Where(x => x.Status == code).Count();
+                    .Where(x => x.Status == code 
+                    && subinventoryList.Contains(x.Subinventory)
+                    ).Count();
 
                 resultDataModel.Code = ResultModel.CODE_SUCCESS;
                 resultDataModel.Msg = "";

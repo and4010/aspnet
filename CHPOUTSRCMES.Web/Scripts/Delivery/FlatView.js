@@ -28,8 +28,8 @@
          { data: "ORDER_NUMBER", name: "訂單", autoWidth: true },
          { data: "ORDER_SHIP_NUMBER", name: "訂單行號", autoWidth: true },
          { data: "OSP_BATCH_NO", name: "工單號碼", autoWidth: true },
-         { data: "TMP_ITEM_NUMBER", name: "代紙料號", autoWidth: true, className: "dt-body-left" },
          { data: "ITEM_NUMBER", name: "料號", autoWidth: true, className: "dt-body-left" },
+         { data: "TMP_ITEM_NUMBER", name: "代紙料號", autoWidth: true, className: "dt-body-left" },
          { data: "REAM_WEIGHT", name: "令重", autoWidth: true },
          { data: "PACKING_TYPE", name: "包裝方式", autoWidth: true },
 

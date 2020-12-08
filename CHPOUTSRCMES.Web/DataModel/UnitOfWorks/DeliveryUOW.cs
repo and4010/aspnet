@@ -2083,15 +2083,23 @@ WHERE p.BARCODE = @Barcode
 
         }
 
-        public ResultDataModel<int> GetDlvPendingCount()
+        public ResultDataModel<int> GetDlvPendingCount(string userId)
         {
             var resultDataModel = new ResultDataModel<int>(false, "", 0);
             try
             {
+                var subinventoryList = GetSubinventoryListForUser(userId);
+                if (subinventoryList == null || subinventoryList.Count == 0)
+                {
+                    throw new Exception("找不到使用者倉庫");
+                }
+
                 resultDataModel.Data = dlvHeaderTRepository.GetAll()
                 .Where(x => 
                     x.DeliveryStatusCode != DeliveryStatusCode.Canceled
-                    && x.DeliveryStatusCode != DeliveryStatusCode.Shipped)
+                    && x.DeliveryStatusCode != DeliveryStatusCode.Shipped
+                    && subinventoryList.Contains(x.SubinventoryCode)
+                    )
                 .Count();
                 resultDataModel.Code = ResultModel.CODE_SUCCESS;
                 resultDataModel.Msg = "";
@@ -2099,7 +2107,7 @@ WHERE p.BARCODE = @Barcode
             catch (Exception ex)
             {
                 resultDataModel.Code = -1;
-                resultDataModel.Msg = $"取得加工單未完成數量時發生錯誤 EX:{ex.Message}";
+                resultDataModel.Msg = $"取得出貨未完成數量時發生錯誤 EX:{ex.Message}";
             }
 
             return resultDataModel;

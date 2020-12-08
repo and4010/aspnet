@@ -255,8 +255,12 @@ JOIN USER_SUBINVENTORY_T us ON us.ORGANIZATION_ID = h.ORGANIZATION_ID AND us.SUB
                 report.ProcessingMode = ProcessingMode.Remote;
                 report.BackColor = Color.LightGray;
                 report.SizeToReportContent = true;
+                report.AsyncRendering = false;
+                //report.ZoomMode = ZoomMode.PageWidth;
+                //report.Width = Unit.Percentage(100);
+                //report.Height = Unit.Percentage(100);
                 report.BorderWidth = 1;
-                report.BorderStyle = BorderStyle.Solid;
+                report.BorderStyle = BorderStyle.None;
                 report.ServerReport.ReportPath = KeyName + "/OspYield";
                 report.ServerReport.ReportServerUrl = new Uri("http://rs.yfy.com/ReportServer");
                 report.ServerReport.SetParameters(uow.GetOspYieldReportParameterList(cuttingDateFrom, cuttingDateTo, batchNo, machineNum, itemNumber, barcode, subinventory, userId));

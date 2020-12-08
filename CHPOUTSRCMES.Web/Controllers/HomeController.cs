@@ -41,8 +41,8 @@ namespace CHPOUTSRCMES.Web.Controllers
             using var deliveryUow = new DeliveryUOW(mesContext);
 
             HomeViewModel viewModel = new HomeViewModel();
-            var model1 = purchaseUow.GetCtrPendingCount();
-            var model2 = deliveryUow.GetDlvPendingCount();
+            var model1 = purchaseUow.GetCtrPendingCount(id);
+            var model2 = deliveryUow.GetDlvPendingCount(id);
             var model3 = processUow.GetOspPendingCount(id);
             viewModel.CtrPendingCount = model1.Data;
             viewModel.DlvPendingCount = model2.Data;
@@ -599,27 +599,27 @@ namespace CHPOUTSRCMES.Web.Controllers
         //    return Json(model, JsonRequestBehavior.AllowGet);
         //}
 
-        [HttpPost]
-        public JsonResult GetDlvCount()
-        {
-            using var mesContext = new MesContext();
-            using var deliveryUow = new DeliveryUOW(mesContext);
+        //[HttpPost]
+        //public JsonResult GetDlvCount()
+        //{
+        //    using var mesContext = new MesContext();
+        //    using var deliveryUow = new DeliveryUOW(mesContext);
 
-            var model = deliveryUow.GetDlvPendingCount();
+        //    var model = deliveryUow.GetDlvPendingCount();
 
-            return Json(model, JsonRequestBehavior.AllowGet);
-        }
+        //    return Json(model, JsonRequestBehavior.AllowGet);
+        //}
 
-        [HttpPost]
-        public JsonResult GetCtrCount()
-        {
-            using var mesContext = new MesContext();
-            using var purchaseUOW = new PurchaseUOW(mesContext);
+        //[HttpPost]
+        //public JsonResult GetCtrCount()
+        //{
+        //    using var mesContext = new MesContext();
+        //    using var purchaseUOW = new PurchaseUOW(mesContext);
 
-            var model = purchaseUOW.GetCtrPendingCount();
+        //    var model = purchaseUOW.GetCtrPendingCount();
 
-            return Json(model, JsonRequestBehavior.AllowGet);
-        }
+        //    return Json(model, JsonRequestBehavior.AllowGet);
+        //}
 
         //[HttpGet]
         //public ActionResult massPrint(long id)

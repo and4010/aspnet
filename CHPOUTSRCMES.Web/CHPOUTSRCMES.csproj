@@ -1515,6 +1515,7 @@
     <Content Include="Content\photo.css" />
     <Content Include="Content\Purchase\index.css" />
     <Content Include="Content\Purchase\detail.css" />
+    <Content Include="Content\report.css" />
     <Content Include="Content\timeline.css" />
     <Content Include="Content\Yszmpckq.css" />
     <Content Include="Data\SQLScript\002_SP_SaveOspDetailOut.sql" />

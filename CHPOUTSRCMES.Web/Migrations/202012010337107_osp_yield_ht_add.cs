@@ -13,7 +13,7 @@ namespace CHPOUTSRCMES.Web.Migrations
             AddColumn("dbo.OSP_YIELD_VARIANCE_HT", "DETAIL_OUT_PRIMARY_QUANTITY", c => c.Decimal(nullable: false, precision: 30, scale: 10));
             AddColumn("dbo.OSP_YIELD_VARIANCE_HT", "DETAIL_OUT_SECONDARY_QUANTITY", c => c.Decimal(nullable: false, precision: 30, scale: 10));
             AddColumn("dbo.OSP_YIELD_VARIANCE_HT", "DETAIL_OUT_PRIMARY_UOM", c => c.String(maxLength: 3));
-            AddColumn("dbo.OSP_YIELD_VARIANCE_HT", "DETAIL_Out_SECONDARY_UOM", c => c.String(maxLength: 3));
+            AddColumn("dbo.OSP_YIELD_VARIANCE_HT", "DETAIL_OUT_SECONDARY_UOM", c => c.String(maxLength: 3));
             AddColumn("dbo.OSP_YIELD_VARIANCE_HT", "COTANGENT_SECONDARY_QUANTITY", c => c.Decimal(nullable: false, precision: 30, scale: 10));
             AddColumn("dbo.OSP_YIELD_VARIANCE_HT", "COTANGENT_PRIMARY_UOM", c => c.String(maxLength: 3));
             AddColumn("dbo.OSP_YIELD_VARIANCE_HT", "COTANGENT_SECONDARY_UOM", c => c.String(maxLength: 3));
@@ -26,7 +26,7 @@ namespace CHPOUTSRCMES.Web.Migrations
             DropColumn("dbo.OSP_YIELD_VARIANCE_HT", "COTANGENT_SECONDARY_UOM");
             DropColumn("dbo.OSP_YIELD_VARIANCE_HT", "COTANGENT_PRIMARY_UOM");
             DropColumn("dbo.OSP_YIELD_VARIANCE_HT", "COTANGENT_SECONDARY_QUANTITY");
-            DropColumn("dbo.OSP_YIELD_VARIANCE_HT", "DETAIL_Out_SECONDARY_UOM");
+            DropColumn("dbo.OSP_YIELD_VARIANCE_HT", "DETAIL_OUT_SECONDARY_UOM");
             DropColumn("dbo.OSP_YIELD_VARIANCE_HT", "DETAIL_OUT_PRIMARY_UOM");
             DropColumn("dbo.OSP_YIELD_VARIANCE_HT", "DETAIL_OUT_SECONDARY_QUANTITY");
             DropColumn("dbo.OSP_YIELD_VARIANCE_HT", "DETAIL_OUT_PRIMARY_QUANTITY");
