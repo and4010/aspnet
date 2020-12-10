@@ -1,12 +1,10 @@
-﻿USE [CHPOUTSRCMES]
-GO
-/****** Object:  StoredProcedure [dbo].[SP_OspYieldReport]    Script Date: 2020/12/3 上午 08:36:49 ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-
-ALTER PROCEDURE [dbo].[SP_OspYieldReport]
+﻿/****** SSMS 中 SelectTopNRows 命令的指令碼  ******/
+-- =============================================
+-- Author:		Pon
+-- Create date: 2020/12/08
+-- Description:	工單得率報表
+-- =============================================
+CREATE PROCEDURE [dbo].[SP_OspYieldReport]
 	@cuttingDateFrom VARCHAR(30),
 	@cuttingDateTo VARCHAR(30),
 	@batchNo VARCHAR(32),

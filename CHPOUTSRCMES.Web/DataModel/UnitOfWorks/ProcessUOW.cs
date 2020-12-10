@@ -4368,6 +4368,39 @@ AND OPO.OSP_PICKED_OUT_ID = @OSP_PICKED_OUT_ID
 
         }
 
+        public ResultDataModel<ReportDataSource> GetOspCutSumReportDataSource(string planStartDateFrom, string planStartDateTo, string batchNo, string paperType, string userId)
+        {
+
+            using (SqlConnection connection = new SqlConnection(WebConfigurationManager.ConnectionStrings["MesContext"].ConnectionString.ToString()))
+            {
+                try
+                {
+                    string cmd = @"EXEC dbo.SP_OspCutSumReport 
+@planStartDateFrom, @planStartDateTo, @batchNo, @paperType, @dateFormStatus, @dateToStatus, @code, @message, @user
+";
+                    connection.Open();
+                    SqlCommand command = new SqlCommand(cmd, connection);
+                    DataSet dataset = new DataSet("OSP");
+                    command.Parameters.AddRange(GetOspCutSumSqlParameterList(planStartDateFrom, planStartDateTo, batchNo, paperType, userId).ToArray());
+                    SqlDataAdapter salesOrderAdapter = new SqlDataAdapter(command);
+                    salesOrderAdapter.Fill(dataset, "DataSet1");
+                    ReportDataSource dataSource = new ReportDataSource();
+                    dataSource.Name = "DataSet1";
+                    dataSource.Value = dataset.Tables["DataSet1"];
+
+                    connection.Close();
+
+                    return new ResultDataModel<ReportDataSource>(true, "取得裁切資料彙總報表資料來源成功", dataSource);
+                }
+                catch (Exception ex)
+                {
+                    logger.Error(LogUtilities.BuildExceptionMessage(ex));
+                    return new ResultDataModel<ReportDataSource>(false, "取得裁切資料彙總報表資料來源失敗:" + ex.Message, null);
+                }
+            }
+
+        }
+
         public List<SqlParameter> GetOspYieldSqlParameterList(string cuttingDateFrom, string cuttingDateTo, string batchNo, string machineNum, string itemNumber, string barcode, string subinventory, string userId)
         {
             DateTime dateFrom = new DateTime();
@@ -4375,8 +4408,13 @@ AND OPO.OSP_PICKED_OUT_ID = @OSP_PICKED_OUT_ID
             string sDateFormStatus = "1";
             string sDateToStatus = "1";
 
+            if (!string.IsNullOrEmpty(cuttingDateTo))
+            {
+                cuttingDateTo += " 23:59:59";
+            }
+
             var dateFormStatus = DateTime.TryParseExact(cuttingDateFrom, "yyyy-MM-dd", null, System.Globalization.DateTimeStyles.NoCurrentDateDefault, out dateFrom);
-            var dateToStatus = DateTime.TryParseExact(cuttingDateTo, "yyyy-MM-dd", null, System.Globalization.DateTimeStyles.NoCurrentDateDefault, out dateTo);
+            var dateToStatus = DateTime.TryParseExact(cuttingDateTo, "yyyy-MM-dd HH:mm:ss", null, System.Globalization.DateTimeStyles.NoCurrentDateDefault, out dateTo);
             if (!dateFormStatus)
             {
                 cuttingDateFrom = "1900-01-01";
@@ -4384,7 +4422,7 @@ AND OPO.OSP_PICKED_OUT_ID = @OSP_PICKED_OUT_ID
             }
             if (!dateToStatus)
             {
-                cuttingDateTo = "9999-12-31";
+                cuttingDateTo = "9999-12-31 23:59:59";
                 sDateToStatus = "0";
             }
 
@@ -4405,6 +4443,45 @@ AND OPO.OSP_PICKED_OUT_ID = @OSP_PICKED_OUT_ID
             return sqlParameterList;
         }
 
+        public List<SqlParameter> GetOspCutSumSqlParameterList(string planStartDateFrom, string planStartDateTo, string batchNo, string paperType, string userId)
+        {
+            DateTime dateFrom = new DateTime();
+            DateTime dateTo = new DateTime();
+            string sDateFormStatus = "1";
+            string sDateToStatus = "1";
+
+            if (!string.IsNullOrEmpty(planStartDateTo))
+            {
+                planStartDateTo += " 23:59:59";
+            }
+
+            var dateFormStatus = DateTime.TryParseExact(planStartDateFrom, "yyyy-MM-dd", null, System.Globalization.DateTimeStyles.NoCurrentDateDefault, out dateFrom);
+            var dateToStatus = DateTime.TryParseExact(planStartDateTo, "yyyy-MM-dd HH:mm:ss", null, System.Globalization.DateTimeStyles.NoCurrentDateDefault, out dateTo);
+            if (!dateFormStatus)
+            {
+                planStartDateFrom = "1900-01-01";
+                sDateFormStatus = "0";
+            }
+            if (!dateToStatus)
+            {
+                planStartDateTo = "9999-12-31 23:59:59";
+                sDateToStatus = "0";
+            }
+
+            List<SqlParameter> sqlParameterList = new List<SqlParameter>();
+            sqlParameterList.Add(SqlParamHelper.GetVarChar("@planStartDateFrom", planStartDateFrom, 30));
+            sqlParameterList.Add(SqlParamHelper.GetVarChar("@planStartDateTo", planStartDateTo, 30));
+            sqlParameterList.Add(SqlParamHelper.GetVarChar("@batchNo", batchNo, 32));
+            sqlParameterList.Add(SqlParamHelper.GetVarChar("@paperType", paperType, 4));
+            sqlParameterList.Add(SqlParamHelper.GetVarChar("@dateFormStatus", sDateFormStatus, 1));
+            sqlParameterList.Add(SqlParamHelper.GetVarChar("@dateToStatus", sDateToStatus, 1));
+            sqlParameterList.Add(SqlParamHelper.GetInt("@code", 0, System.Data.ParameterDirection.Output));
+            sqlParameterList.Add(SqlParamHelper.GetNVarChar("@message", "", 500, System.Data.ParameterDirection.Output));
+            sqlParameterList.Add(SqlParamHelper.GetVarChar("@user", userId, 128));
+
+            return sqlParameterList;
+        }
+
         public List<ReportParameter> GetOspYieldReportParameterList(string cuttingDateFrom, string cuttingDateTo, string batchNo, string machineNum, string itemNumber, string barcode, string subinventory, string userId)
         {
             DateTime dateFrom = new DateTime();
@@ -4412,8 +4489,13 @@ AND OPO.OSP_PICKED_OUT_ID = @OSP_PICKED_OUT_ID
             string sDateFormStatus = "1";
             string sDateToStatus = "1";
 
+            if (!string.IsNullOrEmpty(cuttingDateTo))
+            {
+                cuttingDateTo += " 23:59:59";
+            }
+
             var dateFormStatus = DateTime.TryParseExact(cuttingDateFrom, "yyyy-MM-dd", null, System.Globalization.DateTimeStyles.NoCurrentDateDefault, out dateFrom);
-            var dateToStatus = DateTime.TryParseExact(cuttingDateTo, "yyyy-MM-dd", null, System.Globalization.DateTimeStyles.NoCurrentDateDefault, out dateTo);
+            var dateToStatus = DateTime.TryParseExact(cuttingDateTo, "yyyy-MM-dd HH:mm:ss", null, System.Globalization.DateTimeStyles.NoCurrentDateDefault, out dateTo);
             if (!dateFormStatus)
             {
                 cuttingDateFrom = "1900-01-01";
@@ -4421,7 +4503,7 @@ AND OPO.OSP_PICKED_OUT_ID = @OSP_PICKED_OUT_ID
             }
             if (!dateToStatus)
             {
-                cuttingDateTo = "9999-12-31";
+                cuttingDateTo = "9999-12-31 23:59:59";
                 sDateToStatus = "0";
             }
             
@@ -4442,6 +4524,45 @@ AND OPO.OSP_PICKED_OUT_ID = @OSP_PICKED_OUT_ID
             return reportParameterList;
         }
 
+
+        public List<ReportParameter> GetOspCutSumReportParameterList(string planStartDateFrom, string planStartDateTo, string batchNo, string paperType, string userId)
+        {
+            DateTime dateFrom = new DateTime();
+            DateTime dateTo = new DateTime();
+            string sDateFormStatus = "1";
+            string sDateToStatus = "1";
+
+            if (!string.IsNullOrEmpty(planStartDateTo))
+            {
+                planStartDateTo += " 23:59:59";
+            }
+
+            var dateFormStatus = DateTime.TryParseExact(planStartDateFrom, "yyyy-MM-dd", null, System.Globalization.DateTimeStyles.NoCurrentDateDefault, out dateFrom);
+            var dateToStatus = DateTime.TryParseExact(planStartDateTo, "yyyy-MM-dd HH:mm:ss", null, System.Globalization.DateTimeStyles.NoCurrentDateDefault, out dateTo);
+            if (!dateFormStatus)
+            {
+                planStartDateFrom = "1900-01-01";
+                sDateFormStatus = "0";
+            }
+            if (!dateToStatus)
+            {
+                planStartDateTo = "9999-12-31 23:59:59";
+                sDateToStatus = "0";
+            }
+
+            List<ReportParameter> reportParameterList = new List<ReportParameter>();
+            reportParameterList.Add(new ReportParameter("planStartDateFrom", planStartDateFrom, false));
+            reportParameterList.Add(new ReportParameter("planStartDateTo", planStartDateTo, false));
+            reportParameterList.Add(new ReportParameter("batchNo", batchNo, false));
+            reportParameterList.Add(new ReportParameter("paperType", paperType, false));
+            reportParameterList.Add(new ReportParameter("dateFormStatus", sDateFormStatus, false));
+            reportParameterList.Add(new ReportParameter("dateToStatus", sDateToStatus, false));
+            reportParameterList.Add(new ReportParameter("code", "0", false));
+            reportParameterList.Add(new ReportParameter("message", "", false));
+            reportParameterList.Add(new ReportParameter("user", userId, false));
+
+            return reportParameterList;
+        }
 
         /// <summary>
         /// 取得deatialOut資料

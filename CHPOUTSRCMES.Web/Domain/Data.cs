@@ -46,7 +46,7 @@ namespace CHPOUTSRCMES.Web.Domain
 
             //報表 (第二層選單)
             menu.Add(new Navbar { Id = 701, nameOption = "工單得率報表", controller = "Report", action = "Yield", status = true, isParent = false, parentId = 7 });
-            //menu.Add(new Navbar { Id = 702, nameOption = "裁切加工報表", controller = "Home", action = "Icons", status = false, isParent = false, parentId = 7 });
+            menu.Add(new Navbar { Id = 702, nameOption = "裁切資料匯總報表", controller = "Report", action = "CutSum", status = true, isParent = false, parentId = 7 });
             return menu.ToList();
         }
     }

@@ -3892,6 +3892,11 @@ SELECT [STOCK_ID] as ID
                         }
                     }
 
+                    var stkTxnT = CreateStockRecord(stock, trfLocator.OrganizationId, trfOrganization.OrganizationCode,
+                        trfLocator.SubinventoryCode, transferLocatorId, CategoryCode.TransferReason, ActionCode.StockTransfer, header.ShipmentNumber,
+                                stock.PrimaryAvailableQty, 0, stock.PrimaryAvailableQty, stock.SecondaryAvailableQty, 0, stock.SecondaryAvailableQty,
+                                StockStatusCode.InStock, userId, now);
+
                     //更新庫存
                     stock.OrganizationId = trfLocator.OrganizationId;
                     stock.OrganizationCode = trfOrganization.OrganizationCode;
@@ -3901,6 +3906,7 @@ SELECT [STOCK_ID] as ID
                     stock.ReasonCode = reasonCode;
                     stock.ReasonDesc = reason.ReasonDesc;
                     stock.StatusCode = StockStatusCode.InStock;
+                    stkTxnT.StatusCode = stock.Note;
                     if (string.IsNullOrEmpty(stock.Note))
                     {
                         stock.Note = note;
@@ -3909,16 +3915,13 @@ SELECT [STOCK_ID] as ID
                     {
                         stock.Note = stock.Note + "," + note;
                     }
+                    stkTxnT.Note = stock.Note;
                     stock.LastUpdateBy = userId;
                     stock.LastUpdateDate = now;
                     stockTRepository.Update(stock);
 
-                    var stkTxnT = CreateStockRecord(stock, trfLocator.OrganizationId, trfOrganization.OrganizationCode, trfLocator.SubinventoryCode,
-                        transferLocatorId, CategoryCode.TransferReason, ActionCode.StockTransfer, header.ShipmentNumber,
-                                  stock.PrimaryAvailableQty, 0, stock.PrimaryAvailableQty, stock.SecondaryAvailableQty, 0, stock.SecondaryAvailableQty, StockStatusCode.InStock, userId, now);
                     stkTxnTRepository.Create(stkTxnT);
 
-                    
                     //複製貨故明細資料到貨故歷史明細
                     string cmd = @"
 INSERT INTO TRF_REASON_HT

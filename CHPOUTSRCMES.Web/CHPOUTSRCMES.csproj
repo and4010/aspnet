@@ -473,6 +473,7 @@
     <Compile Include="Models\Navbar.cs" />
     <Compile Include="Models\Purchase\DetailModel.cs" />
     <Compile Include="Models\Information\ReasonModel.cs" />
+    <Compile Include="Models\Report\CutSumQueryModel.cs" />
     <Compile Include="Models\Report\YieldQueryModel.cs" />
     <Compile Include="Models\ResultModel.cs" />
     <Compile Include="Models\CHP_SUBINVENTORY_T\LOCATOR.cs" />
@@ -519,6 +520,7 @@
     <Compile Include="ViewModels\OrgSubinventoryViewModel.cs" />
     <Compile Include="ViewModels\OspRelatedViewModel.cs" />
     <Compile Include="ViewModels\HomeViewModel.cs" />
+    <Compile Include="ViewModels\Report\CutSumViewModel.cs" />
     <Compile Include="ViewModels\Report\YieldViewModel.cs" />
     <Compile Include="ViewModels\SoaQuery\SoaQueryDetailViewModel.cs" />
     <Compile Include="ViewModels\SoaQuery\SoaQueryViewModel.cs" />
@@ -1544,6 +1546,7 @@
     <Content Include="Data\SQLScript\025_ROLL_QUANTITY.sql" />
     <Content Include="Data\SQLScript\026_ROLL_NUMBER.sql" />
     <Content Include="Data\SQLScript\027_SP_ReturnOspPickedIn.sql" />
+    <Content Include="Data\SQLScript\030_SP_OspCutSumReport.sql" />
     <Content Include="Data\SQLScript\101_SP_OrgUnitSync.sql" />
     <Content Include="Data\SQLScript\102_SP_OrganizationSync.sql" />
     <Content Include="Data\SQLScript\103_SP_SubinventorySync.sql" />
@@ -2053,6 +2056,7 @@
     <None Include="Properties\PublishProfiles\元譯環境發佈.pubxml" />
     <None Include="Properties\PublishProfiles\華紙環境發佈.pubxml" />
     <Content Include="Report\OspYield.rdlc" />
+    <Content Include="Report\OspCutSum.rdlc" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\Delivery\DetailViewHeader.js" />
     <Content Include="Scripts\Delivery\FlatEdit.js" />
@@ -2078,6 +2082,7 @@
     <Content Include="Scripts\Obsolete\Obsolete.js" />
     <Content Include="Scripts\OrgSubinventory.js" />
     <Content Include="Scripts\OspRelated.js" />
+    <Content Include="Scripts\Report\CutSumQuery.js" />
     <Content Include="Scripts\Report\YieldQuery.js" />
     <Content Include="Scripts\SoaQuery.js" />
     <Content Include="Scripts\SoaQueryDetail.js" />
@@ -2229,6 +2234,7 @@
     <Content Include="Views\Report\Yield.cshtml" />
     <Content Include="Views\Report\Report.cshtml" />
     <Content Include="Views\Shared\_ReportPartial.cshtml" />
+    <Content Include="Views\Report\CutSum.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

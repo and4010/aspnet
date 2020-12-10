@@ -17,7 +17,7 @@ $(document).ready(function () {
             swal.fire("工單號須輸入4碼以上");
             return;
         }
-        $('#ReportBox').show();
+        //$('#ReportBox').show();
 
         $.ajax({
             url: "/Report/OspYieldReport",
@@ -52,7 +52,7 @@ $(document).ready(function () {
         changeYear: true
     });
 
-    initQueryTable();
+    //initQueryTable();
 });
 
 function getCuttingDateFrom() {
