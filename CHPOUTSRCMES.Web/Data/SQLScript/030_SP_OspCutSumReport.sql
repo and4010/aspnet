@@ -101,14 +101,12 @@ END AS SupplierName
 FROM OSP_HEADER_T h
 LEFT JOIN OSP_DETAIL_OUT_T ot on ot.OSP_HEADER_ID = h.OSP_HEADER_ID AND (h.STATUS = ''0'' or h.STATUS = ''1'' or h.STATUS = ''2'')
 LEFT JOIN OSP_DETAIL_OUT_HT oht on oht.OSP_HEADER_ID = h.OSP_HEADER_ID AND (h.STATUS = ''3'' or h.STATUS = ''4'')
-LEFT JOIN OSP_DETAIL_IN_T it on it.OSP_HEADER_ID = h.OSP_HEADER_ID AND (h.STATUS = ''0'' or h.STATUS = ''1'' or h.STATUS = ''2'')
-LEFT JOIN OSP_DETAIL_IN_HT iht on iht.OSP_HEADER_ID = h.OSP_HEADER_ID AND (h.STATUS = ''3'' or h.STATUS = ''4'')
 WHERE 1=1'
 
 SET @success = @success + 1
 IF (@user IS NOT NULL) AND (LEN(@user) > 0)
-	set @cmd = @cmd + ' AND (((h.STATUS = ''0'' or h.STATUS = ''1'' or h.STATUS = ''2'') AND it.SUBINVENTORY in (SELECT SUBINVENTORY_CODE FROM USER_SUBINVENTORY_T WHERE UserId = ''' + @user + '''' + '))
-OR ((h.STATUS = ''3'' or h.STATUS = ''4'') AND iht.SUBINVENTORY in (SELECT SUBINVENTORY_CODE FROM USER_SUBINVENTORY_T WHERE UserId = ''' + @user + '''' + ')))'
+	set @cmd = @cmd + ' AND (((h.STATUS = ''0'' or h.STATUS = ''1'' or h.STATUS = ''2'') AND ot.SUBINVENTORY in (SELECT SUBINVENTORY_CODE FROM USER_SUBINVENTORY_T WHERE UserId = ''' + @user + '''' + '))
+OR ((h.STATUS = ''3'' or h.STATUS = ''4'') AND oht.SUBINVENTORY in (SELECT SUBINVENTORY_CODE FROM USER_SUBINVENTORY_T WHERE UserId = ''' + @user + '''' + ')))'
 
 SET @success = @success + 1
 IF (@dateFormStatus = 1) OR (@dateToStatus = 1)
