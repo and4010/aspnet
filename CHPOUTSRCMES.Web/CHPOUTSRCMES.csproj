@@ -2121,6 +2121,7 @@
     <Content Include="Scripts\StockTransaction\StockTransfer.js" />
     <Content Include="Scripts\StockTransaction\Top.js" />
     <Content Include="Scripts\StockTransaction\TransferReason.js" />
+    <Content Include="Scripts\utility.js" />
     <Content Include="Scripts\Yszmpckq.js" />
     <Content Include="Scripts\_references.js" />
     <Content Include="Data\SQLScript\001_SP_GenerateBarcode.sql" />

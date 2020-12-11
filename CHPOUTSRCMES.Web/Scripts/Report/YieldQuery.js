@@ -1,4 +1,5 @@
-﻿var QueryTable;
+﻿
+var QueryTable;
 
 
 $(document).ready(function () {
@@ -11,35 +12,10 @@ $(document).ready(function () {
     });
 
     $('#btnPrint').click(function () {
-        //window.open("/Report/OspYieldReport/?cuttingDateFrom=" + getCuttingDateFrom() + "&cuttingDateTo=" + getCuttingDateTo() + "&batchNo=" + getBatchNo() + "&machineNum=" + getMachineNum());
-        var batchNo = getBatchNo();
-        if (batchNo && batchNo.length < 4) {
-            swal.fire("工單號須輸入4碼以上");
-            return;
-        }
-        //$('#ReportBox').show();
 
-        $.ajax({
-            url: "/Report/OspYieldReport",
-            type: "post",
-            data: {
-                cuttingDateFrom: getCuttingDateFrom(),
-                cuttingDateTo: getCuttingDateTo(),
-                batchNo: batchNo,
-                machineNum: getMachineNum(),
-                itemNumber: getItemNumber(),
-                barcode: getBarcode(),
-                subinventory: getSubinventory()
-            },
-            success: function (model) {
-                $("#ReportPartial").html(model);
-            },
-            error: function () {
-                swal.fire('更新報表失敗');
-            }
-        });
+        ShowWait(ospYieldReport);
     });
-    
+
     $('#dateFrom').datepicker({
         dateFormat: 'yy-mm-dd',
         changeMonth: true,
@@ -54,6 +30,39 @@ $(document).ready(function () {
 
     //initQueryTable();
 });
+
+function ospYieldReport() {
+    var batchNo = getBatchNo();
+    if (batchNo && batchNo.length < 4) {
+        swal.fire("工單號須輸入4碼以上");
+        CloseWait();
+        return;
+    }
+
+    $.ajax({
+        async: false,
+        url: "/Report/OspYieldReport",
+        type: "post",
+        data: {
+            cuttingDateFrom: getCuttingDateFrom(),
+            cuttingDateTo: getCuttingDateTo(),
+            batchNo: batchNo,
+            machineNum: getMachineNum(),
+            itemNumber: getItemNumber(),
+            barcode: getBarcode(),
+            subinventory: getSubinventory()
+        },
+        success: function (model) {
+            $("#ReportPartial").html(model).promise().done(function () {
+                CloseWait();
+            });
+        },
+        error: function () {
+            CloseWait();
+            swal.fire('更新報表失敗');
+        }
+    });
+}
 
 function getCuttingDateFrom() {
     return $("#dateFrom").val();
@@ -94,7 +103,7 @@ function initQueryTable() {
         processing: true,
         //orderMulti: true,
         deferLoading: 0, //初始化DataTable時，不發出ajax
-        
+
         dom:
             "<'row'<'col-sm-3 width-s'l><'col-sm-6'B><'col-sm-3'f>>" +
             "<'row'<'col-sm-12'tr>>" +
