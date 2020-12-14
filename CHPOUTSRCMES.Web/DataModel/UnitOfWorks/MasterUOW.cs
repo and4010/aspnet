@@ -452,7 +452,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             return Guid.NewGuid().ToString();
         }
 
-       
+
 
         public TRANSACTION_TYPE_T GetTransactionType(long transactionTypeId)
         {
@@ -1985,6 +1985,19 @@ select
         }
 
         /// <summary>
+        /// 取得庫存異動紀錄原因選單
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public List<SelectListItem> GetStkTxnReasonDropDownList(string userId, DropDownListType type)
+        {
+            var reasonList = createDropDownList(type);
+            reasonList.AddRange(getStkTxnReasonListForUserId(userId));
+            return reasonList;
+        }
+
+        /// <summary>
         /// 取得原因SelectListItem
         /// </summary>
         /// <returns></returns>
@@ -2236,7 +2249,7 @@ select
             }
 
             return subinventoryList;
-            
+
         }
 
         /// <summary>
@@ -2452,7 +2465,7 @@ select
                 tmp = tmp.Where(x => x.SubinventoryCode == SUBINVENTORY_CODE);
             }
 
-            return tmp.OrderBy(x => x.Segment2).ThenBy(x =>x.Segment3)
+            return tmp.OrderBy(x => x.Segment2).ThenBy(x => x.Segment3)
                      .Select(x => new SelectListItem()
                      {
                          Text = x.Segment2 + "." + x.Segment3,
@@ -2460,7 +2473,7 @@ select
                      }).ToList();
         }
 
-        public List<SelectListItem> getLocatorListForUserId(string userId, string SUBINVENTORY_CODE, long? selectedLocatorId )
+        public List<SelectListItem> getLocatorListForUserId(string userId, string SUBINVENTORY_CODE, long? selectedLocatorId)
         {
 
             var tmp = userSubinventoryTRepository.GetAll().AsNoTracking()
@@ -2507,6 +2520,43 @@ select
                          Text = x.Segment2 + "." + x.Segment3,
                          Value = x.LocatorId.ToString()
                      }).ToList();
+            }
+        }
+
+       
+        public List<SelectListItem> getStkTxnReasonListForUserId(string userId)
+        {
+            try
+            {
+                var subinventoryList = GetSubinventoryListForUser(userId);
+                if (subinventoryList == null || subinventoryList.Count == 0)
+                {
+                    throw new Exception("找不到使用者倉庫");
+                }
+
+                List<string> newSubinventoryList = new List<string>();
+                foreach(string subinventory in subinventoryList)
+                {
+                    newSubinventoryList.Add("'" + subinventory + "'");
+                }
+
+                StringBuilder cmd = new StringBuilder();
+                cmd.AppendLine(
+@"SELECT s.reason as Text, s.reason as Value FROM (SELECT (CATEGORY + '-(' + ACTION + ')') as reason  FROM  [STK_TXN_T] WHERE 
+SUBINVENTORY_CODE IN ({subinventoryList}) OR DST_SUBINVENTORY_CODE IN ({subinventoryList}) ) as s group by s.reason order by s.reason");
+                var subinventoryCondition = string.Join(",", newSubinventoryList);
+                cmd.Replace("{subinventoryList}", subinventoryCondition);
+                string commandText = cmd.ToString();
+
+                var list = Context.Database.SqlQuery<SelectListItem>(commandText).ToList();
+
+                return list;
+
+            }
+            catch(Exception ex)
+            {
+                logger.Error(LogUtilities.BuildExceptionMessage(ex));
+                return new List<SelectListItem>();
             }
         }
 

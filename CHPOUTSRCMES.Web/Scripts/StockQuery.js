@@ -1,4 +1,5 @@
-﻿$(document).ready(function () {
+﻿
+$(document).ready(function () {
    
     $('#btnSearch').click(function () {
         loadTable();
@@ -11,20 +12,25 @@
 
     $(".ItemNumber").autocomplete({
         source: function (request, response) {
-            $.ajax({
-                url: "/Stock/GetItemNumbers",
-                type: "POST",
-                dataType: "json",
-                data: {
-                    'Prefix': request.term,
-                    'itemNo': $("#ItemNumber").val(),
-                    '__RequestVerificationToken': $('input[name=__RequestVerificationToken]').val()
-                },
-                success: function (data) {
-                    response($.map(data, function (item) {
-                        return { label: item.Value + " " + item.Description, value: item.Value };
-                    }))
-                }
+            ShowWait(function () {
+                $.ajax({
+                    url: "/Stock/GetItemNumbers",
+                    type: "POST",
+                    dataType: "json",
+                    data: {
+                        'Prefix': request.term,
+                        'itemNo': $("#ItemNumber").val(),
+                        '__RequestVerificationToken': $('input[name=__RequestVerificationToken]').val()
+                    },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return { label: item.Value + " " + item.Description, value: item.Value };
+                        }))
+                    },
+                    complete: function () {
+                        CloseWait();
+                    }
+                })
             })
         },
         messages: {
@@ -148,22 +154,25 @@ function loadLocator(subinventory, option) {
         'subinventory': subinventory,
         '__RequestVerificationToken' : $('input[name=__RequestVerificationToken]').val()
     };
-    
-    $.ajax({
-        url: '/Stock/GetLocators',
-        type: 'POST',
-        data: data,
-        dataType: 'json',
-        success: function (data) {
-            option.empty();
-            if (data != null) {
-                $.each(data, function (i, item) {
-                    option.append($('<option></option>').val(item.Value).text(item.Text));
-                });
+
+    ShowWait(function () {
+        $.ajax({
+            url: '/Stock/GetLocators',
+            type: 'POST',
+            data: data,
+            dataType: 'json',
+            success: function (data) {
+                CloseWait();
+                option.empty();
+                if (data != null) {
+                    $.each(data, function (i, item) {
+                        option.append($('<option></option>').val(item.Value).text(item.Text));
+                    });
+                }
+            },
+            error: function () {
+                swal.fire('無法取得儲位清單');
             }
-        },
-        error: function () {
-            alert('無法取得儲位清單');
-        }
-    });
+        });
+    })
 }

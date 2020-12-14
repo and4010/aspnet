@@ -12,8 +12,7 @@ $(document).ready(function () {
     });
 
     $('#btnPrint').click(function () {
-
-        ShowWait(ospYieldReport);
+        ospYieldReport();
     });
 
     $('#dateFrom').datepicker({
@@ -35,33 +34,40 @@ function ospYieldReport() {
     var batchNo = getBatchNo();
     if (batchNo && batchNo.length < 4) {
         swal.fire("工單號須輸入4碼以上");
-        CloseWait();
         return;
     }
 
-    $.ajax({
-        async: false,
-        url: "/Report/OspYieldReport",
-        type: "post",
-        data: {
-            cuttingDateFrom: getCuttingDateFrom(),
-            cuttingDateTo: getCuttingDateTo(),
-            batchNo: batchNo,
-            machineNum: getMachineNum(),
-            itemNumber: getItemNumber(),
-            barcode: getBarcode(),
-            subinventory: getSubinventory()
-        },
-        success: function (model) {
-            $("#ReportPartial").html(model).promise().done(function () {
-                CloseWait();
-            });
-        },
-        error: function () {
-            CloseWait();
-            swal.fire('更新報表失敗');
+    ShowWait(
+        function () {
+            //console.log('click');
+            //setTimeout(function () {
+            //    CloseWait();
+            //}, 500); 
+
+            $.ajax({
+                async: false,
+                url: "/Report/OspYieldReport",
+                type: "post",
+                data: {
+                    cuttingDateFrom: getCuttingDateFrom(),
+                    cuttingDateTo: getCuttingDateTo(),
+                    batchNo: batchNo,
+                    machineNum: getMachineNum(),
+                    itemNumber: getItemNumber(),
+                    barcode: getBarcode(),
+                    subinventory: getSubinventory()
+                },
+                success: function (model) {
+                    $("#ReportPartial").html(model).promise().done(function () {
+                        CloseWait();
+                    });
+                },
+                error: function () {
+                    swal.fire('更新報表失敗');
+                }
+            })
         }
-    });
+    );
 }
 
 function getCuttingDateFrom() {

@@ -22,22 +22,24 @@ $(document).ready(function () {
             return;
         }
         //$('#ReportBox').show();
-
-        $.ajax({
-            url: "/Report/OspCutSumReport",
-            type: "post",
-            data: {
-                planStartDateFrom: getPlanStartDateFrom(),
-                planStartDateTo: getPlanStartDateTo(),
-                batchNo: batchNo,
-                paperType: getPaperType()
-            },
-            success: function (model) {
-                $("#ReportPartial").html(model);
-            },
-            error: function () {
-                swal.fire('更新報表失敗');
-            }
+        ShowWait(function () {
+            $.ajax({
+                url: "/Report/OspCutSumReport",
+                type: "post",
+                data: {
+                    planStartDateFrom: getPlanStartDateFrom(),
+                    planStartDateTo: getPlanStartDateTo(),
+                    batchNo: batchNo,
+                    paperType: getPaperType()
+                },
+                success: function (model) {
+                    CloseWait();
+                    $("#ReportPartial").html(model);
+                },
+                error: function () {
+                    swal.fire('更新報表失敗');
+                }
+            });
         });
     });
 });

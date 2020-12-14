@@ -76,6 +76,7 @@ namespace CHPOUTSRCMES.Web.Controllers
             model.SubinvenotoryList = StockTxnQueryViewModel.getSubinvenotoryList(this.User.Identity.GetUserId());
             model.ItemCategoryList = StockTxnQueryViewModel.getItemCategoryList(this.User.Identity.GetUserId());
             model.locatorList = StockTxnQueryViewModel.getLocatorList(this.User.Identity.GetUserId(), "");
+            model.ReasonList = StockTxnQueryViewModel.getStkTxnReasonList(this.User.Identity.GetUserId());
             model.Fields = new StockTxnQueryModel();
             return View(model);
         }

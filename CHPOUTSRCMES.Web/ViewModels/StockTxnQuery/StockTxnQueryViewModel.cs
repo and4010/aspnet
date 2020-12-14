@@ -19,6 +19,7 @@ namespace CHPOUTSRCMES.Web.ViewModels.StockTxnQuery
 
         public IEnumerable<SelectListItem> locatorList { set; get; }
 
+        public IEnumerable<SelectListItem> ReasonList { set; get; }
 
         public static IEnumerable<SelectListItem> getSubinvenotoryList(string userId)
         {
@@ -71,6 +72,24 @@ namespace CHPOUTSRCMES.Web.ViewModels.StockTxnQuery
             try
             {
                 return masterUow.GetLocatorDropDownListForUserId(userId, "", MasterUOW.DropDownListType.All);
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            return new List<SelectListItem>();
+        }
+
+        public static IEnumerable<SelectListItem> getStkTxnReasonList(string userId)
+        {
+
+            using var mesContext = new CHPOUTSRCMES.Web.DataModel.MesContext();
+
+            using var masterUow = new CHPOUTSRCMES.Web.DataModel.UnitOfWorks.MasterUOW(mesContext);
+            try
+            {
+                return masterUow.GetStkTxnReasonDropDownList(userId, MasterUOW.DropDownListType.All);
             }
             catch (Exception ex)
             {
