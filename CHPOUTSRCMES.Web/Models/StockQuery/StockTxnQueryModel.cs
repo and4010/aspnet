@@ -10,6 +10,7 @@ using System.Data.Entity;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Web.UI.WebControls;
 
 namespace CHPOUTSRCMES.Web.Models.StockQuery
@@ -95,7 +96,7 @@ namespace CHPOUTSRCMES.Web.Models.StockQuery
 
 
         public static DataTableJsonResultModel<StockTxnQueryModel> getModels(DataTableAjaxPostViewModel data,
-            string subinventory, string locator, string itemCategory, string itemNo, string barcode, string dateFrom, string dateTo, string userId)
+            string subinventory, string locator, string itemCategory, string itemNo, string barcode, string dateFrom, string dateTo, string reason,string userId)
         {
             var paramList = new List<SqlParameter>();
             using var mesContext = new MesContext();
@@ -208,6 +209,22 @@ OR S.DST_SUBINVENTORY_CODE IN (SELECT SUBINVENTORY_CODE FROM USER_SUBINVENTORY_T
                     DateTime.TryParseExact(dateTo, "yyyy-MM-dd", null, System.Globalization.DateTimeStyles.NoCurrentDateDefault, out dueDate1);
                     builder.AppendLine("and CREATION_DATE <= @dateTo");
                     paramList.Add(SqlParamHelper.GetDataTime("@dateTo", dueDate1.AddDays(1).AddMilliseconds(-1), ParameterDirection.Input));
+                }
+
+                if (!string.IsNullOrEmpty(reason) && reason.CompareTo("*") != 0)
+                {
+                    var temp = reason.Split(new string[] { "-(" }, StringSplitOptions.None);
+                    string category = "";
+                    string action = "";
+                    if (temp.Length == 2)
+                    {
+                        category = temp[0];
+                        action = temp[1].Trim(')');
+                        builder.AppendLine(" AND S.CATEGORY= @category");
+                        paramList.Add(SqlParamHelper.GetVarChar("@category", category, 30, System.Data.ParameterDirection.Input));
+                        builder.AppendLine(" AND S.ACTION= @action");
+                        paramList.Add(SqlParamHelper.GetVarChar("@action", action, 50, System.Data.ParameterDirection.Input));
+                    }
                 }
 
                 var models = mesContext.Database.SqlQuery<StockTxnQueryModel>(builder.ToString(), paramList.ToArray()).ToList();

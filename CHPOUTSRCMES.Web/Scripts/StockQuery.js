@@ -1,6 +1,6 @@
 ﻿
 $(document).ready(function () {
-   
+
     $('#btnSearch').click(function () {
         loadTable();
     });
@@ -12,25 +12,20 @@ $(document).ready(function () {
 
     $(".ItemNumber").autocomplete({
         source: function (request, response) {
-            ShowWait(function () {
-                $.ajax({
-                    url: "/Stock/GetItemNumbers",
-                    type: "POST",
-                    dataType: "json",
-                    data: {
-                        'Prefix': request.term,
-                        'itemNo': $("#ItemNumber").val(),
-                        '__RequestVerificationToken': $('input[name=__RequestVerificationToken]').val()
-                    },
-                    success: function (data) {
-                        response($.map(data, function (item) {
-                            return { label: item.Value + " " + item.Description, value: item.Value };
-                        }))
-                    },
-                    complete: function () {
-                        CloseWait();
-                    }
-                })
+            $.ajax({
+                url: "/Stock/GetItemNumbers",
+                type: "POST",
+                dataType: "json",
+                data: {
+                    'Prefix': request.term,
+                    'itemNo': $("#ItemNumber").val(),
+                    '__RequestVerificationToken': $('input[name=__RequestVerificationToken]').val()
+                },
+                success: function (data) {
+                    response($.map(data, function (item) {
+                        return { label: item.Value + " " + item.Description, value: item.Value };
+                    }))
+                }
             })
         },
         messages: {
@@ -69,7 +64,7 @@ function initTable(subinventory, locatorId, itemCategory, itemNo) {
         processing: true,
         serverSide: true,
         autoWidth: false,
-        destroy:true,
+        destroy: true,
         dom:
             "<'row'<'col-sm-3 width-s'l><'col-sm-6'B><'col-sm-3'f>>" +
             "<'row'<'col-sm-12'tr>>" +
@@ -98,8 +93,8 @@ function initTable(subinventory, locatorId, itemCategory, itemNo) {
         ],
         order: [[0, 'asc'], [1, 'asc'], [2, 'asc']],
         columns: [
-            { data: "SubinventoryCode", "name": "倉庫", "autoWidth": true, "className": "dt-body-center"},
-            { data: "LocatorSegments", "name": "儲位", "autoWidth": true, "className": "dt-body-center"},
+            { data: "SubinventoryCode", "name": "倉庫", "autoWidth": true, "className": "dt-body-center" },
+            { data: "LocatorSegments", "name": "儲位", "autoWidth": true, "className": "dt-body-center" },
             { data: "ItemNumber", "name": "料號", "autoWidth": true, "className": "dt-body-center" },
             { data: "ItemCategory", "name": "捲筒/平版", "autoWidth": true, "className": "dt-body-center" },
             {
@@ -152,7 +147,7 @@ function initTable(subinventory, locatorId, itemCategory, itemNo) {
 function loadLocator(subinventory, option) {
     var data = {
         'subinventory': subinventory,
-        '__RequestVerificationToken' : $('input[name=__RequestVerificationToken]').val()
+        '__RequestVerificationToken': $('input[name=__RequestVerificationToken]').val()
     };
 
     ShowWait(function () {

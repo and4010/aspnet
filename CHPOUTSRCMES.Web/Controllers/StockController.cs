@@ -136,11 +136,11 @@ namespace CHPOUTSRCMES.Web.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public JsonResult StockTxnQuery(DataTableAjaxPostViewModel data,
-            string subinventory, string locatorId, string itemCategory, string itemNo, string barcode,string dateFrom,string dateTo)
+            string subinventory, string locatorId, string itemCategory, string itemNo, string barcode,string dateFrom,string dateTo, string reason)
         {
 
             var userId = User.Identity.GetUserId();
-            var models = StockTxnQueryModel.getModels(data, subinventory, locatorId, itemCategory, itemNo, barcode, dateFrom, dateTo, userId);
+            var models = StockTxnQueryModel.getModels(data, subinventory, locatorId, itemCategory, itemNo, barcode, dateFrom, dateTo, reason, userId);
 
             return Json(models, JsonRequestBehavior.AllowGet);
         }

@@ -55,12 +55,13 @@ function loadTable2() {
     var barcode = $("#Barcode").val();
     var dateFrom = $("#dateFrom").val();
     var dateTo = $("#dateTo").val();
+    var reason = $("#Reason").val();
 
-    loadTable(subinventory, locatorId, itemCategory, itemNo, barcode, dateFrom, dateTo);
+    loadTable(subinventory, locatorId, itemCategory, itemNo, barcode, dateFrom, dateTo, reason);
 }
 
 
-function loadTable(subinventory, locatorId, itemCategory, itemNo, barcode, dateFrom, dateTo) {
+function loadTable(subinventory, locatorId, itemCategory, itemNo, barcode, dateFrom, dateTo, reason) {
 
     $('#QueryTable').DataTable({
         "language": {
@@ -87,6 +88,7 @@ function loadTable(subinventory, locatorId, itemCategory, itemNo, barcode, dateF
                 'barcode': barcode, 
                 'dateFrom': dateFrom,
                 'dateTo': dateTo,
+                'reason': reason,
                 '__RequestVerificationToken': $('input[name=__RequestVerificationToken]').val()
             }
         },
@@ -153,23 +155,26 @@ function loadLocator(subinventory, option) {
         'subinventory': subinventory,
         '__RequestVerificationToken' : $('input[name=__RequestVerificationToken]').val()
     };
-    
-    $.ajax({
-        url: '/Stock/GetLocators',
-        type: 'POST',
-        data: data,
-        dataType: 'json',
-        success: function (data) {
-            option.empty();
-            if (data != null) {
-                $.each(data, function (i, item) {
-                    option.append($('<option></option>').val(item.Value).text(item.Text));
-                });
+    ShowWait(function () {
+        $.ajax({
+            url: '/Stock/GetLocators',
+            type: 'POST',
+            data: data,
+            dataType: 'json',
+            success: function (data) {
+                CloseWait();
+                option.empty();
+                if (data != null) {
+                    $.each(data, function (i, item) {
+                        option.append($('<option></option>').val(item.Value).text(item.Text));
+                    });
+                }
+                $('#LocatorId').val()
+            },
+            error: function () {
+                swal.fire('無法取得儲位清單');
             }
-            $('#LocatorId').val()
-        },
-        error: function () {
-            alert('無法取得儲位清單');
-        }
+        });
     });
+    
 }

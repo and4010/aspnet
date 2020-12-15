@@ -1,13 +1,7 @@
 ﻿$(document).ready(function () {
    
     $('#btnSearch').click(function () {
-
-        var processCode = $("#ProcessCodeList option:selected").val(); 
-        var processDate = $("#ProcessDate").val();
-        var hasError = $("#ErrorOptionList option:selected").val();
-        
-        loadTable(processCode, processDate, hasError);
-
+        loadTable();
     });
 
     $.datepicker.setDefaults($.datepicker.regional["zh-TW"]);
@@ -26,10 +20,19 @@
 
     //    window.open("/Soa/Detail/" + processCode + "/" + serverCode + "/" + batchId);
     //});
+    loadTable();
+
+    function loadTable() {
+        var processCode = $("#ProcessCodeList option:selected").val();
+        var processDate = $("#ProcessDate").val();
+        var hasError = $("#ErrorOptionList option:selected").val();
+
+        initTable(processCode, processDate, hasError);
+    }
 });
 
 
-function loadTable(processCode, processDate, hasError) {
+function initTable(processCode, processDate, hasError) {
 
     $('#QueryTable').DataTable({
         "language": {
