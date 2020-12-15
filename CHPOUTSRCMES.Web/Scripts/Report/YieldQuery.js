@@ -27,6 +27,28 @@ $(document).ready(function () {
         changeYear: true
     });
 
+    $(".ItemNumber").autocomplete({
+        source: function (request, response) {
+            $.ajax({
+                url: "/Report/GetItemNumbers",
+                type: "POST",
+                dataType: "json",
+                data: {
+                    'Prefix': request.term,
+                    'itemNo': $("#ItemNumber").val(),
+                    '__RequestVerificationToken': $('input[name=__RequestVerificationToken]').val()
+                },
+                success: function (data) {
+                    response($.map(data, function (item) {
+                        return { label: item.Value + " " + item.Description, value: item.Value };
+                    }))
+                }
+            })
+        },
+        messages: {
+            noResults: "", results: ""
+        }
+    });
     //initQueryTable();
 });
 

@@ -10361,7 +10361,7 @@ pre code {
 .tt-hint {
   display: block;
   width: 100%;
-  height: 2.375rem;
+  height: 3.375rem;
   padding: 0.56rem 1.375rem;
   font-size: 0.75rem;
   font-weight: 400;
@@ -20100,7 +20100,7 @@ h6,
 .h4,
 .h5,
 .h6 {
-  font-family: "roboto-bold", sans-serif;
+  font-family: Arial,'\u9ed1\u9ad4\u002d\u7e41','\u5fae\u8edf\u6b63\u9ed1\u9ad4', sans-serif;
 }
 
 p {
@@ -20300,7 +20300,7 @@ address p {
 }
 
 .font-weight-light, .landing-page .feature-list .feature-list-row .feature-list-item p {
-  font-family: "roboto-light", sans-serif;
+  font-family: Arial,'\u9ed1\u9ad4\u002d\u7e41','\u5fae\u8edf\u6b63\u9ed1\u9ad4', sans-serif;
 }
 
 .font-weight-medium {
@@ -21986,7 +21986,7 @@ code {
 .btn, .ajax-upload-dragdrop .ajax-file-upload, .swal2-modal .swal2-buttonswrapper .swal2-styled, .swal2-modal .swal2-buttonswrapper .swal2-styled.swal2-confirm, .swal2-modal .swal2-buttonswrapper .swal2-styled.swal2-cancel, .wizard > .actions a {
   font-size: 0.875rem;
   line-height: 1;
-  font-family: "roboto-regular", sans-serif;
+  font-family: Arial,'\u9ed1\u9ad4\u002d\u7e41','\u5fae\u8edf\u6b63\u9ed1\u9ad4', sans-serif;
 }
 
 .btn i, .ajax-upload-dragdrop .ajax-file-upload i, .swal2-modal .swal2-buttonswrapper .swal2-styled i, .swal2-modal .swal2-buttonswrapper .swal2-styled.swal2-confirm i, .swal2-modal .swal2-buttonswrapper .swal2-styled.swal2-cancel i, .wizard > .actions a i {
@@ -23360,11 +23360,11 @@ code {
 .jsgrid .jsgrid-table .jsgrid-filter-row select, .jsgrid .jsgrid-table .jsgrid-filter-row input[type=number], .select2-container--default .select2-selection--single, .select2-container--default .select2-selection--single .select2-search__field, .typeahead,
 .tt-query,
 .tt-hint {
-  border: 1px solid #f3f3f3;
-  font-family: "roboto-regular", sans-serif;
-  font-size: 0.75rem;
-  padding: 0.56rem 0.75rem;
-  line-height: 14px;
+    border: 1px solid #f3f3f3;
+    font-family: Arial,'\u9ed1\u9ad4\u002d\u7e41','\u5fae\u8edf\u6b63\u9ed1\u9ad4', sans-serif;
+    font-size: 0.75rem;
+    padding: 0.56rem 0.75rem;
+    line-height: 24px;
 }
 
 .form-control.form-control-lg, .form-control-lg.asColorPicker-input, .dataTables_wrapper select.form-control-lg, .jsgrid .jsgrid-table .jsgrid-filter-row input.form-control-lg[type=text],
@@ -29294,8 +29294,8 @@ div.tagsinput span.tag a {
 .auth form .form-group label {
   margin-bottom: 0;
   vertical-align: bottom;
-  font-size: .8125rem;
-  font-family: "roboto-light", sans-serif;
+  font-family: Arial,'\u9ed1\u9ad4\u002d\u7e41','\u5fae\u8edf\u6b63\u9ed1\u9ad4', sans-serif;
+  font-size: small;
 }
 
 .auth form .form-group .form-control, .auth form .form-group .asColorPicker-input, .auth form .form-group .dataTables_wrapper select, .dataTables_wrapper .auth form .form-group select, .auth form .form-group .jsgrid .jsgrid-table .jsgrid-filter-row input[type=text], .jsgrid .jsgrid-table .jsgrid-filter-row .auth form .form-group input[type=text], .auth form .form-group
@@ -29310,7 +29310,7 @@ div.tagsinput span.tag a {
   border-radius: 0;
   padding-left: 0;
   padding-right: 2.5rem;
-  font-size: .9375rem;
+  font-size: medium;
 }
 
 .auth form .form-group i {
@@ -29321,7 +29321,7 @@ div.tagsinput span.tag a {
 }
 
 .auth form .btn, .auth form .ajax-upload-dragdrop .ajax-file-upload, .ajax-upload-dragdrop .auth form .ajax-file-upload, .auth form .swal2-modal .swal2-buttonswrapper .swal2-styled, .swal2-modal .swal2-buttonswrapper .auth form .swal2-styled, .auth form .wizard > .actions a, .wizard > .actions .auth form a {
-  font-size: 1.25rem;
+  font-size: medium;
 }
 
 .auth form .auth-link {

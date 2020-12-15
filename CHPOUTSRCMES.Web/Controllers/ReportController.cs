@@ -34,6 +34,21 @@ namespace CHPOUTSRCMES.Web.Controllers
             return View(cutSumViewModel);
         }
 
+        /// <summary>
+        /// 取得料號清單
+        /// </summary>
+        /// <param name="itemNo">料號前置</param>
+        /// <returns></returns>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public JsonResult GetItemNumbers(string itemNo)
+        {
+
+            var items = YieldViewModel.getItemNumbers(itemNo);
+
+            return this.Json(items, JsonRequestBehavior.AllowGet);
+        }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]

@@ -8,8 +8,8 @@
         <div class="row w-100">
             <div class="col-lg-4 mx-auto">
                 <div class="auth-form-dark text-left p-5">
-                    <h2>華紙 MES</h2>
-                    <h4 class="font-weight-light">- CHP MES account login -</h4>
+                    <h1>華紙 MES</h1>
+                    <h3 class="font-weight-light">- CHP MES account login -</h3>
                     @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "pt-5", role = "form" }))
                     {
                         @Html.AntiForgeryToken()

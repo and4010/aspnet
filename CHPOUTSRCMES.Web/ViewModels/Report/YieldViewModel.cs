@@ -1,4 +1,5 @@
-﻿using CHPOUTSRCMES.Web.Models.Report;
+﻿using CHPOUTSRCMES.Web.Jsons.Requests;
+using CHPOUTSRCMES.Web.Models.Report;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -31,5 +32,23 @@ namespace CHPOUTSRCMES.Web.ViewModels.Report
         public IEnumerable<SelectListItem> MachineCodeList { set; get; }
 
         public IEnumerable<SelectListItem> SubinventoryList { set; get; }
+
+        public static IEnumerable<AutoCompletedItem> getItemNumbers(string itemNo)
+        {
+
+            using var mesContext = new CHPOUTSRCMES.Web.DataModel.MesContext();
+
+            using var masterUow = new CHPOUTSRCMES.Web.DataModel.UnitOfWorks.MasterUOW(mesContext);
+            try
+            {
+                return masterUow.GetAutoCompleteItemNumberList(itemNo);
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            return new List<AutoCompletedItem>();
+        }
     }
 }
