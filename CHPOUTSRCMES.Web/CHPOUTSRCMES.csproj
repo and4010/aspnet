@@ -448,6 +448,10 @@
     <Compile Include="Migrations\202012020542043_osp_yield_ht_add_item_number.Designer.cs">
       <DependentUpon>202012020542043_osp_yield_ht_add_item_number.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202012180742274_addContainerNo.cs" />
+    <Compile Include="Migrations\202012180742274_addContainerNo.Designer.cs">
+      <DependentUpon>202012180742274_addContainerNo.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Delivery\FlatEditBarcodeDT.cs" />
     <Compile Include="Models\Delivery\FlatEditDT.cs" />
@@ -2279,6 +2283,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202012020542043_osp_yield_ht_add_item_number.resx">
       <DependentUpon>202012020542043_osp_yield_ht_add_item_number.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202012180742274_addContainerNo.resx">
+      <DependentUpon>202012180742274_addContainerNo.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
