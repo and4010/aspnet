@@ -64,7 +64,7 @@ namespace CHPOUTSRCMES.Web.Models.Report
                 report.BorderWidth = 1;
                 report.BorderStyle = BorderStyle.None;
                 report.ServerReport.ReportPath = KeyName + "/OspCutSum";
-                report.ServerReport.ReportServerUrl = new Uri("http://rs.yfy.com/ReportServer");
+                report.ServerReport.ReportServerUrl = new Uri("https://rs.yfy.com/ReportServer");
                 report.ServerReport.SetParameters(uow.GetOspCutSumReportParameterList(planStartDateFrom, planStartDateTo, batchNo, paperType, userId));
                 report.ServerReport.Refresh();
 

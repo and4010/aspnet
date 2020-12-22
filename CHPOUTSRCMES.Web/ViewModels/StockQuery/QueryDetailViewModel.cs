@@ -13,6 +13,8 @@ namespace CHPOUTSRCMES.Web.ViewModels.StockQuery
         [Display(Name = "倉庫名稱")]
         public string SubinventoryName { set; get; }
 
+        public string FullSubinventory { set; get; }
+
         [Display(Name = "儲位ID")]
         public long LocatorId { set; get; }
         
@@ -50,6 +52,7 @@ namespace CHPOUTSRCMES.Web.ViewModels.StockQuery
                 
                 model.SubinventoryCode = subinventory.SubinventoryCode;
                 model.SubinventoryName = subinventory.SubinventoryName;
+                model.FullSubinventory = subinventory.SubinventoryName + " " +  subinventory.SubinventoryCode;
                 model.LocatorId = locator.LocatorId;
                 model.LocatorSegments = locator.LocatorSegments;
                 model.InventoryItemId = item.InventoryItemId;

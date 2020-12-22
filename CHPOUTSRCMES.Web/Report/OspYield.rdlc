@@ -1919,7 +1919,7 @@
                 <Value>=Fields!BatchNo.Value</Value>
               </SortExpression>
             </SortExpressions>
-            <Top>16.37242mm</Top>
+            <Top>22.45784mm</Top>
             <Left>0mm</Left>
             <Height>12mm</Height>
             <Width>531.34375mm</Width>
@@ -2799,7 +2799,7 @@
               </TablixMembers>
             </TablixRowHierarchy>
             <DataSetName>DataSet1</DataSetName>
-            <Top>3.35703cm</Top>
+            <Top>3.99203cm</Top>
             <Left>1.25646cm</Left>
             <Height>1.8cm</Height>
             <Width>18.22938cm</Width>
@@ -2827,7 +2827,7 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Textbox63</rd:DefaultName>
-            <Top>3.35703cm</Top>
+            <Top>3.99203cm</Top>
             <Left>0.08819cm</Left>
             <Height>0.6cm</Height>
             <Width>0.99188cm</Width>
@@ -2843,8 +2843,44 @@
               <PaddingBottom>2pt</PaddingBottom>
             </Style>
           </Textbox>
+          <Textbox Name="Textbox35">
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>列印日期：</Value>
+                    <Style />
+                  </TextRun>
+                  <TextRun>
+                    <Value>=Format(Globals!ExecutionTime, "yyyy/MM/dd HH:mm")</Value>
+                    <Style>
+                      <Format>d</Format>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style />
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>Textbox8</rd:DefaultName>
+            <Top>14.17659mm</Top>
+            <Left>483.34375mm</Left>
+            <Height>6.35mm</Height>
+            <Width>48mm</Width>
+            <ZIndex>4</ZIndex>
+            <Style>
+              <Border>
+                <Style>None</Style>
+              </Border>
+              <PaddingLeft>2pt</PaddingLeft>
+              <PaddingRight>2pt</PaddingRight>
+              <PaddingTop>2pt</PaddingTop>
+              <PaddingBottom>2pt</PaddingBottom>
+            </Style>
+          </Textbox>
         </ReportItems>
-        <Height>51.5703mm</Height>
+        <Height>57.9203mm</Height>
         <Style>
           <Border>
             <Style>None</Style>

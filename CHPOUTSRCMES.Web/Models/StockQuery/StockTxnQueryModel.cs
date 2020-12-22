@@ -228,14 +228,16 @@ OR S.DST_SUBINVENTORY_CODE IN (SELECT SUBINVENTORY_CODE FROM USER_SUBINVENTORY_T
                 }
 
                 var models = mesContext.Database.SqlQuery<StockTxnQueryModel>(builder.ToString(), paramList.ToArray()).ToList();
+                int totalCount = models.Count;
 
                 var list = Search(models, data.Search.Value);
+                int filteredCount = list.Count();
 
-                list = Order(data.Order, models);
+                list = Order(data.Order, list);
 
                 list = list.Skip(data.Start).Take(data.Length);
 
-                return new DataTableJsonResultModel<StockTxnQueryModel>(data.Draw, models.Count, list.ToList());
+                return new DataTableJsonResultModel<StockTxnQueryModel>(data.Draw, filteredCount, totalCount, list.ToList());
 
             }
             catch (Exception ex)

@@ -11,37 +11,56 @@
     <script src="~/Scripts/label.js"></script>
 }
 <div class="customBody row">
-    <div class="col col-md-10">
-        <div class="box box-primary" style="padding:20px;">
-            <div class="box-header with-border">
+    <div class="col col-md-12">
+        <div class="box box-primary" style="padding:10px 20px;">
+            @*<div class="box-header with-border">
+                
+            </div>*@
+            <div style="overflow:auto;">
                 @using (Html.BeginForm("StockQuery", "Stock", FormMethod.Post, new { @id = "QueryForm", role = "form" }))
                 {
                     @Html.AntiForgeryToken()
-                    <div class="box-body">
-                        <div class="form-group col-md-3 col-sm-6">
-                            <strong><i class="fa fa-star margin-r-5"></i> 倉庫</strong>
-                            <p class="lead">
-                                @Html.DisplayFor(model => model.SubinventoryName) &nbsp;
-                                @Html.DisplayFor(model => model.SubinventoryCode)
-                            </p>
-                            @Html.HiddenFor(model => model.SubinventoryCode, new { id = "SubinventoryCode" })
-                        </div>
-                        <div class="form-group col-md-4 col-sm-6">
-                            <strong><i class="fa fa-star margin-r-5"></i> 儲位</strong>
-                            <p class="lead">@Html.DisplayFor(model => model.LocatorSegments)</p>
-                            @Html.HiddenFor(model => model.LocatorId, new { id = "LocatorId" })
-                        </div>
-                        <div class="form-group col-md-3 col-sm-6">
-                            <strong><i class="fa fa-star margin-r-5"></i> 料號</strong>
-                            <p class="lead">@Html.DisplayFor(model => model.ItemNumber)</p>
-                            @Html.HiddenFor(model => model.InventoryItemId, new { id = "InventoryItemId" })
-                            @Html.HiddenFor(model => model.ItemCategory, new { id = "ItemCategory" })
-                        </div>
+                    @Html.HiddenFor(model => model.SubinventoryCode, new { id = "SubinventoryCode" })
+                    @Html.HiddenFor(model => model.LocatorId, new { id = "LocatorId" })
+                    @Html.HiddenFor(model => model.InventoryItemId, new { id = "InventoryItemId" })
+                    @Html.HiddenFor(model => model.ItemCategory, new { id = "ItemCategory" })
 
-                    </div>
+                    <table style="border-spacing:20px 5px;">
+                        <tr>
+                            <td class="input-lg" style="text-align: right; padding-left:0px;">
+                                <label style='font-weight:bolder;'>
+                                    倉庫
+                                </label>
+                            </td>
+                            <td style='width: 100px'>
+                                <label style='font-weight:normal; white-space: nowrap'>
+                                    @Html.DisplayFor(model => model.FullSubinventory)
+                                </label>
+                            </td>
+                            <td class="input-lg" style="text-align: right;">
+                                <label style='font-weight:bolder;'>
+                                    儲位
+                                </label>
+                            </td>
+                            <td style='width: 100px'>
+                                <label style='font-weight:normal'>
+                                    @Html.DisplayFor(model => model.LocatorSegments)
+                                </label>
+                            </td>
+                            <td class="input-lg" style="text-align: right;">
+                                <label style='font-weight:bolder;'>
+                                    料號
+                                </label>
+                            </td>
+                            <td style='width: 100px'>
+                                <label style='font-weight:normal'>
+                                    @Html.DisplayFor(model => model.ItemNumber)
+                                </label>
+                            </td>
+                        </tr>
+                    </table>
                 }
-            </div>
-            <div class="box-body" style="overflow:auto;padding:20px;">
+
                 <div class="row row-std">
                     <div class="col-md-12">
                         <table class="table table-striped table-bordered dataTable" id="QueryTable">

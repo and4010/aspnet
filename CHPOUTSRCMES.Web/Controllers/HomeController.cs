@@ -216,7 +216,7 @@ namespace CHPOUTSRCMES.Web.Controllers
             {
                 report.ServerReport.ReportPath = KeyName + "/PurchasePaperRoll";
             }
-            report.ServerReport.ReportServerUrl = new Uri("http://rs.yfy.com/ReportServer");
+            report.ServerReport.ReportServerUrl = new Uri("https://rs.yfy.com/ReportServer");
             report.ServerReport.SetParameters(paramList);
             report.ServerReport.Refresh();
             ViewBag.ReportViewer = report;
@@ -283,7 +283,7 @@ namespace CHPOUTSRCMES.Web.Controllers
             report.BorderWidth = 1;
             report.BackColor = Color.LightGray;
             report.ServerReport.ReportPath = KeyName + "/ProcessCutMaterial";
-            report.ServerReport.ReportServerUrl = new Uri("http://rs.yfy.com/ReportServer");
+            report.ServerReport.ReportServerUrl = new Uri("https://rs.yfy.com/ReportServer");
             report.ServerReport.SetParameters(paramList);
             report.ServerReport.Refresh();
             report.ServerReport.Timeout = 120;
@@ -373,7 +373,7 @@ namespace CHPOUTSRCMES.Web.Controllers
                     report.BorderWidth = 1;
                     report.BackColor = Color.LightGray;
                     report.ServerReport.ReportPath = KeyName + "/ProcessCutReceipt";
-                    report.ServerReport.ReportServerUrl = new Uri("http://rs.yfy.com/ReportServer");
+                    report.ServerReport.ReportServerUrl = new Uri("https://rs.yfy.com/ReportServer");
                     report.ServerReport.SetParameters(paramList);
                     report.ServerReport.Refresh();
                     ViewBag.ReportViewer = report;
@@ -446,7 +446,7 @@ namespace CHPOUTSRCMES.Web.Controllers
             report.BorderWidth = 1;
             report.BackColor = Color.LightGray;
             report.ServerReport.ReportPath = KeyName + "/CutStock";
-            report.ServerReport.ReportServerUrl = new Uri("http://rs.yfy.com/ReportServer");
+            report.ServerReport.ReportServerUrl = new Uri("https://rs.yfy.com/ReportServer");
             report.ServerReport.SetParameters(paramList);
             report.ServerReport.Refresh();
             ViewBag.ReportViewer = report;
@@ -513,7 +513,7 @@ namespace CHPOUTSRCMES.Web.Controllers
             report.BorderWidth = 1;
             report.BackColor = Color.LightGray;
             report.ServerReport.ReportPath = KeyName + "/OspCutPaperRollStock";
-            report.ServerReport.ReportServerUrl = new Uri("http://rs.yfy.com/ReportServer");
+            report.ServerReport.ReportServerUrl = new Uri("https://rs.yfy.com/ReportServer");
             report.ServerReport.SetParameters(paramList);
             report.ServerReport.Refresh();
             ViewBag.ReportViewer = report;
@@ -580,7 +580,7 @@ namespace CHPOUTSRCMES.Web.Controllers
             report.BorderWidth = 1;
             report.BackColor = Color.LightGray;
             report.ServerReport.ReportPath = KeyName + "/OspReplaceFlatStock";
-            report.ServerReport.ReportServerUrl = new Uri("http://rs.yfy.com/ReportServer");
+            report.ServerReport.ReportServerUrl = new Uri("https://rs.yfy.com/ReportServer");
             report.ServerReport.SetParameters(paramList);
             report.ServerReport.Refresh();
             ViewBag.ReportViewer = report;

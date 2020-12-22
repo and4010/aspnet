@@ -1,7 +1,9 @@
-﻿$(document).ready(function () {
+﻿var t;
+$(document).ready(function () {
    
     $('#btnSearch').click(function () {
         loadTable();
+        //t.ajax.reload();
     });
 
     $.datepicker.setDefaults($.datepicker.regional["zh-TW"]);
@@ -34,7 +36,7 @@
 
 function initTable(processCode, processDate, hasError) {
 
-    $('#QueryTable').DataTable({
+     t = $('#QueryTable').DataTable({
         "language": {
             "url": "/bower_components/datatables/language/zh-TW.json"
         },
@@ -43,7 +45,7 @@ function initTable(processCode, processDate, hasError) {
         autoWidth: false,
         destroy:true,
         dom:
-            "<'row'<'col-sm-2'l><'col-sm-7'B><'col-sm-3'f>>" +
+            "<'row'<'col-sm-3 width-s'l><'col-sm-6'B><'col-sm-3'f>>" +
             "<'row'<'col-sm-12'tr>>" +
             "<'row'<'col-sm-5'i><'col-sm-7'p>>",
         "lengthMenu": [[50, 100, 200, 500], [50, 100, 200, 500]],
@@ -69,7 +71,13 @@ function initTable(processCode, processDate, hasError) {
         ],
         "order": [[2, 'desc']],
         columns: [
-            { data: "Id", "name": "項次", "autoWidth": true, "className": "dt-body-center" },
+            //{ data: "Id", "name": "項次", "autoWidth": true, "className": "dt-body-center", "searchable": false },
+            {
+                "data": null, "sortable": false, "searchable": false,
+                render: function (data, type, row, meta) {
+                    return meta.row + meta.settings._iDisplayStart + 1;
+                }
+            },
             { data: "ProcessName", "name": "傳輸類型", "autoWidth": true, "className": "dt-body-center" },
             {
                 data: "ProcessDate", "name": "傳輸日期", "autoWidth": true, "className": "dt-body-right", "mRender": function (data, type, full) {
@@ -99,8 +107,27 @@ function initTable(processCode, processDate, hasError) {
             { data: "SoaErrorMsg", "name": "SOA錯誤訊息", "autoWidth": true, "className": "dt-body-right" },
             { data: "SoaProcessCode", "name": "SOA狀態", "autoWidth": true, "className": "dt-body-right" }
             
-        ]
-
+         ],
+         //'columnDefs': [{
+         //    "targets": [0],
+         //    "orderable": false,
+         //    "sortable": false
+         //}]
+        //"fnRowCallback": function (nRow, aData, iDisplayIndex) {
+        //    $("td:first", nRow).html(iDisplayIndex + 1);
+        //    return nRow;
+        //},
+         //"fnRowCallback": function (nRow, aData, iDisplayIndex) {
+         //    var oSettings = oAllLinksTable.fnSettings();
+         //    $("td:first", nRow).html(oSettings._iDisplayStart + iDisplayIndex + 1);
+         //    return nRow;
+         //},
     });
+
+    //t.on('order.dt search.dt', function () {
+    //    t.column(0, { search: 'applied', order: 'applied' }).nodes().each(function (cell, i) {
+    //        cell.innerHTML = i + 1;
+    //    });
+    //}).draw();
 }
 

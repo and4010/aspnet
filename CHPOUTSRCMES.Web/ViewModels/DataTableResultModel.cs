@@ -25,5 +25,12 @@ namespace CHPOUTSRCMES.Web.ViewModels
             this.data = data;
         }
 
+        public DataTableJsonResultModel(int draw, int recordsFiltered, int recordsTotal, List<T> data)
+        {
+            this.draw = draw;
+            this.recordsFiltered = recordsFiltered;
+            this.recordsTotal = recordsTotal;
+            this.data = data;
+        }
     }
 }

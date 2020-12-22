@@ -129,14 +129,16 @@ ORDER BY S.SUBINVENTORY_CODE, S.LOCATOR_ID, S.INVENTORY_ITEM_ID
                 paramList.Add(SqlParamHelper.GetBigInt("@locatorId", locatorId));
                 paramList.Add(SqlParamHelper.GetBigInt("@itemId", itemId));
                 var models = mesContext.Database.SqlQuery<StockDetailQueryModel>(builder.ToString(), paramList.ToArray()).ToList();
-                //var count = models.Count();
+                int totalCount = models.Count;
 
                 var list = Search(models, data.Search.Value);
-                list = Order(data.Order, models);
+                int filteredCount = list.Count();
+
+                list = Order(data.Order, list);
 
                 list = list.Skip(data.Start).Take(data.Length);
 
-                return new DataTableJsonResultModel<StockDetailQueryModel>(data.Draw, 0, list.ToList());
+                return new DataTableJsonResultModel<StockDetailQueryModel>(data.Draw, filteredCount, totalCount, list.ToList());
             }
             catch (Exception ex)
             {

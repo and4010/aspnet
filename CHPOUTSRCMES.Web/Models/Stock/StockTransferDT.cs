@@ -1681,7 +1681,7 @@ namespace CHPOUTSRCMES.Web.Models.Stock
                 report.BorderWidth = 1;
                 report.BorderStyle = BorderStyle.Solid;
                 report.ServerReport.ReportPath = KeyName + "/OutboundPickingList";
-                report.ServerReport.ReportServerUrl = new Uri("http://rs.yfy.com/ReportServer");
+                report.ServerReport.ReportServerUrl = new Uri("https://rs.yfy.com/ReportServer");
                 report.ServerReport.SetParameters(paramList);
                 report.ServerReport.Refresh();
 
@@ -1745,7 +1745,7 @@ namespace CHPOUTSRCMES.Web.Models.Stock
                 report.BorderWidth = 1;
                 report.BorderStyle = BorderStyle.Solid;
                 report.ServerReport.ReportPath = KeyName + "/InboundRollPickingList";
-                report.ServerReport.ReportServerUrl = new Uri("http://rs.yfy.com/ReportServer");
+                report.ServerReport.ReportServerUrl = new Uri("https://rs.yfy.com/ReportServer");
                 report.ServerReport.SetParameters(paramList);
                 report.ServerReport.Refresh();
 
@@ -1809,7 +1809,7 @@ namespace CHPOUTSRCMES.Web.Models.Stock
                 report.BorderWidth = 1;
                 report.BorderStyle = BorderStyle.Solid;
                 report.ServerReport.ReportPath = KeyName + "/InboundFlatPickingList";
-                report.ServerReport.ReportServerUrl = new Uri("http://rs.yfy.com/ReportServer");
+                report.ServerReport.ReportServerUrl = new Uri("https://rs.yfy.com/ReportServer");
                 report.ServerReport.SetParameters(paramList);
                 report.ServerReport.Refresh();
 

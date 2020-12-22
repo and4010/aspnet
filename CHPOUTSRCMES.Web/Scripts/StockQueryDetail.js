@@ -33,7 +33,7 @@ function loadTable(subinventory, locatorId, itemId, itemCategory) {
         autoWidth: false,
         destroy:true,
         dom:
-            "<'row'<'col-sm-2'l><'col-sm-7'B><'col-sm-3'f>>" +
+            "<'row'<'col-sm-3 width-s'l><'col-sm-7'B><'col-sm-3'f>>" +
             "<'row'<'col-sm-12'tr>>" +
             "<'row'<'col-sm-5'i><'col-sm-7'p>>",
         "lengthMenu": [[500, 1000, 2000, 3000], [500, 1000, 2000, 3000]],

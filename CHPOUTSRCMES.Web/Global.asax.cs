@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Optimization;
@@ -24,6 +25,9 @@ namespace CHPOUTSRCMES.Web
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+            //報表如使用SSL連結 這一段忽略憑證檢查
+            ServicePointManager.ServerCertificateValidationCallback += (sender, cert, chain, sslPolicyErrors) => true;
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
             using (MesContext mesContext = new MesContext())
             {

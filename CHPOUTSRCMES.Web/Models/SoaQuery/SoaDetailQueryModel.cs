@@ -55,14 +55,16 @@ namespace CHPOUTSRCMES.Web.Models.SoaQuery
                 paramList.Add(SqlParamHelper.GetVarChar("@batchId", batchId, 20));
 
                 var models = mesContext.Database.SqlQuery<SoaDetailQueryModel>(cmd, paramList.ToArray()).ToList();
-                //var count = models.Count();
+                int totalCount = models.Count;
 
                 var list = Search(models, data.Search.Value);
+                int filteredCount = list.Count();
+
                 list = Order(data.Order, list);
 
                 list = list.Skip(data.Start).Take(data.Length);
 
-                return new DataTableJsonResultModel<SoaDetailQueryModel>(data.Draw, 0, list.ToList());
+                return new DataTableJsonResultModel<SoaDetailQueryModel>(data.Draw, filteredCount, totalCount, list.ToList());
             }
             catch (Exception ex)
             {

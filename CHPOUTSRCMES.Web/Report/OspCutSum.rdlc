@@ -1813,7 +1813,7 @@
                 <Value>=Fields!BatchNo.Value</Value>
               </SortExpression>
             </SortExpressions>
-            <Top>25.89742mm</Top>
+            <Top>22.45784mm</Top>
             <Left>0mm</Left>
             <Height>18mm</Height>
             <Width>379.77287mm</Width>
@@ -1831,7 +1831,7 @@
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>日期</Value>
+                    <Value>開始日期：</Value>
                     <Style />
                   </TextRun>
                 </TextRuns>
@@ -1841,10 +1841,10 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Textbox8</rd:DefaultName>
-            <Top>17.96617mm</Top>
+            <Top>14.36042mm</Top>
             <Left>0.8819mm</Left>
             <Height>6mm</Height>
-            <Width>10.7125mm</Width>
+            <Width>20.2375mm</Width>
             <ZIndex>2</ZIndex>
             <Style>
               <Border>
@@ -1876,8 +1876,8 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>planStartDateFrom</rd:DefaultName>
-            <Top>17.16617mm</Top>
-            <Left>13.35829mm</Left>
+            <Top>14mm</Top>
+            <Left>19.70829mm</Left>
             <Height>6mm</Height>
             <Width>19.95744mm</Width>
             <ZIndex>3</ZIndex>
@@ -1909,8 +1909,8 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Textbox10</rd:DefaultName>
-            <Top>17.16617mm</Top>
-            <Left>35.07963mm</Left>
+            <Top>14mm</Top>
+            <Left>41.42963mm</Left>
             <Height>6mm</Height>
             <Width>4.86617mm</Width>
             <ZIndex>4</ZIndex>
@@ -1944,8 +1944,8 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>planStartDateTo</rd:DefaultName>
-            <Top>17.16617mm</Top>
-            <Left>41.70968mm</Left>
+            <Top>14mm</Top>
+            <Left>48.05968mm</Left>
             <Height>6mm</Height>
             <Width>19.95744mm</Width>
             <ZIndex>5</ZIndex>
@@ -1977,7 +1977,7 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Textbox63</rd:DefaultName>
-            <Top>4.94453cm</Top>
+            <Top>4.60057cm</Top>
             <Left>0.08819cm</Left>
             <Height>0.6cm</Height>
             <Width>0.99188cm</Width>
@@ -2316,7 +2316,7 @@
               </TablixMembers>
             </TablixRowHierarchy>
             <DataSetName>DataSet1</DataSetName>
-            <Top>49.4453mm</Top>
+            <Top>46.00572mm</Top>
             <Left>12.56459mm</Left>
             <Height>18mm</Height>
             <Width>68mm</Width>
@@ -2327,8 +2327,44 @@
               </Border>
             </Style>
           </Tablix>
+          <Textbox Name="Textbox48">
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>列印日期：</Value>
+                    <Style />
+                  </TextRun>
+                  <TextRun>
+                    <Value>=Format(Globals!ExecutionTime, "yyyy/MM/dd HH:mm")</Value>
+                    <Style>
+                      <Format>d</Format>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style />
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>Textbox8</rd:DefaultName>
+            <Top>14.17659mm</Top>
+            <Left>330.77287mm</Left>
+            <Height>6.35mm</Height>
+            <Width>48mm</Width>
+            <ZIndex>8</ZIndex>
+            <Style>
+              <Border>
+                <Style>None</Style>
+              </Border>
+              <PaddingLeft>2pt</PaddingLeft>
+              <PaddingRight>2pt</PaddingRight>
+              <PaddingTop>2pt</PaddingTop>
+              <PaddingBottom>2pt</PaddingBottom>
+            </Style>
+          </Textbox>
         </ReportItems>
-        <Height>67.4453mm</Height>
+        <Height>64.00572mm</Height>
         <Style>
           <Border>
             <Style>None</Style>

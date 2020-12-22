@@ -112,14 +112,16 @@ WHERE U.UserId =  @userId AND S.STATUS_CODE = @statusCode
  ORDER BY S.SUBINVENTORY_CODE, S.LOCATOR_ID, S.INVENTORY_ITEM_ID");
 
                 var models = mesContext.Database.SqlQuery<StockQueryModel>(builder.ToString(), paramList.ToArray()).ToList();
-
+                int totalCount = models.Count;
 
                 var list = Search(models, data.Search.Value);
-                list = Order(data.Order, models);
+                int filteredCount = list.Count();
+
+                list = Order(data.Order, list);
 
                 list = list.Skip(data.Start).Take(data.Length);
 
-                return new DataTableJsonResultModel<StockQueryModel>(data.Draw, models.Count, list.ToList());
+                return new DataTableJsonResultModel<StockQueryModel>(data.Draw, filteredCount, totalCount, list.ToList());
 
             }
             catch (Exception ex)

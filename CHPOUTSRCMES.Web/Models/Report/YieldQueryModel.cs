@@ -262,7 +262,7 @@ JOIN USER_SUBINVENTORY_T us ON us.ORGANIZATION_ID = h.ORGANIZATION_ID AND us.SUB
                 report.BorderWidth = 1;
                 report.BorderStyle = BorderStyle.None;
                 report.ServerReport.ReportPath = KeyName + "/OspYield";
-                report.ServerReport.ReportServerUrl = new Uri("http://rs.yfy.com/ReportServer");
+                report.ServerReport.ReportServerUrl = new Uri("https://rs.yfy.com/ReportServer");
                 report.ServerReport.SetParameters(uow.GetOspYieldReportParameterList(cuttingDateFrom, cuttingDateTo, batchNo, machineNum, itemNumber, barcode, subinventory, userId));
                 report.ServerReport.Refresh();
 

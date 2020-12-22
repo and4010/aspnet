@@ -562,7 +562,7 @@ namespace CHPOUTSRCMES.Web.Models.Delivery
                 report.BorderWidth = 1;
                 report.BorderStyle = BorderStyle.Solid;
                 report.ServerReport.ReportPath = KeyName + "/DeliveryPickingList";
-                report.ServerReport.ReportServerUrl = new Uri("http://rs.yfy.com/ReportServer");
+                report.ServerReport.ReportServerUrl = new Uri("https://rs.yfy.com/ReportServer");
                 report.ServerReport.SetParameters(paramList);
                 report.ServerReport.Refresh();                
 

@@ -106,14 +106,16 @@ WHERE 1=1
                 }
 
                 var models = mesContext.Database.SqlQuery<SoaQueryModel>(builder.ToString(), paramList.ToArray()).ToList();
-
+                int totalCount = models.Count;
 
                 var list = Search(models, data.Search.Value);
+                int filteredCount = list.Count();
+
                 list = Order(data.Order, list);
 
                 list = list.Skip(data.Start).Take(data.Length);
 
-                return new DataTableJsonResultModel<SoaQueryModel>(data.Draw, 0, list.ToList());
+                return new DataTableJsonResultModel<SoaQueryModel>(data.Draw, filteredCount, totalCount, list.ToList());
 
             }
             catch (Exception ex)

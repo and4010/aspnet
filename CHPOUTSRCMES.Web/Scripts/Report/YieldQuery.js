@@ -67,7 +67,6 @@ function ospYieldReport() {
             //}, 500); 
 
             $.ajax({
-                async: false,
                 url: "/Report/OspYieldReport",
                 type: "post",
                 data: {
