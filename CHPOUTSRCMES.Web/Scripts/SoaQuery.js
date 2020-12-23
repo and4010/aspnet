@@ -101,11 +101,11 @@ function initTable(processCode, processDate, hasError) {
                 }
             },
             { data: "RowNum", "name": "傳輸筆數", "autoWidth": true, "className": "dt-body-right" },
-            { data: "StatusCode", "name": "狀態", "autoWidth": true, "className": "dt-body-right" },
+            { data: "StatusCode", "name": "狀態", "autoWidth": true, "className": "dt-body-center" },
             { data: "ErrorMsg", "name": "錯誤訊息", "autoWidth": true, "className": "dt-body-right" },
-            { data: "SoaPullingFlag", "name": "SOA傳輸狀態", "autoWidth": true, "className": "dt-body-right" },
+            { data: "SoaPullingFlag", "name": "SOA傳輸狀態", "autoWidth": true, "className": "dt-body-center" },
             { data: "SoaErrorMsg", "name": "SOA錯誤訊息", "autoWidth": true, "className": "dt-body-right" },
-            { data: "SoaProcessCode", "name": "SOA狀態", "autoWidth": true, "className": "dt-body-right" }
+            { data: "SoaProcessCode", "name": "SOA狀態", "autoWidth": true, "className": "dt-body-center" }
             
          ],
          //'columnDefs': [{
