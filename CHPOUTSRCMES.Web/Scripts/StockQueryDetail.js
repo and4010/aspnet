@@ -67,6 +67,7 @@ function loadTable(subinventory, locatorId, itemId, itemCategory) {
                 action: printlabel
             }
         ],
+        order: [[7, 'desc']],
         columns: [
             {
                 data: null,
