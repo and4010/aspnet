@@ -2657,7 +2657,9 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
                         return new ResultDataModel<long>(false, "僅完工狀態可進行修改!!", 0);
                     }
 
-                    var notInStockBarocdeList = OspPickedInHTRepository.GetAll().AsNoTracking().Join(
+                    List<string> notInStockBarocdeList = new List<string>();
+
+                    var inNotInStockBarocdeList = OspPickedInHTRepository.GetAll().AsNoTracking().Join(
                         stockTRepository.GetAll().AsNoTracking(),
                         o => new { o.StockId },
                         s => new { s.StockId },
@@ -2671,11 +2673,53 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
                         .Select(x => x.Barcode)
                         .ToList();
                      
+                    if (inNotInStockBarocdeList != null && inNotInStockBarocdeList.Count > 0)
+                    {
+                        notInStockBarocdeList.AddRange(inNotInStockBarocdeList);
+                    }
+
+                    var outNotInStockBarocdeList = OspPickedOutHTRepository.GetAll().AsNoTracking().Join(
+                        stockTRepository.GetAll().AsNoTracking(),
+                        o => o.StockId,
+                        s => s.StockId,
+                        (o, s) => new
+                        {
+                            OspHeaderId = o.OspHeaderId,
+                            Barcode = s.Barcode,
+                            StatusCode = s.StatusCode
+                        })
+                        .Where(x => x.OspHeaderId == OspHeaderId && x.StatusCode != StockStatusCode.InStock)
+                        .Select(x => x.Barcode)
+                        .ToList();
+
+                    if (outNotInStockBarocdeList != null && outNotInStockBarocdeList.Count > 0)
+                    {
+                        notInStockBarocdeList.AddRange(outNotInStockBarocdeList);
+                    }
+                    
+                    var cotangentNotInStockBarocdeList = OspCotangentHTRepository.GetAll().AsNoTracking().Join(
+                        stockTRepository.GetAll().AsNoTracking(),
+                        o => o.StockId,
+                        s => s.StockId,
+                        (o, s) => new
+                        {
+                            OspHeaderId = o.OspHeaderId,
+                            Barcode = s.Barcode,
+                            StatusCode = s.StatusCode
+                        })
+                        .Where(x => x.OspHeaderId == OspHeaderId && x.StatusCode != StockStatusCode.InStock)
+                        .Select(x => x.Barcode)
+                        .ToList();
+
+                    if (cotangentNotInStockBarocdeList != null && cotangentNotInStockBarocdeList.Count > 0)
+                    {
+                        notInStockBarocdeList.AddRange(cotangentNotInStockBarocdeList);
+                    }
+
                     if (notInStockBarocdeList != null && notInStockBarocdeList.Count > 0)
                     {
                         return new ResultDataModel<long>(false, "以下條碼不在庫無法修改:" + string.Join(",", notInStockBarocdeList), 0);
                     }
-                    
 
                     var newHeader = OspHeaderTRepository.GetAll().Where(x => x.OspHeaderId == OspHeaderId).AsNoTracking().FirstOrDefault();
                     if (newHeader.Status == ProcessStatusCode.CompletedBatch)

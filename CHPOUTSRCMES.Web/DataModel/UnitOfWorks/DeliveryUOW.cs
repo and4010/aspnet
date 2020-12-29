@@ -893,7 +893,7 @@ GROUP BY d.DLV_DETAIL_ID";
         }
 
 
-
+        //取得符合使用者倉庫365天內的航程號
         private List<SelectListItem> getTripNameList(string userId)
         {
             var tripNameList = new List<SelectListItem>();
