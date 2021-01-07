@@ -1,6 +1,8 @@
 ﻿var t;
 $(document).ready(function () {
-   
+    //var referrer = document.referrer;
+    
+
     $('#btnSearch').click(function () {
         loadTable();
         //t.ajax.reload();
@@ -12,7 +14,7 @@ $(document).ready(function () {
         changeMonth: true,
         changeYear: true
     });
-    $("#ProcessDate").val($.datepicker.formatDate("yy-mm-dd", new Date()));
+    //$("#ProcessDate").val($.datepicker.formatDate("yy-mm-dd", new Date()));
     //$('#QueryTable tbody').on('click', '.available-query', function () {
     //    var data = $('#QueryTable').DataTable().row($(this).parents('tr')).data();
 
@@ -22,16 +24,29 @@ $(document).ready(function () {
 
     //    window.open("/Soa/Detail/" + processCode + "/" + serverCode + "/" + batchId);
     //});
+    processDateInit();
     loadTable();
-
+    
     function loadTable() {
         var processCode = $("#ProcessCodeList option:selected").val();
         var processDate = $("#ProcessDate").val();
         var hasError = $("#ErrorOptionList option:selected").val();
+        if (processDate) {
+            $.session.set('ProcessDate', processDate)
+        }
 
         initTable(processCode, processDate, hasError);
     }
+    function processDateInit() {
+        var processDate = $.session.get('ProcessDate');
+        if (processDate) {
+            $("#ProcessDate").val(processDate);
+        } else {
+            $("#ProcessDate").val($.datepicker.formatDate("yy-mm-dd", new Date()));
+        }
+    }
 });
+
 
 
 function initTable(processCode, processDate, hasError) {

@@ -694,7 +694,7 @@ $(document).ready(function () {
                 return;
             }
             if (data[i].DELIVERY_STATUS == '已取消') {
-                swal.fire('已出貨，無法再修改核准日');
+                swal.fire('已取消，無法再修改核准日');
                 return;
             }
         }
