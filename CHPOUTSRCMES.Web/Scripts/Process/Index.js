@@ -264,7 +264,7 @@ function ProcessLoadTable(Status, BatchNo, MachineNum, DueDateFrom, DueDateTo, C
             ]
         },
       
-        "order": [[5, "desc"]], //單號排序
+        "order": [[23, "desc"]], //計畫開始時間排序
         columnDefs: [{
             orderable: false, targets: [0, 24], width: "60px",
         }],
