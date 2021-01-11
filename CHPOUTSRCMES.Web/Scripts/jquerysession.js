@@ -1,5 +1,5 @@
 ﻿(function ($) {
-    var cookieExpireTime = 1209600; // cookie项过期时间 2周
+    var cookieExpireTime = 3600; // cookie项过期时间1小時
     $.session = {
         _id: null,
 
@@ -26,7 +26,7 @@
                 }
             }
 
-            document.cookie = this._generatePrefix() + "=" + document.location.protocol + ';path=/;expires=' + (new Date((new Date).getTime() + 28800000 + cookieExpireTime)).toUTCString(); // 28800000 含义：世界时间+8天=北京时间
+            document.cookie = this._generatePrefix() + "=" + document.location.protocol + ';path=/;expires=' + (new Date((new Date).getTime() + 28800000 + cookieExpireTime)).toUTCString(); // 28800000 含义：世界时间+8天=北京时间同台灣時間
 
         },
 

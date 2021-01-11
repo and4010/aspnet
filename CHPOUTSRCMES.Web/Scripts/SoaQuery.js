@@ -32,7 +32,7 @@ $(document).ready(function () {
         var processDate = $("#ProcessDate").val();
         var hasError = $("#ErrorOptionList option:selected").val();
         if (processDate) {
-            $.session.set('ProcessDate', processDate)
+            $.session.set('ProcessDate', processDate);
         }
 
         initTable(processCode, processDate, hasError);

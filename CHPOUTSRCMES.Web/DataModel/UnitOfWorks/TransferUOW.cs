@@ -1384,13 +1384,13 @@ SELECT [TRANSFER_PICKED_ID] as ID
                     UpdateInboundPickStatus(pick, InboundStatus.AlreadyInbound, userId, userName, DateTime.Now);
                     trfInboundPickedTRepository.SaveChanges();
                     txn.Commit();
-                    return new ResultModel(true, "待列印轉待入庫成功");
+                    return new ResultModel(true, "待列印轉已入庫成功");
                 }
                 catch (Exception ex)
                 {
                     logger.Error(LogUtilities.BuildExceptionMessage(ex));
                     txn.Rollback();
-                    return new ResultModel(false, "待列印轉待入庫失敗:" + ex.Message);
+                    return new ResultModel(false, "待列印轉已入庫失敗:" + ex.Message);
                 }
             }
 
