@@ -22,13 +22,20 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             this.context = context;
         }
 
-
+        /// <summary>
+        /// 變更儲存資料庫
+        /// </summary>
+        /// <returns></returns>
         public int SaveChanges()
         {
             int result = this.Context.SaveChanges();
             return result;
         }
 
+        /// <summary>
+        /// 釋放DbContext
+        /// </summary>
+        /// <param name="disposing"></param>
         protected virtual void Dispose(bool disposing)
         {
             if (!this.disposed)

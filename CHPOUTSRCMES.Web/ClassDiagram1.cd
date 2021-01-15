@@ -1,0 +1,2420 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="CHPOUTSRCMES.Web.ActionFilter.NoCacheAttribute" Collapsed="true">
+    <Position X="33.5" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAA=</HashCode>
+      <FileName>ActionFilter\NoCacheAttribute.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.App_Start.AuthConfig" Collapsed="true">
+    <Position X="38.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>App_Start\AuthConfig.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.BundleConfig" Collapsed="true">
+    <Position X="47.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAA=</HashCode>
+      <FileName>App_Start\BundleConfig.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.FilterConfig" Collapsed="true">
+    <Position X="31.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAA=</HashCode>
+      <FileName>App_Start\FilterConfig.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.RouteConfig" Collapsed="true">
+    <Position X="49.25" Y="10.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAA=</HashCode>
+      <FileName>App_Start\RouteConfig.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.MvcApplication" Collapsed="true">
+    <Position X="28.25" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAACAAAAAAABAAAAAEAIAAAAAAAAAAA=</HashCode>
+      <FileName>Global.asax.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Startup" Collapsed="true">
+    <Position X="35.25" Y="11.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAA=</HashCode>
+      <FileName>Startup.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Controllers.AccountController" Collapsed="true">
+    <Position X="26.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAQAAAACAAAEAgIgAggEBAEACEQESAAYAAAg=</HashCode>
+      <FileName>Controllers\AccountController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Controllers.DeliveryController" Collapsed="true">
+    <Position X="26.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>YAAAAAQAYAABACEAGAAAAEBAQACACIAIAAVBAAABIAA=</HashCode>
+      <FileName>Controllers\DeliveryController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Controllers.ErrorsController" Collapsed="true">
+    <Position X="51" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Controllers\ErrorsController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Controllers.HomeController" Collapsed="true">
+    <Position X="51" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAkIAABAAABABBAACAECASDECQAIAAwAkAEBQAAAA=</HashCode>
+      <FileName>Controllers\HomeController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Controllers.InventoryController" Collapsed="true">
+    <Position X="40.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAgAAAEAAAEAAAAAAAgIBAAAkEAgQAEAIAACAAA=</HashCode>
+      <FileName>Controllers\InventoryController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Controllers.MachinePaperTypeController" Collapsed="true">
+    <Position X="44" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAEAAAAAAAA=</HashCode>
+      <FileName>Controllers\MachinePaperTypeController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Controllers.MiscellaneousController" Collapsed="true">
+    <Position X="52.75" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gABBAACBAAAAAAAAAAAAgAgAAAAAAEAAAQEgICAAAAA=</HashCode>
+      <FileName>Controllers\MiscellaneousController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Controllers.NavbarController" Collapsed="true">
+    <Position X="31.75" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAA=</HashCode>
+      <FileName>Controllers\NavbarController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Controllers.ObsoleteController" Collapsed="true">
+    <Position X="35.25" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gAAFAAABAAAAAAAAAAAAgAgAAAAAAEAAAQEgICAAAAA=</HashCode>
+      <FileName>Controllers\ObsoleteController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Controllers.OrgSubinventoryController" Collapsed="true">
+    <Position X="52.75" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAAAAAQAAAAQAAEAAAAAEAAAAAAAA=</HashCode>
+      <FileName>Controllers\OrgSubinventoryController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Controllers.OspRelatedController" Collapsed="true">
+    <Position X="45.75" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAACAAAAAAAAAAQAAAAAAEAAAAAAAMAAAAAAAA=</HashCode>
+      <FileName>Controllers\OspRelatedController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Controllers.PartNoController" Collapsed="true">
+    <Position X="40.5" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAA=</HashCode>
+      <FileName>Controllers\PartNoController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Controllers.ProcessController" Collapsed="true">
+    <Position X="52.75" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAARAQAAgQqEHAGgBEUBCqAEBAAQACACEAIEBAKgI=</HashCode>
+      <FileName>Controllers\ProcessController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Controllers.PurchaseController" Collapsed="true">
+    <Position X="31.75" Y="10.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAEAATIAAAxCEgAgACIAAGAACAqAAAwAAA0QAAQQKAA=</HashCode>
+      <FileName>Controllers\PurchaseController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Controllers.ReasonController" Collapsed="true">
+    <Position X="38.75" Y="10.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAQAAAAAAAAAAAEAAAAAEAAAAAAAA=</HashCode>
+      <FileName>Controllers\ReasonController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Controllers.ReportController" Collapsed="true">
+    <Position X="47.5" Y="10.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AFAAAAAAAAAAAAAAAAABAAAAAAAIAAAAAAAAIQAAAAA=</HashCode>
+      <FileName>Controllers\ReportController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Controllers.SoaController" Collapsed="true">
+    <Position X="54.5" Y="10.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAEAAIAAAAAAAAAAAAAAAAAAAAAEAAAEACAA=</HashCode>
+      <FileName>Controllers\SoaController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Controllers.StockController" Collapsed="true">
+    <Position X="44" Y="11.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AACAAAAQAAAAAgAAAAABAAABQAAAAAgIAAkACAAACAA=</HashCode>
+      <FileName>Controllers\StockController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Controllers.StockInventoryController" Collapsed="true">
+    <Position X="52.75" Y="11.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gAgAABABAghAAAACACAciAiAAAAAAQAAISEgACAAAgA=</HashCode>
+      <FileName>Controllers\StockInventoryController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Controllers.StockTransactionController" Collapsed="true">
+    <Position X="52.75" Y="12.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>owFhQAAGFCFTAQCgBgAI7DgADUoCgABoAWEAEBFkAAA=</HashCode>
+      <FileName>Controllers\StockTransactionController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Controllers.TransferController" Collapsed="true">
+    <Position X="26.5" Y="14.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAA=</HashCode>
+      <FileName>Controllers\TransferController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Controllers.YszmpckqController" Collapsed="true">
+    <Position X="38.75" Y="16.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAgAAAAAQAAAAAAAAQAAAAAAAEAAAAEAAAAAAAA=</HashCode>
+      <FileName>Controllers\YszmpckqController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.DataAnnotation.Precision" Collapsed="true">
+    <Position X="51" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAEAAAAAAAAAAACAAAAAAAAAAAQAAAAAAA=</HashCode>
+      <FileName>DataAnnotation\Precision.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entity.Delivery.DLV_DETAIL_HT" Collapsed="true">
+    <Position X="35.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QCBwDUAQACQAADCgUWQACCAAAApcABAAAECIAAwAAAE=</HashCode>
+      <FileName>DataModel\Entity\Delivery\DLV_DETAIL_HT.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entity.Delivery.DLV_DETAIL_T" Collapsed="true">
+    <Position X="37" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QCBwDUIQAAQAADCgEWQACCCAQApeAAAAAACAAAwAAAE=</HashCode>
+      <FileName>DataModel\Entity\Delivery\DLV_DETAIL_T.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entity.Delivery.DLV_HEADER_T" Collapsed="true">
+    <Position X="38.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QARwAAADiIAAggCAQaIAACABQQhEFBABAAAgEAmAwAE=</HashCode>
+      <FileName>DataModel\Entity\Delivery\DLV_HEADER_T.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entity.Delivery.DLV_ORG_T" Collapsed="true">
+    <Position X="40.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>RCBgCUADkKQQct+AUQMACCQAQQIcNBIDAECgAAyAQQE=</HashCode>
+      <FileName>DataModel\Entity\Delivery\DLV_ORG_T.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entity.Delivery.DLV_PICKED_HT" Collapsed="true">
+    <Position X="42.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>UCBQAgAUBAEoADAAQEAAAIAAQARAAAAIAACAAwwIAAE=</HashCode>
+      <FileName>DataModel\Entity\Delivery\DLV_PICKED_HT.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entity.Delivery.DLV_PICKED_T" Collapsed="true">
+    <Position X="44" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>UCBQAgAUBAEgADAAQEAAAIAAQAxAAAAIAACAAwwAAAE=</HashCode>
+      <FileName>DataModel\Entity\Delivery\DLV_PICKED_T.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entity.Delivery.DLV_SOA_T" Collapsed="true">
+    <Position X="45.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAAACQAAAAAAAAAAEAIAAAAAAAAAAAAAAAAAAAAAAAE=</HashCode>
+      <FileName>DataModel\Entity\Delivery\DLV_SOA_T.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entity.Information.BCD_MISC_T" Collapsed="true">
+    <Position X="42.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QABAAAAAAAAAAAIAAABAAAAAAQAAEAAAAAAAAAgAAAE=</HashCode>
+      <FileName>DataModel\Entity\Information\BCD_MISC_T.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entity.Information.BCD_SERIAL_T" Collapsed="true">
+    <Position X="44" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAAAAAAAAAAAAIAAAABAAAAAAQEAEAAAAAAAAAAAAAE=</HashCode>
+      <FileName>DataModel\Entity\Information\BCD_SERIAL_T.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entity.Information.BCD_UNIQUE_T" Collapsed="true">
+    <Position X="45.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE=</HashCode>
+      <FileName>DataModel\Entity\Information\BCD_UNIQUE_T.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entity.Information.DOC_UNIQUE_T" Collapsed="true">
+    <Position X="47.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAAAAAAAAAAABAAAAAAAAAACAAAAAAAAAAAAAQAAAAE=</HashCode>
+      <FileName>DataModel\Entity\Information\DOC_UNIQUE_T.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entity.Information.ITEMS_T" Collapsed="true">
+    <Position X="45.75" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QABAAAIQgOGfAAAAABAAAAKEAAAIAAAAgIIAQAwAAgE=</HashCode>
+      <FileName>DataModel\Entity\Information\ITEMS_T.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entity.Information.LOCATOR_T" Collapsed="true">
+    <Position X="54.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACAAEAgAAAAUAAAAAABAAAAAgQCgEAAAQAAAAAAgIAA=</HashCode>
+      <FileName>DataModel\Entity\Information\LOCATOR_T.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entity.Information.MACHINE_PAPER_TYPE_T" Collapsed="true">
+    <Position X="38.75" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QABAAAABAAAwAIAAAAIAAAAAAQIAAAAIAIAAAAgAQAE=</HashCode>
+      <FileName>DataModel\Entity\Information\MACHINE_PAPER_TYPE_T.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entity.Information.ORG_ITEMS_T" Collapsed="true">
+    <Position X="40.5" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAQAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DataModel\Entity\Information\ORG_ITEMS_T.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entity.Information.ORG_UNIT_T" Collapsed="true">
+    <Position X="44" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAQAAAAAAAAAAAAAAAEAAAAAAAAAACAAAA=</HashCode>
+      <FileName>DataModel\Entity\Information\ORG_UNIT_T.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entity.Information.ORGANIZATION_T" Collapsed="true">
+    <Position X="49.25" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAIAQAAAAAAAAAAAAAQgAAAAAAAAAAAAAQAA=</HashCode>
+      <FileName>DataModel\Entity\Information\ORGANIZATION_T.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entity.Information.RELATED_T" Collapsed="true">
+    <Position X="44" Y="10.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QABAAAASAAAQAAAAAAAAAADAACAKAAAAAAAAAAgAAAE=</HashCode>
+      <FileName>DataModel\Entity\Information\RELATED_T.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entity.Information.STK_REASON_T" Collapsed="true">
+    <Position X="37" Y="11.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QABAAAAAAAAAAAAAAAAAAAQAAAAACAAAAAAAAAgAAAE=</HashCode>
+      <FileName>DataModel\Entity\Information\STK_REASON_T.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entity.Information.SUBINVENTORY_T" Collapsed="true">
+    <Position X="44" Y="13.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAoAAAQAIAAAAAAAAAAAQAAEAAAACAAAAAAAAA=</HashCode>
+      <FileName>DataModel\Entity\Information\SUBINVENTORY_T.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entity.Information.TRANSACTION_TYPE_T" Collapsed="true">
+    <Position X="52.75" Y="13.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAhAAQAAAgAwEAIAAAAAAAAAAAAACAAAAAAAAAgAAAE=</HashCode>
+      <FileName>DataModel\Entity\Information\TRANSACTION_TYPE_T.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entity.Information.USER_SUBINVENTORY_T" Collapsed="true">
+    <Position X="54.5" Y="15.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QABAAAAAAAAAAAAAAAAAAAgAAQAAEAAAAAAAAAgAAAE=</HashCode>
+      <FileName>DataModel\Entity\Information\USER_SUBINVENTORY_T.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entity.Information.YSZMPCKQ_T" Collapsed="true">
+    <Position X="35.25" Y="16.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QABCAAAAAAASQAAAAAAAAAAAAYAABBAAAAAAAAiAQEE=</HashCode>
+      <FileName>DataModel\Entity\Information\YSZMPCKQ_T.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entity.Information.ORG_ITEMS_TMP_T" Collapsed="true">
+    <Position X="42.25" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAQAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DataModel\Entity\Temp\ORG_ITEMS_TMP_T.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entity.Inventory.TRF_INVENTORY_HEADER_T" Collapsed="true">
+    <Position X="42.25" Y="14.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QChQAAgAQAAEEACAAAAAAAACQwBEEAQAAAABUCgAQAE=</HashCode>
+      <FileName>DataModel\Entity\Inventory\TRF_INVENTORY_HEADER_T.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entity.Inventory.TRF_INVENTORY_HT" Collapsed="true">
+    <Position X="44" Y="14.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>UADQAAAQAAksABAAAAAIAACIAIBCAAgIAAAIAgkAAAE=</HashCode>
+      <FileName>DataModel\Entity\Inventory\TRF_INVENTORY_HT.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entity.Inventory.TRF_INVENTORY_SOA_T" Collapsed="true">
+    <Position X="45.75" Y="14.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAAACQAAAAAEAAAAEAAAAAAAAAAAAAAAIAAAAAAAAAE=</HashCode>
+      <FileName>DataModel\Entity\Inventory\TRF_INVENTORY_SOA_T.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entity.Inventory.TRF_INVENTORY_T" Collapsed="true">
+    <Position X="47.5" Y="14.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>UADQAAAQAAksABAAAAAIAACIAIBCAAgAAAAIAgkAAAE=</HashCode>
+      <FileName>DataModel\Entity\Inventory\TRF_INVENTORY_T.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entity.LOG_ENTRY_T" Collapsed="true">
+    <Position X="28.25" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAQYAAgAAAQAAAAAAAAAAAAABAABAIAABAAA=</HashCode>
+      <FileName>DataModel\Entity\LOG_ENTRY_T.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entity.LOG_ENTRY_TASK_T" Collapsed="true">
+    <Position X="30" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAQYAAgAAAQAAAAAAAAAAAAABAABAIAABAAA=</HashCode>
+      <FileName>DataModel\Entity\LOG_ENTRY_TASK_T.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entity.STK_TXN_T" Collapsed="true">
+    <Position X="38.75" Y="11.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>UCBAABAQAAEAAAAAAKABQECoCQADUBACIAAIQgkASAU=</HashCode>
+      <FileName>DataModel\Entity\STK_TXN_T.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entity.STOCK_HT" Collapsed="true">
+    <Position X="40.5" Y="11.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>USBAQAIQAAEAAjCAACAAACSAgQICGAAgIAKIAgkCQAM=</HashCode>
+      <FileName>DataModel\Entity\STOCK_HT.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entity.STOCK_T" Collapsed="true">
+    <Position X="42.25" Y="11.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>UCBAwAIQAAEAAjCAACAAACSAgQMCGAAgIAKIAgkCQAM=</HashCode>
+      <FileName>DataModel\Entity\STOCK_T.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entity.AppUser" Collapsed="true">
+    <Position X="35.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAEAAECAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DataModel\Entity\USER_T.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entity.Miscellaneous.TRF_MISCELLANEOUS_HEADER_T" Collapsed="true">
+    <Position X="49.25" Y="14.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QChQAAgAQAAAEACAAAAAAAACQwBEEAQAAAABUCgAYAE=</HashCode>
+      <FileName>DataModel\Entity\Miscellaneous\TRF_MISCELLANEOUS_HEADER_T.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entity.Miscellaneous.TRF_MISCELLANEOUS_HT" Collapsed="true">
+    <Position X="51" Y="14.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>UADQAAAQAAkoABAAAAAIgACIAIBCAAAAAAAIAgkQIAE=</HashCode>
+      <FileName>DataModel\Entity\Miscellaneous\TRF_MISCELLANEOUS_HT.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entity.Miscellaneous.TRF_MISCELLANEOUS_SOA_T" Collapsed="true">
+    <Position X="52.75" Y="14.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAAACQAAAAAAAAAAEAAAAAAAAAAAAAAAIAAAAAAAIAE=</HashCode>
+      <FileName>DataModel\Entity\Miscellaneous\TRF_MISCELLANEOUS_SOA_T.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entity.Miscellaneous.TRF_MISCELLANEOUS_T" Collapsed="true">
+    <Position X="54.5" Y="14.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>UADQAAAQAAkoABAAAAAIgACIAIBCAAAAAAAIAgkAIAE=</HashCode>
+      <FileName>DataModel\Entity\Miscellaneous\TRF_MISCELLANEOUS_T.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entity.Obsolete.TRF_OBSOLETE_HEADER_T" Collapsed="true">
+    <Position X="26.5" Y="15.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QChQAAgAQAAAEACAAAAAAAACQwBEEAQIAAABUCgAQAE=</HashCode>
+      <FileName>DataModel\Entity\Obsolete\TRF_OBSOLETE_HEADER_T.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entity.Obsolete.TRF_OBSOLETE_HT" Collapsed="true">
+    <Position X="28.25" Y="15.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>UADQAAAQAAkoABAAAAAIAACIAIJCAAAIAAAIAg0AAAE=</HashCode>
+      <FileName>DataModel\Entity\Obsolete\TRF_OBSOLETE_HT.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entity.Obsolete.TRF_OBSOLETE_SOA_T" Collapsed="true">
+    <Position X="30" Y="15.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAAACQAAAAAAAAAAEAAAAAAAAAAAAAAIIAAAAAAAAAE=</HashCode>
+      <FileName>DataModel\Entity\Obsolete\TRF_OBSOLETE_SOA_T.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entity.Obsolete.TRF_OBSOLETE_T" Collapsed="true">
+    <Position X="31.75" Y="15.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>UADQAAAQAAkoABAAAAAIAACIAIBCAAAIAAAIAg0AAAE=</HashCode>
+      <FileName>DataModel\Entity\Obsolete\TRF_OBSOLETE_T.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entity.Process.OSP_COTANGENT_HT" Collapsed="true">
+    <Position X="31.75" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>UQBQAAAUAAEgABAAAAAgAKAAgAZAAAAAAAAIQggAAAE=</HashCode>
+      <FileName>DataModel\Entity\Process\OSP_COTANGENT_HT.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entity.Process.OSP_COTANGENT_T" Collapsed="true">
+    <Position X="33.5" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>UQBQAAAUAAEgABAAAAAgAKAAgAZAAAAAAAAIAggAAAE=</HashCode>
+      <FileName>DataModel\Entity\Process\OSP_COTANGENT_T.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entity.Process.OSP_DETAIL_IN_HT" Collapsed="true">
+    <Position X="35.25" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QjBISwIYAAdgcP+AEEAAIK4kwAYKJDILgAQABB4AEgE=</HashCode>
+      <FileName>DataModel\Entity\Process\OSP_DETAIL_IN_HT.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entity.Process.OSP_DETAIL_IN_T" Collapsed="true">
+    <Position X="37" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QjBISwIYAAdgcP+AEEAAAK4kwAYKJDILgAQABB4AEgE=</HashCode>
+      <FileName>DataModel\Entity\Process\OSP_DETAIL_IN_T.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entity.Process.OSP_DETAIL_OUT_HT" Collapsed="true">
+    <Position X="38.75" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QzBISwIYAAdgcP+AEEAIAK4kwAYKJDILgAQAAB4AEgE=</HashCode>
+      <FileName>DataModel\Entity\Process\OSP_DETAIL_OUT_HT.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entity.Process.OSP_DETAIL_OUT_T" Collapsed="true">
+    <Position X="40.5" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QzBISwIYAAdgcP+AEEAAAK4kwAYKJDILgAQAAB4AEgE=</HashCode>
+      <FileName>DataModel\Entity\Process\OSP_DETAIL_OUT_T.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entity.Process.OSP_HEADER_T" Collapsed="true">
+    <Position X="44" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>YARAgAAFAAAQACAGAEAAAACBiQBEAAABBECIAAmAQAE=</HashCode>
+      <FileName>DataModel\Entity\Process\OSP_HEADER_T.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entity.Process.OSP_ORG_T" Collapsed="true">
+    <Position X="45.75" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>YjRIywIYAAdgcP+CEEAAAK6lSQYOJDILgASIAB6AUgE=</HashCode>
+      <FileName>DataModel\Entity\Process\OSP_ORG_T.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entity.Process.OSP_PICKED_IN_HT" Collapsed="true">
+    <Position X="47.5" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>UABQAAAQBAEgABAAAAAAIKCAgAZAAAQAAQAIBggAAAE=</HashCode>
+      <FileName>DataModel\Entity\Process\OSP_PICKED_IN_HT.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entity.Process.OSP_PICKED_IN_T" Collapsed="true">
+    <Position X="49.25" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>UABQAAAQBAEgABAAAAAAAKCAgAZAAAQAAQAIBggAAAE=</HashCode>
+      <FileName>DataModel\Entity\Process\OSP_PICKED_IN_T.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entity.Process.OSP_PICKED_OUT_HT" Collapsed="true">
+    <Position X="51" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>UQBQAAAUAAEgABAAAAAgAKBAgAZAAAAAgBAIAggAAAE=</HashCode>
+      <FileName>DataModel\Entity\Process\OSP_PICKED_OUT_HT.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entity.Process.OSP_PICKED_OUT_T" Collapsed="true">
+    <Position X="52.75" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>UQBQAAAUAAEgABAAAAAgAKBAgAZAAAAAABAIAggAAAE=</HashCode>
+      <FileName>DataModel\Entity\Process\OSP_PICKED_OUT_T.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entity.Process.OSP_YIELD_VARIANCE_HT" Collapsed="true">
+    <Position X="42.25" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QARwAgAAAAEAAIARCAAkAAAAiAFABAAgCAAAAAkAgAE=</HashCode>
+      <FileName>DataModel\Entity\Process\OSP_YIELD_VARIANCE_HT.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entity.Process.OSP_YIELD_VARIANCE_T" Collapsed="true">
+    <Position X="44" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QARwAgAAAAEAAIARCAAkAAAAiAFAAAAgCAAAAAkAgAE=</HashCode>
+      <FileName>DataModel\Entity\Process\OSP_YIELD_VARIANCE_T.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entity.Purchase.OSP_HEADER_MOD_T" Collapsed="true">
+    <Position X="42.25" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAQAAAAAAgAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DataModel\Entity\Process\OSP_HEADER_MOD_T.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entity.Purchase.OSP_SOA_DTL_S1_T" Collapsed="true">
+    <Position X="54.5" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAQQAAAAAAAAAAAAAAAgAAAAAAAAAQAAAAAAAA=</HashCode>
+      <FileName>DataModel\Entity\Process\OSP_SOA_DTL_S1_T.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entity.Purchase.OSP_SOA_DTL_S2_T" Collapsed="true">
+    <Position X="26.5" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAQAAAAAAAAIAAAAAAAgAgAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DataModel\Entity\Process\OSP_SOA_DTL_S2_T.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entity.Purchase.OSP_SOA_DTL_S3_T" Collapsed="true">
+    <Position X="28.25" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQAAAAAQAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DataModel\Entity\Process\OSP_SOA_DTL_S3_T.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entity.Purchase.OSP_SOA_S1_T" Collapsed="true">
+    <Position X="30" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QABACQAAAAAAAAAAEAAAAAAAgAAAAAAAIAQAAAgAAAE=</HashCode>
+      <FileName>DataModel\Entity\Process\OSP_SOA_S1_T.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entity.Purchase.OSP_SOA_S2_T" Collapsed="true">
+    <Position X="31.75" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QABACQAAAAAAAAAAEAAAAAAAgAgAAAAAIAAAAAgAAAE=</HashCode>
+      <FileName>DataModel\Entity\Process\OSP_SOA_S2_T.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entity.Purchase.OSP_SOA_S3_T" Collapsed="true">
+    <Position X="33.5" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QQBACQAAAAAAAAAAEAAAAAAAgAAAAAAAIAAAAAgAAAE=</HashCode>
+      <FileName>DataModel\Entity\Process\OSP_SOA_S3_T.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entity.Purchase.CTR_DETAIL_HT" Collapsed="true">
+    <Position X="31.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QCBQCwJQAAAgcv8CECAAAKQAQA5AIAIJAACAAAwQAAk=</HashCode>
+      <FileName>DataModel\Entity\Purchase\CTR_DETAIL_HT.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entity.Purchase.CTR_DETAIL_T" Collapsed="true">
+    <Position X="33.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QCBQCwIQAAAgcv8CECAAAKQAQA5AIAIJAACAAAwQAAk=</HashCode>
+      <FileName>DataModel\Entity\Purchase\CTR_DETAIL_T.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entity.Purchase.CTR_FILEINFO_T" Collapsed="true">
+    <Position X="35.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAAAAgAAAAAAhAAAAAAAIACAAAAAAAAAAAAAAABAAAE=</HashCode>
+      <FileName>DataModel\Entity\Purchase\CTR_FILEINFO_T.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entity.Purchase.CTR_FILES_T" Collapsed="true">
+    <Position X="37" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAA=</HashCode>
+      <FileName>DataModel\Entity\Purchase\CTR_FILES_T.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entity.Purchase.CTR_HEADER_T" Collapsed="true">
+    <Position X="38.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAhQAAAEAAAQAAAAAAAAAAAAAQhEAAAIAAAAAAqSQAE=</HashCode>
+      <FileName>DataModel\Entity\Purchase\CTR_HEADER_T.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entity.Purchase.CTR_ORG_T" Collapsed="true">
+    <Position X="40.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QChACwIQAAAwcv8AECAAIKQAQQ4EIAIJAACAAA6CQAk=</HashCode>
+      <FileName>DataModel\Entity\Purchase\CTR_ORG_T.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entity.Purchase.CTR_PICKED_HT" Collapsed="true">
+    <Position X="42.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QCBQAgIUAAEgAjACACAAAKSAQAZAKAAIAACIAwkQAAk=</HashCode>
+      <FileName>DataModel\Entity\Purchase\CTR_PICKED_HT.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entity.Purchase.CTR_PICKED_T" Collapsed="true">
+    <Position X="44" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QCBQAgIUAAEgAjACACAAAKSAQAZACAAIAACIAwkQAAk=</HashCode>
+      <FileName>DataModel\Entity\Purchase\CTR_PICKED_T.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entity.Purchase.CTR_SOA_T" Collapsed="true">
+    <Position X="45.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QABACQAAAAAAAAAAEAAAAAAAAAAAAAAAIAAAAAgQAAE=</HashCode>
+      <FileName>DataModel\Entity\Purchase\CTR_SOA_T.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entity.Temp.ITEMS_TMP_T" Collapsed="true">
+    <Position X="47.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QABAAAIQgOGfAAAAABAAAAKEAAAIAAAAgIIAQAwAAgE=</HashCode>
+      <FileName>DataModel\Entity\Temp\ITEMS_TMP_T.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entity.Temp.LOCATOR_TMP_T" Collapsed="true">
+    <Position X="26.5" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACAAEAgAAAAUAAAAAABAAAAAgQCgEAAAQAAAAAAgIAA=</HashCode>
+      <FileName>DataModel\Entity\Temp\LOCATOR_TMP_T.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entity.Temp.MACHINE_PAPER_TYPE_TMP_T" Collapsed="true">
+    <Position X="40.5" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QABAAAABAAAwAIAAAAIAAAAAAQIAAAAIAIAAAAgAQAE=</HashCode>
+      <FileName>DataModel\Entity\Temp\MACHINE_PAPER_TYPE_TMP_T.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entity.Temp.ORG_UNIT_TMP_T" Collapsed="true">
+    <Position X="45.75" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAQAAAAAAAAAAAAAAAEAAAAAAAAAACAAAA=</HashCode>
+      <FileName>DataModel\Entity\Temp\ORG_UNIT_T.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entity.Temp.ORGANIZATION_TMP_T" Collapsed="true">
+    <Position X="51" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAIAQAAAAAAAAAAAAAQgAAAAAAAAAAAAAQAA=</HashCode>
+      <FileName>DataModel\Entity\Temp\ORGANIZATION_TMP_T.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entity.Temp.RELATED_TMP_T" Collapsed="true">
+    <Position X="45.75" Y="10.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QABAAAASAAAQAAAAAAAAAADAACAKAAAAAAAAAAgAAAE=</HashCode>
+      <FileName>DataModel\Entity\Temp\RELATED_TMP_T.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entity.Temp.SUBINVENTORY_TMP_T" Collapsed="true">
+    <Position X="45.75" Y="13.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAoAAAQAIAAAAAAAAAAAQAAEAAAACAAAAAAAAA=</HashCode>
+      <FileName>DataModel\Entity\Temp\SUBINVENTORY_TMP_T.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entity.Temp.TRANSACTION_TYPE_TMP_T" Collapsed="true">
+    <Position X="54.5" Y="13.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAhAAQAAAgAwEAIAAAAAAAAAAAAACAAAAAAAAAgAAAE=</HashCode>
+      <FileName>DataModel\Entity\Temp\TRANSACTION_TYPE_TMP_T.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entity.Temp.YSZMPCKQ_TMP_T" Collapsed="true">
+    <Position X="37" Y="16.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QABCAAAAAAASQAAAAAAAAAAAAYAABBAAAAAAAAiAQEE=</HashCode>
+      <FileName>DataModel\Entity\Temp\YSZMPCKQ_TMP_T.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entiy.Transfer.TRF_DETAIL_HT" Collapsed="true">
+    <Position X="30" Y="14.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QABQAAARhCAAAmAAAGAAIAiAAABCAIAAAAAAADgAEAE=</HashCode>
+      <FileName>DataModel\Entity\Transfer\TRF_DETAIL_HT.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entiy.Transfer.TRF_DETAIL_T" Collapsed="true">
+    <Position X="31.75" Y="14.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QABQAAARhCAAAmAAAGAAIAiAAABCAIAAAAAAADgAEAE=</HashCode>
+      <FileName>DataModel\Entity\Transfer\TRF_DETAIL_T.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entiy.Transfer.TRF_HEADER_T" Collapsed="true">
+    <Position X="37" Y="14.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QChQAAAAQAAAEACAAAAAAAACQ0BEEYQAAAABUCoAQAE=</HashCode>
+      <FileName>DataModel\Entity\Transfer\TRF_HEADER_T.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entiy.Transfer.TRF_INBOUND_PICKED_HT" Collapsed="true">
+    <Position X="38.75" Y="14.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>UABQAAAVAAkgABACAAAAAICAAARAAIAAAACIAg0CAAE=</HashCode>
+      <FileName>DataModel\Entity\Transfer\TRF_INBOUND_PICKED_HT.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entiy.Transfer.TRF_INBOUND_PICKED_T" Collapsed="true">
+    <Position X="40.5" Y="14.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>UABQAAAVAAEgABACAAAAAICAAARAAIAAAACIAg0CAAE=</HashCode>
+      <FileName>DataModel\Entity\Transfer\TRF_INBOUND_PICKED_T.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entiy.Transfer.TRF_OUTBOUND_PICKED_HT" Collapsed="true">
+    <Position X="33.5" Y="15.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>UABQAAAVAAkgABACAAAAAICAAARAAIAAAAAIAg0AAAE=</HashCode>
+      <FileName>DataModel\Entity\Transfer\TRF_OUTBOUND_PICKED_HT.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entiy.Transfer.TRF_OUTBOUND_PICKED_T" Collapsed="true">
+    <Position X="35.25" Y="15.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>UABQAAAVAAEgABACAAAAAICAAARAAIAAAAAIAg0AAAE=</HashCode>
+      <FileName>DataModel\Entity\Transfer\TRF_OUTBOUND_PICKED_T.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entiy.Transfer.TRF_SOA_T" Collapsed="true">
+    <Position X="44" Y="15.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAAACQAAAAAAAAAAEAAAAAAAAAAAAIAAIAAAAAIAAAE=</HashCode>
+      <FileName>DataModel\Entity\Transfer\TRF_SOA_T.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entity.Transfer.TRF_FILEINFO_T" Collapsed="true">
+    <Position X="33.5" Y="14.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAAQAgCAAAAAhAABAAAAAAAAAAAAAAAAAAAADABAAAE=</HashCode>
+      <FileName>DataModel\Entity\Transfer\TRF_FILEINFO_T.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entity.Transfer.TRF_FILES_T" Collapsed="true">
+    <Position X="35.25" Y="14.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAIAA=</HashCode>
+      <FileName>DataModel\Entity\Transfer\TRF_FILES_T.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entity.Transfer.TRF_REASON_HEADER_T" Collapsed="true">
+    <Position X="37" Y="15.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QChQAAgAQAAAEACAAAAAACACQwBEEAQAAAABVCgQQAE=</HashCode>
+      <FileName>DataModel\Entity\Transfer\TRF_REASON_HEADER_T.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entity.Transfer.TRF_REASON_HT" Collapsed="true">
+    <Position X="38.75" Y="15.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>UABQAACQAAEgABIAAAAAAISAAARCCAAAAAAIBgkAAAE=</HashCode>
+      <FileName>DataModel\Entity\Transfer\TRF_REASON_HT.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entity.Transfer.TRF_REASON_SOA_T" Collapsed="true">
+    <Position X="40.5" Y="15.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAAACQAAAAAAAAAAEAAAAAAAAAAAAAAAIAAABAAAAAE=</HashCode>
+      <FileName>DataModel\Entity\Transfer\TRF_REASON_SOA_T.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entity.Transfer.TRF_REASON_T" Collapsed="true">
+    <Position X="42.25" Y="15.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>UABQAACQAAEgABAAAAAAAISAAARCCAAAAAAIBgkAAAE=</HashCode>
+      <FileName>DataModel\Entity\Transfer\TRF_REASON_T.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.FakeUomConversion" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="30" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DataModel\FakeUomConversion.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Initializer" Collapsed="true">
+    <Position X="35.25" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DataModel\Initializer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.MesContext" Collapsed="true">
+    <Position X="51" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AElAEEghQQIBCQiUkRiSJEmTPBEHWEQwhiFCUgnS5Ew=</HashCode>
+      <FileName>DataModel\MesContext.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.ModelInitializer" Collapsed="true">
+    <Position X="26.5" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAACAAACAAABAAAAAAAAAAAAACAAAAA=</HashCode>
+      <FileName>DataModel\ModelInitializer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.UomConversion" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="52.75" Y="15.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAAIABAAAEAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DataModel\UomConversion.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Managers.AppRoleManager" Collapsed="true">
+    <Position X="33.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAA=</HashCode>
+      <FileName>DataModel\Managers\AppRoleManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Managers.AppUserManager" Collapsed="true">
+    <Position X="37" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAA=</HashCode>
+      <FileName>DataModel\Managers\AppUserManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entity.Repositorys.GenericRepository&lt;TEntity&gt;" Collapsed="true">
+    <Position X="3.5" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gAQCAAAAACAAAABAAAAAAAAAAAEAgEgAAgAAAAAAAAA=</HashCode>
+      <FileName>DataModel\Repositorys\GenericRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.Entity.Repositorys.ItemsTRepository" Collapsed="true">
+    <Position X="3.5" Y="8.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DataModel\Repositorys\ItemsTRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.UnitOfWorks.DeliveryUOW" Collapsed="true">
+    <Position X="24" Y="3.25" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <NestedTypes>
+      <Class Name="CHPOUTSRCMES.Web.DataModel.UnitOfWorks.DeliveryUOW.DeliveryStatusCode" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>DataModel\UnitOfWorks\DeliveryUOW.cs</NewMemberFileName>
+        </TypeIdentifier>
+        <Lollipop Position="0.2" />
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>CAAAAQAAkAABEggCQAAUAFAYRAhgAAIIAgRCABBAggE=</HashCode>
+      <FileName>DataModel\UnitOfWorks\DeliveryUOW.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.UnitOfWorks.IdentityUOW" Collapsed="true">
+    <Position X="1.5" Y="3.25" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+      <Compartment Name="Properties" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>IMAAgDAAAQQAxIAyIAAAgMFAAgEAAAASEBEAAEAFAIA=</HashCode>
+      <FileName>DataModel\UnitOfWorks\IdentityUOW.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.UnitOfWorks.ItemNoUOW" Collapsed="true">
+    <Position X="3.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIEAAAAAAAEAAAACAAAAAAABKQAAAAAAAAAAAAAAQAA=</HashCode>
+      <FileName>DataModel\UnitOfWorks\ItemNoUOW.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.UnitOfWorks.MaincheTypeUOW" Collapsed="true">
+    <Position X="6" Y="3.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAACAAAAAAABQAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DataModel\UnitOfWorks\MaincheTypeUOW.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.UnitOfWorks.MasterUOW" Collapsed="true">
+    <Position X="12.75" Y="1.75" Width="3.75" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <NestedTypes>
+      <Class Name="CHPOUTSRCMES.Web.DataModel.UnitOfWorks.MasterUOW.InboundStatus" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>DataModel\UnitOfWorks\MasterUOW.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="CHPOUTSRCMES.Web.DataModel.UnitOfWorks.MasterUOW.DropDownListTypeValue" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>DataModel\UnitOfWorks\MasterUOW.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="CHPOUTSRCMES.Web.DataModel.UnitOfWorks.MasterUOW.TransferCatalog" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>DataModel\UnitOfWorks\MasterUOW.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="CHPOUTSRCMES.Web.DataModel.UnitOfWorks.MasterUOW.LocatorStatusCode" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>DataModel\UnitOfWorks\MasterUOW.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="CHPOUTSRCMES.Web.DataModel.UnitOfWorks.MasterUOW.PalletStatusCode" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>DataModel\UnitOfWorks\MasterUOW.cs</NewMemberFileName>
+        </TypeIdentifier>
+        <Lollipop Position="0.2" />
+      </Class>
+      <Class Name="CHPOUTSRCMES.Web.DataModel.UnitOfWorks.MasterUOW.ItemCategory" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>DataModel\UnitOfWorks\MasterUOW.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Enum Name="CHPOUTSRCMES.Web.DataModel.UnitOfWorks.MasterUOW.DropDownListType" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>DataModel\UnitOfWorks\MasterUOW.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+      <Class Name="CHPOUTSRCMES.Web.DataModel.UnitOfWorks.MasterUOW.UserRole" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>DataModel\UnitOfWorks\MasterUOW.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="CHPOUTSRCMES.Web.DataModel.UnitOfWorks.MasterUOW.PackingType" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>DataModel\UnitOfWorks\MasterUOW.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="CHPOUTSRCMES.Web.DataModel.UnitOfWorks.MasterUOW.LocatorType" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>DataModel\UnitOfWorks\MasterUOW.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="CHPOUTSRCMES.Web.DataModel.UnitOfWorks.MasterUOW.PickStatus" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>DataModel\UnitOfWorks\MasterUOW.cs</NewMemberFileName>
+        </TypeIdentifier>
+        <Lollipop Position="0.2" />
+      </Class>
+      <Class Name="CHPOUTSRCMES.Web.DataModel.UnitOfWorks.MasterUOW.ControlFlag" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>DataModel\UnitOfWorks\MasterUOW.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="CHPOUTSRCMES.Web.DataModel.UnitOfWorks.MasterUOW.ToErp" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>DataModel\UnitOfWorks\MasterUOW.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="CHPOUTSRCMES.Web.DataModel.UnitOfWorks.MasterUOW.ActionCode" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>DataModel\UnitOfWorks\MasterUOW.cs</NewMemberFileName>
+        </TypeIdentifier>
+        <Lollipop Position="0.2" />
+      </Class>
+      <Class Name="CHPOUTSRCMES.Web.DataModel.UnitOfWorks.MasterUOW.CategoryCode" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>DataModel\UnitOfWorks\MasterUOW.cs</NewMemberFileName>
+        </TypeIdentifier>
+        <Lollipop Position="0.2" />
+      </Class>
+      <Class Name="CHPOUTSRCMES.Web.DataModel.UnitOfWorks.MasterUOW.TransactionTypeId" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>DataModel\UnitOfWorks\MasterUOW.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="CHPOUTSRCMES.Web.DataModel.UnitOfWorks.MasterUOW.NumberStatus" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>DataModel\UnitOfWorks\MasterUOW.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="CHPOUTSRCMES.Web.DataModel.UnitOfWorks.MasterUOW.StockStatusCode" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>DataModel\UnitOfWorks\MasterUOW.cs</NewMemberFileName>
+        </TypeIdentifier>
+        <Lollipop Position="0.2" />
+      </Class>
+      <Class Name="CHPOUTSRCMES.Web.DataModel.UnitOfWorks.MasterUOW.OspFlag" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>DataModel\UnitOfWorks\MasterUOW.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AEUwKEANqAQAMoQzBApBAAIYmFDQkAGJ0AEFGAAITgg=</HashCode>
+      <FileName>DataModel\UnitOfWorks\MasterUOW.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.UnitOfWorks.MiscellaneousUOW" Collapsed="true">
+    <Position X="15" Y="4.75" Width="1.75" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <NestedTypes>
+      <Class Name="CHPOUTSRCMES.Web.DataModel.UnitOfWorks.MiscellaneousUOW.MiscellaneousType" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>DataModel\UnitOfWorks\MiscellaneousUOW.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AMAIAAAAAAEAAAACEIIAAAAiAAAAAAAAQAAgAAAAAEA=</HashCode>
+      <FileName>DataModel\UnitOfWorks\MiscellaneousUOW.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.UnitOfWorks.ObsoleteUOW" Collapsed="true">
+    <Position X="17.25" Y="4.75" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAAMAAAAAAEAAAACAAAAIAACAAAABAAAAABgAAAAAEA=</HashCode>
+      <FileName>DataModel\UnitOfWorks\ObsoleteUOW.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.UnitOfWorks.ProcessUOW" Collapsed="true">
+    <Position X="8.25" Y="3.25" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <NestedTypes>
+      <Class Name="CHPOUTSRCMES.Web.DataModel.UnitOfWorks.ProcessUOW.DetailDTEditor" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>DataModel\UnitOfWorks\ProcessUOW.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="CHPOUTSRCMES.Web.DataModel.UnitOfWorks.ProcessUOW.ProductionDTEditor" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>DataModel\UnitOfWorks\ProcessUOW.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="CHPOUTSRCMES.Web.DataModel.UnitOfWorks.ProcessUOW.CotangentDTEditor" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>DataModel\UnitOfWorks\ProcessUOW.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="CHPOUTSRCMES.Web.DataModel.UnitOfWorks.ProcessUOW.ProcessStatusCode" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>DataModel\UnitOfWorks\ProcessUOW.cs</NewMemberFileName>
+        </TypeIdentifier>
+        <Lollipop Position="0.2" />
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>ouIhAbZ2EqpQ6kgr9ABFbAg6BFDiEgBugCAzHMQAihE=</HashCode>
+      <FileName>DataModel\UnitOfWorks\ProcessUOW.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.UnitOfWorks.PurchaseUOW">
+    <Position X="10.5" Y="3.25" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <NestedTypes>
+      <Class Name="CHPOUTSRCMES.Web.DataModel.UnitOfWorks.PurchaseUOW.PurchaseStatusCode" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>DataModel\UnitOfWorks\PurchaseUOW.cs</NewMemberFileName>
+        </TypeIdentifier>
+        <Lollipop Position="0.2" />
+      </Class>
+      <Class Name="CHPOUTSRCMES.Web.DataModel.UnitOfWorks.PurchaseUOW.PickingStatusCode" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>DataModel\UnitOfWorks\PurchaseUOW.cs</NewMemberFileName>
+        </TypeIdentifier>
+        <Lollipop Position="0.2" />
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>ECAKBCAAABUEAwAGBGgCvBAMiwAAFgQSQAQACFwKYyA=</HashCode>
+      <FileName>DataModel\UnitOfWorks\PurchaseUOW.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.UnitOfWorks.RelatedUOW" Collapsed="true">
+    <Position X="14" Y="3.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAEACAAAACAAAAAAAAAAAAAAAAACAAAAAAAAA=</HashCode>
+      <FileName>DataModel\UnitOfWorks\RelatedUOW.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.UnitOfWorks.StockInventoryUOW" Collapsed="true">
+    <Position X="19.5" Y="4.75" Width="1.75" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <NestedTypes>
+      <Class Name="CHPOUTSRCMES.Web.DataModel.UnitOfWorks.StockInventoryUOW.InventoryType" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>DataModel\UnitOfWorks\StockInventoryUOW.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAICAAAAAEACAACAAAIAAAGAAAABCAAAAAgAAgAAEM=</HashCode>
+      <FileName>DataModel\UnitOfWorks\StockInventoryUOW.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.UnitOfWorks.TransferUOW" Collapsed="true">
+    <Position X="17.25" Y="3.25" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <NestedTypes>
+      <Class Name="CHPOUTSRCMES.Web.DataModel.UnitOfWorks.TransferUOW.TransferType" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>DataModel\UnitOfWorks\TransferUOW.cs</NewMemberFileName>
+        </TypeIdentifier>
+        <Lollipop Position="0.2" />
+      </Class>
+      <Class Name="CHPOUTSRCMES.Web.DataModel.UnitOfWorks.TransferUOW.IsMes" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>DataModel\UnitOfWorks\TransferUOW.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="CHPOUTSRCMES.Web.DataModel.UnitOfWorks.TransferUOW.DataUpdateAuthority" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>DataModel\UnitOfWorks\TransferUOW.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="CHPOUTSRCMES.Web.DataModel.UnitOfWorks.TransferUOW.DataWriteType" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>DataModel\UnitOfWorks\TransferUOW.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>JwghACgBICkQBACCQAIRmIACJcgQAjQYAgAECFDgIEA=</HashCode>
+      <FileName>DataModel\UnitOfWorks\TransferUOW.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.UnitOfWorks.UnitOfWork" Collapsed="true">
+    <Position X="12.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gAICAAAAAiAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DataModel\UnitOfWorks\UnitOfWork.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.DataModel.UnitOfWorks.YszmpckqUOW" Collapsed="true">
+    <Position X="21.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAQAACAAAAAAAAAAAAAEAAACAAAAAAAAA=</HashCode>
+      <FileName>DataModel\UnitOfWorks\YszmpckqUOW.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Domain.Data" Collapsed="true">
+    <Position X="51" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAA=</HashCode>
+      <FileName>Domain\Data.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Jsons.Requests.AutoCompletedItem" Collapsed="true">
+    <Position X="40.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAA=</HashCode>
+      <FileName>Jsons\Requests\AutoCompletedItem.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Migrations.init_build" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="33.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAIAMAAAAAAAAAAAAAAAAAAAAAAAAAAQEAAAAAI=</HashCode>
+      <FileName>Migrations\202010291223592_init_build.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Migrations.fix_log_entry" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="33.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAIAMAAAAAAAAAAAAAAAAAAAAAAAAAAQEAAAAAI=</HashCode>
+      <FileName>Migrations\202011040354502_fix_log_entry.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Migrations.lotNumber_allow_null" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="37" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAIAMAAAAAAAAAAAAAAAAAAAAAAAAAAQEAAAAAI=</HashCode>
+      <FileName>Migrations\202011181014520_lotNumber_allow_null.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Migrations.osp_yield_add" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="35.25" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAIAMAAAAAAAAAAAAAAAAAAAAAAAAAAQEAAAAAI=</HashCode>
+      <FileName>Migrations\202012010325355_osp_yield_add.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Migrations.osp_yield_ht_add" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="38.75" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAIAMAAAAAAAAAAAAAAAAAAAAAAAAAAQEAAAAAI=</HashCode>
+      <FileName>Migrations\202012010337107_osp_yield_ht_add.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Migrations.osp_yield_add_item_number" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="37" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAIAMAAAAAAAAAAAAAAAAAAAAAAAAAAQEAAAAAI=</HashCode>
+      <FileName>Migrations\202012010604289_osp_yield_add_item_number.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Migrations.osp_yield_ht_add_item_number" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="40.5" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAIAMAAAAAAAAAAAAAAAAAAAAAAAAAAQEAAAAAI=</HashCode>
+      <FileName>Migrations\202012020542043_osp_yield_ht_add_item_number.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Migrations.addContainerNo" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="31.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAIAMAAAAAAAAAAAAAAAAAAAAAAAAAAQEAAAAAI=</HashCode>
+      <FileName>Migrations\202012180742274_addContainerNo.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Migrations.Configuration" Collapsed="true">
+    <Position X="54.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Migrations\Configuration.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Models.Subinventory.LOCATOR" Collapsed="true">
+    <Position X="52.75" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAgAAAAAAAQCAAAAAABAiAAAAAADAAAAAAAAEI=</HashCode>
+      <FileName>Models\CHP_SUBINVENTORY_T\LOCATOR.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Models.Subinventory.ORGANIZATION" Collapsed="true">
+    <Position X="47.5" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAABAAAAAAAACAAAAAAAQAA=</HashCode>
+      <FileName>Models\CHP_SUBINVENTORY_T\ORGANIZATION.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Models.Subinventory.SUBINVENTORY" Collapsed="true">
+    <Position X="42.25" Y="13.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAADAAAAAAQAAA=</HashCode>
+      <FileName>Models\CHP_SUBINVENTORY_T\SUBINVENTORY.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Models.Delivery.DeliveryDetailViewHeader" Collapsed="true">
+    <Position X="28.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAICAAgAEAAgAgBAAAAAAABQwAAAAA=</HashCode>
+      <FileName>Models\Delivery\DeliveryDetailViewHeader.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Models.Delivery.FlatEditBarcodeDT" Collapsed="true">
+    <Position X="37" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABABAYAAIgEAAAABAIAAAQAAAgAAAQAAAEAgEAAAAA=</HashCode>
+      <FileName>Models\Delivery\FlatEditBarcodeDT.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Models.Delivery.FlatEditBarcodeData" Collapsed="true">
+    <Position X="35.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Delivery\FlatEditBarcodeDT.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Models.Delivery.FlatEditBarcodeDTOrder" Collapsed="true">
+    <Position X="38.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA=</HashCode>
+      <FileName>Models\Delivery\FlatEditBarcodeDT.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Models.Delivery.FlatEditDT" Collapsed="true">
+    <Position X="42.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACBABQIAAogEgVAIAAAIAAAAgAAAAFAoAAIBAkAAQCA=</HashCode>
+      <FileName>Models\Delivery\FlatEditDT.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Models.Delivery.FlatEditData" Collapsed="true">
+    <Position X="40.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAA=</HashCode>
+      <FileName>Models\Delivery\FlatEditDT.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Models.Delivery.FlatEditDTOrder" Collapsed="true">
+    <Position X="44" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA=</HashCode>
+      <FileName>Models\Delivery\FlatEditDT.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Models.Delivery.PaperRollEditBarcodeDT" Collapsed="true">
+    <Position X="28.25" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAABAIAAIgEAAAABAAAAAQAAAgAAAQAAAEAgEAAAAA=</HashCode>
+      <FileName>Models\Delivery\PaperRollEditBarcodeDT.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Models.Delivery.PaperRollEditBarcodeData" Collapsed="true">
+    <Position X="26.5" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAA=</HashCode>
+      <FileName>Models\Delivery\PaperRollEditBarcodeDT.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Models.Delivery.PaperRollEditBarcodeDTOrder" Collapsed="true">
+    <Position X="30" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA=</HashCode>
+      <FileName>Models\Delivery\PaperRollEditBarcodeDT.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Models.Delivery.PaperRollEditDT" Collapsed="true">
+    <Position X="33.5" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACAQBQAAAAAAgVAIAAAIAAAAAAgAAFAgAAIBAEAAACA=</HashCode>
+      <FileName>Models\Delivery\PaperRollEditDT.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Models.Delivery.PaperRollEditData" Collapsed="true">
+    <Position X="31.75" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAA=</HashCode>
+      <FileName>Models\Delivery\PaperRollEditDT.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Models.Delivery.PaperRollEditDTOrder" Collapsed="true">
+    <Position X="35.25" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA=</HashCode>
+      <FileName>Models\Delivery\PaperRollEditDT.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Models.Delivery.TripHeaderDT" Collapsed="true">
+    <Position X="51" Y="15.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAAaRAAgAAACAEAICQAgAEAAgAABQAAQBCAAQwQAAAA=</HashCode>
+      <FileName>Models\Delivery\TripHeaderDT.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Models.Delivery.TripHeaderData" Collapsed="true">
+    <Position X="49.25" Y="15.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAAAAAgAAABAAAKAAAQAEAAQAAiAIAKAARBAggACCA=</HashCode>
+      <FileName>Models\Delivery\TripHeaderDT.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Models.Delivery.TripDetailDTOrder" Collapsed="true">
+    <Position X="47.5" Y="15.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA=</HashCode>
+      <FileName>Models\Delivery\TripHeaderDT.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Models.Delivery.TripDetailDTEditor" Collapsed="true">
+    <Position X="45.75" Y="15.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAQ=</HashCode>
+      <FileName>Models\Delivery\TripHeaderDT.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Models.Delivery.PickDTEditor" Collapsed="true">
+    <Position X="47.5" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAQ=</HashCode>
+      <FileName>Models\Delivery\TripHeaderDT.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Models.Error" Collapsed="true">
+    <Position X="49.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAgAAAAAgAAAAAAAAAAAAAAAAIAAAAAA=</HashCode>
+      <FileName>Models\Error.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Models.LabelModel" Collapsed="true">
+    <Position X="51" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAACAAAAAAAAABCgIAAAACAQgAAAAAAQAAABAgAAAAA=</HashCode>
+      <FileName>Models\Label.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Models.LabelData" Collapsed="true">
+    <Position X="49.25" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAABMAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Label.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Models.Navbar" Collapsed="true">
+    <Position X="30" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BAQCBAIAAAAAAAEAAAAAAAAAAEAAAAAAAAAAAAAACQE=</HashCode>
+      <FileName>Models\Navbar.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Models.ResultDataModel&lt;T&gt;" Collapsed="true">
+    <Position X="0.5" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAEAAAAAAAAAAAAABAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\ResultDataModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Models.ResultModel" Collapsed="true">
+    <Position X="2" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAEAAAgAAAAAgAABAAAABAAAAAAAAA=</HashCode>
+      <FileName>Models\ResultModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Models.ResultPageModel&lt;T&gt;" Collapsed="true">
+    <Position X="2.75" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BAAAAAAAAAAAAgIAAAAAAAAAAAAAAAAAAAAAAAAAAAI=</HashCode>
+      <FileName>Models\ResultPageModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Models.Information.AccountModel" Collapsed="true">
+    <Position X="28.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAACAAIEACAAAAAQAAAAAAQAAAIACAACAAAAEAAAAEA=</HashCode>
+      <FileName>Models\Information\AccountModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Models.Information.UserSubinventory" Collapsed="true">
+    <Position X="26.5" Y="16.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABAAAAAAAAAAAAAAAAAAABAAAAAAAABAAAAAAQAAA=</HashCode>
+      <FileName>Models\Information\AccountModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Models.Information.SubinventoryDetail" Collapsed="true">
+    <Position X="47.5" Y="13.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAA=</HashCode>
+      <FileName>Models\Information\AccountModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Models.Information.MachinePaperType" Collapsed="true">
+    <Position X="42.25" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAEAAAAAoCAAAAAAACAAgAAAEABCFABAAAAAAAAA=</HashCode>
+      <FileName>Models\Information\MachinePaperType.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Models.Information.OrgSubinventoryDT" Collapsed="true">
+    <Position X="26.5" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAgAAAAAAAQCAAAAIABAiBAAAAADAAAAAAQQEI=</HashCode>
+      <FileName>Models\Information\OrgSubinventoryDT.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Models.Information.OrgSubinventoryData" Collapsed="true">
+    <Position X="54.5" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAABAAAACAAAFAAAAAAQBAAAQAAAQAAACAgAAAAEAA=</HashCode>
+      <FileName>Models\Information\OrgSubinventoryDT.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Models.Information.OrgSubinventoryDTOrder" Collapsed="true">
+    <Position X="28.25" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA=</HashCode>
+      <FileName>Models\Information\OrgSubinventoryDT.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Models.Information.OspRelatedDT" Collapsed="true">
+    <Position X="49.25" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEABQIAAYgEAAAQCAAIAAABAAAAAAAACAAAAEAAQAA=</HashCode>
+      <FileName>Models\Information\OspRelatedDT.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Models.Information.OspRelatedData" Collapsed="true">
+    <Position X="47.5" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAAAAAAAAAAABAAAAAQAAAAAAAAAAAAACIAAAAAAAA=</HashCode>
+      <FileName>Models\Information\OspRelatedDT.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Models.Information.OspRelatedDTOrder" Collapsed="true">
+    <Position X="51" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA=</HashCode>
+      <FileName>Models\Information\OspRelatedDT.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Models.Information.PartNoModel" Collapsed="true">
+    <Position X="42.25" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>fwACAQAYBBECAAAIQAAAAAAAAAAGAAAFAQAEggMAAOA=</HashCode>
+      <FileName>Models\Information\PartNoModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Models.Information.ReasonModel" Collapsed="true">
+    <Position X="40.5" Y="10.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAACAAAAAAAQQAAAFAAAAAAEAAAAAA=</HashCode>
+      <FileName>Models\Information\ReasonModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Models.Information.YszmpckqDT" Collapsed="true">
+    <Position X="42.25" Y="16.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAABAIQQIgEBAAIAAQIQAIFIgAAAAAACAAAgQAEQAA=</HashCode>
+      <FileName>Models\Information\YszmpckqDT.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Models.Information.YszmpckqData" Collapsed="true">
+    <Position X="40.5" Y="16.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAABAAAAAAAQBAAAAAAAAAAAAAAAEAAACAEAAAAAAA=</HashCode>
+      <FileName>Models\Information\YszmpckqDT.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Models.Information.YszmpckqDTOrder" Collapsed="true">
+    <Position X="44" Y="16.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA=</HashCode>
+      <FileName>Models\Information\YszmpckqDT.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Models.Inventory.Inventory" Collapsed="true">
+    <Position X="38.75" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Inventory\Inventory.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Models.Process.CHP_PROCESS_T" Collapsed="true">
+    <Position X="51" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QUAAQAIUAABwILAGAUIAADAD4AdIAAAIgECgBAsAAgA=</HashCode>
+      <FileName>Models\Process\CHP_PROCESS_T.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Models.Process.Cotangent" Collapsed="true">
+    <Position X="30" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQAAAAAUAAEgABAAAAAgAIAAgAQAAAAAABAAAAAAAAA=</HashCode>
+      <FileName>Models\Process\Cotangent.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Models.Process.Invest" Collapsed="true">
+    <Position X="44" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAQAAEAABAAAAAAAKCAgAYAAAQAAQAIBgAAAAA=</HashCode>
+      <FileName>Models\Process\Invest.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Models.Process.Production" Collapsed="true">
+    <Position X="26.5" Y="10.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQAAAAAUAAEgABAAAAIAAKBAgAYAAAAAAJAJAgAAEAA=</HashCode>
+      <FileName>Models\Process\Production.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Models.Process.YieldVariance" Collapsed="true">
+    <Position X="31.75" Y="16.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAAAAAAABAAAAAAAAAAAAAAAgAAAAAAABAAAAAEAgAA=</HashCode>
+      <FileName>Models\Process\YieldVariance.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Models.Purchase.DetailModel" Collapsed="true">
+    <Position X="33.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Purchase\DetailModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Models.Purchase.FullCalendarEventModel" Collapsed="true">
+    <Position X="49.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAGQAAAAAAgAAAAAAAAAAAIAQCAAAAAAAAAAgA=</HashCode>
+      <FileName>Models\Purchase\FullCalendarEventModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Models.Purchase.PurchaseCalendar" Collapsed="true">
+    <Position X="30" Y="10.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAgAAAAAAAAAAAAAAAAIAAAAAAEAAAAAAAA=</HashCode>
+      <FileName>Models\Purchase\PurchaseCalendar.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Models.Purchase.Chp_Container_Header_T" Collapsed="true">
+    <Position X="49.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AACEIAAEAAIEACAJAAAAAAAAABAAAACEAAAAAAICAAI=</HashCode>
+      <FileName>Models\Purchase\PurchaseCalendar.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Models.Report.CutSumQueryModel" Collapsed="true">
+    <Position X="47.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAEAA=</HashCode>
+      <FileName>Models\Report\CutSumQueryModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Models.Report.YieldQueryModel" Collapsed="true">
+    <Position X="30" Y="16.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIEAAIAUAAAAAEBCAAABABAEAAAAAAAAAAAAAQAwQAA=</HashCode>
+      <FileName>Models\Report\YieldQueryModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Models.SoaQuery.SoaDetailQueryModel" Collapsed="true">
+    <Position X="26.5" Y="11.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIEAAIAQAAAgABAAQAAAAICAAAQAAAAAIAACAEEgQAA=</HashCode>
+      <FileName>Models\SoaQuery\SoaDetailQueryModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Models.SoaQuery.SoaQueryModel" Collapsed="true">
+    <Position X="30" Y="11.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IIECC4AAAIAAAAAAEAAAAAAAAQAAABAAIAAAAEAgQAA=</HashCode>
+      <FileName>Models\SoaQuery\SoaQueryModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Models.Stock.StockDT" Collapsed="true">
+    <Position X="49.25" Y="11.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgBBBQIAEIEAgFAoCQAQBiAFACIAAAAADAEQAAgQQEQ=</HashCode>
+      <FileName>Models\Stock\StockDT.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Models.Stock.StockData" Collapsed="true">
+    <Position X="45.75" Y="11.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABgAAAEAACAIAKgAABAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Stock\StockDT.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Models.Stock.StockDTOrder" Collapsed="true">
+    <Position X="51" Y="11.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA=</HashCode>
+      <FileName>Models\Stock\StockDT.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Models.Stock.StockInventoryDT" Collapsed="true">
+    <Position X="26.5" Y="12.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgAABAIAEIAAgBAoCQAEBiAAACIAAEAADAEQAAAAAEA=</HashCode>
+      <FileName>Models\Stock\StockInventoryDT.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Models.Stock.StockInventoryData" Collapsed="true">
+    <Position X="54.5" Y="11.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAYASIAABBAMAAAAAAACggAAQAAAAEAIQE4ICAAAgQ=</HashCode>
+      <FileName>Models\Stock\StockInventoryDT.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Models.Stock.StockInventoryDTOrder" Collapsed="true">
+    <Position X="30" Y="12.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA=</HashCode>
+      <FileName>Models\Stock\StockInventoryDT.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Models.Stock.StockInventoryDTEditor" Collapsed="true">
+    <Position X="28.25" Y="12.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAQ=</HashCode>
+      <FileName>Models\Stock\StockInventoryDT.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Models.Stock.StockMiscellaneousDT" Collapsed="true">
+    <Position X="38.75" Y="12.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgAABAIAEIAAgAAAAQAEBAAAACAAAEAABAEQAAAAAEA=</HashCode>
+      <FileName>Models\Stock\StockMiscellaneousDT.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Models.Stock.StockMiscellaneousData" Collapsed="true">
+    <Position X="37" Y="12.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAJAAABAACAIAgAAAAAAAAAAAAAAEAAAQAgACAIAAA=</HashCode>
+      <FileName>Models\Stock\StockMiscellaneousDT.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Models.Stock.StockMiscellaneousDTOrder" Collapsed="true">
+    <Position X="42.25" Y="12.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA=</HashCode>
+      <FileName>Models\Stock\StockMiscellaneousDT.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Models.Stock.StockMiscellaneousDTEditor" Collapsed="true">
+    <Position X="40.5" Y="12.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAQ=</HashCode>
+      <FileName>Models\Stock\StockMiscellaneousDT.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Models.Stock.StockObsoleteDT" Collapsed="true">
+    <Position X="45.75" Y="12.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgAABAIAEIAAgAAAAQAEBAAAACAAAEAABAEQAAAAAEA=</HashCode>
+      <FileName>Models\Stock\StockObsoleteDT.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Models.Stock.StockObsoleteData" Collapsed="true">
+    <Position X="44" Y="12.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAJAAABAACAIAABAAAAAAAABAAAAEAAAQAgACAIAAA=</HashCode>
+      <FileName>Models\Stock\StockObsoleteDT.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Models.Stock.StockObsoleteDTOrder" Collapsed="true">
+    <Position X="49.25" Y="12.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA=</HashCode>
+      <FileName>Models\Stock\StockObsoleteDT.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Models.Stock.StockObsoleteDTEditor" Collapsed="true">
+    <Position X="47.5" Y="12.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAQ=</HashCode>
+      <FileName>Models\Stock\StockObsoleteDT.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Models.Stock.StockTransferBarcodeDT" Collapsed="true">
+    <Position X="26.5" Y="13.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gCBABAYFAQgEgBAJDAIAAgQAAAIIAIQAAAGJAEIAAAQ=</HashCode>
+      <FileName>Models\Stock\StockTransferBarcodeDT.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Models.Stock.StockTransferBarcodeData" Collapsed="true">
+    <Position X="54.5" Y="12.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQGBQIgAAAATIAAAAIAAZAAAAAAAgAAAAAAAAAAMwAA=</HashCode>
+      <FileName>Models\Stock\StockTransferBarcodeDT.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Models.Stock.StockTransferBarcodeDTOrder" Collapsed="true">
+    <Position X="30" Y="13.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA=</HashCode>
+      <FileName>Models\Stock\StockTransferBarcodeDT.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Models.Stock.InboundStockTransferBarcodeDTOrder" Collapsed="true">
+    <Position X="30" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA=</HashCode>
+      <FileName>Models\Stock\StockTransferBarcodeDT.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Models.Stock.StockTransferBarcodeDTEditor" Collapsed="true">
+    <Position X="28.25" Y="13.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQ=</HashCode>
+      <FileName>Models\Stock\StockTransferBarcodeDT.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Models.Stock.ImportRollInboundBarcodeModel" Collapsed="true">
+    <Position X="26.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAQIAAAAAQAAAAgEAAAAAAAAAAAEEAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Stock\StockTransferBarcodeDT.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Models.Stock.ImportFlatInboundBarcodeModel" Collapsed="true">
+    <Position X="54.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAQIBAAAAAAAAAgEAAAAAAAAAAAEEAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Stock\StockTransferBarcodeDT.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Models.Stock.StockTransferDT" Collapsed="true">
+    <Position X="33.5" Y="13.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACBARIIAQggEgQABhIAAAAAAAEAAAEAIAAKBAEAAQgQ=</HashCode>
+      <FileName>Models\Stock\StockTransferDT.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Models.Stock.StockTransferData" Collapsed="true">
+    <Position X="31.75" Y="13.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>oxEoAHgAGClRIAA2BoAJLSgBBEgAIRBoQUAgMBE4QBA=</HashCode>
+      <FileName>Models\Stock\StockTransferDT.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Models.Stock.StockTransferDTOrder" Collapsed="true">
+    <Position X="35.25" Y="13.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA=</HashCode>
+      <FileName>Models\Stock\StockTransferDT.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Models.Stock.PickEditor" Collapsed="true">
+    <Position X="49.25" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQ=</HashCode>
+      <FileName>Models\Stock\StockTransferDT.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Models.Stock.DetailEditor" Collapsed="true">
+    <Position X="31.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQ=</HashCode>
+      <FileName>Models\Stock\StockTransferDT.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Models.Stock.InboundImportExcelModel" Collapsed="true">
+    <Position X="28.25" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAgAAAAAAAACAgAAAAAAAAAAAAgACAAA=</HashCode>
+      <FileName>Models\Stock\StockTransferDT.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Models.Stock.Top" Collapsed="true">
+    <Position X="49.25" Y="13.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Stock\Top.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Models.StockInventory.StockInventoryModel" Collapsed="true">
+    <Position X="31.75" Y="12.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgBBAQIAEIEAgFAoCQAQBiAFACIAAAAADAEQAAgQQEQ=</HashCode>
+      <FileName>Models\StockInventory\StockInventoryModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Models.StockQuery.StockDetailQueryModel" Collapsed="true">
+    <Position X="47.5" Y="11.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AKEAQIIQAAEAAjAAAAAAACCAgAIAGAAAACKIAgEiQAI=</HashCode>
+      <FileName>Models\StockQuery\StockDetailQueryModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Models.StockQuery.StockQueryModel" Collapsed="true">
+    <Position X="51" Y="12.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AKEAQIIQIAAAAAAAACAAAACAgAAAEAACAAIAAAAgQAI=</HashCode>
+      <FileName>Models\StockQuery\StockQueryModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Models.StockQuery.StockTxnQueryModel" Collapsed="true">
+    <Position X="38.75" Y="13.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EKFAgIAQAJGEAAAAACAAgCCAgQgAEAIAACAHAAEgSAA=</HashCode>
+      <FileName>Models\StockQuery\StockTxnQueryModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SqlServerTypes.Utilities" Collapsed="true">
+    <Position X="28.25" Y="16.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAEAAAAAAAAAAAAAAAAAAQAAAAAAAAAQAAAAAA=</HashCode>
+      <FileName>SqlServerTypes\Loader.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Util.ConvertDateTime" Collapsed="true">
+    <Position X="26.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Util\ConvertDateTime.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Util.ConvertEx" Collapsed="true">
+    <Position X="28.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Util\ConvertEx.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Util.ExcelImport" Collapsed="true">
+    <Position X="54.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAgAAAA=</HashCode>
+      <FileName>Util\ExcelImport.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Util.ExcelUtil" Collapsed="true">
+    <Position X="26.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gIAABAQAAAAAAAAAAAAAAAAAAAAEQAAAAQAAAAgAAAE=</HashCode>
+      <FileName>Util\ExcelUtil.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Util.ExportClass" Collapsed="true">
+    <Position X="28.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAg=</HashCode>
+      <FileName>Util\ExportClass.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Util.LogUtilities" Collapsed="true">
+    <Position X="33.5" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAgQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Util\LogUtilities.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Util.PdfLableUtil" Collapsed="true">
+    <Position X="45.75" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Util\PdfLableUtil.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.Util.SqlParamHelper" Collapsed="true">
+    <Position X="33.5" Y="11.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAEAAAEAAAAAAAAAAAAAABAAAAAAAAAAAAACAMAA=</HashCode>
+      <FileName>Util\SqlParamHelper.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.ViewModels.Account.AccountViewModel" Collapsed="true">
+    <Position X="30" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIEAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAoQAA=</HashCode>
+      <FileName>ViewModels\Account\AccountViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.ViewModels.Account.LoginViewModel" Collapsed="true">
+    <Position X="31.75" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAQAAAAAgAAA=</HashCode>
+      <FileName>ViewModels\Account\LoginViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.ViewModels.Account.ManageUserViewModel" Collapsed="true">
+    <Position X="47.5" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAABAAAAAAAEAAAAAAAAAAAAAAIAA=</HashCode>
+      <FileName>ViewModels\Account\LoginViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.ViewModels.DataTableAjaxPostViewModel" Collapsed="true">
+    <Position X="52.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAACAAAgAAAAAAAABAAAAAAAAAAAAAAAggAAA=</HashCode>
+      <FileName>ViewModels\DataTableAjaxPostViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.ViewModels.Column" Collapsed="true">
+    <Position X="52.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAEAAAAAAAAAAAAAAAAQAAAAAABAAAAAAACAgAAA=</HashCode>
+      <FileName>ViewModels\DataTableAjaxPostViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.ViewModels.Search" Collapsed="true">
+    <Position X="51" Y="10.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAgAAAAAAA=</HashCode>
+      <FileName>ViewModels\DataTableAjaxPostViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.ViewModels.Order" Collapsed="true">
+    <Position X="38.75" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAgAABAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ViewModels\DataTableAjaxPostViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.ViewModels.DataTableJsonResultModel&lt;T&gt;" Collapsed="true">
+    <Position X="54.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAIAAAAAAAAAAABAAEAQAAAAAAA=</HashCode>
+      <FileName>ViewModels\DataTableResultModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.ViewModels.ErrorViewModel" Collapsed="true">
+    <Position X="52.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ViewModels\ErrorViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.ViewModels.HomeViewModel" Collapsed="true">
+    <Position X="52.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgAAAAAAAAAAAAAABAAAAAgAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ViewModels\HomeViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.ViewModels.MachinePaperTypeViewModel" Collapsed="true">
+    <Position X="45.75" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIEAAAAAAAAAAAAAAACAAAABQAAAAAAAAAAAAAAgQAA=</HashCode>
+      <FileName>ViewModels\MachinePaperTypeViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.ViewModels.OrgSubinventoryViewModel" Collapsed="true">
+    <Position X="30" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAAAABAAAABAAAgAAAAAAQAAAIAAAAAAAABAAAAAAA=</HashCode>
+      <FileName>ViewModels\OrgSubinventoryViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.ViewModels.OspRelatedViewModel" Collapsed="true">
+    <Position X="52.75" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAEAAAAIAgAAQAAAAAAAAAAAAAAAABAACABAA=</HashCode>
+      <FileName>ViewModels\OspRelatedViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.ViewModels.PartNoViewModel" Collapsed="true">
+    <Position X="44" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAEAAAAABAAAACABAAAAAAAAAgQAAAAAAAA=</HashCode>
+      <FileName>ViewModels\PartNoViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.ViewModels.ReasonViewModel" Collapsed="true">
+    <Position X="42.25" Y="10.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAQAAAAAAAgAAAAAAAAAAAAAAAAAAQAAAAA=</HashCode>
+      <FileName>ViewModels\ReasonViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.ViewModels.YszmpckqViewModel" Collapsed="true">
+    <Position X="45.75" Y="16.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAhAAAAAAAAEAACAAAAAAEBAAAAAAg=</HashCode>
+      <FileName>ViewModels\YszmpckqViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.ViewModels.Delivery.DeliverySearchViewModel" Collapsed="true">
+    <Position X="30" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAAAAAAAAEAEAAAAABAACSAAAIAIAAAAAAAEAACAAA=</HashCode>
+      <FileName>ViewModels\Delivery\DeliverySearchViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.ViewModels.Delivery.FlatEditViewModel" Collapsed="true">
+    <Position X="45.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAhABAQgAAAAAAAAAAAAAAAAgAAAABAAAAEAgEAAACA=</HashCode>
+      <FileName>ViewModels\Delivery\FlatEditViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.ViewModels.Delivery.FlatViewModel" Collapsed="true">
+    <Position X="47.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ViewModels\Delivery\FlatViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.ViewModels.Delivery.InsteadEditViewModel" Collapsed="true">
+    <Position X="37" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAA=</HashCode>
+      <FileName>ViewModels\Delivery\InsteadEditViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.ViewModels.Delivery.PaperRollEditViewModel" Collapsed="true">
+    <Position X="37" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAABAAgAAAAAAAAAAAAAAAAgAAAABAAAAEAAEAAACA=</HashCode>
+      <FileName>ViewModels\Delivery\PaperRollEditViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.ViewModels.Delivery.PaperRollViewModel" Collapsed="true">
+    <Position X="38.75" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ViewModels\Delivery\PaperRollViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.ViewModels.Inventory.InventoryViewModel" Collapsed="true">
+    <Position X="42.25" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIEAAAAgAAAAAAAAIAAAAAAAEAAAABAAAAAAAAAgSAA=</HashCode>
+      <FileName>ViewModels\Inventory\InventoryViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.ViewModels.Miscellaneous.MiscellaneousViewModel" Collapsed="true">
+    <Position X="54.5" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEABAAAAQEAAAAgIAAAAACAgAAAAAEkAAAAAAMAAAA=</HashCode>
+      <FileName>ViewModels\Miscellaneous\MiscellaneousViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.ViewModels.Obsolete.ObsoleteViewModel" Collapsed="true">
+    <Position X="37" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAABAAAAQEAAAAAIAAAAACAgAAAAAAAAAAAAAIAAAA=</HashCode>
+      <FileName>ViewModels\Obsolete\ObsoleteViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.ViewModels.Process.ProcessViewModel" Collapsed="true">
+    <Position X="54.5" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAZYwEIpAoEBAWABAQAA6AFDAAABGADEAAESgDgA=</HashCode>
+      <FileName>ViewModels\Process\ProcessViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.ViewModels.Purchase.PurchaseViewModel" Collapsed="true">
+    <Position X="33.5" Y="10.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQCBCAERSQABgBCAGgAYMAECRACIACkACARRBoYiwA=</HashCode>
+      <FileName>ViewModels\Purchase\PurchaseViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.ViewModels.Report.CutSumViewModel" Collapsed="true">
+    <Position X="49.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ViewModels\Report\CutSumViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.ViewModels.Report.YieldViewModel" Collapsed="true">
+    <Position X="33.5" Y="16.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAEAAAAAAAAEGAAIAAAAAAABAAAAAAQAAEAIAgAA=</HashCode>
+      <FileName>ViewModels\Report\YieldViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.ViewModels.SoaQuery.SoaQueryDetailViewModel" Collapsed="true">
+    <Position X="28.25" Y="11.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAIAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ViewModels\SoaQuery\SoaQueryDetailViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.ViewModels.SoaQuery.SoaQueryViewModel" Collapsed="true">
+    <Position X="31.75" Y="11.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAIAAAAAAAgAAAAIAAAAAAAAAAAAAAAAoAA=</HashCode>
+      <FileName>ViewModels\SoaQuery\SoaQueryViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.ViewModels.StockInvetory.LossViewModel" Collapsed="true">
+    <Position X="35.25" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ViewModels\StockInvetory\LossViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.ViewModels.StockInvetory.ProfitViewModel" Collapsed="true">
+    <Position X="28.25" Y="10.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ViewModels\StockInvetory\ProfitViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.ViewModels.StockInvetory.StockInventoryViewModel" Collapsed="true">
+    <Position X="35.25" Y="12.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAIAEAAAAIAAA=</HashCode>
+      <FileName>ViewModels\StockInvetory\StockInventoryViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.ViewModels.StockInvetory.StockInventoryModelDTOrder" Collapsed="true">
+    <Position X="33.5" Y="12.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA=</HashCode>
+      <FileName>ViewModels\StockInvetory\StockInventoryViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.ViewModels.StockQuery.QueryDetailViewModel" Collapsed="true">
+    <Position X="35.25" Y="10.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACAAAIAQAAAAAAAAACAAAACAgCAAFAAAACAAAAAAAAA=</HashCode>
+      <FileName>ViewModels\StockQuery\QueryDetailViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.ViewModels.StockQuery.QueryViewModel" Collapsed="true">
+    <Position X="37" Y="10.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gAAEAAAAAAAAAAEgBAAIAAAAAAIAAAAAAAAAAAAAgAA=</HashCode>
+      <FileName>ViewModels\StockQuery\QueryViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.ViewModels.StockTransaction.InBoundViewModel" Collapsed="true">
+    <Position X="31.75" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EABEACAQEAAAAAAIIIUEAABAQAICAQCAIDEBQCAyAAA=</HashCode>
+      <FileName>ViewModels\StockTransaction\InBoundViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.ViewModels.StockTransaction.MergeBarcodeViewModel" Collapsed="true">
+    <Position X="49.25" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQAAAAAAAAAAAgAAIAAAAAAAQAAAAAAAAAAAAAAABAA=</HashCode>
+      <FileName>ViewModels\StockTransaction\MergeBarcodeViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.ViewModels.StockTransaction.OutBoundViewModel" Collapsed="true">
+    <Position X="54.5" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABEACAQEAAAAAAIIMUAAAFAQgACAQCAIDEBVCAwEAA=</HashCode>
+      <FileName>ViewModels\StockTransaction\OutBoundViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.ViewModels.StockTransaction.ShipmentNumberViewModel" Collapsed="true">
+    <Position X="52.75" Y="10.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAQIAAAAAAAAAAgAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ViewModels\StockTransaction\ShipmentNumberViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.ViewModels.StockTransaction.StockTransferViewModel" Collapsed="true">
+    <Position X="37" Y="13.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAACAQEAAAAAAIAJUEAABAQAACAQCAACFBQCAgAAA=</HashCode>
+      <FileName>ViewModels\StockTransaction\StockTransferViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.ViewModels.StockTransaction.TopViewModel" Collapsed="true">
+    <Position X="51" Y="13.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAQAAAIAAAAAAAAAAAEAAACAAAIAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ViewModels\StockTransaction\TopViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.ViewModels.StockTransaction.TransferReasonViewModel" Collapsed="true">
+    <Position X="28.25" Y="14.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAIAAQAAAAIAAAAAAAAAAAAAAAAAAAAAAQAAAQA=</HashCode>
+      <FileName>ViewModels\StockTransaction\TransferReasonViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHPOUTSRCMES.Web.ViewModels.StockTxnQuery.StockTxnQueryViewModel" Collapsed="true">
+    <Position X="40.5" Y="13.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gAAEAAAAAAAAAAEiBAAIAAAAAAIAAAAAAAAABAAAgAA=</HashCode>
+      <FileName>ViewModels\StockTxnQuery\StockTxnQueryViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Interface Name="CHPOUTSRCMES.Web.DataModel.Interfaces.IAction" Collapsed="true">
+    <Position X="26.5" Y="17.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DataModel\Interfaces\IAction.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="CHPOUTSRCMES.Web.DataModel.Interfaces.ICategory" Collapsed="true">
+    <Position X="28.25" Y="17.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DataModel\Interfaces\ICategory.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="CHPOUTSRCMES.Web.DataModel.Interfaces.IDetail" Collapsed="true">
+    <Position X="5.5" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQ=</HashCode>
+      <FileName>DataModel\Interfaces\IDetail.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="CHPOUTSRCMES.Web.DataModel.Interfaces.IHeader" Collapsed="true">
+    <Position X="7.75" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DataModel\Interfaces\IHeader.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="CHPOUTSRCMES.Web.DataModel.Interfaces.IStaff" Collapsed="true">
+    <Position X="30" Y="17.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAE=</HashCode>
+      <FileName>DataModel\Interfaces\IStaff.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="CHPOUTSRCMES.Web.DataModel.Interfaces.IStatus" Collapsed="true">
+    <Position X="6.75" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DataModel\Interfaces\IStatus.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="CHPOUTSRCMES.Web.DataModel.Interfaces.IUomConversion" Collapsed="true">
+    <Position X="33.5" Y="17.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DataModel\Interfaces\IUomConversion.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="CHPOUTSRCMES.Web.DataModel.Entity.Interfaces.IItemsTRepository" Collapsed="true">
+    <Position X="0.5" Y="9" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DataModel\Repositorys\Interfaces\IItemsTRepository.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="CHPOUTSRCMES.Web.DataModel.Entity.Interfaces.IRepository&lt;T&gt;" Collapsed="true">
+    <Position X="0.5" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gAQAAAAAAAAAAABAAAAAAAAAAAEAAEgAAgAAAAAAAAA=</HashCode>
+      <FileName>DataModel\Repositorys\Interfaces\IRepository.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="CHPOUTSRCMES.Web.DataModel.UnitOfWorks.Interfaces.IUnitOfWork" Collapsed="true">
+    <Position X="31.75" Y="17.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DataModel\UnitOfWorks\Interfaces\IUnitOfWork.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Microsoft JhengHei UI" Size="9" />
+</ClassDiagram>

@@ -66,7 +66,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
         #region 雜項異動類別下拉選單
 
         /// <summary>
-        /// 取得雜項異動類別下拉選單
+        /// 取得雜項異動類別選單資料
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
@@ -77,6 +77,10 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             return transferTypeList;
         }
 
+        /// <summary>
+        /// 取得雜項異動類別選單資料
+        /// </summary>
+        /// <returns></returns>
         private List<SelectListItem> getMiscellaneousTypeList()
         {
             var miscellaneousTypeList = new List<SelectListItem>();
@@ -96,7 +100,16 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
 
         #endregion
 
-
+        /// <summary>
+        /// 取得庫存查詢表單資料
+        /// </summary>
+        /// <param name="organizationId"></param>
+        /// <param name="subinventoryCode"></param>
+        /// <param name="locatorId"></param>
+        /// <param name="itemNumber"></param>
+        /// <param name="primaryQty"></param>
+        /// <param name="percentageError"></param>
+        /// <returns></returns>
         public List<StockDT> GetStockTList(long organizationId, string subinventoryCode, long? locatorId, string itemNumber, decimal primaryQty, decimal percentageError)
         {
             try
@@ -185,6 +198,12 @@ SELECT [STOCK_ID] as ID
             }
         }
 
+        /// <summary>
+        /// 取的異動明細表單資料
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="transactionTypeId"></param>
+        /// <returns></returns>
         public List<StockMiscellaneousDT> GetStockMiscellaneousTList(string userId, long transactionTypeId)
         {
             try
@@ -269,7 +288,16 @@ SELECT m.TRANSFER_MISCELLANEOUS_ID AS ID
             }
         }
 
-
+        /// <summary>
+        /// 新增異動明細
+        /// </summary>
+        /// <param name="transactionTypeId"></param>
+        /// <param name="stockId"></param>
+        /// <param name="mPrimaryQty"></param>
+        /// <param name="note"></param>
+        /// <param name="userId"></param>
+        /// <param name="userName"></param>
+        /// <returns></returns>
         public ResultModel CreateDetail(long transactionTypeId, long stockId, decimal mPrimaryQty, string note, string userId, string userName)
         {
             using (var txn = this.Context.Database.BeginTransaction())
@@ -448,7 +476,11 @@ SELECT m.TRANSFER_MISCELLANEOUS_ID AS ID
             }
         }
 
-
+        /// <summary>
+        /// 刪除異動明細
+        /// </summary>
+        /// <param name="ids"></param>
+        /// <returns></returns>
         public ResultModel DelDetailData(List<long> ids)
         {
             using (var txn = this.Context.Database.BeginTransaction())
@@ -484,7 +516,14 @@ SELECT m.TRANSFER_MISCELLANEOUS_ID AS ID
                 }
             }
         }
-
+        /// <summary>
+        /// 更新異動明細備註
+        /// </summary>
+        /// <param name="ids"></param>
+        /// <param name="note"></param>
+        /// <param name="userId"></param>
+        /// <param name="userName"></param>
+        /// <returns></returns>
         public ResultModel UpdateDetailNote(List<long> ids, string note, string userId, string userName)
         {
             using (var txn = this.Context.Database.BeginTransaction())
@@ -517,7 +556,13 @@ SELECT m.TRANSFER_MISCELLANEOUS_ID AS ID
                 }
             }
         }
-
+        /// <summary>
+        /// 異動存檔
+        /// </summary>
+        /// <param name="transactionTypeId"></param>
+        /// <param name="userId"></param>
+        /// <param name="userName"></param>
+        /// <returns></returns>
         public ResultModel SaveTransactionDetail(long transactionTypeId, string userId, string userName)
         {
             using (var txn = this.Context.Database.BeginTransaction())

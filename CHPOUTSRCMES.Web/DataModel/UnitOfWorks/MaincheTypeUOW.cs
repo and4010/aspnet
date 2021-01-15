@@ -53,6 +53,9 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
         }
 
 
+        /// <summary>
+        /// 取得基本資料-紙別機台表單資料
+        /// </summary>
         public List<MachinePaperType> GetMachinePaperTypes(string Organization_code)
         {
             try

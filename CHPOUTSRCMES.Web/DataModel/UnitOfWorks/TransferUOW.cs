@@ -102,7 +102,9 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
        
 
 
-
+        /// <summary>
+        /// 是否為MES狀態類別
+        /// </summary>
         public class IsMes
         {
             /// <summary>
@@ -116,7 +118,9 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
         }
 
         
-
+        /// <summary>
+        /// 拒絕允許狀態類別
+        /// </summary>
         public class DataUpdateAuthority
         {
             /// <summary>
@@ -129,6 +133,9 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             public const string Permit = "1";
         }
 
+        /// <summary>
+        /// 資料寫入方式狀態類別
+        /// </summary>
         public class DataWriteType
         {
             /// <summary>
@@ -175,6 +182,10 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             return transferTypeList;
         }
 
+        /// <summary>
+        /// 取得庫存移轉類別選單資料
+        /// </summary>
+        /// <returns></returns>
         private List<SelectListItem> getTransferTypeList()
         {
             var transferTypeList = new List<SelectListItem>();
@@ -196,6 +207,14 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
 
 
         #region 出貨編號下拉選單
+        /// <summary>
+        /// 取得入庫的出貨編號選單資料
+        /// </summary>
+        /// <param name="outOrganizationId"></param>
+        /// <param name="outSubinventoryCode"></param>
+        /// <param name="inOrganizationId"></param>
+        /// <param name="inSubinventoryCode"></param>
+        /// <returns></returns>
         public List<SelectListItem> GetInBoundShipmentNumberDropDownList(long outOrganizationId, string outSubinventoryCode, long inOrganizationId, string inSubinventoryCode)
         {
             var transferTypeList = createDropDownList(DropDownListType.Add);
@@ -204,7 +223,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
         }
 
         /// <summary>
-        /// 取得入庫的出貨編號
+        /// 取得入庫的出貨編號選單資料
         /// </summary>
         /// <param name="outOrganizationId"></param>
         /// <param name="outSubinventoryCode"></param>
@@ -245,14 +264,28 @@ AND t.SHIPMENT_NUMBER IS NULL";
                 new SqlParameter("@trfOrganId", inOrganizationId)).ToList();
 
         }
-
+        /// <summary>
+        /// 取得出庫的出或編號選單資料
+        /// </summary>
+        /// <param name="outOrganizationId"></param>
+        /// <param name="outSubinventoryCode"></param>
+        /// <param name="inOrganizationId"></param>
+        /// <param name="inSubinventoryCode"></param>
+        /// <returns></returns>
         public List<SelectListItem> GetOutBoundShipmentNumberDropDownList(long outOrganizationId, string outSubinventoryCode, long inOrganizationId, string inSubinventoryCode)
         {
             var transferTypeList = createDropDownList(DropDownListType.Add);
             transferTypeList.AddRange(GetShipmentNumberforOutbound(outOrganizationId, outSubinventoryCode, inOrganizationId, inSubinventoryCode));
             return transferTypeList;
         }
-
+        /// <summary>
+        /// 取得出庫的出或編號選單資料
+        /// </summary>
+        /// <param name="outOrganizationId"></param>
+        /// <param name="outSubinventoryCode"></param>
+        /// <param name="inOrganizationId"></param>
+        /// <param name="inSubinventoryCode"></param>
+        /// <returns></returns>
         public List<SelectListItem> GetShipmentNumberforOutbound(long outOrganizationId, string outSubinventoryCode, long inOrganizationId, string inSubinventoryCode)
         {
 
@@ -276,17 +309,34 @@ AND DateDiff(dd, CREATION_DATE ,getdate())<=365";
 
         #endregion
 
-
+        /// <summary>
+        /// 取得庫存移轉明細資料
+        /// </summary>
+        /// <param name="transferHeaderId"></param>
+        /// <param name="transferDetailId"></param>
+        /// <returns></returns>
         public TRF_DETAIL_T GetTrfDetail(long transferHeaderId, long transferDetailId)
         {
             return trfDetailTRepository.GetAll().AsNoTracking().FirstOrDefault(x => x.TransferHeaderId == transferHeaderId && x.TransferDetailId == transferDetailId);
         }
 
+        /// <summary>
+        /// 取得入庫揀貨資料
+        /// </summary>
+        /// <param name="transferHeaderId"></param>
+        /// <param name="barcode"></param>
+        /// <returns></returns>
         public TRF_INBOUND_PICKED_T GetTrfInboundPickedDataFromBarcode(long transferHeaderId, string barcode)
         {
             return trfInboundPickedTRepository.GetAll().AsNoTracking().FirstOrDefault(x => x.TransferHeaderId == transferHeaderId && x.Barcode == barcode);
         }
 
+        /// <summary>
+        /// 取得表頭資料
+        /// </summary>
+        /// <param name="shipmentNumber"></param>
+        /// <param name="transferType"></param>
+        /// <returns></returns>
         public TRF_HEADER_T GetTrfHeader(string shipmentNumber, string transferType)
         {
             return trfHeaderTRepository.GetAll().AsNoTracking().FirstOrDefault(x =>
@@ -294,6 +344,11 @@ AND DateDiff(dd, CREATION_DATE ,getdate())<=365";
             x.TransferType == transferType);
         }
 
+        /// <summary>
+        /// 取得入庫表頭資料
+        /// </summary>
+        /// <param name="shipmentNumber"></param>
+        /// <returns></returns>
         public TRF_HEADER_T GetTrfHeaderForInbound(string shipmentNumber)
         {
             return trfHeaderTRepository.GetAll().AsNoTracking()
@@ -302,25 +357,37 @@ AND DateDiff(dd, CREATION_DATE ,getdate())<=365";
                 .FirstOrDefault();
         }
 
-
+        /// <summary>
+        /// 取得表頭資料
+        /// </summary>
+        /// <param name="transferHeaderId"></param>
+        /// <returns></returns>
         public TRF_HEADER_T GetTrfHeader(long transferHeaderId)
         {
             return trfHeaderTRepository.GetAll().AsNoTracking().FirstOrDefault(x =>
             x.TransferHeaderId == transferHeaderId);
         }
-
+        /// <summary>
+        /// 取得入庫揀貨資料
+        /// </summary>
+        /// <param name="transferPickedIdList"></param>
+        /// <returns></returns>
         public List<TRF_INBOUND_PICKED_T> GetTrfInboundPickedList(List<long> transferPickedIdList)
         {
             return trfInboundPickedTRepository.GetAll().AsNoTracking().Where(x => transferPickedIdList.Contains(x.TransferPickedId)).ToList();
         }
-
+        /// <summary>
+        /// 取得入庫揀貨資料
+        /// </summary>
+        /// <param name="transferPickedIdList"></param>
+        /// <returns></returns>
         public List<TRF_INBOUND_PICKED_T> GetTrfInboundPickedList2(List<long> transferPickedIdList)
         {
             return trfInboundPickedTRepository.GetAll().Where(x => transferPickedIdList.Contains(x.TransferPickedId)).ToList();
         }
 
         /// <summary>
-        /// 取得揀貨清單給入庫揀貨Datatables用
+        /// 取得入庫揀貨表單資料
         /// </summary>
         /// <param name="transferHeaderId"></param>
         /// <param name="numberStatus"></param>
@@ -378,7 +445,7 @@ SELECT [TRANSFER_PICKED_ID] as ID
         }
 
         /// <summary>
-        /// 取得明細清單給出庫明細Datatables用
+        /// 取得出庫明細表單資料
         /// </summary>
         /// <param name="transferHeaderId"></param>
         /// <param name="numberStatus"></param>
@@ -428,7 +495,12 @@ SELECT d.[TRANSFER_DETAIL_ID] AS ID
             }
             return this.Context.Database.SqlQuery<StockTransferDT>(cmd, new SqlParameter("@transferHeaderId", transferHeaderId)).ToList();
         }
-
+        /// <summary>
+        /// 取得出庫揀貨表單資料
+        /// </summary>
+        /// <param name="transferHeaderId"></param>
+        /// <param name="numberStatus"></param>
+        /// <returns></returns>
         public List<StockTransferBarcodeDT> GetTrfOutboundPickedTList(long transferHeaderId, string numberStatus)
         {
             string cmd = "";
@@ -472,7 +544,7 @@ SELECT [TRANSFER_PICKED_ID] as ID
         }
 
         /// <summary>
-        /// 取出貨編號 待修正為從資料庫取
+        /// 取出貨編號
         /// </summary>
         /// <param name="outSubinventoryCode"></param>
         /// <param name="inSubinventoryCode"></param>
@@ -480,12 +552,13 @@ SELECT [TRANSFER_PICKED_ID] as ID
         public ResultDataModel<string> GetShipmentNumber(string outSubinventoryCode, string inSubinventoryCode, DateTime now, string userId)
         {
             return GenerateShipmentNo(outSubinventoryCode, inSubinventoryCode, now, 3, userId);
-            //Random rnd = new Random();
-            //List<int> randomList = Enumerable.Range(1, 999)
-            //    .OrderBy(x => rnd.Next()).Take(100).ToList();
-            //return "(" + outSubinventoryCode + "-" + inSubinventoryCode + ")" + DateTime.Now.ToString("yyyyMMdd") + "-" + String.Format("{0:000}", randomList[0].ToString());
         }
 
+        /// <summary>
+        /// 檢查出貨編號是否有資料
+        /// </summary>
+        /// <param name="shipmentNumber"></param>
+        /// <returns></returns>
         public ResultDataModel<int> InobundCheckShipmentNumberExist(string shipmentNumber)
         {
             try
@@ -509,7 +582,7 @@ SELECT [TRANSFER_PICKED_ID] as ID
 
 
         /// <summary>
-        /// 新增明細
+        /// 新增入庫明細
         /// </summary>
         /// <param name="shipmentNumber"></param>
         /// <param name="transferType"></param>
@@ -553,7 +626,7 @@ SELECT [TRANSFER_PICKED_ID] as ID
         }
 
         /// <summary>
-        /// 新增明細 要加 Transaction
+        /// 新增入庫明細 要加 Transaction
         /// </summary>
         /// <param name="shipmentNumber"></param>
         /// <param name="transferType"></param>
@@ -928,7 +1001,25 @@ SELECT [TRANSFER_PICKED_ID] as ID
             return new ResultDataModel<TRF_HEADER_T>(true, "新增明細成功", trfHeader);
         }
 
-
+        /// <summary>
+        /// 新增出庫明細
+        /// </summary>
+        /// <param name="shipmentNumber"></param>
+        /// <param name="transferType"></param>
+        /// <param name="itemNumber"></param>
+        /// <param name="outOrganizationId"></param>
+        /// <param name="outSubinventoryCode"></param>
+        /// <param name="outLocatorId"></param>
+        /// <param name="inOrganizationId"></param>
+        /// <param name="inSubinventoryCode"></param>
+        /// <param name="inLocatorId"></param>
+        /// <param name="dataUpadteAuthority"></param>
+        /// <param name="dataWriteType"></param>
+        /// <param name="requestedQty"></param>
+        /// <param name="rollReamQty"></param>
+        /// <param name="createUser"></param>
+        /// <param name="createUserName"></param>
+        /// <returns></returns>
         public ResultDataModel<TRF_HEADER_T> OutboundCreateDetail(string shipmentNumber, string transferType, string itemNumber, long outOrganizationId,
         string outSubinventoryCode, long? outLocatorId, long inOrganizationId, string inSubinventoryCode, long? inLocatorId, string dataUpadteAuthority, string dataWriteType,
         decimal requestedQty, decimal rollReamQty, string createUser, string createUserName)
@@ -1144,6 +1235,16 @@ SELECT [TRANSFER_PICKED_ID] as ID
 
         }
 
+        /// <summary>
+        /// 新增出庫揀貨
+        /// </summary>
+        /// <param name="transferHeaderId"></param>
+        /// <param name="transferDetailId"></param>
+        /// <param name="barcode"></param>
+        /// <param name="reamQty"></param>
+        /// <param name="createUser"></param>
+        /// <param name="createUserName"></param>
+        /// <returns></returns>
         public ResultModel OutboundCreatePick(long transferHeaderId, long transferDetailId, string barcode,
         decimal reamQty, string createUser, string createUserName)
         {
@@ -1310,7 +1411,14 @@ SELECT [TRANSFER_PICKED_ID] as ID
 
 
         }
-
+        
+        /// <summary>
+        /// 待列印轉待入庫
+        /// </summary>
+        /// <param name="transferPickedIdList"></param>
+        /// <param name="userId"></param>
+        /// <param name="userName"></param>
+        /// <returns></returns>
         public ResultModel WaitPrintToWaitInbound(List<long> transferPickedIdList, string userId, string userName)
         {
             var pickList = trfInboundPickedTRepository.GetAll().Where(x => transferPickedIdList.Contains(x.TransferPickedId)).ToList();
@@ -1341,7 +1449,14 @@ SELECT [TRANSFER_PICKED_ID] as ID
                 }
             }
         }
-
+        /// <summary>
+        /// 待入庫轉已入庫
+        /// </summary>
+        /// <param name="transferHeaderId"></param>
+        /// <param name="barcode"></param>
+        /// <param name="userId"></param>
+        /// <param name="userName"></param>
+        /// <returns></returns>
         public ResultModel ChangeToAlreadyInBound(long transferHeaderId, string barcode, string userId, string userName)
         {
             var pick = trfInboundPickedTRepository.GetAll().FirstOrDefault(x => x.Barcode == barcode && x.TransferHeaderId == transferHeaderId);
@@ -1356,18 +1471,25 @@ SELECT [TRANSFER_PICKED_ID] as ID
                     UpdateInboundPickStatus(pick, InboundStatus.AlreadyInbound, userId, userName, DateTime.Now);
                     trfInboundPickedTRepository.SaveChanges();
                     txn.Commit();
-                    return new ResultModel(true, "待列印轉待入庫成功");
+                    return new ResultModel(true, "待入庫轉已入庫成功");
                 }
                 catch (Exception ex)
                 {
                     logger.Error(LogUtilities.BuildExceptionMessage(ex));
                     txn.Rollback();
-                    return new ResultModel(false, "待列印轉待入庫失敗:" + ex.Message);
+                    return new ResultModel(false, "待入庫轉已入庫失敗:" + ex.Message);
                 }
             }
 
         }
-
+        /// <summary>
+        /// 待入庫轉已入庫
+        /// </summary>
+        /// <param name="shipmnetNumber"></param>
+        /// <param name="barcode"></param>
+        /// <param name="userId"></param>
+        /// <param name="userName"></param>
+        /// <returns></returns>
         public ResultModel ChangeToAlreadyInBoundForShipmentNumber(string shipmnetNumber, string barcode, string userId, string userName)
         {
             var header = GetTrfHeaderForInbound(shipmnetNumber);
@@ -1414,6 +1536,14 @@ SELECT [TRANSFER_PICKED_ID] as ID
             trfInboundPickedTRepository.Update(pick);
         }
 
+        /// <summary>
+        /// 更新入庫揀貨備註
+        /// </summary>
+        /// <param name="transferPickedIdList"></param>
+        /// <param name="note"></param>
+        /// <param name="userId"></param>
+        /// <param name="userName"></param>
+        /// <returns></returns>
         public ResultModel UpdateInboundPickNote(List<long> transferPickedIdList, string note, string userId, string userName)
         {
             var pickList = trfInboundPickedTRepository.GetAll().Where(x => transferPickedIdList.Contains(x.TransferPickedId)).ToList();
@@ -1446,6 +1576,13 @@ SELECT [TRANSFER_PICKED_ID] as ID
             }
         }
 
+        /// <summary>
+        /// 刪除入庫揀貨資料
+        /// </summary>
+        /// <param name="transferPickedIdList"></param>
+        /// <param name="userId"></param>
+        /// <param name="userName"></param>
+        /// <returns></returns>
         public ResultModel DelInboundPickData(List<long> transferPickedIdList, string userId, string userName)
         {
             var pickList = trfInboundPickedTRepository.GetAll().Where(x => transferPickedIdList.Contains(x.TransferPickedId)).ToList();
@@ -1469,7 +1606,7 @@ SELECT [TRANSFER_PICKED_ID] as ID
         }
 
         /// <summary>
-        /// 刪除入庫Pick資料 要加Transaction
+        /// 刪除入庫揀貨資料 要加Transaction
         /// </summary>
         /// <param name="pickList"></param>
         /// <param name="userId"></param>
@@ -1566,6 +1703,14 @@ SELECT [TRANSFER_PICKED_ID] as ID
             //return new ResultModel(true, "刪除入庫揀貨資料成功");
         }
 
+        /// <summary>
+        /// 更新出庫揀貨明細
+        /// </summary>
+        /// <param name="transferPickedIdList"></param>
+        /// <param name="note"></param>
+        /// <param name="userId"></param>
+        /// <param name="userName"></param>
+        /// <returns></returns>
         public ResultModel UpdateOutboundPickNote(List<long> transferPickedIdList, string note, string userId, string userName)
         {
             var pickList = trfOutboundPickedTRepository.GetAll().Where(x => transferPickedIdList.Contains(x.TransferPickedId)).ToList();
@@ -1597,7 +1742,13 @@ SELECT [TRANSFER_PICKED_ID] as ID
                 }
             }
         }
-
+        /// <summary>
+        /// 刪除出庫揀貨資料
+        /// </summary>
+        /// <param name="transferPickedIdList"></param>
+        /// <param name="userId"></param>
+        /// <param name="userName"></param>
+        /// <returns></returns>
         public ResultModel DelOutboundPickedData(List<long> transferPickedIdList, string userId, string userName)
         {
             using (var txn = this.Context.Database.BeginTransaction())
@@ -1637,7 +1788,13 @@ SELECT [TRANSFER_PICKED_ID] as ID
 
             }
         }
-
+        /// <summary>
+        /// 刪除出庫明細資料
+        /// </summary>
+        /// <param name="transferDetailIdList"></param>
+        /// <param name="userId"></param>
+        /// <param name="userName"></param>
+        /// <returns></returns>
         public ResultModel DelOutboundDetailData(List<long> transferDetailIdList, string userId, string userName)
         {
             using (var txn = this.Context.Database.BeginTransaction())
@@ -1688,7 +1845,21 @@ SELECT [TRANSFER_PICKED_ID] as ID
 
         }
 
-
+        /// <summary>
+        /// 入庫匯入Excel資料
+        /// </summary>
+        /// <param name="shipmentNumber"></param>
+        /// <param name="transferType"></param>
+        /// <param name="outOrganizationId"></param>
+        /// <param name="outSubinventoryCode"></param>
+        /// <param name="outLocatorId"></param>
+        /// <param name="inOrganizationId"></param>
+        /// <param name="inSubinventoryCode"></param>
+        /// <param name="inLocatorId"></param>
+        /// <param name="excelList"></param>
+        /// <param name="userId"></param>
+        /// <param name="userName"></param>
+        /// <returns></returns>
         public ResultDataModel<TRF_HEADER_T> InboundImportExcel(string shipmentNumber, string transferType, long outOrganizationId,
             string outSubinventoryCode, long? outLocatorId, long inOrganizationId, string inSubinventoryCode, long? inLocatorId, List<InboundImportExcelModel> excelList,
             string userId, string userName)
@@ -1762,7 +1933,7 @@ SELECT [TRANSFER_PICKED_ID] as ID
         }
 
         /// <summary>
-        /// 入庫存檔(沒用到)
+        /// 入庫存檔
         /// </summary>
         /// <param name="transferHeaderId"></param>
         /// <param name="userId"></param>
@@ -2452,7 +2623,14 @@ SELECT [TRANSFER_PICKED_ID]
             }
 
         }
-
+        /// <summary>
+        /// 入庫存檔
+        /// </summary>
+        /// <param name="shipmentNumber"></param>
+        /// <param name="userId"></param>
+        /// <param name="userName"></param>
+        /// <param name="checkStockStatus"></param>
+        /// <returns></returns>
         public ResultModel InBoundSaveTransferForShipmentNumber(string shipmentNumber, string userId, string userName, bool checkStockStatus)
         {
 
@@ -3365,6 +3543,13 @@ SELECT [TRANSFER_PICKED_ID]
             }
         }
 
+        /// <summary>
+        /// 出庫明細轉入庫明細
+        /// </summary>
+        /// <param name="transferHeaderId"></param>
+        /// <param name="userId"></param>
+        /// <param name="userName"></param>
+        /// <returns></returns>
         public ResultDataModel<TRF_HEADER_T> OutBoundToInbound(long transferHeaderId, string userId, string userName)
         {
             using (var txn = this.Context.Database.BeginTransaction())
@@ -3617,6 +3802,14 @@ SELECT
             }
         }
 
+        /// <summary>
+        /// 併板
+        /// </summary>
+        /// <param name="mergeBarocdeData"></param>
+        /// <param name="waitMergeBarcodeDataList"></param>
+        /// <param name="userId"></param>
+        /// <param name="userName"></param>
+        /// <returns></returns>
         public ResultModel MergeBarcode(STOCK_T mergeBarocdeData, List<TRF_INBOUND_PICKED_T> waitMergeBarcodeDataList, string userId, string userName)
         {
             using (var txn = this.Context.Database.BeginTransaction())
@@ -3689,7 +3882,14 @@ SELECT
 
 
         #region 貨故
-
+        /// <summary>
+        /// 取得庫存查詢表單資料
+        /// </summary>
+        /// <param name="organizationId"></param>
+        /// <param name="subinventoryCode"></param>
+        /// <param name="locatorId"></param>
+        /// <param name="itemNumber"></param>
+        /// <returns></returns>
         public List<StockDT> GetStockTList(long organizationId, string subinventoryCode, long? locatorId, string itemNumber)
         {
             try
@@ -3767,7 +3967,17 @@ SELECT [STOCK_ID] as ID
                 return new List<StockDT>();
             }
         }
-
+        /// <summary>
+        /// 貨故異動存檔
+        /// </summary>
+        /// <param name="File"></param>
+        /// <param name="stockId"></param>
+        /// <param name="reasonCode"></param>
+        /// <param name="transferLocatorId"></param>
+        /// <param name="note"></param>
+        /// <param name="userId"></param>
+        /// <param name="userName"></param>
+        /// <returns></returns>
         public ResultModel SaveReason(HttpFileCollectionBase File, long stockId, string reasonCode, long? transferLocatorId, string note, string userId, string userName)
         {
             using (var txn = this.Context.Database.BeginTransaction())
@@ -4004,6 +4214,12 @@ SELECT [TRANSFER_REASON_ID]
         #endregion
 
         #region 標籤
+        /// <summary>
+        /// 取得入庫條碼標籤資料
+        /// </summary>
+        /// <param name="transferPickedIdList"></param>
+        /// <param name="userName"></param>
+        /// <returns></returns>
         public ResultDataModel<List<LabelModel>> GetInboundLabels(List<long> transferPickedIdList, string userName)
         {
             try
@@ -4317,7 +4533,12 @@ WHERE p.BARCODE = @Barcode
 
 
         }
-
+        /// <summary>
+        /// 取得出庫條碼標籤資料
+        /// </summary>
+        /// <param name="transferPickedIdList"></param>
+        /// <param name="userName"></param>
+        /// <returns></returns>
         public ResultDataModel<List<LabelModel>> GetOutboundLabels(List<long> transferPickedIdList, string userName)
         {
             try
@@ -4425,6 +4646,11 @@ WHERE p.BARCODE = @Barcode
         #endregion
 
         #region 報表
+        /// <summary>
+        /// 取得出庫備貨單報表資料
+        /// </summary>
+        /// <param name="shipmentNumber"></param>
+        /// <returns></returns>
         public ResultDataModel<ReportDataSource> GetOutboundPickingListReportDataSource(string shipmentNumber)
         {
             using (SqlConnection connection = new SqlConnection(WebConfigurationManager.ConnectionStrings["MesContext"].ConnectionString.ToString()))
@@ -4453,7 +4679,11 @@ WHERE p.BARCODE = @Barcode
             }
 
         }
-
+        /// <summary>
+        /// 取得紙捲入庫單報表資料
+        /// </summary>
+        /// <param name="shipmentNumber"></param>
+        /// <returns></returns>
         public ResultDataModel<ReportDataSource> GetInboundRollPickingListReportDataSource(string shipmentNumber)
         {
             using (SqlConnection connection = new SqlConnection(WebConfigurationManager.ConnectionStrings["MesContext"].ConnectionString.ToString()))
@@ -4482,7 +4712,11 @@ WHERE p.BARCODE = @Barcode
             }
 
         }
-
+        /// <summary>
+        /// 取得平張入庫單報表資料
+        /// </summary>
+        /// <param name="shipmentNumber"></param>
+        /// <returns></returns>
         public ResultDataModel<ReportDataSource> GetInboundFlatPickingListReportDataSource(string shipmentNumber)
         {
             using (SqlConnection connection = new SqlConnection(WebConfigurationManager.ConnectionStrings["MesContext"].ConnectionString.ToString()))
@@ -4514,7 +4748,10 @@ WHERE p.BARCODE = @Barcode
 
         #endregion
 
-
+        /// <summary>
+        /// 取得出貨編號輸入模式選單資料
+        /// </summary>
+        /// <returns></returns>
         public List<SelectListItem> GetShipmnetNumberCreateTypeList()
         {
             var list = new List<SelectListItem>();

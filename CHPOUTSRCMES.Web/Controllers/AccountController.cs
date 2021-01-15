@@ -18,6 +18,9 @@ using CHPOUTSRCMES.Web.DataModel;
 using System.Security.Claims;
 using CHPOUTSRCMES.Web.DataModel.UnitOfWorks;
 using CHPOUTSRCMES.Web.DataModel.Entity.Information;
+using System.Reflection;
+using CHPOUTSRCMES.Web.Util;
+using System.Diagnostics;
 
 namespace CHPOUTSRCMES.Web.Controllers
 {
@@ -85,6 +88,7 @@ namespace CHPOUTSRCMES.Web.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
+            //ExportClass.ShowMethods();
             var loginViewModel = CheckLoginCookie();
             ViewBag.ReturnUrl = returnUrl;
             //return View("Login", "_Layout2", loginViewModel);

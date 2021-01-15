@@ -1332,17 +1332,38 @@ namespace CHPOUTSRCMES.Web.Models.Stock
         {
             return uow.InBoundSaveTransfer(transferHeaderId, userId, userName, true);
         }
-
+        /// <summary>
+        /// 入庫存檔
+        /// </summary>
+        /// <param name="uow"></param>
+        /// <param name="shipmentNumber"></param>
+        /// <param name="userId"></param>
+        /// <param name="userName"></param>
+        /// <returns></returns>
         public ResultModel InBoundSaveTransferForShipmentNumber(TransferUOW uow, string shipmentNumber, string userId, string userName)
         {
             return uow.InBoundSaveTransferForShipmentNumber(shipmentNumber, userId, userName, true);
         }
-
+        /// <summary>
+        /// 入庫存檔(不檢查入庫狀態)
+        /// </summary>
+        /// <param name="uow"></param>
+        /// <param name="transferHeaderId"></param>
+        /// <param name="userId"></param>
+        /// <param name="userName"></param>
+        /// <returns></returns>
         public ResultModel InBoundSaveTransferNoCheckStockStatus(TransferUOW uow, long transferHeaderId, string userId, string userName)
         {
             return uow.InBoundSaveTransfer(transferHeaderId, userId, userName, false);
         }
-
+        /// <summary>
+        ///  入庫存檔(不檢查入庫狀態)
+        /// </summary>
+        /// <param name="uow"></param>
+        /// <param name="shipmentNumber"></param>
+        /// <param name="userId"></param>
+        /// <param name="userName"></param>
+        /// <returns></returns>
         public ResultModel InBoundSaveTransferNoCheckStockStatusForShipmentNumber(TransferUOW uow, string shipmentNumber, string userId, string userName)
         {
             return uow.InBoundSaveTransferForShipmentNumber(shipmentNumber, userId, userName, false);

@@ -36,6 +36,9 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             roleManager = new AppRoleManager(new RoleStore<IdentityRole>(context));
         }
 
+        /// <summary>
+        /// 使用者登入
+        /// </summary>
         public async Task<ResultDataModel<AppUser>> SignInAsync(IAuthenticationManager authenticationManager, LoginViewModel model)
         {
             ResultDataModel<AppUser> resultModel = new ResultDataModel<AppUser>();
@@ -71,12 +74,20 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             return resultModel;
         }
 
+        /// <summary>
+        /// 使用者登出
+        /// </summary>
         public void SignOut(IAuthenticationManager authenticationManager)
         {
             authenticationManager.SignOut();
         }
 
-
+        /// <summary>
+        /// 變更密碼
+        /// </summary>
+        /// <param name="manageUserViewModel"></param>
+        /// <param name="UserId"></param>
+        /// <returns></returns>
         public async Task<ResultModel> ChangePassword(ManageUserViewModel manageUserViewModel, string UserId)
         {
             ResultModel resultModel = new ResultModel();
@@ -175,6 +186,14 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             }
         }
 
+        
+        /// <summary>
+        /// 修改使用者資料
+        /// </summary>
+        /// <param name="accountModel"></param>
+        /// <param name="Subinventory"></param>
+        /// <param name="UserId"></param>
+        /// <returns></returns>
         public async Task<ResultModel> Edit(AccountModel accountModel, List<UserSubinventory> Subinventory, string UserId)
         {
             ResultModel resultModel = new ResultModel();
@@ -319,7 +338,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
         }
 
         /// <summary>
-        /// 帳號狀態
+        /// 帳號狀態控制
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -496,6 +515,9 @@ FOR XML PATH('')");
             }
         }
 
+        /// <summary>
+        /// 取得使用者倉庫資料
+        /// </summary>
         public List<String> ViewUserSub(string id)
         {
             try
@@ -522,6 +544,11 @@ order by ot.ORGANIZATION_CODE");
             }
         }
 
+        /// <summary>
+        /// 是否有密碼
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         private bool HasPassword(string id)
         {
             var user = userManager.FindById(id);
@@ -534,6 +561,9 @@ order by ot.ORGANIZATION_CODE");
 
         #region 測試資料產生
 
+        /// <summary>
+        /// 使用者相關資料匯入
+        /// </summary>
         public void ImportUserMisc(IWorkbook book)
         {//大量寫入資料時，請關閉AutoDetectChangesEnabled 功能來提高效能
             this.Context.Configuration.AutoDetectChangesEnabled = false;
@@ -561,6 +591,10 @@ order by ot.ORGANIZATION_CODE");
 
         }
 
+        /// <summary>
+        /// 主檔Excel資料匯入
+        /// </summary>
+        /// <param name="book"></param>
         public void Import(IWorkbook book)
         {
             //大量寫入資料時，請關閉AutoDetectChangesEnabled 功能來提高效能
@@ -597,6 +631,9 @@ order by ot.ORGANIZATION_CODE");
             this.Context.Configuration.AutoDetectChangesEnabled = true;
         }
 
+        /// <summary>
+        /// 產生角色
+        /// </summary>
         public void generateRoles()
         {
             // RoleTypes is a class containing constant string values for different roles
@@ -605,6 +642,9 @@ order by ot.ORGANIZATION_CODE");
             roleManager.Create(new IdentityRole("使用者"));
         }
 
+        /// <summary>
+        /// 使用者帳號資料匯入
+        /// </summary>
         public void ImportUser(IWorkbook book)
         {
             ISheet sheet = FindSheet(book, "使用者帳號");
@@ -643,6 +683,9 @@ order by ot.ORGANIZATION_CODE");
             }
         }
 
+        /// <summary>
+        /// 使用者倉庫資料匯入
+        /// </summary>
         private void ImportUserSubinventory(IWorkbook book)
         {
             ISheet sheet = FindSheet(book, "使用者倉庫");
@@ -705,6 +748,9 @@ order by ot.ORGANIZATION_CODE");
             this.SaveChanges();
         }
 
+        /// <summary>
+        /// 條碼前置碼資料匯入
+        /// </summary>
         private void ImportBcdMisc(IWorkbook book)
         {
             ISheet sheet = FindSheet(book, "條碼前置碼");
@@ -770,6 +816,10 @@ order by ot.ORGANIZATION_CODE");
             this.SaveChanges();
         }
 
+        /// <summary>
+        /// 料號資料匯入
+        /// </summary>
+        /// <param name="book"></param>
         private void ImportItems(IWorkbook book)
         {
 
@@ -1082,6 +1132,9 @@ order by ot.ORGANIZATION_CODE");
             this.SaveChanges();
         }
 
+        /// <summary>
+        /// 組織資料匯入
+        /// </summary>
         private void ImportOrganization(IWorkbook book)
         {
             ISheet sheet = FindSheet(book, "XXCINV_SUBINVENTORY_V");
@@ -1181,6 +1234,9 @@ order by ot.ORGANIZATION_CODE");
             this.SaveChanges();
         }
 
+        /// <summary>
+        /// 倉庫資料匯入
+        /// </summary>
         private void ImportSubinventory(IWorkbook book)
         {
 
@@ -1255,6 +1311,9 @@ order by ot.ORGANIZATION_CODE");
             this.SaveChanges();
         }
 
+        /// <summary>
+        /// 儲位資料匯入
+        /// </summary>
         private void ImportLocater(IWorkbook book)
         {
             ISheet sheet = FindSheet(book, "XXCINV_SUBINVENTORY_V");
@@ -1393,6 +1452,9 @@ order by ot.ORGANIZATION_CODE");
             this.SaveChanges();
         }
 
+        /// <summary>
+        /// 餘切資料匯入
+        /// </summary>
         private void ImprotRelated(IWorkbook book)
         {
             ISheet sheet = FindSheet(book, "XXCINV_OSP_RELATED_ITEM_V");
@@ -1507,6 +1569,9 @@ order by ot.ORGANIZATION_CODE");
             this.SaveChanges();
         }
 
+        /// <summary>
+        /// 令重包數資料匯入
+        /// </summary>
         private void ImportYszmpckq(IWorkbook book)
         {
             ISheet sheet = FindSheet(book, "XXCOM_YSZMPCKQ_V");
@@ -1644,6 +1709,9 @@ order by ot.ORGANIZATION_CODE");
             this.SaveChanges();
         }
 
+        /// <summary>
+        /// 機台紙別資料匯入
+        /// </summary>
         private void ImprotMachinePaperType(IWorkbook book)
         {
             ISheet sheet = FindSheet(book, "XXCPO_MACHINE_PAPER_TYPE_V");
@@ -1769,6 +1837,9 @@ order by ot.ORGANIZATION_CODE");
             this.SaveChanges();
         }
 
+        /// <summary>
+        /// 異動型態資料匯入
+        /// </summary>
         private void ImprotTransaction(IWorkbook book)
         {
             ISheet sheet = FindSheet(book, "XXCINV_TRANSACTION_TYPE_V");
@@ -1881,6 +1952,9 @@ order by ot.ORGANIZATION_CODE");
             this.SaveChanges();
         }
 
+        /// <summary>
+        /// 貨故原因資料匯入
+        /// </summary>
         private void ImportReason(IWorkbook book)
         {
             ISheet sheet = FindSheet(book, "貨故原因");
@@ -1935,7 +2009,12 @@ order by ot.ORGANIZATION_CODE");
             this.SaveChanges();
         }
 
-
+        /// <summary>
+        /// 取得Excel Sheet
+        /// </summary>
+        /// <param name="book"></param>
+        /// <param name="name"></param>
+        /// <returns></returns>
         public ISheet FindSheet(IWorkbook book, string name)
         {
             ISheet sheet = null;

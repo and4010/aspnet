@@ -25,6 +25,9 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
         {
         }
 
+        /// <summary>
+        /// 取得組成成份料號選單資料
+        /// </summary>
         public List<SelectListItem> GetInventoryItemNumber(string ORGANIZATION_ID)
         {
             var InventoryItemList = new List<SelectListItem>();
@@ -84,6 +87,9 @@ LEFT JOIN ORGANIZATION_T ORG ON ORG.ORGANIZATION_ID = OT.ORGANIZATION_ID");
 
 
 
+        /// <summary>
+        /// 取得餘切料號選單資料
+        /// </summary>
         public List<SelectListItem> GetRelatedItem(string ORGANIZATION_ID, string INVENTORY_ITEM_ID)
         {
             var RelatedItemList = new List<SelectListItem>();
@@ -166,6 +172,9 @@ LEFT JOIN ORGANIZATION_T ORG ON ORG.ORGANIZATION_ID = OT.ORGANIZATION_ID");
 
 
 
+        /// <summary>
+        /// 取得基本資料-餘切規格表單資料
+        /// </summary>
         public List<OspRelatedDT> search(string ORGANIZATION_ID, string INVENTORY_ITEM_ID, string RELATED_ITEM_ID)
         {
             long organizationId = 0;

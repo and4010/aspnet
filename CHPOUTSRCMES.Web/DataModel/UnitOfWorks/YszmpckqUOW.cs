@@ -25,7 +25,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
         }
 
         /// <summary>
-        /// 取得加工廠
+        /// 取得加工廠選單資料
         /// </summary>
         /// <param name="ORGANIZATION_ID"></param>
         /// <returns></returns>
@@ -106,7 +106,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
         }
 
         /// <summary>
-        /// 取得紙別
+        /// 取得紙別選單資料
         /// </summary>
         /// <param name="ORGANIZATION_ID"></param>
         /// <param name="OSP_SUBINVENTORY_ID"></param>
@@ -175,7 +175,7 @@ FROM [YSZMPCKQ_T]");
 
 
         /// <summary>
-        /// 取得table資料
+        /// 取得板令對照表單資料
         /// </summary>
         /// <param name="ORGANIZATION_ID"></param>
         /// <param name="OSP_SUBINVENTORY_ID"></param>

@@ -214,7 +214,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                     dlvPickedTRepository.SaveChanges();
 
                     //更新Header狀態
-                    var pickedResult = CheckPicked2(dlvHeaderId);
+                    var pickedResult = CheckPicked(dlvHeaderId);
                     if (!pickedResult.Success)
                     {
                         throw new Exception(pickedResult.Msg);
@@ -245,51 +245,13 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             }
         }
 
-        /// <summary>
-        /// 檢查是否此Header是否揀畢
-        /// </summary>
-        /// <param name="dlvHeaderId"></param>
-        /// <returns></returns>
-        public ResultModel CheckPicked(long dlvHeaderId)
-        {
-            try
-            {
-                string cmd = @"
-           select 
-d.DLV_DETAIL_ID as ID
-from DLV_DETAIL_T d
-JOIN DLV_HEADER_T h ON h.DLV_HEADER_ID = d.DLV_HEADER_ID
-LEFT JOIN DLV_PICKED_T p ON p.DLV_HEADER_ID = d.DLV_HEADER_ID AND p.DLV_DETAIL_ID = d.DLV_DETAIL_ID
-where h.DLV_HEADER_ID = @DLV_HEADER_ID
-GROUP BY d.DLV_DETAIL_ID
-HAVING (SUM(ISNULL(p.PRIMARY_QUANTITY, 0)) <> MIN(d.REQUESTED_PRIMARY_QUANTITY) AND MIN(d.ITEM_CATEGORY) = '捲筒' )
-OR (SUM(ISNULL(p.SECONDARY_QUANTITY, 0)) <> MIN(d.REQUESTED_SECONDARY_QUANTITY) AND MIN(d.ITEM_CATEGORY) = '平版' )";
-
-                var list = this.Context.Database.SqlQuery<PaperRollEditDT>(cmd, new SqlParameter("@DLV_HEADER_ID", dlvHeaderId)).ToList();
-                if (list.Count == 0) //為0表示應揀量等於已揀量
-                {
-                    return new ResultModel(true, DeliveryStatusCode.Picked);
-                }
-                else
-                {
-                    return new ResultModel(true, DeliveryStatusCode.UnPicked);
-                }
-            }
-            catch (Exception ex)
-            {
-                logger.Error(LogUtilities.BuildExceptionMessage(ex));
-                return new ResultModel(false, "檢查是否揀畢失敗:" + ex.Message);
-            }
-
-
-        }
 
         /// <summary>
         /// 檢查是否此Header是否揀畢
         /// </summary>
         /// <param name="dlvHeaderId"></param>
         /// <returns></returns>
-        public ResultDataModel<string> CheckPicked2(long dlvHeaderId)
+        public ResultDataModel<string> CheckPicked(long dlvHeaderId)
         {
             try
             {
@@ -397,7 +359,7 @@ GROUP BY d.DLV_DETAIL_ID";
                     dlvPickedTRepository.SaveChanges();
 
                     //更新Header狀態
-                    var pickedResult = CheckPicked2(dlvHeaderId);
+                    var pickedResult = CheckPicked(dlvHeaderId);
                     if (!pickedResult.Success)
                     {
                         throw new Exception(pickedResult.Msg);
@@ -503,360 +465,12 @@ GROUP BY d.DLV_DETAIL_ID";
             //    }
             //}
         }
-
-        public void generateTestData()
-        {
-            try
-            {
-                #region 第一筆測試資料 平版 令包
-                //DliveryHeaderRepository.getContext().Configuration.AutoDetectChangesEnabled = false;
-                dlvHeaderTRepository.Create(new DLV_HEADER_T()
-                {
-                    OrgId = 1,
-                    OrgName = "1",
-                    OrganizationId = 265,
-                    OrganizationCode = "FTY",
-                    SubinventoryCode = "TB3",
-                    TripCar = "PN01",
-                    TripId = 1,
-                    TripName = "Y191226-1036357",
-                    TripActualShipDate = Convert.ToDateTime("2019-12-26"),
-                    DeliveryId = 1,
-                    DeliveryName = "FTY1912000547",
-                    ItemCategory = "平版",
-                    CustomerId = 1,
-                    CustomerNumber = "1",
-                    CustomerName = "保吉",
-                    CustomerLocationCode = "福安印刷",
-                    ShipCustomerId = 1,
-                    ShipCustomerNumber = "1",
-                    ShipCustomerName = "保吉紙業有限公司",
-                    ShipLocationCode = "台南市安南區府安路5段119巷",
-                    FreightTermsName = "台南",
-                    DeliveryStatusCode = DeliveryStatusCode.Unprinted,
-                    DeliveryStatusName = deliveryStatusCode.GetDesc(DeliveryStatusCode.Unprinted),
-                    TransactionBy = null,
-                    TransactionDate = null, 
-                    TransactionByUserNmae = null,
-                    AuthorizeBy = null,
-                    AuthorizeDate = null,
-                    AuthorizeByUserName = null,
-                    Note = "FT1.P9B0288",
-                    CreatedBy = "1",
-                    CreatedUserName = "華紙",
-                    CreationDate = DateTime.Now,
-                    LastUpdateBy = "1",
-                    LastUpdateUserName = "華紙",
-                    LastUpdateDate = DateTime.Now,
-                }, true);
-
-
-                //DliveryHeaderRepository.getContext().Configuration.AutoDetectChangesEnabled = true;
-
-                dlvDetailTRepository.Create(new DLV_DETAIL_T()
-                {
-                    DlvHeaderId = 1, 
-                    ProcessCode = "XXIFP220",
-                    ServerCode = "FTY",
-                    BatchId = "20200730171945180831",
-                    BatchLineId = 1, 
-                    DeliveryDetailId = 1,
-                    OrderNumber = 1192006167,
-                    OrderLineId = 1,
-                    OrderShipNumber = "1.2",
-                    PackingType = "令包",
-                    InventoryItemId = 504029,
-                    ItemNumber = "4DM00A03500214K512K",
-                    ItemDescription = "全塗灰銅卡",
-                    ReamWeight = "274.27",
-                    ItemCategory = "平版",
-                    PaperType = "DM00",
-                    BasicWeight = "03500",
-                    Specification = "214K512K",
-                    GrainDirection = "L",
-                    LocatorId = null,
-                    LocatorCode = null,
-                    SrcRequestedQuantity = 0.1M,
-                    SrcRequestedQuantityUom = "MT",
-                    RequestedQuantity = 100M,
-                    RequestedQuantityUom = "KG",
-                    RequestedQuantity2 = 50,
-                    RequestedQuantityUom2 = "RE",
-                    OspBatchId = null,
-                    OspBatchNo = "",
-                    OspBatchType = "",
-                    TmpItemId = null,
-                    TmpItemNumber = "",
-                    TmpItemDescription = "",
-                    CreatedBy = "1",
-                    CreatedUserName = "華紙",
-                    CreationDate = DateTime.Now,
-                    LastUpdateBy = "1",
-                    LastUpdateUserName = "華紙",
-                    LastUpdateDate = DateTime.Now, 
-                }, true);
-                #endregion
-
-                #region 第二筆測試資料 捲筒
-                dlvHeaderTRepository.Create(new DLV_HEADER_T()
-                {
-                    OrgId = 1,
-                    OrgName = "1",
-                    OrganizationId = 265,
-                    OrganizationCode = "FTY",
-                    SubinventoryCode = "TB3",
-                    TripCar = "PN01",
-                    TripId = 1,
-                    TripName = "Y191226-1036357",
-                    TripActualShipDate = Convert.ToDateTime("2019-12-26"),
-                    DeliveryId = 1,
-                    DeliveryName = "FTY1912000547",
-                    ItemCategory = "捲筒",
-                    CustomerId = 1,
-                    CustomerNumber = "1",
-                    CustomerName = "保吉",
-                    CustomerLocationCode = "福安印刷",
-                    ShipCustomerId = 1,
-                    ShipCustomerNumber = "1",
-                    ShipCustomerName = "保吉紙業有限公司",
-                    ShipLocationCode = "台南市安南區府安路5段119巷",
-                    FreightTermsName = "台南",
-                    DeliveryStatusCode = DeliveryStatusCode.Unprinted,
-                    DeliveryStatusName = deliveryStatusCode.GetDesc(DeliveryStatusCode.Unprinted),
-                    TransactionBy = null,
-                    TransactionDate = null,
-                    AuthorizeBy = null,
-                    AuthorizeDate = null,
-                    Note = "FT1.P9B0288",
-                    CreatedBy = "1",
-                    CreatedUserName = "華紙",
-                    CreationDate = DateTime.Now,
-                    LastUpdateBy = "1",
-                    LastUpdateUserName = "華紙",
-                    LastUpdateDate = DateTime.Now,
-                }, true);
-
-                dlvDetailTRepository.Create(new DLV_DETAIL_T()
-                {
-                    DlvHeaderId = 2,
-                    ProcessCode = "XXIFP220",
-                    ServerCode = "FTY",
-                    BatchId = "20200730173059000000",
-                    BatchLineId = 1,
-                    DeliveryDetailId = 2,
-                    OrderNumber = 1192006167,
-                    OrderLineId = 1,
-                    OrderShipNumber = "1.2",
-                    PackingType = "",
-                    InventoryItemId = 559299,
-                    ItemNumber = "4AK0XA008001320RL00",
-                    ItemDescription = "Express捲特級銅版",
-                    ReamWeight = "2.2",
-                    ItemCategory = "捲筒",
-                    PaperType = "AK0X",
-                    BasicWeight = "00800",
-                    Specification = "1320RL00",
-                    GrainDirection = "X",
-                    LocatorId = null,
-                    LocatorCode = null,
-                    SrcRequestedQuantity = 1M,
-                    SrcRequestedQuantityUom = "MT",
-                    RequestedQuantity = 1000M,
-                    RequestedQuantityUom = "KG",
-                    RequestedQuantity2 = null,
-                    RequestedQuantityUom2 = "",
-                    OspBatchId = null,
-                    OspBatchNo = "",
-                    OspBatchType = "",
-                    TmpItemId = null,
-                    TmpItemNumber = "",
-                    TmpItemDescription = "",
-                    CreatedBy = "1",
-                    CreatedUserName = "華紙",
-                    CreationDate = DateTime.Now,
-                    LastUpdateBy = "1",
-                    LastUpdateUserName = "華紙",
-                    LastUpdateDate = DateTime.Now,
-                }, true);
-
-                #endregion
-
-                #region 第三筆測試資料 平版 無令打件 代紙
-                dlvHeaderTRepository.Create(new DLV_HEADER_T()
-                {
-                    OrgId = 1,
-                    OrgName = "1",
-                    OrganizationId = 265,
-                    OrganizationCode = "FTY",
-                    SubinventoryCode = "TB3",
-                    TripCar = "PTB2",
-                    TripId = 2,
-                    TripName = "Y200109-1052058",
-                    TripActualShipDate = Convert.ToDateTime("2020-01-09"),
-                    DeliveryId = 2,
-                    DeliveryName = "FTY2001000140",
-                    ItemCategory = "平版",
-                    CustomerId = 2,
-                    CustomerNumber = "2",
-                    CustomerName = "中華彩色",
-                    CustomerLocationCode = "中華彩色",
-                    ShipCustomerId = 2,
-                    ShipCustomerNumber = "2",
-                    ShipCustomerName = "中華彩色印刷股份有限公司",
-                    ShipLocationCode = "新北市新店區寶橋路229號",
-                    FreightTermsName = "台北",
-                    DeliveryStatusCode = DeliveryStatusCode.Unprinted,
-                    DeliveryStatusName = deliveryStatusCode.GetDesc(DeliveryStatusCode.Unprinted),
-                    TransactionBy = null,
-                    TransactionDate = null,
-                    AuthorizeBy = null,
-                    AuthorizeDate = null,
-                    Note = "FT1.早上到X002010031大道季刊98期/P2010087",
-                    CreatedBy = "1",
-                    CreatedUserName = "華紙",
-                    CreationDate = DateTime.Now,
-                    LastUpdateBy = "1",
-                    LastUpdateUserName = "華紙",
-                    LastUpdateDate = DateTime.Now,
-                }, true);
-
-                dlvDetailTRepository.Create(new DLV_DETAIL_T()
-                {
-                    DlvHeaderId = 3,
-                    ProcessCode = "XXIFP220",
-                    ServerCode = "FTY",
-                    BatchId = "20200730173100000000",
-                    BatchLineId = 1,
-                    DeliveryDetailId = 3,
-                    OrderNumber = 1202000114,
-                    OrderLineId = 2,
-                    OrderShipNumber = "1.1",
-                    PackingType = "無令打件",
-                    InventoryItemId = 505675,
-                    ItemNumber = "4DM00P0270008271130",
-                    ItemDescription = "全塗灰銅卡",
-                    ReamWeight = "278.13",
-                    ItemCategory = "平版",
-                    PaperType = "DM00",
-                    BasicWeight = "02700",
-                    Specification = "08271130",
-                    GrainDirection = "L",
-                    LocatorId = null,
-                    LocatorCode = null,
-                    SrcRequestedQuantity = 0.1M,
-                    SrcRequestedQuantityUom = "MT",
-                    RequestedQuantity = 100M,
-                    RequestedQuantityUom = "KG",
-                    RequestedQuantity2 = 50,
-                    RequestedQuantityUom2 = "RE",
-                    OspBatchId = 2,
-                    OspBatchNo = "P2010087",
-                    OspBatchType = "",
-                    TmpItemId = 506313,
-                    TmpItemNumber = "4DM00P0270007991121",
-                    TmpItemDescription = "全塗灰銅卡",
-                    CreatedBy = "1",
-                    CreatedUserName = "華紙",
-                    CreationDate = DateTime.Now,
-                    LastUpdateBy = "1",
-                    LastUpdateUserName = "華紙",
-                    LastUpdateDate = DateTime.Now,
-                }, true);
-                #endregion
-
-                #region 第四筆測試資料 捲筒
-                dlvHeaderTRepository.Create(new DLV_HEADER_T()
-                {
-                    OrgId = 1,
-                    OrgName = "1",
-                    OrganizationId = 265,
-                    OrganizationCode = "FTY",
-                    SubinventoryCode = "TB3",
-                    TripCar = "PTB3",
-                    TripId = 3,
-                    TripName = "Y200109-1052060",
-                    TripActualShipDate = Convert.ToDateTime("2020-04-22"),
-                    DeliveryId = 3,
-                    DeliveryName = "FTY2001000152",
-                    ItemCategory = "捲筒",
-                    CustomerId = 2,
-                    CustomerNumber = "2",
-                    CustomerName = "中華彩色",
-                    CustomerLocationCode = "中華彩色",
-                    ShipCustomerId = 2,
-                    ShipCustomerNumber = "2",
-                    ShipCustomerName = "中華彩色印刷股份有限公司",
-                    ShipLocationCode = "新北市新店區寶橋路229號",
-                    FreightTermsName = "台北",
-                    DeliveryStatusCode = DeliveryStatusCode.Unprinted,
-                    DeliveryStatusName = deliveryStatusCode.GetDesc(DeliveryStatusCode.Unprinted),
-                    TransactionBy = null,
-                    TransactionDate = null,
-                    AuthorizeBy = null,
-                    AuthorizeDate = null,
-                    Note = "",
-                    CreatedBy = "1",
-                    CreatedUserName = "華紙",
-                    CreationDate = DateTime.Now,
-                    LastUpdateBy = "1",
-                    LastUpdateUserName = "華紙",
-                    LastUpdateDate = DateTime.Now,
-                }, true);
-
-                dlvDetailTRepository.Create(new DLV_DETAIL_T()
-                {
-                    DlvHeaderId = 4,
-                    ProcessCode = "XXIFP220",
-                    ServerCode = "FTY",
-                    BatchId = "20200730173200000000",
-                    BatchLineId = 1,
-                    DeliveryDetailId = 4,
-                    OrderNumber = 1192006168,
-                    OrderLineId = 3,
-                    OrderShipNumber = "1.1",
-                    PackingType = "",
-                    InventoryItemId = 558705,
-                    ItemNumber = "4AH00A00900362KRL00",
-                    ItemDescription = "捲筒琉麗",
-                    ReamWeight = "2.2",
-                    ItemCategory = "捲筒",
-                    PaperType = "AH00",
-                    BasicWeight = "00900",
-                    Specification = "362KRL00",
-                    GrainDirection = "X",
-                    LocatorId = null,
-                    LocatorCode = null,
-                    SrcRequestedQuantity = 1M,
-                    SrcRequestedQuantityUom = "MT",
-                    RequestedQuantity = 1000M,
-                    RequestedQuantityUom = "KG",
-                    RequestedQuantity2 = null,
-                    RequestedQuantityUom2 = "",
-                    OspBatchId = null,
-                    OspBatchNo = "",
-                    OspBatchType = "",
-                    TmpItemId = null,
-                    TmpItemNumber = "",
-                    TmpItemDescription = "",
-                    CreatedBy = "1",
-                    CreatedUserName = "華紙",
-                    CreationDate = DateTime.Now,
-                    LastUpdateBy = "1",
-                    LastUpdateUserName = "華紙",
-                    LastUpdateDate = DateTime.Now,
-                }, true);
-                #endregion
-            }
-            catch (Exception ex)
-            {
-                logger.Error(LogUtilities.BuildExceptionMessage(ex));
-            }
-
-
-        }
-
-
-
+        /// <summary>
+        /// 取得航程號選單資料
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         public List<SelectListItem> GetTripNameDropDownList(DropDownListType type, string userId)
         {
             var tripNameList = createDropDownList(type);
@@ -864,6 +478,11 @@ GROUP BY d.DLV_DETAIL_ID";
             return tripNameList;
         }
 
+        /// <summary>
+        /// 取得交運單狀態選單資料
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
         public List<SelectListItem> GetDeliveryStatusDropDownList(DropDownListType type)
         {
             var deliveryStatusList = createDropDownList(type);
@@ -871,6 +490,10 @@ GROUP BY d.DLV_DETAIL_ID";
             return deliveryStatusList;
         }
 
+        /// <summary>
+        /// 取得交運單狀態選單資料
+        /// </summary>
+        /// <returns></returns>
         private List<SelectListItem> getDeliveryStatusList()
         {
             var deliveryStatusList = new List<SelectListItem>();
@@ -893,7 +516,11 @@ GROUP BY d.DLV_DETAIL_ID";
         }
 
 
-        //取得符合使用者倉庫365天內的航程號
+        /// <summary>
+        /// 取得航程號選單資料
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         private List<SelectListItem> getTripNameList(string userId)
         {
             var tripNameList = new List<SelectListItem>();
@@ -912,7 +539,7 @@ GROUP BY d.DLV_DETAIL_ID";
                 //                Value = x.FirstOrDefault().header.TripId.ToString()
                 //            });
                 //tripNameList.AddRange(tempList);
-
+                //取得符合使用者倉庫365天內的航程號
                 string cmd = @"
 SELECT TOP 1000 CONVERT(varchar(10), t.TRIP_ID) as Value
 ,t.TRIP_NAME as Text
@@ -934,8 +561,11 @@ ORDER BY t.TRIP_ID DESC";
             return tripNameList;
         }
 
+        /// <summary>
+        /// 取得出貨查詢表單資料
+        /// </summary>
         public List<TripHeaderDT> DeliverySearch(string TripActualShipBeginDate, string TripActualShipEndDate, string DeliveryName, string SelectedSubinventory,
-            string SelectedTrip, string TransactionDate, string SelectedDeliveryStatus, string userId)
+                    string SelectedTrip, string TransactionDate, string SelectedDeliveryStatus, string userId)
         {
 
             DateTime shipBeginDate = new DateTime();
@@ -1000,7 +630,7 @@ CASE WHEN (h.DELIVERY_STATUS_CODE = 'DH0' OR h.DELIVERY_STATUS_CODE = 'DH5' ) TH
 END AS REQUESTED_SECONDARY_UOM
 FROM DLV_HEADER_T h
 JOIN USER_SUBINVENTORY_T s ON s.SUBINVENTORY_CODE = h.SUBINVENTORY_CODE";
-            
+
             cond.Add("s.UserId = @userId");
             sqlParameterList.Add(SqlParamHelper.GetNVarChar("@userId", userId));
 
@@ -1071,7 +701,7 @@ JOIN USER_SUBINVENTORY_T s ON s.SUBINVENTORY_CODE = h.SUBINVENTORY_CODE";
         }
 
         /// <summary>
-        /// 取DLV_HEADER_T 資料
+        /// 取得出貨表頭資料
         /// </summary>
         /// <param name="dlvHeaderIds"></param>
         /// <returns></returns>
@@ -1081,7 +711,7 @@ JOIN USER_SUBINVENTORY_T s ON s.SUBINVENTORY_CODE = h.SUBINVENTORY_CODE";
         }
 
         /// <summary>
-        /// 取DLV_HEADER_T 資料
+        /// 取得出貨表頭資料
         /// </summary>
         /// <param name="dlvHeaderIds"></param>
         /// <returns></returns>
@@ -1091,21 +721,10 @@ JOIN USER_SUBINVENTORY_T s ON s.SUBINVENTORY_CODE = h.SUBINVENTORY_CODE";
         }
 
         /// <summary>
-        /// 取DLV_DETAIL_T 資料
+        /// 取得出貨揀貨資料
         /// </summary>
-        /// <param name="dlvHeaderIds"></param>
+        /// <param name="dlvPickedId"></param>
         /// <returns></returns>
-        public List<DLV_DETAIL_T> GetDeliveryDetailDataListFromHeaderId(long dlvHeaderId)
-        {
-            return dlvDetailTRepository.GetAll().AsNoTracking().Where(x => dlvHeaderId == x.DlvHeaderId).ToList();
-        }
-
-
-        public List<DLV_PICKED_T> GetDeliveryPickDataListFromPickedId(long dlvPickedId)
-        {
-            return dlvPickedTRepository.GetAll().AsNoTracking().Where(x => dlvPickedId == x.DlvPickedId).ToList();
-        }
-
         public List<DLV_PICKED_T> GetDeliveryPickDataListFromPickedId(List<long> dlvPickedId)
         {
             return dlvPickedTRepository.GetAll().Where(x => dlvPickedId.Contains(x.DlvPickedId)).ToList();
@@ -1390,6 +1009,9 @@ SELECT [DLV_PICKED_ID]
             }
         }
 
+        /// <summary>
+        /// 取消航程號
+        /// </summary>
         public ResultModel CancelTrip(List<DLV_HEADER_T> updateDatas, string userId, string userName)
         {
             if (updateDatas == null || updateDatas.Count == 0) return new ResultModel(false, "沒有交運單資料");
@@ -1649,7 +1271,7 @@ SELECT [DLV_DETAIL_ID]
         #region 捲筒
 
         /// <summary>
-        /// 取得捲筒明細表單內容
+        /// 取得紙捲明細表單資料
         /// </summary>
         /// <param name="dlvHeaderId"></param>
         /// <returns></returns>
@@ -1748,6 +1370,12 @@ GROUP BY d.DLV_DETAIL_ID";
 
         }
 
+        /// <summary>
+        /// 取得紙捲揀貨表單資料
+        /// </summary>
+        /// <param name="dlvHeaderId"></param>
+        /// <param name="DELIVERY_STATUS_NAME"></param>
+        /// <returns></returns>
         public List<PaperRollEditBarcodeDT> GetRollPickDT(long dlvHeaderId, string DELIVERY_STATUS_NAME)
         {
             string cmd = "";
@@ -1792,7 +1420,7 @@ where DLV_HEADER_ID = @DLV_HEADER_ID";
         #region 平版
 
         /// <summary>
-        /// 取得平版明細表單內容
+        /// 取得平張明細表單資料
         /// </summary>
         /// <param name="dlvHeaderId"></param>
         /// <returns></returns>
@@ -1897,6 +1525,12 @@ GROUP BY d.DLV_DETAIL_ID";
 
         }
 
+        /// <summary>
+        /// 取得平張揀貨表單資料
+        /// </summary>
+        /// <param name="dlvHeaderId"></param>
+        /// <param name="DELIVERY_STATUS_NAME"></param>
+        /// <returns></returns>
         public List<FlatEditBarcodeDT> GetFlatPickDT(long dlvHeaderId, string DELIVERY_STATUS_NAME)
         {
             string cmd = "";
@@ -1948,7 +1582,12 @@ where DLV_HEADER_ID = @DLV_HEADER_ID"; ;
 
         #endregion
 
-
+        /// <summary>
+        /// 取得條碼標籤資料
+        /// </summary>
+        /// <param name="PICKED_IDs"></param>
+        /// <param name="userName"></param>
+        /// <returns></returns>
         public ResultDataModel<List<LabelModel>> GetLabels(List<long> PICKED_IDs, string userName)
         {
             try
@@ -2082,7 +1721,11 @@ WHERE p.BARCODE = @Barcode
             }
 
         }
-
+        /// <summary>
+        /// 取得出貨未完成數量
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         public ResultDataModel<int> GetDlvPendingCount(string userId)
         {
             var resultDataModel = new ResultDataModel<int>(false, "", 0);

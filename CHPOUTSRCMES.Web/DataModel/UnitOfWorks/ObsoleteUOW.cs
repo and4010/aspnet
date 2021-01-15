@@ -32,6 +32,9 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
         }
 
 
+        /// <summary>
+        /// 取得庫存查詢表單資料
+        /// </summary>
         public List<StockDT> GetStockTList(long organizationId, string subinventoryCode, long? locatorId, string itemNumber)
         {
             try
@@ -107,6 +110,9 @@ SELECT [STOCK_ID] as ID
             }
         }
 
+        /// <summary>
+        /// 新增異動明細
+        /// </summary>
         public ResultModel CreateDetail(long stockId, decimal mQty, string userId, string userName)
         {
             using (var txn = this.Context.Database.BeginTransaction())
@@ -127,8 +133,8 @@ SELECT [STOCK_ID] as ID
 
                     if (header == null)
                     {
-                           //產生header資料
-                           var organization = GetOrganization(organizationId);
+                        //產生header資料
+                        var organization = GetOrganization(organizationId);
                         if (organization == null) throw new Exception("找不到庫存組織資料");
 
                         var transactionType = GetTransactionType(TransactionTypeId.Chp26Out);
@@ -180,7 +186,7 @@ SELECT [STOCK_ID] as ID
                     x.StockId == stockId);
                     if (detail != null) return new ResultModel(false, "已存在此條碼:" + detail.Barcode + "異動紀錄");
 
-                   
+
 
                     //處理異動量
                     mQty = -1 * Math.Abs(mQty);
@@ -244,6 +250,9 @@ SELECT [STOCK_ID] as ID
         }
 
 
+        /// <summary>
+        /// 取得異動明細表單資料
+        /// </summary>
         public List<StockObsoleteDT> GetStockObsoleteTList(string userId)
         {
             try
@@ -327,6 +336,9 @@ SELECT m.TRANSFER_OBSOLETE_ID AS ID
         }
 
 
+        /// <summary>
+        /// 刪除異動明細
+        /// </summary>
         public ResultModel DelDetailData(List<long> ids)
         {
             using (var txn = this.Context.Database.BeginTransaction())
@@ -363,6 +375,9 @@ SELECT m.TRANSFER_OBSOLETE_ID AS ID
             }
         }
 
+        /// <summary>
+        /// 更新異動明細備註
+        /// </summary>
         public ResultModel UpdateDetailNote(List<long> ids, string note, string userId, string userName)
         {
             using (var txn = this.Context.Database.BeginTransaction())
@@ -396,6 +411,9 @@ SELECT m.TRANSFER_OBSOLETE_ID AS ID
             }
         }
 
+        /// <summary>
+        /// 異動存檔
+        /// </summary>
         public ResultModel SaveTransactionDetail(string userId, string userName)
         {
             using (var txn = this.Context.Database.BeginTransaction())
@@ -476,7 +494,7 @@ SELECT m.TRANSFER_OBSOLETE_ID AS ID
                                 {
                                     stockStatusCode = StockStatusCode.InStock;
                                 }
-                                
+
                             }
                             else if (stock.ItemCategory == ItemCategory.Roll)
                             {
@@ -494,7 +512,7 @@ SELECT m.TRANSFER_OBSOLETE_ID AS ID
                                 {
                                     stockStatusCode = StockStatusCode.InStock;
                                 }
-                                
+
                             }
                             else
                             {
