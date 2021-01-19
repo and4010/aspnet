@@ -41,10 +41,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
         private readonly IRepository<TRF_REASON_T> trfReasonTRepository;
 
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="context"></param>
+
         public PurchaseUOW(DbContext context) : base(context)
         {
             this.ctrOrgTRepository = new GenericRepository<CTR_ORG_T>(this);
@@ -59,260 +56,11 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
         }
 
 
-        public void generateTestData()
-        {
-            this.Context.Configuration.AutoDetectChangesEnabled = false;
-            using (var txn = this.Context.Database.BeginTransaction())
-            {
-                try
-                {
-                    generateTestDataCtrOrgT();
-                    generateTestDataCtrHeaderDetail();
-                    generateFlatDetail();
-                    txn.Commit();
-                }
-                catch (Exception ex)
-                {
-                    logger.Error(LogUtilities.BuildExceptionMessage(ex));
-                    txn.Rollback();
-                }
-            }
-            this.Context.Configuration.AutoDetectChangesEnabled = true;
-        }
-
-        private void generateTestDataCtrOrgT()
-        {
-            CTR_ORG_T ctrorg = new CTR_ORG_T();
-            try
-            {
-
-                ctrorg.CtrOrgId = 1;
-                ctrorg.ProcessCode = "XXIFP217";
-                ctrorg.ServerCode = "123";
-                ctrorg.BatchId = "20200721141600100000";
-                ctrorg.BatchLineId = 1;
-                ctrorg.HeaderId = 1;
-                ctrorg.OrgId = 1;
-                ctrorg.OrgName = "入庫";
-                ctrorg.BlNo = "123456";
-                ctrorg.LineId = 1;
-                ctrorg.ContainerNo = "WHAU5231488";
-                ctrorg.MvContainerDate = DateTime.Now;
-                ctrorg.OrganizationId = 265;
-                ctrorg.OrganizationCode = "FTY";
-                ctrorg.Subinventory = "TB3";
-                ctrorg.DetailId = 1;
-                ctrorg.InventoryItemId = 503376;
-                ctrorg.ShipItemNumber = "4DM00A03000407K471K";
-                ctrorg.PaperType = "DM00";
-                ctrorg.BasicWeight = "03000";
-                ctrorg.ReamWeight = "299.11";
-                ctrorg.RollReamQty = 2;
-                ctrorg.RollReamWt = 3000;
-                ctrorg.TtlRollReam = 1;
-                ctrorg.Specification = "407K471K";
-                ctrorg.PackingType = "令包";
-                ctrorg.ShipMtQty = 1;
-                ctrorg.TransactionQuantity = 3;
-                ctrorg.TransactionUom = "MT";
-                ctrorg.PrimaryQuantity = 3000;
-                ctrorg.PrimaryUom = "KG";
-                ctrorg.SecondaryQuantity = 3000;
-                ctrorg.SecondaryUom = "RE";
-                ctrorg.CreatedBy = "1";
-                ctrorg.CreationDate = DateTime.Now;
-                ctrorg.LastUpdateBy = "1";
-                ctrorg.LastUpdateDate = DateTime.Now;
-                ctrOrgTRepository.Create(ctrorg, true);
-
-                ctrorg.CtrOrgId = 2;
-                ctrorg.ProcessCode = "XXIFP217";
-                ctrorg.ServerCode = "123";
-                ctrorg.BatchId = "20200721141600100000";
-                ctrorg.BatchLineId = 2;
-                ctrorg.HeaderId = 2;
-                ctrorg.OrgId = 2;
-                ctrorg.OrgName = "入庫";
-                ctrorg.BlNo = "123456";
-                ctrorg.LineId = 2;
-                ctrorg.ContainerNo = "WHAU5231488";
-                ctrorg.MvContainerDate = DateTime.Now;
-                ctrorg.OrganizationId = 265;
-                ctrorg.OrganizationCode = "FTY";
-                ctrorg.Subinventory = "TB3";
-                ctrorg.DetailId = 1;
-                ctrorg.InventoryItemId = 503375;
-                ctrorg.ShipItemNumber = "4DM00A03000386K471K";
-                ctrorg.PaperType = "DM00";
-                ctrorg.BasicWeight = "03000";
-                ctrorg.ReamWeight = "02200";
-                ctrorg.RollReamQty = 1;
-                ctrorg.RollReamWt = 1;
-                ctrorg.TtlRollReam = 1;
-                ctrorg.Specification = "352K471K";
-                ctrorg.PackingType = "無";
-                ctrorg.ShipMtQty = 1;
-                ctrorg.TransactionQuantity = 0.616M;
-                ctrorg.TransactionUom = "MT";
-                ctrorg.PrimaryQuantity = 616;
-                ctrorg.PrimaryUom = "KG";
-                ctrorg.SecondaryQuantity = 0;
-                ctrorg.SecondaryUom = "";
-                ctrorg.CreatedBy = "1";
-                ctrorg.CreationDate = DateTime.Now;
-                ctrorg.LastUpdateBy = "1";
-                ctrorg.LastUpdateDate = DateTime.Now;
-                ctrOrgTRepository.Create(ctrorg, true);
-
-                ctrorg.CtrOrgId = 3;
-                ctrorg.ProcessCode = "XXIFP217";
-                ctrorg.ServerCode = "123";
-                ctrorg.BatchId = "20200721141600100000";
-                ctrorg.BatchLineId = 3;
-                ctrorg.HeaderId = 3;
-                ctrorg.OrgId = 3;
-                ctrorg.OrgName = "入庫";
-                ctrorg.BlNo = "123456";
-                ctrorg.LineId = 3;
-                ctrorg.ContainerNo = "WHAU5231488";
-                ctrorg.MvContainerDate = DateTime.Now;
-                ctrorg.OrganizationId = 265;
-                ctrorg.OrganizationCode = "FTY";
-                ctrorg.Subinventory = "TB3";
-                ctrorg.DetailId = 1;
-                ctrorg.InventoryItemId = 503374;
-                ctrorg.ShipItemNumber = "4DM00A03000352K471K";
-                ctrorg.PaperType = "DM00";
-                ctrorg.BasicWeight = "03000";
-                ctrorg.ReamWeight = "02200";
-                ctrorg.RollReamQty = 1;
-                ctrorg.RollReamWt = 1;
-                ctrorg.TtlRollReam = 1;
-                ctrorg.Specification = "386K471K";
-                ctrorg.PackingType = "無";
-                ctrorg.ShipMtQty = 1;
-                ctrorg.TransactionQuantity = 0.440M;
-                ctrorg.TransactionUom = "MT";
-                ctrorg.PrimaryQuantity = 440;
-                ctrorg.PrimaryUom = "KG";
-                ctrorg.SecondaryQuantity = 0;
-                ctrorg.SecondaryUom = "";
-                ctrorg.CreatedBy = "1";
-                ctrorg.CreationDate = DateTime.Now;
-                ctrorg.LastUpdateBy = "1";
-                ctrorg.LastUpdateDate = DateTime.Now;
-                ctrOrgTRepository.Create(ctrorg, true);
-            }
-            catch (Exception e)
-            {
-                logger.Error(e.Message.ToString());
-            }
-
-
-
-
-        }
-
-        public void generateTestDataCtrHeaderDetail()
-        {
-            CTR_HEADER_T ctrheaderT = new CTR_HEADER_T();
-            CTR_DETAIL_T ctrdetailT = new CTR_DETAIL_T();
-
-            var org = ctrOrgTRepository.GetAll().AsNoTracking().ToList();
-
-            try
-            {
-                for (int i = 0; org.Count() > i; i++)
-                {
-                    var ctrHeaderTContainerNo = org[i].ContainerNo;
-                    var ContainerNo = ctrHeaderTRepository.GetAll()
-                        .Where(x => x.ContainerNo == ctrHeaderTContainerNo).SingleOrDefault();
-                    if (ContainerNo == null)
-                    {
-                        ctrheaderT.HeaderId = org[i].HeaderId;
-                        ctrheaderT.OrgId = org[i].OrgId;
-                        ctrheaderT.OrgName = org[i].OrgName;
-                        ctrheaderT.BlNo = org[i].BlNo;
-                        ctrheaderT.LineId = org[i].LineId;
-                        ctrheaderT.ContainerNo = org[i].ContainerNo;
-                        ctrheaderT.MvContainerDate = org[i].MvContainerDate;
-                        ctrheaderT.OrganizationId = org[i].OrganizationId;
-                        ctrheaderT.OrganizationCode = org[i].OrganizationCode;
-                        ctrheaderT.Subinventory = org[i].Subinventory;
-                        ctrheaderT.Status = PurchaseStatusCode.GetCode(PurchaseStatusCode.Pending);
-                        ctrheaderT.CreatedBy = org[i].CreatedBy.ToString();
-                        ctrheaderT.CreatedUserName = org[i].CreatedBy.ToString();
-                        ctrheaderT.CreationDate = org[i].CreationDate;
-                        ctrHeaderTRepository.Create(ctrheaderT, true);
-                    }
-                    else if (ContainerNo.ContainerNo != org[i].ContainerNo)
-                    {
-                        ctrheaderT.HeaderId = org[i].HeaderId;
-                        ctrheaderT.OrgId = org[i].OrgId;
-                        ctrheaderT.OrgName = org[i].OrgName;
-                        ctrheaderT.BlNo = org[i].BlNo;
-                        ctrheaderT.LineId = org[i].LineId;
-                        ctrheaderT.ContainerNo = org[i].ContainerNo;
-                        ctrheaderT.MvContainerDate = org[i].MvContainerDate;
-                        ctrheaderT.OrganizationId = org[i].OrganizationId;
-                        ctrheaderT.OrganizationCode = org[i].OrganizationCode;
-                        ctrheaderT.Subinventory = org[i].Subinventory;
-                        ctrheaderT.Status = PurchaseStatusCode.GetCode(PurchaseStatusCode.Pending);
-                        ctrheaderT.CreatedBy = org[i].CreatedBy.ToString();
-                        ctrheaderT.CreatedUserName = org[i].CreatedBy.ToString();
-                        ctrheaderT.CreationDate = org[i].CreationDate;
-                        ctrHeaderTRepository.Create(ctrheaderT, true);
-                    }
-
-
-                    ctrdetailT.CtrHeaderId = ctrheaderT.CtrHeaderId;
-                    ctrdetailT.ProcessCode = org[i].ProcessCode;
-                    ctrdetailT.ServerCode = org[i].ServerCode;
-                    ctrdetailT.BatchId = org[i].BatchId;
-                    ctrdetailT.BatchLineId = org[i].BatchLineId;
-                    ctrdetailT.HeaderId = org[i].HeaderId;
-                    ctrdetailT.LineId = org[i].LineId;
-                    ctrdetailT.DetailId = org[i].DetailId;
-                    ctrdetailT.LocatorId = org[i].LocatorId;
-                    ctrdetailT.LocatorCode = org[i].LocatorCode;
-                    ctrdetailT.InventoryItemId = org[i].InventoryItemId;
-                    ctrdetailT.ShipItemNumber = org[i].ShipItemNumber;
-                    ctrdetailT.PaperType = org[i].PaperType;
-                    ctrdetailT.BasicWeight = org[i].BasicWeight;
-                    ctrdetailT.ReamWeight = org[i].ReamWeight;
-                    ctrdetailT.RollReamQty = org[i].RollReamQty;
-                    ctrdetailT.RollReamWt = org[i].RollReamWt;
-                    ctrdetailT.TtlRollReam = org[i].TtlRollReam;
-                    ctrdetailT.Specification = org[i].Specification;
-                    ctrdetailT.PackingType = org[i].PackingType;
-                    ctrdetailT.ShipMtQty = org[i].ShipMtQty;
-                    ctrdetailT.TransactionQuantity = org[i].TransactionQuantity;
-                    ctrdetailT.TransactionUom = org[i].TransactionUom;
-                    ctrdetailT.PrimaryQuantity = org[i].PrimaryQuantity;
-                    ctrdetailT.PrimaryUom = org[i].PrimaryUom;
-                    ctrdetailT.SecondaryQuantity = org[i].SecondaryQuantity;
-                    ctrdetailT.SecondaryUom = org[i].SecondaryUom;
-                    if (org[i].SecondaryQuantity > 0)
-                    {
-                        ctrdetailT.ItemCategory = "平版";
-                    }
-                    else
-                    {
-                        ctrdetailT.ItemCategory = "捲筒";
-                    }
-                    ctrdetailT.CreatedBy = org[i].CreatedBy.ToString();
-                    ctrdetailT.CreatedUserName = org[i].CreatedBy.ToString();
-                    ctrdetailT.CreationDate = org[i].CreationDate;
-                    ctrDetailTRepository.Create(ctrdetailT, true);
-                }
-            }
-            catch (Exception e)
-            {
-                logger.Error(e.Message.ToString());
-            }
-
-        }
-
+        /// <summary>
+        /// 取得表頭資料
+        /// </summary>
+        /// <param name="CtrHeaderId"></param>
+        /// <returns></returns>
         public CTR_HEADER_T GetHeader(long CtrHeaderId)
         {
             try
@@ -420,7 +168,14 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             }
         }
 
-
+        /// <summary>
+        /// 重量換算
+        /// </summary>
+        /// <param name="itemId"></param>
+        /// <param name="pryQty"></param>
+        /// <param name="pryUom"></param>
+        /// <param name="txnUom"></param>
+        /// <returns></returns>
         private decimal ConvertTxnQty(long itemId, decimal pryQty, string pryUom, string txnUom)
         {
             if (pryUom.CompareTo(txnUom) == 0)
@@ -468,64 +223,6 @@ and d.ITEM_CATEGORY = N'捲筒'");
 
         }
 
-        /// <summary>
-        /// 平版明細資料
-        /// </summary>
-        public void generateFlatDetail()
-        {
-            var ctrDetail = ctrDetailTRepository.Get(s => s.ItemCategory == "平版").ToList();
-
-            CTR_PICKED_T cTR_PICKED_T = new CTR_PICKED_T();
-            try
-            {
-                for (int i = 0; i < ctrDetail.Count; i++)
-                {
-                    var HeaderId = ctrDetail[i].HeaderId;
-                    var ctrheader = ctrHeaderTRepository.Get(s => s.HeaderId == HeaderId).SingleOrDefault();
-                    for (int j = 0; j < decimal.ToInt32(ctrDetail[i].RollReamQty); j++)
-                    {
-                        cTR_PICKED_T.CtrHeaderId = HeaderId;
-                        cTR_PICKED_T.CtrDetailId = ctrDetail[i].CtrDetailId;
-                        cTR_PICKED_T.StockId = null;
-                        cTR_PICKED_T.LocatorId = ctrDetail[i].LocatorId;
-                        cTR_PICKED_T.LocatorCode = ctrDetail[i].LocatorCode;
-                        cTR_PICKED_T.Barcode = GenerateBarcodes(ctrheader.OrganizationId, ctrheader.Subinventory, ctrDetail.Count, "1").Data[i];
-                        cTR_PICKED_T.InventoryItemId = ctrDetail[i].InventoryItemId;
-                        cTR_PICKED_T.ShipItemNumber = ctrDetail[i].ShipItemNumber;
-                        cTR_PICKED_T.PaperType = ctrDetail[i].PaperType;
-                        cTR_PICKED_T.BasicWeight = ctrDetail[i].BasicWeight;
-                        cTR_PICKED_T.ReamWeight = ctrDetail[i].ReamWeight;
-                        cTR_PICKED_T.RollReamWt = ctrDetail[i].RollReamWt;
-                        cTR_PICKED_T.Specification = ctrDetail[i].Specification;
-                        cTR_PICKED_T.PackingType = ctrDetail[i].PackingType;
-                        cTR_PICKED_T.ShipMtQty = ctrDetail[i].ShipMtQty;
-                        cTR_PICKED_T.TransactionQuantity = ctrDetail[i].TransactionQuantity;
-                        cTR_PICKED_T.TransactionUom = ctrDetail[i].TransactionUom;
-                        cTR_PICKED_T.PrimaryQuantity = ctrDetail[i].PrimaryQuantity;
-                        cTR_PICKED_T.PrimaryUom = ctrDetail[i].PrimaryUom;
-                        cTR_PICKED_T.SecondaryQuantity = ctrDetail[i].SecondaryQuantity;
-                        cTR_PICKED_T.SecondaryUom = ctrDetail[i].SecondaryUom;
-                        cTR_PICKED_T.LotNumber = "";
-                        cTR_PICKED_T.TheoryWeight = "";
-                        cTR_PICKED_T.ItemCategory = ctrDetail[i].ItemCategory;
-                        cTR_PICKED_T.Status = PickingStatusCode.NOT_PRINTED;
-                        cTR_PICKED_T.ReasonCode = "";
-                        cTR_PICKED_T.ReasonDesc = "";
-                        cTR_PICKED_T.Note = "";
-                        cTR_PICKED_T.CreatedBy = ctrDetail[i].CreatedBy;
-                        cTR_PICKED_T.CreationDate = DateTime.Now;
-                        cTR_PICKED_T.CreatedUserName = ctrDetail[i].CreatedUserName;
-                        ctrPickedTRepository.Create(cTR_PICKED_T, true);
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                logger.Error(e.Message);
-                new ResultModel(false, e.Message.ToString());
-            }
-
-        }
 
         /// <summary>
         /// 取得行事曆資料
@@ -1434,8 +1131,9 @@ FROM CTR_HEADER_T h where h.CTR_HEADER_ID = @CTR_HEADER_ID");
 
         //}
 
+
         /// <summary>
-        /// 取得相片
+        /// 照片轉換base64
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -1462,7 +1160,11 @@ FROM CTR_HEADER_T h where h.CTR_HEADER_ID = @CTR_HEADER_ID");
 
         }
 
-
+        /// <summary>
+        /// 取得所有照片ID
+        /// </summary>
+        /// <param name="pickedId"></param>
+        /// <returns></returns>
         public List<long> GetPhotoList(long pickedId)
         {
             return ctrFileInfoTRepository.GetAll()
@@ -1472,6 +1174,11 @@ FROM CTR_HEADER_T h where h.CTR_HEADER_ID = @CTR_HEADER_ID");
                 .ToList();
         }
 
+        /// <summary>
+        /// 取得照片檔案
+        /// </summary>
+        /// <param name="infoId"></param>
+        /// <returns></returns>
         public string GetPhotoByInfoId(long infoId)
         {
             var db = (MesContext)Context;
@@ -1956,7 +1663,14 @@ AND (lt.LOCATOR_DISABLE_DATE >= GETDATE() OR lt.LOCATOR_DISABLE_DATE is null)
             }
         }
 
-
+        /// <summary>
+        /// 入庫單
+        /// </summary>
+        /// <param name="Header"></param>
+        /// <param name="Detail"></param>
+        /// <param name="Reason"></param>
+        /// <param name="CtrHeaderId"></param>
+        /// <param name="ItemCategory"></param>
         public void PurchaseReceipt(ref ReportDataSource Header, ref ReportDataSource Detail, ref ReportDataSource Reason, string CtrHeaderId, string ItemCategory)
         {
 
@@ -1994,6 +1708,12 @@ AND (lt.LOCATOR_DISABLE_DATE >= GETDATE() OR lt.LOCATOR_DISABLE_DATE is null)
 
         }
 
+        /// <summary>
+        /// 取得入庫單表頭資料
+        /// </summary>
+        /// <param name="connection"></param>
+        /// <param name="dsSalesOrder"></param>
+        /// <param name="CTR_HEADER_ID"></param>
         public void GetHeaderReceipt(SqlConnection connection, ref DataSet dsSalesOrder, long CTR_HEADER_ID)
         {
             string Header = "SELECT * FROM dbo.PurchaseHeadaer(@CTR_HEADER_ID)";
@@ -2003,6 +1723,13 @@ AND (lt.LOCATOR_DISABLE_DATE >= GETDATE() OR lt.LOCATOR_DISABLE_DATE is null)
             salesOrderAdapter.Fill(dsSalesOrder, "Header");
         }
 
+        /// <summary>
+        /// 取得報表表身資料
+        /// </summary>
+        /// <param name="connection"></param>
+        /// <param name="Detail"></param>
+        /// <param name="CTR_HEADER_ID"></param>
+        /// <param name="ITEM_CATEGORY"></param>
         public void GetDetailReceipt(SqlConnection connection, ref DataSet Detail, long CTR_HEADER_ID, string ITEM_CATEGORY)
         {
             string Detail1 = "SELECT * FROM dbo.PurchaseDetail(@CTR_HEADER_ID,@ITEM_CATEGORY)";
@@ -2013,6 +1740,11 @@ AND (lt.LOCATOR_DISABLE_DATE >= GETDATE() OR lt.LOCATOR_DISABLE_DATE is null)
             salesOrderAdapter.Fill(Detail, "Detail");
         }
 
+        /// <summary>
+        /// 取得入庫單原因資料
+        /// </summary>
+        /// <param name="connection"></param>
+        /// <param name="Reason"></param>
         public void GetReasonReceipt(SqlConnection connection, ref DataSet Reason)
         {
             string reason = "SELECT * FROM dbo.PurchaseReason()";
@@ -2021,7 +1753,11 @@ AND (lt.LOCATOR_DISABLE_DATE >= GETDATE() OR lt.LOCATOR_DISABLE_DATE is null)
             salesOrderAdapter.Fill(Reason, "Reason");
 
         }
-
+        /// <summary>
+        /// 貨故轉移
+        /// </summary>
+        /// <param name="ctrHeaderId"></param>
+        /// <param name="now"></param>
         public void SaveTrfReason(long ctrHeaderId, DateTime now)
         {
 
@@ -2194,6 +1930,11 @@ SELECT [TRANSFER_REASON_ID]
 
         }
 
+        /// <summary>
+        /// 取得主頁未入庫數量
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         public ResultDataModel<int> GetCtrPendingCount(string userId)
         {
             var resultDataModel = new ResultDataModel<int>(false, "", 0);

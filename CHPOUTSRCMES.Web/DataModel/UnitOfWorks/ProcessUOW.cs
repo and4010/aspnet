@@ -68,678 +68,11 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
 
         }
 
-        public void generateTestData()
-        {
-            this.Context.Configuration.AutoDetectChangesEnabled = false;
-            using (var txn = this.Context.Database.BeginTransaction())
-            {
-                try
-                {
-                    generateTestDataOspOrgT();
-                    OspOrgToDetail();
-                    txn.Commit();
-                }
-                catch (Exception ex)
-                {
-                    logger.Error(LogUtilities.BuildExceptionMessage(ex));
-                    txn.Rollback();
-                }
-            }
-            this.Context.Configuration.AutoDetectChangesEnabled = true;
-        }
-
-        public void generateTestDataOspOrgT()
-        {
-            OSP_ORG_T oSP = new OSP_ORG_T();
-            try
-            {
-                oSP.ProcessCode = "XXIFP219";
-                oSP.ServerCode = "123";
-                oSP.BatchId = "20191112141600100000";
-                oSP.BatchLineId = 1;
-                oSP.PeBatchId = 1;
-                oSP.BatchNo = "W100000";
-                oSP.BatchType = "OSP";
-                oSP.BatchStatus = 0;
-                oSP.BatchStatusDesc = ProcessStatusCode.WaitBatch;
-                oSP.OrgId = 1;
-                oSP.OrgName = "加工";
-                oSP.OrganizationId = 265;
-                oSP.OrganizationCode = "FTY";
-                oSP.DueDate = DateTime.Now;
-                oSP.PlanStartDate = DateTime.Now;
-                oSP.PlanCmpltDate = DateTime.Now;
-                oSP.PeCreatedBy = "1";
-                oSP.PeCreationDate = DateTime.Now;
-                oSP.PeLastUpdateBy = "1";
-                oSP.PeLastUpdateDate = DateTime.Now;
-                oSP.LineType = "I";
-                oSP.LineNo = 1;
-                oSP.InventoryItemId = 558705;
-                oSP.InventoryItemNumber = "4AH00A00900362KRL00";
-                oSP.PackingType = "無令打包";
-                oSP.PaperType = "AH00";
-                oSP.OrderWeight = "20";
-                oSP.BasicWeight = "00900";
-                oSP.Specification = "362KRL00";
-                oSP.GrainDirection = "S";
-                oSP.ReamWt = "20";
-                oSP.PlanQty = 1;
-                oSP.WipPLAN_QTY = 1;
-                oSP.DtlUom = "KG";
-                oSP.OrderHeaderId = 1;
-                oSP.OrderNumber = 123456;
-                oSP.OrderLineId = 1;
-                oSP.OrderLineNumber = "1112315";
-                oSP.CustomerId = 1;
-                oSP.CustomerNumber = "123";
-                oSP.CustomerName = "中華彩色印刷股份有限公司";
-                oSP.PrNumber = 1;
-                oSP.PrLineNumber = 1;
-                oSP.RequisitionLineId = 1;
-                oSP.PoNumber = 1;
-                oSP.PoLineNumber = 1;
-                oSP.PoLineId = 1;
-                oSP.PoUnitPrice = 20;
-                oSP.PoRevisionNum = 1;
-                oSP.PoStatus = "待印";
-                oSP.PoVendorNum = "1";
-                oSP.OspRemark = "N11/25入倉";
-                oSP.Subinventory = "TB3";
-                oSP.LocatorId = 23265;
-                oSP.LocatorCode = "FTY.REVT.A11.B12";
-                oSP.ReservationUomCode = "RE";
-                oSP.ReservationQuantity = 1;
-                oSP.LineCreatedBy = 1;
-                oSP.LineCreationDate = DateTime.Now;
-                oSP.LineLastUpdateBy = 1;
-                oSP.LineLastUpdateDate = DateTime.Now;
-                oSP.TransactionQuantity = 1000;
-                oSP.TransactionUom = "KG";
-                oSP.PrimaryQuantity = 1000;
-                oSP.PrimaryUom = "KG";
-                oSP.CreatedBy = "1";
-                oSP.CreationDate = DateTime.Now;
-                oSP.LastUpdateBy = "1";
-                oSP.LastUpdateDate = DateTime.Now;
-                OspOrgTRepository.Create(oSP, true);
-
-                oSP.ProcessCode = "XXIFP219";
-                oSP.ServerCode = "123";
-                oSP.BatchId = "20191112141600100000";
-                oSP.BatchLineId = 1;
-                oSP.PeBatchId = 1;
-                oSP.BatchNo = "W100000";
-                oSP.BatchType = "OSP";
-                oSP.BatchStatus = 0;
-                oSP.BatchStatusDesc = ProcessStatusCode.WaitBatch;
-                oSP.OrgId = 1;
-                oSP.OrgName = "加工";
-                oSP.OrganizationId = 265;
-                oSP.OrganizationCode = "FTY";
-                oSP.DueDate = DateTime.Now;
-                oSP.PlanStartDate = DateTime.Now;
-                oSP.PlanCmpltDate = DateTime.Now;
-                oSP.PeCreatedBy = "1";
-                oSP.PeCreationDate = DateTime.Now;
-                oSP.PeLastUpdateBy = "1";
-                oSP.PeLastUpdateDate = DateTime.Now;
-                oSP.LineType = "P";
-                oSP.LineNo = 1;
-                oSP.InventoryItemId = 728485;
-                oSP.InventoryItemNumber = "4FU0SA020000889RL00";
-                oSP.PackingType = "無令打包";
-                oSP.PaperType = "FU0S";
-                oSP.OrderWeight = "20";
-                oSP.BasicWeight = "02000";
-                oSP.Specification = "889RL00";
-                oSP.GrainDirection = "S";
-                oSP.ReamWt = "20";
-                oSP.PlanQty = 1;
-                oSP.WipPLAN_QTY = 1;
-                oSP.DtlUom = "KG";
-                oSP.OrderHeaderId = 1;
-                oSP.OrderNumber = 123456;
-                oSP.OrderLineId = 1;
-                oSP.OrderLineNumber = "1112315";
-                oSP.CustomerId = 1;
-                oSP.CustomerNumber = "123";
-                oSP.CustomerName = "中華彩色印刷股份有限公司";
-                oSP.PrNumber = 1;
-                oSP.PrLineNumber = 1;
-                oSP.RequisitionLineId = 1;
-                oSP.PoNumber = 1;
-                oSP.PoLineNumber = 1;
-                oSP.PoLineId = 1;
-                oSP.PoUnitPrice = 20;
-                oSP.PoRevisionNum = 1;
-                oSP.PoStatus = "待印";
-                oSP.PoVendorNum = "1";
-                oSP.OspRemark = "N11/25入倉";
-                oSP.Subinventory = "TB3";
-                oSP.LocatorId = 23265;
-                oSP.LocatorCode = "FTY.REVT.A11.B12";
-                oSP.ReservationUomCode = "RE";
-                oSP.ReservationQuantity = 1;
-                oSP.LineCreatedBy = 1;
-                oSP.LineCreationDate = DateTime.Now;
-                oSP.LineLastUpdateBy = 1;
-                oSP.LineLastUpdateDate = DateTime.Now;
-                oSP.TransactionQuantity = 1000;
-                oSP.TransactionUom = "KG";
-                oSP.PrimaryQuantity = 1000;
-                oSP.PrimaryUom = "KG";
-                oSP.CreatedBy = "1";
-                oSP.CreationDate = DateTime.Now;
-                oSP.LastUpdateBy = "1";
-                oSP.LastUpdateDate = DateTime.Now;
-                OspOrgTRepository.Create(oSP, true);
 
 
-                //代紙平張
-
-                oSP.ProcessCode = "XXIFP219";
-                oSP.ServerCode = "124";
-                oSP.BatchId = "20201112141600100000";
-                oSP.BatchLineId = 2;
-                oSP.PeBatchId = 2;
-                oSP.BatchNo = "P100000";
-                oSP.BatchType = "REP";
-                oSP.BatchStatus = 0;
-                oSP.BatchStatusDesc = ProcessStatusCode.WaitBatch;
-                oSP.OrgId = 1;
-                oSP.OrgName = "加工";
-                oSP.OrganizationId = 265;
-                oSP.OrganizationCode = "FTY";
-                oSP.DueDate = DateTime.Now;
-                oSP.PlanStartDate = DateTime.Now;
-                oSP.PlanCmpltDate = DateTime.Now;
-                oSP.PeCreatedBy = "1";
-                oSP.PeCreationDate = DateTime.Now;
-                oSP.PeLastUpdateBy = "1";
-                oSP.PeLastUpdateDate = DateTime.Now;
-                oSP.LineType = "I";
-                oSP.LineNo = 2;
-                oSP.InventoryItemId = 504124;
-                oSP.InventoryItemNumber = "4DM00P02700252K512K";
-                oSP.PackingType = "無令打件";
-                oSP.PaperType = "DM00";
-                oSP.OrderWeight = "27";
-                oSP.BasicWeight = "2700";
-                oSP.Specification = "252K512K";
-                oSP.GrainDirection = "S";
-                oSP.ReamWt = "27";
-                oSP.PlanQty = 2;
-                oSP.WipPLAN_QTY = 3;
-                oSP.DtlUom = "RE";
-                oSP.OrderHeaderId = 2;
-                oSP.OrderNumber = 654321;
-                oSP.OrderLineId = 2;
-                oSP.OrderLineNumber = "9536852";
-                oSP.CustomerId = 2;
-                oSP.CustomerNumber = "321";
-                oSP.CustomerName = "中華彩色印刷股份有限公司";
-                oSP.PrNumber = 2;
-                oSP.PrLineNumber = 2;
-                oSP.RequisitionLineId = 2;
-                oSP.PoNumber = 2;
-                oSP.PoLineNumber = 2;
-                oSP.PoLineId = 2;
-                oSP.PoUnitPrice = 40;
-                oSP.PoRevisionNum = 2;
-                oSP.PoStatus = "待印";
-                oSP.PoVendorNum = "2";
-                oSP.OspRemark = "N11/25入倉";
-                oSP.Subinventory = "TB3";
-                oSP.LocatorId = 23265;
-                oSP.LocatorCode = "FTY.REVT.A11.B12";
-                oSP.ReservationUomCode = "RE";
-                oSP.ReservationQuantity = 2;
-                oSP.LineCreatedBy = 1;
-                oSP.LineCreationDate = DateTime.Now;
-                oSP.LineLastUpdateBy = 1;
-                oSP.LineLastUpdateDate = DateTime.Now;
-                oSP.TransactionQuantity = 2000;
-                oSP.TransactionUom = "KG";
-                oSP.PrimaryQuantity = 2000;
-                oSP.SecondaryQuantity = 1000;
-                oSP.SecondaryUom = "RE";
-                oSP.PrimaryUom = "KG";
-                oSP.CreatedBy = "1";
-                oSP.CreationDate = DateTime.Now;
-                oSP.LastUpdateBy = "1";
-                oSP.LastUpdateDate = DateTime.Now;
-                OspOrgTRepository.Create(oSP, true);
-
-
-                oSP.ProcessCode = "XXIFP219";
-                oSP.ServerCode = "124";
-                oSP.BatchId = "20201112141600100000";
-                oSP.BatchLineId = 2;
-                oSP.PeBatchId = 2;
-                oSP.BatchNo = "P100000";
-                oSP.BatchType = "REP";
-                oSP.BatchStatus = 0;
-                oSP.BatchStatusDesc = ProcessStatusCode.WaitBatch;
-                oSP.OrgId = 1;
-                oSP.OrgName = "加工";
-                oSP.OrganizationId = 265;
-                oSP.OrganizationCode = "FTY";
-                oSP.DueDate = DateTime.Now;
-                oSP.PlanStartDate = DateTime.Now;
-                oSP.PlanCmpltDate = DateTime.Now;
-                oSP.PeCreatedBy = "1";
-                oSP.PeCreationDate = DateTime.Now;
-                oSP.PeLastUpdateBy = "1";
-                oSP.PeLastUpdateDate = DateTime.Now;
-                oSP.LineType = "P";
-                oSP.LineNo = 2;
-                oSP.InventoryItemId = 504125;
-                oSP.InventoryItemNumber = "4DM00P02700330K512K";
-                oSP.PackingType = "無令打件";
-                oSP.PaperType = "DM00";
-                oSP.OrderWeight = "27";
-                oSP.BasicWeight = "2700";
-                oSP.Specification = "330K512K";
-                oSP.GrainDirection = "S";
-                oSP.ReamWt = "27";
-                oSP.PlanQty = 2;
-                oSP.WipPLAN_QTY = 3;
-                oSP.DtlUom = "RE";
-                oSP.OrderHeaderId = 2;
-                oSP.OrderNumber = 654321;
-                oSP.OrderLineId = 2;
-                oSP.OrderLineNumber = "9536852";
-                oSP.CustomerId = 2;
-                oSP.CustomerNumber = "321";
-                oSP.CustomerName = "中華彩色印刷股份有限公司";
-                oSP.PrNumber = 2;
-                oSP.PrLineNumber = 2;
-                oSP.RequisitionLineId = 2;
-                oSP.PoNumber = 2;
-                oSP.PoLineNumber = 2;
-                oSP.PoLineId = 2;
-                oSP.PoUnitPrice = 40;
-                oSP.PoRevisionNum = 2;
-                oSP.PoStatus = "待印";
-                oSP.PoVendorNum = "2";
-                oSP.OspRemark = "N11/25入倉";
-                oSP.Subinventory = "TB3";
-                oSP.LocatorId = 23265;
-                oSP.LocatorCode = "FTY.REVT.A11.B12";
-                oSP.ReservationUomCode = "RE";
-                oSP.ReservationQuantity = 2;
-                oSP.LineCreatedBy = 1;
-                oSP.LineCreationDate = DateTime.Now;
-                oSP.LineLastUpdateBy = 1;
-                oSP.LineLastUpdateDate = DateTime.Now;
-                oSP.TransactionQuantity = 2000;
-                oSP.TransactionUom = "KG";
-                oSP.PrimaryQuantity = 2000;
-                oSP.SecondaryQuantity = 1000;
-                oSP.SecondaryUom = "RE";
-                oSP.PrimaryUom = "KG";
-                oSP.CreatedBy = "1";
-                oSP.CreationDate = DateTime.Now;
-                oSP.LastUpdateBy = "1";
-                oSP.LastUpdateDate = DateTime.Now;
-                OspOrgTRepository.Create(oSP, true);
-
-                //代紙平張
-
-                oSP.ProcessCode = "XXIFP219";
-                oSP.ServerCode = "124";
-                oSP.BatchId = "20201112141600100000";
-                oSP.BatchLineId = 3;
-                oSP.PeBatchId = 3;
-                oSP.BatchNo = "K100000";
-                oSP.BatchType = "REP";
-                oSP.BatchStatus = 0;
-                oSP.BatchStatusDesc = ProcessStatusCode.WaitBatch;
-                oSP.OrgId = 1;
-                oSP.OrgName = "加工";
-                oSP.OrganizationId = 265;
-                oSP.OrganizationCode = "FTY";
-                oSP.DueDate = DateTime.Now;
-                oSP.PlanStartDate = DateTime.Now;
-                oSP.PlanCmpltDate = DateTime.Now;
-                oSP.PeCreatedBy = "1";
-                oSP.PeCreationDate = DateTime.Now;
-                oSP.PeLastUpdateBy = "1";
-                oSP.PeLastUpdateDate = DateTime.Now;
-                oSP.LineType = "I";
-                oSP.LineNo = 2;
-                oSP.InventoryItemId = 558789;
-                oSP.InventoryItemNumber = "4AH00C01055294KRL00";
-                oSP.PackingType = "";
-                oSP.PaperType = "AH00";
-                oSP.OrderWeight = "22";
-                oSP.BasicWeight = "1055";
-                oSP.Specification = "294KRL00";
-                oSP.GrainDirection = "A";
-                oSP.ReamWt = "22";
-                oSP.PlanQty = 3;
-                oSP.WipPLAN_QTY = 4;
-                oSP.DtlUom = "RE";
-                oSP.OrderHeaderId = 32;
-                oSP.OrderNumber = 9513542;
-                oSP.OrderLineId = 3;
-                oSP.OrderLineNumber = "1111536";
-                oSP.CustomerId = 3;
-                oSP.CustomerNumber = "321";
-                oSP.CustomerName = "彩色印刷股份有限公司";
-                oSP.PrNumber = 3;
-                oSP.PrLineNumber = 3;
-                oSP.RequisitionLineId = 3;
-                oSP.PoNumber = 3;
-                oSP.PoLineNumber = 3;
-                oSP.PoLineId = 3;
-                oSP.PoUnitPrice = 50;
-                oSP.PoRevisionNum = 3;
-                oSP.PoStatus = "待印";
-                oSP.PoVendorNum = "3";
-                oSP.OspRemark = "N11/25入倉";
-                oSP.Subinventory = "TB3";
-                oSP.LocatorId = 23265;
-                oSP.LocatorCode = "FTY.REVT.A11.B12";
-                oSP.ReservationUomCode = "RE";
-                oSP.ReservationQuantity = 2;
-                oSP.LineCreatedBy = 1;
-                oSP.LineCreationDate = DateTime.Now;
-                oSP.LineLastUpdateBy = 1;
-                oSP.LineLastUpdateDate = DateTime.Now;
-                oSP.TransactionQuantity = 3000;
-                oSP.TransactionUom = "KG";
-                oSP.PrimaryQuantity = 3000;
-                oSP.PrimaryUom = "KG";
-                oSP.CreatedBy = "1";
-                oSP.CreationDate = DateTime.Now;
-                oSP.LastUpdateBy = "1";
-                oSP.LastUpdateDate = DateTime.Now;
-                OspOrgTRepository.Create(oSP, true);
-
-
-                oSP.ProcessCode = "XXIFP219";
-                oSP.ServerCode = "124";
-                oSP.BatchId = "20201112141600100000";
-                oSP.BatchLineId = 3;
-                oSP.PeBatchId = 3;
-                oSP.BatchNo = "K100000";
-                oSP.BatchType = "REP";
-                oSP.BatchStatus = 0;
-                oSP.BatchStatusDesc = ProcessStatusCode.WaitBatch;
-                oSP.OrgId = 1;
-                oSP.OrgName = "加工";
-                oSP.OrganizationId = 265;
-                oSP.OrganizationCode = "FTY";
-                oSP.DueDate = DateTime.Now;
-                oSP.PlanStartDate = DateTime.Now;
-                oSP.PlanCmpltDate = DateTime.Now;
-                oSP.PeCreatedBy = "1";
-                oSP.PeCreationDate = DateTime.Now;
-                oSP.PeLastUpdateBy = "1";
-                oSP.PeLastUpdateDate = DateTime.Now;
-                oSP.LineType = "P";
-                oSP.LineNo = 2;
-                oSP.InventoryItemId = 558790;
-                oSP.InventoryItemNumber = "4AH00E01000340KRL00";
-                oSP.PackingType = "";
-                oSP.PaperType = "AH00";
-                oSP.OrderWeight = "22";
-                oSP.BasicWeight = "1000";
-                oSP.Specification = "340KRL00";
-                oSP.GrainDirection = "C";
-                oSP.ReamWt = "22";
-                oSP.PlanQty = 3;
-                oSP.WipPLAN_QTY = 4;
-                oSP.DtlUom = "RE";
-                oSP.OrderHeaderId = 3;
-                oSP.OrderNumber = 4357213;
-                oSP.OrderLineId = 3;
-                oSP.OrderLineNumber = "4357213";
-                oSP.CustomerId = 3;
-                oSP.CustomerNumber = "753";
-                oSP.CustomerName = "彩色印刷股份有限公司";
-                oSP.PrNumber = 3;
-                oSP.PrLineNumber = 3;
-                oSP.RequisitionLineId = 3;
-                oSP.PoNumber = 3;
-                oSP.PoLineNumber = 3;
-                oSP.PoLineId = 3;
-                oSP.PoUnitPrice = 50;
-                oSP.PoRevisionNum = 3;
-                oSP.PoStatus = "待印";
-                oSP.PoVendorNum = "3";
-                oSP.OspRemark = "N11/25入倉";
-                oSP.Subinventory = "TB3";
-                oSP.LocatorId = 23265;
-                oSP.LocatorCode = "FTY.REVT.A11.B12";
-                oSP.ReservationUomCode = "RE";
-                oSP.ReservationQuantity = 3;
-                oSP.LineCreatedBy = 1;
-                oSP.LineCreationDate = DateTime.Now;
-                oSP.LineLastUpdateBy = 1;
-                oSP.LineLastUpdateDate = DateTime.Now;
-                oSP.TransactionQuantity = 3000;
-                oSP.TransactionUom = "KG";
-                oSP.PrimaryQuantity = 3000;
-                oSP.PrimaryUom = "KG";
-                oSP.CreatedBy = "1";
-                oSP.CreationDate = DateTime.Now;
-                oSP.LastUpdateBy = "1";
-                oSP.LastUpdateDate = DateTime.Now;
-                OspOrgTRepository.Create(oSP, true);
-
-
-
-            }
-            catch (Exception e)
-            {
-                logger.Error(LogUtilities.BuildExceptionMessage(e));
-            }
-        }
 
         /// <summary>
-        /// 主檔轉各自detail
-        /// </summary>
-        public void OspOrgToDetail()
-        {
-            OSP_HEADER_T OspHeaderT = new OSP_HEADER_T();
-            OSP_DETAIL_IN_T OspDetailInT = new OSP_DETAIL_IN_T();
-            OSP_DETAIL_OUT_T OspDetailOutT = new OSP_DETAIL_OUT_T();
-            var org = OspOrgTRepository.GetAll().AsNoTracking().ToList();
-
-            try
-            {
-                for (int i = 0; org.Count() > i; i++)
-                {
-                    var OspHeaderBatchNo = org[i].BatchNo;
-                    var batch = OspHeaderTRepository.GetAll().Where(x => x.BatchNo == OspHeaderBatchNo).SingleOrDefault();
-                    if (batch == null)
-                    {
-                        OspHeaderT.PeBatchId = org[i].PeBatchId;
-                        OspHeaderT.BatchNo = org[i].BatchNo;
-                        OspHeaderT.BatchType = org[i].BatchType;
-                        OspHeaderT.BatchStatus = org[i].BatchStatus;
-                        OspHeaderT.BatchStatusDesc = org[i].BatchStatusDesc;
-                        OspHeaderT.OrgId = org[i].OrgId;
-                        OspHeaderT.OrgName = org[i].OrgName;
-                        OspHeaderT.OrganizationId = org[i].OrganizationId;
-                        OspHeaderT.OrganizationCode = org[i].OrganizationCode;
-                        OspHeaderT.DueDate = org[i].DueDate;
-                        OspHeaderT.PlanStartDate = org[i].PlanStartDate;
-                        OspHeaderT.PlanCmpltDate = org[i].PlanCmpltDate;
-                        OspHeaderT.PeCreatedBy = org[i].PeCreatedBy;
-                        OspHeaderT.PeCreationDate = org[i].PeCreationDate;
-                        OspHeaderT.PeLastUpdateBy = org[i].PeLastUpdateBy;
-                        OspHeaderT.PeLastUpdateDate = org[i].PeLastUpdateDate;
-                        OspHeaderT.Status = ProcessStatusCode.WaitBatch;
-                        OspHeaderT.Modifications = 0;
-                        OspHeaderT.CreatedBy = "SYS";
-                        OspHeaderT.CreationDate = DateTime.Now;
-                        OspHeaderTRepository.Create(OspHeaderT, true);
-                    }
-                    else if (batch.BatchNo != org[i].BatchNo)
-                    {
-                        OspHeaderT.PeBatchId = org[i].PeBatchId;
-                        OspHeaderT.BatchNo = org[i].BatchNo;
-                        OspHeaderT.BatchType = org[i].BatchType;
-                        OspHeaderT.BatchStatus = org[i].BatchStatus;
-                        OspHeaderT.BatchStatusDesc = org[i].BatchStatusDesc;
-                        OspHeaderT.OrgId = org[i].OrgId;
-                        OspHeaderT.OrgName = org[i].OrgName;
-                        OspHeaderT.OrganizationId = org[i].OrganizationId;
-                        OspHeaderT.OrganizationCode = org[i].OrganizationCode;
-                        OspHeaderT.DueDate = org[i].DueDate;
-                        OspHeaderT.PlanStartDate = org[i].PlanStartDate;
-                        OspHeaderT.PlanCmpltDate = org[i].PlanCmpltDate;
-                        OspHeaderT.PeCreatedBy = org[i].PeCreatedBy;
-                        OspHeaderT.PeCreationDate = org[i].PeCreationDate;
-                        OspHeaderT.PeLastUpdateBy = org[i].PeLastUpdateBy;
-                        OspHeaderT.PeLastUpdateDate = org[i].PeLastUpdateDate;
-                        OspHeaderT.Status = ProcessStatusCode.WaitBatch;
-                        OspHeaderT.Modifications = 0;
-                        OspHeaderT.CreatedBy = "SYS";
-                        OspHeaderT.CreationDate = DateTime.Now;
-                        OspHeaderTRepository.Create(OspHeaderT, true);
-                    }
-
-
-                    if (org[i].LineType == "I")
-                    {
-                        OspDetailInT.OspHeaderId = OspHeaderT.OspHeaderId;
-                        OspDetailInT.ProcessCode = org[i].ProcessCode;
-                        OspDetailInT.ServerCode = org[i].ServerCode;
-                        OspDetailInT.BatchId = org[i].BatchId;
-                        OspDetailInT.BatchLineId = org[i].BatchLineId;
-                        OspDetailInT.LineType = org[i].LineType;
-                        OspDetailInT.LineNo = org[i].LineNo;
-                        OspDetailInT.InventoryItemId = org[i].InventoryItemId;
-                        OspDetailInT.InventoryItemNumber = org[i].InventoryItemNumber;
-                        OspDetailInT.BasicWeight = org[i].BasicWeight;
-                        OspDetailInT.Specification = org[i].Specification;
-                        OspDetailInT.GrainDirection = org[i].GrainDirection;
-                        OspDetailInT.OrderWeight = org[i].OrderWeight;
-                        OspDetailInT.ReamWt = org[i].ReamWt;
-                        OspDetailInT.PaperType = org[i].PaperType;
-                        OspDetailInT.PackingType = org[i].PackingType;
-                        OspDetailInT.PlanQty = org[i].PlanQty;
-                        OspDetailInT.WipPLAN_QTY = org[i].LineNo;
-                        OspDetailInT.DtlUom = org[i].DtlUom;
-                        OspDetailInT.OrderHeaderId = org[i].OrderHeaderId;
-                        OspDetailInT.OrderNumber = org[i].OrderNumber;
-                        OspDetailInT.OrderLineId = org[i].OrderLineId;
-                        OspDetailInT.OrderLineNumber = org[i].OrderLineNumber;
-                        OspDetailInT.CustomerId = org[i].CustomerId;
-                        OspDetailInT.CustomerNumber = org[i].CustomerNumber;
-                        OspDetailInT.CustomerName = org[i].CustomerName;
-                        OspDetailInT.PrNumber = org[i].PrNumber;
-                        OspDetailInT.PrLineNumber = org[i].PrLineNumber;
-                        OspDetailInT.RequisitionLineId = org[i].RequisitionLineId;
-                        OspDetailInT.PoNumber = org[i].PoNumber;
-                        OspDetailInT.PoLineNumber = org[i].PoLineNumber;
-                        OspDetailInT.PoLineId = org[i].PoLineId;
-                        OspDetailInT.PoUnitPrice = org[i].PoUnitPrice;
-                        OspDetailInT.PoRevisionNum = org[i].PoRevisionNum;
-                        OspDetailInT.PoStatus = org[i].PoStatus;
-                        OspDetailInT.PoVendorNum = org[i].PoVendorNum;
-                        OspDetailInT.OspRemark = org[i].OspRemark;
-                        OspDetailInT.Subinventory = org[i].Subinventory;
-                        OspDetailInT.LocatorId = org[i].LocatorId;
-                        OspDetailInT.LocatorCode = org[i].LocatorCode;
-                        OspDetailInT.ReservationUomCode = org[i].ReservationUomCode;
-                        OspDetailInT.ReservationQuantity = org[i].ReservationQuantity;
-                        OspDetailInT.LineCreatedBy = org[i].LineCreatedBy;
-                        OspDetailInT.LineCreationDate = org[i].LineCreationDate;
-                        OspDetailInT.LineLastUpdateBy = org[i].LineLastUpdateBy;
-                        OspDetailInT.LineLastUpdateDate = org[i].LineLastUpdateDate;
-                        OspDetailInT.TransactionQuantity = org[i].TransactionQuantity;
-                        OspDetailInT.TransactionUom = org[i].TransactionUom;
-                        OspDetailInT.PrimaryQuantity = org[i].PrimaryQuantity;
-                        OspDetailInT.PrimaryUom = org[i].PrimaryUom;
-                        OspDetailInT.SecondaryQuantity = org[i].SecondaryQuantity;
-                        OspDetailInT.SecondaryUom = org[i].SecondaryUom;
-                        OspDetailInT.RequestId = org[i].RequestId;
-                        OspDetailInT.CreatedBy = org[i].CreatedBy;
-                        OspDetailInT.CreationDate = org[i].CreationDate;
-                        OspDetailInT.LastUpdateBy = org[i].LastUpdateBy;
-                        OspDetailInT.LastUpdateDate = org[i].LastUpdateDate;
-                        OspDetailInTRepository.Create(OspDetailInT, true);
-
-                    }
-
-                    if (org[i].LineType == "P")
-                    {
-                        OspDetailOutT.OspHeaderId = OspHeaderT.OspHeaderId;
-                        OspDetailOutT.ProcessCode = org[i].ProcessCode;
-                        OspDetailOutT.ServerCode = org[i].ServerCode;
-                        OspDetailOutT.BatchId = org[i].BatchId;
-                        OspDetailOutT.BatchLineId = org[i].BatchLineId;
-                        OspDetailOutT.LineType = org[i].LineType;
-                        OspDetailOutT.LineNo = org[i].LineNo;
-                        OspDetailOutT.InventoryItemId = org[i].InventoryItemId;
-                        OspDetailOutT.InventoryItemNumber = org[i].InventoryItemNumber;
-                        OspDetailOutT.BasicWeight = org[i].BasicWeight;
-                        OspDetailOutT.Specification = org[i].Specification;
-                        OspDetailOutT.GrainDirection = org[i].GrainDirection;
-                        OspDetailOutT.OrderWeight = org[i].OrderWeight;
-                        OspDetailOutT.ReamWt = org[i].ReamWt;
-                        OspDetailOutT.PaperType = org[i].PaperType;
-                        OspDetailOutT.PackingType = org[i].PackingType;
-                        OspDetailOutT.PlanQty = org[i].PlanQty;
-                        OspDetailOutT.WipPLAN_QTY = org[i].LineNo;
-                        OspDetailOutT.DtlUom = org[i].DtlUom;
-                        OspDetailOutT.OrderHeaderId = org[i].OrderHeaderId;
-                        OspDetailOutT.OrderNumber = org[i].OrderNumber;
-                        OspDetailOutT.OrderLineId = org[i].OrderLineId;
-                        OspDetailOutT.OrderLineNumber = org[i].OrderLineNumber;
-                        OspDetailOutT.CustomerId = org[i].CustomerId;
-                        OspDetailOutT.CustomerNumber = org[i].CustomerNumber;
-                        OspDetailOutT.CustomerName = org[i].CustomerName;
-                        OspDetailOutT.PrNumber = org[i].PrNumber;
-                        OspDetailOutT.PrLineNumber = org[i].PrLineNumber;
-                        OspDetailOutT.RequisitionLineId = org[i].RequisitionLineId;
-                        OspDetailOutT.PoNumber = org[i].PoNumber;
-                        OspDetailOutT.PoLineNumber = org[i].PoLineNumber;
-                        OspDetailOutT.PoLineId = org[i].PoLineId;
-                        OspDetailOutT.PoUnitPrice = org[i].PoUnitPrice;
-                        OspDetailOutT.PoRevisionNum = org[i].PoRevisionNum;
-                        OspDetailOutT.PoStatus = org[i].PoStatus;
-                        OspDetailOutT.PoVendorNum = org[i].PoVendorNum;
-                        OspDetailOutT.OspRemark = org[i].OspRemark;
-                        OspDetailOutT.Subinventory = org[i].Subinventory;
-                        OspDetailOutT.LocatorId = org[i].LocatorId;
-                        OspDetailOutT.LocatorCode = org[i].LocatorCode;
-                        OspDetailOutT.ReservationUomCode = org[i].ReservationUomCode;
-                        OspDetailOutT.ReservationQuantity = org[i].ReservationQuantity;
-                        OspDetailOutT.LineCreatedBy = org[i].LineCreatedBy;
-                        OspDetailOutT.LineCreationDate = org[i].LineCreationDate;
-                        OspDetailOutT.LineLastUpdateBy = org[i].LineLastUpdateBy;
-                        OspDetailOutT.LineLastUpdateDate = org[i].LineLastUpdateDate;
-                        OspDetailOutT.TransactionQuantity = org[i].TransactionQuantity;
-                        OspDetailOutT.TransactionUom = org[i].TransactionUom;
-                        OspDetailOutT.PrimaryQuantity = org[i].PrimaryQuantity;
-                        OspDetailOutT.PrimaryUom = org[i].PrimaryUom;
-                        OspDetailOutT.SecondaryQuantity = org[i].SecondaryQuantity;
-                        OspDetailOutT.SecondaryUom = org[i].SecondaryUom;
-                        OspDetailOutT.RequestId = org[i].RequestId;
-                        OspDetailOutT.CreatedBy = org[i].CreatedBy;
-                        OspDetailOutT.CreationDate = org[i].CreationDate;
-                        OspDetailOutT.LastUpdateBy = org[i].LastUpdateBy;
-                        OspDetailOutT.LastUpdateDate = org[i].LastUpdateDate;
-                        OspDetailOutTRepository.Create(OspDetailOutT, true);
-
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                logger.Error(LogUtilities.BuildExceptionMessage(e));
-            }
-        }
-
-        /// <summary>
-        /// 取得畫面Model
+        /// 取得單一筆加工排程資料
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -846,7 +179,7 @@ WHERE DI.OSP_HEADER_ID = @OSP_HEADER_ID");
         }
 
         /// <summary>
-        /// 取得table資料
+        /// 取得加工排程資料
         /// </summary>
         /// <param name="Status"></param>
         /// <param name="BatchNo"></param>
@@ -857,7 +190,7 @@ WHERE DI.OSP_HEADER_ID = @OSP_HEADER_ID");
         /// <param name="Subinventory"></param>
         /// <returns></returns>
         public List<CHP_PROCESS_T> GetTable(string Status, string BatchNo, string MachineNum, string DueDateFrom, string DueDateTo,
-            string CuttingDateFrom, string CuttingDateTo, string Subinventory,string PlanStartDateFrom, string PlanStartDateTo, string UserId)
+            string CuttingDateFrom, string CuttingDateTo, string Subinventory, string PlanStartDateFrom, string PlanStartDateTo, string UserId)
         {
             try
             {
@@ -923,7 +256,7 @@ left JOIN OSP_HEADER_MOD_T HM ON HM.OSP_HEADER_ID = H.OSP_HEADER_ID
                         cond.Add("H.STATUS = @STATUS");
                         sqlParameterList.Add(new SqlParameter("@STATUS", Status));
                     }
-                    
+
                     if (!string.IsNullOrEmpty(BatchNo))
                     {
                         cond.Add("H.BATCH_NO LIKE @BATCH_NO");
@@ -942,7 +275,7 @@ left JOIN OSP_HEADER_MOD_T HM ON HM.OSP_HEADER_ID = H.OSP_HEADER_ID
                         sqlParameterList.Add(SqlParamHelper.GetDataTime("@DUE_DATE", dueDateFrom, ParameterDirection.Input));
                     }
 
-                    DateTime dueDateTo= new DateTime();
+                    DateTime dueDateTo = new DateTime();
                     if (DueDateTo != "" && DateTime.TryParseExact(DueDateTo, "yyyy-MM-dd", null, System.Globalization.DateTimeStyles.NoCurrentDateDefault, out dueDateTo))
                     {
                         cond.Add("H.DUE_DATE <= @DUE_END_DATE");
@@ -1007,7 +340,7 @@ left JOIN OSP_HEADER_MOD_T HM ON HM.OSP_HEADER_ID = H.OSP_HEADER_ID
                     }
 
                     cond.Add("H.STATUS <> '5'");
-                    
+
                     string commandText = string.Format(query + "{0}{1}", cond.Count > 0 ? " where " : "", string.Join(" and ", cond.ToArray()));
 
                     commandText = string.Concat(commandText, " UNION ", commandText.Replace("OSP_DETAIL_IN_T", "OSP_DETAIL_IN_HT").Replace("OSP_DETAIL_OUT_T", "OSP_DETAIL_OUT_HT"));
@@ -1030,7 +363,7 @@ left JOIN OSP_HEADER_MOD_T HM ON HM.OSP_HEADER_ID = H.OSP_HEADER_ID
         }
 
         /// <summary>
-        /// 投入條碼
+        /// 取得投入條碼資料
         /// </summary>
         /// <param name="OspDetailInId"></param>
         /// <returns></returns>
@@ -1794,7 +1127,7 @@ AND ST.BARCODE = @BARCODE");
 
 
         /// <summary>
-        /// 取得產出檢貨picket
+        /// 取得產出檢貨資料
         /// </summary>
         /// <param name="OspDetailOutId"></param>
         /// <returns></returns>
@@ -2465,7 +1798,10 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
 
 
         }
-
+        /// <summary>
+        /// 刪除得率
+        /// </summary>
+        /// <param name="OspHeaderId"></param>
         public void DeleteRate(long OspHeaderId)
         {
 
@@ -3293,13 +2629,7 @@ where P.OSP_HEADER_ID = @OSP_HEADER_ID"
 
         }
 
-        public int DeletePickedInHT(long ospHeaderId)
-        {
-            return Context.Database.ExecuteSqlCommand(
-                    "DELETE FROM [OSP_PICKED_IN_HT] WHERE OSP_HEADER_ID = @OSP_HEADER_ID "
-                    , new SqlParameter("@OSP_HEADER_ID", ospHeaderId)
-                   );
-        }
+
 
         /// <summary>
         /// PickOut歷史轉撿貨&刪除歷史
@@ -3332,13 +2662,7 @@ WHERE P.OSP_HEADER_ID = @OSP_HEADER_ID"
 
         }
 
-        public int DeletePickedOutHT(long ospHeaderId)
-        {
-            return Context.Database.ExecuteSqlCommand(
-                    "DELETE FROM [OSP_PICKED_OUT_HT] WHERE OSP_HEADER_ID = @OSP_HEADER_ID "
-                    , new SqlParameter("@OSP_HEADER_ID", ospHeaderId)
-                   );
-        }
+
 
         /// <summary>
         /// 投入歷史轉投入明細&刪除歷史
@@ -3389,13 +2713,7 @@ WHERE D.OSP_HEADER_ID = @OSP_HEADER_ID"
 
         }
 
-        public int DeleteDetailInHT(long ospHeaderId)
-        {
-            return Context.Database.ExecuteSqlCommand(
-                    "DELETE FROM [OSP_DETAIL_IN_HT] WHERE OSP_HEADER_ID = @OSP_HEADER_ID "
-                    , new SqlParameter("@OSP_HEADER_ID", ospHeaderId)
-                  );
-        }
+
 
         /// <summary>
         /// 產出歷史轉產出明細&刪除歷史
@@ -3445,13 +2763,7 @@ WHERE D.OSP_HEADER_ID = @ORG_OSP_HEADER_ID"
 
         }
 
-        public int DeleteDetailOutHT(long ospHeaderId)
-        {
-            return Context.Database.ExecuteSqlCommand(
-                    "DELETE FROM [OSP_DETAIL_OUT_HT] WHERE OSP_HEADER_ID = @OSP_HEADER_ID "
-                    , new SqlParameter("@OSP_HEADER_ID", ospHeaderId)
-                  );
-        }
+
 
         /// <summary>
         /// 餘切歷史轉餘切明細&刪除歷史
@@ -3483,13 +2795,6 @@ WHERE C.OSP_HEADER_ID = @OSP_HEADER_ID"
 
         }
 
-        public int DeleteContangetHT(long ospHeaderId)
-        {
-            return Context.Database.ExecuteSqlCommand(
-                "DELETE FROM [OSP_COTANGENT_HT] WHERE OSP_HEADER_ID = @OSP_HEADER_ID "
-                , new SqlParameter("@OSP_HEADER_ID"
-                , ospHeaderId));
-        }
 
         /// <summary>
         /// 損耗歷史轉損耗明細&刪除歷史
@@ -3561,13 +2866,6 @@ WHERE Y.OSP_HEADER_ID = @OSP_HEADER_ID
 
         }
 
-        public int DeleteYieldHT(long ospHeaderId)
-        {
-            return Context.Database.ExecuteSqlCommand(
-                    "DELETE FROM [OSP_YIELD_VARIANCE_HT] WHERE OSP_HEADER_ID = @OSP_HEADER_ID "
-                    , new SqlParameter("@OSP_HEADER_ID", ospHeaderId)
-                );
-        }
 
         /// <summary>
         /// 歷史轉修改資料庫存資料刪除
@@ -3578,6 +2876,12 @@ WHERE Y.OSP_HEADER_ID = @OSP_HEADER_ID
             return DeleteStockFromOspPickedHT(ospHeaderId, userId) + DeleteStockFromOspContangetHT(ospHeaderId, userId);
         }
 
+        /// <summary>
+        /// 刪除庫存來自撿貨歷史表格
+        /// </summary>
+        /// <param name="ospHeaderId"></param>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         public int DeleteStockFromOspPickedHT(long ospHeaderId, string userId)
         {
             int createStockRecord = Context.Database.ExecuteSqlCommand(
@@ -3615,6 +2919,12 @@ WHERE POH.OSP_HEADER_ID = @OSP_HEADER_ID"
             return createStockRecord + delStock;
         }
 
+        /// <summary>
+        /// 刪除庫存來自餘切歷史紀錄
+        /// </summary>
+        /// <param name="ospHeaderId"></param>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         public int DeleteStockFromOspContangetHT(long ospHeaderId, string userId)
         {
             int createStockRecord = Context.Database.ExecuteSqlCommand(
@@ -3988,7 +3298,7 @@ AND OPO.OSP_PICKED_OUT_ID = @OSP_PICKED_OUT_ID
         }
 
         /// <summary>
-        /// 狀態
+        /// 取得工單號狀態
         /// </summary>
         /// <returns></returns>
         public List<SelectListItem> GetBatchStatusDesc()
@@ -4152,7 +3462,7 @@ AND OPO.OSP_PICKED_OUT_ID = @OSP_PICKED_OUT_ID
 
 
         /// <summary>
-        /// 領料單
+        /// 取得領料單報表
         /// </summary>
         /// <param name="Header"></param>
         /// <param name="OspHeaderId"></param>
@@ -4191,7 +3501,7 @@ AND OPO.OSP_PICKED_OUT_ID = @OSP_PICKED_OUT_ID
 
 
         /// <summary>
-        /// 外場P裁切單
+        /// 取得外場P裁切單報表
         /// </summary>
         /// <param name="Detail"></param>
         /// <param name="LabelKnife"></param>
@@ -4243,7 +3553,12 @@ AND OPO.OSP_PICKED_OUT_ID = @OSP_PICKED_OUT_ID
 
         }
 
-
+        /// <summary>
+        /// 取得裁切單資料
+        /// </summary>
+        /// <param name="connection"></param>
+        /// <param name="dsDetail"></param>
+        /// <param name="ospHeaderId"></param>
         public void GetDetail(SqlConnection connection, ref DataSet dsDetail, long ospHeaderId)
         {
             string Header = "SELECT * FROM dbo.OspOutSourcCut(@OSP_HEADER_ID)";
@@ -4253,6 +3568,12 @@ AND OPO.OSP_PICKED_OUT_ID = @OSP_PICKED_OUT_ID
             salesOrderAdapter.Fill(dsDetail, "DataSet1");
         }
 
+        /// <summary>
+        /// 取得標籤園刀資料
+        /// </summary>
+        /// <param name="connection"></param>
+        /// <param name="LabelKnife"></param>
+        /// <param name="spec"></param>
         public void GetLabelKnife(SqlConnection connection, ref DataSet LabelKnife, string spec)
         {
             string Header = "SELECT dbo.OspLabelKnife(dbo.CheckOspLabelSpec(@SPECIFICATION)) AS Knife";
@@ -4262,6 +3583,12 @@ AND OPO.OSP_PICKED_OUT_ID = @OSP_PICKED_OUT_ID
             salesOrderAdapter.Fill(LabelKnife, "LabelKnife");
         }
 
+        /// <summary>
+        /// 取得標籤摘要
+        /// </summary>
+        /// <param name="connection"></param>
+        /// <param name="LabelDesc"></param>
+        /// <param name="packingType"></param>
         public void GetLabelDesc(SqlConnection connection, ref DataSet LabelDesc, string packingType)
         {
             string Header = "select dbo.ConvertOspLabelDesc(@packingType) as LabelDesc";
@@ -4271,6 +3598,12 @@ AND OPO.OSP_PICKED_OUT_ID = @OSP_PICKED_OUT_ID
             salesOrderAdapter.Fill(LabelDesc, "LabelDesc");
         }
 
+        /// <summary>
+        /// 取得標籤大小
+        /// </summary>
+        /// <param name="connection"></param>
+        /// <param name="LabelSize"></param>
+        /// <param name="spec"></param>
         public void GetLabelSize(SqlConnection connection, ref DataSet LabelSize, string spec)
         {
             string Header = "select dbo.CheckOspLabelSize(dbo.CheckOspLabelSpec(@SPECIFICATION)) as LabelSize";
@@ -4282,7 +3615,7 @@ AND OPO.OSP_PICKED_OUT_ID = @OSP_PICKED_OUT_ID
 
 
         /// <summary>
-        /// 成品入庫
+        /// 成品入庫報表
         /// </summary>
         /// <param name="stock"></param>
         /// <param name="OspHeaderId"></param>
@@ -4316,6 +3649,12 @@ AND OPO.OSP_PICKED_OUT_ID = @OSP_PICKED_OUT_ID
             }
         }
 
+        /// <summary>
+        /// 取得成品入庫資料
+        /// </summary>
+        /// <param name="connection"></param>
+        /// <param name="dsDetail"></param>
+        /// <param name="ospHeaderId"></param>
         public void OspStockData(SqlConnection connection, ref DataSet dsDetail, long ospHeaderId)
         {
             string Header1 = "select * from OspCutStock(@OSP_HEADER_ID)";
@@ -4325,6 +3664,12 @@ AND OPO.OSP_PICKED_OUT_ID = @OSP_PICKED_OUT_ID
             salesOrderAdapter.Fill(dsDetail, "DataSet1");
         }
 
+        /// <summary>
+        /// 取得成品入庫產出資料
+        /// </summary>
+        /// <param name="connection"></param>
+        /// <param name="dsCotangent"></param>
+        /// <param name="ospHeaderId"></param>
         public void OspStockCotangentData(SqlConnection connection, ref DataSet dsCotangent, long ospHeaderId)
         {
             string Header1 = "select * from OspCutCotangentStock(@OSP_HEADER_ID)";
@@ -4334,6 +3679,12 @@ AND OPO.OSP_PICKED_OUT_ID = @OSP_PICKED_OUT_ID
             salesOrderAdapter.Fill(dsCotangent, "DataSet2");
         }
 
+        /// <summary>
+        /// 取得成品入庫殘捲資料
+        /// </summary>
+        /// <param name="connection"></param>
+        /// <param name="Remain"></param>
+        /// <param name="ospHeaderId"></param>
         public void OspStockRemainData(SqlConnection connection, ref DataSet Remain, long ospHeaderId)
         {
             string Header1 = "select * from OspRemainQty(@OSP_HEADER_ID)";
@@ -4378,7 +3729,18 @@ AND OPO.OSP_PICKED_OUT_ID = @OSP_PICKED_OUT_ID
 
         }
 
-       
+        /// <summary>
+        /// 取得工單得率報表資料
+        /// </summary>
+        /// <param name="cuttingDateFrom"></param>
+        /// <param name="cuttingDateTo"></param>
+        /// <param name="batchNo"></param>
+        /// <param name="machineNum"></param>
+        /// <param name="itemNumber"></param>
+        /// <param name="barcode"></param>
+        /// <param name="subinventory"></param>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         public ResultDataModel<ReportDataSource> GetOspYieldReportDataSource(string cuttingDateFrom, string cuttingDateTo, string batchNo, string machineNum, string itemNumber, string barcode, string subinventory, string userId)
         {
 
@@ -4412,6 +3774,15 @@ AND OPO.OSP_PICKED_OUT_ID = @OSP_PICKED_OUT_ID
 
         }
 
+        /// <summary>
+        /// 裁切資料匯總報
+        /// </summary>
+        /// <param name="planStartDateFrom"></param>
+        /// <param name="planStartDateTo"></param>
+        /// <param name="batchNo"></param>
+        /// <param name="paperType"></param>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         public ResultDataModel<ReportDataSource> GetOspCutSumReportDataSource(string planStartDateFrom, string planStartDateTo, string batchNo, string paperType, string userId)
         {
 
@@ -4445,6 +3816,18 @@ AND OPO.OSP_PICKED_OUT_ID = @OSP_PICKED_OUT_ID
 
         }
 
+        /// <summary>
+        /// 取得工單得率報表時間範圍資料
+        /// </summary>
+        /// <param name="cuttingDateFrom"></param>
+        /// <param name="cuttingDateTo"></param>
+        /// <param name="batchNo"></param>
+        /// <param name="machineNum"></param>
+        /// <param name="itemNumber"></param>
+        /// <param name="barcode"></param>
+        /// <param name="subinventory"></param>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         public List<SqlParameter> GetOspYieldSqlParameterList(string cuttingDateFrom, string cuttingDateTo, string batchNo, string machineNum, string itemNumber, string barcode, string subinventory, string userId)
         {
             DateTime dateFrom = new DateTime();
@@ -4487,6 +3870,15 @@ AND OPO.OSP_PICKED_OUT_ID = @OSP_PICKED_OUT_ID
             return sqlParameterList;
         }
 
+        /// <summary>
+        /// 裁切資料匯總報表時間範圍資料
+        /// </summary>
+        /// <param name="planStartDateFrom"></param>
+        /// <param name="planStartDateTo"></param>
+        /// <param name="batchNo"></param>
+        /// <param name="paperType"></param>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         public List<SqlParameter> GetOspCutSumSqlParameterList(string planStartDateFrom, string planStartDateTo, string batchNo, string paperType, string userId)
         {
             DateTime dateFrom = new DateTime();
@@ -4526,6 +3918,18 @@ AND OPO.OSP_PICKED_OUT_ID = @OSP_PICKED_OUT_ID
             return sqlParameterList;
         }
 
+        /// <summary>
+        /// 報表時間範圍資料參數
+        /// </summary>
+        /// <param name="cuttingDateFrom"></param>
+        /// <param name="cuttingDateTo"></param>
+        /// <param name="batchNo"></param>
+        /// <param name="machineNum"></param>
+        /// <param name="itemNumber"></param>
+        /// <param name="barcode"></param>
+        /// <param name="subinventory"></param>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         public List<ReportParameter> GetOspYieldReportParameterList(string cuttingDateFrom, string cuttingDateTo, string batchNo, string machineNum, string itemNumber, string barcode, string subinventory, string userId)
         {
             DateTime dateFrom = new DateTime();
@@ -4568,7 +3972,15 @@ AND OPO.OSP_PICKED_OUT_ID = @OSP_PICKED_OUT_ID
             return reportParameterList;
         }
 
-
+        /// <summary>
+        /// 裁切資料匯總報資料參數
+        /// </summary>
+        /// <param name="planStartDateFrom"></param>
+        /// <param name="planStartDateTo"></param>
+        /// <param name="batchNo"></param>
+        /// <param name="paperType"></param>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         public List<ReportParameter> GetOspCutSumReportParameterList(string planStartDateFrom, string planStartDateTo, string batchNo, string paperType, string userId)
         {
             DateTime dateFrom = new DateTime();
@@ -4609,7 +4021,7 @@ AND OPO.OSP_PICKED_OUT_ID = @OSP_PICKED_OUT_ID
         }
 
         /// <summary>
-        /// 取得deatialOut資料
+        /// 取得明細產出資料
         /// </summary>
         /// <param name="OspHeaderId"></param>
         /// <returns></returns>
@@ -4639,6 +4051,11 @@ AND OPO.OSP_PICKED_OUT_ID = @OSP_PICKED_OUT_ID
             return new ResultModel(true, "可以排單");
         }
 
+        /// <summary>
+        /// 取得使用者倉庫資料
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         public ResultDataModel<int> GetOspPendingCount(string userId)
         {
             var resultDataModel = new ResultDataModel<int>(false, "", 0);
