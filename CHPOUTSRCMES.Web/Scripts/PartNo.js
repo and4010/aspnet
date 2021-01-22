@@ -1,10 +1,10 @@
 ﻿$(document).ready(function () {
     onclick();
     LoadTable();
-    $("#Catalog_elem_val_050").combobox();
-    $("#Organization_code").combobox();
-    $("#Catalog_elem_val_020").combobox();
-    $("#Catalog_elem_val_070").combobox();
+    //$("#Catalog_elem_val_050").combobox();
+    //$("#Organization_code").combobox();
+    //$("#Catalog_elem_val_020").combobox();
+    //$("#Catalog_elem_val_070").combobox();
 });
 
 

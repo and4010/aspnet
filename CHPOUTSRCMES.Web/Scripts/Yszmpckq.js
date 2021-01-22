@@ -9,22 +9,30 @@ $(document).ready(function () {
     //    });
     //}
 
-
-    $("#ddlOrganization").combobox({
-        select: function (event, ui) {
-            updateDdlOspSubinventory(this.value);
-
-        }
+    $("#ddlOrganization").change(function (event) {
+        updateDdlOspSubinventory($(this).val());
     });
 
-    $("#ddlOspSubinventory").combobox({
-        select: function (event, ui) {
-            var ORGANIZATION_ID = $("#ddlOrganization").val();
-            updateDdlPstyp(ORGANIZATION_ID, $("#ddlOspSubinventory option:selected").text());
-        }
+    //$("#ddlOrganization").combobox({
+    //    select: function (event, ui) {
+    //        updateDdlOspSubinventory(this.value);
+
+    //    }
+    //});
+
+    $("#ddlOspSubinventory").change(function (event) {
+        var ORGANIZATION_ID = $("#ddlOrganization").val();
+        updateDdlPstyp(ORGANIZATION_ID, $("#ddlOspSubinventory option:selected").text());
     });
 
-    $("#ddlPstyp").combobox();
+    //$("#ddlOspSubinventory").combobox({
+    //    select: function (event, ui) {
+    //        var ORGANIZATION_ID = $("#ddlOrganization").val();
+    //        updateDdlPstyp(ORGANIZATION_ID, $("#ddlOspSubinventory option:selected").text());
+    //    }
+    //});
+
+    //$("#ddlPstyp").combobox();
 
 
 
@@ -107,90 +115,110 @@ $(document).ready(function () {
 
     });
 
-
-    $('.row-std').on('click', '#btnSearch', function (e) {
-
-        //YszmpckqDataTablesBody.draw();
-        YszmpckqDataTablesBody.ajax.reload();
+    $('#btnSearch').click(function () {
+        search();
         return false;
     });
+
+    //$('.row-std').on('click', '#btnSearch', function (e) {
+
+    //    //YszmpckqDataTablesBody.draw();
+    //    YszmpckqDataTablesBody.ajax.reload();
+    //    return false;
+    //});
 
 
 
     function updateDdlOspSubinventory(ORGANIZATION_ID) {
         var ddl = $("#ddlOspSubinventory");
 
-        $.ajax({
-            url: "/Yszmpckq/GetOspSubinventoryList",
-            type: "post",
-            data: {
-                ORGANIZATION_ID: ORGANIZATION_ID
-            },
-            success: function (data) {
-                ddl.html("");
+        ShowWait(function () {
+            $.ajax({
+                url: "/Yszmpckq/GetOspSubinventoryList",
+                type: "post",
+                data: {
+                    ORGANIZATION_ID: ORGANIZATION_ID
+                },
+                success: function (data) {
+                    CloseWait();
+                    ddl.html("");
 
-                for (var i = 0; i < data.length; i++) {
-                    ddl.append($('<option></option>').val(data[i].Value).html(data[i].Text));
+                    for (var i = 0; i < data.length; i++) {
+                        ddl.append($('<option></option>').val(data[i].Value).html(data[i].Text));
+                    }
+
+                    var optionCount = ddl[0].length;
+                    if (optionCount == 2) {
+                        //選單數量為2時，選擇第2個
+                        //ddl.combobox('autocomplete', ddl[0][1].value, ddl[0][1].text);
+                        ddl.val(ddl[0][1].value);
+                    } else {
+                        //ddl.combobox('autocomplete', ddl[0][0].value, ddl[0][0].text);
+                        ddl.val(ddl[0][0].value);
+                    }
+
+                },
+                error: function () {
+                    swal.fire('更新加工廠選單失敗');
+                },
+                complete: function () {
+                    var OSP_SUBINVENTORY_ID = $("#ddlOspSubinventory option:selected").text();
+                    updateDdlPstyp(ORGANIZATION_ID, OSP_SUBINVENTORY_ID);
                 }
 
-                var optionCount = ddl[0].length;
-                if (optionCount == 2) {
-                    //選單數量為2時，選擇第2個
-                    ddl.combobox('autocomplete', ddl[0][1].value, ddl[0][1].text);
-                } else {
-                    ddl.combobox('autocomplete', ddl[0][0].value, ddl[0][0].text);
-                }
-
-            },
-            error: function () {
-                swal.fire('更新加工廠選單失敗');
-            },
-            complete: function () {
-                var OSP_SUBINVENTORY_ID = $("#ddlOspSubinventory option:selected").text();
-                updateDdlPstyp(ORGANIZATION_ID, OSP_SUBINVENTORY_ID);
-            }
-
+            });
         });
+       
 
     }
 
     function updateDdlPstyp(ORGANIZATION_ID, OSP_SUBINVENTORY_ID) {
         var ddl = $("#ddlPstyp");
 
-        $.ajax({
-            url: "/Yszmpckq/GetPstypList",
-            type: "post",
-            data: {
-                ORGANIZATION_ID: ORGANIZATION_ID,
-                OSP_SUBINVENTORY_ID: OSP_SUBINVENTORY_ID
-            },
-            success: function (data) {
-                ddl.html("");
+        ShowWait(function () {
+            $.ajax({
+                url: "/Yszmpckq/GetPstypList",
+                type: "post",
+                data: {
+                    ORGANIZATION_ID: ORGANIZATION_ID,
+                    OSP_SUBINVENTORY_ID: OSP_SUBINVENTORY_ID
+                },
+                success: function (data) {
+                    CloseWait();
+                    ddl.html("");
 
-                for (var i = 0; i < data.length; i++) {
-                    ddl.append($('<option></option>').val(data[i].Value).html(data[i].Text));
+                    for (var i = 0; i < data.length; i++) {
+                        ddl.append($('<option></option>').val(data[i].Value).html(data[i].Text));
+                    }
+
+                    var optionCount = ddl[0].length;
+                    if (optionCount == 2) {
+                        //選單數量為2時，選擇第2個                
+                        //ddl.combobox('autocomplete', ddl[0][1].value, ddl[0][1].text);
+                        ddl.val(ddl[0][1].value);
+                    } else {
+                        //ddl.combobox('autocomplete', ddl[0][0].value, ddl[0][0].text);
+                        ddl.val(ddl[0][0].value);
+                    }
+
+                },
+                error: function () {
+                    swal.fire('更新紙別選單失敗');
+                },
+                complete: function (data) {
+
+
                 }
 
-                var optionCount = ddl[0].length;
-                if (optionCount == 2) {
-                    //選單數量為2時，選擇第2個                
-                    ddl.combobox('autocomplete', ddl[0][1].value, ddl[0][1].text);
-                } else {
-                    ddl.combobox('autocomplete', ddl[0][0].value, ddl[0][0].text);
-                }
-
-            },
-            error: function () {
-                swal.fire('更新紙別選單失敗');
-            },
-            complete: function (data) {
-
-
-            }
-
+            });
         });
+        
 
     }
 
+    function search() {
+        YszmpckqDataTablesBody.ajax.reload();
+    }
 
+    search();
 });

@@ -1,20 +1,29 @@
 ﻿
 $(document).ready(function () {
 
-    $("#ddlOrganization").combobox({
-        select: function (event, ui) {
-            updateDdlSubinventory(this.value);
-        }
+    $("#ddlOrganization").change(function (event) {
+        updateDdlSubinventory($(this).val());
     });
 
-    $("#ddlSubinventory").combobox({
-        select: function (event, ui) {
-            var ORGANIZATION_ID = $("#ddlOrganization").val();
-            updateDdlLocator(ORGANIZATION_ID, $("#ddlSubinventory option:selected").text());
-        }
+    //$("#ddlOrganization").combobox({
+    //    select: function (event, ui) {
+    //        updateDdlSubinventory(this.value);
+    //    }
+    //});
+
+    $("#ddlSubinventory").change(function (event) {
+        var ORGANIZATION_ID = $("#ddlOrganization").val();
+        updateDdlLocator(ORGANIZATION_ID, $("#ddlSubinventory option:selected").text());
     });
 
-    $("#ddlLocator").combobox();
+    //$("#ddlSubinventory").combobox({
+    //    select: function (event, ui) {
+    //        var ORGANIZATION_ID = $("#ddlOrganization").val();
+    //        updateDdlLocator(ORGANIZATION_ID, $("#ddlSubinventory option:selected").text());
+    //    }
+    //});
+
+    //$("#ddlLocator").combobox();
 
     var OrgSubinventoryDataTablesBody = $('#OrgSubinventoryDataTablesBody').DataTable({
         //"scrollX": true,
@@ -84,75 +93,57 @@ $(document).ready(function () {
 
     });
 
-    $('.row-std').on('click', '#btnSearch', function (e) {
-
-        OrgSubinventoryDataTablesBody.ajax.reload();
+    $('#btnSearch').click(function () {
+        search();
         return false;
-
-        //$.ajax({
-        //    url: "/OrgSubinventory/Search",
-        //    type: "post",
-        //    data: {
-        //        ORGANIZATION_ID: $("#ddlOrganization").val(),
-        //        SUBINVENTORY_CODE: $("#ddlSubinventory").val(),
-        //        LOCATOR_ID: $("#ddlLocator").val()
-        //    },
-        //    success: function (data) {
-        //        if (data.status) {
-        //            if (data.result == "搜尋成功") {
-        //                OrgSubinventoryDataTablesBody.ajax.reload();
-        //            }
-        //        }
-        //        else {
-        //            swal.fire(data.result);
-        //        }
-        //    },
-        //    error: function () {
-        //        swal.fire('搜尋失敗');
-        //    },
-        //    complete: function (data) {
-
-
-        //    }
-
-        //});
-        //return false;
     });
+
+    //$('.row-std').on('click', '#btnSearch', function (e) {
+
+    //    OrgSubinventoryDataTablesBody.ajax.reload();
+    //    return false;
+
+        
+    //});
 
 
     function updateDdlSubinventory(ORGANIZATION_ID) {
         var ddl = $("#ddlSubinventory");
+        ShowWait(function () {
+            $.ajax({
+                url: "/OrgSubinventory/GetSubinventoryList",
+                type: "post",
+                data: {
+                    ORGANIZATION_ID: ORGANIZATION_ID
+                },
+                success: function (data) {
+                    CloseWait();
+                    ddl.html("");
 
-        $.ajax({
-            url: "/OrgSubinventory/GetSubinventoryList",
-            type: "post",
-            data: {
-                ORGANIZATION_ID: ORGANIZATION_ID
-            },
-            success: function (data) {
-                ddl.html("");
+                    for (var i = 0; i < data.length; i++) {
+                        ddl.append($('<option></option>').val(data[i].Value).html(data[i].Text));
+                    }
 
-                for (var i = 0; i < data.length; i++) {
-                    ddl.append($('<option></option>').val(data[i].Value).html(data[i].Text));
+                    var optionCount = ddl[0].length;
+                    if (optionCount == 2) {
+                        //選單數量為2時，選擇第2個
+                        //ddl.combobox('autocomplete', ddl[0][1].value, ddl[0][1].text);
+                        ddl.val(ddl[0][1].value);
+                    } else {
+                        //ddl.combobox('autocomplete', ddl[0][0].value, ddl[0][0].text);
+                        ddl.val(ddl[0][0].value);
+                    }
+
+                },
+                error: function () {
+                    swal.fire('更新倉庫選單失敗');
+                },
+                complete: function () {
+                    var SUBINVENTORY_CODE = $("#ddlSubinventory option:selected").text();
+                    updateDdlLocator(ORGANIZATION_ID, SUBINVENTORY_CODE);
                 }
 
-                var optionCount = ddl[0].length;
-                if (optionCount == 2) {
-                    //選單數量為2時，選擇第2個
-                    ddl.combobox('autocomplete', ddl[0][1].value, ddl[0][1].text);
-                } else {
-                    ddl.combobox('autocomplete', ddl[0][0].value, ddl[0][0].text);
-                }
-
-            },
-            error: function () {
-                swal.fire('更新倉庫選單失敗');
-            },
-            complete: function () {
-                var SUBINVENTORY_CODE = $("#ddlSubinventory option:selected").text();
-                updateDdlLocator(ORGANIZATION_ID, SUBINVENTORY_CODE);
-            }
-
+            });
         });
 
     }
@@ -160,38 +151,50 @@ $(document).ready(function () {
     function updateDdlLocator(ORGANIZATION_ID, SUBINVENTORY_CODE) {
         var ddl = $("#ddlLocator");
 
-        $.ajax({
-            url: "/OrgSubinventory/GetLocatorList",
-            type: "post",
-            data: {
-                ORGANIZATION_ID: ORGANIZATION_ID,
-                SUBINVENTORY_CODE: SUBINVENTORY_CODE
-            },
-            success: function (data) {
-                ddl.html("");
+        ShowWait(function () {
+            $.ajax({
+                url: "/OrgSubinventory/GetLocatorList",
+                type: "post",
+                data: {
+                    ORGANIZATION_ID: ORGANIZATION_ID,
+                    SUBINVENTORY_CODE: SUBINVENTORY_CODE
+                },
+                success: function (data) {
+                    CloseWait();
+                    ddl.html("");
 
-                for (var i = 0; i < data.length; i++) {
-                    ddl.append($('<option></option>').val(data[i].Value).html(data[i].Text));
+                    for (var i = 0; i < data.length; i++) {
+                        ddl.append($('<option></option>').val(data[i].Value).html(data[i].Text));
+                    }
+
+                    var optionCount = ddl[0].length;
+                    if (optionCount == 2) {
+                        //選單數量為2時，選擇第2個
+                        //ddl.combobox('autocomplete', ddl[0][1].value, ddl[0][1].text);
+                        ddl.val(ddl[0][1].value);
+                    } else {
+                        //ddl.combobox('autocomplete', ddl[0][0].value, ddl[0][0].text);
+                        ddl.val(ddl[0][0].value);
+                    }
+
+                },
+                error: function () {
+                    swal.fire('更新儲位選單失敗');
+                },
+                complete: function () {
+
                 }
 
-                var optionCount = ddl[0].length;
-                if (optionCount == 2) {
-                    //選單數量為2時，選擇第2個
-                    ddl.combobox('autocomplete', ddl[0][1].value, ddl[0][1].text);
-                } else {
-                    ddl.combobox('autocomplete', ddl[0][0].value, ddl[0][0].text);
-                }
-
-            },
-            error: function () {
-                swal.fire('更新儲位選單失敗');
-            },
-            complete: function () {
-
-            }
-
+            });
         });
+       
 
     }
+
+    function search() {
+        OrgSubinventoryDataTablesBody.ajax.reload();
+    }
+
+    search();
 
 });

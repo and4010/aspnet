@@ -39,7 +39,7 @@
                 <div class="form-group form-inline">
                     <label class="text-right font-weight:bolder;">交運單號</label>
                     @*<span class="input-group-addon" style="width: 53px;">交運單號</span>*@
-                    @Html.TextBoxFor(model => model.DELIVERY_NAME, new { @class = "form-control", id = "txtDeliveryName", placeholder = "請輸入交運單號", autocomplete = "off" })
+                    @Html.TextBoxFor(model => model.DELIVERY_NAME, new { @class = "form-control customTextBox", id = "txtDeliveryName", placeholder = "請輸入交運單號", autocomplete = "off" })
                     <input type="button" id="btnCheckDeliveryName" value="比對" class="btn btn-success btn-flat" />
                 </div>
                     
@@ -229,7 +229,7 @@
                                 <div class="form-group form-inline">
                                     <label class="text-right font-weight:bolder;">條碼</label>
                                     @*<span class="input-group-addon" style="width:53px;">條碼</span>*@
-                                    @Html.TextBoxFor(model => model.BARCODE, new { @class = "form-control", placeholder = "請輸入條碼", id = "txtBARCODE", autocomplete = "off" })
+                                    @Html.TextBoxFor(model => model.BARCODE, new { @class = "form-control customTextBox", placeholder = "請輸入條碼", id = "txtBARCODE", autocomplete = "off" })
                                 </div>
                             </div>
 
@@ -240,7 +240,7 @@
                                     <label class="text-right font-weight:bolder;">條碼</label>
                                     @*<span class="input-group-addon" style="width:53px;">令數 </span>*@
                                     @*<input class="form-control input-sm" type="number" id="txtSECONDARY_QUANTITY" placeholder="請輸入令數" autocomplete="off" />*@
-                                    @Html.TextBoxFor(model => model.SECONDARY_QUANTITY, new { @class = "form-control", placeholder = "請輸入令數", id = "txtSECONDARY_QUANTITY", autocomplete = "off" })
+                                    @Html.TextBoxFor(model => model.SECONDARY_QUANTITY, new { @class = "form-control customTextBox", placeholder = "請輸入令數", id = "txtSECONDARY_QUANTITY", autocomplete = "off" })
                                 </div>
                                 @Html.ValidationMessageFor(model => model.SECONDARY_QUANTITY)
                             </div>

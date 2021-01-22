@@ -31,23 +31,25 @@
             cancelButtonText: "取消"
         }).then(function (result) {
             if (result.value) {
-                $.ajax({
-                    url: '/Account/AccountDisable/',
-                    type: "POST",
-                    datatype: 'json',
-                    data: { id: id },
-                    success: function (data) {
-                        if (data.status) {
-                            LoadTable();
-                        } else {
-                            swal.fire(data.message);
+                ShowWait(function () {
+                    $.ajax({
+                        url: '/Account/AccountDisable/',
+                        type: "POST",
+                        datatype: 'json',
+                        data: { id: id },
+                        success: function (data) {
+                            if (data.status) {
+                                CloseWait();
+                                LoadTable();
+                            } else {
+                                swal.fire(data.message);
+                            }
+                        },
+                        error: function () {
+                            swal.fire("失敗");
                         }
-                        
-                    },
-                    error: function () {
-                        swal.fire("失敗");
-                    }
 
+                    });
                 });
             }
         });
@@ -70,24 +72,27 @@
             cancelButtonText: "取消"
         }).then(function (result) {
             if (result.value) {
-                $.ajax({
-                    url: '/Account/DeafultPassword/',
-                    type: "POST",
-                    datatype: 'json',
-                    data: { Id: Id },
-                    success: function (data) {
-                        if (data.status) {
-                            LoadTable();
-                            swal.fire("重設成功");
-                        } else {
-                            swal.fire(data.message);
+                ShowWait(function () {
+                    $.ajax({
+                        url: '/Account/DeafultPassword/',
+                        type: "POST",
+                        datatype: 'json',
+                        data: { Id: Id },
+                        success: function (data) {
+                            if (data.status) {
+                                CloseWait();
+                                LoadTable();
+                                swal.fire("重設成功");
+                            } else {
+                                swal.fire(data.message);
+                            }
+
+                        },
+                        error: function () {
+                            swal.fire("失敗");
                         }
 
-                    },
-                    error: function () {
-                        swal.fire("失敗");
-                    }
-
+                    });
                 });
             }
         });
@@ -135,23 +140,26 @@
             cancelButtonText: '取消',
         }).then(function (result) {
             if (result.value) {
-                $.ajax({
-                    url: '/Account/Delete/',
-                    type: "POST",
-                    datatype: 'json',
-                    data: { id: Id },
-                    success: function (data) {
-                        if (data.status) {
-                            LoadTable();
-                            swal.fire(data.message)
-                        } else {
-                            swal.fire(data.message);
-                        }
+                ShowWait(function () {
+                    $.ajax({
+                        url: '/Account/Delete/',
+                        type: "POST",
+                        datatype: 'json',
+                        data: { id: Id },
+                        success: function (data) {
+                            if (data.status) {
+                                CloseWait();
+                                LoadTable();
+                                swal.fire(data.message)
+                            } else {
+                                swal.fire(data.message);
+                            }
 
-                    },
-                    error: function () {
-                        swal.fire("失敗")
-                    }
+                        },
+                        error: function () {
+                            swal.fire("失敗")
+                        }
+                    });
                 });
             }
         });
@@ -164,39 +172,40 @@
             return false;
         };
 
-        $.ajax({
-            url: '/Account/GetViewUserSub/',
-            type: "POST",
-            data: { id: Id },
-            success: function (data) {
-                if (data.message != "") {
-                    var text = "";
-                    var i = 0;
-                    for (i = 0; i < data.message.length; i++) {
-                        text += data.message[i] + "<br />";
-                    }
-                    Swal.fire({
-                        title: "倉庫",
-                        html: text,
-                        confirmButtonColor: '#3085d6',
-                        cancelButtonColor: '#d33',
-                        confirmButtonText: '確定',
-                    }).then(function (result) {
-                        if (result.value) {
-
+        ShowWait(function () {
+            $.ajax({
+                url: '/Account/GetViewUserSub/',
+                type: "POST",
+                data: { id: Id },
+                success: function (data) {
+                    if (data.message != "") {
+                        CloseWait();
+                        var text = "";
+                        var i = 0;
+                        for (i = 0; i < data.message.length; i++) {
+                            text += data.message[i] + "<br />";
                         }
-                    });
-                } else {
-                  
+                        Swal.fire({
+                            title: "倉庫",
+                            html: text,
+                            confirmButtonColor: '#3085d6',
+                            cancelButtonColor: '#d33',
+                            confirmButtonText: '確定',
+                        }).then(function (result) {
+                            if (result.value) {
+                                
+                            }
+                        });
+                    } else {
+                        CloseWait();
+                    }
+
+                },
+                error: function () {
+                    swal.fire("失敗")
                 }
-
-            },
-            error: function () {
-                swal.fire("失敗")
-            }
+            });
         });
-
-
 
     });
 
@@ -340,19 +349,25 @@ function Insert() {
 
     accountModel.__RequestVerificationToken = $('input[name=__RequestVerificationToken]').val();
     
-    $.ajax({
-        url: "/account/createuser",
-        type: "post",
-        data: { accountmodel: accountModel, userSubinventory: userSubinventory},
-        datatype: "json",
-        success: function (data) {
-            if (data.resultModel.Success) {
-                swal.fire(data.resultModel.Msg);
-                clearItem();
-            } else {
-                swal.fire(data.resultModel.Msg);
+    ShowWait(function () {
+        $.ajax({
+            url: "/account/createuser",
+            type: "post",
+            data: { accountmodel: accountModel, userSubinventory: userSubinventory },
+            datatype: "json",
+            success: function (data) {
+                if (data.resultModel.Success) {
+                    CloseWait();
+                    swal.fire(data.resultModel.Msg);
+                    clearItem();
+                } else {
+                    swal.fire(data.resultModel.Msg);
+                }
+            },
+             error: function () {
+                swal.fire("新增使用者失敗")
             }
-        }
+        });
     });
 
 }

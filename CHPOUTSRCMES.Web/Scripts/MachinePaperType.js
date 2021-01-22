@@ -1,6 +1,6 @@
 ﻿$(document).ready(function () {
-    $("#Organization_code").combobox()
-    LoadTable();
+    //$("#Organization_code").combobox()
+    LoadTable($("#Organization_code").val());
 
     onclcik();
 });

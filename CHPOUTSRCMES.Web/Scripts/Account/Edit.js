@@ -67,25 +67,28 @@ function Edit() {
 
     accountModel.__RequestVerificationToken = $('input[name=__RequestVerificationToken]').val();
 
-
-    $.ajax({
-        url: '/Account/Edit',
-        type: "POST",
-        datatype: 'json',
-        data: { accountModel: accountModel, userSubinventory: userSubinventory },
-        success: function (data) {
-            if (data.status) {
-                swal.fire("更改成功");
-                window.history.go(-1);
-            } else {
-                swal.fire(data.message);
+    ShowWait(function () {
+        $.ajax({
+            url: '/Account/Edit',
+            type: "POST",
+            datatype: 'json',
+            data: { accountModel: accountModel, userSubinventory: userSubinventory },
+            success: function (data) {
+                if (data.status) {
+                    CloseWait();
+                    swal.fire("更改成功");
+                    window.history.go(-1);
+                } else {
+                    swal.fire(data.message);
+                }
+            },
+            error: function () {
+                swal.fire("失敗");
             }
-        },
-        error: function () {
-            swal.fire("失敗");
-        }
 
+        });
     });
+    
 }
 
 //預設checkbox勾選

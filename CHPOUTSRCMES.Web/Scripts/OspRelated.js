@@ -1,21 +1,27 @@
 ﻿
 $(document).ready(function () {
 
-
-    $("#ddlOrganization").combobox({
-        select: function (event, ui) {
-            updateDdlInventoryItem(this.value);
-
-        }
+    $("#ddlOrganization").change(function (event) {
+        updateDdlInventoryItem($(this).val());
     });
 
-    $("#ddlInventoryItem").combobox({
-        select: function (event, ui) {
-            var ORGANIZATION_ID = $("#ddlOrganization").val();
-            updateDdlRelatedItem(ORGANIZATION_ID, this.value);
+    //        updateDdlInventoryItem(this.value);
 
-        }
+    //    }
+    //});
+
+    $("#ddlInventoryItem").change(function (event) {
+        var ORGANIZATION_ID = $("#ddlOrganization").val();
+        updateDdlRelatedItem(ORGANIZATION_ID, $(this).val());
     });
+
+    //$("#ddlInventoryItem").combobox({
+    //    select: function (event, ui) {
+    //        var ORGANIZATION_ID = $("#ddlOrganization").val();
+    //        updateDdlRelatedItem(ORGANIZATION_ID, this.value);
+
+    //    }
+    //});
 
 
     //$('#ddlInventoryItem').combobox({
@@ -28,7 +34,7 @@ $(document).ready(function () {
     //    alert(newValue);
     //}
 
-    $("#ddlRelatedItem").combobox();
+    //$("#ddlRelatedItem").combobox();
 
 
     var OspRelatedDataTablesBody = $('#OspRelatedDataTablesBody').DataTable({
@@ -92,116 +98,109 @@ $(document).ready(function () {
 
     });
 
-    $('.row-std').on('click', '#btnSearch', function (e) {
-
-        OspRelatedDataTablesBody.ajax.reload();
+    $('#btnSearch').click(function () {
+        search();
         return false;
-
-        //$.ajax({
-        //    url: "/OspRelated/Search",
-        //    type: "post",
-        //    data: {
-        //        INVENTORY_ITEM_ID: $("#ddlInventoryItem").val(),
-        //        RELATED_ITEM_ID: $("#ddlRelatedItem").val(),
-
-        //    },
-        //    success: function (data) {
-        //        if (data.status) {
-        //            if (data.result == "搜尋成功") {
-        //                OspRelatedDataTablesBody.ajax.reload();
-        //            }
-        //        }
-        //        else {
-        //            swal.fire(data.result);
-        //        }
-        //    },
-        //    error: function () {
-        //        swal.fire('搜尋失敗');
-        //    },
-        //    complete: function (data) {
-
-
-        //    }
-
-        //});
-        //return false;
     });
+
+    //$('.row-std').on('click', '#btnSearch', function (e) {
+
+    //    OspRelatedDataTablesBody.ajax.reload();
+    //    return false;
+    //});
 
 
     function updateDdlInventoryItem(ORGANIZATION_ID) {
         var ddl = $("#ddlInventoryItem");
 
-        $.ajax({
-            url: "/OspRelated/GetInventoryItemList",
-            type: "post",
-            data: {
-                ORGANIZATION_ID: ORGANIZATION_ID
-            },
-            success: function (data) {
-                ddl.html("");
+        ShowWait(function () {
+            $.ajax({
+                url: "/OspRelated/GetInventoryItemList",
+                type: "post",
+                data: {
+                    ORGANIZATION_ID: ORGANIZATION_ID
+                },
+                success: function (data) {
+                    CloseWait();
+                    ddl.html("");
 
-                for (var i = 0; i < data.length; i++) {
-                    ddl.append($('<option></option>').val(data[i].Value).html(data[i].Text));
+                    for (var i = 0; i < data.length; i++) {
+                        ddl.append($('<option></option>').val(data[i].Value).html(data[i].Text));
+                    }
+
+                    var optionCount = ddl[0].length;
+                    if (optionCount == 2) {
+                        //選單數量為2時，選擇第2個
+                        //ddl.combobox('autocomplete', ddl[0][1].value, ddl[0][1].text);
+                        ddl.val(ddl[0][1].value);
+                    } else {
+                        //ddl.combobox('autocomplete', ddl[0][0].value, ddl[0][0].text);
+                        ddl.val(ddl[0][0].value);
+                    }
+
+                },
+                error: function () {
+                    swal.fire('更新組成成份料號選單失敗');
+                },
+                complete: function () {
+                    var INVENTORY_ITEM_ID = $("#ddlInventoryItem").val();
+                    updateDdlRelatedItem(ORGANIZATION_ID, INVENTORY_ITEM_ID);
                 }
 
-                var optionCount = ddl[0].length;
-                if (optionCount == 2) {
-                    //選單數量為2時，選擇第2個
-                    ddl.combobox('autocomplete', ddl[0][1].value, ddl[0][1].text);
-                } else {
-                    ddl.combobox('autocomplete', ddl[0][0].value, ddl[0][0].text);
-                }
-
-            },
-            error: function () {
-                swal.fire('更新組成成份料號選單失敗');
-            },
-            complete: function () {
-                var INVENTORY_ITEM_ID = $("#ddlInventoryItem").val();
-                updateDdlRelatedItem(ORGANIZATION_ID, INVENTORY_ITEM_ID);
-            }
-
+            });
         });
+        
     }
 
 
     function updateDdlRelatedItem(ORGANIZATION_ID, INVENTORY_ITEM_ID) {
         var ddl = $("#ddlRelatedItem");
 
-        $.ajax({
-            url: "/OspRelated/GetRelatedItemList",
-            type: "post",
-            data: {
-                ORGANIZATION_ID: ORGANIZATION_ID,
-                INVENTORY_ITEM_ID: INVENTORY_ITEM_ID
-            },
-            success: function (data) {
-                ddl.html("");
+        ShowWait(function () {
+            $.ajax({
+                url: "/OspRelated/GetRelatedItemList",
+                type: "post",
+                data: {
+                    ORGANIZATION_ID: ORGANIZATION_ID,
+                    INVENTORY_ITEM_ID: INVENTORY_ITEM_ID
+                },
+                success: function (data) {
+                    CloseWait();
+                    ddl.html("");
 
 
-                for (var i = 0; i < data.length; i++) {
-                    ddl.append($('<option></option>').val(data[i].Value).html(data[i].Text));
+                    for (var i = 0; i < data.length; i++) {
+                        ddl.append($('<option></option>').val(data[i].Value).html(data[i].Text));
+                    }
+
+
+
+                    var optionCount = ddl[0].length;
+                    if (optionCount == 2) {
+                        //選單數量為2時，選擇第2個
+                        //ddl.combobox('autocomplete', ddl[0][1].value, ddl[0][1].text);
+                        ddl.val(ddl[0][1].value);
+                    } else {
+                        //ddl.combobox('autocomplete', ddl[0][0].value, ddl[0][0].text);
+                        ddl.val(ddl[0][0].value);
+                    }
+                },
+                error: function () {
+                    swal.fire('更新餘切料號選單失敗');
+                },
+                complete: function (data) {
+
+
                 }
 
-
-
-                var optionCount = ddl[0].length;
-                if (optionCount == 2) {
-                    //選單數量為2時，選擇第2個
-                    ddl.combobox('autocomplete', ddl[0][1].value, ddl[0][1].text);
-                } else {
-                    ddl.combobox('autocomplete', ddl[0][0].value, ddl[0][0].text);
-                }
-            },
-            error: function () {
-                swal.fire('更新餘切料號選單失敗');
-            },
-            complete: function (data) {
-
-
-            }
-
+            });
         });
 
     }
+
+    function search() {
+        OspRelatedDataTablesBody.ajax.reload();
+    }
+
+    search();
 });

@@ -181,6 +181,7 @@ function table() {
                 }, "className": "dt-body-center"
             },
         ],
+        "order": [[1, 'asc']],
         select: {
             style: 'single',
         },

@@ -13,7 +13,7 @@
     <script src="http://jqueryvalidation.org/files/dist/additional-methods.min.js"></script>
 }
 
-<div class="row">
+<div class="row customBody">
     <div class="col-md-12">
 
         <div class="box box-success">
@@ -30,50 +30,70 @@
                     @Html.AntiForgeryToken()
                     @Html.ValidationSummary(true)
                     <fieldset>
-                        <div class="input-group col-md-12 row-mtd">
-                            <span class="input-group-addon">角色</span>
-                            @Html.DropDownListFor(model => model.GetRoleNameList, Model.GetRoleNameList, new { @class = "form-control", id = "ddlRoleName" })
-                            @*<select class="form-control" id="User">
-                            <option value="1" selected="selected" onchange="selectUser">使用者</option>
-                            <option value="2">華紙使用者</option>
-                            <option value="3">系統管理員</option>
-                        </select>*@
-                        </div>
-
-                        <div class="input-group col-md-12 row-mtd">
-                            <span class="input-group-addon">帳號</span>
-                            @Html.TextBoxFor(model => model.Account, new { placeholder = "請輸入帳號", @class = "form-control", id = "Account" })
-                            @*<input type="text" class="form-control" placeholder="請輸入帳號" id="Acount" required>*@
-                            @Html.ValidationMessageFor(model => model.Account, "", new { @class = "text-danger", autocomplete = "off" })
-                        </div>
-
-                        <div class="input-group col-md-12 row-mtd">
-                            <span class="input-group-addon">使用者</span>
-                            @Html.TextBoxFor(model => model.Name, new { placeholder = "請輸入姓名", @class = "form-control", id = "Name" })
-                            @*<input type="text" class="form-control" placeholder="請輸入姓名" id="Name" required>*@
-                            @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger", autocomplete = "off" })
-                        </div>
-
-                        <div class="input-group col-md-12 row-mtd">
-                            <span class="input-group-addon">信箱</span>
-                            @Html.TextBoxFor(model => model.Email, new { placeholder = "請輸入信箱", @class = "form-control", id = "Email" })
-                            @*<input type="text" class="form-control" placeholder="請輸入信箱" id="Email" required>*@
-                            @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger", autocomplete = "off" })
-                        </div>
-
-                        <div class="input-group col-md-12 row-mtd">
-                            <span class="input-group-addon">密碼</span>
-                            @Html.PasswordFor(model => model.Password, new { placeholder = "請輸入密碼", @class = "form-control", id = "Password" })
-                            @*<input type="text" class="form-control" placeholder="請輸入密碼" id="Password" required>*@
-                            @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger", autocomplete = "off" })
-                        </div>
-
+                        <table style=" border-spacing:20px 5px">
+                            <tr>
+                                <td style="text-align: right;">
+                                    <label style='font-weight:bolder;'>
+                                        角色
+                                    </label>
+                                </td>
+                                <td class="input-lg">@Html.DropDownListFor(model => model.GetRoleNameList, Model.GetRoleNameList, new { @class = "customDropDownList", id = "ddlRoleName", autocomplete = "off" })</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: right;">
+                                    <label style='font-weight:bolder;'>
+                                        帳號
+                                    </label>
+                                </td>
+                                <td class="input-lg">
+                                    @Html.TextBoxFor(model => model.Account, new { placeholder = "請輸入帳號", @class = "form-control customTextBox", id = "Account", style = "width:200px;", autocomplete = "off" })
+                                    @Html.ValidationMessageFor(model => model.Account, "", new { @class = "text-danger", autocomplete = "off" })
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: right;">
+                                    <label style='font-weight:bolder;'>
+                                        使用者
+                                    </label>
+                                </td>
+                                <td class="input-lg">
+                                    @Html.TextBoxFor(model => model.Name, new { placeholder = "請輸入姓名", @class = "form-control customTextBox", id = "Name", style = "width:200px;", autocomplete = "off" })
+                                    @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger", autocomplete = "off" })
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: right;">
+                                    <label style='font-weight:bolder;'>
+                                        信箱
+                                    </label>
+                                </td>
+                                <td class="input-lg">
+                                    @Html.TextBoxFor(model => model.Email, new { placeholder = "請輸入信箱", @class = "form-control customTextBox", id = "Email", style = "width:200px;", autocomplete = "off" })
+                                    @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger", autocomplete = "off" })
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: right;">
+                                    <label style='font-weight:bolder;'>
+                                        密碼
+                                    </label>
+                                </td>
+                                <td class="input-lg">
+                                    @Html.TextBoxFor(model => model.Password, new { placeholder = "請輸入密碼", @class = "form-control customTextBox", id = "Password", style = "width:200px;", autocomplete = "off" })
+                                    @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger", autocomplete = "off" })
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="input-lg" colspan="2" style=" text-align: right;">
+                                    <button type="button" id="BtnAccountSave" class="btn btn-danger externalBtn" style="width: 100px;">儲存</button>
+                                </td>
+                            </tr>
+                        </table>
                     </fieldset>
                 </form>
-                <div class="row row-std col-md-12">
+                @*<div class="row row-std col-md-12">
                     <button class="btn btn-danger externalBtn col-sm-offset-4" id="BtnAccountSave">儲存</button>
-                    @*<button class="btn btn-dark externalBtn" id="BtnCancel">取消</button>*@
-                </div>
+                </div>*@
             </div>
         </div>
     </div>

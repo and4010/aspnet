@@ -6,14 +6,20 @@
 //更改密碼dialog
 function btnDailog() {
     $('#BtnchagnePassword').click(function () {
-        $.ajax({
-            url: '/Account/_ChangePassword',
-            type: "POST",
-            datatype: 'json',
-            success: function (result) {
-                $('body').append(result);
-                Open($('#changePasswordModal'));
-            }
+        ShowWait(function () {
+            $.ajax({
+                url: '/Account/_ChangePassword',
+                type: "POST",
+                datatype: 'json',
+                success: function (result) {
+                    CloseWait();
+                    $('body').append(result);
+                    Open($('#changePasswordModal'));
+                },
+                error: function () {
+                    swal.fire("修改密碼失敗")
+                }
+            });
         });
     });
 }
@@ -67,24 +73,28 @@ function Open(modal_dialog) {
         //Add validation token
         ManageUserViewModel.__RequestVerificationToken = $('input[name=__RequestVerificationToken]').val();
 
-        $.ajax({
-            url: '/Account/ChangPasswordAsync',
-            type: "POST",
-            datatype: 'json',
-            data: { ManageUserViewModel: ManageUserViewModel },
-            success: function (data) {
-                if (data.resultModel.Success) {
-                    swal.fire("更改成功");
-                    modal_dialog.modal('hide');
-                } else {
-                    swal.fire(data.resultModel.Msg);
+        ShowWait(function () {
+            $.ajax({
+                url: '/Account/ChangPasswordAsync',
+                type: "POST",
+                datatype: 'json',
+                data: { ManageUserViewModel: ManageUserViewModel },
+                success: function (data) {
+                    if (data.resultModel.Success) {
+                        CloseWait();
+                        swal.fire("更改成功");
+                        modal_dialog.modal('hide');
+                    } else {
+                        swal.fire(data.resultModel.Msg);
+                    }
+                },
+                error: function () {
+                    swal.fire("失敗");
                 }
-            },
-            error: function () {
-                swal.fire("失敗");
-            }
 
+            });
         });
+        
     });
 
     modal_dialog.modal('show');
