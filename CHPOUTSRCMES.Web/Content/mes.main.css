@@ -82,6 +82,9 @@ table.table-bordered {
     margin-left: 50px;
 }
 
+.margin-left-ms {
+    margin-left: 20px;
+}
 
 .noborder td, .noborder th {
     border: none !important;

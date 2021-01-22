@@ -586,59 +586,64 @@ $(document).ready(function () {
             SECONDARY_QUANTITY: SECONDARY_QUANTITY,
         };
         viewModel.__RequestVerificationToken = $('input[name=__RequestVerificationToken]').val();
-        $.ajax({
-            url: "/Delivery/InputFlatEditBarcode",
-            type: "post",
-            data: viewModel,
-            dataType: 'json',
-            //data: {
-            //    'BARCODE': BARCODE,
-            //    'SECONDARY_QUANTITY': SECONDARY_QUANTITY,
-            //    DlvHeaderId: $("#DlvHeaderId").text(),
-            //    DLV_DETAIL_ID: $("#DLV_DETAIL_ID").text(),
-            //    DELIVERY_NAME: $("#DELIVERY_NAME").text()
-            //},
-            success: function (data) {
-                if (data.status) {
-                    FlatBarcodeDataTablesBody.ajax.reload(null, false);
-                    FlatDataTablesBody.ajax.reload(null, false);
-                    UpdateDeliveryDetailViewHeader();
 
-                    //if (data.result == "令包") {
-                    //    //$("#SECONDARY_QUANTITY").show();
-                    //    $('#txtSECONDARY_QUANTITY').focus();
-                    //    //$('#PACKING_TYPE').text("令包");
-                    //}
-                    //if (data.result == "令包_條碼儲存成功") {
-                    //    FlatBarcodeDataTablesBody.ajax.reload();
-                    //    FlatDataTablesBody.ajax.reload(null, false);
-                    //    UpdateDeliveryDetailViewHeader();
-                    //}
-                    //if (data.result == "無令打件_條碼儲存成功") {
-                    //    //$('#PACKING_TYPE').text("無令打件");
-                    //    FlatBarcodeDataTablesBody.ajax.reload();
-                    //    FlatDataTablesBody.ajax.reload(null, false);
-                    //    UpdateDeliveryDetailViewHeader();
-                    //}
+        ShowWait(function () {
+            $.ajax({
+                url: "/Delivery/InputFlatEditBarcode",
+                type: "post",
+                data: viewModel,
+                dataType: 'json',
+                //data: {
+                //    'BARCODE': BARCODE,
+                //    'SECONDARY_QUANTITY': SECONDARY_QUANTITY,
+                //    DlvHeaderId: $("#DlvHeaderId").text(),
+                //    DLV_DETAIL_ID: $("#DLV_DETAIL_ID").text(),
+                //    DELIVERY_NAME: $("#DELIVERY_NAME").text()
+                //},
+                success: function (data) {
+                    if (data.status) {
+                        CloseWait();
+                        FlatBarcodeDataTablesBody.ajax.reload(null, false);
+                        FlatDataTablesBody.ajax.reload(null, false);
+                        UpdateDeliveryDetailViewHeader();
+
+                        //if (data.result == "令包") {
+                        //    //$("#SECONDARY_QUANTITY").show();
+                        //    $('#txtSECONDARY_QUANTITY').focus();
+                        //    //$('#PACKING_TYPE').text("令包");
+                        //}
+                        //if (data.result == "令包_條碼儲存成功") {
+                        //    FlatBarcodeDataTablesBody.ajax.reload();
+                        //    FlatDataTablesBody.ajax.reload(null, false);
+                        //    UpdateDeliveryDetailViewHeader();
+                        //}
+                        //if (data.result == "無令打件_條碼儲存成功") {
+                        //    //$('#PACKING_TYPE').text("無令打件");
+                        //    FlatBarcodeDataTablesBody.ajax.reload();
+                        //    FlatDataTablesBody.ajax.reload(null, false);
+                        //    UpdateDeliveryDetailViewHeader();
+                        //}
+                    }
+                    else {
+                        swal.fire({
+                            title: data.result,
+                            onAfterClose: function () {
+                                $('#txtBARCODE').focus().select();
+                            }
+                        });
+                    }
+                },
+                error: function () {
+                    swal.fire('條碼輸入失敗');
+                },
+                complete: function (data) {
+                    $('#txtBARCODE').attr('disabled', false);
+
                 }
-                else {
-                    swal.fire({
-                        title: data.result,
-                        onAfterClose: function () {
-                            $('#txtBARCODE').focus().select();
-                        }
-                    });
-                }
-            },
-            error: function () {
-                swal.fire('條碼輸入失敗');
-            },
-            complete: function (data) {
-                $('#txtBARCODE').attr('disabled', false);
 
-            }
-
+            });
         });
+       
     }
 
     function deliveryNameCheck() {

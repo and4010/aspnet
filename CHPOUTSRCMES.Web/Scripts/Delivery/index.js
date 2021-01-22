@@ -5,7 +5,7 @@ var deliveryAuthorizeEditor;
 $(document).ready(function () {
 
     //航程號下拉選單自動完成
-    $("#ddlTrip").combobox();
+    //$("#ddlTrip").combobox();
 
     //jQuery ui datepicker初始化
     $.datepicker.setDefaults($.datepicker.regional["zh-TW"]);
@@ -287,7 +287,7 @@ $(document).ready(function () {
         //sScrollX: "100%",
         //sScrollXInner: "110%",
         dom:
-            "<'row'<'col-sm-2'l><'col-sm-7'B><'col-sm-3'f>>" +
+            "<'row'<'col-sm-2 width-s'l><'col-sm-7'B><'col-sm-3'f>>" +
             "<'row'<'col-sm-12'tr>>" +
             "<'row'<'col-sm-5'i><'col-sm-7'p>>",
         ajax: {
@@ -379,9 +379,6 @@ $(document).ready(function () {
             {
                 data: "AUTHORIZE_DATE", name: "出貨核准日", "autoWidth": true,
             },
-            
-
-            
 
         ],
 
@@ -416,103 +413,227 @@ $(document).ready(function () {
                         return moment().format("YYYYMMDDHHmmss");
                     }
                 },
-                //{
-                //    text: '列印備貨單',
-                //    className: 'btn-primary',
-                //    action: function () {
-                //        PrintPickList();
-                //    },
-                //    init: function (api, node, config) {
-                //        $(node).removeClass('btn-default')
-                //    }
-                //},
-                //{
-                //    extend: 'edit',
-                //    editor: editor,
-                //    className: "btn-danger"
-                //},
-                //{
-                //    extend: 'edit',
-                //    editor: editor,
-                //    formButtons: {
-                //        text: 'Save',
-                //        action: function () { this.submit(); },
-                //        className: 'btn btn-danger'
-                //    }
-                //},
+                {
+                    text: '取消申請',
+                    className: 'btn-danger',
+                    action: function () {
+                        var data = TripDataTablesBody.rows('.selected').data();
+                        if (data.length == 0) {
+                            return false;
+                        }
 
-                //{
-                //    text: '編輯核准日',
-                //    className: 'btn-danger',
-                //    init: function (api, node, config) {
-                //        $(node).removeClass('btn-default')
-                //    },
-                //    action: function (e, dt, node, config) {
-                //        var count = dt.rows({ selected: true }).count();
+                        for (var i = 0; i < data.length; i++) {
+                            if (data[i].DELIVERY_STATUS != '待核准') {
+                                swal.fire('交運單' + data[i].DELIVERY_NAME + '狀態須為待核准');
+                                return false;
+                            }
+                        }
 
-                //        if (count == 0) {
-                //            return;
-                //        }
-                //        //var data = dt.rows({ selected: true }).data().pluck('Id')[0];
+                        swal.fire({
+                            title: "取消申請",
+                            text: "確定取消申請出貨嗎?",
+                            type: "warning",
+                            showCancelButton: true,
+                            confirmButtonColor: "#DD6B55",
+                            confirmButtonText: "確定",
+                            cancelButtonText: "取消"
+                        }).then(function (result) {
+                            if (result.value) {
+                                CancelConfirm(data);
+                            }
+                        });
+                    },
+                    init: function (api, node, config) {
+                        $(node).removeClass('btn-default')
+                    }
+                },
+                {
+                    text: '出貨申請',
+                    className: 'btn-danger',
+                    action: function () {
+                        var data = TripDataTablesBody.rows('.selected').data();
+                        if (data.length == 0) {
+                            return false;
+                        }
 
-                //        //var Id = dt.rows(indexes).data().pluck('Id')[0];
+                        for (var i = 0; i < data.length; i++) {
+                            if (data[i].DELIVERY_STATUS != '已揀') {
+                                swal.fire('交運單' + data[i].DELIVERY_NAME + '狀態須為已揀');
+                                return false;
+                            }
+                        }
 
-                //        for (i = 0; i < count; i++) {
+                        swal.fire({
+                            title: "出貨申請",
+                            text: "確定申請出貨嗎?",
+                            type: "warning",
+                            showCancelButton: true,
+                            confirmButtonColor: "#DD6B55",
+                            confirmButtonText: "確定",
+                            cancelButtonText: "取消"
+                        }).then(function (result) {
+                            if (result.value) {
+                                DeliveryConfirm(data);
+                            }
+                        });
+                    },
+                    init: function (api, node, config) {
+                        $(node).removeClass('btn-default')
+                    }
+                },
+                {
+                    text: '編輯核准日',
+                    className: 'buttons-advanced margin-left-ms btn-danger',
+                    action: function () {
+                        var data = TripDataTablesBody.rows('.selected').data();
+                        if (data.length == 0) {
+                            return false;
+                        }
 
-                //            if (dt.rows({ selected: true }).data().pluck('DELIVERY_STATUS')[i] == '已出貨') {
-                //                swal.fire('已出貨，無法再修改核准日');
-                //                return;
-                //            }
-                //            if (dt.rows({ selected: true }).data().pluck('DELIVERY_STATUS')[i] == '已取消') {
-                //                swal.fire('已取消，無法再修改核准日');
-                //                return;
-                //            }
-                //            //if (data[i].DELIVERY_STATUS == '已出貨') {
-                //            //    swal.fire('已出貨，無法再修改核准日');
-                //            //    return;
-                //            //}
-                //        }
+                        for (var i = 0; i < data.length; i++) {
+                            if (data[i].DELIVERY_STATUS == '已出貨') {
+                                swal.fire('已出貨，無法再修改核准日');
+                                return;
+                            }
+                            if (data[i].DELIVERY_STATUS == '已取消') {
+                                swal.fire('已取消，無法再修改核准日');
+                                return;
+                            }
+                        }
 
-                //        editor.edit(TripDataTablesBody.rows({ selected: true }).indexes())
-                //            .title('編輯出貨核准日')
-                //            .buttons({
-                //                text: '確定',
-                //                action: function () {
-                //                    this.submit();
-                //                },
-                //                className: 'btn-danger'
-                //            });
-                //    }
-                //}
+                        editor.edit(TripDataTablesBody.rows({ selected: true }).indexes())
+                            .title('編輯出貨核准日')
+                            .buttons([
+                                {
+                                    text: '確定',
+                                    className: 'btn-danger',
+                                    action: function () {
+                                        this.submit();
+                                    }
+                                }
+                            ]);
+                    },
+                    init: function (api, node, config) {
+                        $(node).removeClass('btn-default')
+                    }
+                },
+                {
+                    text: '航程號取消',
+                    className: 'buttons-advanced btn-danger',
+                    action: function () {
+                        var data = TripDataTablesBody.rows('.selected').data();
+                        if (data.length == 0) {
+                            return false;
+                        }
 
-                //{
-                //    text: '出貨確認',
-                //    className: 'btn-primary',
-                //    action: function () {
-                //        DeliveryConfirm();
-                //    }
-                //},
-                //{
-                //    text: '取消確認',
-                //    className: 'btn-warning',
-                //    action: function () {
-                //        CancelConfirm();
-                //    }
-                //},
-                //{
-                //    text: '出貨核准',
-                //    className: 'btn-danger',
-                //    action: function () {
-                //        DeliveryAuthorize();
-                //    }
-                //},
-                //{
-                //    text: '取消核准',
-                //    className: 'btn-warning',
-                //    action: function () {
-                //        CancelAuthorize();
-                //    }
-                //}
+                        for (var i = 0; i < data.length; i++) {
+                            if (data[i].DELIVERY_STATUS == '已取消') {
+                                swal.fire('交運單' + data[i].DELIVERY_NAME + '已取消');
+                                return false;
+                            }
+                            if (data[i].DELIVERY_STATUS == '已出貨') {
+                                swal.fire('交運單' + data[i].DELIVERY_NAME + '已出貨不可取消');
+                                return false;
+                            }
+                        }
+
+                        swal.fire({
+                            title: "航程號取消",
+                            text: "確定取消航程號嗎?",
+                            type: "warning",
+                            showCancelButton: true,
+                            confirmButtonColor: "#DD6B55",
+                            confirmButtonText: "確定",
+                            cancelButtonText: "取消"
+                        }).then(function (result) {
+                            if (result.value) {
+                                CancelTrip(data);
+                            }
+                        });
+                    },
+                    init: function (api, node, config) {
+                        $(node).removeClass('btn-default')
+                    }
+                },
+                {
+                    text: '出貨駁回',
+                    className: 'buttons-advanced btn-danger',
+                    action: function () {
+                        var data = TripDataTablesBody.rows('.selected').data();
+                        if (data.length == 0) {
+                            return false;
+                        }
+
+                        for (var i = 0; i < data.length; i++) {
+                            if (data[i].DELIVERY_STATUS != '待核准') {
+                                swal.fire('交運單' + data[i].DELIVERY_NAME + '狀態須為待核准');
+                                return false;
+                            }
+                        }
+
+                        swal.fire({
+                            title: "駁回出貨",
+                            text: "確定駁回出貨嗎?",
+                            type: "warning",
+                            showCancelButton: true,
+                            confirmButtonColor: "#DD6B55",
+                            confirmButtonText: "確定",
+                            cancelButtonText: "取消"
+                        }).then(function (result) {
+                            if (result.value) {
+                                CancelAuthorize(data);
+                            }
+                        });
+                    },
+                    init: function (api, node, config) {
+                        $(node).removeClass('btn-default')
+                    }
+                },
+                {
+                    text: '出貨核准',
+                    className: 'buttons-advanced btn-danger',
+                    action: function () {
+                        var data = TripDataTablesBody.rows('.selected').data();
+                        if (data.length == 0) {
+                            return false;
+                        }
+
+                        for (var i = 0; i < data.length; i++) {
+                            if (data[i].DELIVERY_STATUS != '待核准') {
+                                swal.fire('交運單' + data[i].DELIVERY_NAME + '狀態須為待核准');
+                                return false;
+                            }
+                        }
+
+                        deliveryAuthorizeEditor.edit(TripDataTablesBody.rows({ selected: true }).indexes())
+                            .title('出貨核准')
+                            .buttons([
+                                {
+                                    text: '確定',
+                                    className: 'btn-danger',
+                                    action: function () {
+                                        swal.fire({
+                                            title: "出貨核准",
+                                            text: "確定核准出貨嗎?",
+                                            type: "warning",
+                                            showCancelButton: true,
+                                            confirmButtonColor: "#DD6B55",
+                                            confirmButtonText: "確定",
+                                            cancelButtonText: "取消"
+                                        }).then(function (result) {
+                                            if (result.value) {
+                                                deliveryAuthorizeEditor.submit();
+                                                //DeliveryAuthorize(data);
+                                            }
+                                        });
+                                    }
+                                }
+                            ]);
+                    },
+                    init: function (api, node, config) {
+                        $(node).removeClass('btn-default')
+                    }
+                },
             ],
         },
 
@@ -522,6 +643,25 @@ $(document).ready(function () {
                 var selectRow = ':eq(' + dataIndex + ')';
                 TripDataTablesBody.row(selectRow, { page: 'current' }).select();
             }
+
+            //判斷是否顯示進階功能
+            $.ajax({
+                url: "/Delivery/GetAdvancedStatus",
+                type: "post",
+                data: {},
+                success: function (data) {
+                    $('.buttons-advanced')[0].style.visibility = data.status ? 'visible' : 'hidden'
+                    $('.buttons-advanced')[1].style.visibility = data.status ? 'visible' : 'hidden'
+                    $('.buttons-advanced')[2].style.visibility = data.status ? 'visible' : 'hidden'
+                    $('.buttons-advanced')[3].style.visibility = data.status ? 'visible' : 'hidden'
+                },
+                error: function () {
+                    swal.fire('取得使用者進階權限失敗');
+                },
+                complete: function (data) {
+
+                }
+            });       
         }
     });
 
@@ -633,44 +773,15 @@ $(document).ready(function () {
         
     })
 
-    $('.box-footer').on('click', '#btnSearch', function (e) {
+    $('#btnSearch').click(function () {
         TripDataTablesBody.ajax.reload();
         return false;
-
-        //$.ajax({
-        //    url: "/Delivery/Search",
-        //    type: "post",
-        //    data: {
-        //        'TripActualShipBeginDate': $("#txtTripActualShipBeginDate").val(),
-        //        'TripActualShipEndDate': $("#txtTripActualShipEndDate").val(),
-        //        'DeliveryName': $("#txtDeliveryName").val(),
-        //        'SelectedSubinventory': $("#ddlWarehouse").val(),
-        //        SelectedTrip: $("#ddlTrip").val(),
-        //        TransactionDate: $("#txtTransactionDate").val(),
-        //        SelectedDeliveryStatus: $("#ddlDeliveryStatus").val()
-
-        //    },
-        //    success: function (data) {
-        //        if (data.status) {
-        //            if (data.result == "搜尋成功") {
-        //                TripDataTablesBody.ajax.reload();
-        //            }
-        //        }
-        //        else {
-        //            swal.fire(data.result);
-        //        }
-        //    },
-        //    error: function () {
-        //        swal.fire('搜尋失敗');
-        //    },
-        //    complete: function (data) {
-
-
-        //    }
-
-        //});
-        //return false;
     });
+
+    //$('.box-footer').on('click', '#btnSearch', function (e) {
+    //    TripDataTablesBody.ajax.reload();
+    //    return false;
+    //});
 
     //$(".buttons-excel").detach();
 
@@ -682,225 +793,225 @@ $(document).ready(function () {
     //});
     TripDataTablesBody.buttons(2, null).containers().appendTo('#btnExportExcel');
 
-    $("#btnUpdateTransactionAuthorizeDates").click(function () {
-        var data = TripDataTablesBody.rows('.selected').data();
-        if (data.length == 0) {
-            return false;
-        }
+    //$("#btnUpdateTransactionAuthorizeDates").click(function () {
+    //    var data = TripDataTablesBody.rows('.selected').data();
+    //    if (data.length == 0) {
+    //        return false;
+    //    }
 
-        for (var i = 0; i < data.length; i++) {
-            if (data[i].DELIVERY_STATUS == '已出貨') {
-                swal.fire('已出貨，無法再修改核准日');
-                return;
-            }
-            if (data[i].DELIVERY_STATUS == '已取消') {
-                swal.fire('已取消，無法再修改核准日');
-                return;
-            }
-        }
+    //    for (var i = 0; i < data.length; i++) {
+    //        if (data[i].DELIVERY_STATUS == '已出貨') {
+    //            swal.fire('已出貨，無法再修改核准日');
+    //            return;
+    //        }
+    //        if (data[i].DELIVERY_STATUS == '已取消') {
+    //            swal.fire('已取消，無法再修改核准日');
+    //            return;
+    //        }
+    //    }
 
-        editor.edit(TripDataTablesBody.rows({ selected: true }).indexes())
-            .title('編輯出貨核准日')
-            .buttons([
-                {
-                    text: '確定',
-                    className: 'btn-danger',
-                    action: function () {
-                        this.submit();
-                    }
-                }
-            ]);
+    //    editor.edit(TripDataTablesBody.rows({ selected: true }).indexes())
+    //        .title('編輯出貨核准日')
+    //        .buttons([
+    //            {
+    //                text: '確定',
+    //                className: 'btn-danger',
+    //                action: function () {
+    //                    this.submit();
+    //                }
+    //            }
+    //        ]);
 
 
-    });
+    //});
 
-    $("#btnDeliveryConfirm").click(function () {
-        var data = TripDataTablesBody.rows('.selected').data();
-        if (data.length == 0) {
-            return false;
-        }
+    //$("#btnDeliveryConfirm").click(function () {
+    //    var data = TripDataTablesBody.rows('.selected').data();
+    //    if (data.length == 0) {
+    //        return false;
+    //    }
 
-        for (var i = 0; i < data.length; i++) {
-            if (data[i].DELIVERY_STATUS != '已揀') {
-                swal.fire('交運單' + data[i].DELIVERY_NAME + '狀態須為已揀');
-                return false;
-            }
-        }
+    //    for (var i = 0; i < data.length; i++) {
+    //        if (data[i].DELIVERY_STATUS != '已揀') {
+    //            swal.fire('交運單' + data[i].DELIVERY_NAME + '狀態須為已揀');
+    //            return false;
+    //        }
+    //    }
 
-        swal.fire({
-            title: "出貨申請",
-            text: "確定申請出貨嗎?",
-            type: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#DD6B55",
-            confirmButtonText: "確定",
-            cancelButtonText: "取消"
-        }).then(function (result) {
-            if (result.value) {
-                DeliveryConfirm(data);
-            }
-        });
+    //    swal.fire({
+    //        title: "出貨申請",
+    //        text: "確定申請出貨嗎?",
+    //        type: "warning",
+    //        showCancelButton: true,
+    //        confirmButtonColor: "#DD6B55",
+    //        confirmButtonText: "確定",
+    //        cancelButtonText: "取消"
+    //    }).then(function (result) {
+    //        if (result.value) {
+    //            DeliveryConfirm(data);
+    //        }
+    //    });
 
-        //DeliveryConfirm();
-    });
+    //    //DeliveryConfirm();
+    //});
 
-    $("#btnCancelConfirm").click(function () {
-        var data = TripDataTablesBody.rows('.selected').data();
-        if (data.length == 0) {
-            return false;
-        }
+    //$("#btnCancelConfirm").click(function () {
+    //    var data = TripDataTablesBody.rows('.selected').data();
+    //    if (data.length == 0) {
+    //        return false;
+    //    }
 
-        for (var i = 0; i < data.length; i++) {
-            if (data[i].DELIVERY_STATUS != '待核准') {
-                swal.fire('交運單' + data[i].DELIVERY_NAME + '狀態須為待核准');
-                return false;
-            }
-        }
+    //    for (var i = 0; i < data.length; i++) {
+    //        if (data[i].DELIVERY_STATUS != '待核准') {
+    //            swal.fire('交運單' + data[i].DELIVERY_NAME + '狀態須為待核准');
+    //            return false;
+    //        }
+    //    }
 
-        swal.fire({
-            title: "取消申請",
-            text: "確定取消申請出貨嗎?",
-            type: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#DD6B55",
-            confirmButtonText: "確定",
-            cancelButtonText: "取消"
-        }).then(function (result) {
-            if (result.value) {
-                CancelConfirm(data);
-            }
-        });
+    //    swal.fire({
+    //        title: "取消申請",
+    //        text: "確定取消申請出貨嗎?",
+    //        type: "warning",
+    //        showCancelButton: true,
+    //        confirmButtonColor: "#DD6B55",
+    //        confirmButtonText: "確定",
+    //        cancelButtonText: "取消"
+    //    }).then(function (result) {
+    //        if (result.value) {
+    //            CancelConfirm(data);
+    //        }
+    //    });
 
-        //CancelConfirm();
-    });
+    //    //CancelConfirm();
+    //});
 
     //$("#btnPrintPick").click(function () {
     //    PrintPickList();
     //});
 
-    $("#btnDeliveryAuthorize").click(function () {
-        var data = TripDataTablesBody.rows('.selected').data();
-        if (data.length == 0) {
-            return false;
-        }
+    //$("#btnDeliveryAuthorize").click(function () {
+    //    var data = TripDataTablesBody.rows('.selected').data();
+    //    if (data.length == 0) {
+    //        return false;
+    //    }
 
-        for (var i = 0; i < data.length; i++) {
-            if (data[i].DELIVERY_STATUS != '待核准') {
-                swal.fire('交運單' + data[i].DELIVERY_NAME + '狀態須為待核准');
-                return false;
-            }
-        }
+    //    for (var i = 0; i < data.length; i++) {
+    //        if (data[i].DELIVERY_STATUS != '待核准') {
+    //            swal.fire('交運單' + data[i].DELIVERY_NAME + '狀態須為待核准');
+    //            return false;
+    //        }
+    //    }
 
-        deliveryAuthorizeEditor.edit(TripDataTablesBody.rows({ selected: true }).indexes())
-            .title('出貨核准')
-            .buttons([
-                //{
-                //    text: '駁回',
-                //    className: 'btn-danger',
-                //    action: function () {
-                //        swal.fire({
-                //            title: "駁回",
-                //            text: "確定駁回出貨嗎?",
-                //            type: "warning",
-                //            showCancelButton: true,
-                //            confirmButtonColor: "#DD6B55",
-                //            confirmButtonText: "確定",
-                //            cancelButtonText: "取消"
-                //        }).then(function (result) {
-                //            if (result.value) {
-                //                //editor.submit();
-                //                CancelAuthorize(data);
-                //            }
-                //        });
-                //    },
-                //},
-                {
-                    text: '確定',
-                    className: 'btn-danger',
-                    action: function () {
-                        swal.fire({
-                            title: "出貨核准",
-                            text: "確定核准出貨嗎?",
-                            type: "warning",
-                            showCancelButton: true,
-                            confirmButtonColor: "#DD6B55",
-                            confirmButtonText: "確定",
-                            cancelButtonText: "取消"
-                        }).then(function (result) {
-                            if (result.value) {
-                                deliveryAuthorizeEditor.submit();
-                                //DeliveryAuthorize(data);
-                            }
-                        });
-                    }
-                }
-            ]);
-    });
-
-
-    $("#btnDeliveryReject").click(function () {
-        var data = TripDataTablesBody.rows('.selected').data();
-        if (data.length == 0) {
-            return false;
-        }
-
-        for (var i = 0; i < data.length; i++) {
-            if (data[i].DELIVERY_STATUS != '待核准') {
-                swal.fire('交運單' + data[i].DELIVERY_NAME + '狀態須為待核准');
-                return false;
-            }
-        }
-
-        swal.fire({
-            title: "駁回出貨",
-            text: "確定駁回出貨嗎?",
-            type: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#DD6B55",
-            confirmButtonText: "確定",
-            cancelButtonText: "取消"
-        }).then(function (result) {
-            if (result.value) {
-                CancelAuthorize(data);
-            }
-        });
-
-        //CancelAuthorize();
-    });
+    //    deliveryAuthorizeEditor.edit(TripDataTablesBody.rows({ selected: true }).indexes())
+    //        .title('出貨核准')
+    //        .buttons([
+    //            //{
+    //            //    text: '駁回',
+    //            //    className: 'btn-danger',
+    //            //    action: function () {
+    //            //        swal.fire({
+    //            //            title: "駁回",
+    //            //            text: "確定駁回出貨嗎?",
+    //            //            type: "warning",
+    //            //            showCancelButton: true,
+    //            //            confirmButtonColor: "#DD6B55",
+    //            //            confirmButtonText: "確定",
+    //            //            cancelButtonText: "取消"
+    //            //        }).then(function (result) {
+    //            //            if (result.value) {
+    //            //                //editor.submit();
+    //            //                CancelAuthorize(data);
+    //            //            }
+    //            //        });
+    //            //    },
+    //            //},
+    //            {
+    //                text: '確定',
+    //                className: 'btn-danger',
+    //                action: function () {
+    //                    swal.fire({
+    //                        title: "出貨核准",
+    //                        text: "確定核准出貨嗎?",
+    //                        type: "warning",
+    //                        showCancelButton: true,
+    //                        confirmButtonColor: "#DD6B55",
+    //                        confirmButtonText: "確定",
+    //                        cancelButtonText: "取消"
+    //                    }).then(function (result) {
+    //                        if (result.value) {
+    //                            deliveryAuthorizeEditor.submit();
+    //                            //DeliveryAuthorize(data);
+    //                        }
+    //                    });
+    //                }
+    //            }
+    //        ]);
+    //});
 
 
-    $("#btnTripChancel").click(function () {
-        var data = TripDataTablesBody.rows('.selected').data();
-        if (data.length == 0) {
-            return false;
-        }
+    //$("#btnDeliveryReject").click(function () {
+    //    var data = TripDataTablesBody.rows('.selected').data();
+    //    if (data.length == 0) {
+    //        return false;
+    //    }
 
-        for (var i = 0; i < data.length; i++) {
-            if (data[i].DELIVERY_STATUS == '已取消') {
-                swal.fire('交運單' + data[i].DELIVERY_NAME + '已取消');
-                return false;
-            }
-            if (data[i].DELIVERY_STATUS == '已出貨') {
-                swal.fire('交運單' + data[i].DELIVERY_NAME + '已出貨不可取消');
-                return false;
-            }
-        }
+    //    for (var i = 0; i < data.length; i++) {
+    //        if (data[i].DELIVERY_STATUS != '待核准') {
+    //            swal.fire('交運單' + data[i].DELIVERY_NAME + '狀態須為待核准');
+    //            return false;
+    //        }
+    //    }
 
-        swal.fire({
-            title: "航程號取消",
-            text: "確定取消航程號嗎?",
-            type: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#DD6B55",
-            confirmButtonText: "確定",
-            cancelButtonText: "取消"
-        }).then(function (result) {
-            if (result.value) {
-                CancelTrip(data);
-            }
-        });
+    //    swal.fire({
+    //        title: "駁回出貨",
+    //        text: "確定駁回出貨嗎?",
+    //        type: "warning",
+    //        showCancelButton: true,
+    //        confirmButtonColor: "#DD6B55",
+    //        confirmButtonText: "確定",
+    //        cancelButtonText: "取消"
+    //    }).then(function (result) {
+    //        if (result.value) {
+    //            CancelAuthorize(data);
+    //        }
+    //    });
 
-    });
+    //    //CancelAuthorize();
+    //});
+
+
+    //$("#btnTripChancel").click(function () {
+    //    var data = TripDataTablesBody.rows('.selected').data();
+    //    if (data.length == 0) {
+    //        return false;
+    //    }
+
+    //    for (var i = 0; i < data.length; i++) {
+    //        if (data[i].DELIVERY_STATUS == '已取消') {
+    //            swal.fire('交運單' + data[i].DELIVERY_NAME + '已取消');
+    //            return false;
+    //        }
+    //        if (data[i].DELIVERY_STATUS == '已出貨') {
+    //            swal.fire('交運單' + data[i].DELIVERY_NAME + '已出貨不可取消');
+    //            return false;
+    //        }
+    //    }
+
+    //    swal.fire({
+    //        title: "航程號取消",
+    //        text: "確定取消航程號嗎?",
+    //        type: "warning",
+    //        showCancelButton: true,
+    //        confirmButtonColor: "#DD6B55",
+    //        confirmButtonText: "確定",
+    //        cancelButtonText: "取消"
+    //    }).then(function (result) {
+    //        if (result.value) {
+    //            CancelTrip(data);
+    //        }
+    //    });
+
+    //});
 
     //取得判斷核准日可選範圍的基準日
     function GetStandardDate() {
@@ -956,29 +1067,34 @@ $(document).ready(function () {
             list.push(data[i].Id);
         }
 
-        $.ajax({
-            url: "/Delivery/DeliveryConfirm",
-            type: "post",
-            data: {
-                'id': list
-            },
-            success: function (data) {
-                if (data.status) {
-                    TripDataTablesBody.ajax.reload(null, false);
+        ShowWait(function () {
+            $.ajax({
+                url: "/Delivery/DeliveryConfirm",
+                type: "post",
+                data: {
+                    'id': list
+                },
+                success: function (data) {
+                    if (data.status) {
+                        CloseWait();
+                        TripDataTablesBody.ajax.reload(null, false);
+                    }
+                    else {
+                        swal.fire(data.result);
+                    }
+                },
+                error: function () {
+                    swal.fire('出貨申請失敗');
+                },
+                complete: function (data) {
+
+
                 }
-                else {
-                    swal.fire(data.result);
-                }
-            },
-            error: function () {
-                swal.fire('出貨申請失敗');
-            },
-            complete: function (data) {
 
-
-            }
-
+            });
         });
+
+        
     }
 
     function CancelConfirm(data) {
@@ -988,32 +1104,34 @@ $(document).ready(function () {
         for (i = 0; i < data.length; i++) {
             list.push(data[i].Id);
         }
+        ShowWait(function () {
+            $.ajax({
+                url: "/Delivery/CancelConfirm",
+                type: "post",
+                data: {
+                    'id': list
+                },
+                success: function (data) {
+                    if (data.status) {
+                        CloseWait();
+                        TripDataTablesBody.ajax.reload(null, false);
 
-        $.ajax({
-            url: "/Delivery/CancelConfirm",
-            type: "post",
-            data: {
-                'id': list
-            },
-            success: function (data) {
-                if (data.status) {
+                    }
+                    else {
+                        swal.fire(data.result);
+                    }
+                },
+                error: function () {
+                    swal.fire('取消出貨申請失敗');
+                },
+                complete: function (data) {
 
-                    TripDataTablesBody.ajax.reload(null, false);
 
                 }
-                else {
-                    swal.fire(data.result);
-                }
-            },
-            error: function () {
-                swal.fire('取消出貨申請失敗');
-            },
-            complete: function (data) {
 
-
-            }
-
+            });
         });
+        
     }
 
     function PrintPickList(selectData) {
@@ -1027,31 +1145,36 @@ $(document).ready(function () {
         //    list.push(data[i].Id);
         //}
         //var tripName = data.pluck('TRIP_NAME')[0];
-        
-        $.ajax({
-            url: "/Delivery/PrintPickList",
-            type: "post",
-            data: {
-                'id': selectData.Id
-            },
-            success: function (data) {
-                if (data.status) {
-                    TripDataTablesBody.ajax.reload(null, false);
-                    window.open("/Delivery/PickingReport/?tripName=" + selectData.TRIP_NAME);
+        ShowWait(function () {
+            $.ajax({
+                url: "/Delivery/PrintPickList",
+                type: "post",
+                data: {
+                    'id': selectData.Id
+                },
+                success: function (data) {
+                    if (data.status) {
+                        CloseWait();
+                        TripDataTablesBody.ajax.reload(null, false);
+                        window.open("/Delivery/PickingReport/?tripName=" + selectData.TRIP_NAME);
+                    }
+                    else {
+                        swal.fire(data.result);
+                    }
+                },
+                error: function () {
+                    swal.fire('列印備貨單失敗');
+                },
+                complete: function (data) {
+
+
                 }
-                else {
-                    swal.fire(data.result);
-                }
-            },
-            error: function () {
-                swal.fire('列印備貨單失敗');
-            },
-            complete: function (data) {
 
-
-            }
-
+            });
         });
+
+
+        
     }
 
     function DeliveryAuthorize(data) {
@@ -1097,31 +1220,36 @@ $(document).ready(function () {
             list.push(data[i].Id);
         }
 
-        $.ajax({
-            url: "/Delivery/CancelAuthorize",
-            type: "post",
-            data: {
-                'id': list
-            },
-            success: function (data) {
-                if (data.status) {
+        ShowWait(function () {
+            $.ajax({
+                url: "/Delivery/CancelAuthorize",
+                type: "post",
+                data: {
+                    'id': list
+                },
+                success: function (data) {
+                    if (data.status) {
+                        CloseWait();
+                        TripDataTablesBody.ajax.reload(null, false);
 
-                    TripDataTablesBody.ajax.reload(null, false);
+                    }
+                    else {
+                        swal.fire(data.result);
+                    }
+                },
+                error: function () {
+                    swal.fire('取消出貨核准失敗');
+                },
+                complete: function (data) {
+
 
                 }
-                else {
-                    swal.fire(data.result);
-                }
-            },
-            error: function () {
-                swal.fire('取消出貨核准失敗');
-            },
-            complete: function (data) {
 
-
-            }
-
+            });
         });
+
+
+        
     }
 
 
@@ -1133,31 +1261,36 @@ $(document).ready(function () {
             list.push(data[i].Id);
         }
 
-        $.ajax({
-            url: "/Delivery/CancelTrip",
-            type: "post",
-            data: {
-                'id': list
-            },
-            success: function (data) {
-                if (data.status) {
 
-                    TripDataTablesBody.ajax.reload(null, false);
+        ShowWait(function () {
+            $.ajax({
+                url: "/Delivery/CancelTrip",
+                type: "post",
+                data: {
+                    'id': list
+                },
+                success: function (data) {
+                    if (data.status) {
+                        CloseWait();
+                        TripDataTablesBody.ajax.reload(null, false);
+
+                    }
+                    else {
+                        swal.fire(data.result);
+                    }
+                },
+                error: function () {
+                    swal.fire('取消航程號失敗');
+                },
+                complete: function (data) {
+
 
                 }
-                else {
-                    swal.fire(data.result);
-                }
-            },
-            error: function () {
-                swal.fire('取消航程號失敗');
-            },
-            complete: function (data) {
 
-
-            }
-
+            });
         });
+
+        
     }
 
 

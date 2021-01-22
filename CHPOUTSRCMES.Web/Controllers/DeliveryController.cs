@@ -565,5 +565,36 @@ namespace CHPOUTSRCMES.Web.Controllers
         }
 
 
+        [HttpPost]
+        public ActionResult GetAdvancedStatus()
+        {
+            //取得使用者ID
+            var id = this.User.Identity.GetUserId();
+            //取得使用者帳號
+            var name = this.User.Identity.GetUserName();
+            //取得使用者角色
+            var userIdentity = (ClaimsIdentity)User.Identity;
+            var claims = userIdentity.Claims;
+            var roleClaimType = userIdentity.RoleClaimType;
+            var roles = claims.Where(c => c.Type == ClaimTypes.Role).ToList();
+            bool Advanced = false;
+            if (roles != null && roles.Count > 0)
+            {
+                foreach (Claim role in roles)
+                {
+                    if (role.Value == MasterUOW.UserRole.Adm || role.Value == MasterUOW.UserRole.ChpUser)
+                    {
+                        Advanced = true;
+                        break;
+                    }
+                    else
+                    {
+                        Advanced = false;
+                    }
+                }
+            }
+            return new JsonResult { Data = new { status = Advanced, result = "" } };
+
+        }
     }
 }

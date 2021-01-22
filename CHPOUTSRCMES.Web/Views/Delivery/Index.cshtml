@@ -11,15 +11,63 @@
     <script src="~/Scripts/Delivery/index.js"></script>
     <script src="~/Scripts/moment.js"></script>
 }
-<div class="box box-primary" style="padding: 15px;">
+<div class="box box-primary customBody" style="padding: 10px 20px;">
     
-    <div class="box-body">
+   
         <div style="display: none">
             <span id="Advanced">@Html.DisplayFor(model => model.Advanced)</span>
         </div>
 
-        <div class="row row-std form-inline">
-            <div class="col col-md-1 text-right">
+        <table style=" border-spacing:20px 5px">
+            <tr>
+                <td style="text-align: right;">
+                    @Html.LabelFor(model => model.TripActualShipBeginDate, new { style = "font-weight:bolder;" })
+                </td>
+                <td class="input-lg" colspan="3">
+                    @Html.TextBoxFor(model => model.TripActualShipBeginDate, new { @class = "customTextBox", id = "txtTripActualShipBeginDate", style = "width:100px;", autocomplete = "off" })
+                    ~
+                    @Html.TextBoxFor(model => model.TripActualShipEndDate, new { @class = "customTextBox", id = "txtTripActualShipEndDate", style = "width:100px;", autocomplete = "off" })
+                </td>
+
+                <td style="text-align: right;">
+                    @Html.LabelFor(model => model.DeliveryName, new { style = "font-weight:bolder;" })
+                </td>
+                <td class="input-lg">
+                    @Html.TextBoxFor(model => model.DeliveryName, new { @class = "customTextBox", id = "txtDeliveryName", style = "width:150px;", autocomplete = "off" })
+                </td>
+
+                <td style="text-align: right;">
+                    @Html.LabelFor(model => model.SelectedSubinventory, new { style = "font-weight:bolder;" })
+                </td>
+                <td class="input-lg">@Html.DropDownListFor(model => model.SelectedSubinventory, Model.SubinventoryNameItems, new { @class = "customDropDownList", id = "ddlWarehouse", autocomplete = "off" })</td>
+            </tr>
+            <tr>
+                <td style="text-align: right;">
+                    @Html.LabelFor(model => model.TransactionDate, new { style = "font-weight:bolder;" })
+                </td>
+                <td class="input-lg" colspan="3">
+                    @Html.TextBoxFor(model => model.TransactionDate, new { @class = "customTextBox", id = "txtTransactionDate", style = "width:100px;", autocomplete = "off" })
+                </td>
+
+                <td style="text-align: right;">
+                    @Html.LabelFor(model => model.SelectedTrip, new { style = "font-weight:bolder;" })
+                </td>
+                <td class="input-lg">@Html.DropDownListFor(model => model.SelectedTrip, Model.TripNameItems, new { @class = "customDropDownList", id = "ddlTrip", autocomplete = "off" })</td>
+
+                <td style="text-align: right;">
+                    @Html.LabelFor(model => model.SelectedDeliveryStatus, new { style = "font-weight:bolder;" })
+                </td>
+                <td class="input-lg">@Html.DropDownListFor(model => model.SelectedDeliveryStatus, Model.DeliveryStatusItems, new { @class = "customDropDownList", id = "ddlDeliveryStatus", autocomplete = "off" })</td>
+            </tr>
+            <tr>
+                <td class="input-lg" colspan="8" style=" text-align: right;">
+                    <button type="button" id="btnSearch" class="btn btn-primary externalBtn" style="width: 100px;">查詢</button>
+                </td>
+            </tr>
+        </table>
+
+        @*<div class="row row-std form-inline">
+            <div class="col col-md-2 text-right" style="width:15%;">
                 @Html.LabelFor(model => model.TripActualShipBeginDate, new { @class = "input-lg " })
             </div>
             <div class="col col-md-3">
@@ -41,41 +89,39 @@
             <div class="col col-md-1 text-right">
                 @Html.LabelFor(model => model.SelectedSubinventory, new { @class = "input-lg" })
             </div>
-            <div class="col col-md-2">
+            <div class="col col-md-1">
                 @Html.DropDownListFor(model => model.SelectedSubinventory, Model.SubinventoryNameItems, new { @class = "form-control", id = "ddlWarehouse" })
             </div>
-        </div>
+        </div>*@
 
 
-        <div class="row row-std form-inline">
-            <div class="col col-md-1 text-right">
-                @Html.LabelFor(model => model.SelectedTrip, new { @class = "input-lg" })
-            </div>
-            <div class="col col-md-3">
-                @Html.DropDownListFor(model => model.SelectedTrip, Model.TripNameItems, new { @class = "form-control", id = "ddlTrip" })
-            </div>
-            <div class="col col-md-2 text-right">
+        @*<div class="row row-std form-inline">
+            <div class="col col-md-2 text-right" , style="width:15%;">
                 @Html.LabelFor(model => model.TransactionDate, new { @class = "input-lg" })
             </div>
             <div class="col col-md-3">
                 @Html.TextBoxFor(model => model.TransactionDate, new { @class = "form-control input-md", id = "txtTransactionDate", aria_describedby = "txtTransactionDate-addon" })
             </div>
+            <div class="col col-md-2 text-right">
+                @Html.LabelFor(model => model.SelectedTrip, new { @class = "input-lg" })
+            </div>
+            <div class="col col-md-3">
+                @Html.DropDownListFor(model => model.SelectedTrip, Model.TripNameItems, new { @class = "form-control", id = "ddlTrip" })
+            </div>
             <div class="col col-md-1 text-right">
                 @Html.LabelFor(model => model.SelectedDeliveryStatus, new { @class = "input-lg" })
             </div>
-            <div class="col col-md-2">
+            <div class="col col-md-1">
                 @Html.DropDownListFor(model => model.SelectedDeliveryStatus, Model.DeliveryStatusItems, new { @class = "form-control", id = "ddlDeliveryStatus" })
             </div>
-        </div>
+        </div>*@
     </div>
-    <div class="box-footer">
+    @*<div class="box-footer">
         <div class="btn-group col-md-2">
             <button id="btnSearch" class="btn btn-primary externalBtn">查詢</button>
         </div>
 
         <div class="col-md-3 col-md-offset-1">
-            @*<button id="btnExportExcel" class="btn btn-primary externalBtn">匯出Excel</button>*@
-            @*<button id="btnPrintPickList" class="btn btn-primary externalBtn">列印備貨單</button>*@
             <button id="btnCancelConfirm" class="btn btn-danger externalBtn">取消申請</button>
             <button id="btnDeliveryConfirm" class="btn btn-danger externalBtn">出貨申請</button>
         </div>
@@ -88,9 +134,9 @@
                 <button id="btnDeliveryAuthorize" class="btn btn-danger externalBtn">出貨核准</button>
             </div>
         }
-    </div>
-</div>
-<div class="box box-primary" style="padding: 15px; overflow-y:auto">
+    </div>*@
+
+<div class="box box-primary customBody" style="padding: 15px; overflow-y:auto">
     <div class="row row-std">
         
     </div>

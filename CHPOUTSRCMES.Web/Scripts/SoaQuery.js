@@ -93,6 +93,7 @@ function initTable(processCode, processDate, hasError) {
                     return meta.row + meta.settings._iDisplayStart + 1;
                 }
             },
+            { data: "ProcessCode", "name": "傳輸代號", "autoWidth": true, "className": "dt-body-center" },
             { data: "ProcessName", "name": "傳輸類型", "autoWidth": true, "className": "dt-body-center" },
             {
                 data: "ProcessDate", "name": "傳輸日期", "autoWidth": true, "className": "dt-body-right", "mRender": function (data, type, full) {

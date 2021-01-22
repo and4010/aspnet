@@ -511,43 +511,45 @@ $(document).ready(function () {
 
         $('#txtBARCODE').attr('disabled', true);
 
-        $.ajax({
-            url: "/Delivery/InputRollEditBarcode",
-            type: "post",
-            data: {
-                BARCODE: BARCODE,
-                DlvHeaderId: $("#DlvHeaderId").text(),
-                DLV_DETAIL_ID: $("#DLV_DETAIL_ID").text(),
-                DELIVERY_NAME: $("#DELIVERY_NAME").text()
-            },
-            success: function (data) {
-                if (data.status) {
+        ShowWait(function () {
+            $.ajax({
+                url: "/Delivery/InputRollEditBarcode",
+                type: "post",
+                data: {
+                    BARCODE: BARCODE,
+                    DlvHeaderId: $("#DlvHeaderId").text(),
+                    DLV_DETAIL_ID: $("#DLV_DETAIL_ID").text(),
+                    DELIVERY_NAME: $("#DELIVERY_NAME").text()
+                },
+                success: function (data) {
+                    if (data.status) {
+                        CloseWait();
+                        PaperRollDataTablesBody.ajax.reload(null, false);
+                        PaperRollBarcodeDataTablesBody.ajax.reload();
+                        UpdateDeliveryDetailViewHeader();
 
-                    PaperRollDataTablesBody.ajax.reload(null, false);
-                    PaperRollBarcodeDataTablesBody.ajax.reload();
-                    UpdateDeliveryDetailViewHeader();
+                    }
+                    else {
+
+                        swal.fire({
+                            title: data.result,
+                            onAfterClose: function () {
+                                $('#txtBARCODE').focus().select();
+                            }
+                        });
+                    }
+                },
+                error: function () {
+                    swal.fire('條碼輸入失敗');
+
+                },
+                complete: function (data) {
+                    $('#txtBARCODE').attr('disabled', false);
+                    //event.preventDefault();
 
                 }
-                else {
 
-                    swal.fire({
-                        title: data.result,
-                        onAfterClose: function () {
-                            $('#txtBARCODE').focus().select();
-                        }
-                    });
-                }
-            },
-            error: function () {
-                swal.fire('條碼輸入失敗');
-
-            },
-            complete: function (data) {
-                $('#txtBARCODE').attr('disabled', false);
-                //event.preventDefault();
-
-            }
-
+            });
         });
 
     }
