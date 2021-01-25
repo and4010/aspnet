@@ -16,7 +16,7 @@ function getTransactionTypeId() {
     return id;
 }
 
-function getOrganizationId() {
+function getLossOrganizationId() {
     var id = $("#ddlSubinventory").val();
     if (id == '請選擇') {
         id = '0';
@@ -24,15 +24,20 @@ function getOrganizationId() {
     return id;
 }
 
-function getSubinventoryCode() {
+function getLossSubinventoryCode() {
     return $("#ddlSubinventory option:selected").text();
 }
 
-function getLocatorId() {
-    if ($('#ddlLocatorArea').is(":visible")) {
-        return $("#ddlLocator").val();
-    } else {
+function getLossLocatorId() {
+    //if ($('#ddlLocatorArea').is(":visible")) {
+    //    return $("#ddlLocator").val();
+    //} else {
+    //    return null;
+    //}
+    if ($('#ddlLocator option').length === 1) {
         return null;
+    } else {
+        return $("#ddlLocator").val();
     }
 }
 
@@ -87,11 +92,11 @@ function LossTopInit() {
                     $('#ddlLocator').append($('<option></option>').val(data[i].Value).html(data[i].Text));
                 }
                 //GetItemNumberList();
-                if (data.length == 1) {
-                    $('#ddlLocatorArea').hide();
-                } else {
-                    $('#ddlLocatorArea').show();
-                }
+                //if (data.length == 1) {
+                //    $('#ddlLocatorArea').hide();
+                //} else {
+                //    $('#ddlLocatorArea').show();
+                //}
 
             },
             error: function () {
@@ -180,9 +185,9 @@ function LossLoadStockDT() {
             "type": "POST",
             "datatype": "json",
             "data": function (d) {
-                d.organizationId = getOrganizationId();
-                d.subinventoryCode = getSubinventoryCode();
-                d.locatorId = getLocatorId();
+                d.organizationId = getLossOrganizationId();
+                d.subinventoryCode = getLossSubinventoryCode();
+                d.locatorId = getLossLocatorId();
                 d.itemNumber = $("#txtItemNumber").val();
             }
         },
@@ -665,13 +670,18 @@ function SearchStock() {
         event.preventDefault();
         return;
     }
-    if ($('#ddlLocatorArea').is(":visible")) {
-        if ($('#ddlLocator').val() == "請選擇") {
-            swal.fire('請選擇儲位');
-            event.preventDefault();
-            return;
-        }
+    if ($('#ddlLocator option').length > 1 && $('#ddlLocator').val() == "請選擇") {
+        swal.fire('請選擇儲位');
+        event.preventDefault();
+        return;
     }
+    //if ($('#ddlLocatorArea').is(":visible")) {
+    //    if ($('#ddlLocator').val() == "請選擇") {
+    //        swal.fire('請選擇儲位');
+    //        event.preventDefault();
+    //        return;
+    //    }
+    //}
     if ($('#txtItemNumber').val() == "") {
         swal.fire('請輸入料號');
         event.preventDefault();
@@ -730,32 +740,35 @@ function AddLossDetail() {
     }
 
 
+    ShowWait(function () {
+        $.ajax({
+            url: "/StockInventory/AddTransactionDetail",
+            type: "post",
+            data: {
+                transactionTypeId: transactionTypeId,
+                stockId: stockId,
+                mQty: mQty
+            },
+            success: function (data) {
+                if (data.status) {
+                    CloseWait();
+                    LossDetailDT.ajax.reload();
+                } else {
+                    swal.fire(data.result);
+                }
+            },
+            error: function () {
+                swal.fire('新增異動明細失敗');
+            },
+            complete: function (data) {
 
 
-    $.ajax({
-        url: "/StockInventory/AddTransactionDetail",
-        type: "post",
-        data: {
-            transactionTypeId: transactionTypeId,
-            stockId: stockId,
-            mQty: mQty
-        },
-        success: function (data) {
-            if (data.status) {
-                LossDetailDT.ajax.reload();
-            } else {
-                swal.fire(data.result);
             }
-        },
-        error: function () {
-            swal.fire('新增異動明細失敗');
-        },
-        complete: function (data) {
 
-
-        }
-
+        });
     });
+
+    
 }
 
 function SaveLossDetail() {
@@ -766,41 +779,45 @@ function SaveLossDetail() {
         return false;
     }
 
-    swal.fire({
-        title: "異動存檔",
-        text: "確定存檔嗎?",
-        type: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#DD6B55",
-        confirmButtonText: "確定",
-        cancelButtonText: "取消"
-    }).then(function (result) {
-        if (result.value) {
-            $.ajax({
-                url: "/StockInventory/SaveTransactionDetail",
-                type: "post",
-                data: {
-                    transactionTypeId: transactionTypeId
-                },
-                success: function (data) {
-                    if (data.status) {
-                        swal.fire(data.result);
-                        LossDetailDT.ajax.reload();
-                    } else {
-                        swal.fire(data.result);
+    ShowWait(function () {
+        swal.fire({
+            title: "異動存檔",
+            text: "確定存檔嗎?",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "確定",
+            cancelButtonText: "取消"
+        }).then(function (result) {
+            if (result.value) {
+                $.ajax({
+                    url: "/StockInventory/SaveTransactionDetail",
+                    type: "post",
+                    data: {
+                        transactionTypeId: transactionTypeId
+                    },
+                    success: function (data) {
+                        if (data.status) {
+                            swal.fire(data.result);
+                            LossDetailDT.ajax.reload();
+                        } else {
+                            swal.fire(data.result);
+                        }
+                    },
+                    error: function () {
+                        swal.fire('異動存檔失敗');
+                    },
+                    complete: function (data) {
+
+
                     }
-                },
-                error: function () {
-                    swal.fire('異動存檔失敗');
-                },
-                complete: function (data) {
 
-
-                }
-
-            });
-        }
+                });
+            }
+        });
     });
+
+    
 
 
 }

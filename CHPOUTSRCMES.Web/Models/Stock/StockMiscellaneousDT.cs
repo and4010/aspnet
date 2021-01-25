@@ -1,4 +1,5 @@
 ﻿using CHPOUTSRCMES.Web.DataModel.UnitOfWorks;
+using CHPOUTSRCMES.Web.Models.Information;
 using CHPOUTSRCMES.Web.Util;
 using CHPOUTSRCMES.Web.ViewModels;
 using CHPOUTSRCMES.Web.ViewModels.Miscellaneous;
@@ -40,7 +41,7 @@ namespace CHPOUTSRCMES.Web.Models.Stock
             model = new List<StockMiscellaneousDT>();
         }
 
-        public MiscellaneousViewModel GetMiscellaneousViewModel(MiscellaneousUOW uow)
+        public MiscellaneousViewModel GetMiscellaneousViewModel(MiscellaneousUOW uow, OrgSubinventoryData orgData, string userId)
         {
             MiscellaneousViewModel viewModel = new MiscellaneousViewModel();
             viewModel.SelectedMiscellaneous = "請選擇";
@@ -55,6 +56,8 @@ namespace CHPOUTSRCMES.Web.Models.Stock
             viewModel.PercentageError = "";
             viewModel.Qty = "";
 
+            viewModel.SubinventoryItems = orgData.GetSubinventoryListForUserId(uow, userId, MasterUOW.DropDownListType.Choice);
+            viewModel.LocatorItems = new List<SelectListItem> { new SelectListItem { Text = "請選擇", Value = "請選擇" } };
 
             return viewModel;
         }

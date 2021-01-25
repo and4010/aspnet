@@ -29,6 +29,16 @@ namespace CHPOUTSRCMES.Web.ViewModels.Obsolete
         public string Unit { set; get; }
 
         public string Qty { set; get; }
-        
+
+        public IEnumerable<SelectListItem> SubinventoryItems { set; get; }
+        [Display(Name = "倉庫")]
+        public string SelectedSubinventory { set; get; }
+
+        public IEnumerable<SelectListItem> LocatorItems { set; get; }
+        [Display(Name = "儲位")]
+        public string SelectedLocator { set; get; }
+
+        public IEnumerable<SelectListItem> ItemNumberItems { set; get; }
+
     }
 }

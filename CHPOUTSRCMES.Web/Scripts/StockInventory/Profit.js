@@ -15,7 +15,7 @@ function getTransactionTypeId() {
     return id;
 }
 
-function getOrganizationId() {
+function getProfitOrganizationId() {
     var id = $("#ddlSubinventory").val();
     if (id == '請選擇') {
         id = '0';
@@ -23,15 +23,20 @@ function getOrganizationId() {
     return id;
 }
 
-function getSubinventoryCode() {
+function getProfitSubinventoryCode() {
     return $("#ddlSubinventory option:selected").text();
 }
 
-function getLocatorId() {
-    if ($('#ddlLocatorArea').is(":visible")) {
-        return $("#ddlLocator").val();
-    } else {
+function getProfitLocatorId() {
+    //if ($('#ddlLocatorArea').is(":visible")) {
+    //    return $("#ddlLocator").val();
+    //} else {
+    //    return null;
+    //}
+    if ($('#ddlLocator option').length === 1) {
         return null;
+    } else {
+        return $("#ddlLocator").val();
     }
 }
 
@@ -86,11 +91,11 @@ function ProfitTopInit() {
                     $('#ddlLocator').append($('<option></option>').val(data[i].Value).html(data[i].Text));
                 }
                 //GetItemNumberList();
-                if (data.length == 1) {
-                    $('#ddlLocatorArea').hide();
-                } else {
-                    $('#ddlLocatorArea').show();
-                }
+                //if (data.length == 1) {
+                //    $('#ddlLocatorArea').hide();
+                //} else {
+                //    $('#ddlLocatorArea').show();
+                //}
 
             },
             error: function () {
@@ -176,9 +181,9 @@ function ProfitLoadLossDetailDT() {
             "type": "POST",
             "datatype": "json",
             "data": function (d) {
-                d.organizationId = getOrganizationId();
-                d.subinventoryCode = getSubinventoryCode();
-                d.locatorId = getLocatorId();
+                d.organizationId = getProfitOrganizationId();
+                d.subinventoryCode = getProfitSubinventoryCode();
+                d.locatorId = getProfitLocatorId();
                 d.itemNumber = $("#txtItemNumber").val();
             }
         },
@@ -744,9 +749,9 @@ function ProfitOnClick() {
     $('#btnCreateBarcode').click(function (e) {
         e.preventDefault();
         var SEGMENT3 = $("#ddlLocator option:selected").text();
-        var SUBINVENTORY_CODE = getSubinventoryCode();
-        var ORGANIZATION_ID = getOrganizationId();
-        var LOCATOR_ID = getLocatorId();
+        var SUBINVENTORY_CODE = getProfitSubinventoryCode();
+        var ORGANIZATION_ID = getProfitOrganizationId();
+        var LOCATOR_ID = getProfitLocatorId();
         var ITEM_NO = $('#txtItemNumber').val();
 
         if (SUBINVENTORY_CODE == "請選擇") {
@@ -824,10 +829,15 @@ function CreateBarcode(ORGANIZATION_ID, SUBINVENTORY_CODE, SEGMENT3, ITEM_NO, LO
                 return;
             }
 
-            editor.create({
-                title: '新增庫存',
-                buttons: '確定'
-            });
+            editor.create()
+                .title('新增庫存')
+                .buttons({
+                    text: '確定',
+                    action: function () {
+                        this.submit();
+                    },
+                    className: 'btn-danger'
+                });
             editor.hide(['ID']);
             if (ITEM_CATEGORY == "平版") {
                 editor.show(['SUBINVENTORY_CODE', 'SEGMENT3', 'SECONDARY_TRANSACTION_QTY', 'ITEM_NO']);
@@ -861,13 +871,18 @@ function SearchLoss() {
         event.preventDefault();
         return;
     }
-    if ($('#ddlLocatorArea').is(":visible")) {
-        if ($('#ddlLocator').val() == "請選擇") {
-            swal.fire('請選擇儲位');
-            event.preventDefault();
-            return;
-        }
+    if ($('#ddlLocator option').length > 1 && $('#ddlLocator').val() == "請選擇") {
+        swal.fire('請選擇儲位');
+        event.preventDefault();
+        return;
     }
+    //if ($('#ddlLocatorArea').is(":visible")) {
+    //    if ($('#ddlLocator').val() == "請選擇") {
+    //        swal.fire('請選擇儲位');
+    //        event.preventDefault();
+    //        return;
+    //    }
+    //}
     if ($('#txtItemNumber').val() == "") {
         swal.fire('請輸入料號');
         event.preventDefault();
@@ -904,32 +919,36 @@ function AddProfitDetail() {
         return false;
     }
 
+    ShowWait(function () {
+        $.ajax({
+            url: "/StockInventory/AddTransactionDetail",
+            type: "post",
+            data: {
+                transactionTypeId: transactionTypeId,
+                stockId: stockId,
+                mQty: mQty
+            },
+            success: function (data) {
+                if (data.status) {
+                    CloseWait();
+                    ProfitDetailDT.ajax.reload();
+                } else {
+                    swal.fire(data.result);
+                }
+            },
+            error: function () {
+                swal.fire('新增異動明細失敗');
+            },
+            complete: function (data) {
 
 
-    $.ajax({
-        url: "/StockInventory/AddTransactionDetail",
-        type: "post",
-        data: {
-            transactionTypeId: transactionTypeId,
-            stockId: stockId,
-            mQty: mQty
-        },
-        success: function (data) {
-            if (data.status) {
-                ProfitDetailDT.ajax.reload();
-            } else {
-                swal.fire(data.result);
             }
-        },
-        error: function () {
-            swal.fire('新增異動明細失敗');
-        },
-        complete: function (data) {
 
-
-        }
-
+        });
     });
+
+
+    
 }
 
 function SaveProfitDetail() {
@@ -940,41 +959,42 @@ function SaveProfitDetail() {
         return false;
     }
 
-    swal.fire({
-        title: "異動存檔",
-        text: "確定存檔嗎?",
-        type: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#DD6B55",
-        confirmButtonText: "確定",
-        cancelButtonText: "取消"
-    }).then(function (result) {
-        if (result.value) {
-            $.ajax({
-                url: "/StockInventory/SaveTransactionDetail",
-                type: "post",
-                data: {
-                    transactionTypeId: transactionTypeId
-                },
-                success: function (data) {
-                    if (data.status) {
-                        swal.fire(data.result);
-                        ProfitDetailDT.ajax.reload();
-                    } else {
-                        swal.fire(data.result);
+    ShowWait(function () {
+        swal.fire({
+            title: "異動存檔",
+            text: "確定存檔嗎?",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "確定",
+            cancelButtonText: "取消"
+        }).then(function (result) {
+            if (result.value) {
+                $.ajax({
+                    url: "/StockInventory/SaveTransactionDetail",
+                    type: "post",
+                    data: {
+                        transactionTypeId: transactionTypeId
+                    },
+                    success: function (data) {
+                        if (data.status) {
+                            swal.fire(data.result);
+                            ProfitDetailDT.ajax.reload();
+                        } else {
+                            swal.fire(data.result);
+                        }
+                    },
+                    error: function () {
+                        swal.fire('異動存檔失敗');
+                    },
+                    complete: function (data) {
+
+
                     }
-                },
-                error: function () {
-                    swal.fire('異動存檔失敗');
-                },
-                complete: function (data) {
 
-
-                }
-
-            });
-        }
+                });
+            }
+        });
     });
-
 
 }

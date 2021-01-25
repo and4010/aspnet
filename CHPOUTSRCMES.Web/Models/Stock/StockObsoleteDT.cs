@@ -1,4 +1,5 @@
 ﻿using CHPOUTSRCMES.Web.DataModel.UnitOfWorks;
+using CHPOUTSRCMES.Web.Models.Information;
 using CHPOUTSRCMES.Web.Util;
 using CHPOUTSRCMES.Web.ViewModels;
 using CHPOUTSRCMES.Web.ViewModels.Obsolete;
@@ -6,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 
 namespace CHPOUTSRCMES.Web.Models.Stock
 {
@@ -39,11 +41,13 @@ namespace CHPOUTSRCMES.Web.Models.Stock
             model = new List<StockObsoleteDT>();
         }
 
-        public ObsoleteViewModel GetObsoleteViewModel()
+        public ObsoleteViewModel GetObsoleteViewModel(ObsoleteUOW uow, OrgSubinventoryData orgData, string userId)
         {
             ObsoleteViewModel viewModel = new ObsoleteViewModel();
             viewModel.Unit = "";
             viewModel.Qty = "";
+            viewModel.SubinventoryItems = orgData.GetSubinventoryListForUserId(uow, userId, MasterUOW.DropDownListType.Choice);
+            viewModel.LocatorItems = new List<SelectListItem> { new SelectListItem { Text = "請選擇", Value = "請選擇" } };
             return viewModel;
         }
 

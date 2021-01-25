@@ -21,10 +21,15 @@ $(document).ready(function () {
     }
 
     function getLocatorId() {
-        if ($('#ddlLocatorArea').is(":visible")) {
-            return $("#ddlLocator").val();
-        } else {
+        //if ($('#ddlLocatorArea').is(":visible")) {
+        //    return $("#ddlLocator").val();
+        //} else {
+        //    return null;
+        //}
+        if ($('#ddlLocator option').length === 1) {
             return null;
+        } else {
+            return $("#ddlLocator").val();
         }
     }
 
@@ -428,31 +433,34 @@ $(document).ready(function () {
             return false;
         }
 
+        ShowWait(function () {
+            $.ajax({
+                url: "/Obsolete/AddTransactionDetail",
+                type: "post",
+                data: {
+                    stockId: stockId,
+                    mQty: ObsoleteQty
+                },
+                success: function (data) {
+                    if (data.status) {
+                        CloseWait();
+                        TransactionDetailDT.ajax.reload();
+                    } else {
+                        swal.fire(data.result);
+                    }
+                },
+                error: function () {
+                    swal.fire('新增異動明細失敗');
+                },
+                complete: function (data) {
 
 
-        $.ajax({
-            url: "/Obsolete/AddTransactionDetail",
-            type: "post",
-            data: {
-                stockId: stockId,
-                mQty: ObsoleteQty
-            },
-            success: function (data) {
-                if (data.status) {
-                    TransactionDetailDT.ajax.reload();
-                } else {
-                    swal.fire(data.result);
                 }
-            },
-            error: function () {
-                swal.fire('新增異動明細失敗');
-            },
-            complete: function (data) {
 
-
-            }
-
+            });
         });
+
+        
     }
 
     function DelTransactionDetail(selectedData) {
@@ -497,39 +505,43 @@ $(document).ready(function () {
             return;
         }
 
-        swal.fire({
-            title: "異動存檔",
-            text: "確定存檔嗎?",
-            type: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#DD6B55",
-            confirmButtonText: "確定",
-            cancelButtonText: "取消"
-        }).then(function (result) {
-            if (result.value) {
-                $.ajax({
-                    url: "/Obsolete/SaveTransactionDetail",
-                    type: "post",
-                    data: {},
-                    success: function (data) {
-                        if (data.status) {
-                            swal.fire(data.result);
-                            TransactionDetailDT.ajax.reload();
-                        } else {
-                            swal.fire(data.result);
+        ShowWait(function () {
+            swal.fire({
+                title: "異動存檔",
+                text: "確定存檔嗎?",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "確定",
+                cancelButtonText: "取消"
+            }).then(function (result) {
+                if (result.value) {
+                    $.ajax({
+                        url: "/Obsolete/SaveTransactionDetail",
+                        type: "post",
+                        data: {},
+                        success: function (data) {
+                            if (data.status) {
+                                swal.fire(data.result);
+                                TransactionDetailDT.ajax.reload();
+                            } else {
+                                swal.fire(data.result);
+                            }
+                        },
+                        error: function () {
+                            swal.fire('異動存檔失敗');
+                        },
+                        complete: function (data) {
+
+
                         }
-                    },
-                    error: function () {
-                        swal.fire('異動存檔失敗');
-                    },
-                    complete: function (data) {
 
-
-                    }
-
-                });
-            }
+                    });
+                }
+            });
         });
+
+        
 
 
     }
@@ -541,13 +553,18 @@ function SearchStock() {
         event.preventDefault();
         return;
     }
-    if ($('#ddlLocatorArea').is(":visible")) {
-        if ($('#ddlLocator').val() == "請選擇") {
-            swal.fire('請選擇儲位');
-            event.preventDefault();
-            return;
-        }
+    if ($('#ddlLocator option').length > 1 && $('#ddlLocator').val() == "請選擇") {
+        swal.fire('請選擇儲位');
+        event.preventDefault();
+        return;
     }
+    //if ($('#ddlLocatorArea').is(":visible")) {
+    //    if ($('#ddlLocator').val() == "請選擇") {
+    //        swal.fire('請選擇儲位');
+    //        event.preventDefault();
+    //        return;
+    //    }
+    //}
     if ($('#txtItemNumber').val() == "") {
         swal.fire('請輸入料號');
         event.preventDefault();

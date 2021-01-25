@@ -24,9 +24,17 @@ namespace CHPOUTSRCMES.Web.Controllers
         // GET: /Obsolete/
         public ActionResult Index()
         {
-            StockData.addDefault();
-            ObsoleteViewModel viewModel = obsoleteData.GetObsoleteViewModel();
-            return View(viewModel);
+            using (var context = new MesContext())
+            {
+                using (ObsoleteUOW uow = new ObsoleteUOW(context))
+                {
+                    //取得使用者ID
+                    var id = this.User.Identity.GetUserId();
+                    ObsoleteViewModel viewModel = obsoleteData.GetObsoleteViewModel(uow, orgData, id);
+                    return View(viewModel);
+                }
+            }
+                   
         }
 
         public PartialViewResult GetTop()

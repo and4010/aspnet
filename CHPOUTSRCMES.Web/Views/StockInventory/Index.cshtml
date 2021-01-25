@@ -17,11 +17,11 @@
     <script src="~/Scripts/StockInventory/Profit.js"></script>
 }
 
-<div class="row row-std">
+<div class="row row-std customBody">
     <div class="col-md-12 form-inline">
         <div class="form-group col col-md-2">
             <label class="input-lg">盤點</label>
-            @Html.DropDownListFor(model => model.SelectedTransactionType, Model.TransactionTypeItems, new { @class = "form-control", id = "ddlProfit", autocomplete = "off" })
+            @Html.DropDownListFor(model => model.SelectedTransactionType, Model.TransactionTypeItems, new { @class = "customDropDownList", id = "ddlProfit", autocomplete = "off" })
         </div>
     </div>
 </div>

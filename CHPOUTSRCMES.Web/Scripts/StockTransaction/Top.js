@@ -34,36 +34,41 @@ function TopInit() {
     $('#ddlSubinventory').change(function () {
 
         var SUBINVENTORY_CODE = $("#ddlSubinventory option:selected").text();
-        $.ajax({
-            url: "/StockTransaction/GetLocatorListForUserId",
-            type: "post",
-            data: {
-                SUBINVENTORY_CODE: SUBINVENTORY_CODE
-            },
-            success: function (data) {
-                $('#ddlLocator').empty();
-                for (var i = 0; i < data.length; i++) {
-                    $('#ddlLocator').append($('<option></option>').val(data[i].Value).html(data[i].Text));
+
+        ShowWait(function () {
+            $.ajax({
+                url: "/StockTransaction/GetLocatorListForUserId",
+                type: "post",
+                data: {
+                    SUBINVENTORY_CODE: SUBINVENTORY_CODE
+                },
+                success: function (data) {
+                    CloseWait();
+                    $('#ddlLocator').empty();
+                    for (var i = 0; i < data.length; i++) {
+                        $('#ddlLocator').append($('<option></option>').val(data[i].Value).html(data[i].Text));
+                    }
+                    //GetItemNumberList();
+                    //if (data.length == 1) {
+                    //    $('#ddlLocatorArea').hide();
+                    //    $('#ddlLocatorArea2').hide();
+                    //} else {
+                    //    $('#ddlLocatorArea').show();
+                    //    $('#ddlLocatorArea2').show();
+                    //}
+
+                },
+                error: function () {
+                    swal.fire('更新儲位失敗');
+                },
+                complete: function (data) {
+
+                    SubinventoryChangeCallBack();
                 }
-                //GetItemNumberList();
-                if (data.length == 1) {
-                    $('#ddlLocatorArea').hide();
-                } else {
-                    $('#ddlLocatorArea').show();
-                }
 
-            },
-            error: function () {
-                swal.fire('更新儲位失敗');
-            },
-            complete: function (data) {
-
-                SubinventoryChangeCallBack();
-            }
-
-        })
-
-
+            })
+        });
+       
     })
 
     $('#ddlLocator').change(function () {

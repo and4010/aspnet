@@ -56,15 +56,25 @@ namespace CHPOUTSRCMES.Web.Controllers
         public PartialViewResult GetContent(long inventoryType)
         {
             //StockData.addDefault();
-            if (inventoryType == StockInventoryUOW.InventoryType.loss)
+            using (var context = new MesContext())
             {
-                return PartialView("_LossPartial");
+                using (StockInventoryUOW uow = new StockInventoryUOW(context))
+                {
+                    if (inventoryType == StockInventoryUOW.InventoryType.loss)
+                    {
+                        //取得使用者ID
+                        var id = this.User.Identity.GetUserId();
+                        LossViewModel viewModel = stockInventoryData.GetLossViewModel(uow, id);
+                        return PartialView("_LossPartial", viewModel);
+                    }
+                    else
+                    {
+                        var id = this.User.Identity.GetUserId();
+                        ProfitViewModel viewModel = stockInventoryData.GetProfitViewModel(uow, id);
+                        return PartialView("_ProfitPartial", viewModel);
+                    }
+                }
             }
-            else
-            {
-                return PartialView("_ProfitPartial");
-            }
-
         }
 
         [HttpPost, ActionName("SearchStock")]

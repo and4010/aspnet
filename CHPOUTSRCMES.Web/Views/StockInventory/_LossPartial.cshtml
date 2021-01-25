@@ -1,6 +1,6 @@
 ﻿@model CHPOUTSRCMES.Web.ViewModels.StockInvetory.LossViewModel
 
-<div style="padding: 15px;">
+<div class="customBody" style="padding: 15px;">
     <div class="box box-primary">
         <div class="box-header with-border">
             <h4 class="fa fa-caret-right box-title">庫存查詢</h4>
@@ -12,11 +12,41 @@
         </div>
 
         <div class="box-body with-border">
-            <div id="Top">
-            </div>
-            <div class="row row-std col-md-12">
-                <input type="button" id="btnSearchStock" value="查詢" class="btn btn-primary" />
-            </div>
+            @*<div id="Top">
+        </div>
+        <div class="row row-std col-md-12">
+            <input type="button" id="btnSearchStock" value="查詢" class="btn btn-primary" />
+        </div>*@
+
+            <table style=" border-spacing:20px 5px">
+                <tr>
+                    <td style="text-align: right;">
+                        @Html.LabelFor(model => model.SelectedSubinventory, new { style = "font-weight:bolder;" })
+                    </td>
+                    <td class="input-lg">@Html.DropDownListFor(model => model.SelectedSubinventory, Model.SubinventoryItems, new { @class = "customDropDownList", id = "ddlSubinventory", autocomplete = "off" })</td>
+
+                    <td style="text-align: right;">
+                        @Html.LabelFor(model => model.SelectedLocator, new { style = "font-weight:bolder;" })
+                    </td>
+                    <td class="input-lg">@Html.DropDownListFor(model => model.SelectedLocator, Model.LocatorItems, new { @class = "customDropDownList", id = "ddlLocator", autocomplete = "off" })</td>
+
+                    <td style="text-align: right;">
+                        <label style='font-weight:bolder;'>
+                            料號
+                        </label>
+                    </td>
+                    <td class="input-lg" colspan="3">
+                        <input class="customTextBox" type="text" id="txtItemNumber" style="width:250px;" , autocomplete="off" />
+                        @*@Html.TextBoxFor(model => model.ItemNumber, new { @class = "form-control customTextBox", id = "txtItemNumber", style = "width:250px;", placeholder = "請輸入料號", autocomplete = "off" })*@
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="input-lg" colspan="8" style=" text-align: right;">
+                        <button type="button" id="btnSearchStock" class="btn btn-primary externalBtn" style="width: 100px;">查詢</button>
+                    </td>
+                </tr>
+            </table>
 
             <div class="row row-std">
 
@@ -103,12 +133,17 @@
                 </div>
             </div>
 
-            <div class="row form-inline col-md-12  form-group">
+            <div class="row form-inline col-md-12 input-lg form-group">
 
-                <div id="InputArea" class="input-group form-row col col-md-3">
+                <label style='font-weight:bolder;'>
+                    減少數量
+                </label>
+                <input type="text" class="customTextBox" id="txtQty" style = "width: 120px;" autocomplete="off">
+
+                @*<div id="InputArea" class="input-group form-row col col-md-3">
                     <span class="input-group-addon" id="QtyText">減少數量</span>
                     <input type="text" class="form-control" placeholder="請輸入數量" id="txtQty" autocomplete="off">
-                </div>
+                </div>*@
                 <label id="TransactionUnit"></label>
 
                 <button class="btn btn-danger" type="button" id="btnAddRecord">新增明細</button>

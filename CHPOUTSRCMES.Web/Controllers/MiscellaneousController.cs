@@ -29,7 +29,9 @@ namespace CHPOUTSRCMES.Web.Controllers
                 using (MiscellaneousUOW uow = new MiscellaneousUOW(context))
                 {
                     //StockData.addDefault();
-                    MiscellaneousViewModel viewModel = miscellaneousData.GetMiscellaneousViewModel(uow);
+                    //取得使用者ID
+                    var id = this.User.Identity.GetUserId();
+                    MiscellaneousViewModel viewModel = miscellaneousData.GetMiscellaneousViewModel(uow, orgData, id);
                     return View(viewModel);
                 }
             }

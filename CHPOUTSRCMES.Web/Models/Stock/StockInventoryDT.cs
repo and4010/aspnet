@@ -63,6 +63,22 @@ namespace CHPOUTSRCMES.Web.Models.Stock
             return viewModel;
         }
 
+        public LossViewModel GetLossViewModel(StockInventoryUOW uow, string userId)
+        {
+            LossViewModel viewModel = new LossViewModel();
+            viewModel.SubinventoryItems = orgData.GetSubinventoryListForUserId(uow, userId, MasterUOW.DropDownListType.Choice);
+            viewModel.LocatorItems = new List<SelectListItem> { new SelectListItem { Text = "請選擇", Value = "請選擇" } };
+            return viewModel;
+        }
+
+        public ProfitViewModel GetProfitViewModel(StockInventoryUOW uow, string userId)
+        {
+            ProfitViewModel viewModel = new ProfitViewModel();
+            viewModel.SubinventoryItems = orgData.GetSubinventoryListForUserId(uow, userId, MasterUOW.DropDownListType.Choice);
+            viewModel.LocatorItems = new List<SelectListItem> { new SelectListItem { Text = "請選擇", Value = "請選擇" } };
+            return viewModel;
+        }
+
         public List<StockDT> SearchStock(StockInventoryUOW uow, long organizationId, string subinventoryCode, long? locatorId, string itemNumber)
         {
             return uow.GetStockTList(organizationId, subinventoryCode, locatorId, itemNumber);

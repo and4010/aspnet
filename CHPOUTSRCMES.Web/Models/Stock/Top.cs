@@ -25,7 +25,7 @@ namespace CHPOUTSRCMES.Web.Models.Stock
             viewModel.SubinventoryItems = orgData.GetSubinventoryListForUserId(uow, userId, MasterUOW.DropDownListType.Choice);
 
             //viewModel.LocatorItems = orgData.GetLocatorList(uow, "265", viewModel.SelectedSubinventory, MasterUOW.DropDownListType.Choice);
-            viewModel.LocatorItems = new List<SelectListItem> { new SelectListItem { Text = "", Value = "" } };
+            viewModel.LocatorItems = new List<SelectListItem> { new SelectListItem { Text = "請選擇", Value = "請選擇" } };
             return viewModel;
         }
     }
