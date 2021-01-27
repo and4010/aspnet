@@ -1067,7 +1067,7 @@ $(document).ready(function () {
             list.push(data[i].Id);
         }
 
-        ShowWait2(function () {
+        ShowWait(function () {
             $.ajax({
                 url: "/Delivery/DeliveryConfirm",
                 type: "post",
@@ -1104,7 +1104,7 @@ $(document).ready(function () {
         for (i = 0; i < data.length; i++) {
             list.push(data[i].Id);
         }
-        ShowWait2(function () {
+        ShowWait(function () {
             $.ajax({
                 url: "/Delivery/CancelConfirm",
                 type: "post",
@@ -1220,7 +1220,7 @@ $(document).ready(function () {
             list.push(data[i].Id);
         }
 
-        ShowWait2(function () {
+        ShowWait(function () {
             $.ajax({
                 url: "/Delivery/CancelAuthorize",
                 type: "post",
@@ -1262,7 +1262,7 @@ $(document).ready(function () {
         }
 
 
-        ShowWait2(function () {
+        ShowWait(function () {
             $.ajax({
                 url: "/Delivery/CancelTrip",
                 type: "post",

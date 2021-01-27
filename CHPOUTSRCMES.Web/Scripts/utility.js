@@ -1,44 +1,40 @@
 ﻿
 function ShowWait(callBack) {
-    //if (!swal.isVisible()) {
-    //    swal.fire({
-    //        title: "請等待...",
-    //        allowOutsideClick: false,
-    //        allowEscapeKey: false,
-    //        onOpen: function () {
-    //            callBack();
-    //        }
-    //    })
-    //    swal.showLoading();
-    //}
-    swal.fire({
-        title: "請等待...",
-        allowOutsideClick: false,
-        allowEscapeKey: false,
-        onOpen: function () {
+    if (swal.isVisible()) { //判斷swal是否已顯示
+        if (swal.isLoading()) { //判斷swal是否顯示正在讀取
+            //已有顯示正在讀取，只執行callBack
             callBack();
+        } else {
+            //顯示正在讀取並執行callBack
+            swal.fire({ //設定swal
+                title: "請等待...",
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                onOpen: function () {
+                    callBack();
+                }
+            })
+            swal.showLoading(); //顯示正在讀取，隱藏按鈕
         }
-    })
-    swal.showLoading();
+    } else {
+        //顯示正在讀取並執行callBack
+        swal.fire({
+            title: "請等待...",
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            onOpen: function () {
+                callBack();
+            }
+        })
+        swal.showLoading();
+    }
 }
 
-//不檢查swal是否已開啟，強制開新的swal。通常用在swal.fire裡，因為swal.isVisible()會判斷錯誤
-function ShowWait2(callBack) {
-    swal.fire({
-        title: "請等待...",
-        allowOutsideClick: false,
-        allowEscapeKey: false,
-        onOpen: function () {
-            callBack();
-        }
-    })
-    swal.showLoading();
-}
+
 
 
 function CloseWait() {
-    swal.close();
-    //if (swal.isVisible()) {
-    //    swal.close();
-    //}
+    if (swal.isVisible()) {
+        swal.close();
+    }
 }

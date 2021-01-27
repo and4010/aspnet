@@ -31,7 +31,7 @@
             cancelButtonText: "取消"
         }).then(function (result) {
             if (result.value) {
-                ShowWait2(function () {
+                ShowWait(function () {
                     $.ajax({
                         url: '/Account/AccountDisable/',
                         type: "POST",
@@ -72,7 +72,7 @@
             cancelButtonText: "取消"
         }).then(function (result) {
             if (result.value) {
-                ShowWait2(function () {
+                ShowWait(function () {
                     $.ajax({
                         url: '/Account/DeafultPassword/',
                         type: "POST",
@@ -140,7 +140,7 @@
             cancelButtonText: '取消',
         }).then(function (result) {
             if (result.value) {
-                ShowWait2(function () {
+                ShowWait(function () {
                     $.ajax({
                         url: '/Account/Delete/',
                         type: "POST",

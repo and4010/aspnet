@@ -15,10 +15,15 @@ function getSubinventoryCode() {
 }
 
 function getLocatorId() {
-    if ($('#ddlLocatorArea').is(":visible")) {
-        return $("#ddlLocator").val();
-    } else {
+    //if ($('#ddlLocatorArea').is(":visible")) {
+    //    return $("#ddlLocator").val();
+    //} else {
+    //    return null;
+    //}
+    if ($('#ddlLocator option').length === 1) {
         return null;
+    } else {
+        return $("#ddlLocator").val();
     }
 }
 
@@ -221,38 +226,43 @@ function SaveReason(StockId, ReasonCode, TransferLocatorId, Note) {
     formData.append("transferLocatorId", TransferLocatorId);
     formData.append("note", Note);
 
-    $.ajax({
-        url: "/StockTransaction/SaveReason",
-        type: "post",
-        dataType: 'json',
-        cache: false,
-        contentType: false,
-        processData: false,
-        data: formData,
-        success: function (data) {
-            if (data.status) {
-                TransferReasonTable.ajax.reload();
-                clearText();
-                clearContent('#imgBox'); //清除預覽圖片
-                $('#photo_form').trigger("reset"); //清除圖片檔名
-                imgName = [];
-                imgSrc = [];
-                imgFile = [];
-                files = [];
-                swal.fire(data.result);
-            } else {
-                swal.fire(data.result);
+    ShowWait(function () {
+        $.ajax({
+            url: "/StockTransaction/SaveReason",
+            type: "post",
+            dataType: 'json',
+            cache: false,
+            contentType: false,
+            processData: false,
+            data: formData,
+            success: function (data) {
+                if (data.status) {
+                    CloseWait();
+                    TransferReasonTable.ajax.reload();
+                    clearText();
+                    clearContent('#imgBox'); //清除預覽圖片
+                    $('#photo_form').trigger("reset"); //清除圖片檔名
+                    imgName = [];
+                    imgSrc = [];
+                    imgFile = [];
+                    files = [];
+                    swal.fire(data.result);
+                } else {
+                    swal.fire(data.result);
+                }
+
+            },
+            error: function () {
+                swal.fire('儲存貨故失敗');
+            },
+            complete: function (data) {
+
             }
 
-        },
-        error: function () {
-            swal.fire('儲存貨故失敗');
-        },
-        complete: function (data) {
-
-        }
-
+        });
     });
+
+    
 }
 
 //已存檔入庫預設照片
@@ -344,13 +354,18 @@ function SearchStock() {
         event.preventDefault();
         return;
     }
-    if ($('#ddlLocatorArea').is(":visible")) {
-        if ($('#ddlLocator').val() == "請選擇") {
-            swal.fire('請選擇儲位');
-            event.preventDefault();
-            return;
-        }
+    if ($('#ddlLocator option').length > 1 && $('#ddlLocator').val() == "請選擇") {
+        swal.fire('請選擇儲位');
+        event.preventDefault();
+        return;
     }
+    //if ($('#ddlLocatorArea').is(":visible")) {
+    //    if ($('#ddlLocator').val() == "請選擇") {
+    //        swal.fire('請選擇儲位');
+    //        event.preventDefault();
+    //        return;
+    //    }
+    //}
     if ($('#txtItemNumber').val() == "") {
         swal.fire('請輸入料號');
         event.preventDefault();

@@ -1,6 +1,6 @@
 ﻿@model CHPOUTSRCMES.Web.ViewModels.StockTransaction.InBoundViewModel
 
-<div style="padding: 15px;">
+<div class="customBody" style="padding: 15px;">
     <div class="box box-primary">
         <div class="box-header with-border">
             <h4 class="fa fa-caret-right box-title">入庫單產生</h4>
@@ -17,44 +17,79 @@
                 <span id="TransactionType" />
             </div>*@
         <div class="box-body with-border">
-            <div class="row row-std">
-                <div class="col-md-12 form-inline">
-                    <div class="form-group col col-md-4">
-                        @Html.LabelFor(model => model.SelectedOutOrganization, new { @class = "input-lg" })
-                        @Html.DropDownListFor(model => model.SelectedOutOrganization, Model.OutOrganizationItems, new { @class = "form-control", id = "ddlOutOrganization", autocomplete = "off" })
+            <table style=" border-spacing:20px 5px">
+                <tr>
+                    <td style="text-align: right;">
+                        @Html.LabelFor(model => model.SelectedOutOrganization, new { style = "font-weight:bolder;" })
+                    </td>
+                    <td class="input-lg">@Html.DropDownListFor(model => model.SelectedOutOrganization, Model.OutOrganizationItems, new { @class = "customDropDownList", id = "ddlOutOrganization", autocomplete = "off" })</td>
+
+                    <td style="text-align: right;">
+                        @Html.LabelFor(model => model.SelectedOutSubinventory, new { style = "font-weight:bolder;" })
+                    </td>
+                    <td class="input-lg">@Html.DropDownListFor(model => model.SelectedOutSubinventory, Model.OutSubinventoryItems, new { @class = "customDropDownList", id = "ddlOutSubinventory", autocomplete = "off" })</td>
+
+                    <td id="ddlOutLocatorArea" style="text-align: right; display: none;">
+                        @Html.LabelFor(model => model.SelectedOutLocator, new { style = "font-weight:bolder;" })
+                    </td>
+                    <td id="ddlOutLocatorArea2" class="input-lg" style="display: none;">@Html.DropDownListFor(model => model.SelectedOutLocator, Model.OutLocatorItems, new { @class = "customDropDownList", id = "ddlOutLocator", autocomplete = "off" })</td>
+                </tr>
+                <tr>
+                    <td style="text-align: right;">
+                        @Html.LabelFor(model => model.SelectedInOrganization, new { style = "font-weight:bolder;" })
+                    </td>
+                    <td class="input-lg">@Html.DropDownListFor(model => model.SelectedInOrganization, Model.InOrganizationItems, new { @class = "customDropDownList", id = "ddlInOrganization", autocomplete = "off" })</td>
+
+                    <td style="text-align: right;">
+                        @Html.LabelFor(model => model.SelectedInSubinventory, new { style = "font-weight:bolder;" })
+                    </td>
+                    <td class="input-lg">@Html.DropDownListFor(model => model.SelectedInSubinventory, Model.InSubinventoryItems, new { @class = "customDropDownList", id = "ddlInSubinventory", autocomplete = "off" })</td>
+
+                    <td id="ddlInLocatorArea" style="text-align: right; display: none;">
+                        @Html.LabelFor(model => model.SelectedInLocator, new { style = "font-weight:bolder;" })
+                    </td>
+                    <td id="ddlInLocatorArea2" class="input-lg" style="display: none;">@Html.DropDownListFor(model => model.SelectedInLocator, Model.InLocatorItems, new { @class = "customDropDownList", id = "ddlInLocator", autocomplete = "off" })</td>
+                </tr>
+            </table>
+
+            @*<div class="row row-std">
+                    <div class="col-md-12 form-inline">
+                        <div class="form-group col col-md-4">
+                            @Html.LabelFor(model => model.SelectedOutOrganization, new { @class = "input-lg" })
+                            @Html.DropDownListFor(model => model.SelectedOutOrganization, Model.OutOrganizationItems, new { @class = "form-control", id = "ddlOutOrganization", autocomplete = "off" })
+                        </div>
+                        <div class="form-group col col-md-4">
+                            @Html.LabelFor(model => model.SelectedOutSubinventory, new { @class = "input-lg" })
+                            @Html.DropDownListFor(model => model.SelectedOutSubinventory, Model.OutSubinventoryItems, new { @class = "form-control", id = "ddlOutSubinventory", autocomplete = "off" })
+                        </div>
+                        <div id="ddlOutLocatorArea" class="form-group col col-md-4" style="display: none;">
+                            @Html.LabelFor(model => model.SelectedOutLocator, new { @class = "input-lg" })
+                            @Html.DropDownListFor(model => model.SelectedOutLocator, Model.OutLocatorItems, new { @class = "form-control", id = "ddlOutLocator", autocomplete = "off" })
+                        </div>
                     </div>
-                    <div class="form-group col col-md-4">
-                        @Html.LabelFor(model => model.SelectedOutSubinventory, new { @class = "input-lg" })
-                        @Html.DropDownListFor(model => model.SelectedOutSubinventory, Model.OutSubinventoryItems, new { @class = "form-control", id = "ddlOutSubinventory", autocomplete = "off" })
+                    <div class="col-md-12 form-inline">
+                        <div class="form-group col col-md-4">
+                            @Html.LabelFor(model => model.SelectedInOrganization, new { @class = "input-lg" })
+                            @Html.DropDownListFor(model => model.SelectedInOrganization, Model.InOrganizationItems, new { @class = "form-control", id = "ddlInOrganization", autocomplete = "off" })
+                        </div>
+                        <div class="form-group col col-md-4">
+                            @Html.LabelFor(model => model.SelectedInSubinventory, new { @class = "input-lg" })
+                            @Html.DropDownListFor(model => model.SelectedInSubinventory, Model.InSubinventoryItems, new { @class = "form-control", id = "ddlInSubinventory", autocomplete = "off" })
+                        </div>
+                        <div id="ddlInLocatorArea" class="form-group col col-md-4" style="display: none;">
+                            @Html.LabelFor(model => model.SelectedInLocator, new { @class = "input-lg" })
+                            @Html.DropDownListFor(model => model.SelectedInLocator, Model.InLocatorItems, new { @class = "form-control", id = "ddlInLocator", autocomplete = "off" })
+                        </div>
                     </div>
-                    <div id="ddlOutLocatorArea" class="form-group col col-md-4" style="display: none;">
-                        @Html.LabelFor(model => model.SelectedOutLocator, new { @class = "input-lg" })
-                        @Html.DropDownListFor(model => model.SelectedOutLocator, Model.OutLocatorItems, new { @class = "form-control", id = "ddlOutLocator", autocomplete = "off" })
-                    </div>
-                </div>
-                <div class="col-md-12 form-inline">
-                    <div class="form-group col col-md-4">
-                        @Html.LabelFor(model => model.SelectedInOrganization, new { @class = "input-lg" })
-                        @Html.DropDownListFor(model => model.SelectedInOrganization, Model.InOrganizationItems, new { @class = "form-control", id = "ddlInOrganization", autocomplete = "off" })
-                    </div>
-                    <div class="form-group col col-md-4">
-                        @Html.LabelFor(model => model.SelectedInSubinventory, new { @class = "input-lg" })
-                        @Html.DropDownListFor(model => model.SelectedInSubinventory, Model.InSubinventoryItems, new { @class = "form-control", id = "ddlInSubinventory", autocomplete = "off" })
-                    </div>
-                    <div id="ddlInLocatorArea" class="form-group col col-md-4" style="display: none;">
-                        @Html.LabelFor(model => model.SelectedInLocator, new { @class = "input-lg" })
-                        @Html.DropDownListFor(model => model.SelectedInLocator, Model.InLocatorItems, new { @class = "form-control", id = "ddlInLocator", autocomplete = "off" })
-                    </div>
-                </div>
-            </div>
+                </div>*@
 
             <div class="row row-std col-md-12 form-inline" id="SHIPMENT_NUMBER_AREA">
                 <div class="col-md-8">
                     @* <span id="TransactionType" class="input-group-addon" style="width: 53px;">編號</span>
                         <input class="form-control" type="text" id="AutoCompleteShipmentNumber" placeholder="請輸入編號" />*@
                     <label id="TransactionType" class="input-lg">出貨編號</label>
-                    @Html.DropDownListFor(model => model.SelectedShipmentNumber, Model.ShipmentNumberItems, new { @class = "form-control", id = "ddlShipmentNumber", autocomplete = "off" })
-                    <input class="form-control" type="text" id="txtShipmentNumber" placeholder="請輸入出貨編號" style="display: none;" />
+                    @Html.DropDownListFor(model => model.SelectedShipmentNumber, Model.ShipmentNumberItems, new { @class = "customDropDownList", id = "ddlShipmentNumber", autocomplete = "off" })
+                    <input class="customTextBox" type="text" id="txtShipmentNumber" style="display: none;" />
                     @Html.CheckBoxFor(model => model.CustomShipmentNumber, new { id = "chkCustomShipmentNumber" })
                     @Html.LabelFor(m => m.CustomShipmentNumber, new { id = "lblCustomShipmentNumber" })
                     <span id="NumberStatus" style="display: none;"></span>
@@ -80,33 +115,45 @@
                 </div>
                 <div class="panel-body panel-collapse collapse " id="scrollbox">
                     <div id="PickInputArea">
-                        <div class="row row-std col-md-12 form-inline">
-                            <div class="input-group col-md-3">
-                                <span class="input-group-addon" style="width: 53px;">料號</span>
-                                <input class="form-control" type="text" id="AutoCompleteItemNumber" placeholder="請輸入料號" />
-                            </div>
-                            <span id="PACKING_TYPE_LABEL" style="display: none;">@Html.LabelFor(model => model.PACKING_TYPE)</span>
-                            <span id="PACKING_TYPE">@Html.DisplayFor(model => model.PACKING_TYPE)</span>
+                        <div class="row col-md-12 form-inline input-lg">
+
+                            <label class="text-right font-weight:bolder;" style="width:80px;">料號</label>
+                            @*<span class="input-group-addon" style="width: 53px;">料號</span>*@
+                            <span class="">
+                                <input class="customTextBox" type="text" id="AutoCompleteItemNumber" style="width:250px;" autocomplete="off" />
+                                <span id="PACKING_TYPE_LABEL" style="display: none;">@Html.LabelFor(model => model.PACKING_TYPE)</span>
+                                <span id="PACKING_TYPE">@Html.DisplayFor(model => model.PACKING_TYPE)</span>
+                            </span>
+
                         </div>
 
                         <div id="QtyInputArea">
-                            <div class="row row-std col-md-12 form-inline">
-                                <div class="input-group col-md-3">
-                                    <span class="input-group-addon" style="width: 53px;">數量</span>
-                                    <input class="form-control" type="text" id="txtInputTransactionQty" placeholder="請輸入數量" />
-                                </div>
-                                <span id="UNIT">@Html.DisplayFor(model => model.Unit)</span>
+                            <div class="row col-md-12 form-inline input-lg">
+
+                                <label class="text-right font-weight:bolder;" style="width:80px;">數量</label>
+                                @*<span class="input-group-addon" style="width: 53px;">數量</span>*@
+                                <span class="">
+                                    <input class="customTextBox" type="text" id="txtInputTransactionQty" style="width:120px;" autocomplete="off" />
+                                    <span id="UNIT">@Html.DisplayFor(model => model.Unit)</span>
+                                </span>
+
                             </div>
 
-                            <div class="row row-std col-md-12 form-inline">
-                                <div id="REAM_INPUT_AREA" class="input-group col-md-3" style="display: none;">
-                                    <span class="input-group-addon" style="width: 53px;">每棧令數</span>
-                                    <input class="form-control" type="text" id="txtRollReamWT" placeholder="請輸入令數" />
-                                </div>
-                                <div id="ROLL_INPUT_AREA" class="input-group col-md-3" style="display: none;">
-                                    <span class="input-group-addon" style="width: 53px;">捲號</span>
-                                    <input class="form-control" type="text" id="txtLotNumber" placeholder="請輸入捲號" />
-                                </div>
+                            <div class="row col-md-12 form-inline input-lg">
+                                <span id="REAM_INPUT_AREA" style="display: none;">
+                                    <label class="text-right font-weight:bolder;" style="width:80px;">每棧令數</label>
+                                    @*<span class="input-group-addon" style="width: 53px;">每棧令數</span>*@
+                                    <span class="">
+                                        <input class="customTextBox" type="text" id="txtRollReamWT" style="width:120px;" autocomplete="off" />
+                                    </span>
+                                </span>
+                                <span id="ROLL_INPUT_AREA" style="display: none;">
+                                    <label class="text-right font-weight:bolder;" style="width:80px;">捲號</label>
+                                    @*<span class="input-group-addon" style="width: 53px;">捲號</span>*@
+                                    <span class="">
+                                        <input class="customTextBox" type="text" id="txtLotNumber" style="width:120px;" autocomplete="off" />
+                                    </span>
+                                </span>
                                 <input type="button" id="btnSaveStockTransferDT" value="產生明細" class="btn btn-danger" />
                             </div>
                         </div>
@@ -131,11 +178,11 @@
                 <h4 class="page-header">條碼驗收</h4>
             </div>*@
         <div class="box-body with-border">
-            <div class="row row-std col-md-12 form-inline">
-                <div class="input-group col-md-3">
-                    <span class="input-group-addon" style="width: 53px;">條碼</span>
-                    <input class="form-control" type="text" id="txtBARCODE" placeholder="請輸入條碼" />
-                </div>
+
+            <div class="row row-std col-md-12 form-inline input-lg">
+                <label class="text-right font-weight:bolder;">條碼</label>
+                @*<span class="input-group-addon" style="width: 53px;">條碼</span>*@
+                <input class="customTextBox" type="text" id="txtBARCODE" autocomplete="off" />
                 <input type="button" id="btnSaveBarcode" value="轉已入庫" class="btn btn-danger" />
             </div>
 

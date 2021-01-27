@@ -15,12 +15,16 @@ namespace CHPOUTSRCMES.Web.ViewModels.StockTransaction
 
         public IEnumerable<SelectListItem> LocatorItems { set; get; }
         [Display(Name = "儲位")]
-        public string Locator { set; get; }
+        public string SelectedLocator { set; get; }
 
         [Display(Name = "備註")]
         public string Remark { set; get; }
 
-       
+        public IEnumerable<SelectListItem> SubinventoryItems { set; get; }
+        [Display(Name = "倉庫")]
+        public string SelectedSubinventory { set; get; }
+
+        public IEnumerable<SelectListItem> ItemNumberItems { set; get; }
 
     }
 }

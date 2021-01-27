@@ -238,11 +238,13 @@ namespace CHPOUTSRCMES.Web.Models.Stock
             return viewModel;
         }
 
-        public TransferReasonViewModel GetTransferReasonViewModel(TransferUOW uow)
+        public TransferReasonViewModel GetTransferReasonViewModel(TransferUOW uow, string userId)
         {
             TransferReasonViewModel viewModel = new TransferReasonViewModel();
             viewModel.ReasonItems = uow.GetReasonDropDownList(MasterUOW.DropDownListType.Choice);
-            viewModel.LocatorItems = new List<SelectListItem> { new SelectListItem { Text = "", Value = "" } };
+            //viewModel.LocatorItems = new List<SelectListItem> { new SelectListItem { Text = "", Value = "" } };
+            viewModel.SubinventoryItems = orgData.GetSubinventoryListForUserId(uow, userId, MasterUOW.DropDownListType.Choice);
+            viewModel.LocatorItems = new List<SelectListItem> { new SelectListItem { Text = "請選擇", Value = "請選擇" } };
             return viewModel;
         }
 

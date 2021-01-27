@@ -112,7 +112,7 @@ namespace CHPOUTSRCMES.Web.Controllers
                     }
                     else
                     {
-                        return PartialView("_TransferReasonPartial", stockTransferData.GetTransferReasonViewModel(uow));
+                        return PartialView("_TransferReasonPartial", stockTransferData.GetTransferReasonViewModel(uow, id));
                     }
                 }
             }

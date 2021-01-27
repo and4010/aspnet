@@ -19,11 +19,11 @@
     <script src="~/bower_components/bootstrap-filestyle/src/bootstrap-filestyle.min.js"></script>
     <script src="~/Scripts/Photo.js"></script>
 }
-<div class="row row-std">
+<div class="row row-std customBody">
     <div class="col-md-12 form-inline">
         <div class="form-group col col-md-4">
             @Html.LabelFor(model => model.SelectedTransferType, new { @class = "input-lg" })
-            @Html.DropDownListFor(model => model.SelectedTransferType, Model.TransferTypeItems, new { @class = "form-control", id = "ddlTransferType", autocomplete = "off" })
+            @Html.DropDownListFor(model => model.SelectedTransferType, Model.TransferTypeItems, new { @class = "customDropDownList", id = "ddlTransferType", autocomplete = "off" })
         </div>
     </div>
 </div>

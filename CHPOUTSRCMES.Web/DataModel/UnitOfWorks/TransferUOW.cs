@@ -3359,7 +3359,7 @@ OR (SUM(ISNULL(p.SECONDARY_QUANTITY, 0)) <> MIN(d.REQUESTED_SECONDARY_QUANTITY) 
 OR MIN(d.ROLL_REAM_QTY) <> COUNT(p.TRANSFER_DETAIL_ID)";
 
                     var list = this.Context.Database.SqlQuery<long>(cmd, new SqlParameter("@transferHeaderId", transferHeaderId)).ToList();
-                    if (list.Count != 0) return new ResultModel(true, "此出貨編號尚未揀完");
+                    if (list.Count != 0) return new ResultModel(false, "此出貨編號尚未揀完");
 
                     var pickList = trfOutboundPickedTRepository.GetAll().Where(x => x.TransferHeaderId == transferHeaderId).ToList();
                     if (pickList == null || pickList.Count == 0) throw new Exception("找不到揀貨資料");
@@ -4116,7 +4116,7 @@ SELECT [STOCK_ID] as ID
                     stock.ReasonCode = reasonCode;
                     stock.ReasonDesc = reason.ReasonDesc;
                     stock.StatusCode = StockStatusCode.InStock;
-                    stkTxnT.StatusCode = stock.Note;
+                    stkTxnT.StatusCode = stock.StatusCode;
                     if (string.IsNullOrEmpty(stock.Note))
                     {
                         stock.Note = note;
