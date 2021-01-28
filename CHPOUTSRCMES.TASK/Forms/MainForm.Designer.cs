@@ -30,6 +30,7 @@
         {
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.檔案ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.設定ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.功能表ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.單位換算ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.主檔ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -46,15 +47,24 @@
             this.功能表ToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(800, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(584, 24);
             this.menuStrip1.TabIndex = 1;
             this.menuStrip1.Text = "menuStrip1";
             // 
             // 檔案ToolStripMenuItem
             // 
+            this.檔案ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.設定ToolStripMenuItem});
             this.檔案ToolStripMenuItem.Name = "檔案ToolStripMenuItem";
             this.檔案ToolStripMenuItem.Size = new System.Drawing.Size(43, 20);
             this.檔案ToolStripMenuItem.Text = "檔案";
+            this.檔案ToolStripMenuItem.Visible = false;
+            // 
+            // 設定ToolStripMenuItem
+            // 
+            this.設定ToolStripMenuItem.Name = "設定ToolStripMenuItem";
+            this.設定ToolStripMenuItem.Size = new System.Drawing.Size(98, 22);
+            this.設定ToolStripMenuItem.Text = "設定";
             // 
             // 功能表ToolStripMenuItem
             // 
@@ -64,28 +74,27 @@
             this.功能表ToolStripMenuItem.Name = "功能表ToolStripMenuItem";
             this.功能表ToolStripMenuItem.Size = new System.Drawing.Size(55, 20);
             this.功能表ToolStripMenuItem.Text = "功能表";
+            this.功能表ToolStripMenuItem.Visible = false;
             // 
             // 單位換算ToolStripMenuItem
             // 
             this.單位換算ToolStripMenuItem.Name = "單位換算ToolStripMenuItem";
             this.單位換算ToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
             this.單位換算ToolStripMenuItem.Text = "單位換算";
-            this.單位換算ToolStripMenuItem.Click += new System.EventHandler(this.單位換算ToolStripMenuItem_Click);
             // 
             // 主檔ToolStripMenuItem
             // 
             this.主檔ToolStripMenuItem.Name = "主檔ToolStripMenuItem";
             this.主檔ToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
             this.主檔ToolStripMenuItem.Text = "主檔";
-            this.主檔ToolStripMenuItem.Click += new System.EventHandler(this.主檔ToolStripMenuItem_Click);
             // 
             // statusStrip1
             // 
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsl_Version});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 428);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 239);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(800, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(584, 22);
             this.statusStrip1.TabIndex = 3;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -101,13 +110,15 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(584, 261);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.menuStrip1);
             this.IsMdiContainer = true;
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "MainForm";
             this.Text = "MES 轉檔程式";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
+            this.Load += new System.EventHandler(this.MainForm_Load);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.statusStrip1.ResumeLayout(false);
@@ -125,6 +136,7 @@
         private System.Windows.Forms.ToolStripMenuItem 主檔ToolStripMenuItem;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel tsl_Version;
+        private System.Windows.Forms.ToolStripMenuItem 設定ToolStripMenuItem;
     }
 }
 

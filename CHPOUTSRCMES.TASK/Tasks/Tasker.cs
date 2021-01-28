@@ -24,6 +24,17 @@ namespace CHPOUTSRCMES.TASK.Tasks
         public bool Enabled { set; get; }
 
         /// <summary>
+        /// 狀態
+        /// </summary>
+        public string Status
+        {
+            get
+            {
+                return Enabled ? "啟用" : "關閉";
+            }
+        }
+
+        /// <summary>
         /// 單位量
         /// </summary>
         public int Unit { set; get; }
@@ -61,14 +72,14 @@ namespace CHPOUTSRCMES.TASK.Tasks
         /// <param name="name">任務名稱</param>
         /// <param name="unit">單位量</param>
         /// <param name="action">程序</param>
-        public Tasker(string name, int unit, Action<Tasker, CancellationToken> action)
+        public Tasker(string name, int unit, bool enabled, Action<Tasker, CancellationToken> action)
         {
             logger.Info($"Name:{name}, Unit:{unit}, Enabled:{Enabled}");
             Name = name;
             Unit = unit;
             countDown = 0;
             this.action = action;
-            Enabled = true;
+            Enabled = enabled;
         }
 
         public void ChangeInterval(int interval)

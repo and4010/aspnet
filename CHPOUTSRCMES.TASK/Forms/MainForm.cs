@@ -20,14 +20,19 @@ namespace CHPOUTSRCMES.TASK.Forms
             this.tsl_Version.Text = $"程式版本 {Assembly.GetExecutingAssembly().GetName().Version}";
         }
 
-        private void 單位換算ToolStripMenuItem_Click(object sender, EventArgs e)
+        private void MainForm_Load(object sender, EventArgs e)
         {
-            Controller.UomConverterForm.ShowOnParent();
+            Controller.ScheduleForm.ShowOnParent();
         }
 
-        private void 主檔ToolStripMenuItem_Click(object sender, EventArgs e)
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            Controller.MasterViewForm.ShowOnParent();
+            if(MessageBox.Show("是否確定要關閉程式?", "關閉程式", MessageBoxButtons.YesNo) == DialogResult.No)
+            {
+                e.Cancel = true;
+                return;
+            }
+
         }
     }
 }

@@ -15,6 +15,18 @@ namespace CHPOUTSRCMES.TASK.Tasks.Interfaces
         string Name { set; get; }
 
         /// <summary>
+        /// 間隔時間
+        /// </summary>
+        int Unit { set; get; }
+
+        bool Enabled { set; get; }
+
+        /// <summary>
+        /// 狀態
+        /// </summary>
+        string Status { get; }
+
+        /// <summary>
         /// 修改執行間隔
         /// </summary>
         /// <param name="interval"></param>

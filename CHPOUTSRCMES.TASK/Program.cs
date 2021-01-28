@@ -23,10 +23,7 @@ namespace CHPOUTSRCMES.TASK
 
             try
             {
-                MainController.Instance.StartTimer();
-                MainController.Instance.AddMasterTasker(MainController.Instance.configuration);
                 Application.Run(MainController.Instance.MainForm);
-
             }
             catch(Exception ex)
             {
