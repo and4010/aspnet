@@ -157,7 +157,7 @@ else
                         <div class="form-group form-inline">
                             <label class="col-md-1 text-right font-weight:bolder;">工單號</label>
                             <div class="col-md-11">
-                                <input type="text" class="form-control" placeholder="請輸入工單號" id="ProcessBatchNo" autocomplete="off">
+                                <input type="text" class="customTextBox" id="ProcessBatchNo" autocomplete="off">
                                 <button class="btn btn-danger" type="button" id="BtnProcess_Batch_no">比對</button>
                                 <button class="btn btn-danger" type="button" id="BtnEdit">修改</button>
                                 @if (Model.Authority)
@@ -189,7 +189,7 @@ else
                     </div>
 
                     <div class="form-inline col col-md-2">
-                        <input class="text" autocomplete="off" id="PaperRoll_Invest_Barcode" />
+                        <input type="text" class="customTextBox" autocomplete="off" id="PaperRoll_Invest_Barcode" />
                     </div>
 
                     @* 原重量 *@
@@ -284,7 +284,7 @@ else
                         <div class="form-group form-inline">
                             <label class="col-md-1 text-right font-weight:bolder;">工單號</label>
                             <div class="col-md-11">
-                                <input type="text" class="form-control" placeholder="請輸入工單號" id="ProcessProductionBatchNo" autocomplete="off">
+                                <input type="text" class="customTextBox" id="ProcessProductionBatchNo" autocomplete="off">
                                 <button class="btn btn-danger" type="button" id="BtnProcess_Production_Batch_no">比對</button>
                             </div>
                         </div>
@@ -332,7 +332,7 @@ else
                     </div>
 
                     <div class="form-inline col col-md-2">
-                        <input class="form-control input-sm" id="PaperRoll_Lot_Number" autocomplete="off" />
+                        <input class="customTextBox" id="PaperRoll_Lot_Number" autocomplete="off" />
                     </div>
 
                     <div class="form-inline col-md-1 text-right">
@@ -340,7 +340,7 @@ else
                     </div>
 
                     <div class="form-inline col col-md-2">
-                        <input class="form-control input-sm" id="PaperRoll_Weight" autocomplete="off" type="number" />
+                        <input class="customTextBox" id="PaperRoll_Weight" autocomplete="off" type="number" />
                     </div>
 
                     <div class="form-group col-md-1 ">
@@ -355,7 +355,7 @@ else
                     <div class="form-group form-inline">
                         <label class="col-md-1 text-right font-weight:bolder;">條碼</label>
                         <div class="col-md-11">
-                            <input type="text" class="form-control" placeholder="請輸入條碼" id="PaperRoll_Production_Barcode" autocomplete="off">
+                            <input type="text" class="customTextBox" id="PaperRoll_Production_Barcode" autocomplete="off">
                             <button class="btn btn-danger" type="button" id="BtnPaperRollBarcodeSave">轉已入庫</button>
                         </div>
                     </div>

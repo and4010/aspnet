@@ -61,25 +61,29 @@ function RollSave() {
     formData.append("Locator", Locator);
     formData.append("Remark", remak);
 
-    $.ajax({
-        url: '/Purchase/RollEditSave',
-        type: 'POST',
-        datatype: 'json',
-        data: formData,
-        cache: false,
-        contentType: false,
-        processData: false,
-        success: function (data) {
-            if (data.resultModel.Success) {
-                window.history.go(-1);
-            } else {
-                swal.fire(data.resultModel.Msg)
+    ShowWait(function () {
+        $.ajax({
+            url: '/Purchase/RollEditSave',
+            type: 'POST',
+            datatype: 'json',
+            data: formData,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function (data) {
+                if (data.resultModel.Success) {
+                    CloseWait();
+                    window.history.go(-1);
+                } else {
+                    swal.fire(data.resultModel.Msg)
+                }
+            },
+            error: function (data) {
+                swal.fire('存檔失敗')
             }
-        },
-        error: function (data) {
-
-        }
+        });
     });
+    
 
 }
 
@@ -98,27 +102,30 @@ function FlatSave() {
     formData.append("Locator", Locator);
     formData.append("Remark", remak);
 
-
-
-    $.ajax({
-        "url": "/Purchase/FlatEditSave",
-        "type": "POST",
-        "datatype": "json",
-        "data": formData,
-        success: function (data) {
-            if (data.resultModel.Success) {
-                window.history.go(-1);
-            } else {
-                swal.fire(data.resultModel.Msg)
-            }
-        },
-        error: function (data) {
-            swal.fire(data);
-        },
-        cache: false,
-        contentType: false,
-        processData: false
+    ShowWait(function () {
+        $.ajax({
+            "url": "/Purchase/FlatEditSave",
+            "type": "POST",
+            "datatype": "json",
+            "data": formData,
+            success: function (data) {
+                if (data.resultModel.Success) {
+                    CloseWait();
+                    window.history.go(-1);
+                } else {
+                    swal.fire(data.resultModel.Msg)
+                }
+            },
+            error: function (data) {
+                swal.fire('存檔失敗')
+            },
+            cache: false,
+            contentType: false,
+            processData: false
+        });
     });
+
+   
 }
 
 

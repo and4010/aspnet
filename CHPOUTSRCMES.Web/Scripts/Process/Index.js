@@ -490,23 +490,29 @@ function status_onclick() {
 
     if (BatchType == "REP" && SrcOspHeaderId) {
         //又裁又代 須檢查來源裁切工單是否完工
-        $.ajax({
-            "url": "/Process/CheckInsteadPaperOrderProcess",
-            "type": "POST",
-            "datatype": "json",
-            "data": {
-                SrcOspHeaderId: SrcOspHeaderId
-            },
-            success: function (data) {
-                if (data != null) {
-                    if (data.resultModel.Success) {
-                        orderProcess(PaperType, OspHeaderId, BatchType);
-                    } else {
-                        swal.fire(data.resultModel.Msg);
+        ShowWait(function () {
+            $.ajax({
+                "url": "/Process/CheckInsteadPaperOrderProcess",
+                "type": "POST",
+                "datatype": "json",
+                "data": {
+                    SrcOspHeaderId: SrcOspHeaderId
+                },
+                success: function (data) {
+                    if (data != null) {
+                        if (data.resultModel.Success) {
+                            CloseWait();
+                            orderProcess(PaperType, OspHeaderId, BatchType);
+                        } else {
+                            swal.fire(data.resultModel.Msg);
+                        }
                     }
+                },
+                error: function () {
+                    swal.fire("檢查來源柴切工單是否完工失敗");
                 }
-            }
-        })
+            })
+        });
     } else {
         orderProcess(PaperType, OspHeaderId, BatchType);
     }
@@ -637,7 +643,11 @@ function orderProcess(PaperType, OspHeaderId, BatchType) {
         success: function (result) {
             $('body').append(result);
             Open($('#ProcessModal'), OspHeaderId, BatchType);
+        },
+        error: function () {
+            swal.fire("排單失敗");
         }
+
     });
 }
 
@@ -722,25 +732,26 @@ function Open(modal_dialog, OspHeaderId, BatchType) {
             return
         }
 
-        $.ajax({
-            url: '/Process/_BtnDailogChangStatusCutDate',
-            type: "POST",
-            dataType: 'json',
-            data: {
-                OspHeaderId: OspHeaderId, Dialog_CuttingDateFrom: Dialog_CuttingDateFrom
-                , Dialog_CuttingDateTo: Dialog_CuttingDateTo, Dialog_MachineNum: Dialog_MachineNum, BtnStatus: BtnStatus
-            },
-            success: function (result) {
-                $(modal_dialog.selector).modal('hide');
-                firstLoad();
-                rowData = null;
-            },
-            error: function () {
-                swal.fire("時間格式錯誤");
-            }
+        ShowWait(function () {
+            $.ajax({
+                url: '/Process/_BtnDailogChangStatusCutDate',
+                type: "POST",
+                dataType: 'json',
+                data: {
+                    OspHeaderId: OspHeaderId, Dialog_CuttingDateFrom: Dialog_CuttingDateFrom
+                    , Dialog_CuttingDateTo: Dialog_CuttingDateTo, Dialog_MachineNum: Dialog_MachineNum, BtnStatus: BtnStatus
+                },
+                success: function (result) {
+                    CloseWait();
+                    $(modal_dialog.selector).modal('hide');
+                    firstLoad();
+                    rowData = null;
+                },
+                error: function () {
+                    swal.fire("時間格式錯誤");
+                }
+            });
         });
-
-
 
     });
 
@@ -751,20 +762,22 @@ function Open(modal_dialog, OspHeaderId, BatchType) {
 }
 
 function changeStatus(OspHeaderId, BtnStatus) {
-    $.ajax({
-        url: '/Process/SetClose',
-        type: "POST",
-        dataType: 'json',
-        data: { OspHeaderId: OspHeaderId, BtnStatus: BtnStatus },
-        success: function (result) {
-            firstLoad();
-        },
-        error: function () {
-            swal.fire("失敗")
-        }
+    ShowWait(function () {
+        $.ajax({
+            url: '/Process/SetClose',
+            type: "POST",
+            dataType: 'json',
+            data: { OspHeaderId: OspHeaderId, BtnStatus: BtnStatus },
+            success: function (result) {
+                CloseWait();
+                firstLoad();
+            },
+            error: function () {
+                swal.fire("關帳失敗")
+            }
+        });
     });
-
-
+   
 }
 
 function firstLoad() {

@@ -155,7 +155,7 @@ else
                         <div class="form-group form-inline">
                             <label class="col-md-1 text-right font-weight:bolder;">工單號</label>
                             <div class="col-md-11">
-                                <input type="text" class="form-control" placeholder="請輸入工單號" id="InputBatchNo" autocomplete="off">
+                                <input type="text" class="customTextBox" id="InputBatchNo" autocomplete="off">
                                 <button class="btn btn-danger" type="button" id="BtnCheckBatchNo">比對</button>
                                 <button class="btn btn-danger" type="button" id="BtnEdit">修改</button>
                                 @if (Model.Authority)
@@ -191,7 +191,7 @@ else
                     </div>
 
                     <div class="form-inline col-md-2">
-                        <input type="text" class="form-control input-sm col-md-auto" id="Invest_Barcode" autocomplete="off">
+                        <input type="text" class="customTextBox col-md-auto" id="Invest_Barcode" autocomplete="off">
                     </div>
 
                     @* 殘捲 *@
@@ -200,7 +200,7 @@ else
                     </div>
 
                     <div class="form-inline col col-md-1">
-                        @Html.DropDownListFor(model => model.Invest.HasRemaint, RemnantItem, new { @class = "form-control input-sm", id = "Invest_Remnant" })
+                        @Html.DropDownListFor(model => model.Invest.HasRemaint, RemnantItem, new { @class = "form-control", id = "Invest_Remnant" })
                     </div>
 
                     @* 原重量 *@
@@ -218,7 +218,7 @@ else
                     </div>
 
                     <div class="form-inline col col-md-1">
-                        @Html.TextBoxFor(model => model.Invest.RemainingQuantity, new { @class = "form-control form-control input-sm", id = "Invest_Remaining_Weight", autocomplete = "off" })
+                        @Html.TextBoxFor(model => model.Invest.RemainingQuantity, new { @class = "customTextBox", id = "Invest_Remaining_Weight", autocomplete = "off" })
                     </div>
 
                 </div>
@@ -335,7 +335,7 @@ else
                         <div class="form-group form-inline">
                             <label class="col-md-1 text-right font-weight:bolder;">工單號</label>
                             <div class="col-md-11">
-                                <input type="text" class="form-control" placeholder="請輸入工單號" id="OutBatchNo" autocomplete="off">
+                                <input type="text" class="customTextBox" id="OutBatchNo" autocomplete="off">
                                 <button class="btn btn-danger" type="button" id="BtnCheckProductionBatchNo">比對</button>
                             </div>
                         </div>
@@ -364,7 +364,7 @@ else
                     </div>
 
                     <div class="form-inline col col-md-2">
-                        <input id="Production_Roll_Ream_Qty" class="form-control input-sm" autocomplete="off" />
+                        <input id="Production_Roll_Ream_Qty" class="customTextBox" autocomplete="off" />
                     </div>
 
                     @* 每版令數 *@
@@ -375,7 +375,7 @@ else
                     </div>
 
                     <div class="form-inline col col-md-2">
-                        <input id="Production_Roll_Ream_Wt" class="form-control input-sm" autocomplete="off" />
+                        <input id="Production_Roll_Ream_Wt" class="customTextBox" autocomplete="off" />
                     </div>
 
                     @* 有無餘切 *@
@@ -386,7 +386,7 @@ else
                     </div>
 
                     <div class="form-inline col col-md-1">
-                        @Html.DropDownListFor(model => model.Production.Cotangent, CotangentItem, new { @class = "form-control form-control input-sm", id = "Cotangent" })
+                        @Html.DropDownListFor(model => model.Production.Cotangent, CotangentItem, new { @class = "form-control", id = "Cotangent" })
                     </div>
 
                     <div class="form-group col col-md-1 ">
@@ -400,7 +400,7 @@ else
                     <div class="form-group form-inline">
                         <label class="col-md-1 text-right font-weight:bolder;">條碼</label>
                         <div class="col-md-11">
-                            <input type="text" class="form-control" placeholder="請輸入條碼" id="Production_Barcode" autocomplete="off">
+                            <input type="text" class="customTextBox" id="Production_Barcode" autocomplete="off">
                             <button class="btn btn-danger" type="button" id="BtnProductionSave">轉已入庫</button>
                         </div>
                     </div>
@@ -462,7 +462,7 @@ else
                     <div class="form-group form-inline">
                         <label class="col-md-1 text-right font-weight:bolder;">條碼</label>
                         <div class="col-md-11">
-                            <input type="text" class="form-control" placeholder="請輸入條碼" id="Cotangent_Barcode" autocomplete="off">
+                            <input type="text" class="customTextBox" id="Cotangent_Barcode" autocomplete="off">
                             <button class="btn btn-danger" type="button" id="BtnCotangentSave">轉已入庫</button>
                         </div>
                     </div>

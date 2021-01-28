@@ -254,19 +254,26 @@ function serach() {
             allowOutsideClick: false
         }).then(function (result) {
             if (result.value) {
-                $.ajax({
-                    url: '/Purchase/SearchCabinetNumber',
-                    type: 'POST',
-                    datatype: 'json',
-                    data: { CabinetNumber: result.value },
-                    success: function (data) {
-                        if (data.Success) {
-                            window.location.href = '/Purchase/Detail/' + data.Msg;
-                        } else {
-                            swal.fire(data.Msg);
+                ShowWait(function () {
+                    $.ajax({
+                        url: '/Purchase/SearchCabinetNumber',
+                        type: 'POST',
+                        datatype: 'json',
+                        data: { CabinetNumber: result.value },
+                        success: function (data) {
+                            if (data.Success) {
+                                CloseWait();
+                                window.location.href = '/Purchase/Detail/' + data.Msg;
+                            } else {
+                                swal.fire(data.Msg);
+                            }
+                        },
+                        error: function () {
+                            swal.fire("查詢櫃號失敗");
                         }
-                    }
+                    });
                 });
+                
             }
         })
 

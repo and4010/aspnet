@@ -230,30 +230,28 @@ function init() {
     $('#Invest_Barcode').change(function (e) {
         var Barcode = $('#Invest_Barcode').val();
         var OspDetailInId = $("#OspDetailInId").val();
-        $.ajax({
-            url: '/Process/CheckStockBarcode',
-            type: 'post',
-            datatype: 'json',
-            data: { Barcode: Barcode, OspDetailInId: OspDetailInId },
-            success: function (data) {
-                if (data.resultDataModel.Success == false) {
-                    swal.fire(data.resultDataModel.Msg);
-                    ClearText();
-                } else {
-                    DispalyText(data);
+        ShowWait(function () {
+            $.ajax({
+                url: '/Process/CheckStockBarcode',
+                type: 'post',
+                datatype: 'json',
+                data: { Barcode: Barcode, OspDetailInId: OspDetailInId },
+                success: function (data) {
+                    if (data.resultDataModel.Success == false) {
+                        swal.fire(data.resultDataModel.Msg);
+                        ClearText();
+                    } else {
+                        CloseWait();
+                        DispalyText(data);
+                    }
+                },
+                error: function () {
+                    swal.fire("檢查庫存條碼失敗");
                 }
-            },
-            error: function () {
-                swal.fire("失敗");
-            }
+            });
         });
-
+        
     });
-
-
-
-
-
 
 }
 
@@ -263,22 +261,27 @@ function BtnClick() {
     $('#BtnCheckBatchNo').click(function (e) {
         var BatchNo = $('#InputBatchNo').val();
         var OspHeaderId = $('#OspHeaderId').val();
-        $.ajax({
-            url: '/Process/CheckBatchNo',
-            datatype: 'json',
-            type: "POST",
-            data: { BatchNo: BatchNo, OspHeaderId: OspHeaderId },
-            success: function (data) {
-                if (data.resultModel.Success) {
-                    DisplayInvestEnable(false);
-                } else {
-                    swal.fire(data.resultModel.Msg);
-                }
-            },
-            error: function () {
 
-            }
+        ShowWait(function () {
+            $.ajax({
+                url: '/Process/CheckBatchNo',
+                datatype: 'json',
+                type: "POST",
+                data: { BatchNo: BatchNo, OspHeaderId: OspHeaderId },
+                success: function (data) {
+                    if (data.resultModel.Success) {
+                        CloseWait();
+                        DisplayInvestEnable(false);
+                    } else {
+                        swal.fire(data.resultModel.Msg);
+                    }
+                },
+                error: function () {
+                    swal.fire('檢查工單號失敗')
+                }
+            });
         });
+        
     });
 
     //列印入庫單
@@ -311,22 +314,27 @@ function BtnClick() {
     $('#BtnCheckProductionBatchNo').click(function (e) {
         var BatchNo = $('#OutBatchNo').val();
         var OspHeaderId = $('#OspHeaderId').val();
-        $.ajax({
-            url: '/Process/CheckBatchNo',
-            datatype: 'json',
-            type: "POST",
-            data: { BatchNo: BatchNo, OspHeaderId: OspHeaderId },
-            success: function (data) {
-                if (data.resultModel.Success) {
-                    DisplayProductionEnable(false);
-                } else {
-                    swal.fire(data.resultModel.Msg);
-                }
-            },
-            error: function () {
 
-            }
+        ShowWait(function () {
+            $.ajax({
+                url: '/Process/CheckBatchNo',
+                datatype: 'json',
+                type: "POST",
+                data: { BatchNo: BatchNo, OspHeaderId: OspHeaderId },
+                success: function (data) {
+                    if (data.resultModel.Success) {
+                        CloseWait();
+                        DisplayProductionEnable(false);
+                    } else {
+                        swal.fire(data.resultModel.Msg);
+                    }
+                },
+                error: function () {
+                    swal.fire('檢查工單號失敗')
+                }
+            });
         });
+        
     });
 
     //投入儲存條碼儲存按鈕
@@ -695,22 +703,26 @@ function LoadInvestDataTable() {
                         cancelButtonText: "取消"
                     }).then(function (result) {
                         if (result.value) {
-                            $.ajax({
-                                url: '/Process/AllDelete',
-                                datatype: 'json',
-                                type: "POST",
-                                data: { OspPickedInId: OspPickedInId },
-                                success: function (data) {
-                                    if (data.resultModel.Success) {
-                                        InvestDataTables.ajax.reload(null, false);
-                                    } else {
-                                        swal.fire(data.resultModel.Msg);
+                            ShowWait(function () {
+                                $.ajax({
+                                    url: '/Process/AllDelete',
+                                    datatype: 'json',
+                                    type: "POST",
+                                    data: { OspPickedInId: OspPickedInId },
+                                    success: function (data) {
+                                        if (data.resultModel.Success) {
+                                            CloseWait();
+                                            InvestDataTables.ajax.reload(null, false);
+                                        } else {
+                                            swal.fire(data.resultModel.Msg);
+                                        }
+                                    },
+                                    error: function () {
+                                        swal.fire('刪除失敗');
                                     }
-                                },
-                                error: function () {
-
-                                }
+                                });
                             });
+                           
                         }
                     });
                 }
@@ -746,22 +758,29 @@ function LoadInvestDataTable() {
 }
 //儲存條碼
 function InvestSaveBarcode(Barcode, Remnant, Remaining_Weight, OspDetailInId) {
-    $.ajax({
-        "url": "/Process/SaveInvestBarcode",
-        "type": "POST",
-        "datatype": "json",
-        "data": { Barcode: Barcode, Remnant: Remnant, Remaining_Weight: Remaining_Weight, OspDetailInId: OspDetailInId },
-        success: function (data) {
-            if (data.resultModel.Success) {
-                InvestDataTables.ajax.reload(null, false);
-                ClearRateLoss();
-            } else {
-                swal.fire(data.resultModel.Msg);
+
+    ShowWait(function () {
+        $.ajax({
+            "url": "/Process/SaveInvestBarcode",
+            "type": "POST",
+            "datatype": "json",
+            "data": { Barcode: Barcode, Remnant: Remnant, Remaining_Weight: Remaining_Weight, OspDetailInId: OspDetailInId },
+            success: function (data) {
+                if (data.resultModel.Success) {
+                    CloseWait();
+                    InvestDataTables.ajax.reload(null, false);
+                    ClearRateLoss();
+                } else {
+                    swal.fire(data.resultModel.Msg);
+                }
+            },
+            error: function () {
+                swal.fire('儲存失敗');
             }
-        }
 
-
+        });
     });
+    
 
 }
 
@@ -900,22 +919,27 @@ function LoadProductionDataTable() {
                         cancelButtonText: "取消"
                     }).then(function (result) {
                         if (result.value) {
-                            $.ajax({
-                                url: '/Process/ProductionChooseDelete',
-                                datatype: 'json',
-                                type: "POST",
-                                data: { OspPickedOutId: OspPickedOutId },
-                                success: function (data) {
-                                    if (data.resultModel.Success) {
-                                        ProductionTables.ajax.reload(null, false);
-                                    } else {
-                                        swal.fire(data.resultModel.Msg);
+                            ShowWait(function () {
+                                $.ajax({
+                                    url: '/Process/ProductionChooseDelete',
+                                    datatype: 'json',
+                                    type: "POST",
+                                    data: { OspPickedOutId: OspPickedOutId },
+                                    success: function (data) {
+                                        if (data.resultModel.Success) {
+                                            CloseWait();
+                                            ProductionTables.ajax.reload(null, false);
+                                        } else {
+                                            swal.fire(data.resultModel.Msg);
+                                        }
+                                    },
+                                    error: function () {
+                                        swal.fire('刪除失敗');
                                     }
-                                },
-                                error: function () {
-
-                                }
+                                });
                             });
+
+                           
                         }
                     });
                 }
@@ -971,48 +995,64 @@ function LoadProductionDataTable() {
 //產生明細
 function CreateProduct(Production_Roll_Ream_Qty, Production_Roll_Ream_Wt, Cotangent, OspDetailOutId, OspDetailInId, OspHeaderId) {
 
-    $.ajax({
-        "url": "/Process/CreateProduction",
-        "type": "POST",
-        "datatype": "json",
-        "data": {
-            Production_Roll_Ream_Qty: Production_Roll_Ream_Qty,
-            Production_Roll_Ream_Wt: Production_Roll_Ream_Wt,
-            Cotangent: Cotangent,
-            OspDetailOutId: OspDetailOutId,
-            OspDetailInId: OspDetailInId,
-            OspHeaderId: OspHeaderId
-        },
-        success: function (data) {
-            if (data != null) {
-                if (data.resultModel.Success) {
-                    ProductionTables.ajax.reload(null, false);
-                    CotangentDataTable.ajax.reload(null, false);
-                    ClearRateLoss();
-                } else {
-                    swal.fire(data.resultModel.Msg);
+    ShowWait(function () {
+        $.ajax({
+            "url": "/Process/CreateProduction",
+            "type": "POST",
+            "datatype": "json",
+            "data": {
+                Production_Roll_Ream_Qty: Production_Roll_Ream_Qty,
+                Production_Roll_Ream_Wt: Production_Roll_Ream_Wt,
+                Cotangent: Cotangent,
+                OspDetailOutId: OspDetailOutId,
+                OspDetailInId: OspDetailInId,
+                OspHeaderId: OspHeaderId
+            },
+            success: function (data) {
+                if (data != null) {
+                    if (data.resultModel.Success) {
+                        CloseWait();
+                        ProductionTables.ajax.reload(null, false);
+                        CotangentDataTable.ajax.reload(null, false);
+                        ClearRateLoss();
+                    } else {
+                        swal.fire(data.resultModel.Msg);
+                    }
                 }
+            },
+            error: function () {
+                swal.fire('產生明細失敗')
             }
-        }
+        });
     });
+
+    
 
 }
 
 ///產出條碼待入庫
 function ChangeProductionStauts(Production_Barcode, OspDetailOutId) {
-    $.ajax({
-        "url": "/Process/ProductionChangeStatus",
-        "type": "POST",
-        "datatype": "json",
-        "data": { Production_Barcode: Production_Barcode, OspDetailOutId: OspDetailOutId },
-        success: function (data) {
-            if (data.resultModel.Success) {
-                ProductionTables.ajax.reload(null, false);
-            } else {
-                swal.fire(data.resultModel.Msg);
+
+    ShowWait(function () {
+        $.ajax({
+            "url": "/Process/ProductionChangeStatus",
+            "type": "POST",
+            "datatype": "json",
+            "data": { Production_Barcode: Production_Barcode, OspDetailOutId: OspDetailOutId },
+            success: function (data) {
+                if (data.resultModel.Success) {
+                    CloseWait();
+                    ProductionTables.ajax.reload(null, false);
+                } else {
+                    swal.fire(data.resultModel.Msg);
+                }
+            },
+            error: function () {
+                swal.fire('轉已入庫失敗')
             }
-        }
-    })
+        })
+    });
+    
 }
 
 //餘切初始化Table
@@ -1160,22 +1200,26 @@ function CotangentDataTables() {
                         cancelButtonText: "取消"
                     }).then(function (result) {
                         if (result.value) {
-                            $.ajax({
-                                url: '/Process/CotangentChooseDelete',
-                                datatype: 'json',
-                                type: "POST",
-                                data: { OspCotangentId: OspCotangentId },
-                                success: function (data) {
-                                    if (data.resultModel.Success) {
-                                        CotangentDataTable.ajax.reload(null, false);
-                                    } else {
-                                        swal.fire(data.resultModel.Msg);
+                            ShowWait(function () {
+                                $.ajax({
+                                    url: '/Process/CotangentChooseDelete',
+                                    datatype: 'json',
+                                    type: "POST",
+                                    data: { OspCotangentId: OspCotangentId },
+                                    success: function (data) {
+                                        if (data.resultModel.Success) {
+                                            CloseWait();
+                                            CotangentDataTable.ajax.reload(null, false);
+                                        } else {
+                                            swal.fire(data.resultModel.Msg);
+                                        }
+                                    },
+                                    error: function () {
+                                        swal.fire('刪除失敗');
                                     }
-                                },
-                                error: function () {
-
-                                }
+                                });
                             });
+
                         }
                     });
                 }
@@ -1229,19 +1273,26 @@ function CotangentDataTables() {
 
 ///餘切條碼入庫
 function ChagneCotangent(CotangentBarcode, OspDetailOutId) {
-    $.ajax({
-        "url": "/Process/CotangentChangeStatus",
-        "type": "POST",
-        "datatype": "json",
-        "data": { CotangentBarcode: CotangentBarcode, OspDetailOutId: OspDetailOutId },
-        success: function (data) {
-            if (data.resultModel.Success) {
-                CotangentDataTable.ajax.reload(null, false);
-            } else {
-                swal.fire(data.resultModel.Msg);
+    ShowWait(function () {
+        $.ajax({
+            "url": "/Process/CotangentChangeStatus",
+            "type": "POST",
+            "datatype": "json",
+            "data": { CotangentBarcode: CotangentBarcode, OspDetailOutId: OspDetailOutId },
+            success: function (data) {
+                if (data.resultModel.Success) {
+                    CloseWait();
+                    CotangentDataTable.ajax.reload(null, false);
+                } else {
+                    swal.fire(data.resultModel.Msg);
+                }
+            },
+            error: function () {
+                swal.fire('轉已入庫失敗')
             }
-        }
+        });
     });
+   
 }
 
 function DispalyText(data) {
@@ -1281,22 +1332,26 @@ function Open(modal_dialog) {
     modal_dialog.on('click', '#btnSaveSubinventory', function (e) {
         var Locator = $('#dialg_Locator').val();
         var OspHeaderId = $("#OspHeaderId").val();
-        $.ajax({
-            url: '/Process/ChangeHeaderStatus/',
-            dataType: 'json',
-            type: 'post',
-            data: { OspHeaderId: OspHeaderId, Locator: Locator },
-            success: function (data) {
-                if (data.resultModel.Success) {
-                    window.location.href = '/Process/Index';
-                } else {
-                    swal.fire(data.resultModel.Msg)
+
+        ShowWait(function () {
+            $.ajax({
+                url: '/Process/ChangeHeaderStatus/',
+                dataType: 'json',
+                type: 'post',
+                data: { OspHeaderId: OspHeaderId, Locator: Locator },
+                success: function (data) {
+                    if (data.resultModel.Success) {
+                        CloseWait();
+                        window.location.href = '/Process/Index';
+                    } else {
+                        swal.fire(data.resultModel.Msg)
+                    }
+                },
+                error: function () {
+                    swal.fire('完工存檔失敗')
                 }
-            
-            }
+            });
         });
-
-
 
     });
 
@@ -1325,22 +1380,27 @@ function OpenApproveDialog(modal_dialog) {
     modal_dialog.on('click', '#btnSaveSubinventory', function (e) {
         var Locator = $('#dialg_Locator').val();
         var OspHeaderId = $("#OspHeaderId").val();
-        $.ajax({
-            url: '/Process/ApproveHeaderStauts/',
-            dataType: 'json',
-            type: 'post',
-            data: { OspHeaderId: OspHeaderId, Locator: Locator },
-            success: function (data) {
-                if (data.resultModel.Success) {
-                    window.location.href = '/Process/Index';
-                } else {
-                    swal.fire(data.resultModel.Msg)
+
+        ShowWait(function () {
+            $.ajax({
+                url: '/Process/ApproveHeaderStauts/',
+                dataType: 'json',
+                type: 'post',
+                data: { OspHeaderId: OspHeaderId, Locator: Locator },
+                success: function (data) {
+                    if (data.resultModel.Success) {
+                        CloseWait();
+                        window.location.href = '/Process/Index';
+                    } else {
+                        swal.fire(data.resultModel.Msg)
+                    }
+
+                },
+                error: function () {
+                    swal.fire('核准失敗')
                 }
-
-            }
+            });
         });
-
-
 
     });
 
@@ -1411,10 +1471,10 @@ function DeleteRateLoss() {
         type: "POST",
         data: { OspHeaderId: OspHeaderId },
         success: function (data) {
-           
+            
         },
         error: function () {
-
+            swal.fire('刪除得率失敗')
         }
     });
 }
@@ -1457,23 +1517,27 @@ function BtnRecordEdit() {
 
         var BatchNo = $('#InputBatchNo').val();
         var OspHeaderId = $('#OspHeaderId').val();
-        $.ajax({
-            url: '/Process/FinishedEdit',
-            datatype: 'json',
-            type: "POST",
-            data: { BatchNo: BatchNo, OspHeaderId: OspHeaderId },
-            success: function (data) {
-                if (data.Success) {
-                    location.href = "/Process/Schedule/" + data.Data;
-                } else {
-                    swal.fire(data.Msg);
+
+        ShowWait(function () {
+            $.ajax({
+                url: '/Process/FinishedEdit',
+                datatype: 'json',
+                type: "POST",
+                data: { BatchNo: BatchNo, OspHeaderId: OspHeaderId },
+                success: function (data) {
+                    if (data.Success) {
+                        CloseWait();
+                        location.href = "/Process/Schedule/" + data.Data;
+                    } else {
+                        swal.fire(data.Msg);
+                    }
+                },
+                error: function () {
+                    swal.fire('修改失敗');
                 }
-            },
-            error: function () {
-
-            }
+            });
         });
-
+        
     });
 
     $('#BtnApprove').click(function () {

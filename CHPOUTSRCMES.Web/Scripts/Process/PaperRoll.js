@@ -147,24 +147,26 @@ function init() {
     $('#PaperRoll_Invest_Barcode').change(function (e) {
         var Barcode = $('#PaperRoll_Invest_Barcode').val();
         var OspDetailInId = $("#OspDetailInId").val();
-        $.ajax({
-            url: '/Process/CheckStockBarcode',
-            type: 'post',
-            datatype: 'json',
-            data: { Barcode: Barcode, OspDetailInId: OspDetailInId },
-            success: function (data) {
-                if (data.resultDataModel.Success == false) {
-                    swal.fire(data.resultDataModel.Msg);
-                    ClearTextPaperRoll();
-                } else {
-                    PaperRollDispalyText(data);
+        ShowWait(function () {
+            $.ajax({
+                url: '/Process/CheckStockBarcode',
+                type: 'post',
+                datatype: 'json',
+                data: { Barcode: Barcode, OspDetailInId: OspDetailInId },
+                success: function (data) {
+                    if (data.resultDataModel.Success == false) {
+                        swal.fire(data.resultDataModel.Msg);
+                        ClearTextPaperRoll();
+                    } else {
+                        CloseWait();
+                        PaperRollDispalyText(data);
+                    }
+                },
+                error: function () {
+                    swal.fire("檢查庫存條碼失敗");
                 }
-            },
-            error: function () {
-                swal.fire("失敗");
-            }
+            });
         });
-
     });
 
     ////1 有殘捲 0 無殘捲
@@ -236,46 +238,50 @@ function onclick() {
     $('#BtnProcess_Batch_no').click(function (e) {
         var BatchNo = $('#ProcessBatchNo').val();
         var OspHeaderId = $('#OspHeaderId').val();
-        $.ajax({
-            url: '/Process/CheckBatchNo',
-            datatype: 'json',
-            type: "POST",
-            data: { BatchNo: BatchNo, OspHeaderId: OspHeaderId },
-            success: function (data) {
-                if (data.resultModel.Success) {
-                    DisplayInvestPaperRollEnable(false);
-                } else {
-                    swal.fire(data.resultModel.Msg);
+        ShowWait(function () {
+            $.ajax({
+                url: '/Process/CheckBatchNo',
+                datatype: 'json',
+                type: "POST",
+                data: { BatchNo: BatchNo, OspHeaderId: OspHeaderId },
+                success: function (data) {
+                    if (data.resultModel.Success) {
+                        CloseWait();
+                        DisplayInvestPaperRollEnable(false);
+                    } else {
+                        swal.fire(data.resultModel.Msg);
+                    }
+                },
+                error: function () {
+                    swal.fire('檢查工單號失敗')
                 }
-            },
-            error: function () {
-
-            }
+            });
         });
-
     });
 
     //投出驗證單號
     $('#BtnProcess_Production_Batch_no').click(function (e) {
         var BatchNo = $('#ProcessProductionBatchNo').val();
         var OspHeaderId = $('#OspHeaderId').val();
-        $.ajax({
-            url: '/Process/CheckBatchNo',
-            datatype: 'json',
-            type: "POST",
-            data: { BatchNo: BatchNo, OspHeaderId: OspHeaderId },
-            success: function (data) {
-                if (data.resultModel.Success) {
-                    DisplayProductionPaperRollEnable(false);
-                } else {
-                    swal.fire(data.resultModel.Msg);
+        ShowWait(function () {
+            $.ajax({
+                url: '/Process/CheckBatchNo',
+                datatype: 'json',
+                type: "POST",
+                data: { BatchNo: BatchNo, OspHeaderId: OspHeaderId },
+                success: function (data) {
+                    if (data.resultModel.Success) {
+                        CloseWait();
+                        DisplayProductionPaperRollEnable(false);
+                    } else {
+                        swal.fire(data.resultModel.Msg);
+                    }
+                },
+                error: function () {
+                    swal.fire('檢查工單號失敗')
                 }
-            },
-            error: function () {
-
-            }
+            });
         });
-
     });
 
 
@@ -355,23 +361,28 @@ function onclick() {
             return
         }
 
-        $.ajax({
-            "url": "/Process/Loss",
-            "type": "POST",
-            "datatype": "json",
-            "data": { OspDetailInId: OspDetailInId, OspDetailOutId: OspDetailOutId },
-            success: function (data) {
-                if (data.resultDataModel.Success) {
-                    $('#InvestWeight').html(data.resultDataModel.Data.InvestWeight);
-                    $('#ProductWeight').html(data.resultDataModel.Data.ProductWeight);
-                    $('#Production_Loss').html(data.resultDataModel.Data.LossWeight);
-                    $('#Rate').html(data.resultDataModel.Data.Rate);
-                } else {
-                    swal.fire(data.resultDataModel.Msg)
+        ShowWait(function () {
+            $.ajax({
+                "url": "/Process/Loss",
+                "type": "POST",
+                "datatype": "json",
+                "data": { OspDetailInId: OspDetailInId, OspDetailOutId: OspDetailOutId },
+                success: function (data) {
+                    if (data.resultDataModel.Success) {
+                        CloseWait();
+                        $('#InvestWeight').html(data.resultDataModel.Data.InvestWeight);
+                        $('#ProductWeight').html(data.resultDataModel.Data.ProductWeight);
+                        $('#Production_Loss').html(data.resultDataModel.Data.LossWeight);
+                        $('#Rate').html(data.resultDataModel.Data.Rate);
+                    } else {
+                        swal.fire(data.resultDataModel.Msg)
+                    }
+                },
+                error: function () {
+                    swal.fire('計算損耗失敗')
                 }
-            }
+            });
         });
-
     });
 
     $('#BtnReturn').click(function () {
@@ -589,22 +600,26 @@ function LoadPaperRollInvestDataTable() {
                         cancelButtonText: "取消"
                     }).then(function (result) {
                         if (result.value) {
-                            $.ajax({
-                                url: '/Process/AllDelete',
-                                datatype: 'json',
-                                type: "POST",
-                                data: { OspPickedInId: OspPickedInId },
-                                success: function (data) {
-                                    if (data.resultModel.Success) {
-                                        PaperRollInvestDataTables.ajax.reload(null, false);
-                                    } else {
-                                        swal.fire(data.resultModel.Msg);
+                            ShowWait(function () {
+                                $.ajax({
+                                    url: '/Process/AllDelete',
+                                    datatype: 'json',
+                                    type: "POST",
+                                    data: { OspPickedInId: OspPickedInId },
+                                    success: function (data) {
+                                        if (data.resultModel.Success) {
+                                            CloseWait();
+                                            PaperRollInvestDataTables.ajax.reload(null, false);
+                                        } else {
+                                            swal.fire(data.resultModel.Msg);
+                                        }
+                                    },
+                                    error: function () {
+                                        swal.fire('刪除失敗');
                                     }
-                                },
-                                error: function () {
-
-                                }
+                                });
                             });
+                            
                         }
                     });
                 }
@@ -646,23 +661,28 @@ function LoadPaperRollInvestDataTable() {
 
 //儲存投入條碼
 function PaperInvestSaveBarcode(Barcode, Remnant, Remaining_Weight, OspDetailInId) {
-    $.ajax({
-        "url": "/Process/SaveInvestBarcode",
-        "type": "POST",
-        "datatype": "json",
-        "data": { Barcode: Barcode, Remnant: Remnant, Remaining_Weight: Remaining_Weight, OspDetailInId: OspDetailInId },
-        success: function (data) {
-            if (data.resultModel.Success) {
-                PaperRollInvestDataTables.ajax.reload(null, false);
-                ClearRateLoss();
-            } else {
-                swal.fire(data.resultModel.Msg);
+    ShowWait(function () {
+        $.ajax({
+            "url": "/Process/SaveInvestBarcode",
+            "type": "POST",
+            "datatype": "json",
+            "data": { Barcode: Barcode, Remnant: Remnant, Remaining_Weight: Remaining_Weight, OspDetailInId: OspDetailInId },
+            success: function (data) {
+                if (data.resultModel.Success) {
+                    CloseWait();
+                    PaperRollInvestDataTables.ajax.reload(null, false);
+                    ClearRateLoss();
+                } else {
+                    swal.fire(data.resultModel.Msg);
+                }
+            },
+            error: function () {
+                swal.fire('儲存失敗');
             }
-        }
 
-
+        });
     });
-
+    
 }
 
 
@@ -782,21 +802,24 @@ function LoadPaperRollProductionDataTable() {
                         cancelButtonText: "取消"
                     }).then(function (result) {
                         if (result.value) {
-                            $.ajax({
-                                url: '/Process/ProductionChooseDelete',
-                                datatype: 'json',
-                                type: "POST",
-                                data: { OspPickedOutId: OspPickedOutId },
-                                success: function (data) {
-                                    if (data.resultModel.Success) {
-                                        PaperRollProductionDataTables.ajax.reload(null, false);
-                                    } else {
-                                        swal.fire(data.resultModel.Msg);
+                            ShowWait(function () {
+                                $.ajax({
+                                    url: '/Process/ProductionChooseDelete',
+                                    datatype: 'json',
+                                    type: "POST",
+                                    data: { OspPickedOutId: OspPickedOutId },
+                                    success: function (data) {
+                                        if (data.resultModel.Success) {
+                                            CloseWait();
+                                            PaperRollProductionDataTables.ajax.reload(null, false);
+                                        } else {
+                                            swal.fire(data.resultModel.Msg);
+                                        }
+                                    },
+                                    error: function () {
+                                        swal.fire('刪除失敗')
                                     }
-                                },
-                                error: function () {
-
-                                }
+                                });
                             });
                         }
                     });
@@ -847,46 +870,56 @@ function LoadPaperRollProductionDataTable() {
 
 ///產生明細
 function PaperRollProductionDetail(PaperRoll_Weight, PaperRoll_Lot_Number, OspDetailOutId) {
-
-    $.ajax({
-        "url": "/Process/PaperRollCreateProduction",
-        "type": "POST",
-        "datatype": "json",
-        "data": {
-            PaperRoll_Weight: PaperRoll_Weight,
-            PaperRoll_Lot_Number: PaperRoll_Lot_Number,
-            OspDetailOutId: OspDetailOutId
-        },
-        success: function (data) {
-            if (data != null) {
-                if (data.resultModel.Success) {
-                    PaperRollProductionDataTables.ajax.reload(null, false);
-                    ClearRateLoss();
-                } else {
-                    swal.fire(data.resultModel.Msg);
+    ShowWait(function () {
+        $.ajax({
+            "url": "/Process/PaperRollCreateProduction",
+            "type": "POST",
+            "datatype": "json",
+            "data": {
+                PaperRoll_Weight: PaperRoll_Weight,
+                PaperRoll_Lot_Number: PaperRoll_Lot_Number,
+                OspDetailOutId: OspDetailOutId
+            },
+            success: function (data) {
+                if (data != null) {
+                    if (data.resultModel.Success) {
+                        CloseWait();
+                        PaperRollProductionDataTables.ajax.reload(null, false);
+                        ClearRateLoss();
+                    } else {
+                        swal.fire(data.resultModel.Msg);
+                    }
                 }
+            },
+            error: function () {
+                swal.fire('產生明細失敗')
             }
-        }
-    })
-
+        })
+    });
 
 }
 
 //產出條碼入庫
 function PaperRollChangeProductionStauts(Production_Barcode, OspDetailOutId) {
-    $.ajax({
-        "url": "/Process/ProductionChangeStatus",
-        "type": "POST",
-        "datatype": "json",
-        "data": { Production_Barcode: Production_Barcode, OspDetailOutId: OspDetailOutId },
-        success: function (data) {
-            if (data.resultModel.Success) {
-                PaperRollProductionDataTables.ajax.reload(null, false);
-            } else {
-                swal.fire(data.resultModel.Msg);
+    ShowWait(function () {
+        $.ajax({
+            "url": "/Process/ProductionChangeStatus",
+            "type": "POST",
+            "datatype": "json",
+            "data": { Production_Barcode: Production_Barcode, OspDetailOutId: OspDetailOutId },
+            success: function (data) {
+                if (data.resultModel.Success) {
+                    CloseWait();
+                    PaperRollProductionDataTables.ajax.reload(null, false);
+                } else {
+                    swal.fire(data.resultModel.Msg);
+                }
+            },
+            error: function () {
+                swal.fire('轉已入庫失敗')
             }
-        }
-    })
+        })
+    });
 }
 
 
@@ -917,10 +950,10 @@ function DeleteRateLoss() {
         type: "POST",
         data: { OspHeaderId: OspHeaderId },
         success: function (data) {
-
+           
         },
         error: function () {
-
+            swal.fire('刪除得率失敗')
         }
     });
 }
@@ -945,24 +978,26 @@ function Open(modal_dialog, Process_Batch_no) {
     modal_dialog.on('click', '#btnSaveSubinventory', function (e) {
         var Locator = $('#dialg_Locator').val();
         var OspHeaderId = $("#OspHeaderId").val();
-        $.ajax({
-            url: '/Process/ChangeHeaderStatus/',
-            dataType: 'json',
-            type: 'post',
-            data: { OspHeaderId: OspHeaderId, Locator: Locator },
-            success: function (data) {
-                if (data.resultModel.Success) {
-                    window.location.href = '/Process/Index';
-                } else {
-                    swal.fire(data.resultModel.Msg)
+        ShowWait(function () {
+            $.ajax({
+                url: '/Process/ChangeHeaderStatus/',
+                dataType: 'json',
+                type: 'post',
+                data: { OspHeaderId: OspHeaderId, Locator: Locator },
+                success: function (data) {
+                    if (data.resultModel.Success) {
+                        CloseWait();
+                        window.location.href = '/Process/Index';
+                    } else {
+                        swal.fire(data.resultModel.Msg)
+                    }
+                },
+                error: function () {
+                    swal.fire('完工存檔失敗')
                 }
-
-            }
+            });
         });
-
     });
-
-
 
     modal_dialog.modal('show');
 
@@ -987,24 +1022,27 @@ function OpenApproveDialog(modal_dialog) {
     modal_dialog.on('click', '#btnSaveSubinventory', function (e) {
         var Locator = $('#dialg_Locator').val();
         var OspHeaderId = $("#OspHeaderId").val();
-        $.ajax({
-            url: '/Process/ApproveHeaderStauts/',
-            dataType: 'json',
-            type: 'post',
-            data: { OspHeaderId: OspHeaderId, Locator: Locator },
-            success: function (data) {
-                if (data.resultModel.Success) {
-                    window.location.href = '/Process/Index';
-                } else {
-                    swal.fire(data.resultModel.Msg)
+        ShowWait(function () {
+            $.ajax({
+                url: '/Process/ApproveHeaderStauts/',
+                dataType: 'json',
+                type: 'post',
+                data: { OspHeaderId: OspHeaderId, Locator: Locator },
+                success: function (data) {
+                    if (data.resultModel.Success) {
+                        CloseWait();
+                        window.location.href = '/Process/Index';
+                    } else {
+                        swal.fire(data.resultModel.Msg)
+                    }
+
+                },
+                error: function () {
+                    swal.fire('核准失敗')
                 }
-
-            }
+            });
         });
-
     });
-
-
 
     modal_dialog.modal('show');
 
@@ -1060,22 +1098,25 @@ function BtnRecord() {
     $('#BtnEdit').click(function () {
         var BatchNo = $('#ProcessBatchNo').val();
         var OspHeaderId = $('#OspHeaderId').val();
-        $.ajax({
-            url: '/Process/FinishedEdit',
-            datatype: 'json',
-            type: "POST",
-            data: { BatchNo: BatchNo, OspHeaderId: OspHeaderId },
-            success: function (data) {
-                if (data.Success) {
-                    //changeStaus();
-                    location.href = "/Process/Schedule/" + data.Data;
-                } else {
-                    swal.fire(data.Msg);
+        ShowWait(function () {
+            $.ajax({
+                url: '/Process/FinishedEdit',
+                datatype: 'json',
+                type: "POST",
+                data: { BatchNo: BatchNo, OspHeaderId: OspHeaderId },
+                success: function (data) {
+                    if (data.Success) {
+                        CloseWait();
+                        //changeStaus();
+                        location.href = "/Process/Schedule/" + data.Data;
+                    } else {
+                        swal.fire(data.Msg);
+                    }
+                },
+                error: function () {
+                    swal.fire('修改失敗');
                 }
-            },
-            error: function () {
-
-            }
+            });
         });
     });
 
@@ -1134,20 +1175,28 @@ function BtnRecord() {
 //完工紀錄使用
 function changeStaus() {
     var OspHeaderId = $("#OspHeaderId").val();
-    $.ajax({
-        url: '/Process/EditHeaderStatus/',
-        dataType: 'json',
-        type: 'post',
-        data: { OspHeaderId: OspHeaderId },
-        success: function (data) {
-            if (data.resultModel.Success) {
-                DisplayInvestPaperRollEnable(false);
-                DisplayProductionPaperRollEnable(false);
-                PaperRollInvestDataTables.column(9).visible(true);
-                PaperRollProductionDataTables.column(8).visible(true);
-            } else {
-                swal.fire(data.resultModel.Msg)
+    ShowWait(function () {
+        $.ajax({
+            url: '/Process/EditHeaderStatus/',
+            dataType: 'json',
+            type: 'post',
+            data: { OspHeaderId: OspHeaderId },
+            success: function (data) {
+                if (data.resultModel.Success) {
+                    CloseWait();
+                    DisplayInvestPaperRollEnable(false);
+                    DisplayProductionPaperRollEnable(false);
+                    PaperRollInvestDataTables.column(9).visible(true);
+                    PaperRollProductionDataTables.column(8).visible(true);
+                } else {
+                    swal.fire(data.resultModel.Msg)
+                }
+            },
+            error: function () {
+                swal.fire('完工紀錄工單號狀態更改失敗')
             }
-        }
+
+        });
     });
+    
 }

@@ -191,85 +191,175 @@ function CheckCabinetNumber(status, showDialog) {
     if (status == 0) {
         return
     }
-    $.ajax({
-        url: '/Purchase/CheckCabinetNumber',
-        datatype: 'json',
-        type: "POST",
-        data: { InputCabinetNumber: InputCabinetNumber, ViewCabinetNumber: ViewCabinetNumber },
-        success: function (data) {
-            if (data.boolean) {
-                EnableBarcode(false);
-            } else {
-                if (showDialog) {
-                    swal.fire("櫃號輸入不對請重新輸入");
+    if (showDialog) {
+        ShowWait(function () {
+            $.ajax({
+                url: '/Purchase/CheckCabinetNumber',
+                datatype: 'json',
+                type: "POST",
+                data: { InputCabinetNumber: InputCabinetNumber, ViewCabinetNumber: ViewCabinetNumber },
+                success: function (data) {
+                    CloseWait();
+                    if (data.boolean) {
+                        EnableBarcode(false);
+                    } else {
+                        if (showDialog) {
+                            swal.fire("櫃號輸入不對請重新輸入");
+                        }
+                    }
+                },
+                error: function () {
+                    swal.fire("比對失敗");
                 }
+            });
+        });
+    } else {
+        $.ajax({
+            url: '/Purchase/CheckCabinetNumber',
+            datatype: 'json',
+            type: "POST",
+            data: { InputCabinetNumber: InputCabinetNumber, ViewCabinetNumber: ViewCabinetNumber },
+            success: function (data) {
+                if (data.boolean) {
+                    EnableBarcode(false);
+                } else {
+                    if (showDialog) {
+                        swal.fire("櫃號輸入不對請重新輸入");
+                    }
+                }
+            },
+            error: function () {
+
             }
-        },
-        error: function () {
-
-        }
-    });
+        });
+    }
 }
 
 
-function PaperNavsNumber() {
+function PaperNavsNumber(showDialog) {
     var CtrHeaderId = $("#CtrHeaderId").val();
-    $.ajax({
-        url: '/Purchase/PaperNumber',
-        type: 'POST',
-        datatype: 'json',
-        data: { id: CtrHeaderId },
-        success: function (data) {
-            $('#PaperRollSpan').text(data.PaperTotle);
-        },
-        error: function (data) {
+    if (showDialog) {
+        ShowWait(function () {
+            $.ajax({
+                url: '/Purchase/PaperNumber',
+                type: 'POST',
+                datatype: 'json',
+                data: { id: CtrHeaderId },
+                success: function (data) {
+                    $('#PaperRollSpan').text(data.PaperTotle);
+                },
+                error: function (data) {
+                    swal.fire("更新未入庫紙捲筆數失敗");
+                }
+            });
+        });
 
-        }
-    });
+        ShowWait(function () {
+            $.ajax({
+                url: '/Purchase/PaperNumberIn',
+                type: 'POST',
+                datatype: 'json',
+                data: { id: CtrHeaderId },
+                success: function (data) {
+                    CloseWait();
+                    $('#PaperRollSpanIn').text(data.PaperTotleIn);
+                },
+                error: function (data) {
+                    swal.fire("更新已入庫紙捲筆數失敗");
+                }
+            });
+        });
+    } else {
+        $.ajax({
+            url: '/Purchase/PaperNumber',
+            type: 'POST',
+            datatype: 'json',
+            data: { id: CtrHeaderId },
+            success: function (data) {
+                $('#PaperRollSpan').text(data.PaperTotle);
+            },
+            error: function (data) {
+                swal.fire("更新未入庫紙捲筆數失敗");
+            }
+        });
 
-    $.ajax({
-        url: '/Purchase/PaperNumberIn',
-        type: 'POST',
-        datatype: 'json',
-        data: { id: CtrHeaderId },
-        success: function (data) {
-            $('#PaperRollSpanIn').text(data.PaperTotleIn);
-        },
-        error: function (data) {
-
-        }
-    });
-
+        $.ajax({
+            url: '/Purchase/PaperNumberIn',
+            type: 'POST',
+            datatype: 'json',
+            data: { id: CtrHeaderId },
+            success: function (data) {
+                $('#PaperRollSpanIn').text(data.PaperTotleIn);
+            },
+            error: function (data) {
+                swal.fire("更新已入庫紙捲筆數失敗");
+            }
+        });
+    }
 }
 
-function FlatNavsNumber() {
+function FlatNavsNumber(showDialog) {
     var CtrHeaderId = $("#CtrHeaderId").val();
-    $.ajax({
-        url: '/Purchase/FlatNumber',
-        type: 'POST',
-        datatype: 'json',
-        data: { id: CtrHeaderId },
-        success: function (data) {
-            $('#FlatSpan').text(data.FlatTotle);
-        },
-        error: function (data) {
 
-        }
-    });
+    if (showDialog) {
+        ShowWait(function () {
+            $.ajax({
+                url: '/Purchase/FlatNumber',
+                type: 'POST',
+                datatype: 'json',
+                data: { id: CtrHeaderId },
+                success: function (data) {
+                    $('#FlatSpan').text(data.FlatTotle);
+                },
+                error: function (data) {
+                    swal.fire("更新未入庫平張筆數失敗");
+                }
+            });
+        });
+        
+        ShowWait(function () {
+            $.ajax({
+                url: '/Purchase/FlatInNumberIn',
+                type: 'POST',
+                datatype: 'json',
+                data: { id: CtrHeaderId },
+                success: function (data) {
+                    CloseWait();
+                    $('#FlatSpanIn').text(data.FlatTotleIn);
+                },
+                error: function (data) {
+                    swal.fire("更新已入庫平張筆數失敗");
+                }
+            });
+        });
+        
+    } else {
+        $.ajax({
+            url: '/Purchase/FlatNumber',
+            type: 'POST',
+            datatype: 'json',
+            data: { id: CtrHeaderId },
+            success: function (data) {
+                $('#FlatSpan').text(data.FlatTotle);
+            },
+            error: function (data) {
+                swal.fire("更新未入庫平張筆數失敗");
+            }
+        });
 
-    $.ajax({
-        url: '/Purchase/FlatInNumberIn',
-        type: 'POST',
-        datatype: 'json',
-        data: { id: CtrHeaderId },
-        success: function (data) {
-            $('#FlatSpanIn').text(data.FlatTotleIn);
-        },
-        error: function (data) {
-
-        }
-    });
-
+        $.ajax({
+            url: '/Purchase/FlatInNumberIn',
+            type: 'POST',
+            datatype: 'json',
+            data: { id: CtrHeaderId },
+            success: function (data) {
+                $('#FlatSpanIn').text(data.FlatTotleIn);
+            },
+            error: function (data) {
+                swal.fire("更新已入庫平張筆數失敗");
+            }
+        });
+    }
 }
 
 //紙捲匯入Dialog
@@ -329,7 +419,7 @@ function init(status) {
         }
     });
 
-    //儲存紙捲條碼按鈕
+    //儲存紙捲條碼按鈕 紙捲轉已入庫
     $("#BtnPaperRollSaveBarcode").click(function (e) {
         var barcode = $('#PaperRollBarcode').val();
         var CtrHeaderId = $('#CtrHeaderId').val();
@@ -430,20 +520,25 @@ function init(status) {
             return;
         }
 
-        $.ajax({
-            url: '/Purchase/ReturnIndex',
-            type: 'POST',
-            datatype: 'json',
-            data: { id: CtrHeaderId },
-            success: function (data) {
-                if (data.resultModel.Success) {
-                    window.location.href = '/Purchase/Index';
-                } else {
-                    swal.fire(data.resultModel.Msg);
+        ShowWait(function () {
+            $.ajax({
+                url: '/Purchase/ReturnIndex',
+                type: 'POST',
+                datatype: 'json',
+                data: { id: CtrHeaderId },
+                success: function (data) {
+                    if (data.resultModel.Success) {
+                        CloseWait();
+                        window.location.href = '/Purchase/Index';
+                    } else {
+                        swal.fire(data.resultModel.Msg);
+                    }
+                },
+                error: function () {
+                    swal.fire("存檔入庫失敗");
                 }
-            }
+            });
         });
-
 
     });
 
@@ -464,42 +559,49 @@ function init(status) {
 
 //儲存紙捲入庫條碼
 function InsertPaperRollBarcode(barcode, CtrHeaderId) {
-    $.ajax({
-        "url": "/Purchase/RollSaveBarcode",
-        "type": "POST",
-        "datatype": "json",
-        "data": { barcode: barcode, id: CtrHeaderId },
-        success: function (data) {
-            if (data.resultModel.Success) {
+    ShowWait(function () {
+        $.ajax({
+            "url": "/Purchase/RollSaveBarcode",
+            "type": "POST",
+            "datatype": "json",
+            "data": { barcode: barcode, id: CtrHeaderId },
+            success: function (data) {
+                if (data.resultModel.Success) {
 
-            } else {
-                swal.fire(data.resultModel.Msg);
+                } else {
+                    swal.fire(data.resultModel.Msg);
+                }
+                PaperRolldataTablesBodys.ajax.reload(null, false);
+                PaperNavsNumber(true);
+            },
+            error: function () {
+                swal.fire("轉已入庫失敗");
             }
-            PaperRolldataTablesBodys.ajax.reload(null, false);
-            PaperNavsNumber();
-        }
+        });
     });
-
 }
 //儲存平張入庫條碼
 function InsertFlatBarocde(barcode, CtrHeaderId) {
+    ShowWait(function () {
+        $.ajax({
+            "url": "/Purchase/FlatSaveBarcode",
+            "type": "POST",
+            "datatype": "json",
+            "data": { barcode: barcode, id: CtrHeaderId },
+            success: function (data) {
+                if (data.resultModel.Success) {
 
-    $.ajax({
-        "url": "/Purchase/FlatSaveBarcode",
-        "type": "POST",
-        "datatype": "json",
-        "data": { barcode: barcode, id: CtrHeaderId },
-        success: function (data) {
-            if (data.resultModel.Success) {
-
-            } else {
-                swal.fire(data.resultModel.Msg);
+                } else {
+                    swal.fire(data.resultModel.Msg);
+                }
+                FlatdataTablesBodys.ajax.reload(null, false);
+                FlatNavsNumber(true);
+            },
+            error: function () {
+                swal.fire("轉已入庫失敗");
             }
-            FlatdataTablesBodys.ajax.reload(null, false);
-            FlatNavsNumber();
-        }
+        });
     });
-
 }
 
 
@@ -543,17 +645,19 @@ function Open(modal_dialog) {
         var CtrHeaderId = $("#CtrHeaderId").val();
         var table = $('#ImportPaperRollTable').DataTable();
         if (table.column(0).data().length) {
-            $.ajax({
-                "url": "/Purchase/ExcelDelete",
-                "type": "POST",
-                "datatype": "json",
-                "data": { CtrHeaderId: CtrHeaderId },
-                success: function (data) {
-                    swal.fire(data.result.Msg);
-                },
-                error: function (data) {
-                    swal.fire(data);
-                }
+            ShowWait(function () {
+                $.ajax({
+                    "url": "/Purchase/ExcelDelete",
+                    "type": "POST",
+                    "datatype": "json",
+                    "data": { CtrHeaderId: CtrHeaderId },
+                    success: function (data) {
+                        swal.fire(data.result.Msg);
+                    },
+                    error: function (data) {
+                        swal.fire(data);
+                    }
+                });
             });
         }
     });
@@ -579,27 +683,31 @@ function ImportPaperRoll() {
         formData.append("file", fileInput[0]);
         formData.append("id", CtrHeaderId);
     }
-    $.ajax({
-        "url": "/Purchase/UploadFileRoll",
-        "type": "POST",
-        "datatype": "json",
-        "data": formData,
-        success: function (data) {
-            if (data.result.Success) {
-                ImportPaperRollTable(data);
-            } else {
-                swal.fire(data.result.Msg);
-            }
 
-
-        },
-        error: function (data) {
-            swal.fire(data);
-        },
-        cache: false,
-        contentType: false,
-        processData: false
+    ShowWait(function () {
+        $.ajax({
+            "url": "/Purchase/UploadFileRoll",
+            "type": "POST",
+            "datatype": "json",
+            "data": formData,
+            success: function (data) {
+                if (data.result.Success) {
+                    CloseWait();
+                    ImportPaperRollTable(data);
+                } else {
+                    swal.fire(data.result.Msg);
+                }
+            },
+            error: function (data) {
+                swal.fire(data);
+            },
+            cache: false,
+            contentType: false,
+            processData: false
+        });
     });
+
+    
 
 }
 
@@ -649,26 +757,28 @@ function ImportFlat() {
     var formData = new FormData();
     if (fileInput.length > 0) { formData.append("file", fileInput[0]); }
 
-    $.ajax({
-        "url": "/Purchase/UploadFileFlat",
-        "type": "POST",
-        "datatype": "json",
-        "data": formData,
-        success: function (data) {
-            if (data.result.Success) {
-                ImportFlatTable(data);
-            } else {
-                swal.fire(data.result.Msg);
-            }
-        },
-        error: function (data) {
-            swal.fire(data);
-        },
-        cache: false,
-        contentType: false,
-        processData: false
+    ShowWait(function () {
+        $.ajax({
+            "url": "/Purchase/UploadFileFlat",
+            "type": "POST",
+            "datatype": "json",
+            "data": formData,
+            success: function (data) {
+                if (data.result.Success) {
+                    CloseWait();
+                    ImportFlatTable(data);
+                } else {
+                    swal.fire(data.result.Msg);
+                }
+            },
+            error: function (data) {
+                swal.fire(data);
+            },
+            cache: false,
+            contentType: false,
+            processData: false
+        });
     });
-
 }
 
 function ImportFlatTable(data) {
@@ -999,8 +1109,8 @@ function FlatdataTablesBody() {
 //等待0.1秒後載入頁籤數字
 $(window).load(function () {
     setTimeout(function () {
-        PaperNavsNumber();
-        FlatNavsNumber();
+        PaperNavsNumber(false);
+        FlatNavsNumber(false);
         //Something you want delayed.
     }, 100);//How long do you want the delay to be (in milliseconds)? 
 
