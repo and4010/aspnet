@@ -49,10 +49,12 @@ namespace CHPOUTSRCMES.TASK
         /// 取消權杖來源
         /// </summary>
         private CancellationTokenSource cancelTokenSource { set; get; }
+
         /// <summary>
         /// 取消權杖
         /// </summary>
         private CancellationToken cancelToken { set; get; }
+
         /// <summary>
         /// 任務清單
         /// </summary>
@@ -68,13 +70,19 @@ namespace CHPOUTSRCMES.TASK
 
         internal MainForm MainForm => mainForm ?? (mainForm = new MainForm() { Controller = this });
 
-        private UomConverterForm uomConverterForm = null;
+        private ScheduleForm scheduleForm = null;
 
-        internal UomConverterForm UomConverterForm => (uomConverterForm == null || uomConverterForm.IsDisposed) ? (uomConverterForm = new UomConverterForm() { Controller = this }) : uomConverterForm;
+        internal ScheduleForm ScheduleForm => (scheduleForm == null || scheduleForm.IsDisposed) ? (scheduleForm = new ScheduleForm() { Controller = this }) : scheduleForm;
 
-        private MasterViewForm masterViewForm = null;
+        internal Tasker masterTasker;
 
-        internal MasterViewForm MasterViewForm => (masterViewForm == null || masterViewForm.IsDisposed) ? (masterViewForm = new MasterViewForm() { Controller = this }) : masterViewForm;
+        internal Tasker ctrTasker;
+
+        internal Tasker dlvTasker;
+
+        internal Tasker ospTasker;
+
+        internal Tasker trfTasker;
 
         /// <summary>
         /// 
@@ -87,6 +95,95 @@ namespace CHPOUTSRCMES.TASK
             taskList = new Dictionary<string, Task>();
 
             readConfig();
+
+            masterTasker = new Tasker("主檔轉檔程序", configuration.MasterTaskInterval, configuration.MasterTaskEnabled, (tasker, token) =>
+            {
+
+                TaskerMessageUpdate(tasker, DateTime.Now.ToString("dd日 HH:mm:ss.fff"), "");
+
+                MasterService service = new MasterService(MesConnStr, ErpConnStr);
+                //組織倉庫儲位
+                var taskSubinventory = Task.Run(() => service.importSubinventory(tasker, token));
+                //庫存交易類別
+                var taskTransactionType = Task.Run(() => service.importTransactionType(tasker, token));
+                //料號
+                var taskItem = taskSubinventory.ContinueWith(task => service.importItem(tasker, token), TaskContinuationOptions.OnlyOnRanToCompletion);
+                //餘切規格
+                var taskOspRelatedItem = taskItem.ContinueWith(subTask => service.importOspRelatedItem(tasker, token), TaskContinuationOptions.OnlyOnRanToCompletion);
+                //紙別機台
+                var taskMachinePaperType = taskItem.ContinueWith(subTask => service.importMachinePaperType(tasker, token), TaskContinuationOptions.OnlyOnRanToCompletion);
+                //令重張數
+                var tasYszmpckq = taskItem.ContinueWith(subTask => service.importYszmpckq(tasker, token), TaskContinuationOptions.OnlyOnRanToCompletion);
+
+                Task.WaitAll(taskSubinventory, taskTransactionType, taskItem, taskOspRelatedItem, taskMachinePaperType, tasYszmpckq);
+
+                AddOtherTasker(configuration);
+            });
+
+            ctrTasker = new Tasker("進櫃轉檔程序", configuration.CtrTaskInterval, configuration.CtrTaskEnabled, (tasker, token) =>
+            {
+
+                TaskerMessageUpdate(tasker, DateTime.Now.ToString("dd日 HH:mm:ss.fff"), "");
+
+                CtrStService service = new CtrStService(MesConnStr, ErpConnStr);
+                var task = Task.Run(() => service.ImportCtrSt(tasker, token));
+                var statusTask = task.ContinueWith(t => service.UpdateStatusCtrSt(tasker, token), TaskContinuationOptions.OnlyOnRanToCompletion);
+                var rvTask = statusTask.ContinueWith(subTask => service.ExportCtrStRv(tasker, token), TaskContinuationOptions.OnlyOnRanToCompletion);
+
+                Task.WaitAll(task, rvTask, statusTask);
+            });
+
+            dlvTasker = new Tasker("出貨轉檔程序", configuration.DlvTaskInterval, configuration.DlvTaskEnabled, (tasker, token) =>
+            {
+
+                TaskerMessageUpdate(tasker, DateTime.Now.ToString("dd日 HH:mm:ss.fff"), "");
+
+                DlvStService service = new DlvStService(MesConnStr, ErpConnStr);
+                var task = Task.Run(() => service.ImportDlvSt(tasker, token));
+                //var task = service.ImportDlvSt(tasker, token);
+                var rvTask = task.ContinueWith(subTask => service.ExportDlvStRv(tasker, token), TaskContinuationOptions.OnlyOnRanToCompletion);
+
+                Task.WaitAll(task, rvTask);
+            });
+
+            ospTasker = new Tasker("加工轉檔程序", configuration.OspTaskInterval, configuration.OspTaskEnabled, (tasker, token) =>
+            {
+
+                TaskerMessageUpdate(tasker, DateTime.Now.ToString("dd日 HH:mm:ss.fff"), "");
+
+                OspStService service = new OspStService(MesConnStr, ErpConnStr);
+                var task = service.ImportOspSt(tasker, token);
+
+                var rvStage1StatusCodeTask = task.ContinueWith(subTask => service.UpdateStatusOspStRvStage1(tasker, token), TaskContinuationOptions.OnlyOnRanToCompletion);
+                var rvStage1Task = rvStage1StatusCodeTask.ContinueWith(subTask => service.ExportOspStRvStage1(tasker, token), TaskContinuationOptions.OnlyOnRanToCompletion);
+
+                var rvStage2StatusCodeTask = rvStage1Task.ContinueWith(subTask => service.UpdateStatusOspStRvStage2(tasker, token), TaskContinuationOptions.OnlyOnRanToCompletion);
+                var rvStage2Task = rvStage2StatusCodeTask.ContinueWith(subTask => service.ExportOspStRvStage2(tasker, token), TaskContinuationOptions.OnlyOnRanToCompletion);
+
+                var rvStage3StatusCodeTask = rvStage2Task.ContinueWith(subTask => service.UpdateStatusOspStRvStage3(tasker, token), TaskContinuationOptions.OnlyOnRanToCompletion);
+                var rvStage3Task = rvStage3StatusCodeTask.ContinueWith(subTask => service.ExportOspStRvStage3(tasker, token), TaskContinuationOptions.OnlyOnRanToCompletion);
+
+                Task.WaitAll(task, rvStage1Task, rvStage1StatusCodeTask, rvStage2Task, rvStage2StatusCodeTask, rvStage3Task, rvStage3StatusCodeTask);
+
+                //Task.WaitAll(task);
+            });
+
+            trfTasker = new Tasker("庫存異動轉檔程序", configuration.TrfTaskInterval, configuration.TrfTaskEnabled, (tasker, token) =>
+            {
+
+                TaskerMessageUpdate(tasker, DateTime.Now.ToString("dd日 HH:mm:ss.fff"), "");
+
+                TrfStService service = new TrfStService(MesConnStr, ErpConnStr);
+
+                var trfTask1 = Task.Run(() => service.ExportTrfStRv(tasker, token));
+                var trfTask2 = Task.Run(() => service.ExportMiscStRv(tasker, token));
+                var trfTask3 = Task.Run(() => service.ExportRsnStRv(tasker, token));
+                var trfTask4 = Task.Run(() => service.ExportObsStRv(tasker, token));
+                var trfTask5 = Task.Run(() => service.ExportInvStRv(tasker, token));
+
+                Task.WaitAll(trfTask1, trfTask2, trfTask3, trfTask4, trfTask5);
+            });
+
         }
 
         /// <summary>
@@ -108,7 +205,6 @@ namespace CHPOUTSRCMES.TASK
             configuration.OspTaskEnabled = Helpers.AppConfigHelper.GetInt("OspTaskEnabled") == 1;
             configuration.TrfTaskEnabled = Helpers.AppConfigHelper.GetInt("TrfTaskEnabled") == 1;
         }
-
 
 
         #region 任務計數器
@@ -200,6 +296,7 @@ namespace CHPOUTSRCMES.TASK
             }
         }
 
+
         internal void RemoveTasker(string taskname)
         {
             for (int i = 0; i < taskers.Count; i++)
@@ -251,6 +348,28 @@ namespace CHPOUTSRCMES.TASK
            
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tasker"></param>
+        internal void TaskerMessageUpdate(ITasker tasker, string dateTime, string message)
+        {
+            try
+            {
+                if (scheduleForm != null)
+                {
+                    Enums.MessageType messageType = tasker.Enabled ? Enums.MessageType.Important : Enums.MessageType.Error;
+
+                    scheduleForm.MessageUpdate(tasker.Name, tasker.Unit.ToString() + " 分鐘", tasker.Status, dateTime, messageType);
+                }
+            } 
+            catch
+            {
+
+            }
+            
+        }
+
         #endregion 任務計數器
 
         /// <summary>
@@ -259,31 +378,13 @@ namespace CHPOUTSRCMES.TASK
         /// <param name="configuration"></param>
         internal void AddMasterTasker(Configuration configuration)
         {
-            if(!configuration.MasterTaskEnabled)
+            if (!configuration.MasterTaskEnabled)
             {
                 AddOtherTasker(configuration);
                 return;
             }
 
-            AddTasker(new Tasker("主檔轉檔程序", configuration.MasterTaskInterval, (tasker, token) => {
-                MasterService service = new MasterService(MesConnStr, ErpConnStr);
-                //組織倉庫儲位
-                var taskSubinventory = Task.Run(() => service.importSubinventory(tasker, token));
-                //庫存交易類別
-                var taskTransactionType = Task.Run(() => service.importTransactionType(tasker, token));  
-                //料號
-                var taskItem = taskSubinventory.ContinueWith(task => service.importItem(tasker, token), TaskContinuationOptions.OnlyOnRanToCompletion);
-                //餘切規格
-                var taskOspRelatedItem = taskItem.ContinueWith(subTask => service.importOspRelatedItem(tasker, token), TaskContinuationOptions.OnlyOnRanToCompletion);
-                //紙別機台
-                var taskMachinePaperType = taskItem.ContinueWith(subTask => service.importMachinePaperType(tasker, token), TaskContinuationOptions.OnlyOnRanToCompletion);
-                //令重張數
-                var tasYszmpckq = taskItem.ContinueWith(subTask => service.importYszmpckq(tasker, token), TaskContinuationOptions.OnlyOnRanToCompletion);
-
-                Task.WaitAll(taskSubinventory, taskTransactionType, taskItem, taskOspRelatedItem, taskMachinePaperType, tasYszmpckq);
-
-                AddOtherTasker(configuration);
-            }));
+            AddTasker(masterTasker);
         }
 
         /// <summary>
@@ -308,14 +409,7 @@ namespace CHPOUTSRCMES.TASK
                 return;
             }
 
-            AddTasker(new Tasker("進櫃轉檔程序", configuration.CtrTaskInterval, (tasker, token) => {
-                CtrStService service = new CtrStService(MesConnStr, ErpConnStr);
-                var task = Task.Run(() => service.ImportCtrSt(tasker, token));
-                var statusTask = task.ContinueWith(t => service.UpdateStatusCtrSt(tasker, token), TaskContinuationOptions.OnlyOnRanToCompletion);
-                var rvTask = statusTask.ContinueWith(subTask => service.ExportCtrStRv(tasker, token), TaskContinuationOptions.OnlyOnRanToCompletion);
-                
-                Task.WaitAll(task, rvTask, statusTask);
-            }));
+            AddTasker(ctrTasker);
         }
 
         /// <summary>
@@ -328,14 +422,7 @@ namespace CHPOUTSRCMES.TASK
                 return;
             }
 
-            AddTasker(new Tasker("出貨轉檔程序", configuration.DlvTaskInterval, (tasker, token) => {
-                DlvStService service = new DlvStService(MesConnStr, ErpConnStr);
-                var task = Task.Run(() => service.ImportDlvSt(tasker, token));
-                //var task = service.ImportDlvSt(tasker, token);
-                var rvTask = task.ContinueWith(subTask => service.ExportDlvStRv(tasker, token), TaskContinuationOptions.OnlyOnRanToCompletion);
-
-                Task.WaitAll(task, rvTask);
-            }));
+            AddTasker(dlvTasker);
         }
 
         /// <summary>
@@ -348,23 +435,7 @@ namespace CHPOUTSRCMES.TASK
                 return;
             }
 
-            AddTasker(new Tasker("加工轉檔程序", configuration.OspTaskInterval, (tasker, token) => {
-                OspStService service = new OspStService(MesConnStr, ErpConnStr);
-                var task = service.ImportOspSt(tasker, token);
-
-                var rvStage1StatusCodeTask = task.ContinueWith(subTask => service.UpdateStatusOspStRvStage1(tasker, token), TaskContinuationOptions.OnlyOnRanToCompletion);
-                var rvStage1Task = rvStage1StatusCodeTask.ContinueWith(subTask => service.ExportOspStRvStage1(tasker, token), TaskContinuationOptions.OnlyOnRanToCompletion);
-
-                var rvStage2StatusCodeTask = rvStage1Task.ContinueWith(subTask => service.UpdateStatusOspStRvStage2(tasker, token), TaskContinuationOptions.OnlyOnRanToCompletion);
-                var rvStage2Task = rvStage2StatusCodeTask.ContinueWith(subTask => service.ExportOspStRvStage2(tasker, token), TaskContinuationOptions.OnlyOnRanToCompletion);
-
-                var rvStage3StatusCodeTask = rvStage2Task.ContinueWith(subTask => service.UpdateStatusOspStRvStage3(tasker, token), TaskContinuationOptions.OnlyOnRanToCompletion);
-                var rvStage3Task = rvStage3StatusCodeTask.ContinueWith(subTask => service.ExportOspStRvStage3(tasker, token), TaskContinuationOptions.OnlyOnRanToCompletion);
-                
-                Task.WaitAll(task, rvStage1Task, rvStage1StatusCodeTask, rvStage2Task, rvStage2StatusCodeTask, rvStage3Task, rvStage3StatusCodeTask);
-
-                //Task.WaitAll(task);
-            }));
+            AddTasker(ospTasker);
         }
 
         /// <summary>
@@ -377,17 +448,7 @@ namespace CHPOUTSRCMES.TASK
                 return;
             }
 
-            AddTasker(new Tasker("庫存異動轉檔程序", configuration.TrfTaskInterval, (tasker, token) => {
-                TrfStService service = new TrfStService(MesConnStr, ErpConnStr);
-
-                var trfTask1 = Task.Run(() => service.ExportTrfStRv(tasker, token));
-                var trfTask2 = Task.Run(() => service.ExportMiscStRv(tasker, token));
-                var trfTask3 = Task.Run(() => service.ExportRsnStRv(tasker, token));
-                var trfTask4 = Task.Run(() => service.ExportObsStRv(tasker, token));
-                var trfTask5 = Task.Run(() => service.ExportInvStRv(tasker, token));
-
-                Task.WaitAll(trfTask1, trfTask2, trfTask3, trfTask4, trfTask5);
-            }));
+            AddTasker(trfTasker);
         }
 
         /// <summary>
@@ -422,10 +483,8 @@ namespace CHPOUTSRCMES.TASK
                 {
                     if (mainForm != null && !mainForm.IsDisposed)
                         mainForm.Dispose();
-                    if (uomConverterForm != null && !uomConverterForm.IsDisposed)
-                        uomConverterForm.Dispose();
-                    if (masterViewForm != null && !masterViewForm.IsDisposed)
-                        masterViewForm.Dispose();
+                    if (scheduleForm != null && !scheduleForm.IsDisposed)
+                        scheduleForm.Dispose();
                 }
             }
             this.disposed = true;
