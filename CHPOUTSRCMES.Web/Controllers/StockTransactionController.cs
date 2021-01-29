@@ -23,7 +23,7 @@ namespace CHPOUTSRCMES.Web.Controllers
     {
         StockTransferData stockTransferData = new StockTransferData();
         StockTransferBarcodeData stockTransferBarcodeData = new StockTransferBarcodeData();
-        Top top = new Top();
+        //Top top = new Top();
 
         //
         // GET: /StockTransaction/
@@ -70,20 +70,20 @@ namespace CHPOUTSRCMES.Web.Controllers
         //    return View(viewModel);
         //}
 
-        public PartialViewResult GetTop()
-        {
-            using (var context = new MesContext())
-            {
-                using (MasterUOW uow = new MasterUOW(context))
-                {
-                    //取得使用者帳號
-                    //var name = this.User.Identity.GetUserName();
-                    //取得使用者ID
-                    var id = this.User.Identity.GetUserId();
-                    return PartialView("_TopPartial", top.GetViewModel(uow, stockTransferData.orgData, id));
-                }
-            }
-        }
+        //public PartialViewResult GetTop()
+        //{
+        //    using (var context = new MesContext())
+        //    {
+        //        using (MasterUOW uow = new MasterUOW(context))
+        //        {
+        //            //取得使用者帳號
+        //            //var name = this.User.Identity.GetUserName();
+        //            //取得使用者ID
+        //            var id = this.User.Identity.GetUserId();
+        //            return PartialView("_TopPartial", top.GetViewModel(uow, stockTransferData.orgData, id));
+        //        }
+        //    }
+        //}
 
         public PartialViewResult GetContent(string TransferType)
         {

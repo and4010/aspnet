@@ -56,9 +56,9 @@
                     <td class="input-lg">@Html.DropDownListFor(model => model.SelectedSubinventory, Model.SubinventoryItems, new { @class = "customDropDownList", id = "ddlSubinventory", autocomplete = "off" })</td>
 
                     <td style="text-align: right;">
-                        @Html.LabelFor(model => model.SelectedLocator, new { style = "font-weight:bolder;" })
+                        @Html.LabelFor(model => model.SelectedLocator, new { id = "ddlLocatorArea", style = "font-weight:bolder; display:none" })
                     </td>
-                    <td class="input-lg">@Html.DropDownListFor(model => model.SelectedLocator, Model.LocatorItems, new { @class = "customDropDownList", id = "ddlLocator", autocomplete = "off" })</td>
+                    <td class="input-lg">@Html.DropDownListFor(model => model.SelectedLocator, Model.LocatorItems, new { @class = "customDropDownList", id = "ddlLocator", autocomplete = "off", style = "display:none" })</td>
 
                     <td style="text-align: right;">
                         <label style='font-weight:bolder;'>
@@ -66,7 +66,7 @@
                         </label>
                     </td>
                     <td class="input-lg" colspan="3">
-                        <input class="customTextBox" type="text" id="txtItemNumber" style="width:250px;", autocomplete="off" />
+                        <input class="customTextBox" type="text" id="txtItemNumber" style="width:250px;" autocomplete="off" />
                         @*@Html.TextBoxFor(model => model.ItemNumber, new { @class = "form-control customTextBox", id = "txtItemNumber", style = "width:250px;", placeholder = "請輸入料號", autocomplete = "off" })*@
                     </td>
                 </tr>

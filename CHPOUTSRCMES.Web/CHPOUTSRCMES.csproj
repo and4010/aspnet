@@ -283,7 +283,6 @@
     <Compile Include="Controllers\StockController.cs" />
     <Compile Include="Controllers\StockInventoryController.cs" />
     <Compile Include="Controllers\StockTransactionController.cs" />
-    <Compile Include="Controllers\TransferController.cs" />
     <Compile Include="Controllers\YszmpckqController.cs" />
     <Compile Include="DataAnnotation\Precision.cs" />
     <Compile Include="DataModel\Entity\Delivery\DLV_SOA_T.cs" />
@@ -494,7 +493,6 @@
     <Compile Include="Models\Stock\StockObsoleteDT.cs" />
     <Compile Include="Models\Stock\StockTransferBarcodeDT.cs" />
     <Compile Include="Models\Stock\StockTransferDT.cs" />
-    <Compile Include="Models\Stock\Top.cs" />
     <Compile Include="Models\Information\YszmpckqDT.cs" />
     <Compile Include="Models\ResultDataModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -545,7 +543,6 @@
     <Compile Include="ViewModels\StockTransaction\MergeBarcodeViewModel.cs" />
     <Compile Include="ViewModels\StockTransaction\OutBoundViewModel.cs" />
     <Compile Include="ViewModels\StockTransaction\ShipmentNumberViewModel.cs" />
-    <Compile Include="ViewModels\StockTransaction\TopViewModel.cs" />
     <Compile Include="ViewModels\StockTransaction\TransferReasonViewModel.cs" />
     <Compile Include="ViewModels\StockTransaction\StockTransferViewModel.cs" />
     <Compile Include="ViewModels\StockTxnQuery\StockTxnQueryViewModel.cs" />
@@ -2192,7 +2189,6 @@
     <Content Include="Views\Delivery\FlatView.cshtml" />
     <Content Include="Views\Delivery\RollView.cshtml" />
     <Content Include="Views\Shared\_DeliveryPartial.cshtml" />
-    <Content Include="Views\Shared\_DeliveryRollPartial.cshtml" />
     <Content Include="Views\PartNo\Index.cshtml" />
     <Content Include="Views\Reason\Index.cshtml" />
     <Content Include="Views\MachinePaperType\Index.cshtml" />
@@ -2214,7 +2210,6 @@
     <Content Include="Views\StockTransaction\_OutBoundPartial.cshtml" />
     <Content Include="Views\StockTransaction\_InBoundPartial.cshtml" />
     <Content Include="Views\StockTransaction\_TransferReasonPartial.cshtml" />
-    <Content Include="Views\Shared\_TopPartial.cshtml" />
     <Content Include="Views\Inventory\Index.cshtml" />
     <Content Include="Views\Inventory\PaperRollRecord.cshtml" />
     <Content Include="Views\Inventory\FlatRecord.cshtml" />

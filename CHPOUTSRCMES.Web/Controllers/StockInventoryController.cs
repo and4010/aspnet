@@ -19,7 +19,7 @@ namespace CHPOUTSRCMES.Web.Controllers
     public class StockInventoryController : Controller
     {
         StockInventoryData stockInventoryData = new StockInventoryData();
-        Top top = new Top();
+        //Top top = new Top();
        
 
         // GET: StockInventory
@@ -38,20 +38,20 @@ namespace CHPOUTSRCMES.Web.Controllers
 
 
 
-        public PartialViewResult GetTop()
-        {
-            using (var context = new MesContext())
-            {
-                using (MasterUOW uow = new MasterUOW(context))
-                {
-                    //取得使用者帳號
-                    //var name = this.User.Identity.GetUserName();
-                    //取得使用者ID
-                    var id = this.User.Identity.GetUserId();
-                    return PartialView("_TopPartial", top.GetViewModel(uow, stockInventoryData.orgData, id));
-                }
-            }
-        }
+        //public PartialViewResult GetTop()
+        //{
+        //    using (var context = new MesContext())
+        //    {
+        //        using (MasterUOW uow = new MasterUOW(context))
+        //        {
+        //            //取得使用者帳號
+        //            //var name = this.User.Identity.GetUserName();
+        //            //取得使用者ID
+        //            var id = this.User.Identity.GetUserId();
+        //            return PartialView("_TopPartial", top.GetViewModel(uow, stockInventoryData.orgData, id));
+        //        }
+        //    }
+        //}
 
         public PartialViewResult GetContent(long inventoryType)
         {

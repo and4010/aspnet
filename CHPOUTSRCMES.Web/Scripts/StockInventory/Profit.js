@@ -28,21 +28,21 @@ function getProfitSubinventoryCode() {
 }
 
 function getProfitLocatorId() {
-    //if ($('#ddlLocatorArea').is(":visible")) {
-    //    return $("#ddlLocator").val();
-    //} else {
-    //    return null;
-    //}
-    if ($('#ddlLocator option').length === 1) {
-        return null;
-    } else {
+    if ($('#ddlLocatorArea').is(":visible")) {
         return $("#ddlLocator").val();
+    } else {
+        return null;
     }
+    //if ($('#ddlLocator option').length === 1) {
+    //    return null;
+    //} else {
+    //    return $("#ddlLocator").val();
+    //}
 }
 
 
 function ProfitInit() {
-    GetProfitTop();
+    ProfitTopInit();
     ProfitOnClick();
     ProfitLoadLossDetailDT();
     ProfitLoadProfitDetailDT();
@@ -50,28 +50,28 @@ function ProfitInit() {
 };
 
 
-function GetProfitTop() {
-    $("#txtItemNumberArea").toggleClass('border-0')
-    $.ajax({
-        url: "/StockTransaction/GetTop",
-        type: "GET",
-        dataType: 'html',
-        data: {},
-        success: function (data) {
-            $('#Top').empty();
-            $('#Top').html(data);
-            ProfitTopInit();
-        },
-        error: function () {
-            swal.fire('更新倉庫搜尋頁面失敗');
-        },
-        complete: function (data) {
+//function GetProfitTop() {
+//    $("#txtItemNumberArea").toggleClass('border-0')
+//    $.ajax({
+//        url: "/StockTransaction/GetTop",
+//        type: "GET",
+//        dataType: 'html',
+//        data: {},
+//        success: function (data) {
+//            $('#Top').empty();
+//            $('#Top').html(data);
+//            ProfitTopInit();
+//        },
+//        error: function () {
+//            swal.fire('更新倉庫搜尋頁面失敗');
+//        },
+//        complete: function (data) {
 
 
-        }
+//        }
 
-    })
-}
+//    })
+//}
 
 
 function ProfitTopInit() {
@@ -91,11 +91,13 @@ function ProfitTopInit() {
                     $('#ddlLocator').append($('<option></option>').val(data[i].Value).html(data[i].Text));
                 }
                 //GetItemNumberList();
-                //if (data.length == 1) {
-                //    $('#ddlLocatorArea').hide();
-                //} else {
-                //    $('#ddlLocatorArea').show();
-                //}
+                if (data.length == 1) {
+                    $('#ddlLocatorArea').hide();
+                    $('#ddlLocator').hide();
+                } else {
+                    $('#ddlLocatorArea').show();
+                    $('#ddlLocator').show();
+                }
 
             },
             error: function () {
@@ -871,18 +873,18 @@ function SearchLoss() {
         event.preventDefault();
         return;
     }
-    if ($('#ddlLocator option').length > 1 && $('#ddlLocator').val() == "請選擇") {
-        swal.fire('請選擇儲位');
-        event.preventDefault();
-        return;
-    }
-    //if ($('#ddlLocatorArea').is(":visible")) {
-    //    if ($('#ddlLocator').val() == "請選擇") {
-    //        swal.fire('請選擇儲位');
-    //        event.preventDefault();
-    //        return;
-    //    }
+    //if ($('#ddlLocator option').length > 1 && $('#ddlLocator').val() == "請選擇") {
+    //    swal.fire('請選擇儲位');
+    //    event.preventDefault();
+    //    return;
     //}
+    if ($('#ddlLocatorArea').is(":visible")) {
+        if ($('#ddlLocator').val() == "請選擇") {
+            swal.fire('請選擇儲位');
+            event.preventDefault();
+            return;
+        }
+    }
     if ($('#txtItemNumber').val() == "") {
         swal.fire('請輸入料號');
         event.preventDefault();

@@ -29,21 +29,21 @@ function getLossSubinventoryCode() {
 }
 
 function getLossLocatorId() {
-    //if ($('#ddlLocatorArea').is(":visible")) {
-    //    return $("#ddlLocator").val();
-    //} else {
-    //    return null;
-    //}
-    if ($('#ddlLocator option').length === 1) {
-        return null;
-    } else {
+    if ($('#ddlLocatorArea').is(":visible")) {
         return $("#ddlLocator").val();
+    } else {
+        return null;
     }
+    //if ($('#ddlLocator option').length === 1) {
+    //    return null;
+    //} else {
+    //    return $("#ddlLocator").val();
+    //}
 }
 
 
 function LossInit() {
-    GetLossTop();
+    LossTopInit();
     LossOnClick();
     LossLoadStockDT();
     LossLoadLossDetailDT();
@@ -51,28 +51,28 @@ function LossInit() {
     LossOnkey();
 };
 
-function GetLossTop() {
-    $("#txtItemNumberArea").toggleClass('border-0')
-    $.ajax({
-        url: "/StockTransaction/GetTop",
-        type: "GET",
-        dataType: 'html',
-        data: {},
-        success: function (data) {
-            $('#Top').empty();
-            $('#Top').html(data);
-            LossTopInit();
-        },
-        error: function () {
-            swal.fire('更新倉庫搜尋頁面失敗');
-        },
-        complete: function (data) {
+//function GetLossTop() {
+//    $("#txtItemNumberArea").toggleClass('border-0')
+//    $.ajax({
+//        url: "/StockTransaction/GetTop",
+//        type: "GET",
+//        dataType: 'html',
+//        data: {},
+//        success: function (data) {
+//            $('#Top').empty();
+//            $('#Top').html(data);
+//            LossTopInit();
+//        },
+//        error: function () {
+//            swal.fire('更新倉庫搜尋頁面失敗');
+//        },
+//        complete: function (data) {
 
 
-        }
+//        }
 
-    })
-}
+//    })
+//}
 
 
 function LossTopInit() {
@@ -92,11 +92,13 @@ function LossTopInit() {
                     $('#ddlLocator').append($('<option></option>').val(data[i].Value).html(data[i].Text));
                 }
                 //GetItemNumberList();
-                //if (data.length == 1) {
-                //    $('#ddlLocatorArea').hide();
-                //} else {
-                //    $('#ddlLocatorArea').show();
-                //}
+                if (data.length == 1) {
+                    $('#ddlLocatorArea').hide();
+                    $('#ddlLocator').hide();
+                } else {
+                    $('#ddlLocatorArea').show();
+                    $('#ddlLocator').show();
+                }
 
             },
             error: function () {
@@ -670,18 +672,18 @@ function SearchStock() {
         event.preventDefault();
         return;
     }
-    if ($('#ddlLocator option').length > 1 && $('#ddlLocator').val() == "請選擇") {
-        swal.fire('請選擇儲位');
-        event.preventDefault();
-        return;
-    }
-    //if ($('#ddlLocatorArea').is(":visible")) {
-    //    if ($('#ddlLocator').val() == "請選擇") {
-    //        swal.fire('請選擇儲位');
-    //        event.preventDefault();
-    //        return;
-    //    }
+    //if ($('#ddlLocator option').length > 1 && $('#ddlLocator').val() == "請選擇") {
+    //    swal.fire('請選擇儲位');
+    //    event.preventDefault();
+    //    return;
     //}
+    if ($('#ddlLocatorArea').is(":visible")) {
+        if ($('#ddlLocator').val() == "請選擇") {
+            swal.fire('請選擇儲位');
+            event.preventDefault();
+            return;
+        }
+    }
     if ($('#txtItemNumber').val() == "") {
         swal.fire('請輸入料號');
         event.preventDefault();

@@ -17,7 +17,7 @@ namespace CHPOUTSRCMES.Web.Controllers
     [Authorize]
     public class ObsoleteController : Controller
     {
-        Top top = new Top();
+        //Top top = new Top();
         StockObsoleteData obsoleteData = new StockObsoleteData();
         OrgSubinventoryData orgData = new OrgSubinventoryData();
         //
@@ -37,20 +37,20 @@ namespace CHPOUTSRCMES.Web.Controllers
                    
         }
 
-        public PartialViewResult GetTop()
-        {
-            using (var context = new MesContext())
-            {
-                using (MasterUOW uow = new MasterUOW(context))
-                {
-                    //取得使用者帳號
-                    //var name = this.User.Identity.GetUserName();
-                    //取得使用者ID
-                    var id = this.User.Identity.GetUserId();
-                    return PartialView("_TopPartial", top.GetViewModel(uow, orgData, id));
-                }
-            }
-        }
+        //public PartialViewResult GetTop()
+        //{
+        //    using (var context = new MesContext())
+        //    {
+        //        using (MasterUOW uow = new MasterUOW(context))
+        //        {
+        //            //取得使用者帳號
+        //            //var name = this.User.Identity.GetUserName();
+        //            //取得使用者ID
+        //            var id = this.User.Identity.GetUserId();
+        //            return PartialView("_TopPartial", top.GetViewModel(uow, orgData, id));
+        //        }
+        //    }
+        //}
 
         [HttpPost, ActionName("SearchStock")]
         public JsonResult SearchStock(DataTableAjaxPostViewModel data, long organizationId, string subinventoryCode, long? locatorId, string itemNumber)

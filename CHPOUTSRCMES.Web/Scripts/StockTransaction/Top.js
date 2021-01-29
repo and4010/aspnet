@@ -1,31 +1,32 @@
 ﻿
 function GetTop() {
     $("#txtItemNumberArea").toggleClass('border-0')
-    $.ajax({
-        url: "/StockTransaction/GetTop",
-        type: "GET",
-        dataType: 'html',
-        data: {},
-        success: function (data) {
-            $('#Top').empty();
-            $('#Top').html(data);
-            TopInit();
+    TopInit();
+    //$.ajax({
+    //    url: "/StockTransaction/GetTop",
+    //    type: "GET",
+    //    dataType: 'html',
+    //    data: {},
+    //    success: function (data) {
+    //        $('#Top').empty();
+    //        $('#Top').html(data);
+    //        TopInit();
 
-            //if (TransferType == "出庫") {
-            //    OutBoundInit();
-            //} else {
-            //    InBoundInit();
-            //}
-        },
-        error: function () {
-            swal.fire('更新倉庫搜尋頁面失敗');
-        },
-        complete: function (data) {
+    //        //if (TransferType == "出庫") {
+    //        //    OutBoundInit();
+    //        //} else {
+    //        //    InBoundInit();
+    //        //}
+    //    },
+    //    error: function () {
+    //        swal.fire('更新倉庫搜尋頁面失敗');
+    //    },
+    //    complete: function (data) {
 
 
-        }
+    //    }
 
-    })
+    //})
 }
 
 
@@ -49,13 +50,13 @@ function TopInit() {
                         $('#ddlLocator').append($('<option></option>').val(data[i].Value).html(data[i].Text));
                     }
                     //GetItemNumberList();
-                    //if (data.length == 1) {
-                    //    $('#ddlLocatorArea').hide();
-                    //    $('#ddlLocatorArea2').hide();
-                    //} else {
-                    //    $('#ddlLocatorArea').show();
-                    //    $('#ddlLocatorArea2').show();
-                    //}
+                    if (data.length == 1) {
+                        $('#ddlLocatorArea').hide();
+                        $('#ddlLocator').hide();
+                    } else {
+                        $('#ddlLocatorArea').show();
+                        $('#ddlLocator').show();
+                    }
 
                 },
                 error: function () {

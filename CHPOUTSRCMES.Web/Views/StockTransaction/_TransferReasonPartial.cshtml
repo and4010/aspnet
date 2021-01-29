@@ -27,9 +27,9 @@
                     <td class="input-lg">@Html.DropDownListFor(model => model.SelectedSubinventory, Model.SubinventoryItems, new { @class = "customDropDownList", id = "ddlSubinventory", autocomplete = "off" })</td>
 
                     <td style="text-align: right;">
-                        @Html.LabelFor(model => model.SelectedLocator, new { style = "font-weight:bolder;" })
+                        @Html.LabelFor(model => model.SelectedLocator, new { id = "ddlLocatorArea", style = "font-weight:bolder; display:none" })
                     </td>
-                    <td class="input-lg">@Html.DropDownListFor(model => model.SelectedLocator, Model.LocatorItems, new { @class = "customDropDownList", id = "ddlLocator", autocomplete = "off" })</td>
+                    <td class="input-lg">@Html.DropDownListFor(model => model.SelectedLocator, Model.LocatorItems, new { @class = "customDropDownList", id = "ddlLocator", autocomplete = "off", style = "display:none" })</td>
 
                     <td style="text-align: right;">
                         <label style='font-weight:bolder;'>
