@@ -5,7 +5,7 @@ var deliveryAuthorizeEditor;
 $(document).ready(function () {
 
     //航程號下拉選單自動完成
-    //$("#ddlTrip").combobox();
+    $("#ddlTrip").combobox();
 
     //jQuery ui datepicker初始化
     $.datepicker.setDefaults($.datepicker.regional["zh-TW"]);
