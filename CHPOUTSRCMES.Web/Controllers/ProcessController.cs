@@ -16,8 +16,10 @@ namespace CHPOUTSRCMES.Web.Controllers
     [Authorize]
     public class ProcessController : Controller
     {
-        //
-        // GET: /Process/
+        /// <summary>
+        /// 加工首頁
+        /// </summary>
+        /// <returns></returns>
         public ActionResult Index()
         {
             //取得使用者ID
@@ -30,6 +32,11 @@ namespace CHPOUTSRCMES.Web.Controllers
             return View();
         }
 
+        /// <summary>
+        /// 加工-平張頁面
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public ActionResult Schedule(long id)
         {
             //取得使用者角色
@@ -46,6 +53,11 @@ namespace CHPOUTSRCMES.Web.Controllers
             return View(procesViewModel);
         }
 
+        /// <summary>
+        /// 加工-編輯備註頁面
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public ActionResult Edit(long id)
         {
             ProcessViewModel procesViewModel = new ProcessViewModel();
@@ -54,6 +66,12 @@ namespace CHPOUTSRCMES.Web.Controllers
             return View(procesViewModel);
         }
 
+        /// <summary>
+        /// 加工-編輯備註儲存
+        /// </summary>
+        /// <param name="OspHeaderId"></param>
+        /// <param name="Note"></param>
+        /// <returns></returns>
         public JsonResult EditSave(long OspHeaderId, string Note)
         {
             //取得使用者ID
@@ -63,6 +81,11 @@ namespace CHPOUTSRCMES.Web.Controllers
             return Json(new { resultModel },JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>
+        /// 代紙-平張頁面
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public ActionResult Flat(long id)
         {
             var userIdentity = (ClaimsIdentity)User.Identity;
@@ -76,6 +99,11 @@ namespace CHPOUTSRCMES.Web.Controllers
             return View(procesViewModel);
         }
 
+        /// <summary>
+        /// 代紙-紙捲頁面
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public ActionResult PaperRoll(long id)
         {
             var userIdentity = (ClaimsIdentity)User.Identity;
@@ -90,7 +118,11 @@ namespace CHPOUTSRCMES.Web.Controllers
         }
 
 
-
+        /// <summary>
+        /// 加工頁面裁切日期dialog
+        /// </summary>
+        /// <param name="PaperType"></param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult _ProcessIndex(string PaperType)
         {
@@ -99,6 +131,11 @@ namespace CHPOUTSRCMES.Web.Controllers
             return PartialView();
         }
 
+        /// <summary>
+        /// 儲位dialog
+        /// </summary>
+        /// <param name="OspDetailOutId"></param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult _Locator(long OspDetailOutId)
         {
@@ -128,7 +165,12 @@ namespace CHPOUTSRCMES.Web.Controllers
             return Json(new { resultModel }, JsonRequestBehavior.AllowGet);
         }
 
-        //待測試修改
+        /// <summary>
+        /// 完工紀錄-允許按鈕
+        /// </summary>
+        /// <param name="OspHeaderId"></param>
+        /// <param name="Locator"></param>
+        /// <returns></returns>
         [Authorize(Roles = "系統管理員, 華紙使用者")]
         [HttpPost]
         public ActionResult ApproveHeaderStauts(long OspHeaderId, string Locator)
@@ -143,6 +185,15 @@ namespace CHPOUTSRCMES.Web.Controllers
             return Json(new { resultModel }, JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>
+        /// 更改裁切日期按鈕
+        /// </summary>
+        /// <param name="OspHeaderId"></param>
+        /// <param name="Dialog_CuttingDateFrom"></param>
+        /// <param name="Dialog_CuttingDateTo"></param>
+        /// <param name="Dialog_MachineNum"></param>
+        /// <param name="BtnStatus"></param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult _BtnDailogChangStatusCutDate(long OspHeaderId, DateTime Dialog_CuttingDateFrom, DateTime Dialog_CuttingDateTo, string Dialog_MachineNum, string BtnStatus)
         {
@@ -153,6 +204,12 @@ namespace CHPOUTSRCMES.Web.Controllers
             return Json(new { resultModel }, JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>
+        /// 關帳按鈕
+        /// </summary>
+        /// <param name="OspHeaderId"></param>
+        /// <param name="BtnStatus"></param>
+        /// <returns></returns>
         public ActionResult SetClose(long OspHeaderId, string BtnStatus)
         {
             ProcessViewModel procesViewModel = new ProcessViewModel();
@@ -160,7 +217,21 @@ namespace CHPOUTSRCMES.Web.Controllers
             return Json(new { resultModel }, JsonRequestBehavior.AllowGet);
         }
 
-
+        /// <summary>
+        /// 加工表格單查詢
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="Status"></param>
+        /// <param name="BatchNo"></param>
+        /// <param name="MachineNum"></param>
+        /// <param name="DueDateFrom"></param>
+        /// <param name="DueDateTo"></param>
+        /// <param name="CuttingDateFrom"></param>
+        /// <param name="CuttingDateTo"></param>
+        /// <param name="PlanStartDateFrom"></param>
+        /// <param name="PlanStartDateTo"></param>
+        /// <param name="Subinventory"></param>
+        /// <returns></returns>
         [HttpPost]
         public JsonResult TableResult(DataTableAjaxPostViewModel data, string Status, string BatchNo, 
             string MachineNum, string DueDateFrom, string DueDateTo, string CuttingDateFrom, string CuttingDateTo, string PlanStartDateFrom, string PlanStartDateTo, string Subinventory)
@@ -176,6 +247,12 @@ namespace CHPOUTSRCMES.Web.Controllers
             return Json(new { draw = data.Draw, recordsFiltered = model.Count, recordsTotal = model.Count, data = model1 }, JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>
+        /// 檢查批號
+        /// </summary>
+        /// <param name="BatchNo"></param>
+        /// <param name="OspHeaderId"></param>
+        /// <returns></returns>
         [HttpPost]
         public JsonResult CheckBatchNo(string BatchNo,long OspHeaderId)
         {
@@ -185,6 +262,12 @@ namespace CHPOUTSRCMES.Web.Controllers
             return Json(new { resultModel }, JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>
+        /// 投入表格
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="OspHeaderId"></param>
+        /// <returns></returns>
         [HttpPost]
         public JsonResult InvestLoadTable(DataTableAjaxPostViewModel data, long OspHeaderId)
         {
@@ -196,6 +279,12 @@ namespace CHPOUTSRCMES.Web.Controllers
             return Json(new { draw = data.Draw, recordsFiltered = model.Count, recordsTotal = model.Count, data = model1 }, JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>
+        /// 檢查庫存條碼
+        /// </summary>
+        /// <param name="Barcode"></param>
+        /// <param name="OspDetailInId"></param>
+        /// <returns></returns>
         [HttpPost]
         public JsonResult CheckStockBarcode(string Barcode, long OspDetailInId)
         {
@@ -227,6 +316,11 @@ namespace CHPOUTSRCMES.Web.Controllers
             return Json(new { resultModel }, JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>
+        /// 投入條碼編輯修改Editor
+        /// </summary>
+        /// <param name="InvestDTList"></param>
+        /// <returns></returns>
         [HttpPost]
         public JsonResult InvestEdit(ProcessUOW.DetailDTEditor InvestDTList)
         {
@@ -240,6 +334,11 @@ namespace CHPOUTSRCMES.Web.Controllers
             return Json(new { resultModel }, JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>
+        /// 刪除全部條碼
+        /// </summary>
+        /// <param name="OspPickedInId"></param>
+        /// <returns></returns>
         [HttpPost]
         public JsonResult AllDelete(long[] OspPickedInId)
         {
@@ -251,6 +350,12 @@ namespace CHPOUTSRCMES.Web.Controllers
             return Json(new { resultModel }, JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>
+        /// 產出表單資料
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="OspHeaderId"></param>
+        /// <returns></returns>
         [HttpPost]
         public JsonResult ProductionLoadDataTables(DataTableAjaxPostViewModel data, long OspHeaderId)
         {
@@ -284,7 +389,7 @@ namespace CHPOUTSRCMES.Web.Controllers
         }
 
         /// <summary>
-        /// 加工產出Editor
+        /// 加工產出編輯Editor
         /// </summary>
         /// <param name="ProductionDTEditor"></param>
         /// <returns></returns>
@@ -316,6 +421,12 @@ namespace CHPOUTSRCMES.Web.Controllers
             var resultModel = viewModel.ProductionChooseDelete(OspPickedOutId);
             return Json(new { resultModel }, JsonRequestBehavior.AllowGet);
         }
+
+        /// <summary>
+        /// 加工餘切選擇刪除
+        /// </summary>
+        /// <param name="OspCotangentId"></param>
+        /// <returns></returns>
         [HttpPost]
         public JsonResult CotangentChooseDelete(long[] OspCotangentId)
         {
@@ -325,7 +436,7 @@ namespace CHPOUTSRCMES.Web.Controllers
         }
 
         /// <summary>
-        /// 代紙紙捲Editor
+        /// 代紙紙捲編輯Editor
         /// </summary>
         /// <param name="ProductionDTEditor"></param>
         /// <returns></returns>
@@ -341,6 +452,12 @@ namespace CHPOUTSRCMES.Web.Controllers
             return Json(new { resultModel }, JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>
+        /// 產出條碼入庫
+        /// </summary>
+        /// <param name="Production_Barcode"></param>
+        /// <param name="OspDetailOutId"></param>
+        /// <returns></returns>
         [HttpPost]
         public JsonResult ProductionChangeStatus(string Production_Barcode, long OspDetailOutId)
         {
@@ -353,7 +470,12 @@ namespace CHPOUTSRCMES.Web.Controllers
             return Json(new { resultModel }, JsonRequestBehavior.AllowGet);
         }
 
-
+        /// <summary>
+        /// 取得餘切表單資料
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="OspHeaderId"></param>
+        /// <returns></returns>
         [HttpPost]
         public JsonResult CotangentDataTables(DataTableAjaxPostViewModel data, long OspHeaderId)
         {
@@ -365,6 +487,11 @@ namespace CHPOUTSRCMES.Web.Controllers
             return Json(new { draw = data.Draw, recordsFiltered = model.Count, recordsTotal = model.Count, data = model1 }, JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>
+        /// 餘切編輯Editor
+        /// </summary>
+        /// <param name="cotangentDTEditor"></param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult CotangentEdit(ProcessUOW.CotangentDTEditor cotangentDTEditor)
         {
@@ -378,7 +505,12 @@ namespace CHPOUTSRCMES.Web.Controllers
         }
 
 
-
+        /// <summary>
+        /// 儲存餘切條碼資料
+        /// </summary>
+        /// <param name="CotangentBarcode"></param>
+        /// <param name="OspDetailOutId"></param>
+        /// <returns></returns>
         [HttpPost]
         public JsonResult CotangentChangeStatus(string CotangentBarcode,long OspDetailOutId)
         {
@@ -392,15 +524,11 @@ namespace CHPOUTSRCMES.Web.Controllers
             return Json(new { resultModel }, JsonRequestBehavior.AllowGet);
         }
 
-
-        [HttpPost]
-        public JsonResult RecordCotangentDataTables(DataTableAjaxPostViewModel data)
-        {
-            List<Cotangent> model = new List<Cotangent>();
-            //model = ProcessViewModel.ListCotangent;
-            return Json(new { draw = data.Draw, recordsFiltered = model.Count, recordsTotal = model.Count, data = model }, JsonRequestBehavior.AllowGet);
-        }
-
+        /// <summary>
+        /// 刪除得率計算
+        /// </summary>
+        /// <param name="OspHeaderId"></param>
+        /// <returns></returns>
         [HttpPost]
         public JsonResult DeleteRate(long OspHeaderId)
         {
@@ -409,6 +537,12 @@ namespace CHPOUTSRCMES.Web.Controllers
             return Json(new {  }, JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>
+        /// 計算損耗
+        /// </summary>
+        /// <param name="OspDetailInId"></param>
+        /// <param name="OspDetailOutId"></param>
+        /// <returns></returns>
         public JsonResult Loss(long OspDetailInId ,long OspDetailOutId)
         {
             ProcessViewModel viewModel = new ProcessViewModel();
@@ -457,6 +591,12 @@ namespace CHPOUTSRCMES.Web.Controllers
             return Json(new { resultModel }, JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>
+        /// 列印標籤成品平版
+        /// </summary>
+        /// <param name="OspPickedOutId"></param>
+        /// <param name="OspCotangentId"></param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult GeProductLabels(List<long> OspPickedOutId,List<long> OspCotangentId)
         {
@@ -480,7 +620,12 @@ namespace CHPOUTSRCMES.Web.Controllers
             return procesViewModel.GePaperRollerProductLabels(OspPickedOutId, name);
         }
 
-
+        /// <summary>
+        /// 補印標籤
+        /// </summary>
+        /// <param name="StockId"></param>
+        /// <param name="Status"></param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult RePrintLabel(List<long> StockId, string Status)
         {
@@ -490,6 +635,11 @@ namespace CHPOUTSRCMES.Web.Controllers
             return viewModel.RePrintLabel(StockId, name, Status);
         }
 
+        /// <summary>
+        /// 又裁又代 須檢查來源裁切工單是否完工
+        /// </summary>
+        /// <param name="SrcOspHeaderId"></param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult CheckInsteadPaperOrderProcess(long SrcOspHeaderId)
         {
