@@ -20,8 +20,11 @@ namespace CHPOUTSRCMES.Web.Controllers
         //Top top = new Top();
         StockMiscellaneousData miscellaneousData = new StockMiscellaneousData();
         OrgSubinventoryData orgData = new OrgSubinventoryData();
-        //
-        // GET: /Miscellaneous/
+       
+        /// <summary>
+        /// 雜項異動 View
+        /// </summary>
+        /// <returns></returns>
         public ActionResult Index()
         {
             using (var context = new MesContext())
@@ -66,24 +69,18 @@ namespace CHPOUTSRCMES.Web.Controllers
             
         //}
 
-        [HttpPost, ActionName("GetStockItemData")]
-        public JsonResult GetStockItemData(string SUBINVENTORY_CODE, string ITEM_NO)
-        {
-            List<StockDT> list = StockData.GetStockItemData(SUBINVENTORY_CODE, ITEM_NO);
-            if (list.Count > 0 && list[0].ITEM_CATEGORY == "平版")
-            {
-                return new JsonResult { Data = new { STATUS = true, PACKING_TYPE = list[0].PACKING_TYPE, ITEM_CATEGORY = list[0].ITEM_CATEGORY, UNIT = list[0].PRIMARY_UOM_CODE } };
-            }
-            else if (list.Count > 0 && list[0].ITEM_CATEGORY == "捲筒")
-            {
-                return new JsonResult { Data = new { STATUS = true, PACKING_TYPE = list[0].PACKING_TYPE, ITEM_CATEGORY = list[0].ITEM_CATEGORY, UNIT = list[0].PRIMARY_UOM_CODE } };
-            }
-            else
-            {
-                return new JsonResult { Data = new { STATUS = false, PACKING_TYPE = "", ITEM_CATEGORY = "", UNIT = "" } };
-            }
-        }
-
+       
+        /// <summary>
+        /// 庫存查詢
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="organizationId"></param>
+        /// <param name="subinventoryCode"></param>
+        /// <param name="locatorId"></param>
+        /// <param name="itemNumber"></param>
+        /// <param name="primaryQty"></param>
+        /// <param name="percentageError"></param>
+        /// <returns></returns>
         [HttpPost, ActionName("SearchStock")]
         //public JsonResult SearchStock(DataTableAjaxPostViewModel data, long organizationId, string subinventoryCode, long? locatorId, string itemNumber, decimal primaryQty, decimal percentageError)
         public JsonResult SearchStock(DataTableAjaxPostViewModel data, long organizationId, string subinventoryCode, long? locatorId, string itemNumber, decimal primaryQty, decimal percentageError)
@@ -122,6 +119,12 @@ namespace CHPOUTSRCMES.Web.Controllers
             }
         }
 
+        /// <summary>
+        /// 異動明細表格
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="transactionTypeId"></param>
+        /// <returns></returns>
         [HttpPost, ActionName("GetTransactionDetail")]
         public JsonResult GetTransactionDetail(DataTableAjaxPostViewModel data, long transactionTypeId)
         {
@@ -162,6 +165,11 @@ namespace CHPOUTSRCMES.Web.Controllers
             }
         }
 
+        /// <summary>
+        /// 異動明細表格資料編輯
+        /// </summary>
+        /// <param name="detailEditor"></param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult DetailEditor(StockMiscellaneousDTEditor detailEditor)
         {
@@ -179,13 +187,14 @@ namespace CHPOUTSRCMES.Web.Controllers
             }
         }
 
-        [HttpPost]
-        public ActionResult UpdateRemark(StockMiscellaneousDTEditor selectedData)
-        {
-            List<StockMiscellaneousDT> data = miscellaneousData.UpdateRemark(selectedData);
-            return new JsonResult { Data = new { data } };
-        }
-
+        /// <summary>
+        /// 新增異動明細
+        /// </summary>
+        /// <param name="transactionTypeId"></param>
+        /// <param name="stockId"></param>
+        /// <param name="mPrimaryQty"></param>
+        /// <param name="note"></param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult AddTransactionDetail(long transactionTypeId,
       long stockId, string mPrimaryQty, string note)
@@ -204,13 +213,12 @@ namespace CHPOUTSRCMES.Web.Controllers
             }
         }
 
-        [HttpPost]
-        public ActionResult DelTransactionDetail(List<long> IDs)
-        {
-            ResultModel result = miscellaneousData.DelTransactionDetail(IDs);
-            return new JsonResult { Data = new { status = result.Success, result = result.Msg } };
-        }
-
+     
+        /// <summary>
+        /// 異動存檔
+        /// </summary>
+        /// <param name="transactionTypeId"></param>
+        /// <returns></returns>
           [HttpPost]
         public ActionResult SaveTransactionDetail(long transactionTypeId)
         {

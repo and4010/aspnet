@@ -16,13 +16,21 @@ namespace CHPOUTSRCMES.Web.Controllers
     [Authorize]
     public class ReasonController : Controller
     {
-        // GET: Reason
+        /// <summary>
+        /// 基本資料-貨故原因 View
+        /// </summary>
+        /// <returns></returns>
         public ActionResult Index()
         {
             ReasonViewModel model = new ReasonViewModel();
             return View(model);
         }
 
+        /// <summary>
+        /// 貨故原因表格
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
         [HttpPost, ActionName("ReasonJson")]
         public JsonResult ReasonJson(DataTableAjaxPostViewModel data)
         {
@@ -41,7 +49,12 @@ namespace CHPOUTSRCMES.Web.Controllers
         }
 
 
-
+        /// <summary>
+        /// 貨故原因表格資料編輯
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="ReasonEditor"></param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult Editor(DataTableAjaxPostViewModel data, ReasonViewModel.ReasonEditor ReasonEditor)
         {

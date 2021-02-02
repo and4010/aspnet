@@ -13,8 +13,11 @@ namespace CHPOUTSRCMES.Web.Controllers
     public class OspRelatedController : Controller
     {
         OspRelatedData ospRelatedData = new OspRelatedData();
-        //
-        // GET: /OspRelated/
+        
+        /// <summary>
+        /// 基本資料-餘切規格 View
+        /// </summary>
+        /// <returns></returns>
         public ActionResult Index()
         {
             var id = this.User.Identity.GetUserId();
@@ -22,6 +25,14 @@ namespace CHPOUTSRCMES.Web.Controllers
             return View(viewModel);
         }
 
+        /// <summary>
+        /// 查詢
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="ORGANIZATION_ID"></param>
+        /// <param name="INVENTORY_ITEM_ID"></param>
+        /// <param name="RELATED_ITEM_ID"></param>
+        /// <returns></returns>
         [HttpPost, ActionName("GetOspRelatedDT")]
         public JsonResult GetOspRelatedDT(DataTableAjaxPostViewModel data, string ORGANIZATION_ID, string INVENTORY_ITEM_ID, string RELATED_ITEM_ID)
         {
@@ -57,6 +68,11 @@ namespace CHPOUTSRCMES.Web.Controllers
         //    return new JsonResult { Data = new { status = result.Success, result = result.Msg } };
         //}
 
+        /// <summary>
+        /// 組成成份料號下拉選單
+        /// </summary>
+        /// <param name="ORGANIZATION_ID"></param>
+        /// <returns></returns>
         [HttpPost, ActionName("GetInventoryItemList")]
         public JsonResult GetInventoryItemList(string ORGANIZATION_ID)
         {
@@ -64,6 +80,12 @@ namespace CHPOUTSRCMES.Web.Controllers
             return Json(items, JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>
+        /// 餘切料號下拉選單
+        /// </summary>
+        /// <param name="ORGANIZATION_ID"></param>
+        /// <param name="INVENTORY_ITEM_ID"></param>
+        /// <returns></returns>
         [HttpPost, ActionName("GetRelatedItemList")]
         public JsonResult GetRelatedItemList(string ORGANIZATION_ID, string INVENTORY_ITEM_ID)
         {

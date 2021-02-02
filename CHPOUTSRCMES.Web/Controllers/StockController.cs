@@ -13,13 +13,22 @@ namespace CHPOUTSRCMES.Web.Controllers
     [Authorize]
     public class StockController : Controller
     {
-        //
+        /// <summary>
+        /// 庫存查詢-首頁 View
+        /// </summary>
+        /// <returns></returns>
         // GET: /Stock/
         public ActionResult Index()
         {
             return View();
         }
 
+        /// <summary>
+        /// 照片檢視 View
+        /// </summary>
+        /// <param name="Id"></param>
+        /// <param name="ItemNumber"></param>
+        /// <returns></returns>
         public ActionResult PhotoView(string Id , string ItemNumber)
         {
             StockDetailQueryModel stockDetailQueryModel = new StockDetailQueryModel();
@@ -28,6 +37,11 @@ namespace CHPOUTSRCMES.Web.Controllers
             return View(stockDetailQueryModel);
         }
 
+        /// <summary>
+        /// 取得照片清單
+        /// </summary>
+        /// <param name="STOCK_ID"></param>
+        /// <returns></returns>
         public JsonResult GetPhoto(long STOCK_ID)
         {
             StockDetailQueryModel stockDetailQueryModel = new StockDetailQueryModel();

@@ -3343,7 +3343,7 @@ SELECT [TRANSFER_PICKED_ID]
                 try
                 {
                     var detail = trfDetailTRepository.GetAll().AsNoTracking().FirstOrDefault(x => x.TransferHeaderId == transferHeaderId);
-                    if (detail == null) return new ResultModel(true, "請輸入出庫明細");
+                    if (detail == null) return new ResultModel(false, "請輸入出庫明細");
 
                     //檢查出貨編號是否揀完
                     string cmd = @"

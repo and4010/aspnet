@@ -12,8 +12,10 @@ namespace CHPOUTSRCMES.Web.Controllers
     public class PartNoController : Controller
     {
 
-
-        // GET: PartNo
+        /// <summary>
+        /// 基本資料-料號 View
+        /// </summary>
+        /// <returns></returns>
         public ActionResult Index()
         {
             PartNoViewModel model = new PartNoViewModel();
@@ -25,7 +27,15 @@ namespace CHPOUTSRCMES.Web.Controllers
         }
 
 
-
+        /// <summary>
+        /// 查詢
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="Catalog_elem_val_050"></param>
+        /// <param name="Catalog_elem_val_020"></param>
+        /// <param name="Catalog_elem_val_070"></param>
+        /// <param name="OrganizationId"></param>
+        /// <returns></returns>
         [HttpPost, ActionName("PartNoJson")]
         public JsonResult PartNoJson(DataTableAjaxPostViewModel data,string Catalog_elem_val_050, string Catalog_elem_val_020,string Catalog_elem_val_070,string OrganizationId)
         {

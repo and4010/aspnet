@@ -657,39 +657,39 @@ $(document).ready(function () {
 
     }
 
-    function DelTransactionDetail(selectedData) {
+    //function DelTransactionDetail(selectedData) {
 
 
-        var list = [];
-        for (i = 0; i < selectedData.length; i++) {
-            list.push(selectedData[i].ID);
-        }
+    //    var list = [];
+    //    for (i = 0; i < selectedData.length; i++) {
+    //        list.push(selectedData[i].ID);
+    //    }
 
 
-        $.ajax({
-            url: "/Miscellaneous/DelTransactionDetail",
-            type: "post",
-            data: {
-                IDs: list
-            },
-            success: function (data) {
-                if (data.status) {
-                    TransactionDetailDT.ajax.reload();
-                }
-                else {
-                    swal.fire(data.result);
-                }
-            },
-            error: function () {
-                swal.fire('刪除異動明細失敗');
-            },
-            complete: function (data) {
+    //    $.ajax({
+    //        url: "/Miscellaneous/DelTransactionDetail",
+    //        type: "post",
+    //        data: {
+    //            IDs: list
+    //        },
+    //        success: function (data) {
+    //            if (data.status) {
+    //                TransactionDetailDT.ajax.reload();
+    //            }
+    //            else {
+    //                swal.fire(data.result);
+    //            }
+    //        },
+    //        error: function () {
+    //            swal.fire('刪除異動明細失敗');
+    //        },
+    //        complete: function (data) {
 
 
-            }
+    //        }
 
-        });
-    }
+    //    });
+    //}
 
     function SaveTransactionDetail() {
         var transactionTypeId = $('#ddlMiscellaneous').val();

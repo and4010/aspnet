@@ -15,8 +15,11 @@ namespace CHPOUTSRCMES.Web.Controllers
     public class OrgSubinventoryController : Controller
     {
         OrgSubinventoryData orgSubinventoryData = new OrgSubinventoryData();
-        //
-        // GET: /OrgSubinventory/
+
+        /// <summary>
+        /// 基本資料-組織倉庫 View
+        /// </summary>
+        /// <returns></returns>
         public ActionResult Index()
         {
             using (var context = new MesContext())
@@ -29,6 +32,14 @@ namespace CHPOUTSRCMES.Web.Controllers
             }
         }
 
+        /// <summary>
+        /// 查詢
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="ORGANIZATION_ID"></param>
+        /// <param name="SUBINVENTORY_CODE"></param>
+        /// <param name="LOCATOR_ID"></param>
+        /// <returns></returns>
         [HttpPost, ActionName("GetOrgSubinventoryDT")]
         public JsonResult GetOrgSubinventoryDT(DataTableAjaxPostViewModel data, string ORGANIZATION_ID, string SUBINVENTORY_CODE, string LOCATOR_ID)
         {
@@ -73,6 +84,11 @@ namespace CHPOUTSRCMES.Web.Controllers
         //    return new JsonResult { Data = new { status = result.Success, result = result.Msg } };
         //}
 
+        /// <summary>
+        /// 倉庫下拉選單
+        /// </summary>
+        /// <param name="ORGANIZATION_ID"></param>
+        /// <returns></returns>
         [HttpPost, ActionName("GetSubinventoryList")]
         public JsonResult GetSubinventoryList(string ORGANIZATION_ID)
         {
@@ -86,6 +102,12 @@ namespace CHPOUTSRCMES.Web.Controllers
             }
         }
 
+        /// <summary>
+        /// 儲位下拉選單
+        /// </summary>
+        /// <param name="ORGANIZATION_ID"></param>
+        /// <param name="SUBINVENTORY_CODE"></param>
+        /// <returns></returns>
         [HttpPost, ActionName("GetLocatorList")]
         public JsonResult GetLocatorList(string ORGANIZATION_ID, string SUBINVENTORY_CODE)
         {

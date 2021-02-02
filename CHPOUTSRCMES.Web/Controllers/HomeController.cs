@@ -6,7 +6,6 @@ using CHPOUTSRCMES.Web.Models.Stock;
 using CHPOUTSRCMES.Web.Util;
 using CHPOUTSRCMES.Web.ViewModels;
 using CHPOUTSRCMES.Web.ViewModels.Account;
-using CHPOUTSRCMES.Web.ViewModels.Inventory;
 using CHPOUTSRCMES.Web.ViewModels.Process;
 using CHPOUTSRCMES.Web.ViewModels.Purchase;
 using Microsoft.AspNet.Identity;
@@ -32,6 +31,10 @@ namespace CHPOUTSRCMES.Web.Controllers
 
         StockTransferBarcodeData stockTransferBarcodeData = new StockTransferBarcodeData();
 
+        /// <summary>
+        /// 登入後的首頁View
+        /// </summary>
+        /// <returns></returns>
         public ActionResult Index()
         {
             var id = this.User.Identity.GetUserId();
@@ -51,95 +54,13 @@ namespace CHPOUTSRCMES.Web.Controllers
             return View(viewModel);
         }
 
-        public ActionResult TestData()
-        {
-            return View("TestData");
-        }
-
-        [HttpPost]
-        public ActionResult RecoverTestData()
-        {
-            //FlatEditBarcodeData.resetData();
-            //FlatEditData.resetData();
-            //PaperRollEditBarcodeData.resetData();
-            //PaperRollEditData.resetData();
-            //TripHeaderData.resetData();
-            //AccountViewModel.RestData();
-            //StockTransferBarcodeData.resetData();
-            //StockTransferData.resetData();
-            //StockData.resetData();
-            //InventoryViewModel.ResetData();
-            //StockMiscellaneousData.resetData();
-            //StockObsoleteData.resetData();
-            //StockInventoryData.resetData();
-            return new JsonResult { Data = new { status = true, result = "測試資料還原成功" } };
-        }
-
-        [HttpPost]
-        public ActionResult GetLabel(List<string> BARCODE)
-        {
-            string msg = "";
-            LabelData labelData = new LabelData();
-            var lables = labelData.GetLabels(BARCODE);
-            Util.PdfLableUtil pdf = new PdfLableUtil();
-            string labelFullPath = pdf.GeneratePdfLabels2(lables, ref msg);
-            if (string.IsNullOrEmpty(labelFullPath))
-            {
-                throw new Exception("產生PDF發生錯誤:" + msg);
-            }
-
-            var fileStream = new FileStream(labelFullPath,
-                                 FileMode.Open,
-                                 FileAccess.Read
-                               );
-            return new FileStreamResult(fileStream, "application/pdf");
-
-        }
-
-        [HttpPost]
-        public ActionResult GetLabel2(List<string> BARCODE)
-        {
-            string msg = "";
-            LabelData labelData = new LabelData();
-            var lables = labelData.GetLabels2(BARCODE, stockTransferBarcodeData);
-            Util.PdfLableUtil pdf = new PdfLableUtil();
-            string labelFullPath = pdf.GeneratePdfLabels2(lables, ref msg);
-            if (string.IsNullOrEmpty(labelFullPath))
-            {
-                throw new Exception("產生PDF發生錯誤:" + msg);
-            }
-
-            var fileStream = new FileStream(labelFullPath,
-                                 FileMode.Open,
-                                 FileAccess.Read
-                               );
-            return new FileStreamResult(fileStream, "application/pdf");
-
-        }
-
-        [HttpPost]
-        public ActionResult GetLabels3(List<string> BARCODE)
-        {
-            string msg = "";
-            LabelData labelData = new LabelData();
-            var lables = labelData.GetLabels3(BARCODE);
-            Util.PdfLableUtil pdf = new PdfLableUtil();
-            string labelFullPath = pdf.GeneratePdfLabels2(lables, ref msg);
-            if (string.IsNullOrEmpty(labelFullPath))
-            {
-                throw new Exception("產生PDF發生錯誤:" + msg);
-            }
-
-            var fileStream = new FileStream(labelFullPath,
-                                 FileMode.Open,
-                                 FileAccess.Read
-                               );
-            return new FileStreamResult(fileStream, "application/pdf");
-
-        }
-
         
-
+        /// <summary>
+        /// 入庫單
+        /// </summary>
+        /// <param name="CtrHeaderId"></param>
+        /// <param name="ItemCategory"></param>
+        /// <returns></returns>
         public ActionResult CtrReport(string CtrHeaderId, string ItemCategory)
         {
 #if DEBUG

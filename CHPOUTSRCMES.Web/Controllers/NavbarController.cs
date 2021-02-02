@@ -9,7 +9,11 @@ namespace CHPOUTSRCMES.Web.Controllers
     public class NavbarController : Controller
     {
         private MesContext db = new MesContext();
-        // GET: Navbar
+
+        /// <summary>
+        /// 左側導覽Menu View
+        /// </summary>
+        /// <returns></returns>
         public ActionResult Index()
         {
             //取得使用者角色

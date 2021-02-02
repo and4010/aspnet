@@ -12,7 +12,10 @@ namespace CHPOUTSRCMES.Web.Controllers
     [Authorize]
     public class SoaController : Controller
     {
-        //
+        /// <summary>
+        /// SOA傳輸記錄 View
+        /// </summary>
+        /// <returns></returns>
         // GET: /Soa/
         public ActionResult Index()
         {

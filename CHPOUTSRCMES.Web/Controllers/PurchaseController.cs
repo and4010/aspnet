@@ -29,8 +29,10 @@ namespace CHPOUTSRCMES.Web.Controllers
     public class PurchaseController : Controller
     {
 
-        //
-        // GET: /Inbound/
+        /// <summary>
+        /// 入庫-月曆首頁 View
+        /// </summary>
+        /// <returns></returns>
         public ActionResult Index()
         {
             var model = new PurchaseViewModel()
@@ -48,6 +50,11 @@ namespace CHPOUTSRCMES.Web.Controllers
             return View(model);
         }
 
+        /// <summary>
+        /// 查詢櫃號
+        /// </summary>
+        /// <param name="CabinetNumber"></param>
+        /// <returns></returns>
         public JsonResult SearchCabinetNumber(string CabinetNumber)
         {
             PurchaseViewModel purchaseViewModel = new PurchaseViewModel();
@@ -56,7 +63,12 @@ namespace CHPOUTSRCMES.Web.Controllers
 
         }
 
-       
+        /// <summary>
+        /// 取得入庫月曆資料
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="status"></param>
+        /// <returns></returns>
         public JsonResult GetEvents(string id, string status)
         {
             ///清除cache fullcalendar才能在執行
@@ -66,6 +78,11 @@ namespace CHPOUTSRCMES.Web.Controllers
             return Json(fullcalendar.ToArray(), JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>
+        /// 入庫存檔
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpPost]
         public JsonResult ReturnIndex(long id)
         {
@@ -94,7 +111,12 @@ namespace CHPOUTSRCMES.Web.Controllers
             return View(model);
         }
 
-
+        /// <summary>
+        /// 紙捲表頭表格
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpPost, ActionName("RollHeader")]
         public JsonResult RollHeader(DataTableAjaxPostViewModel data, long id)
         {
@@ -110,7 +132,12 @@ namespace CHPOUTSRCMES.Web.Controllers
 
 
 
-
+        /// <summary>
+        /// 紙捲表身表格
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpPost, ActionName("RollBody")]
         public JsonResult RollBody(DataTableAjaxPostViewModel data, long id)
         {
@@ -127,7 +154,12 @@ namespace CHPOUTSRCMES.Web.Controllers
         }
 
 
-
+        /// <summary>
+        /// 平張表頭表格
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpPost, ActionName("FlatHeader")]
         public JsonResult FlatHeader(DataTableAjaxPostViewModel data, long id)
         {
@@ -145,7 +177,12 @@ namespace CHPOUTSRCMES.Web.Controllers
 
 
 
-
+        /// <summary>
+        /// 平張表身表格
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpPost, ActionName("FlatBody")]
         public JsonResult FlatBody(DataTableAjaxPostViewModel data,long id)
         {
@@ -163,6 +200,12 @@ namespace CHPOUTSRCMES.Web.Controllers
             //data：該分頁所需要的資料。
         }
 
+        /// <summary>
+        /// 比對櫃號
+        /// </summary>
+        /// <param name="InputCabinetNumber"></param>
+        /// <param name="ViewCabinetNumber"></param>
+        /// <returns></returns>
         [HttpPost]
         public JsonResult CheckCabinetNumber(string InputCabinetNumber, string ViewCabinetNumber)
         {
@@ -178,12 +221,20 @@ namespace CHPOUTSRCMES.Web.Controllers
             return Json(new { boolean }, JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>
+        /// 紙捲匯入View
+        /// </summary>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult _ImportBodyRoll()
         {
             return PartialView();
         }
 
+        /// <summary>
+        /// 平張匯入View
+        /// </summary>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult _ImportBodyFlat()
         {
@@ -274,6 +325,11 @@ namespace CHPOUTSRCMES.Web.Controllers
         
         }
 
+        /// <summary>
+        /// 紙捲編輯存檔
+        /// </summary>
+        /// <param name="formCollection"></param>
+        /// <returns></returns>
         [HttpPost]
         public JsonResult RollEditSave(FormCollection formCollection)
         {
@@ -301,6 +357,11 @@ namespace CHPOUTSRCMES.Web.Controllers
             return Json(new { resultModel }, JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>
+        /// 平張編輯存檔
+        /// </summary>
+        /// <param name="formCollection"></param>
+        /// <returns></returns>
         [HttpPost]
         public JsonResult FlatEditSave(FormCollection formCollection)
         {
@@ -331,7 +392,12 @@ namespace CHPOUTSRCMES.Web.Controllers
             return Json(new { resultModel }, JsonRequestBehavior.AllowGet);
         }
 
-
+        /// <summary>
+        /// 紙捲轉已入庫
+        /// </summary>
+        /// <param name="Barcode"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpPost]
         public JsonResult RollSaveBarcode(string Barcode,long id)
         {
@@ -344,6 +410,12 @@ namespace CHPOUTSRCMES.Web.Controllers
             return Json(new { resultModel }, JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>
+        /// 平張轉已入庫
+        /// </summary>
+        /// <param name="Barcode"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpPost]
         public JsonResult FlatSaveBarcode(string Barcode, long id)
         {
@@ -356,7 +428,13 @@ namespace CHPOUTSRCMES.Web.Controllers
             return Json(new { resultModel }, JsonRequestBehavior.AllowGet);
         }
 
-
+        /// <summary>
+        /// 紙捲Excel匯入資料預覽表格
+        /// </summary>
+        /// <param name="file"></param>
+        /// <param name="data"></param>
+        /// <param name="formCollection"></param>
+        /// <returns></returns>
         [HttpPost]
         public JsonResult UploadFileRoll(HttpPostedFileBase file, DataTableAjaxPostViewModel data, FormCollection formCollection)
         {
@@ -399,6 +477,14 @@ namespace CHPOUTSRCMES.Web.Controllers
             return Json(new { draw = data.Draw, recordsFiltered = detail.Count, recordsTotal = detail.Count, data = detail, result }, JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>
+        /// 紙捲Excel匯入資料預覽表格
+        /// </summary>
+        /// <param name="file"></param>
+        /// <param name="PaperRollModel"></param>
+        /// <param name="result"></param>
+        /// <param name="CtrHeaderId"></param>
+        /// <returns></returns>
         [HttpPost]
         public JsonResult ExcelImportRoll(HttpPostedFileBase file, ref List<DetailModel.RollDetailModel> PaperRollModel, ref ResultModel result, long CtrHeaderId)
         {
@@ -411,6 +497,11 @@ namespace CHPOUTSRCMES.Web.Controllers
             return Json(new { data = PaperRollModel, result }, JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>
+        /// 取消Excell匯入
+        /// </summary>
+        /// <param name="CtrHeaderId"></param>
+        /// <returns></returns>
         [HttpPost]
         public JsonResult ExcelDelete(long CtrHeaderId)
         {
@@ -472,6 +563,12 @@ namespace CHPOUTSRCMES.Web.Controllers
             return Json(new { FlatTotleIn }, JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>
+        /// 平張Excel匯入資料預覽表格
+        /// </summary>
+        /// <param name="file"></param>
+        /// <param name="data"></param>
+        /// <returns></returns>
         [HttpPost]
         public JsonResult UploadFileFlat(HttpPostedFileBase file, DataTableAjaxPostViewModel data)
         {

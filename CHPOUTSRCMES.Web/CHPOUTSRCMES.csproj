@@ -267,7 +267,6 @@
     <Compile Include="Controllers\DeliveryController.cs" />
     <Compile Include="Controllers\ErrorsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\InventoryController.cs" />
     <Compile Include="Controllers\MachinePaperTypeController.cs" />
     <Compile Include="Controllers\MiscellaneousController.cs" />
     <Compile Include="Controllers\ObsoleteController.cs" />
@@ -464,7 +463,6 @@
     <Compile Include="Models\Purchase\FullCalendarEventModel.cs" />
     <Compile Include="Models\Information\OrgSubinventoryDT.cs" />
     <Compile Include="Models\Information\OspRelatedDT.cs" />
-    <Compile Include="Models\Inventory\Inventory.cs" />
     <Compile Include="Models\Label.cs" />
     <Compile Include="Models\Information\MachinePaperType.cs" />
     <Compile Include="Models\Information\PartNoModel.cs" />
@@ -517,7 +515,6 @@
     <Compile Include="ViewModels\Delivery\PaperRollEditViewModel.cs" />
     <Compile Include="ViewModels\Delivery\PaperRollViewModel.cs" />
     <Compile Include="ViewModels\ErrorViewModel.cs" />
-    <Compile Include="ViewModels\Inventory\InventoryViewModel.cs" />
     <Compile Include="ViewModels\MachinePaperTypeViewModel.cs" />
     <Compile Include="ViewModels\Obsolete\ObsoleteViewModel.cs" />
     <Compile Include="ViewModels\OrgSubinventoryViewModel.cs" />
@@ -2065,15 +2062,12 @@
     <Content Include="Scripts\Delivery\FlatEdit.js" />
     <Content Include="Scripts\Delivery\FlatView.js" />
     <Content Include="Scripts\Delivery\index.js" />
-    <Content Include="Scripts\Delivery\InsteadEdit.js" />
     <Content Include="Scripts\Delivery\PaperRollEdit.js" />
     <Content Include="Scripts\Delivery\PaperRollView.js" />
     <Content Include="Scripts\Errors\General.js" />
     <Content Include="Scripts\flot-data.js" />
     <Content Include="Scripts\Account\Account.js" />
     <Content Include="bower_components\GlobalFunc.js" />
-    <Content Include="Scripts\Home\TestData.js" />
-    <Content Include="Scripts\Inventory\Index.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\jquerysession.js" />
@@ -2198,9 +2192,6 @@
     <Content Include="Views\Process\Index.cshtml" />
     <Content Include="Views\Process\_ProcessIndex.cshtml" />
     <Content Include="Views\Process\Schedule.cshtml" />
-    <Content Include="Views\Home\TestData.cshtml">
-      <SubType>Code</SubType>
-    </Content>
     <Content Include="Views\Process\Flat.cshtml" />
     <Content Include="Views\Process\PaperRoll.cshtml" />
     <Content Include="Views\Process\Record.cshtml" />
@@ -2210,9 +2201,6 @@
     <Content Include="Views\StockTransaction\_OutBoundPartial.cshtml" />
     <Content Include="Views\StockTransaction\_InBoundPartial.cshtml" />
     <Content Include="Views\StockTransaction\_TransferReasonPartial.cshtml" />
-    <Content Include="Views\Inventory\Index.cshtml" />
-    <Content Include="Views\Inventory\PaperRollRecord.cshtml" />
-    <Content Include="Views\Inventory\FlatRecord.cshtml" />
     <Content Include="Views\StockInventory\_LossPartial.cshtml" />
     <Content Include="Views\Miscellaneous\Index.cshtml" />
     <Content Include="Views\Obsolete\Index.cshtml" />

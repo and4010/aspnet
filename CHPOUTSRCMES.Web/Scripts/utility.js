@@ -1,4 +1,4 @@
-﻿
+﻿//顯示請等待Dialog
 function ShowWait(callBack) {
     if (swal.isVisible()) { //判斷swal是否已顯示
         if (swal.isLoading()) { //判斷swal是否顯示正在讀取
@@ -32,7 +32,7 @@ function ShowWait(callBack) {
 
 
 
-
+//關閉請等待Dialog
 function CloseWait() {
     if (swal.isVisible()) {
         swal.close();

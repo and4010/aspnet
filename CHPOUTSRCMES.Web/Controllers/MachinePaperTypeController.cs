@@ -12,7 +12,10 @@ namespace CHPOUTSRCMES.Web.Controllers
     [Authorize]
     public class MachinePaperTypeController : Controller
     {
-        // GET: MachinePaperType
+        /// <summary>
+        /// 基本資料-機台 View
+        /// </summary>
+        /// <returns></returns>
         public ActionResult Index()
         {
             MachinePaperTypeViewModel model = new MachinePaperTypeViewModel();
@@ -21,7 +24,12 @@ namespace CHPOUTSRCMES.Web.Controllers
         }
 
 
-
+        /// <summary>
+        /// 查詢
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="Organization_code"></param>
+        /// <returns></returns>
         [HttpPost, ActionName("MachinePaperType")]
         public JsonResult MachinePaperType(DataTableAjaxPostViewModel data,string Organization_code)
         {

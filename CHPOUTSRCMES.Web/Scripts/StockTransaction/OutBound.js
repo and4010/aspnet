@@ -747,6 +747,9 @@ function OutBoundInit() {
             var SelectedItemNumber2 = dt.rows(indexes).data().pluck('ITEM_NUMBER')[0];
             $("#SelectedItemNumber2").text(SelectedItemNumber2);
             var PACKING_TYPE = dt.rows(indexes).data().pluck('PACKING_TYPE')[0];
+            if (!PACKING_TYPE) {
+                PACKING_TYPE = "";
+            }
             $('#PACKING_TYPE2').text(PACKING_TYPE);
 
             var rowsData = OutBoundDataTablesBody.rows({ page: 'current' }).data();
@@ -1242,65 +1245,65 @@ function OutBoundInit() {
         
     }
 
-    function GetNumberStatus() {
-        $.ajax({
-            url: "/StockTransaction/GetNumberStatus",
-            type: "POST",
-            dataType: "json",
-            data: {
-                TransactionType: GetTransactionType(),
-                OUT_SUBINVENTORY_CODE: getOutSubinventoryCode(),
-                OUT_LOCATOR_ID: $("#ddlOutLocator").val(),
-                IN_SUBINVENTORY_CODE: getInSubinventoryCode(),
-                IN_LOCATOR_ID: $("#ddlInLocator").val(),
-                Number: $('#ddlShipmentNumber').val()
-                //Number: $('#AutoCompleteShipmentNumber').val()
-            },
-            success: function (data) {
-                if (data.status) {
-                    $('#NumberStatus').html(data.result);
-                    $('#txtInputTransactionQty').val("");
-                    $('#txtRollReamQty').val("");
-                    OutBoundDataTablesBody.ajax.reload(null, false);
-                    $('#txtBARCODE').val("");
-                    $("#SECONDARY_QUANTITY").hide();
-                    $('#txtSECONDARY_QUANTITY').val("");
-                    OutBoundBarcodeDataTablesBody.ajax.reload();
-                    inputOpen();
-                    if (data.result == "MES未出庫") {
+    //function GetNumberStatus() {
+    //    $.ajax({
+    //        url: "/StockTransaction/GetNumberStatus",
+    //        type: "POST",
+    //        dataType: "json",
+    //        data: {
+    //            TransactionType: GetTransactionType(),
+    //            OUT_SUBINVENTORY_CODE: getOutSubinventoryCode(),
+    //            OUT_LOCATOR_ID: $("#ddlOutLocator").val(),
+    //            IN_SUBINVENTORY_CODE: getInSubinventoryCode(),
+    //            IN_LOCATOR_ID: $("#ddlInLocator").val(),
+    //            Number: $('#ddlShipmentNumber').val()
+    //            //Number: $('#AutoCompleteShipmentNumber').val()
+    //        },
+    //        success: function (data) {
+    //            if (data.status) {
+    //                $('#NumberStatus').html(data.result);
+    //                $('#txtInputTransactionQty').val("");
+    //                $('#txtRollReamQty').val("");
+    //                OutBoundDataTablesBody.ajax.reload(null, false);
+    //                $('#txtBARCODE').val("");
+    //                $("#SECONDARY_QUANTITY").hide();
+    //                $('#txtSECONDARY_QUANTITY').val("");
+    //                OutBoundBarcodeDataTablesBody.ajax.reload();
+    //                inputOpen();
+    //                if (data.result == "MES未出庫") {
 
-                    } else if (data.result == "MES已出庫") {
-                        inputClose();
-                    } else if (data.result == "MES已入庫") {
-                        inputClose();
-                    } else if (data.result == "非MES入庫手動新增") {
-                        swal.fire("編號" + $('#ddlShipmentNumber').val() + "沒有出貨紀錄");
-                        //swal.fire("編號" + $('#AutoCompleteShipmentNumber').val() + "沒有出貨紀錄");
-                        //$('#AutoCompleteShipmentNumber').autocomplete('close').val('');
-                        //selectedNumber = "";
-                    } else if (data.result == "非MES入庫檔案匯入") {
-                        swal.fire("編號" + $('#ddlShipmentNumber').val() + "沒有出貨紀錄");
-                        //swal.fire("編號" + $('#AutoCompleteShipmentNumber').val() + "沒有出貨紀錄");
-                        //$('#AutoCompleteShipmentNumber').autocomplete('close').val('');
-                        //selectedNumber = "";
-                    } else if (data.result == "非MES已入庫") {
-                        swal.fire("編號" + $('#ddlShipmentNumber').val() + "沒有出貨紀錄");
-                        //swal.fire("編號" + $('#AutoCompleteShipmentNumber').val() + "沒有出貨紀錄");
-                        //$('#AutoCompleteShipmentNumber').autocomplete('close').val('');
-                        //selectedNumber = "";
-                    } else {
-                        //為新增編號 此編號還未儲存
-                        //$('#AutoCompleteItemNumber').focus();
-                    }
-                } else {
-                    swal.fire(data.result);
-                }
-            },
-            error: function () {
-                swal.fire('取得編號狀態失敗');
-            }
-        })
-    }
+    //                } else if (data.result == "MES已出庫") {
+    //                    inputClose();
+    //                } else if (data.result == "MES已入庫") {
+    //                    inputClose();
+    //                } else if (data.result == "非MES入庫手動新增") {
+    //                    swal.fire("編號" + $('#ddlShipmentNumber').val() + "沒有出貨紀錄");
+    //                    //swal.fire("編號" + $('#AutoCompleteShipmentNumber').val() + "沒有出貨紀錄");
+    //                    //$('#AutoCompleteShipmentNumber').autocomplete('close').val('');
+    //                    //selectedNumber = "";
+    //                } else if (data.result == "非MES入庫檔案匯入") {
+    //                    swal.fire("編號" + $('#ddlShipmentNumber').val() + "沒有出貨紀錄");
+    //                    //swal.fire("編號" + $('#AutoCompleteShipmentNumber').val() + "沒有出貨紀錄");
+    //                    //$('#AutoCompleteShipmentNumber').autocomplete('close').val('');
+    //                    //selectedNumber = "";
+    //                } else if (data.result == "非MES已入庫") {
+    //                    swal.fire("編號" + $('#ddlShipmentNumber').val() + "沒有出貨紀錄");
+    //                    //swal.fire("編號" + $('#AutoCompleteShipmentNumber').val() + "沒有出貨紀錄");
+    //                    //$('#AutoCompleteShipmentNumber').autocomplete('close').val('');
+    //                    //selectedNumber = "";
+    //                } else {
+    //                    //為新增編號 此編號還未儲存
+    //                    //$('#AutoCompleteItemNumber').focus();
+    //                }
+    //            } else {
+    //                swal.fire(data.result);
+    //            }
+    //        },
+    //        error: function () {
+    //            swal.fire('取得編號狀態失敗');
+    //        }
+    //    })
+    //}
 
 
     function inputOpen() {
@@ -1600,54 +1603,54 @@ function OutBoundInit() {
     //    });
     //}
 
-    function DeleteItemNumber(selectedData) {
-        var TransactionType = GetTransactionType();
-        var ID = selectedData[0].ID;
+    //function DeleteItemNumber(selectedData) {
+    //    var TransactionType = GetTransactionType();
+    //    var ID = selectedData[0].ID;
 
-        $.ajax({
-            url: "/StockTransaction/DeleteItemNumber",
-            type: "post",
-            data: {
-                'ID': ID,
-            },
-            success: function (data) {
-                if (data.status) {
+    //    $.ajax({
+    //        url: "/StockTransaction/DeleteItemNumber",
+    //        type: "post",
+    //        data: {
+    //            'ID': ID,
+    //        },
+    //        success: function (data) {
+    //            if (data.status) {
 
-                    OutBoundDataTablesBody.ajax.reload(null, false);
-                    OutBoundBarcodeDataTablesBody.ajax.reload();
-                    if (data.result == "刪除料號成功，備貨單已沒任何資料") {
-                        $('#txtInputTransactionQty').val("");
-                        $('#txtRollReamQty').val("");
-                        $('#txtBARCODE').val("");
-                        $("#SECONDARY_QUANTITY").hide();
-                        $('#txtSECONDARY_QUANTITY').val("");
-                        $('#AutoCompleteItemNumber').focus().select();
+    //                OutBoundDataTablesBody.ajax.reload(null, false);
+    //                OutBoundBarcodeDataTablesBody.ajax.reload();
+    //                if (data.result == "刪除料號成功，備貨單已沒任何資料") {
+    //                    $('#txtInputTransactionQty').val("");
+    //                    $('#txtRollReamQty').val("");
+    //                    $('#txtBARCODE').val("");
+    //                    $("#SECONDARY_QUANTITY").hide();
+    //                    $('#txtSECONDARY_QUANTITY').val("");
+    //                    $('#AutoCompleteItemNumber').focus().select();
 
-                        //if (TransactionType == "出貨編號") {
-                        //    GetShipmentNumberList("新增出貨編號");
-                        //}
-                        //else if (TransactionType == "移轉編號") {
-                        //    GetSubinventoryTransferNumberList("新增移轉編號");
-                        //}
-                        //else {
+    //                    //if (TransactionType == "出貨編號") {
+    //                    //    GetShipmentNumberList("新增出貨編號");
+    //                    //}
+    //                    //else if (TransactionType == "移轉編號") {
+    //                    //    GetSubinventoryTransferNumberList("新增移轉編號");
+    //                    //}
+    //                    //else {
 
-                        //}
-                    }
-                }
-                else {
-                    swal.fire(data.result);
-                }
-            },
-            error: function () {
-                swal.fire('料號刪除失敗');
-            },
-            complete: function (data) {
+    //                    //}
+    //                }
+    //            }
+    //            else {
+    //                swal.fire(data.result);
+    //            }
+    //        },
+    //        error: function () {
+    //            swal.fire('料號刪除失敗');
+    //        },
+    //        complete: function (data) {
 
 
-            }
+    //        }
 
-        });
-    }
+    //    });
+    //}
 
 
 
@@ -1709,41 +1712,41 @@ function OutBoundInit() {
         
     }
 
-    function DeleteBarcode(selectedData) {
+    //function DeleteBarcode(selectedData) {
 
 
-        var list = [];
-        for (i = 0; i < selectedData.length; i++) {
-            list.push(selectedData[i].ID);
-        }
+    //    var list = [];
+    //    for (i = 0; i < selectedData.length; i++) {
+    //        list.push(selectedData[i].ID);
+    //    }
 
 
-        $.ajax({
-            url: "/StockTransaction/DeleteBarcode",
-            type: "post",
-            data: {
-                IDs: list
-            },
-            success: function (data) {
-                if (data.status) {
+    //    $.ajax({
+    //        url: "/StockTransaction/DeleteBarcode",
+    //        type: "post",
+    //        data: {
+    //            IDs: list
+    //        },
+    //        success: function (data) {
+    //            if (data.status) {
 
-                    OutBoundDataTablesBody.ajax.reload(null, false);
-                    OutBoundBarcodeDataTablesBody.ajax.reload();
-                }
-                else {
-                    swal.fire(data.result);
-                }
-            },
-            error: function () {
-                swal.fire('條碼刪除失敗');
-            },
-            complete: function (data) {
+    //                OutBoundDataTablesBody.ajax.reload(null, false);
+    //                OutBoundBarcodeDataTablesBody.ajax.reload();
+    //            }
+    //            else {
+    //                swal.fire(data.result);
+    //            }
+    //        },
+    //        error: function () {
+    //            swal.fire('條碼刪除失敗');
+    //        },
+    //        complete: function (data) {
 
 
-            }
+    //        }
 
-        });
-    }
+    //    });
+    //}
 
     function OutBoundSaveTransfer() {
         if (getShipmentNumber() == "新增編號") {

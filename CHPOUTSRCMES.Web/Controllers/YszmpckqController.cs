@@ -16,8 +16,10 @@ namespace CHPOUTSRCMES.Web.Controllers
         YszmpckqData yszmpckqDataData = new YszmpckqData();
          
 
-        //
-        // GET: /Yszmpckq/
+        /// <summary>
+        /// 板令對照 View
+        /// </summary>
+        /// <returns></returns>
         public ActionResult Index()
         {
             var id = this.User.Identity.GetUserId();
@@ -25,6 +27,15 @@ namespace CHPOUTSRCMES.Web.Controllers
             return View(viewModel);
         }
 
+
+        /// <summary>
+        /// 查詢
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="ORGANIZATION_ID"></param>
+        /// <param name="OSP_SUBINVENTORY"></param>
+        /// <param name="PSTYP"></param>
+        /// <returns></returns>
         [HttpPost, ActionName("GetYszmpckqDT")]
         public JsonResult GetYszmpckqDT(DataTableAjaxPostViewModel data, string ORGANIZATION_ID, string OSP_SUBINVENTORY, string PSTYP)
         {
@@ -79,6 +90,11 @@ namespace CHPOUTSRCMES.Web.Controllers
         //    return new JsonResult { Data = new { status = result.Success, result = result.Msg } };
         //}
 
+        /// <summary>
+        /// 加工廠下拉選單
+        /// </summary>
+        /// <param name="ORGANIZATION_ID"></param>
+        /// <returns></returns>
         [HttpPost, ActionName("GetOspSubinventoryList")]
         public JsonResult GetOspSubinventoryList(string ORGANIZATION_ID)
         {
@@ -86,6 +102,12 @@ namespace CHPOUTSRCMES.Web.Controllers
             return Json(items, JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>
+        /// 紙別下拉選單
+        /// </summary>
+        /// <param name="ORGANIZATION_ID"></param>
+        /// <param name="OSP_SUBINVENTORY_ID"></param>
+        /// <returns></returns>
         [HttpPost, ActionName("GetPstypList")]
         public JsonResult GetPstypList(string ORGANIZATION_ID, string OSP_SUBINVENTORY_ID)
         {

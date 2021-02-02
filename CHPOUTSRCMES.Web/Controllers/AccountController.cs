@@ -39,11 +39,19 @@ namespace CHPOUTSRCMES.Web.Controllers
             identityUOW = new IdentityUOW(new MesContext());
         }
 
+        /// <summary>
+        /// 變更密碼Dailog
+        /// </summary>
+        /// <returns></returns>
         public ActionResult _ChangePassword()
         {
             return PartialView();
         }
 
+        /// <summary>
+        /// 新增使用者View
+        /// </summary>
+        /// <returns></returns>
         public ActionResult Create()
         {
             AccountModel accountModel = new AccountModel();
@@ -52,6 +60,11 @@ namespace CHPOUTSRCMES.Web.Controllers
             return View(accountModel);
         }
 
+        /// <summary>
+        /// 編輯使用者View
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public ActionResult Edit(string id)
         {
             AccountModel accountModel = new AccountModel();
@@ -61,8 +74,10 @@ namespace CHPOUTSRCMES.Web.Controllers
             return View(accountModel);
         }
 
-        //
-        // GET: /Account/
+        /// <summary>
+        /// 使用者管理首頁View
+        /// </summary>
+        /// <returns></returns>
         [Authorize(Roles="系統管理員")]
         public ActionResult Index()
         {
@@ -79,8 +94,11 @@ namespace CHPOUTSRCMES.Web.Controllers
             return View();
         }
 
-        //
-        // GET: /Account/Login
+        /// <summary>
+        /// 使用者登入View
+        /// </summary>
+        /// <param name="returnUrl"></param>
+        /// <returns></returns>
         [AllowAnonymous]
         public ActionResult Login(string returnUrl)
         {
@@ -95,6 +113,10 @@ namespace CHPOUTSRCMES.Web.Controllers
             return View(loginViewModel);
         }
 
+        /// <summary>
+        /// 檢查登入Cookie
+        /// </summary>
+        /// <returns></returns>
         private LoginViewModel CheckLoginCookie()
         {
             var loginViewModel = new LoginViewModel();
@@ -106,8 +128,12 @@ namespace CHPOUTSRCMES.Web.Controllers
             return loginViewModel;
         }
 
-        //
-        // POST: /Account/Login
+        /// <summary>
+        /// 使用者登入
+        /// </summary>
+        /// <param name="model"></param>
+        /// <param name="returnUrl"></param>
+        /// <returns></returns>
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -136,8 +162,10 @@ namespace CHPOUTSRCMES.Web.Controllers
             return View(model);
         }
 
-        //
-        // POST: /Account/LogOff
+        /// <summary>
+        /// 使用者登出
+        /// </summary>
+        /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public JsonResult LogOff()
@@ -161,6 +189,11 @@ namespace CHPOUTSRCMES.Web.Controllers
             }
         }
 
+        /// <summary>
+        /// 使用者管理表格
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
         [Authorize(Roles = "系統管理員")]
         [HttpPost]
         public JsonResult LoadTable(DataTableAjaxPostViewModel data)
@@ -172,6 +205,11 @@ namespace CHPOUTSRCMES.Web.Controllers
             var data1 = model.Skip(data.Start).Take(data.Length).ToList();
             return Json(new { draw = data.Draw, recordsFiltered = model.Count, recordsTotal = model.Count, data = data1 }, JsonRequestBehavior.AllowGet);
         }
+
+        /// <summary>
+        /// 取得倉庫設定清單
+        /// </summary>
+        /// <returns></returns>
         [HttpPost]
         public JsonResult Subinventory()
         {
@@ -180,6 +218,11 @@ namespace CHPOUTSRCMES.Web.Controllers
             return Json(new { model }, JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>
+        /// 變更密碼
+        /// </summary>
+        /// <param name="manageUserViewModel"></param>
+        /// <returns></returns>
         [HttpPost]
         public async Task<JsonResult> ChangPasswordAsync(ManageUserViewModel manageUserViewModel)
         {
@@ -188,6 +231,12 @@ namespace CHPOUTSRCMES.Web.Controllers
             return Json(new { resultModel }, JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>
+        /// 新增使用者帳號
+        /// </summary>
+        /// <param name="accountModel"></param>
+        /// <param name="userSubinventory"></param>
+        /// <returns></returns>
         [Authorize(Roles = "系統管理員")]
         [HttpPost]
         public async Task<JsonResult> CreateUser([Bind(Include = "RoleName,Account, Password, Name, Email")] AccountModel accountModel, List<UserSubinventory> userSubinventory)
@@ -198,7 +247,11 @@ namespace CHPOUTSRCMES.Web.Controllers
 
         }
 
-
+        /// <summary>
+        /// 使用者帳號啟用或停用
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult AccountDisable(string id)
         {
@@ -208,7 +261,11 @@ namespace CHPOUTSRCMES.Web.Controllers
             return new JsonResult { Data = new { status = result.Success, message = result.Msg } };
         }
 
-
+        /// <summary>
+        /// 恢復使用者密碼至預設密碼
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpPost]
         [Authorize(Roles ="系統管理員")]
         public async Task<JsonResult> DeafultPassword(string id)
@@ -219,7 +276,7 @@ namespace CHPOUTSRCMES.Web.Controllers
         }
 
         /// <summary>
-        /// 刪除註記
+        /// 刪除使用者帳號
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -232,7 +289,7 @@ namespace CHPOUTSRCMES.Web.Controllers
         }
 
         /// <summary>
-        /// 取得預設checkbox
+        /// 取得編輯使用者時的倉庫設定checkbox設定值
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -245,7 +302,7 @@ namespace CHPOUTSRCMES.Web.Controllers
         }
 
         /// <summary>
-        /// 取得預設使用者
+        /// 取得編輯使用者時的使用者資料
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -271,6 +328,12 @@ namespace CHPOUTSRCMES.Web.Controllers
             return new JsonResult { Data = new { status = result.Success, message = result.Msg } };
         }
 
+
+        /// <summary>
+        /// 取得使用者所屬倉庫(在倉庫設定中有被勾選的倉庫)
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult GetViewUserSub(string id)
         {

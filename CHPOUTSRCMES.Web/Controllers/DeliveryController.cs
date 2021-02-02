@@ -24,8 +24,10 @@ namespace CHPOUTSRCMES.Web.Controllers
         TripHeaderData tripHeaderData = new TripHeaderData();
 
 
-        //
-        // GET: /Delivery/
+        /// <summary>
+        /// 出貨首頁View
+        /// </summary>
+        /// <returns></returns>
         public ActionResult Index()
         {
             using (var context = new MesContext())
@@ -47,6 +49,18 @@ namespace CHPOUTSRCMES.Web.Controllers
             }
         }
 
+        /// <summary>
+        /// 出貨查詢
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="TripActualShipBeginDate"></param>
+        /// <param name="TripActualShipEndDate"></param>
+        /// <param name="DeliveryName"></param>
+        /// <param name="SelectedSubinventory"></param>
+        /// <param name="SelectedTrip"></param>
+        /// <param name="TransactionDate"></param>
+        /// <param name="SelectedDeliveryStatus"></param>
+        /// <returns></returns>
         [HttpPost, ActionName("DeliverySearch")]
         public JsonResult DeliverySearch(DataTableAjaxPostViewModel data, string TripActualShipBeginDate, string TripActualShipEndDate, string DeliveryName, string SelectedSubinventory,
             string SelectedTrip, string TransactionDate, string SelectedDeliveryStatus)
@@ -100,7 +114,11 @@ namespace CHPOUTSRCMES.Web.Controllers
         }
 
        
-
+        /// <summary>
+        /// 平張明細輸入View
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public ActionResult FlatEdit(long id)
         {
             using (var context = new MesContext())
@@ -113,7 +131,11 @@ namespace CHPOUTSRCMES.Web.Controllers
         }
 
         
-
+        /// <summary>
+        /// 紙捲明細輸入View
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet]
         public ActionResult RollEdit(long id)
         {
@@ -126,6 +148,13 @@ namespace CHPOUTSRCMES.Web.Controllers
             }
         }
 
+        /// <summary>
+        /// 紙捲需求表格
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="DlvHeaderId"></param>
+        /// <param name="DELIVERY_STATUS_NAME"></param>
+        /// <returns></returns>
         [HttpPost, ActionName("GetRollEdit")]
         public JsonResult GetRollEdit(DataTableAjaxPostViewModel data, long DlvHeaderId, string DELIVERY_STATUS_NAME)
         {
@@ -164,6 +193,13 @@ namespace CHPOUTSRCMES.Web.Controllers
             }
         }
 
+        /// <summary>
+        /// 紙捲揀貨表格
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="DlvHeaderId"></param>
+        /// <param name="DELIVERY_STATUS_NAME"></param>
+        /// <returns></returns>
         [HttpPost, ActionName("GetRollEditBarcode")]
         public JsonResult GetRollEditBarcode(DataTableAjaxPostViewModel data, long DlvHeaderId, string DELIVERY_STATUS_NAME)
         {
@@ -195,6 +231,14 @@ namespace CHPOUTSRCMES.Web.Controllers
             }
         }
 
+        /// <summary>
+        /// 紙捲新增揀貨條碼
+        /// </summary>
+        /// <param name="BARCODE"></param>
+        /// <param name="DlvHeaderId"></param>
+        /// <param name="DLV_DETAIL_ID"></param>
+        /// <param name="DELIVERY_NAME"></param>
+        /// <returns></returns>
         [HttpPost, ActionName("InputRollEditBarcode")]
         public ActionResult InputRollEditBarcode(string BARCODE, long DlvHeaderId, long DLV_DETAIL_ID, string DELIVERY_NAME)
         {
@@ -213,7 +257,13 @@ namespace CHPOUTSRCMES.Web.Controllers
         }
 
        
-
+        /// <summary>
+        /// 平張需求表格
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="DlvHeaderId"></param>
+        /// <param name="DELIVERY_STATUS_NAME"></param>
+        /// <returns></returns>
         [HttpPost, ActionName("GetFlatEdit")]
         public JsonResult GetFlatEdit(DataTableAjaxPostViewModel data, long DlvHeaderId, string DELIVERY_STATUS_NAME)
         {
@@ -255,6 +305,14 @@ namespace CHPOUTSRCMES.Web.Controllers
             }
         }
 
+
+        /// <summary>
+        /// 平張揀貨表格
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="DlvHeaderId"></param>
+        /// <param name="DELIVERY_STATUS_NAME"></param>
+        /// <returns></returns>
         [HttpPost, ActionName("GetFlatEditBarcode")]
         public JsonResult GetFlatEditBarcode(DataTableAjaxPostViewModel data, long DlvHeaderId, string DELIVERY_STATUS_NAME)
         {
@@ -289,6 +347,11 @@ namespace CHPOUTSRCMES.Web.Controllers
             }
         }
 
+        /// <summary>
+        /// 平張新增揀貨條碼
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [ValidateAntiForgeryToken]
         [HttpPost, ActionName("InputFlatEditBarcode")]
         //public ActionResult InputFlatEditBarcode(string BARCODE, decimal? SECONDARY_QUANTITY, long DlvHeaderId, long DLV_DETAIL_ID, string DELIVERY_NAME)
@@ -317,7 +380,11 @@ namespace CHPOUTSRCMES.Web.Controllers
 
       
 
-
+        /// <summary>
+        /// 平張明細檢視View
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public ActionResult FlatView(long id)
         {
             using (var context = new MesContext())
@@ -330,7 +397,11 @@ namespace CHPOUTSRCMES.Web.Controllers
         }
 
      
-
+        /// <summary>
+        /// 紙捲明細檢視View
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public ActionResult RollView(long id)
         {
             using (var context = new MesContext())
@@ -342,6 +413,11 @@ namespace CHPOUTSRCMES.Web.Controllers
             }
         }
 
+        /// <summary>
+        /// 出貨申請
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult DeliveryConfirm(List<long> id)
         {
@@ -360,7 +436,11 @@ namespace CHPOUTSRCMES.Web.Controllers
         }
 
 
-
+        /// <summary>
+        /// 取消出貨申請
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult CancelConfirm(List<long> id)
         {
@@ -378,6 +458,11 @@ namespace CHPOUTSRCMES.Web.Controllers
             }
         }
 
+        /// <summary>
+        /// 列印備貨單(變更交運單狀態 未印 => 待出)
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult PrintPickList(List<long> id)
         {
@@ -395,6 +480,11 @@ namespace CHPOUTSRCMES.Web.Controllers
             }
         }
 
+        /// <summary>
+        /// 出貨核准
+        /// </summary>
+        /// <param name="selectDatas"></param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult DeliveryAuthorize(TripDetailDTEditor selectDatas)
         {
@@ -412,6 +502,12 @@ namespace CHPOUTSRCMES.Web.Controllers
             }
         }
 
+
+        /// <summary>
+        /// 取消出貨核准(未使用)
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult CancelAuthorize(List<long> id)
         {
@@ -429,6 +525,11 @@ namespace CHPOUTSRCMES.Web.Controllers
             }
         }
 
+        /// <summary>
+        /// 取消航程號
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult CancelTrip(List<long> id)
         {
@@ -446,6 +547,12 @@ namespace CHPOUTSRCMES.Web.Controllers
             }
         }
 
+
+        /// <summary>
+        /// 更新明細輸入抬頭
+        /// </summary>
+        /// <param name="DlvHeaderId"></param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult UpdateDeliveryDetailViewHeader(long DlvHeaderId)
         {
@@ -460,7 +567,11 @@ namespace CHPOUTSRCMES.Web.Controllers
             }
         }
 
-
+        /// <summary>
+        /// 更新出貨核准日
+        /// </summary>
+        /// <param name="selectedData"></param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult UpdateTransactionAuthorizeDates(TripDetailDTEditor selectedData)
         {
@@ -480,6 +591,11 @@ namespace CHPOUTSRCMES.Web.Controllers
         }
 
 
+        /// <summary>
+        /// 揀貨表格資料編輯
+        /// </summary>
+        /// <param name="pickDTEditor"></param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult PickDTEditor(PickDTEditor pickDTEditor)
         {
@@ -504,7 +620,11 @@ namespace CHPOUTSRCMES.Web.Controllers
             }
         }
 
-
+        /// <summary>
+        /// 列印標籤
+        /// </summary>
+        /// <param name="PICKED_ID"></param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult PrintLabel(List<long> PICKED_ID)
         {
@@ -525,7 +645,6 @@ namespace CHPOUTSRCMES.Web.Controllers
         /// </summary>
         /// <param name="OspHeaderId"></param>
         /// <returns></returns>
-
         public ActionResult PickingReport(string tripName)
         {
             using (var context = new MesContext())
@@ -564,7 +683,10 @@ namespace CHPOUTSRCMES.Web.Controllers
             }
         }
 
-
+        /// <summary>
+        /// 取得進階功能狀態
+        /// </summary>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult GetAdvancedStatus()
         {

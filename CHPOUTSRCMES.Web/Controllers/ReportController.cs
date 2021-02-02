@@ -16,7 +16,10 @@ namespace CHPOUTSRCMES.Web.Controllers
     public class ReportController : Controller
     {
         
-        // GET: Report
+        /// <summary>
+        /// 工單得率報表View
+        /// </summary>
+        /// <returns></returns>
         public ActionResult Yield()
         {
             var id = this.User.Identity.GetUserId();
@@ -28,6 +31,10 @@ namespace CHPOUTSRCMES.Web.Controllers
             return View(yieldViewModel);
         }
 
+        /// <summary>
+        /// 裁切資料匯種報表View
+        /// </summary>
+        /// <returns></returns>
         public ActionResult CutSum()
         {
             CutSumViewModel cutSumViewModel = new CutSumViewModel();
@@ -50,17 +57,27 @@ namespace CHPOUTSRCMES.Web.Controllers
         }
 
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public JsonResult YieldQuery(DataTableAjaxPostViewModel data, string cuttingDateFrom, string cuttingDateTo, string batchNo, string machineNum)
-        {
-            var userId = User.Identity.GetUserId();
-            YieldQueryModel yieldQueryModel = new YieldQueryModel();
-            var models = yieldQueryModel.getModels(data, cuttingDateFrom, cuttingDateTo, batchNo, machineNum, userId);
-            return Json(models, JsonRequestBehavior.AllowGet);
-        }
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public JsonResult YieldQuery(DataTableAjaxPostViewModel data, string cuttingDateFrom, string cuttingDateTo, string batchNo, string machineNum)
+        //{
+        //    var userId = User.Identity.GetUserId();
+        //    YieldQueryModel yieldQueryModel = new YieldQueryModel();
+        //    var models = yieldQueryModel.getModels(data, cuttingDateFrom, cuttingDateTo, batchNo, machineNum, userId);
+        //    return Json(models, JsonRequestBehavior.AllowGet);
+        //}
 
-
+        /// <summary>
+        /// 工單得率報表
+        /// </summary>
+        /// <param name="cuttingDateFrom"></param>
+        /// <param name="cuttingDateTo"></param>
+        /// <param name="batchNo"></param>
+        /// <param name="machineNum"></param>
+        /// <param name="itemNumber"></param>
+        /// <param name="barcode"></param>
+        /// <param name="subinventory"></param>
+        /// <returns></returns>
         public ActionResult OspYieldReport(string cuttingDateFrom, string cuttingDateTo, string batchNo, string machineNum, string itemNumber, string barcode, string subinventory)
         {
             using (var context = new MesContext())
@@ -103,6 +120,14 @@ namespace CHPOUTSRCMES.Web.Controllers
             }
         }
 
+        /// <summary>
+        /// 裁切資料匯種報表
+        /// </summary>
+        /// <param name="planStartDateFrom"></param>
+        /// <param name="planStartDateTo"></param>
+        /// <param name="batchNo"></param>
+        /// <param name="paperType"></param>
+        /// <returns></returns>
         public ActionResult OspCutSumReport(string planStartDateFrom, string planStartDateTo, string batchNo, string paperType)
         {
             using (var context = new MesContext())

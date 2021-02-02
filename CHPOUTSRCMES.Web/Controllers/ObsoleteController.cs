@@ -20,8 +20,11 @@ namespace CHPOUTSRCMES.Web.Controllers
         //Top top = new Top();
         StockObsoleteData obsoleteData = new StockObsoleteData();
         OrgSubinventoryData orgData = new OrgSubinventoryData();
-        //
-        // GET: /Obsolete/
+        
+        /// <summary>
+        /// 存貨報廢 View
+        /// </summary>
+        /// <returns></returns>
         public ActionResult Index()
         {
             using (var context = new MesContext())
@@ -52,6 +55,15 @@ namespace CHPOUTSRCMES.Web.Controllers
         //    }
         //}
 
+        /// <summary>
+        /// 庫存查詢
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="organizationId"></param>
+        /// <param name="subinventoryCode"></param>
+        /// <param name="locatorId"></param>
+        /// <param name="itemNumber"></param>
+        /// <returns></returns>
         [HttpPost, ActionName("SearchStock")]
         public JsonResult SearchStock(DataTableAjaxPostViewModel data, long organizationId, string subinventoryCode, long? locatorId, string itemNumber)
         {
@@ -89,6 +101,11 @@ namespace CHPOUTSRCMES.Web.Controllers
             }
         }
 
+        /// <summary>
+        /// 異動明細表格
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
         [HttpPost, ActionName("GetTransactionDetail")]
         public JsonResult GetTransactionDetail(DataTableAjaxPostViewModel data)
         {
@@ -128,6 +145,11 @@ namespace CHPOUTSRCMES.Web.Controllers
             }
         }
 
+        /// <summary>
+        /// 異動明細表格資料編輯
+        /// </summary>
+        /// <param name="detailEditor"></param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult DetailEditor(StockObsoleteDTEditor detailEditor)
         {
@@ -145,13 +167,12 @@ namespace CHPOUTSRCMES.Web.Controllers
             }
         }
 
-        [HttpPost]
-        public ActionResult UpdateRemark(StockObsoleteDTEditor selectedData)
-        {
-            List<StockObsoleteDT> data = obsoleteData.UpdateRemark(selectedData);
-            return new JsonResult { Data = new { data } };
-        }
-
+        /// <summary>
+        /// 新增異動明細
+        /// </summary>
+        /// <param name="stockId"></param>
+        /// <param name="mQty"></param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult AddTransactionDetail( long stockId, string mQty)
         {
@@ -169,13 +190,10 @@ namespace CHPOUTSRCMES.Web.Controllers
             }
         }
 
-        [HttpPost]
-        public ActionResult DelTransactionDetail(List<long> IDs)
-        {
-            ResultModel result = obsoleteData.DelTransactionDetail(IDs);
-            return new JsonResult { Data = new { status = result.Success, result = result.Msg } };
-        }
-
+        /// <summary>
+        /// 異動存檔
+        /// </summary>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult SaveTransactionDetail()
         {
