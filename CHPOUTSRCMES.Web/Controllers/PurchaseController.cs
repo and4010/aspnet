@@ -96,7 +96,11 @@ namespace CHPOUTSRCMES.Web.Controllers
         }
 
 
-
+        /// <summary>
+        /// 取得進櫃明細資料
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         // GET: Purchase
         [HttpGet, ActionName("Detail")]
         public ActionResult Detail(long id)
@@ -638,6 +642,12 @@ namespace CHPOUTSRCMES.Web.Controllers
             //return new JsonResult { Data = new { status = false, result = "" } };
         }
 
+        /// <summary>
+        /// 平張Excel匯入資料預覽表格
+        /// </summary>
+        /// <param name="file"></param>
+        /// <param name="data"></param>
+        /// <returns></returns>
         [HttpPost]
         public JsonResult ExcelImportFlat(HttpPostedFileBase file, DataTableAjaxPostViewModel data, ref List<DetailModel.FlatDetailModel> detail, ref ResultModel result)
         {
@@ -646,6 +656,9 @@ namespace CHPOUTSRCMES.Web.Controllers
             return Json(new { draw = data.Draw, recordsFiltered = detail.Count, recordsTotal = detail.Count, data = detail, result }, JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>
+        /// Excell範例檔案下載
+        /// </summary>
         public void DownloadFile()
         {
             //用戶端的物件
@@ -688,6 +701,11 @@ namespace CHPOUTSRCMES.Web.Controllers
             Response.End();
         }
 
+        /// <summary>
+        /// 取得照片
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpPost]
         public JsonResult GetPhotos(long id)
         {
@@ -712,6 +730,11 @@ namespace CHPOUTSRCMES.Web.Controllers
            
         }
 
+        /// <summary>
+        /// 取得照片清單ID
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpPost]
         public JsonResult GetPhotoList(long id)
         {
@@ -734,7 +757,11 @@ namespace CHPOUTSRCMES.Web.Controllers
             return Json(new { Result = list, Code = code, Msg = message }, JsonRequestBehavior.AllowGet);
         }
 
-
+        /// <summary>
+        /// 取得照片
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public JsonResult GetPhoto(long id)
         {
             int code = 0;
@@ -753,6 +780,11 @@ namespace CHPOUTSRCMES.Web.Controllers
             return Json(new { Result = photo, Code = code, Msg = message }, JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>
+        /// 取得編輯頁面的異常原因和儲位的Value
+        /// </summary>
+        /// <param name="PickId"></param>
+        /// <returns></returns>
         public JsonResult SetSpinnerValue(long PickId)
         {
             PurchaseViewModel ViewModel = new PurchaseViewModel();
