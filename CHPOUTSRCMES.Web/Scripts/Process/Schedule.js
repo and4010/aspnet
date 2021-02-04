@@ -470,7 +470,7 @@ function BtnClick() {
             return;
         }
 
-        if (loss == 0) {
+        if (!loss) {
             swal.fire("損耗量未計算");
             return;
         }
@@ -1571,7 +1571,7 @@ function BtnRecordEdit() {
             return;
         }
 
-        if (loss == 0) {
+        if (!loss) {
             swal.fire("損耗量未計算");
             return;
         }
