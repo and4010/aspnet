@@ -2003,9 +2003,11 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
                         {
                             OspHeaderId = o.OspHeaderId,
                             Barcode = s.Barcode,
-                            StatusCode = s.StatusCode
+                            StatusCode = s.StatusCode,
+                            HasRemaint = o.HasRemaint
                         })
-                        .Where(x => x.OspHeaderId == OspHeaderId && x.StatusCode != StockStatusCode.InStock)
+                        //殘捲入庫必須為在庫狀態
+                        .Where(x => x.OspHeaderId == OspHeaderId && x.StatusCode != StockStatusCode.InStock && x.HasRemaint == "有")
                         .Select(x => x.Barcode)
                         .ToList();
                      
