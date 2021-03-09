@@ -69,122 +69,15 @@
                         <td class="input-lg">@Html.DropDownListFor(model => model.Subinventory, Model.SubinventoryList, new { @class = "customDropDownList", id = "Subinventory", autocomplete = "off" })</td>
                     </tr>
 
-
                     <tr>
                         <td class="input-lg" colspan="8" style=" text-align: right;">
                             <button type="button" id="btnPrint" class="btn btn-primary externalBtn" style="width: 100px;">匯出報表</button>
                         </td>
                     </tr>
                 </table>
-
-
-                @*<div class="row row-std">
-
-                    <div class="col col-md-2 text-right">
-                        <label class="input-lg">裁切完工日期(起)</label>
-                    </div>
-
-                    <div class="col-md-3 input-lg">
-                        <input class="form-control input-lg" type="text" id="dateFrom" tabindex="3" style="min-width:300px;" autocomplete="off" />
-                    </div>
-
-                    <div class="col col-md-2 text-right">
-                        <label class="input-lg">裁切完工日期(迄)</label>
-                    </div>
-
-                    <div class="col-md-3 input-lg">
-                        <input class="form-control input-lg" type="text" id="dateTo" tabindex="3" style="min-width:300px;" autocomplete="off" />
-                    </div>
-                </div>
-
-                <div class="row row-std">
-
-                    <div class="col col-md-2 text-right">
-                        <label class="input-lg">工單號</label>
-                    </div>
-
-                    <div class="col-md-3 input-lg">
-                        @Html.DropDownListFor(model => model.BatchNo, Model.BathNoList, new { @class = "form-control input-lg", id = "BatchNo", autocomplete = "off" })
-                    </div>
-
-                    <div class="col col-md-2 text-right">
-                        <label class="input-lg">機台</label>
-                    </div>
-
-                    <div class="col-md-3 input-lg">
-                        @Html.DropDownListFor(model => model.MachineNum, Model.MachineCodeList, new { @class = "form-control input-lg", id = "MachineNum", autocomplete = "off" })
-                    </div>
-
-
-                </div>*@
             }
-
-
-            @*<div class="box-footer">
-                <div class="row row-mtd">
-                    <div class="btn-group col-md-3 col-lg">
-                        <button id="btnSearch" class="btn btn-primary externalBtn" style="min-width:200px;">查詢</button>
-                    </div>
-                    <div class="btn-group col-md-3 col-lg">
-                        <button id="btnPrint" class="btn btn-primary externalBtn" style="min-width:200px;">匯出報表</button>
-                    </div>
-                </div>
-            </div>*@
         </div>
-        @*<div class="box box-primary" id="ReportBox" style="display: none;">
-            <div class="box-body" style="overflow:auto;padding:20px;">
-                <div class="box-body" style="padding:20px;">
-                    <div id="ReportPartial" style="width:2000px;">
-                        @Html.Partial("_ReportPartial")
-                    </div>
-                    <div class="row row-std">
-                        <div class="col-md-12">
-                            <table class="table table-striped table-bordered dataTable" id="QueryTable">
-                                <thead>
-                                    <tr>
-                                        <th rowspan="2">
-                                            @Html.DisplayNameFor(model => model.Fields.BatchNo)
-                                        </th>
-                                        <th rowspan="2">
-                                            @Html.DisplayNameFor(model => model.Fields.Status)
-                                        </th>
-                                        <th colspan="2">
-                                            @Html.DisplayName("投入")
-                                        </th>
-                                        <th colspan="3">
-                                            @Html.DisplayName("產出")
-                                        </th>
-                                        <th rowspan="2">
-                                            @Html.DisplayNameFor(model => model.Fields.Yield)
-                                        </th>
-                                    </tr>
-                                    <tr>
-                                        <th>
-                                            @Html.DisplayNameFor(model => model.Fields.DiItemNumber)
-                                        </th>
-                                        <th>
-                                            @Html.DisplayNameFor(model => model.Fields.DiQty)
-                                        </th>
-                                        <th>
-                                            @Html.DisplayNameFor(model => model.Fields.DoItemNumber)
-                                        </th>
-                                        <th>
-                                            @Html.DisplayNameFor(model => model.Fields.DoReQty)
-                                        </th>
-                                        <th>
-                                            @Html.DisplayNameFor(model => model.Fields.DiQty)
-                                        </th>
-                                    </tr>
-                                </thead>
-
-                            </table>
-
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </div>*@
+       
         <div id="ReportPartial">
             @Html.Partial("_ReportPartial")
         </div>

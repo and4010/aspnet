@@ -23,11 +23,6 @@
         </div>
 
         <div class="box-body with-border">
-            @*<div id="Top">
-        </div>
-        <div class="row row-std col-md-12">
-            <input type="button" id="btnSearchStock" value="查詢" class="btn btn-primary" />
-        </div>*@
 
             <table style=" border-spacing:20px 5px">
                 <tr>
@@ -49,7 +44,6 @@
                     </td>
                     <td class="input-lg" colspan="3">
                         <input class="customTextBox" type="text" id="txtItemNumber" style="width:250px;" , autocomplete="off" />
-                        @*@Html.TextBoxFor(model => model.ItemNumber, new { @class = "form-control customTextBox", id = "txtItemNumber", style = "width:250px;", placeholder = "請輸入料號", autocomplete = "off" })*@
                     </td>
                 </tr>
                 
@@ -141,11 +135,7 @@
                 <label style='font-weight:bolder;'>
                     報廢數量
                 </label>
-                @*<span class="input-group-addon" style="width: 53px;">報廢數量</span>*@
                 @Html.TextBoxFor(model => model.Qty, new { @class = "customTextBox", id = "txtQty", style = "width: 120px;", autocomplete = "off" })
-                @*@Html.TextBoxFor(model => model.TransactionDate, new { @class = "form-control input-sm", id = "txtTransactionDate", aria_describedby = "txtTransactionDate-addon" })*@
-                @*<input class="form-control" type="text" id="txtQty" placeholder="請輸入數量" />*@
-
                 <span id="Unit">@Html.DisplayFor(model => model.Unit)</span>
                 <input type="button" id="btnAddRecord" value="新增" class="btn btn-danger" />
             </div>
@@ -170,23 +160,6 @@
                                 <th rowspan="2" colspan="1">備註</th>
                             </tr>
                             <tr>
-                                @*<th>
-                                    </th>*@
-                                @*<th>
-                                        @Html.DisplayName("項次")
-                                    </th>
-                                    <th>
-                                        @Html.DisplayName("倉庫")
-                                    </th>
-                                    <th>
-                                        @Html.DisplayName("儲位")
-                                    </th>
-                                    <th>
-                                        @Html.DisplayName("料號")
-                                    </th>
-                                    <th>
-                                        @Html.DisplayName("條碼號")
-                                    </th>*@
                                 <th>
                                     @Html.DisplayName("異動量")
                                 </th>

@@ -10,15 +10,9 @@
                 </button>
             </div>
         </div>
-        @*<div class="row col-md-12">
-                <h4 class="page-header">庫存查詢</h4>
-            </div>*@
+        
         <div class="box-body with-border">
-            @*<div id="Top">
-                </div>
-                <div class="row row-std col-md-12">
-                    <input type="button" id="btnSearchStock" value="查詢" class="btn btn-primary" />
-                </div>*@
+            
             <table style=" border-spacing:20px 5px">
                 <tr>
                     <td style="text-align: right;">
@@ -38,7 +32,6 @@
                     </td>
                     <td class="input-lg" colspan="3">
                         <input class="customTextBox" type="text" id="txtItemNumber" style="width:250px;" , autocomplete="off" />
-                        @*@Html.TextBoxFor(model => model.ItemNumber, new { @class = "form-control customTextBox", id = "txtItemNumber", style = "width:250px;", placeholder = "請輸入料號", autocomplete = "off" })*@
                     </td>
                 </tr>
 
@@ -95,9 +88,7 @@
                 </button>
             </div>
         </div>
-        @*<div class="row col-md-12">
-                <h4 class="page-header">貨故編輯</h4>
-            </div>*@
+        
         <div class="box-body with-border ">
             <div class="row form-group input-lg">
                 <span id="StockId" style="display: none;"></span>
@@ -164,7 +155,6 @@
                 </div>
 
                 <div class="form-inline col col-md-2">
-                    @*<input class="customTextBox" type="text" id="txtItemNumber" style="width:250px;" , autocomplete="off" />*@
                     <input id="Note" class="customTextBox" type="text"  autocomplete="off" />
                 </div>
             </div>
@@ -181,10 +171,6 @@
                     </div>
 
                     <div class="col-md-6">
-
-                        @*<div class="col-md-6" id="SaveImg">
-                                <img class="col-md-6" id="SaveImg" onclick="imgDisplay(this)" src="" alt="" />
-                            </div>*@
                         <div class="col-md-6" id="imgBox">
                             <img class="col-md-6" id="img" onclick="imgDisplay(this)"
                                  src="" alt="" />

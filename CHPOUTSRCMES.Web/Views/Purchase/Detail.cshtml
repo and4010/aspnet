@@ -64,12 +64,6 @@
                     <label class="text-right font-weight:bolder;">櫃號</label>
                     <input type="text" class="customTextBox" id="CheckCabinetNumber" name="CabinetNumber" autocomplete="off">
                     <input type="button" id="BtnCabinetNumber" value="比對" class="btn btn-success" />
-                    @*@Html.TextBoxFor(model => model.DELIVERY_NAME, new { @class = "customTextBox", id = "CheckCabinetNumber", autocomplete = "off" })
-                    <input type="button" id="btnCheckDeliveryName" value="比對" class="btn btn-success btn-flat" />
-                    <input type="text" class="form-control" placeholder="請輸入櫃號" id="CheckCabinetNumber" name="CabinetNumber" autocomplete="off">
-                    <span class="input-group-btn">
-                        <button type="button" class="btn btn-success btn-flat" id="BtnCabinetNumber">比對</button>
-                    </span>*@
                 </div>
             </div>
         </div>
@@ -160,12 +154,6 @@
                                 <label class="text-right font-weight:bolder;">條碼</label>
                                 <input type="text" class="customTextBox" id="PaperRollBarcode" name="PaperRollKeyword" autocomplete="off">
                                 <input type="button" id="BtnPaperRollSaveBarcode" value="轉已入庫" class="btn btn-danger" />
-                                @*<div class="input-group input-group-sm">
-                                    <input type="text" class="form-control" placeholder="請輸入條碼" id="PaperRollBarcode" name="PaperRollKeyword" autocomplete="off">
-                                    <span class="input-group-btn">
-                                        <button type="button" class="btn btn-success btn-flat" id="BtnPaperRollSaveBarcode">轉已入庫</button>
-                                    </span>
-                                </div>*@
                             </div>
                             <div class="col-sm-4">
                                 <button class="btn btn-primary col-md-offset-1 btn-label" type="button" id="PaperRollLabel">印標籤</button>
@@ -282,12 +270,6 @@
                                 <label class="text-right font-weight:bolder;">條碼</label>
                                 <input type="text" class="customTextBox" id="FlatBarcode" name="FlatKeyword" autocomplete="off">
                                 <input type="button" id="BtnFlatSaveBarcode" value="轉已入庫" class="btn btn-danger" />
-                                @*<div class="input-group input-group-sm">
-                                    <input type="text" class="form-control" placeholder="請輸入條碼" id="FlatBarcode" name="FlatKeyword" autocomplete="off">
-                                    <span class="input-group-btn">
-                                        <button class="btn btn-success insideBtn" type="button" id="BtnFlatSaveBarcode">轉已入庫</button>
-                                    </span>
-                                </div>*@
                             </div>
                             <div class="col-sm-4">
                                 <button class="btn btn-primary col-md-offset-1 btn-label2" type="button" id="FlatLabel">印標籤</button>
@@ -302,10 +284,8 @@
                                 <thead>
                                     <tr role="row" class="bg-light-gray">
                                         <th>
-                                            @*<input type="checkbox" id="flatcheckallbutton" class="fa fa-minus-square-o">*@
                                         </th>
                                         <th>
-                                            @*<input type="checkbox" id="flatcheckallbutton" class="fa fa-minus-square-o">*@
                                         </th>
                                         <th>
                                             @Html.DisplayName("項次")

@@ -61,7 +61,6 @@
                                     <th rowspan="1" colspan="6">商品</th>
                                     <th rowspan="1" colspan="3">主單位</th>
                                     <th rowspan="1" colspan="3">交易單位</th>
-                                    @*<th rowspan="2" colspan="1">備註</th>*@
                                 </tr>
                                 <tr role="row" class="bg-light-gray">
 
@@ -132,7 +131,6 @@
         <div class="box-body with-border">
             <div class="row row-std">
 
-                @*<div class="form-inline ">*@
                 <div class="col-md-12">
                     <div style="display: none">
                         <span id="DLV_DETAIL_ID"></span>
@@ -169,43 +167,14 @@
 
                 <div class="col-md-12">
                     <form class="form-inline" id="form" onsubmit="return false">
-                        @*<div class=" input-group col-md-3">*@
                         <div class="form-group form-inline">
                             <label class="text-right font-weight:bolder;">條碼</label>
-                            @*<span class="input-group-addon" style="width:53px;">條碼</span>*@
                             @Html.TextBoxFor(model => model.BARCODE, new { @class = "customTextBox", id = "txtBARCODE", aria_describedby = "txtBARCODE-addon", autocomplete = "off" })
                         </div>
-
-
                         <input type="button" id="btnSaveBarcode" value="新增" class="btn btn-danger form-control" />
-
                     </form>
-
                 </div>
 
-
-                @* <div class="col-md-12">
-                    <form class="form-inline">
-                         <div class="input-group col-md-3" style="width:53px;">
-                             <span class="input-group-addon">條碼</span>
-                             @Html.TextBoxFor(model => model.BARCODE, new { @class = "form-control", placeholder = "請輸入條碼", id = "txtBARCODE", aria_describedby = "txtBARCODE-addon" })
-                         </div>
-                     </form>
-
-                     <button id="btnSaveBarcode" class="btn btn-danger">新增</button>
-                         </div>*@
-
-                @*  <div class="form-group col col-md-4 input-lg">
-                        @Html.LabelFor(model => model.BARCODE, new { @class = "input-lg" })
-                        @Html.TextBoxFor(model => model.BARCODE, new { @class = "form-control input-sm", id = "txtBARCODE", aria_describedby = "txtBARCODE-addon" })
-                    </div>*@
-
-
-                @*        <div class="btn-group col col-md-2 input-lg">
-                        <button id="btnSaveBarcode" class="btn btn-danger externalBtn">新增</button>
-                    </div>*@
-
-                @*</div>*@
             </div>
 
             <br />
@@ -231,9 +200,6 @@
                                     <th>
                                         @Html.DisplayName("單位")
                                     </th>
-                                    @*<th>
-                                            @Html.DisplayName("備註")
-                                        </th>*@
                                 </tr>
                             </thead>
                             <tbody>

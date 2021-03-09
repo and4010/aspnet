@@ -55,21 +55,6 @@
                         <button id="btnSearch" class="btn btn-primary btn-lg">查詢櫃號</button>
                     </div>
                 </div>
-
-                @*<div>
-                    <div class="form-group col-md-3">
-                        @Html.LabelFor(model => model.CabinetNumber, new { @class = "input-lg" })
-                        @Html.TextBoxFor(model => model.CabinetNumber, new { @class = "form-control input-lg", id = "InputCabinetNumber", autocomplete = "off" })
-                    </div>
-                    <div class="form-group col-md-1">
-                        <button id="btnSearch" class="btn btn-primary btn-lg">查詢櫃號</button>
-                    </div>
-                </div>*@
-
-                @*<input type ="submit" value ="更新" class ="btn btn-success btn-sm" />*@
-                @*@Html.ActionLink(" 更新", "Refresh", null, new { @class = "btn btn-success btn-sm glyphicon glyphicon-refresh" })*@
-
-
             </div>
 
         </div>
@@ -81,26 +66,8 @@
 </div>
 
 
-@*@Ajax.ActionLink("PDF", "GetLabel", "Purchase", new AjaxOptions { HttpMethod = "Post" , Url = Url.Action("GetLabel") })*@
-
-@*@{
-        var categories = new List<CHPOUTSRCMES.Web.Models.Purchase.PurchaseDetailModel>() { 6, 7 };
-
-        var parameters = new RouteValueDictionary();
-
-        for (int i = 0; i < categories.Count; ++i)
-        {
-            parameters.Add("category[" + i + "]", categories[i]);
-        }
-    }
-
-    @Url.Action("GetLabel", "Purchase", new List<MES.Web.Models.Purchase.PurchaseDetailModel> abc new MES.Web.Models.Purchase.PurchaseDetailModel{1,"123",}})
-    @Html.ActionLink("PDF", "GetLabel", null, new { @class = "btn btn-success btn-sm", target = "_blank"})*@<CHPOUTSRCMES.Web.Models.Purchase.PurchaseDetailModel>
+<CHPOUTSRCMES.Web.Models.Purchase.PurchaseDetailModel>
     <MES.Web.Models.Purchase.PurchaseDetailModel>
-        @*@using (Html.BeginForm("GetLabel", "Purchase", FormMethod.Post, new { target = "_blank" }))
-            {
-                <a href="javascript:;" onclick="document.forms[0].submit();">View PDF</a>
-            }*@
         <a href="javascript:;" onclick="document.forms[0].submit();"></a>
 
 

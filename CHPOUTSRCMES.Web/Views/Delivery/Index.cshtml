@@ -64,76 +64,7 @@
                 </td>
             </tr>
         </table>
-
-        @*<div class="row row-std form-inline">
-            <div class="col col-md-2 text-right" style="width:15%;">
-                @Html.LabelFor(model => model.TripActualShipBeginDate, new { @class = "input-lg " })
-            </div>
-            <div class="col col-md-3">
-                @Html.TextBoxFor(model => model.TripActualShipBeginDate, new { @class = "form-control input-md", style = "width:40%;", id = "txtTripActualShipBeginDate", aria_describedby = "txtTripActualShipBeginDate-addon" })
-                ~
-                @Html.TextBoxFor(model => model.TripActualShipEndDate, new { @class = "form-control input-md", style = "width:40%;", id = "txtTripActualShipEndDate", aria_describedby = "txtTripActualShipEndDate-addon" })
-            </div>
-
-
-
-            <div class="col col-md-2 text-right">
-                @Html.LabelFor(model => model.DeliveryName, new { @class = "input-lg" })
-            </div>
-            <div class="col col-md-3">
-                @Html.TextBoxFor(model => model.DeliveryName, new { @class = "form-control input-md", id = "txtDeliveryName", aria_describedby = "txtDeliveryName-addon" })
-
-            </div>
-
-            <div class="col col-md-1 text-right">
-                @Html.LabelFor(model => model.SelectedSubinventory, new { @class = "input-lg" })
-            </div>
-            <div class="col col-md-1">
-                @Html.DropDownListFor(model => model.SelectedSubinventory, Model.SubinventoryNameItems, new { @class = "form-control", id = "ddlWarehouse" })
-            </div>
-        </div>*@
-
-
-        @*<div class="row row-std form-inline">
-            <div class="col col-md-2 text-right" , style="width:15%;">
-                @Html.LabelFor(model => model.TransactionDate, new { @class = "input-lg" })
-            </div>
-            <div class="col col-md-3">
-                @Html.TextBoxFor(model => model.TransactionDate, new { @class = "form-control input-md", id = "txtTransactionDate", aria_describedby = "txtTransactionDate-addon" })
-            </div>
-            <div class="col col-md-2 text-right">
-                @Html.LabelFor(model => model.SelectedTrip, new { @class = "input-lg" })
-            </div>
-            <div class="col col-md-3">
-                @Html.DropDownListFor(model => model.SelectedTrip, Model.TripNameItems, new { @class = "form-control", id = "ddlTrip" })
-            </div>
-            <div class="col col-md-1 text-right">
-                @Html.LabelFor(model => model.SelectedDeliveryStatus, new { @class = "input-lg" })
-            </div>
-            <div class="col col-md-1">
-                @Html.DropDownListFor(model => model.SelectedDeliveryStatus, Model.DeliveryStatusItems, new { @class = "form-control", id = "ddlDeliveryStatus" })
-            </div>
-        </div>*@
     </div>
-    @*<div class="box-footer">
-        <div class="btn-group col-md-2">
-            <button id="btnSearch" class="btn btn-primary externalBtn">查詢</button>
-        </div>
-
-        <div class="col-md-3 col-md-offset-1">
-            <button id="btnCancelConfirm" class="btn btn-danger externalBtn">取消申請</button>
-            <button id="btnDeliveryConfirm" class="btn btn-danger externalBtn">出貨申請</button>
-        </div>
-        @if (Model.Advanced)
-        {
-            <div class="col-md-5">
-                <button id="btnUpdateTransactionAuthorizeDates" class="btn btn-danger externalBtn">編輯核准日</button>
-                <button id="btnTripChancel" class="btn btn-danger externalBtn">航程號取消</button>
-                <button id="btnDeliveryReject" class="btn btn-danger externalBtn">出貨駁回</button>
-                <button id="btnDeliveryAuthorize" class="btn btn-danger externalBtn">出貨核准</button>
-            </div>
-        }
-    </div>*@
 
 <div class="box box-primary customBody" style="padding: 15px; overflow-y:auto">
     <div class="row row-std">
