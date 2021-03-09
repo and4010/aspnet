@@ -19,8 +19,6 @@ namespace CHPOUTSRCMES.Web.Controllers
     public class StockInventoryController : Controller
     {
         StockInventoryData stockInventoryData = new StockInventoryData();
-        //Top top = new Top();
-       
 
         /// <summary>
         /// 盤點-首頁 View
@@ -37,24 +35,6 @@ namespace CHPOUTSRCMES.Web.Controllers
                 }
             }
         }
-
-
-
-
-        //public PartialViewResult GetTop()
-        //{
-        //    using (var context = new MesContext())
-        //    {
-        //        using (MasterUOW uow = new MasterUOW(context))
-        //        {
-        //            //取得使用者帳號
-        //            //var name = this.User.Identity.GetUserName();
-        //            //取得使用者ID
-        //            var id = this.User.Identity.GetUserId();
-        //            return PartialView("_TopPartial", top.GetViewModel(uow, stockInventoryData.orgData, id));
-        //        }
-        //    }
-        //}
 
         /// <summary>
         /// 取得盤點內容View(分為盤虧、盤盈)

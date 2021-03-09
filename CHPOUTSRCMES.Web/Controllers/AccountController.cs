@@ -106,10 +106,8 @@ namespace CHPOUTSRCMES.Web.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
-            //ExportClass.ShowMethods();
             var loginViewModel = CheckLoginCookie();
             ViewBag.ReturnUrl = returnUrl;
-            //return View("Login", "_Layout2", loginViewModel);
             return View(loginViewModel);
         }
 
@@ -346,8 +344,6 @@ namespace CHPOUTSRCMES.Web.Controllers
         public class AccountEditor
         {
             public string Action { get; set; }
-            //public List<long> TripDetailDT_IDs { get; set; }
-            //public List<string> TRANSACTION_AUTHORIZE_DATEs { get; set; }
             public AccountModel AccountModel { get; set; }
         }
 

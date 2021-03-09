@@ -25,7 +25,6 @@ namespace CHPOUTSRCMES.Web.Controllers
             var id = this.User.Identity.GetUserId();
             YieldViewModel yieldViewModel = new YieldViewModel();
             ProcessViewModel processViewModel = new ProcessViewModel();
-            //yieldViewModel.BathNoList = processViewModel.GetBatchNo();
             yieldViewModel.MachineCodeList = processViewModel.GetManchine();
             yieldViewModel.SubinventoryList = processViewModel.GetSubinventory(id, "Y");
             return View(yieldViewModel);
@@ -55,17 +54,6 @@ namespace CHPOUTSRCMES.Web.Controllers
 
             return this.Json(items, JsonRequestBehavior.AllowGet);
         }
-
-
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public JsonResult YieldQuery(DataTableAjaxPostViewModel data, string cuttingDateFrom, string cuttingDateTo, string batchNo, string machineNum)
-        //{
-        //    var userId = User.Identity.GetUserId();
-        //    YieldQueryModel yieldQueryModel = new YieldQueryModel();
-        //    var models = yieldQueryModel.getModels(data, cuttingDateFrom, cuttingDateTo, batchNo, machineNum, userId);
-        //    return Json(models, JsonRequestBehavior.AllowGet);
-        //}
 
         /// <summary>
         /// 工單得率報表
@@ -97,7 +85,6 @@ namespace CHPOUTSRCMES.Web.Controllers
                     else
                     {
                         throw new Exception(result.Msg);
-    //return new JsonResult { Data = new { status = result.Success, result = result.Msg } };
 }
 
 #else

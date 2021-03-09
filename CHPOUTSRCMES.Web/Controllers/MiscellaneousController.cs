@@ -17,7 +17,6 @@ namespace CHPOUTSRCMES.Web.Controllers
     [Authorize]
     public class MiscellaneousController : Controller
     {
-        //Top top = new Top();
         StockMiscellaneousData miscellaneousData = new StockMiscellaneousData();
         OrgSubinventoryData orgData = new OrgSubinventoryData();
        
@@ -39,36 +38,6 @@ namespace CHPOUTSRCMES.Web.Controllers
                 }
             }
         }
-
-        //public PartialViewResult GetTop()
-        //{
-        //    using (var context = new MesContext())
-        //    {
-        //        using (MasterUOW uow = new MasterUOW(context))
-        //        {
-        //            //取得使用者帳號
-        //            //var name = this.User.Identity.GetUserName();
-        //            //取得使用者ID
-        //            var id = this.User.Identity.GetUserId();
-        //            return PartialView("_TopPartial", top.GetViewModel(uow, orgData, id));
-        //        }
-        //    }
-        //}
-
-        //public PartialViewResult GetContent(string Miscellaneous)
-        //{
-        //    StockData.addDefault();
-        //    if (Miscellaneous == "雜發")
-        //    {
-        //        return PartialView("_SendPartial", miscellaneousData.GetMiscellaneousSendViewModel());
-        //    }
-        //    else
-        //    {
-        //        return PartialView("_ReceivePartial", miscellaneousData.GetMiscellaneousReceiveViewModel());
-        //    }
-            
-        //}
-
        
         /// <summary>
         /// 庫存查詢

@@ -39,7 +39,6 @@ namespace CHPOUTSRCMES.Web.Controllers
         [HttpPost, ActionName("GetYszmpckqDT")]
         public JsonResult GetYszmpckqDT(DataTableAjaxPostViewModel data, string ORGANIZATION_ID, string OSP_SUBINVENTORY, string PSTYP)
         {
-            //List<YszmpckqDT> model = yszmpckqDataData.GetYszmpckqDT();
             List<YszmpckqDT> model = yszmpckqDataData.search(ORGANIZATION_ID, OSP_SUBINVENTORY, PSTYP);
             var totalCount = model.Count;
             string search = data.Search.Value;
@@ -75,20 +74,6 @@ namespace CHPOUTSRCMES.Web.Controllers
 
             return Json(new { draw = data.Draw, recordsFiltered = filteredCount, recordsTotal = totalCount, data = model }, JsonRequestBehavior.AllowGet);
         }
-
-        //[HttpPost, ActionName("ClearYszmpckqDT")]
-        //public JsonResult ClearYszmpckqDT()
-        //{
-        //    ResultModel result = yszmpckqDataData.ClearYszmpckqDT();
-        //    return new JsonResult { Data = new { status = result.Success, result = result.Msg } };
-        //}
-
-        //[HttpPost, ActionName("Search")]
-        //public JsonResult Search(string ORGANIZATION_ID, string OSP_SUBINVENTORY, string PSTYP)
-        //{
-        //    ResultModel result = yszmpckqDataData.search(ORGANIZATION_ID, OSP_SUBINVENTORY, PSTYP);
-        //    return new JsonResult { Data = new { status = result.Success, result = result.Msg } };
-        //}
 
         /// <summary>
         /// 加工廠下拉選單

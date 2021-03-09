@@ -98,7 +98,14 @@ ORDER BY t.id";
             return model;
         }
 
-
+        /// <summary>
+        /// 列印期初標籤，現已沒用到
+        /// </summary>
+        /// <param name="uow"></param>
+        /// <param name="id"></param>
+        /// <param name="paperType"></param>
+        /// <param name="userName"></param>
+        /// <returns></returns>
         public ActionResult PrintMassLabel(TransferUOW uow, long id, string paperType, string userName)
         {
             var resultData = uow.GetLabelForHeaderId(id, paperType, userName);

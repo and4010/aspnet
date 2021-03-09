@@ -741,50 +741,6 @@ SELECT [TRANSFER_PICKED_ID] as ID
                 trfHeaderTRepository.Create(trfHeader, true);
             }
 
-
-
-            //if (shipmentNumber == DropDownListTypeValue.Add)
-            //{
-            //    var result = GetShipmentNumber(outSubinventoryCode, inSubinventoryCode, now, createUser);
-            //    if (!result.Success) throw new Exception(result.Msg);
-            //    shipmentNumber = result.Data;
-
-            //    trfHeaderTRepository.Create(new TRF_HEADER_T
-            //    {
-            //        OrgId = outOrganization.OrgUnitId,
-            //        OrganizationId = outOrganizationId,
-            //        OrganizationCode = outOrganization.OrganizationCode,
-            //        ShipmentNumber = shipmentNumber,
-            //        TransferCatalog = transferCatalog,
-            //        TransferType = TransferType.InBound,
-            //        NumberStatus = NumberStatus.NotSaved,
-            //        IsMes = IsMes.No,
-            //        SubinventoryCode = outSubinventoryCode,
-            //        LocatorId = outLocatorId,
-            //        LocatorCode = locatorCode,
-            //        TransactionDate = now,
-            //        TransactionTypeId = transactionTypeId,
-            //        TransactionTypeName = transactionType.TransactionTypeName,
-            //        TransferOrgId = inOrganization.OrgUnitId,
-            //        TransferOrganizationId = inOrganizationId,
-            //        TransferOrganizationCode = inOrganization.OrganizationCode,
-            //        TransferSubinventoryCode = inSubinventoryCode,
-            //        TransferLocatorId = inLocatorId,
-            //        TransferLocatorCode = transferLocatorCode,
-            //        CreatedBy = createUser,
-            //        CreatedUserName = createUserName,
-            //        CreationDate = now,
-            //        LastUpdateBy = null,
-            //        LastUpdateUserName = null,
-            //        LastUpdateDate = null
-            //    }, true);
-            //}
-
-
-
-            //var trfHeader = GetTrfHeader(shipmentNumber, TransferType.InBound);
-            //if (trfHeader == null) throw new Exception("找不到出貨編號資料");
-
             string headeroutOutLocatorSegment3 = "";
             if (trfHeader.LocatorId != null)
             {
@@ -816,9 +772,6 @@ SELECT [TRANSFER_PICKED_ID] as ID
                 var stock = stockTRepository.GetAll().FirstOrDefault(x => x.LotNumber == lotNumber); //待確認 捲號庫存搜尋方式
                 if (stock != null) throw new Exception("此捲號" + lotNumber + "已入庫");
             }
-
-            //var trfDeatil = GetTrfDetail(trfHeader.TransferHeaderId, item.InventoryItemId);
-            //if (trfDeatil != null) throw new Exception("料號重複輸入");
 
             //計算捲數/棧板數
             decimal rollReamQty = 0;
@@ -888,9 +841,6 @@ SELECT [TRANSFER_PICKED_ID] as ID
             };
 
             trfDetailTRepository.Create(trfDeatil, true);
-
-            //var trfDeatil = GetTrfDetail(trfHeader.TransferHeaderId, item.InventoryItemId);
-            //if (trfDeatil == null) throw new Exception("找不到此料號明細資料");
 
             //產生條碼清單
             var generateBarcodesResult = GenerateBarcodes(inOrganizationId, inSubinventoryCode, (int)rollReamQty, createUser);
@@ -1148,19 +1098,9 @@ SELECT [TRANSFER_PICKED_ID] as ID
                     }
                     else if (item.CatalogElemVal070 == ItemCategory.Flat)
                     {
-                        //rollReamWt = Math.Ceiling(requestedQty / rollReamQty); //每件令數 = 總令數 除以 棧板數 無條件進位 待確認是否正確
                         var yszmpckq = GetYszmpckq(outOrganization.OrganizationId, outOrganization.OrganizationCode, outSubinventoryCode, item.CatalogElemVal020, item.CatalogElemVal040);
                         if (yszmpckq == null) throw new Exception("找不到令重包數資料");
                         rollReamWt = yszmpckq.PiecesQty;
-                        //var yszmpckq = GetYszmpckq(outOrganization.OrganizationId, outOrganization.OrganizationCode, outSubinventoryCode, item.CatalogElemVal020);
-                        //if (yszmpckq == null)
-                        //{
-                        //    rollReamWt = Math.Ceiling(requestedQty / rollReamQty);
-                        //}
-                        //else
-                        //{
-                        //    rollReamWt = yszmpckq.PiecesQty;
-                        //}
                     }
                     else
                     {
@@ -1306,10 +1246,6 @@ SELECT [TRANSFER_PICKED_ID] as ID
                         {
                             palletStatus = PalletStatusCode.All;
                         }
-                        //if (reamQty == detail.RollReamWt)
-                        //{
-                        //    palletStatus = PalletStatusCode.All;
-                        //}
                         else if (reamQty > stock.SecondaryAvailableQty)
                         {
                             throw new Exception("庫存量不足，僅剩:" + stock.SecondaryAvailableQty + " " + stock.SecondaryUomCode);
@@ -1617,40 +1553,11 @@ SELECT [TRANSFER_PICKED_ID] as ID
             List<long> transferDetailIdList = pickList.GroupBy(x => x.TransferDetailId).Select(x => x.Key).ToList();
 
             List<TRF_DETAIL_T> trfDetailList = trfDetailTRepository.GetAll().Where(x => transferDetailIdList.Contains(x.TransferDetailId)).ToList();
-            //List<TRF_DETAIL_T> trfDetailList = trfDetailTRepository.GetAll().Join(
-            //    trfInboundPickedTRepository.GetAll(),
-            //    d => d.TransferDetailId,
-            //    p => p.TransferDetailId,
-            //    (d, p) => d).Select(x => x).ToList();
+            
             if (trfDetailList == null || trfDetailList.Count == 0) throw new Exception("找不到明細資料");
             foreach (TRF_INBOUND_PICKED_T pick in pickList)
             {
                 trfInboundPickedTRepository.Delete(pick);
-                //var remainPick = trfInboundPickedTRepository.GetAll().FirstOrDefault(x => x.TransferDetailId == pick.TransferDetailId);
-                //var detail = trfDetailTRepository.GetAll().FirstOrDefault(x => x.TransferDetailId == pick.TransferDetailId);
-                //if (detail == null) throw new Exception("找不到明細資料");
-                //if (remainPick == null)
-                //{
-                //    //此Deail已沒有關聯的Pick則刪除此Detail
-                //    trfDetailTRepository.Delete(detail);
-                //}
-                //else
-                //{
-                //    //更新Deatail數量  如果每筆轉換數量效率差則 待修改
-                //    //detail.RequestedTransactionQuantity -= pick.PrimaryQuantity; //暫時用主單位數量代替 待修改
-                //    //detail.RequestedPrimaryQuantity -= pick.PrimaryQuantity;
-                //    //detail.RequestedSecondaryQuantity -= pick.SecondaryQuantity;
-                //    detail.RequestedSecondaryQuantity -= pick.SecondaryQuantity;
-                //    var uomConversionResult = uomConversion.Convert(pick.InventoryItemId, (decimal)detail.RequestedSecondaryQuantity, pick.SecondaryUom, pick.PrimaryUom); //副單位需求量 轉 主單位需求量
-                //    if (!uomConversionResult.Success) throw new Exception(uomConversionResult.Msg);
-                //    detail.RequestedTransactionQuantity = uomConversionResult.Data; //暫時用主單位數量代替 待修改
-                //    detail.RequestedPrimaryQuantity = uomConversionResult.Data;
-
-                //    detail.LastUpdateBy = userId;
-                //    detail.LastUpdateUserName = userName;
-                //    detail.LastUpdateDate = now;
-                //    trfDetailTRepository.Update(detail);
-                //}
             }
             trfInboundPickedTRepository.SaveChanges();
             foreach (TRF_DETAIL_T detail in trfDetailList)
@@ -1700,7 +1607,6 @@ SELECT [TRANSFER_PICKED_ID] as ID
             }
 
             trfDetailTRepository.SaveChanges();
-            //return new ResultModel(true, "刪除入庫揀貨資料成功");
         }
 
         /// <summary>
@@ -1873,7 +1779,6 @@ SELECT [TRANSFER_PICKED_ID] as ID
                     {
                         //不是新增出貨編號時，要移除舊資料
                         var trfheader = GetTrfHeader(shipmentNumber, transferType);
-                        //if (trfheader == null) throw new Exception("找不到出貨編號資料");
                         if (trfheader != null)
                         {
                             //刪除入庫揀貨資料
@@ -1893,15 +1798,6 @@ SELECT [TRANSFER_PICKED_ID] as ID
                             {
                                 throw new Exception("刪除入庫明細資料失敗");
                             }
-
-                            //                      //刪除入庫檔頭資料
-                            //                      cmd = @"
-                            //DELETE FROM [TRF_HEADER_T]
-                            //WHERE TRANSFER_HEADER_ID = @TRANSFER_HEADER_ID";
-                            //                      if (this.Context.Database.ExecuteSqlCommand(cmd, new SqlParameter("@TRANSFER_HEADER_ID", trfheader.TransferHeaderId)) < 0)
-                            //                      {
-                            //                          throw new Exception("刪除入庫檔頭資料失敗");
-                            //                      }
                         }
                     }
 
@@ -1966,8 +1862,6 @@ SELECT [TRANSFER_PICKED_ID] as ID
                     header.LastUpdateDate = now;
                     trfHeaderTRepository.Update(header);
                     trfHeaderTRepository.SaveChanges();
-
-
 
                     if (header.IsMes == IsMes.Yes)
                     {
@@ -2103,8 +1997,6 @@ SELECT [TRANSFER_PICKED_ID] as ID
                                         var stock = stockTRepository.GetAll().FirstOrDefault(x => x.StockId == pick.StockId);
                                         if (stock == null) throw new Exception("找不到庫存資料");
 
-                                        //var detail = trfDetailTRepository.GetAll().AsNoTracking().FirstOrDefault(x => x.TransferDetailId == pick.TransferDetailId);
-                                        //if (detail == null) throw new Exception("找不到明細資料");
 
                                         //產生異動紀錄
                                         stock.OrganizationId = (long)header.TransferOrganizationId;
@@ -2222,13 +2114,11 @@ SELECT [TRANSFER_PICKED_ID] as ID
 
                                     stock.SecondaryAvailableQty += pick.SecondaryQuantity;
                                     stkTxnT.SecAftQty = stock.SecondaryAvailableQty;
-                                    //stock.SecondaryTransactionQty = stock.SecondaryAvailableQty;
+                                   
                                     var uomConversionResult = uomConversion.Convert(stock.InventoryItemId, (decimal)stock.SecondaryAvailableQty, stock.SecondaryUomCode, stock.PrimaryUomCode); //副單位需求量 轉 主單位需求量
                                     if (!uomConversionResult.Success) throw new Exception(uomConversionResult.Msg);
                                     stock.PrimaryAvailableQty = uomConversionResult.Data;
                                     stkTxnT.PryAftQty = stock.PrimaryAvailableQty;
-                                    //stock.PrimaryTransactionQty = stock.PrimaryAvailableQty;
-                                    //stock.RollReamWt = stock.RollReamWt;
                                     stkTxnT.CreatedBy = userId;
                                     stkTxnT.CreationDate = now;
                                     stkTxnT.LastUpdateBy = null;
@@ -2347,12 +2237,10 @@ SELECT [TRANSFER_PICKED_ID] as ID
 
                                 stock.SecondaryAvailableQty += pick.SecondaryQuantity;
                                 stkTxnT.SecAftQty = stock.SecondaryAvailableQty;
-                                //stock.SecondaryTransactionQty = stock.SecondaryAvailableQty;
                                 var uomConversionResult = uomConversion.Convert(stock.InventoryItemId, (decimal)stock.SecondaryAvailableQty, stock.SecondaryUomCode, stock.PrimaryUomCode); //副單位需求量 轉 主單位需求量
                                 if (!uomConversionResult.Success) throw new Exception(uomConversionResult.Msg);
                                 stock.PrimaryAvailableQty = uomConversionResult.Data;
                                 stkTxnT.PryAftQty = stock.PrimaryAvailableQty;
-                                //stock.PrimaryTransactionQty = stock.PrimaryAvailableQty;
                                 stock.RollReamWt = stock.RollReamWt;
                                 stkTxnT.CreatedBy = userId;
                                 stkTxnT.CreationDate = now;
@@ -2366,106 +2254,6 @@ SELECT [TRANSFER_PICKED_ID] as ID
                                 //非MES入庫沒有拆板
                             }
                         }
-
-                        //    var stockList = trfDetailTRepository.GetAll().
-                        //    Where(x => x.TransferHeaderId == transferHeaderId).
-                        //    Join(
-                        //itemsTRepository.GetAll(),
-                        //d => d.InventoryItemId,
-                        //i => i.InventoryItemId,
-                        //(d, i) => new
-                        //{
-                        //    TransferDetailId = d.TransferDetailId,
-                        //    InventoryItemId = d.InventoryItemId,
-                        //    ItemNumber = d.ItemNumber,
-                        //    ItemDescription = d.ItemDescription,
-                        //    ItemCategory = i.CatalogElemVal070,
-                        //    PaperType = i.CatalogElemVal020,
-                        //    BasicWeight = i.CatalogElemVal040,
-                        //    ReamWeight = i.CatalogElemVal060,
-                        //    RollReamWt = d.RollReamQty,
-                        //    Specification = i.CatalogElemVal050,
-                        //    PackingType = d.PackingType,
-                        //}).Join(
-                        //trfInboundPickedTRepository.GetAll(),
-                        //di => di.TransferDetailId,
-                        //p => p.TransferDetailId,
-                        //(di, p) => new
-                        //{
-                        //    InventoryItemId = di.InventoryItemId,
-                        //    ItemNumber = di.ItemNumber,
-                        //    ItemDescription = di.ItemDescription,
-                        //    ItemCategory = di.ItemCategory,
-                        //    PaperType = di.PaperType,
-                        //    BasicWeight = di.BasicWeight,
-                        //    ReamWeight = di.ReamWeight,
-                        //    RollReamWt = di.RollReamWt,
-                        //    Specification = di.Specification,
-                        //    PackingType = di.PackingType,
-                        //    LotNumber = p.LotNumber,
-                        //    Barcode = p.Barcode,
-                        //    PrimaryUomCode = p.PrimaryUom,
-                        //    PrimaryTransactionQty = p.PrimaryQuantity,
-                        //    PrimaryAvailableQty = p.PrimaryQuantity,
-                        //    SecondaryUomCode = p.SecondaryUom,
-                        //    SecondaryTransactionQty = p.SecondaryQuantity,
-                        //    SecondaryAvailableQty = p.SecondaryQuantity,
-                        //    Note = p.Note,
-                        //}
-                        //).ToList().Select(x => new STOCK_T
-                        //{
-                        //    OrganizationId = (long)header.TransferOrganizationId,
-                        //    OrganizationCode = header.TransferOrganizationCode,
-                        //    SubinventoryCode = header.TransferSubinventoryCode,
-                        //    LocatorId = header.TransferLocatorId,
-                        //    LocatorSegments = header.TransferLocatorCode,
-                        //    InventoryItemId = x.InventoryItemId,
-                        //    ItemNumber = x.ItemNumber,
-                        //    ItemDescription = x.ItemDescription,
-                        //    ItemCategory = x.ItemCategory,
-                        //    PaperType = x.PaperType,
-                        //    BasicWeight = x.BasicWeight,
-                        //    ReamWeight = x.ReamWeight,
-                        //    RollReamWt = x.RollReamWt,
-                        //    Specification = x.Specification,
-                        //    PackingType = x.PackingType,
-                        //    OspBatchNo = "",
-                        //    LotNumber = x.LotNumber,
-                        //    Barcode = x.Barcode,
-                        //    PrimaryUomCode = x.PrimaryUomCode,
-                        //    PrimaryTransactionQty = x.PrimaryTransactionQty,
-                        //    PrimaryAvailableQty = x.PrimaryAvailableQty,
-                        //    PrimaryLockedQty = 0,
-                        //    SecondaryUomCode = x.SecondaryUomCode,
-                        //    SecondaryTransactionQty = x.SecondaryTransactionQty,
-                        //    SecondaryAvailableQty = x.SecondaryAvailableQty,
-                        //    SecondaryLockedQty = 0,
-                        //    ReasonCode = "",
-                        //    ReasonDesc = "",
-                        //    Note = x.Note,
-                        //    StatusCode = StockStatusCode.InStock,
-                        //    CreatedBy = userId,
-                        //    CreationDate = now,
-                        //    LastUpdateBy = "",
-                        //    LastUpdateDate = null
-                        //}).ToList();
-
-                        //if (stockList == null || stockList.Count == 0) throw new Exception("無法產生庫存資料");
-
-                        //foreach (STOCK_T stock in stockList)
-                        //{
-                        //    //產生庫存資料
-                        //    stockTRepository.Create(stock, true);
-                        //    //產生庫存異動紀錄
-
-
-                        //    //更新pick的STOCK_ID
-                        //    var pick = trfInboundPickedTRepository.GetAll().FirstOrDefault(x => x.Barcode == stock.Barcode && x.TransferHeaderId == transferHeaderId);
-                        //    if (pick == null) throw new Exception("找不到揀貨資料");
-                        //    pick.StockId = stock.StockId;
-                        //    trfInboundPickedTRepository.Update(pick);
-                        //}
-                        //trfInboundPickedTRepository.SaveChanges();
                     }
 
                     //複製入庫明細資料到入庫歷史明細
@@ -2651,8 +2439,6 @@ SELECT [TRANSFER_PICKED_ID]
                     }
                     DateTime now = DateTime.Now;
 
-                    //var header = trfHeaderTRepository.GetAll().FirstOrDefault(x => x.TransferHeaderId == transferHeaderId);
-                    //if (header == null) throw new Exception("找不到出貨編號資料");
                     header.TransactionDate = now;
                     header.NumberStatus = NumberStatus.Saved;
                     header.LastUpdateBy = userId;
@@ -2769,12 +2555,10 @@ SELECT [TRANSFER_PICKED_ID]
 
                                     stock.SecondaryAvailableQty += pick.SecondaryQuantity;
                                     stkTxnT.SecAftQty = stock.SecondaryAvailableQty;
-                                    //stock.SecondaryTransactionQty = stock.SecondaryAvailableQty;
                                     var uomConversionResult = uomConversion.Convert(stock.InventoryItemId, (decimal)stock.SecondaryAvailableQty, stock.SecondaryUomCode, stock.PrimaryUomCode); //副單位需求量 轉 主單位需求量
                                     if (!uomConversionResult.Success) throw new Exception(uomConversionResult.Msg);
                                     stock.PrimaryAvailableQty = uomConversionResult.Data;
                                     stkTxnT.PryAftQty = stock.PrimaryAvailableQty;
-                                    //stock.PrimaryTransactionQty = stock.PrimaryAvailableQty;
                                     stock.RollReamWt = stock.RollReamWt;
                                     stkTxnT.CreatedBy = userId;
                                     stkTxnT.CreationDate = now;
@@ -2798,9 +2582,6 @@ SELECT [TRANSFER_PICKED_ID]
                                         //整版 非從拆板轉來 更新庫存位置
                                         var stock = stockTRepository.GetAll().FirstOrDefault(x => x.StockId == pick.StockId);
                                         if (stock == null) throw new Exception("找不到庫存資料");
-
-                                        //var detail = trfDetailTRepository.GetAll().AsNoTracking().FirstOrDefault(x => x.TransferDetailId == pick.TransferDetailId);
-                                        //if (detail == null) throw new Exception("找不到明細資料");
 
                                         //產生異動紀錄
                                         decimal pryBefQty = stock.PrimaryAvailableQty;
@@ -2923,13 +2704,10 @@ SELECT [TRANSFER_PICKED_ID]
 
                                     stock.SecondaryAvailableQty += pick.SecondaryQuantity;
                                     stkTxnT.SecAftQty = stock.SecondaryAvailableQty;
-                                    //stock.SecondaryTransactionQty = stock.SecondaryAvailableQty;
                                     var uomConversionResult = uomConversion.Convert(stock.InventoryItemId, (decimal)stock.SecondaryAvailableQty, stock.SecondaryUomCode, stock.PrimaryUomCode); //副單位需求量 轉 主單位需求量
                                     if (!uomConversionResult.Success) throw new Exception(uomConversionResult.Msg);
                                     stock.PrimaryAvailableQty = uomConversionResult.Data;
                                     stkTxnT.PryAftQty = stock.PrimaryAvailableQty;
-                                    //stock.PrimaryTransactionQty = stock.PrimaryAvailableQty;
-                                    //stock.RollReamWt = stock.RollReamWt;
                                     stkTxnT.CreatedBy = userId;
                                     stkTxnT.CreationDate = now;
                                     stkTxnT.LastUpdateBy = null;
@@ -3051,12 +2829,11 @@ SELECT [TRANSFER_PICKED_ID]
 
                                 stock.SecondaryAvailableQty += pick.SecondaryQuantity;
                                 stkTxnT.SecAftQty = stock.SecondaryAvailableQty;
-                                //stock.SecondaryTransactionQty = stock.SecondaryAvailableQty;
+                                
                                 var uomConversionResult = uomConversion.Convert(stock.InventoryItemId, (decimal)stock.SecondaryAvailableQty, stock.SecondaryUomCode, stock.PrimaryUomCode); //副單位需求量 轉 主單位需求量
                                 if (!uomConversionResult.Success) throw new Exception(uomConversionResult.Msg);
                                 stock.PrimaryAvailableQty = uomConversionResult.Data;
                                 stkTxnT.PryAftQty = stock.PrimaryAvailableQty;
-                                //stock.PrimaryTransactionQty = stock.PrimaryAvailableQty;
                                 stock.RollReamWt = stock.RollReamWt;
                                 stkTxnT.CreatedBy = userId;
                                 stkTxnT.CreationDate = now;
@@ -3070,106 +2847,6 @@ SELECT [TRANSFER_PICKED_ID]
                                 //非MES入庫沒有拆板
                             }
                         }
-
-                        //    var stockList = trfDetailTRepository.GetAll().
-                        //    Where(x => x.TransferHeaderId == transferHeaderId).
-                        //    Join(
-                        //itemsTRepository.GetAll(),
-                        //d => d.InventoryItemId,
-                        //i => i.InventoryItemId,
-                        //(d, i) => new
-                        //{
-                        //    TransferDetailId = d.TransferDetailId,
-                        //    InventoryItemId = d.InventoryItemId,
-                        //    ItemNumber = d.ItemNumber,
-                        //    ItemDescription = d.ItemDescription,
-                        //    ItemCategory = i.CatalogElemVal070,
-                        //    PaperType = i.CatalogElemVal020,
-                        //    BasicWeight = i.CatalogElemVal040,
-                        //    ReamWeight = i.CatalogElemVal060,
-                        //    RollReamWt = d.RollReamQty,
-                        //    Specification = i.CatalogElemVal050,
-                        //    PackingType = d.PackingType,
-                        //}).Join(
-                        //trfInboundPickedTRepository.GetAll(),
-                        //di => di.TransferDetailId,
-                        //p => p.TransferDetailId,
-                        //(di, p) => new
-                        //{
-                        //    InventoryItemId = di.InventoryItemId,
-                        //    ItemNumber = di.ItemNumber,
-                        //    ItemDescription = di.ItemDescription,
-                        //    ItemCategory = di.ItemCategory,
-                        //    PaperType = di.PaperType,
-                        //    BasicWeight = di.BasicWeight,
-                        //    ReamWeight = di.ReamWeight,
-                        //    RollReamWt = di.RollReamWt,
-                        //    Specification = di.Specification,
-                        //    PackingType = di.PackingType,
-                        //    LotNumber = p.LotNumber,
-                        //    Barcode = p.Barcode,
-                        //    PrimaryUomCode = p.PrimaryUom,
-                        //    PrimaryTransactionQty = p.PrimaryQuantity,
-                        //    PrimaryAvailableQty = p.PrimaryQuantity,
-                        //    SecondaryUomCode = p.SecondaryUom,
-                        //    SecondaryTransactionQty = p.SecondaryQuantity,
-                        //    SecondaryAvailableQty = p.SecondaryQuantity,
-                        //    Note = p.Note,
-                        //}
-                        //).ToList().Select(x => new STOCK_T
-                        //{
-                        //    OrganizationId = (long)header.TransferOrganizationId,
-                        //    OrganizationCode = header.TransferOrganizationCode,
-                        //    SubinventoryCode = header.TransferSubinventoryCode,
-                        //    LocatorId = header.TransferLocatorId,
-                        //    LocatorSegments = header.TransferLocatorCode,
-                        //    InventoryItemId = x.InventoryItemId,
-                        //    ItemNumber = x.ItemNumber,
-                        //    ItemDescription = x.ItemDescription,
-                        //    ItemCategory = x.ItemCategory,
-                        //    PaperType = x.PaperType,
-                        //    BasicWeight = x.BasicWeight,
-                        //    ReamWeight = x.ReamWeight,
-                        //    RollReamWt = x.RollReamWt,
-                        //    Specification = x.Specification,
-                        //    PackingType = x.PackingType,
-                        //    OspBatchNo = "",
-                        //    LotNumber = x.LotNumber,
-                        //    Barcode = x.Barcode,
-                        //    PrimaryUomCode = x.PrimaryUomCode,
-                        //    PrimaryTransactionQty = x.PrimaryTransactionQty,
-                        //    PrimaryAvailableQty = x.PrimaryAvailableQty,
-                        //    PrimaryLockedQty = 0,
-                        //    SecondaryUomCode = x.SecondaryUomCode,
-                        //    SecondaryTransactionQty = x.SecondaryTransactionQty,
-                        //    SecondaryAvailableQty = x.SecondaryAvailableQty,
-                        //    SecondaryLockedQty = 0,
-                        //    ReasonCode = "",
-                        //    ReasonDesc = "",
-                        //    Note = x.Note,
-                        //    StatusCode = StockStatusCode.InStock,
-                        //    CreatedBy = userId,
-                        //    CreationDate = now,
-                        //    LastUpdateBy = "",
-                        //    LastUpdateDate = null
-                        //}).ToList();
-
-                        //if (stockList == null || stockList.Count == 0) throw new Exception("無法產生庫存資料");
-
-                        //foreach (STOCK_T stock in stockList)
-                        //{
-                        //    //產生庫存資料
-                        //    stockTRepository.Create(stock, true);
-                        //    //產生庫存異動紀錄
-
-
-                        //    //更新pick的STOCK_ID
-                        //    var pick = trfInboundPickedTRepository.GetAll().FirstOrDefault(x => x.Barcode == stock.Barcode && x.TransferHeaderId == transferHeaderId);
-                        //    if (pick == null) throw new Exception("找不到揀貨資料");
-                        //    pick.StockId = stock.StockId;
-                        //    trfInboundPickedTRepository.Update(pick);
-                        //}
-                        //trfInboundPickedTRepository.SaveChanges();
                     }
 
                     //複製入庫明細資料到入庫歷史明細
@@ -3723,59 +3400,6 @@ SELECT
 
                         for (int i = 0; i < pickList.Count; i++)
                         {
-                            //var detail = GetTrfDetail(pickList[i].TransferHeaderId, pickList[i].TransferDetailId);
-                            //if (detail == null) throw new Exception("找不到明細資料");
-
-                            //STOCK_T stock = new STOCK_T();
-                            //stock.OrganizationId = (long)header.TransferOrganizationId;
-                            //stock.OrganizationCode = header.TransferOrganizationCode;
-                            //stock.SubinventoryCode = header.TransferSubinventoryCode;
-                            //stock.LocatorId = header.TransferLocatorId;
-                            //stock.LocatorSegments = header.TransferLocatorCode;
-                            //stock.InventoryItemId = detail.InventoryItemId;
-                            //stock.ItemNumber = detail.ItemNumber;
-                            //stock.ItemDescription = detail.ItemDescription;
-                            //stock.ItemCategory = item.CatalogElemVal070;
-                            //stock.PaperType = item.CatalogElemVal020;
-                            //stock.BasicWeight = item.CatalogElemVal040;
-                            //stock.ReamWeight = item.CatalogElemVal060;
-                            //if (item.CatalogElemVal070 == ItemCategory.Flat)
-                            //{
-                            //    stock.RollReamWt = detail.RollReamWt;
-                            //}
-                            //else
-                            //{
-                            //    stock.RollReamWt = 0;
-                            //}
-                            //stock.Specification = item.CatalogElemVal050;
-                            //stock.PackingType = detail.PackingType;
-                            //stock.OspBatchNo = "";
-                            //stock.LotNumber = pick.LotNumber;
-                            //stock.Barcode = pick.Barcode;
-                            //stock.PrimaryUomCode = pick.PrimaryUom;
-                            //stock.PrimaryTransactionQty = pick.PrimaryQuantity;
-                            //stock.PrimaryAvailableQty = pick.PrimaryQuantity;
-                            //stock.PrimaryLockedQty = 0;
-                            //stock.SecondaryUomCode = pick.SecondaryUom;
-                            //stock.SecondaryTransactionQty = pick.SecondaryQuantity;
-                            //stock.SecondaryAvailableQty = pick.SecondaryQuantity;
-                            //stock.SecondaryLockedQty = 0;
-                            //stock.ReasonCode = "";
-                            //stock.ReasonDesc = "";
-                            //stock.Note = pick.Note;
-                            //stock.StatusCode = StockStatusCode.InStock;
-                            //stock.CreatedBy = userId;
-                            //stock.CreationDate = now;
-                            //stock.LastUpdateBy = "";
-                            //stock.LastUpdateDate = null;
-                            //stockTRepository.Create(stock, true);
-
-                            ////產生異動紀錄
-                            //var stkTxnT = CreateStockRecord(stock, header.TransferOrganizationId, header.TransferOrganizationCode, header.TransferSubinventoryCode,
-                            //header.TransferLocatorId, CategoryCode.TransferInbound, ActionCode.InBoundSaveTransfer, header.ShipmentNumber,
-                            //0, stock.PrimaryAvailableQty, stock.PrimaryAvailableQty, 0, stock.SecondaryAvailableQty, stock.SecondaryAvailableQty, StockStatusCode.InStock, userId, now);
-                            //stkTxnTRepository.Create(stkTxnT);
-
                             pickList[i].SplitFromBarcode = pickList[i].Barcode;
                             pickList[i].Barcode = generateBarcodesResult.Data[i];
                             pickList[i].StockId = 0;
@@ -4009,7 +3633,6 @@ SELECT [STOCK_ID] as ID
                     if (transferCatalog == TransferCatalog.OrgTransfer)
                     {
                         throw new Exception("貨故不可為組織間移轉");
-                        //transactionTypeId = TransferUOW.TransactionTypeId.IntransitShipment;
                     }
                     else
                     {

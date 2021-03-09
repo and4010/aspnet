@@ -68,9 +68,6 @@ namespace CHPOUTSRCMES.Web.Controllers
 
             ReasonViewModel reasonViewModel = new ReasonViewModel();
             resultModel = reasonViewModel.SetReasonValue(ReasonEditor, id, name);
-
-
-             //var response = new Editor().Model<ReasonModel>().Field(new Field("Remark")).Process(request).Data();
             return Json(new { resultModel }, JsonRequestBehavior.AllowGet);
         }
 

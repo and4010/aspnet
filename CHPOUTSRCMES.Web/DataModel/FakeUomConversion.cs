@@ -7,6 +7,9 @@ using System.Web;
 
 namespace CHPOUTSRCMES.Web.DataModel
 {
+    /// <summary>
+    /// 模擬單位轉換，現已沒用到
+    /// </summary>
     public class FakeUomConversion : IUomConversion
     {
         public ResultDataModel<decimal> Convert(long P_ITEM_ID, decimal P_FROM_QTY, string P_FROM_UOM, string P_TO_UOM, int Round = 5)

@@ -1032,12 +1032,6 @@ order by ot.ORGANIZATION_CODE");
                 throw new Exception("找不到CATALOG_ELEM_VAL_140欄位");
             }
 
-            //ControlFlag_cell = ExcelUtil.FindCell("CONTROL_FLAG", sheet);
-            //if (ControlFlag_cell == null)
-            //{
-            //    throw new Exception("找不到CONTROL_FLAG欄位");
-            //}
-
             CreatedBy_cell = ExcelUtil.FindCell("CREATED_BY", sheet);
             if (CreatedBy_cell == null)
             {
@@ -1067,7 +1061,6 @@ order by ot.ORGANIZATION_CODE");
                     //搜尋未執行 SaveChanges 的資料
                     var org = this.Context.ChangeTracker.Entries<ITEMS_T>().Where(x => x.Entity.InventoryItemId == id).FirstOrDefault();
                     //搜尋已執行 SaveChanges 的資料
-                    //var org = itemsTRepository.Get(x => x.InventoryItemId == id).FirstOrDefault();
                     if (org == null || org.Entity.InventoryItemId <= 0)
                     {
                         ITEMS_T iTEMS_T = new ITEMS_T();
@@ -1113,7 +1106,6 @@ order by ot.ORGANIZATION_CODE");
                         //搜尋未執行 SaveChanges 的資料
                         var data = this.Context.ChangeTracker.Entries<ORGANIZATION_T>().Where(x => x.Entity.OrganizationCode == oCode).FirstOrDefault();
                         //搜尋已執行 SaveChanges 的資料
-                        //var o = organizationRepository.Get(x => x.OrganizationCode == ocode).FirstOrDefault();
                         if (data != null)
                         {
                             var entity = data.Entity;
@@ -1212,7 +1204,6 @@ order by ot.ORGANIZATION_CODE");
                             .Where(x => x.Entity.OrganizationId == id)
                             .FirstOrDefault();
                         //搜尋已執行 SaveChanges 的資料
-                        //var org = organizationRepository.Get(x => x.OrganizationID == id).FirstOrDefault();
                         if (org == null)
                         {
                             ORGANIZATION_T oRGANIZATION_T = new ORGANIZATION_T();
@@ -1289,7 +1280,6 @@ order by ot.ORGANIZATION_CODE");
                     //搜尋未執行 SaveChanges 的資料
                     var org = this.Context.ChangeTracker.Entries<SUBINVENTORY_T>().Where(x => x.Entity.SubinventoryCode == subCode).FirstOrDefault();
                     //搜尋已執行 SaveChanges 的資料
-                    // var org = subinventoryRepository.Get(x => x.OrganizationID == id && x.SubinventoryCode == subCode).FirstOrDefault();
                     if (org == null)
                     {
                         SUBINVENTORY_T sUBINVENTORY_T = new SUBINVENTORY_T();
@@ -1354,11 +1344,6 @@ order by ot.ORGANIZATION_CODE");
             {
                 throw new Exception("找不到LOCATOR_ID欄位");
             }
-            //LocatorType_cell = ExcelUtil.FindCell("LOCATOR_TYPE", sheet);
-            //if (LocatorType_cell == null)
-            //{
-            //    throw new Exception("找不到LOCATOR_TYPE欄位");
-            //}
             LocatorSegments_cell = ExcelUtil.FindCell("LOCATOR_SEGMENTS", sheet);
             if (LocatorSegments_cell == null)
             {
@@ -1429,7 +1414,6 @@ order by ot.ORGANIZATION_CODE");
                         lOCATOR_T.OrganizationId = ExcelUtil.GetLongCellValue(j, organizationId_cell.ColumnIndex, sheet);
                         lOCATOR_T.SubinventoryCode = ExcelUtil.GetStringCellValue(j, subinventoryCode_cell.ColumnIndex, sheet).Trim();
                         lOCATOR_T.LocatorId = ExcelUtil.GetLongCellValue(j, LocatorId_cell.ColumnIndex, sheet);
-                        //lOCATOR_T.LocatorType = Int64.Parse(ExcelUtil.GetCellString(j, LocatorType_cell.ColumnIndex, sheet).Trim());
                         lOCATOR_T.LocatorSegments = ExcelUtil.GetStringCellValue(j, LocatorSegments_cell.ColumnIndex, sheet).Trim();
                         lOCATOR_T.LocatorDesc = ExcelUtil.GetStringCellValue(j, LocatorDesc_cell.ColumnIndex, sheet).Trim();
                         lOCATOR_T.Segment1 = ExcelUtil.GetStringCellValue(j, Segment1_cell.ColumnIndex, sheet).Trim();
@@ -1474,11 +1458,6 @@ order by ot.ORGANIZATION_CODE");
             ICell LastUpdateBy_cell = null;
             ICell LastUpdateDate_cell = null;
 
-            //Related_id_cell = ExcelUtil.FindCell("RELATED_ITEM_ID", sheet);
-            //if (Related_id_cell == null)
-            //{
-            //    throw new Exception("找不到RELATED_ITEM_ID欄位");
-            //}
             ItemNumber_cell = ExcelUtil.FindCell("ITEM_NUMBER", sheet);
             if (ItemNumber_cell == null)
             {
@@ -1542,7 +1521,6 @@ order by ot.ORGANIZATION_CODE");
                     //搜尋未執行 SaveChanges 的資料
                     var org = this.Context.ChangeTracker.Entries<RELATED_T>().Where(x => x.Entity.InventoryItemId == id).FirstOrDefault();
                     //搜尋已執行 SaveChanges 的資料
-                    //var org = relatedTRepository.Get(x => x.InventoryItemId == id).FirstOrDefault();
                     if (org == null || org.Entity.InventoryItemId <= 0)
                     {
                         RELATED_T rELATED_T = new RELATED_T();
@@ -1677,10 +1655,6 @@ order by ot.ORGANIZATION_CODE");
             {
                 try
                 {
-                    //var id = Int64.Parse(ExcelUtil.GetCellString(j, OrganizationId_cell.ColumnIndex, sheet).Trim());
-                    //var org = YszmpckqTRepository.Get(x => x.InventoryItemId == id);
-                    //if (org == null || org.InventoryItemId <= 0)
-                    //{
                     YSZMPCKQ_T ySZMPCKQ_T = new YSZMPCKQ_T();
                     ySZMPCKQ_T.OrganizationId = ExcelUtil.GetLongCellValue(j, OrganizationId_cell.ColumnIndex, sheet);
                     ySZMPCKQ_T.OrganizationCode = ExcelUtil.GetStringCellValue(j, OrganizationCode_cell.ColumnIndex, sheet).Trim();
@@ -1699,7 +1673,6 @@ order by ot.ORGANIZATION_CODE");
                     ySZMPCKQ_T.LastUpdateDate = ExcelUtil.GetDateTimeCellValue(j, LastUpdateDate_cell.ColumnIndex, sheet);
                     ySZMPCKQ_T.ControlFlag = "";
                     yszmpckqTRepository.Create(ySZMPCKQ_T);
-                    //}
                 }
                 catch (Exception ex)
                 {
@@ -1808,7 +1781,6 @@ order by ot.ORGANIZATION_CODE");
                     //搜尋未執行 SaveChanges 的資料
                     var org = this.Context.ChangeTracker.Entries<MACHINE_PAPER_TYPE_T>().Where(x => x.Entity.MachineCode == MachineCode).FirstOrDefault();
                     //搜尋已執行 SaveChanges 的資料
-                    //var org = machinePaperTypeRepository.Get(x => x.MachineCode == MachineCode).FirstOrDefault();
                     if (org == null || string.IsNullOrEmpty(org.Entity.MachineCode))
                     {
                         MACHINE_PAPER_TYPE_T mACHINE_PAPER_TYPE_T = new MACHINE_PAPER_TYPE_T();
@@ -1925,7 +1897,6 @@ order by ot.ORGANIZATION_CODE");
                     //搜尋未執行 SaveChanges 的資料
                     var org = this.Context.ChangeTracker.Entries<TRANSACTION_TYPE_T>().Where(x => x.Entity.TransactionTypeId == TransactionTypeId).FirstOrDefault();
                     //搜尋已執行 SaveChanges 的資料
-                    //var org = transactionTypeRepository.Get(x => x.TransactionTypeId == TransactionTypeId).FirstOrDefault();
                     if (org == null || org.Entity.TransactionTypeId <= 0)
                     {
                         TRANSACTION_TYPE_T tRANSACTION_TYPE_T = new TRANSACTION_TYPE_T();
@@ -1987,7 +1958,6 @@ order by ot.ORGANIZATION_CODE");
                     var reason = stkReasonTRepository.Get(x => x.ReasonCode == code).FirstOrDefault();
 
                     //搜尋已執行 SaveChanges 的資料
-                    //var org = transactionTypeRepository.Get(x => x.TransactionTypeId == TransactionTypeId).FirstOrDefault();
                     if (reason == null && string.IsNullOrEmpty(reason.ReasonCode) && !string.IsNullOrEmpty(code) && !string.IsNullOrEmpty(desc))
                     {
                         var now = DateTime.Now;

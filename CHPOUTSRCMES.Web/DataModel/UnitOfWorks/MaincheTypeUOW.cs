@@ -103,7 +103,6 @@ FROM [MACHINE_PAPER_TYPE_T]");
                 logger.Error(LogUtilities.BuildExceptionMessage(e));
                 return new List<MachinePaperType>();
             }
-            //return result;
         }
 
 

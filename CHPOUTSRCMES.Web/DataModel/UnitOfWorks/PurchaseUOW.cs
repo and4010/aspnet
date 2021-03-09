@@ -94,10 +94,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                     {
                         var m = DeleteExcel(CtrHeaderId);
                         if (!m.Success) return m;
-                        //return new ResultModel(false, "資料已存在無法匯入");
                     }
-
-
 
                     var ctrDetail = ctrDetailTRepository.GetAll().Join(
                     ctrHeaderTRepository.GetAll(),               //要Join的資料表
@@ -344,8 +341,6 @@ and d.ITEM_CATEGORY = N'捲筒'");
                     var header = ctrHeaderTRepository.Get(x => x.CtrHeaderId == CtrHeaderId).FirstOrDefault();
                     if (header != null)
                     {
-                        //for (int i = 0; i < header.Count; i++)
-                        //{
                         header.Status = PurchaseStatusCode.GetCode(PurchaseStatusCode.Already);
                         header.LastUpdateBy = userId;
                         header.LastUpdateDate = now;
@@ -357,7 +352,6 @@ and d.ITEM_CATEGORY = N'捲筒'");
                         PickToPickHT(header.CtrHeaderId);
                         PickTDelete(header.CtrHeaderId);
                         DetailToDetailHT(header.CtrHeaderId);
-                        //}
                         txn.Commit();
                         return new ResultModel(true, "成功"); ;
                     }
@@ -1025,26 +1019,6 @@ FROM CTR_HEADER_T h where h.CTR_HEADER_ID = @CTR_HEADER_ID");
             }
         }
 
-        //public void SavePhoto(HttpPostedFileBase file, long id, string createby)
-        //{
-        //    //using (var txn = this.Context.Database.BeginTransaction())
-        //    //{
-        //    //    try
-        //    //    {
-        //    //        using (var mescontext = new MesContext())
-        //    //        {
-        //    //            SaveCtrFileInfoT(VaryQualityLevel(file), file, id, createby);
-        //    //        }
-        //    //        txn.Commit();
-        //    //    }
-        //    //    catch (Exception e)
-        //    //    {
-        //    //        txn.Rollback();
-        //    //        logger.Error(e.Message);
-        //    //    }
-        //    //}
-        //    SaveCtrFileInfoT(VaryQualityLevel(file), file, id, createby);
-        //}
 
         /// <summary>
         /// 儲存照片FileInfo Table
@@ -1069,67 +1043,6 @@ FROM CTR_HEADER_T h where h.CTR_HEADER_ID = @CTR_HEADER_ID");
             ctrFileInfoTRepository.Create(cTR_FILEINFO_T);
 
         }
-
-        /// <summary>
-        /// 儲存照片file table
-        /// </summary>
-        /// <param name="filebyte"></param>
-        /// <param name="file"></param>
-        //public void SaveCtrFileT(byte[] filebyte, HttpPostedFileBase file,long id)
-        //{
-        //    try
-        //    {
-        //        CTR_FILES_T cTR_FILES_T = new CTR_FILES_T();
-        //        cTR_FILES_T.FileInstance = filebyte;
-        //        ctrFilesTRepository.Create(cTR_FILES_T, true);
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        logger.Error(e.Message);
-        //    }
-        //}
-
-        ///// <summary>
-        ///// 壓縮照片大小
-        ///// </summary>
-        ///// <param name="file"></param>
-        ///// <returns></returns>
-        //public byte[] VaryQualityLevel(HttpPostedFileBase file)
-        //{
-        //    using (var thumb = Image.FromStream(file.InputStream))
-        //    {
-        //        var jpgInfo = GetEncoder(ImageFormat.Jpeg); /* Returns array of image encoder objects built into GDI+ */
-        //        using (var samllfile = new MemoryStream())
-        //        {
-        //            //    // Create an EncoderParameters object.  
-        //            //    // An EncoderParameters object has an array of EncoderParameter  
-        //            //    // objects. In this case, there is only one  
-        //            //    // EncoderParameter object in the array.  
-        //            EncoderParameters myEncoderParameters = new EncoderParameters(1);
-        //            System.Drawing.Imaging.Encoder myEncoder = System.Drawing.Imaging.Encoder.Quality;
-        //            myEncoderParameters.Param[0] = new EncoderParameter(myEncoder, 30L);
-        //            thumb.Save(samllfile, jpgInfo, myEncoderParameters);
-        //            return samllfile.ToArray();
-        //        }
-        //    };
-
-        //}
-
-        ///// <summary>
-        ///// 轉換
-        ///// </summary>
-        ///// <param name="format"></param>
-        ///// <returns></returns>
-        //private static ImageCodecInfo GetEncoder(ImageFormat format)
-        //{
-        //    ImageCodecInfo codec = ImageCodecInfo.GetImageDecoders().Where(m => m.FormatID == format.Guid).FirstOrDefault();
-        //    if (codec == null)
-        //    {
-        //        return null;
-        //    }
-        //    return codec;
-
-        //}
 
 
         /// <summary>
@@ -1792,7 +1705,6 @@ AND (lt.LOCATOR_DISABLE_DATE >= GETDATE() OR lt.LOCATOR_DISABLE_DATE is null)
                 if (transferCatalog == TransferCatalog.OrgTransfer)
                 {
                     throw new Exception("貨故不可為組織間移轉");
-                    //transactionTypeId = TransferUOW.TransactionTypeId.IntransitShipment;
                 }
                 else
                 {

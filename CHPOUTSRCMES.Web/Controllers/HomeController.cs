@@ -508,61 +508,6 @@ namespace CHPOUTSRCMES.Web.Controllers
             return View("Report");
         }
 
-        //[HttpPost]
-        //public JsonResult GetOspCount()
-        //{
-            
-        //    using var mesContext = new MesContext();
-        //    using var processUow = new ProcessUOW(mesContext);
-
-        //    var model = processUow.GetOspPendingCount();
-
-        //    return Json(model, JsonRequestBehavior.AllowGet);
-        //}
-
-        //[HttpPost]
-        //public JsonResult GetDlvCount()
-        //{
-        //    using var mesContext = new MesContext();
-        //    using var deliveryUow = new DeliveryUOW(mesContext);
-
-        //    var model = deliveryUow.GetDlvPendingCount();
-
-        //    return Json(model, JsonRequestBehavior.AllowGet);
-        //}
-
-        //[HttpPost]
-        //public JsonResult GetCtrCount()
-        //{
-        //    using var mesContext = new MesContext();
-        //    using var purchaseUOW = new PurchaseUOW(mesContext);
-
-        //    var model = purchaseUOW.GetCtrPendingCount();
-
-        //    return Json(model, JsonRequestBehavior.AllowGet);
-        //}
-
-        //[HttpGet]
-        //public ActionResult massPrint(long id)
-        //{
-        //    string paperType = "";
-
-        //    switch (id)
-        //    {
-        //        case 1:
-        //            paperType = "平版";
-        //            break;
-        //        default:
-        //            paperType = "捲筒";
-
-        //            break;
-        //    }
-
-        //    var name = this.User.Identity.GetUserName();
-        //    using var mesContext = new MesContext();
-        //    using var transferUow = new TransferUOW(mesContext);
-        //    return transferUow.PrintMassLabel(transferUow, id, paperType, name);
-        //}
 
     }
 }

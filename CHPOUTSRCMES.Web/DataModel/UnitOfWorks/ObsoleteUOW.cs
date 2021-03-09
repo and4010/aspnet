@@ -627,9 +627,6 @@ SELECT [TRANSFER_OBSOLETE_ID]
                         }
                     }
 
-                    //trfObsoleteHeaderTRepository.SaveChanges();
-                    //stockTRepository.SaveChanges();
-                    //stkTxnTRepository.SaveChanges();
                     this.SaveChanges();
                     txn.Commit();
 

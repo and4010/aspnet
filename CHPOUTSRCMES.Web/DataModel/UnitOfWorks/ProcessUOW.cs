@@ -823,7 +823,6 @@ AND ST.BARCODE = @BARCODE");
                     var OspPickIn = OspPickedInTRepository.Get(x => x.Barcode == Barcode && x.OspDetailInId == OspDetailInId).SingleOrDefault();
                     if (OspPickIn == null)
                     {
-                        //var detailin = OspDetailInTRepository.Get(x => x.OspDetailInId == OspDetailInId).SingleOrDefault();
                         var Header = OspHeaderTRepository.Get(x => x.OspHeaderId == detailin.OspHeaderId).SingleOrDefault();
                         OSP_PICKED_IN_T oSP_PICKED_IN_T = new OSP_PICKED_IN_T();
                         oSP_PICKED_IN_T.OspDetailInId = OspDetailInId;
@@ -848,7 +847,6 @@ AND ST.BARCODE = @BARCODE");
                         oSP_PICKED_IN_T.CreatedUserName = UserName;
                         oSP_PICKED_IN_T.CreationDate = DateTime.Now;
                         OspPickedInTRepository.Create(oSP_PICKED_IN_T, true);
-                        //var aft = Remaining_Weight == "" ? 0 : decimal.Parse(Remaining_Weight);
                         var bef = data.PrimaryAvailableQty;
                         var chg = data.PrimaryAvailableQty - (Remaining_Weight == "" ? 0 : decimal.Parse(Remaining_Weight));
                         var lockQty = (data.PrimaryLockedQty ?? 0) + chg;
@@ -1030,8 +1028,6 @@ AND ST.BARCODE = @BARCODE");
                 ospPickOut.Status = "待入庫";
                 ospPickOut.Cotangent = null;
                 ospPickOut.OspCotangentId = null;
-                //ospPickOut.Cotangent = Cotangent == "1" ? "Y" : "N";
-                //ospPickOut.OspCotangentId = ospCotanget.OspCotangentId;
                 ospPickOut.CreatedBy = UserId;
                 ospPickOut.CreatedUserName = UserName;
                 ospPickOut.CreationDate = DateTime.Now;
@@ -1081,7 +1077,6 @@ AND ST.BARCODE = @BARCODE");
                         return new ResultModel(false, "ID錯誤");
                     }
                     OSP_PICKED_OUT_T ospPickOut = new OSP_PICKED_OUT_T();
-                    //OSP_COTANGENT_T ospCotanget = new OSP_COTANGENT_T();
 
                     var barcodesResult = GenerateBarcodes(header.OrganizationId, detailout.Subinventory, 1, UserName);
                     if (!barcodesResult.Success) throw new Exception(barcodesResult.Msg);
@@ -1102,10 +1097,8 @@ AND ST.BARCODE = @BARCODE");
                     ospPickOut.SecondaryQuantity = 0;
                     ospPickOut.SecondaryUom = "";
                     ospPickOut.Status = "待入庫";
-                    //ospPickOut.Cotangent = "N";
                     ospPickOut.Cotangent = null;
                     ospPickOut.OspCotangentId = null;
-                    //ospPickOut.OspCotangentId = ospCotanget.OspCotangentId;
                     ospPickOut.CreatedBy = UserId;
                     ospPickOut.CreatedUserName = UserName;
                     ospPickOut.CreationDate = DateTime.Now;
@@ -1245,44 +1238,6 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
                         if (id != null)
                         {
                             OspPickedOutTRepository.Delete(id, true);
-                            //if (id.Cotangent == "N")
-                            //{
-                            //    //產出資料沒有餘切時，直接刪除產出資料
-                            //    OspPickedOutTRepository.Delete(id, true);
-                            //}
-                            //else
-                            //{
-                            //    var PickedOutList = OspPickedOutTRepository.GetAll().AsNoTracking().Where(x => x.OspCotangentId == id.OspCotangentId).ToList(); //取得同餘切id的pick產出資料
-                            //    if (PickedOutList == null)
-                            //    {
-                            //        throw new Exception("找不到產出資料");
-                            //    }
-                            //    else if (PickedOutList.Count == 1)
-                            //    {
-                            //        //當產出資料只有一個時，刪除對映的餘切
-                            //        var cotangent = OspCotangenTRepository.GetAll().FirstOrDefault(x => x.OspCotangentId == id.OspCotangentId);
-                            //        if (cotangent == null) throw new Exception("找不到餘切資料");
-                            //        OspCotangenTRepository.Delete(cotangent, true);
-                            //        OspPickedOutTRepository.Delete(id, true);
-                            //    }
-                            //    else
-                            //    {
-                            //        //當產出資料有多個時，保留餘切資料
-                            //        OspPickedOutTRepository.Delete(id, true);
-                            //    }
-                            //}
-
-                            //var PickedOut = OspPickedOutTRepository.GetAll().ToList();
-                            //if (PickedOut.Count == 1)
-                            //{
-                            //    //var cotangent = OspCotangenTRepository.Get(x => x.OspCotangentId == id.OspCotangentId).SingleOrDefault();
-                            //    var cotangent = OspCotangenTRepository.Get(x => x.OspHeaderId == id.OspHeaderId).SingleOrDefault();
-                            //    if (cotangent != null)
-                            //    {
-                            //        OspCotangenTRepository.Delete(cotangent, true);
-                            //    }
-                            //}
-                            //OspPickedOutTRepository.Delete(id, true);
                             txn.Commit();
                             return new ResultModel(true, "");
                         }
@@ -1375,7 +1330,6 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
                             var PickedOut = OspPickedOutTRepository.GetAll().ToList();
                             if (PickedOut.Count == 1)
                             {
-                                //var cotangent = OspCotangenTRepository.Get(x => x.OspCotangentId == id.OspCotangentId).SingleOrDefault();
                                 var cotangent = OspCotangenTRepository.Get(x => x.OspHeaderId == id.OspHeaderId).SingleOrDefault();
                                 if (cotangent != null)
                                 {
@@ -1437,16 +1391,6 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
                         var id = OspCotangenTRepository.Get(r => r.OspCotangentId == OspCotangentId).SingleOrDefault();
                         if (id != null)
                         {
-                            //var osppickList = OspPickedOutTRepository.Get(x => x.OspCotangentId == id.OspCotangentId).ToList();
-                            //foreach (var osppick in osppickList)
-                            //{
-                            //    osppick.Cotangent = "N";
-                            //    osppick.OspCotangentId = null;
-                            //    osppick.LastUpdateBy = UserId;
-                            //    osppick.LastUpdateUserName = UserName;
-                            //    osppick.LastUpdateDate = DateTime.Now;
-                            //    OspPickedOutTRepository.Update(osppick, true);
-                            //}
                             OspCotangenTRepository.Delete(id, true);
                             txn.Commit();
                             return new ResultModel(true, "");
@@ -1658,15 +1602,6 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
                 //投入重量：領料量 - 餘捲
                 var investWeight = PickInWeight - RemainWeight;
 
-                //var investItem = itemsTRepository.GetAll().AsNoTracking().FirstOrDefault(x => x.InventoryItemId == DetailIn.InventoryItemId);
-                //if (investItem == null) { throw new Exception("找不到投入料號資料"); }
-
-                //if (investItem.CatalogElemVal070 == ItemCategory.)
-                //var investUomConversionResult = uomConversion.Convert(DetailIn.InventoryItemId, investWeight, DetailIn.PrimaryUom, DetailIn.SecondaryUom);
-                //if (!investUomConversionResult.Success) throw new Exception(investUomConversionResult.Msg);
-
-                //var Totle = Math.Round(investWeight - ProductWeight, 2);
-                //var rate = Math.Round((ProductWeight / investWeight * 100), 2);
                 var Totle = investWeight - ProductWeight;
                 var rate = ProductWeight / investWeight * 100;
                 var loss = OspYieldVarianceTRepository.Get(x => x.OspHeaderId == DetailOut.OspHeaderId).SingleOrDefault();
@@ -1693,7 +1628,6 @@ where OSP_HEADER_ID = @OSP_HEADER_ID");
                     oSP_YIELD_VARIANCE_T.CotangentPrimaryUom = CotangentPrimaryUom;
                     oSP_YIELD_VARIANCE_T.CotangentSecondaryUom = CotangentSecondaryUom;
 
-                    //oSP_YIELD_VARIANCE_T.PrimaryUom = "KG";
                     oSP_YIELD_VARIANCE_T.LossWeight = Totle;
                     oSP_YIELD_VARIANCE_T.Rate = rate;
                     oSP_YIELD_VARIANCE_T.CreatedBy = UserId;
@@ -3240,28 +3174,6 @@ AND OPO.OSP_PICKED_OUT_ID = @OSP_PICKED_OUT_ID
                 {
                     var DetailOut = OspDetailOutTRepository.Get(x => x.OspDetailOutId == OspDetailOutId).SingleOrDefault();
                     return getLocatorListForUserId(UserId, DetailOut.Subinventory, DetailOut.LocatorId);
-
-                    //                    List<SelectListItem> locator = new List<SelectListItem>();
-                    //                    List<SqlParameter> sqlParameterList = new List<SqlParameter>();
-                    //                    StringBuilder query = new StringBuilder();
-                    //                    query.Append(
-                    //@"SELECT 
-                    //[SEGMENT3] as Text,
-                    //cast([LOCATOR_ID] as nvarchar) as Value
-                    //FROM [LOCATOR_T] LT
-                    //where CONTROL_FLAG <> 'D'
-                    //and SUBINVENTORY_CODE = @SUBINVENTORY_CODE");
-                    //                    sqlParameterList.Add(new SqlParameter("@SUBINVENTORY_CODE", DetailOut.Subinventory));
-                    //                    var data = mesContext.Database.SqlQuery<SelectListItem>(query.ToString(), sqlParameterList.ToArray()).ToList();
-                    //                    if (data == null)
-                    //                    {
-                    //                        locator.AddRange(data);
-                    //                    }
-                    //                    else
-                    //                    {
-                    //                        locator.AddRange(data);
-                    //                    }
-                    //                    return locator;
                 }
             }
             catch (Exception e)

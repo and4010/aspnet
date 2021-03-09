@@ -162,81 +162,26 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             {
                 var items = itemsTRepository.GetAll().Join(orgItemRepository.GetAll(), x => x.InventoryItemId, y => y.InventoryItemId, (x, y) => new { Item = x, OrganId = y.OrganizationId });
 
-
-
-                //var OrganizationId = String.IsNullOrEmpty(Organization_code) || Organization_code == "*" ? 0 : mesContext.OrganizationTs.Where(x => x.OrganizationCode == Organization_code).SingleOrDefault().OrganizationId;
-                //                    List<SqlParameter> sqlParameterList = new List<SqlParameter>();
-                //                    List<string> cond = new List<string>();
-                //                    StringBuilder query = new StringBuilder();
-                //                    query.Append(
-                //@"SELECT 
-                //t.[INVENTORY_ITEM_ID] AS Inventory_item_id,
-                //t.[ITEM_NUMBER] AS Item_number,
-                //t.[CATEGORY_CODE_INV] AS Category_code_inv,
-                //t.[CATEGORY_NAME_INV] AS Category_name_inv,
-                //t.[CATEGORY_CODE_COST] AS Category_code_cost,
-                //t.[CATEGORY_NAME_COST] AS Category_name_cost,
-                //t.[CATEGORY_CODE_CONTROL] AS Category_code_control,
-                //t.[CATEGORY_NAME_CONTROL] AS Category_name_control,
-                //t.[ITEM_DESC_ENG] AS Item_desc_eng,
-                //t.[ITEM_DESC_SCH] AS Item_desc_sch,
-                //t.[ITEM_DESC_TCH] AS Item_desc_tch,
-                //t.[PRIMARY_UOM_CODE] AS Primary_uom_code,
-                //t.[SECONDARY_UOM_CODE] AS Secondary_uom_code,
-                //t.[INVENTORY_ITEM_STATUS_CODE] AS Inventory_item_status_code,
-                //t.[ITEM_TYPE] AS Item_type,
-                //t.[CATALOG_ELEM_VAL_010] AS Catalog_elem_val_010,
-                //t.[CATALOG_ELEM_VAL_020] AS Catalog_elem_val_020,
-                //t.[CATALOG_ELEM_VAL_030] AS Catalog_elem_val_030,
-                //t.[CATALOG_ELEM_VAL_040] AS Catalog_elem_val_040,
-                //t.[CATALOG_ELEM_VAL_050] AS Catalog_elem_val_050,
-                //t.[CATALOG_ELEM_VAL_060] AS Catalog_elem_val_060,
-                //t.[CATALOG_ELEM_VAL_070] AS Catalog_elem_val_070,
-                //t.[CATALOG_ELEM_VAL_080] AS Catalog_elem_val_080,
-                //t.[CATALOG_ELEM_VAL_090] AS Catalog_elem_val_090,
-                //t.[CATALOG_ELEM_VAL_100] AS Catalog_elem_val_100,
-                //t.[CATALOG_ELEM_VAL_110] AS Catalog_elem_val_110,
-                //t.[CATALOG_ELEM_VAL_120] AS Catalog_elem_val_120,
-                //t.[CATALOG_ELEM_VAL_130] AS Catalog_elem_val_130,
-                //t.[CATALOG_ELEM_VAL_140] AS Catalog_elem_val_140,
-                //t.[CREATED_BY] AS Created_by,
-                //t.[CREATION_DATE] AS Creation_Date,
-                //t.[LAST_UPDATE_BY] AS LASt_Updated_by,
-                //t.[LAST_UPDATE_DATE] AS LASt_Update_Date 
-                //FROM [ITEMS_T] t
-                //LEFT JOIN ORG_ITEMS_T ot ON ot.INVENTORY_ITEM_ID = t.INVENTORY_ITEM_ID");
                 if (!string.IsNullOrEmpty(Catalog_elem_val_050)
                     && Catalog_elem_val_050.CompareTo("*") != 0)
                 {
                     items = items.Where(x => x.Item.CatalogElemVal050 == Catalog_elem_val_050);
-                    //cond.Add("t.CATALOG_ELEM_VAL_050 = @CATALOG_ELEM_VAL_050");
-                    //sqlParameterList.Add(new SqlParameter("@CATALOG_ELEM_VAL_050", Catalog_elem_val_050));
                 }
                 if (!string.IsNullOrEmpty(Catalog_elem_val_020)
                     && Catalog_elem_val_020.CompareTo("*") != 0)
                 {
                     items = items.Where(x => x.Item.CatalogElemVal020 == Catalog_elem_val_020);
-                    //cond.Add("t.CATALOG_ELEM_VAL_020 = @CATALOG_ELEM_VAL_020");
-                    //sqlParameterList.Add(new SqlParameter("@CATALOG_ELEM_VAL_020", Catalog_elem_val_020));
                 }
                 if (!string.IsNullOrEmpty(Catalog_elem_val_070)
                     && Catalog_elem_val_070.CompareTo("*") != 0)
                 {
                     items = items.Where(x => x.Item.CatalogElemVal070 == Catalog_elem_val_070);
-                    //cond.Add("t.CATALOG_ELEM_VAL_070 = @CATALOG_ELEM_VAL_070");
-                    //sqlParameterList.Add(new SqlParameter("@CATALOG_ELEM_VAL_070", Catalog_elem_val_070));
                 }
                 if (organId > 0)
                 {
                     items = items.Where(x => x.OrganId == organId);
-                    //cond.Add("ot.ORGANIZATION_ID = @ORGANIZATION_ID");
-                    //sqlParameterList.Add(new SqlParameter("@ORGANIZATION_ID", OrganizationId));
                 }
 
-                //string commandText = string.Format(query + "{0}{1}", cond.Count > 0 ? " where " : "", string.Join(" and ", cond.ToArray()));
-
-                //var rawQuery = sqlParameterList.Count > 0 ? mesContext.Database.SqlQuery<PartNoModel>(commandText, sqlParameterList.ToArray())
-                //    : mesContext.Database.SqlQuery<PartNoModel>(commandText);
                 var list = items.Select(x => new PartNoModel()
                 {
                     Catalog_elem_val_010 = x.Item.CatalogElemVal010,
@@ -276,7 +221,6 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                     Id = 0
                 });
 
-                //model.RecordTotal = rawQuery.Count();
                 string search = data.Search.Value;
                 if (!string.IsNullOrEmpty(search) && !string.IsNullOrWhiteSpace(search))
                 {

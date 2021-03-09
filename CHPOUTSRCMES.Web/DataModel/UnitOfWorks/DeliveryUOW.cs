@@ -49,25 +49,6 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             dlvPickedTRepository = new GenericRepository<DLV_PICKED_T>(this);
             dlvPickedHtRepository = new GenericRepository<DLV_PICKED_HT>(this);
         }
-        //private List<SelectListItem> deliveryStatusList = new List<SelectListItem>() 
-        //{
-        //     new SelectListItem() { Text = "取消", Value = "0" },
-        //     new SelectListItem() { Text = "未印", Value = "1" },
-        //     new SelectListItem() { Text = "待出", Value = "2" },
-        //     new SelectListItem() { Text = "已揀", Value = "3" },
-        //     new SelectListItem() { Text = "待核准", Value = "4" },
-        //     new SelectListItem() { Text = "已出貨", Value = "5" }
-        //};
-
-        //public static Dictionary<string, string> DeliveryStatusDictionary = new Dictionary<string, string>()
-        //{
-        //    {DeliveryStatusCode.Canceled, "已取消"},
-        //    {DeliveryStatusCode.Unprinted, "未印"},
-        //    {DeliveryStatusCode.UnPicked, "待出"},
-        //    {DeliveryStatusCode.Picked, "已揀"},
-        //    {DeliveryStatusCode.UnAuthorized, "待核准"},
-        //    {DeliveryStatusCode.Authorized, "已出貨"},
-        //};
 
         public IHeader deliveryStatusCode = new DeliveryStatusCode();
 
@@ -104,22 +85,6 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
             {
                return new ResultModel(false, "此條碼不符合已選擇的料號");
             }
-
-            //if (detailData.OspBatchId == null && detailData.TmpItemId == null)
-            //{
-            //    if (stock.ItemNumber != detailData.ItemNumber)
-            //    {
-            //        return new ResultModel(false, "此條碼不符合已選擇的料號");
-            //    }
-            //}
-            //else
-            //{
-            //    //代紙
-            //    if (stock.ItemNumber != detailData.TmpItemNumber)
-            //    {
-            //        return new ResultModel(false, "此條碼不符合已選擇的料號");
-            //    }
-            //}
 
             if (detailData.LocatorId != null && detailData.LocatorId != stock.LocatorId)
             {
@@ -280,7 +245,6 @@ GROUP BY d.DLV_DETAIL_ID";
                 }
                 else
                 {
-                    
                     foreach(var status in list)
                     {
                         if (status == 1)
@@ -298,20 +262,6 @@ GROUP BY d.DLV_DETAIL_ID";
                     }
                     //全部detail為已揀，回傳已揀
                     return new ResultDataModel<string>(true, "檢查是否揀畢成功", DeliveryStatusCode.Picked);
-
-                    //if (list[0] == 1)
-                    //{
-                    //    return new ResultDataModel<string>(false, "已揀數量超過需求量", null);
-                    //}
-                    //else if (list[0] == -1)
-                    //{
-                    //    return new ResultDataModel<string>(true, "檢查是否揀畢成功", DeliveryStatusCode.UnPicked);
-                    //}
-                    //else
-                    //{
-                    //    return new ResultDataModel<string>(true, "檢查是否揀畢成功", DeliveryStatusCode.Picked);
-                    //}
-                    
                 }
             }
             catch (Exception ex)
@@ -319,8 +269,6 @@ GROUP BY d.DLV_DETAIL_ID";
                 logger.Error(LogUtilities.BuildExceptionMessage(ex));
                 return new ResultDataModel<string>(false, "檢查是否揀畢失敗:" + ex.Message, null);
             }
-
-
         }
 
 
@@ -376,8 +324,6 @@ GROUP BY d.DLV_DETAIL_ID";
                         dlvHeaderTRepository.Update(data);
                     }
                     dlvHeaderTRepository.SaveChanges();
-
-
                     txn.Commit();
                     return new ResultModel(true, "刪除揀貨明細成功");
                 }
@@ -443,28 +389,8 @@ GROUP BY d.DLV_DETAIL_ID";
                         return "";
                 }
             }
-
-            //public string ToStockStatus(string statusCode)
-            //{
-            //    switch (statusCode)
-            //    {
-            //        case Canceled:
-            //            return StockStatusCode.InStock;
-            //        //case Unprinted:
-            //        //    return "未印";
-            //        //case UnPicked:
-            //        //    return "待出";
-            //        case Picked:
-            //            return StockStatusCode.DeliveryPicked;
-            //        //case UnAuthorized:
-            //        //    return "待核准";
-            //        case Shipped:
-            //            return StockStatusCode.Shipped;
-            //        default:
-            //            return "";
-            //    }
-            //}
         }
+
         /// <summary>
         /// 取得航程號選單資料
         /// </summary>
@@ -526,19 +452,6 @@ GROUP BY d.DLV_DETAIL_ID";
             var tripNameList = new List<SelectListItem>();
             try
             {
-                //var tempList = dlvHeaderTRepository
-                //            .GetAll().AsNoTracking()
-                //            .Join(userSubinventoryTRepository.GetAll(), x=>x.SubinventoryCode, y => y.SubinventoryCode, (x, y) => new { user = y.UserId, header = x })
-                //            .Where(x=>x.user == userId)
-                //            .OrderByDescending(x => x.header.TripId)
-                //            .Take(1000)
-                //            .GroupBy(x => x.header.TripId)
-                //            .Select(x => new SelectListItem()
-                //            {
-                //                Text = x.FirstOrDefault().header.TripName,
-                //                Value = x.FirstOrDefault().header.TripId.ToString()
-                //            });
-                //tripNameList.AddRange(tempList);
                 //取得符合使用者倉庫365天內的航程號
                 string cmd = @"
 SELECT TOP 1000 CONVERT(varchar(10), t.TRIP_ID) as Value
@@ -992,11 +905,6 @@ SELECT [DLV_PICKED_ID]
                     }
 
                     this.SaveChanges();
-                    //dlvHeaderTRepository.SaveChanges();
-                    //stockTRepository.SaveChanges();
-                    //stkTxnTRepository.SaveChanges();
-
-
                     txn.Commit();
                     return new ResultModel(true, "出貨核准成功");
                 }
@@ -1132,7 +1040,6 @@ SELECT [DLV_DETAIL_ID]
                         }
 
                         var pickList = dlvPickedTRepository.GetAll().Where(x => x.DlvHeaderId == header.DlvHeaderId).ToList();
-                        //if (pickList == null || pickList.Count == 0) throw new Exception("找不到揀貨資料");
                         if (pickList != null && pickList.Count > 0)
                         {
                             foreach (DLV_PICKED_T pick in pickList)
@@ -1147,25 +1054,6 @@ SELECT [DLV_DETAIL_ID]
                                 var updaeStockResult = UpdateStock(stock, stkTxnT, ref priQty, ref secQty, pickSatus, PickStatus.Deleted, userId, now, true);
                                 if (!updaeStockResult.Success) throw new Exception(updaeStockResult.Msg);
                                 dlvPickedTRepository.Delete(pick);
-
-                                //decimal pryBefQty = stock.PrimaryAvailableQty;
-                                //decimal? secBefQty = stock.SecondaryAvailableQty;
-                                //stock.PrimaryAvailableQty = stock.PrimaryAvailableQty + pick.PrimaryQuantity;
-                                //stock.PrimaryLockedQty = stock.PrimaryLockedQty - pick.PrimaryQuantity;
-                                //stock.SecondaryAvailableQty = stock.SecondaryAvailableQty + pick.SecondaryQuantity;
-                                //stock.SecondaryLockedQty = stock.SecondaryAvailableQty - pick.SecondaryQuantity;
-                                //stock.StatusCode = StockStatusCode.InStock;
-                                //stock.LastUpdateBy = userId;
-                                //stock.LastUpdateDate = now;
-
-                                //STK_TXN_T stkTxnT = CreateStockRecord(stock, null, "", "", null, CategoryCode.Delivery, ActionCode.Deleted, data.DeliveryName,
-                                //    pryBefQty, pick.PrimaryQuantity, stock.PrimaryAvailableQty, secBefQty, pick.SecondaryQuantity, stock.SecondaryAvailableQty,
-                                //    StockStatusCode.InStock, userId, now);
-
-                                //stockTRepository.Update(stock);
-                                //stkTxnTRepository.Create(stkTxnT);
-
-                                //dlvPickedTRepository.Delete(pick);
                             }
                         }
                     }
@@ -1229,10 +1117,6 @@ SELECT [DLV_DETAIL_ID]
         /// <returns></returns>
         public ResultModel UpdateTransactionAuthorizeDates(TripDetailDTEditor selectDatas, string userId, string userName)
         {
-            //List<TripHeaderDT> result = new List<TripHeaderDT>();
-
-            //dlvHeaderTRepository.GetAll().AsNoTracking().Where(x => data.TripDetailDTList.  .Contains(x.DlvHeaderId)).GroupBy(x => x.TripId).Select(x => x.Key).ToList();
-
             using (var txn = this.Context.Database.BeginTransaction())
             {
                 try
@@ -1309,30 +1193,7 @@ from DLV_DETAIL_HT d
 LEFT JOIN DLV_PICKED_HT p ON p.DLV_HEADER_ID = d.DLV_HEADER_ID AND p.DLV_DETAIL_ID = d.DLV_DETAIL_ID
 where d.DLV_HEADER_ID = @DLV_HEADER_ID
 GROUP BY d.DLV_DETAIL_ID";
-                //string cmd = @"
-                //select 
-                //DLV_DETAIL_ID as ID,
-                //DLV_HEADER_ID as DlvHeaderId,
-                //ROW_NUMBER() OVER(ORDER BY DLV_DETAIL_ID) AS SUB_ID,
-                //ORDER_NUMBER,
-                //ORDER_SHIP_NUMBER,
-                //OSP_BATCH_ID,
-                //OSP_BATCH_NO,
-                //INVENTORY_ITEM_ID,
-                //ITEM_NUMBER,
-                //TMP_ITEM_ID,
-                //TMP_ITEM_NUMBER,
-                //PAPER_TYPE,
-                //BASIC_WEIGHT,
-                //SPECIFICATION,
-                //REQUESTED_PRIMARY_QUANTITY as REQUESTED_QUANTITY,
-                //(select SUM(PRIMARY_QUANTITY) from DLV_PICKED_T where DLV_HEADER_ID = @DLV_HEADER_ID) as PICKED_QUANTITY,
-                //REQUESTED_PRIMARY_UOM as REQUESTED_QUANTITY_UOM,
-                //REQUESTED_TRANSACTION_QUANTITY as SRC_REQUESTED_QUANTITY,
-                //(select SUM(TRANSACTION_QUANTITY) from DLV_PICKED_T where DLV_HEADER_ID = @DLV_HEADER_ID) as SRC_PICKED_QUANTITY,
-                //REQUESTED_TRANSACTION_UOM as SRC_REQUESTED_QUANTITY_UOM
-                //from DLV_DETAIL_T
-                //where DLV_HEADER_ID = @DLV_HEADER_ID";
+                
             }
             else
             {
@@ -1493,36 +1354,7 @@ LEFT JOIN DLV_PICKED_T p ON p.DLV_HEADER_ID = d.DLV_HEADER_ID AND p.DLV_DETAIL_I
 where d.DLV_HEADER_ID = @DLV_HEADER_ID
 GROUP BY d.DLV_DETAIL_ID";
             }
-
-
-            //            string cmd = @"
-            //select 
-            //DLV_DETAIL_ID as ID,
-            //ROW_NUMBER() OVER(ORDER BY DLV_DETAIL_ID) AS SUB_ID,
-            //ORDER_NUMBER,
-            //ORDER_SHIP_NUMBER,
-            //OSP_BATCH_ID,
-            //OSP_BATCH_NO,
-            //INVENTORY_ITEM_ID,
-            //ITEM_NUMBER,
-            //TMP_ITEM_ID,
-            //TMP_ITEM_NUMBER,
-            //REAM_WEIGHT,
-            //PACKING_TYPE,
-            //REQUESTED_PRIMARY_QUANTITY as REQUESTED_QUANTITY,
-            //(select SUM(PRIMARY_QUANTITY) from DLV_PICKED_T where DLV_HEADER_ID = @DLV_HEADER_ID) as PICKED_QUANTITY,
-            //REQUESTED_PRIMARY_UOM as REQUESTED_QUANTITY_UOM,
-            //[REQUESTED_SECONDARY_QUANTITY] as REQUESTED_QUANTITY2,
-            //(select SUM(SECONDARY_QUANTITY) from DLV_PICKED_T where DLV_HEADER_ID = @DLV_HEADER_ID) as PICKED_QUANTITY2,
-            //[REQUESTED_SECONDARY_UOM] as REQUESTED_QUANTITY_UOM2,
-            //REQUESTED_TRANSACTION_QUANTITY as SRC_REQUESTED_QUANTITY,
-            //(select SUM(TRANSACTION_QUANTITY) from DLV_PICKED_T where DLV_HEADER_ID = @DLV_HEADER_ID) as SRC_PICKED_QUANTITY,
-            //REQUESTED_TRANSACTION_UOM as SRC_REQUESTED_QUANTITY_UOM
-            //from DLV_DETAIL_T
-            //where DLV_HEADER_ID = @DLV_HEADER_ID";
-
             return this.Context.Database.SqlQuery<FlatEditDT>(cmd, new SqlParameter("@DLV_HEADER_ID", dlvHeaderId)).ToList();
-
         }
 
         /// <summary>
@@ -1670,7 +1502,6 @@ WHERE p.BARCODE = @Barcode
                         //棧板狀態為併板 在出貨不會遇到
                         throw new Exception("出貨棧板狀態不可為併板");
                     }
-                    //new SqlParameter("@userName", userName);
 
                     var labelModel = this.Context.Database.SqlQuery<LabelModel>(cmd.ToString(), new SqlParameter("@userName", userName), new SqlParameter("@Barcode", pick.Barcode)).ToList();
                     if (labelModel == null || labelModel.Count == 0) return new ResultDataModel<List<LabelModel>>(false, "找不到標籤資料", null);
@@ -1684,8 +1515,6 @@ WHERE p.BARCODE = @Barcode
                 logger.Error(LogUtilities.BuildExceptionMessage(ex));
                 return new ResultDataModel<List<LabelModel>>(false, "取得標籤資料失敗:" + ex.Message, null);
             }
-           
-
         }
 
         /// <summary>
@@ -1721,6 +1550,7 @@ WHERE p.BARCODE = @Barcode
             }
 
         }
+
         /// <summary>
         /// 取得出貨未完成數量
         /// </summary>

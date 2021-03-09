@@ -492,7 +492,7 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
 
 
         #region 庫存
-        //public IDetail stockStatusCode = new StockStatusCode();
+        
 
         /// <summary>
         /// 庫存狀態
@@ -539,26 +539,6 @@ namespace CHPOUTSRCMES.Web.DataModel.UnitOfWorks
                 }
             }
 
-            //public string ToStockStatus(string statusCode)
-            //{
-            //    switch (statusCode)
-            //    {
-            //        case DeliveryStatusCode.Canceled:
-            //            return InStock;
-            //        //case Unprinted:
-            //        //    return "未印";
-            //        //case UnPicked:
-            //        //    return "待出";
-            //        case DeliveryStatusCode.Picked:
-            //            return StockStatusCode.DeliveryPicked;
-            //        //case UnAuthorized:
-            //        //    return "待核准";
-            //        case DeliveryStatusCode.Shipped:
-            //            return StockStatusCode.Shipped;
-            //        default:
-            //            return "";
-            //    }
-            //}
         }
 
         /// <summary>
@@ -2005,75 +1985,12 @@ left join LOCATOR_T l on s.ORGANIZATION_ID = l.ORGANIZATION_ID and s.SUBINVENTOR
                 {
                     return this.Context.Database.SqlQuery<OrgSubinventoryDT>(commandText).ToList();
                 }
-
-                //var tempList = this.Context.Database.SqlQuery<OrgSubinventoryDT>(cmd.ToString(),
-                //    new SqlParameter("@ORGANIZATION_ID", orgId),
-                //    new SqlParameter("@SUBINVENTORY_CODE", SUBINVENTORY_CODE),
-                //    new SqlParameter("@LOCATOR_ID", locId)).ToList();
-
-                //var tempList = organizationRepository.GetAll().AsNoTracking()
-                //    .Join(subinventoryRepository.GetAll().AsNoTracking(),
-                //    o => new { o.OrganizationId },
-                //    s => new { s.OrganizationId },
-                //    (o, s) => new
-                //    {
-                //        o.OrganizationId,
-                //        o.OrganizationCode,
-                //        o.OrganizationName,
-                //        s.SubinventoryCode,
-                //        s.SubinventoryName,
-                //        s.OspFlag,
-                //        s.LocatorType
-                //    })
-                //    .Join(locatorTRepository.GetAll().AsNoTracking(),
-                //    os => new { os.OrganizationId, os.SubinventoryCode },
-                //    l => new { l.OrganizationId, l.SubinventoryCode },
-                //    (os, l) => new {
-                //        OrganizationId = os.OrganizationId,
-                //        OrganizationCode = os.OrganizationCode,
-                //        OrganizationName = os.OrganizationName,
-                //        SubinventoryCode = os.SubinventoryCode,
-                //        SubinventoryName = os.SubinventoryName,
-                //        OspFlag = os.OspFlag,
-                //        BarcodePrefixCode = "A",
-                //        LocatorId = l.LocatorId,
-                //        LocatorType = os.LocatorType,
-                //        LocatorSegments = l.LocatorSegments,
-                //        LocatorDesc = l.LocatorDesc,
-                //        Segment1 = l.Segment1,
-                //        Segment2 = l.Segment2,
-                //        Segment3 = l.Segment3,
-                //        Segment4 = l.Segment4
-                //    })
-                //        .Where(x => ORGANIZATION_ID == "*" ? true : x.OrganizationId == orgId &&
-                //            SUBINVENTORY_CODE == "*" ? true : x.SubinventoryCode == SUBINVENTORY_CODE &&
-                //            LOCATOR_ID == "*" ? true : x.LocatorId == locId)
-                //            .Select(x => new OrgSubinventoryDT{
-                //                ORGANIZATION_ID = x.OrganizationId,
-                //                ORGANIZATION_CODE = x.OrganizationCode,
-                //                ORGANIZATION_NAME = x.OrganizationName,
-                //                SUBINVENTORY_CODE = x.SubinventoryCode,
-                //                SUBINVENTORY_NAME = x.SubinventoryName,
-                //                OSP_FLAG = x.OspFlag,
-                //                BARCODE_PREFIX_CODE = x.BarcodePrefixCode,
-                //                LOCATOR_ID = x.LocatorId,
-                //                LOCATOR_TYPE = x.LocatorType,
-                //                LOCATOR_SEGMENTS = x.LocatorSegments,
-                //                LOCATOR_DESC = x.LocatorDesc,
-                //                SEGMENT1 = x.Segment1,
-                //                SEGMENT2 = x.Segment2,
-                //                SEGMENT3 = x.Segment3,
-                //                SEGMENT4 = x.Segment4
-                //            });
-
-                //return tempList;
             }
             catch (Exception ex)
             {
                 logger.Error(LogUtilities.BuildExceptionMessage(ex));
                 return new List<OrgSubinventoryDT>();
             }
-            //return result;
         }
 
         /// <summary>
@@ -2120,7 +2037,6 @@ WHERE T.STOCK_ID IN");
 
 
                 var stockCondition = string.Join(",", stockIdList);
-                //stockCondition = stockCondition.Length > 0 ? stockCondition.Substring(0, stockCondition.Length - 1) : stockCondition;
 
                 cmd.AppendFormat(" ({0}) ", stockCondition);
 

@@ -319,14 +319,8 @@ namespace CHPOUTSRCMES.Web.Controllers
             ViewBag.LocatorItems = model.GetLocator(CtrPickedId);
             ViewBag.ReasonItems = model.GetReason();
             model.FlatDetailModel = model.GetFlatEdit(CtrPickedId);
-
-            //model.Status = purchaseViewModel.Status;
-            //model.CreateDate = purchaseViewModel.CreateDate;
             model.CabinetNumber = model.GetHeader(CtrHeaderId).ContainerNo;
-            //model.Subinventory = purchaseViewModel.Subinventory;
-
             return View(model);
-        
         }
 
         /// <summary>
@@ -343,14 +337,6 @@ namespace CHPOUTSRCMES.Web.Controllers
             var id = this.User.Identity.GetUserId();
             //取得使用者帳號
             var name = this.User.Identity.GetUserName();
-            //if(Files != null || Files.Count != 0)
-            //{
-            //    foreach (string i in Files)
-            //    {
-            //        HttpPostedFileBase hpf = Files[i] as HttpPostedFileBase;
-            //        model.SavePhoto(hpf);
-            //    }
-            //}
             var resultModel = model.PaperRollEditNote(Files, 
                 Int64.Parse(formCollection["id"]),
                 formCollection["Reason"], 
@@ -375,17 +361,7 @@ namespace CHPOUTSRCMES.Web.Controllers
             var id = this.User.Identity.GetUserId();
             //取得使用者帳號
             var name = this.User.Identity.GetUserName();
-            //if (Files != null || Files.Count != 0)
-            //{
-            //    foreach (string i in Files)
-            //    {
-            //        HttpPostedFileBase hpf = Files[i] as HttpPostedFileBase;
-            //        //model.SavePhoto(hpf);
-            //    }
-            //}
-
-            //model.GetFlatEditRemak(int.Parse(formCollection["id"]),
-            //   formCollection["reason"], formCollection["remak"]);
+            
             var resultModel = model.FlatEditNote(Files,
                 Int64.Parse(formCollection["id"]),
                 formCollection["Reason"],
@@ -454,15 +430,8 @@ namespace CHPOUTSRCMES.Web.Controllers
                 string extension = Path.GetExtension(file.FileName);
                 if (file.FileName.EndsWith(".xls") || file.FileName.EndsWith(".xlsx"))
                 {
-                    //string filelocation = Server.MapPath("~/Content/");
-
-                    //if (System.IO.File.Exists(filelocation))
-                    //{
-                    //    System.IO.File.Delete(filelocation);
-                    //};
                     try
                     {
-                        //file.SaveAs(Path.Combine(filelocation, file.FileName));
                         ExcelImportRoll(file, ref detail, ref result, long.Parse(formCollection["id"]));
                     }
                     catch (Exception e)
@@ -639,7 +608,6 @@ namespace CHPOUTSRCMES.Web.Controllers
             var name = this.User.Identity.GetUserName();
             var userId = this.User.Identity.GetUserId();
             return viewModel.PritPaperRollLabel(Id, userId, name, Status);
-            //return new JsonResult { Data = new { status = false, result = "" } };
         }
 
         /// <summary>
@@ -652,7 +620,6 @@ namespace CHPOUTSRCMES.Web.Controllers
         public JsonResult ExcelImportFlat(HttpPostedFileBase file, DataTableAjaxPostViewModel data, ref List<DetailModel.FlatDetailModel> detail, ref ResultModel result)
         {
             var papper = new ExcelImport();
-            //papper.FlatDetail(file, ref detail, ref result);
             return Json(new { draw = data.Draw, recordsFiltered = detail.Count, recordsTotal = detail.Count, data = detail, result }, JsonRequestBehavior.AllowGet);
         }
 
@@ -697,7 +664,6 @@ namespace CHPOUTSRCMES.Web.Controllers
             }
 
             //這是專門寫文字的
-            //HttpContext.Current.Response.Write();
             Response.End();
         }
 
@@ -710,8 +676,6 @@ namespace CHPOUTSRCMES.Web.Controllers
         public JsonResult GetPhotos(long id)
         {
             PurchaseViewModel viewModel = new PurchaseViewModel();
-            //Image oImage = null;
-            //Bitmap oBitmap = null;
             ////建立副本
             try
             {
@@ -741,8 +705,6 @@ namespace CHPOUTSRCMES.Web.Controllers
             int code = 0;
             string message = "";
             PurchaseViewModel viewModel = new PurchaseViewModel();
-            //Image oImage = null;
-            //Bitmap oBitmap = null;
             ////建立副本
             List<long> list = new List<long>();
             try

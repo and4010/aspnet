@@ -61,12 +61,6 @@ namespace CHPOUTSRCMES.Web.Controllers
             return Json(new { draw = data.Draw, recordsFiltered = filteredCount, recordsTotal = totalCount, data = model }, JsonRequestBehavior.AllowGet);
         }
 
-        //[HttpPost, ActionName("Search")]
-        //public JsonResult Search(string INVENTORY_ITEM_ID, string RELATED_ITEM_ID)
-        //{
-        //    ResultModel result = ospRelatedData.search(INVENTORY_ITEM_ID, RELATED_ITEM_ID);
-        //    return new JsonResult { Data = new { status = result.Success, result = result.Msg } };
-        //}
 
         /// <summary>
         /// 組成成份料號下拉選單

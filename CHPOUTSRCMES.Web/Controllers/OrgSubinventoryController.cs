@@ -61,10 +61,6 @@ namespace CHPOUTSRCMES.Web.Controllers
                             || (!string.IsNullOrEmpty(p.OSP_FLAG) && p.OSP_FLAG.ToLower().Contains(search.ToLower()))
                             || (!string.IsNullOrEmpty(p.LOCATOR_SEGMENTS) && p.LOCATOR_SEGMENTS.ToLower().Contains(search.ToLower()))
                             || (!string.IsNullOrEmpty(p.LOCATOR_DESC) && p.LOCATOR_DESC.ToLower().Contains(search.ToLower()))
-                            //|| (!string.IsNullOrEmpty(p.CREATED_BY_NAME) && p.CREATED_BY_NAME.ToLower().Contains(search.ToLower()))
-                            //|| (p.CREATION_DATE.HasValue && p.CREATION_DATE.Value.ToString("yyyy-MM-dd").ToLower().Contains(search.ToLower()))
-                            //|| (!string.IsNullOrEmpty(p.LAST_UPDATED_BY_NAME) && p.LAST_UPDATED_BY_NAME.ToLower().Contains(search.ToLower()))
-                            //|| (p.LAST_UPDATE_DATE.HasValue && p.LAST_UPDATE_DATE.Value.ToString("yyyy-MM-dd").ToLower().Contains(search.ToLower()))
                             ).ToList();
                     }
 
@@ -77,12 +73,6 @@ namespace CHPOUTSRCMES.Web.Controllers
             }
         }
 
-        //[HttpPost, ActionName("Search")]
-        //public JsonResult Search(string ORGANIZATION_ID, string SUBINVENTORY_CODE, string LOCATOR_ID)
-        //{
-        //    ResultModel result = orgSubinventoryData.search(ORGANIZATION_ID, SUBINVENTORY_CODE, LOCATOR_ID);
-        //    return new JsonResult { Data = new { status = result.Success, result = result.Msg } };
-        //}
 
         /// <summary>
         /// 倉庫下拉選單

@@ -81,15 +81,8 @@ namespace CHPOUTSRCMES.Web.Controllers
                             || (!string.IsNullOrEmpty(p.FREIGHT_TERMS_NAME) && p.FREIGHT_TERMS_NAME.ToLower().Contains(search.ToLower()))
                             || (!string.IsNullOrEmpty(p.DELIVERY_NAME) && p.DELIVERY_NAME.ToLower().Contains(search.ToLower()))
                             || (!string.IsNullOrEmpty(p.CUSTOMER_NAME) && p.CUSTOMER_NAME.ToLower().Contains(search.ToLower()))
-                            //|| (!string.IsNullOrEmpty(p.CUSTOMER_LOCATION_CODE) && p.CUSTOMER_LOCATION_CODE.ToLower().Contains(search.ToLower()))
                             || (!string.IsNullOrEmpty(p.SHIP_CUSTOMER_NAME) && p.SHIP_CUSTOMER_NAME.ToLower().Contains(search.ToLower()))
                             || (!string.IsNullOrEmpty(p.TRIP_CAR) && p.TRIP_CAR.ToLower().Contains(search.ToLower()))
-                            //|| p.SRC_REQUESTED_QUANTITY.ToString().ToLower().Contains(search.ToLower())
-                            //|| (!string.IsNullOrEmpty(p.SRC_REQUESTED_QUANTITY_UOM) && p.SRC_REQUESTED_QUANTITY_UOM.ToLower().Contains(search.ToLower()))
-                            //|| p.REQUESTED_QUANTITY2.ToString().ToLower().Contains(search.ToLower())
-                            //|| (!string.IsNullOrEmpty(p.REQUESTED_QUANTITY_UOM2) && p.REQUESTED_QUANTITY_UOM2.ToLower().Contains(search.ToLower()))
-                            //|| p.REQUESTED_QUANTITY.ToString().ToLower().Contains(search.ToLower())
-                            //|| (!string.IsNullOrEmpty(p.REQUESTED_QUANTITY_UOM) && p.REQUESTED_QUANTITY_UOM.ToLower().Contains(search.ToLower()))
                             || (!string.IsNullOrEmpty(p.SUBINVENTORY_CODE) && p.SUBINVENTORY_CODE.ToLower().Contains(search.ToLower()))
                             || (p.TRIP_ACTUAL_SHIP_DATE.HasValue && p.TRIP_ACTUAL_SHIP_DATE.Value.ToString("yyyy-MM-dd").ToLower().Contains(search.ToLower()))
                             || (!string.IsNullOrEmpty(p.TRIP_NAME) && p.TRIP_NAME.ToLower().Contains(search.ToLower()))
@@ -219,7 +212,6 @@ namespace CHPOUTSRCMES.Web.Controllers
                             || (!string.IsNullOrEmpty(p.BARCODE) && p.BARCODE.ToLower().Contains(search.ToLower()))
                             || p.PRIMARY_QUANTITY.ToString().ToLower().Contains(search.ToLower())
                             || p.PRIMARY_UOM.ToString().ToLower().Contains(search.ToLower())
-                            //|| (!string.IsNullOrEmpty(p.REMARK) && p.REMARK.ToLower().Contains(search.ToLower()))
                             ).ToList();
                     }
                     var filteredCount = model.Count;
@@ -336,7 +328,6 @@ namespace CHPOUTSRCMES.Web.Controllers
                             || p.PRIMARY_UOM.ToString().ToLower().Contains(search.ToLower())
                             || p.SECONDARY_QUANTITY.ToString().ToLower().Contains(search.ToLower())
                             || p.SECONDARY_UOM.ToString().ToLower().Contains(search.ToLower())
-                            //|| (!string.IsNullOrEmpty(p.REMARK) && p.REMARK.ToLower().Contains(search.ToLower()))
                             ).ToList();
                     }
                     var filteredCount = model.Count;
@@ -370,7 +361,6 @@ namespace CHPOUTSRCMES.Web.Controllers
                     var id = this.User.Identity.GetUserId();
                     //取得使用者帳號
                     var name = this.User.Identity.GetUserName();
-                    //var result = tripHeaderData.AddPickDT(uow, DlvHeaderId, DLV_DETAIL_ID, DELIVERY_NAME, BARCODE, SECONDARY_QUANTITY, id, name);
                     var result = tripHeaderData.AddPickDT(uow, model.DLV_HEADER_ID, model.DLV_DETAIL_ID, model.DELIVERY_NAME, model.BARCODE, model.SECONDARY_QUANTITY, id, name);
                     return new JsonResult { Data = new { status = result.Success, result = result.Msg } };
                 }
@@ -585,7 +575,6 @@ namespace CHPOUTSRCMES.Web.Controllers
                     var name = this.User.Identity.GetUserName();
                     ResultModel result = tripHeaderData.UpdateTransactionAuthorizeDates(uow, selectedData, userId, name);
                     return new JsonResult { Data = new { status = result.Success, result = result.Msg } };
-                    //return new JsonResult { Data = new { data } };
                 }
             }
         }
@@ -635,7 +624,6 @@ namespace CHPOUTSRCMES.Web.Controllers
                     //取得使用者帳號
                     var name = this.User.Identity.GetUserName();
                     return tripHeaderData.PritLabel(uow, PICKED_ID, name);
-                    //return new JsonResult { Data = new { status = false, result = "" } };
                 }
             }
         }
@@ -661,7 +649,6 @@ namespace CHPOUTSRCMES.Web.Controllers
                     else
                     {
                         throw new Exception(result.Msg);
-                        //return new JsonResult { Data = new { status = result.Success, result = result.Msg } };
                     }
 
 #else
@@ -675,7 +662,6 @@ namespace CHPOUTSRCMES.Web.Controllers
                     else
                     {
                         throw new Exception(result.Msg);
-                        //return new JsonResult { Data = new { status = result.Success, result = result.Msg } };
                     }
 
 #endif
