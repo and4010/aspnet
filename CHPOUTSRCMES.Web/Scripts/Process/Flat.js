@@ -463,7 +463,6 @@ function LoadFlatInvestTable() {
         destroy: true,
         processing: true,
         serverSide: true,
-        //scrollX: true,
         autoWidth: false,
         dom:
             "<'row'<'col-sm-2'l><'col-sm-7'B><'col-sm-3'f>>" +
@@ -630,10 +629,7 @@ function LoadFlatProductionDataTable() {
         table: "#FlatProductionDataTables",
         idSrc: 'OspPickedOutId',
         fields: [
-            //{
-            //    label: "重量",
-            //    name: "Weight"
-            //},
+            
             {
                 name: "OspPickedOutId"
             },
@@ -656,7 +652,6 @@ function LoadFlatProductionDataTable() {
         destroy: true,
         processing: true,
         serverSide: true,
-        //scrollX: true,
         autoWidth: false,
         dom:
             "<'row'<'col-sm-2'l><'col-sm-7'B><'col-sm-3'f>>" +
@@ -999,20 +994,6 @@ function BtnRecord() {
     });
 
     $('#BtnApprove').click(function () {
-        //var OspHeaderId = $("#OspHeaderId").val();
-        //$.ajax({
-        //    url: '/Process/ApproveHeaderStauts/',
-        //    dataType: 'json',
-        //    type: 'post',
-        //    data: { OspHeaderId: OspHeaderId },
-        //    success: function (data) {
-        //        if (data.resultModel.Success) {
-        //            window.location.href = '/Process/Index';
-        //        } else {
-        //            swal.fire(data.resultModel.Msg)
-        //        }
-        //    }
-        //});
 
         var loss = $('#Production_Loss').text();
         var Process_Batch_no = $('#Process_Batch_no').text()

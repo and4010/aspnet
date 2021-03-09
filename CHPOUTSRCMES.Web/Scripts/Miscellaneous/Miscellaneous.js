@@ -47,11 +47,6 @@ $(document).ready(function () {
         } else {
             return null;
         }
-        //if ($('#ddlLocator option').length === 1) {
-        //    return null;
-        //} else {
-        //    return $("#ddlLocator").val();
-        //}
     }
 
     function getSearchQty() {
@@ -80,7 +75,6 @@ $(document).ready(function () {
         if (e.keyCode == 13) {
             $("#btnSearchStock").focus();
             return false;
-            //SearchStock();
         }
     });
 
@@ -119,40 +113,6 @@ $(document).ready(function () {
             $("#qtyType").html("數量");
         }
         TransactionDetailDT.ajax.reload();
-        //var Miscellaneous = $("#ddlMiscellaneous").val();
-        //if (Miscellaneous == "請選擇") {
-        //    $('#Content').empty();
-        //    return;
-        //}
-
-        //$.ajax({
-        //    url: "/Miscellaneous/GetContent",
-        //    type: "GET",
-        //    dataType: 'html',
-        //    data: {
-        //        Miscellaneous: Miscellaneous
-        //    },
-        //    success: function (data) {
-        //        $('#Content').empty();
-        //        $('#Content').html(data);
-
-        //        if (Miscellaneous == "雜發") {  
-        //            SendInit();
-        //        } else {
-        //            ReceiveInit();
-        //        }
-        //    },
-        //    error: function () {
-        //        swal.fire('更新內容失敗');
-        //    },
-        //    complete: function (data) {
-
-
-        //    }
-
-        //})
-
-
     })
 
 
@@ -165,7 +125,6 @@ $(document).ready(function () {
         processing: true,
         orderMulti: true,
         deferLoading: 0, //初始化DataTable時，不發出ajax
-        //pageLength: 2,
         dom:
             "<'row'<'col-sm-2'l><'col-sm-7'B><'col-sm-3'f>>" +
             "<'row'<'col-sm-12'tr>>" +
@@ -207,7 +166,6 @@ $(document).ready(function () {
             { data: "SECONDARY_UOM_CODE", name: "次要單位", autoWidth: true },
             { data: "NOTE", name: "備註", autoWidth: true },
             { data: "ID", name: "STOCK_ID", autoWidth: true, visible: false }
-            //{ data: "LAST_UPDATE_DATE", name: "更新日期", autoWidth: true, visible: false }
         ],
 
         order: [[1, 'desc']],
@@ -304,7 +262,6 @@ $(document).ready(function () {
                 var size = Object.keys(TData).length;
                 for (var i = 0; i < size; i++) {
                     var ID = Object.keys(TData)[i];
-                    //var NOTE = Object.values(TData[ID])[0];
                     var NOTE = Object.keys(TData[ID]).map(function (e) {
                         return TData[ID][e]
                     })[0];
@@ -374,7 +331,6 @@ $(document).ready(function () {
         serverSide: true,
         processing: true,
         orderMulti: true,
-        //pageLength: 2,
         dom:
             "<'row'<'col-sm-2'l><'col-sm-7'B><'col-sm-3'f>>" +
             "<'row'<'col-sm-12'tr>>" +
@@ -424,7 +380,6 @@ $(document).ready(function () {
             { data: "SECONDARY_UOM_CODE", name: "次要單位", autoWidth: true },
             { data: "NOTE", name: "備註", autoWidth: true },
             { data: "STOCK_ID", name: "STOCK_ID", autoWidth: true, visible: false }
-            //{ data: "LAST_UPDATE_DATE", name: "更新日期", autoWidth: true, visible: false }
         ],
 
         order: [[1, 'desc']],
@@ -472,32 +427,6 @@ $(document).ready(function () {
                         })
                     }
                 },
-                //{
-                //    text: '刪除',
-                //    className: 'btn-danger',
-                //    action: function () {
-                //        var selectedData = TransactionDetailDT.rows('.selected').data();
-                //        if (selectedData.length == 0) {
-                //            swal.fire("請選擇要刪除的項目");
-                //            return;
-                //        }
-
-                //        swal.fire({
-                //            title: "異動明細刪除",
-                //            text: "確定刪除嗎?",
-                //            type: "warning",
-                //            showCancelButton: true,
-                //            confirmButtonColor: "#DD6B55",
-                //            confirmButtonText: "確定",
-                //            cancelButtonText: "取消"
-                //        }).then(function (result) {
-                //            if (result.value) {
-                //                DelTransactionDetail(selectedData);
-                //            }
-                //        });
-
-                //    }
-                //},
                 {
                     text: '編輯備註',
                     className: 'btn-danger',
@@ -522,27 +451,6 @@ $(document).ready(function () {
                             });
                     }
                 }
-                //{
-                //    text: '編輯備註',
-                //    className: 'btn-danger',
-                //    action: function (e, dt, node, config) {
-                //        var count = dt.rows({ selected: true }).count();
-
-                //        if (count == 0) {
-                //            return;
-                //        }
-
-                //        editor.edit(TransactionDetailDT.rows({ selected: true }).indexes())
-                //        .title('編輯備註')
-                //        .buttons({
-                //            text: '確定',
-                //            action: function () {
-                //                this.submit();
-                //            },
-                //            className: 'btn-danger'
-                //        });
-                //    }
-                //}
             ],
         }
     });
@@ -553,11 +461,6 @@ $(document).ready(function () {
             event.preventDefault();
             return;
         }
-        //if ($('#ddlLocator option').length > 1 && $('#ddlLocator').val() == "請選擇") {
-        //        swal.fire('請選擇儲位');
-        //        event.preventDefault();
-        //        return;
-        //}
         if ($('#ddlLocatorArea').is(":visible")) {
             if ($('#ddlLocator').val() == "請選擇") {
                 swal.fire('請選擇儲位');
@@ -657,40 +560,6 @@ $(document).ready(function () {
 
     }
 
-    //function DelTransactionDetail(selectedData) {
-
-
-    //    var list = [];
-    //    for (i = 0; i < selectedData.length; i++) {
-    //        list.push(selectedData[i].ID);
-    //    }
-
-
-    //    $.ajax({
-    //        url: "/Miscellaneous/DelTransactionDetail",
-    //        type: "post",
-    //        data: {
-    //            IDs: list
-    //        },
-    //        success: function (data) {
-    //            if (data.status) {
-    //                TransactionDetailDT.ajax.reload();
-    //            }
-    //            else {
-    //                swal.fire(data.result);
-    //            }
-    //        },
-    //        error: function () {
-    //            swal.fire('刪除異動明細失敗');
-    //        },
-    //        complete: function (data) {
-
-
-    //        }
-
-    //    });
-    //}
-
     function SaveTransactionDetail() {
         var transactionTypeId = $('#ddlMiscellaneous').val();
         if (transactionTypeId == "請選擇") {
@@ -754,13 +623,8 @@ function LocatorChangeCallBack() {
 
 }
 
-//function AutoCompleteItemNumberEnterCallBack() {
-//    $('#txtSearchQty').focus().select();
-//}
 
 function AutoCompleteItemNumberSelectCallBack(ITEM_NO) {
-    //$("#txtItemNumber").val(ITEM_NO);
-
     GetStockItemData(ITEM_NO, true);
 }
 
@@ -796,36 +660,5 @@ function GetStockItemData(ITEM_NO, focusNext) {
         }
 
     });
-
-    //ShowWait(function () {
-    //    $.ajax({
-    //        url: "/StockTransaction/GetStockItemData",
-    //        type: "post",
-    //        data: {
-    //            SUBINVENTORY_CODE: $("#ddlSubinventory option:selected").text(),
-    //            ITEM_NO: ITEM_NO
-    //        },
-    //        success: function (data) {
-    //            if (data.Success) {
-    //                CloseWait();
-    //                $('#SearchUnit').html(data.Data.PrimaryUomCode);
-    //                if (focusNext) {
-    //                    $('#txtSearchQty').focus().select();
-    //                }
-    //            } else {
-    //                CloseWait();
-    //                $('#SearchUnit').html("");
-    //            }
-    //        },
-    //        error: function () {
-    //            swal.fire('取得料號資訊失敗');
-    //        },
-    //        complete: function (data) {
-
-    //        }
-
-    //    });
-    //});
-
     
 }

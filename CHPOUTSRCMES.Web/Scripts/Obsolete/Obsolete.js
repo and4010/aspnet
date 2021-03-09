@@ -3,8 +3,6 @@ var editor;
 var StockDT;
 
 $(document).ready(function () {
-    //$.fn.dataTable.Buttons.defaults.dom.button.className = 'btn'; //datatable button 預設的class btn btn-default 改為 btn
-    //$.fn.dataTable.Editor.classes.form.button = 'btn'; //editor button 預設的class btn btn-default 改為 btn
 
     GetTop();
 
@@ -26,11 +24,6 @@ $(document).ready(function () {
         } else {
             return null;
         }
-        //if ($('#ddlLocator option').length === 1) {
-        //    return null;
-        //} else {
-        //    return $("#ddlLocator").val();
-        //}
     }
 
     $("#btnSearchStock").click(function () {
@@ -61,7 +54,6 @@ $(document).ready(function () {
         processing: true,
         orderMulti: true,
         deferLoading: 0, //初始化DataTable時，不發出ajax
-        //pageLength: 2,
         dom:
             "<'row'<'col-sm-2'l><'col-sm-7'B><'col-sm-3'f>>" +
             "<'row'<'col-sm-12'tr>>" +
@@ -101,7 +93,6 @@ $(document).ready(function () {
             { data: "SECONDARY_UOM_CODE", name: "次要單位", autoWidth: true },
             { data: "NOTE", name: "備註", autoWidth: true },
             { data: "ID", name: "STOCK_ID", autoWidth: true, visible: false }
-            //{ data: "LAST_UPDATE_DATE", name: "更新日期", autoWidth: true, visible: false }
         ],
 
         order: [[1, 'desc']],
@@ -196,7 +187,6 @@ $(document).ready(function () {
                 var size = Object.keys(TData).length;
                 for (var i = 0; i < size; i++) {
                     var ID = Object.keys(TData)[i];
-                    //var NOTE = Object.values(TData[ID])[0];
                     var NOTE = Object.keys(TData[ID]).map(function (e) {
                         return TData[ID][e]
                     })[0];
@@ -266,7 +256,6 @@ $(document).ready(function () {
         serverSide: true,
         processing: true,
         orderMulti: true,
-        //pageLength: 2,
         dom:
             "<'row'<'col-sm-2'l><'col-sm-7'B><'col-sm-3'f>>" +
             "<'row'<'col-sm-12'tr>>" +
@@ -314,7 +303,6 @@ $(document).ready(function () {
             { data: "SECONDARY_UOM_CODE", name: "次要單位", autoWidth: true },
             { data: "NOTE", name: "備註", autoWidth: true },
             { data: "STOCK_ID", name: "STOCK_ID", autoWidth: true, visible: false }
-            //{ data: "LAST_UPDATE_DATE", name: "更新日期", autoWidth: true, visible: false }
         ],
 
         order: [[1, 'desc']],
@@ -362,32 +350,6 @@ $(document).ready(function () {
                         })
                     }
                 },
-                 //{
-                 //    text: '刪除',
-                 //    className: 'btn-danger',
-                 //    action: function () {
-                 //        var selectedData = TransactionDetailDT.rows('.selected').data();
-                 //        if (selectedData.length == 0) {
-                 //            swal.fire("請選擇要刪除的項目");
-                 //            return;
-                 //        }
-
-                 //        swal.fire({
-                 //            title: "異動明細刪除",
-                 //            text: "確定刪除嗎?",
-                 //            type: "warning",
-                 //            showCancelButton: true,
-                 //            confirmButtonColor: "#DD6B55",
-                 //            confirmButtonText: "確定",
-                 //            cancelButtonText: "取消"
-                 //        }).then(function (result) {
-                 //            if (result.value) {
-                 //                DelTransactionDetail(selectedData);
-                 //            }
-                 //        });
-
-                 //    }
-                 //},
                 {
                     text: '編輯備註',
                     className: 'btn-danger',
@@ -553,11 +515,7 @@ function SearchStock() {
         event.preventDefault();
         return;
     }
-    //if ($('#ddlLocator option').length > 1 && $('#ddlLocator').val() == "請選擇") {
-    //    swal.fire('請選擇儲位');
-    //    event.preventDefault();
-    //    return;
-    //}
+    
     if ($('#ddlLocatorArea').is(":visible")) {
         if ($('#ddlLocator').val() == "請選擇") {
             swal.fire('請選擇儲位');
@@ -584,13 +542,8 @@ function LocatorChangeCallBack() {
 
 }
 
-//function AutoCompleteItemNumberEnterCallBack() {
-//    SearchStock();
-//}
 
 function AutoCompleteItemNumberSelectCallBack(ITEM_NO) {
     $("#btnSearchStock").focus();
     return false;
-    //$("#txtItemNumber").val(ITEM_NO);
-    //SearchStock();
 }

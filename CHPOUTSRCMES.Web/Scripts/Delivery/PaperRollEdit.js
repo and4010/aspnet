@@ -9,20 +9,11 @@ $(document).ready(function () {
         language: {
             url: '/bower_components/datatables/language/zh-TW.json'
         },
-
-        //destroy: true,
         autoWidth: false,
-        //rowId: 'PaperRollEditDT_ID',
-        //select: true,
         "serverSide": true,
         processing: true,
         orderMulti: true,
         lengthMenu: [[25, 50, 100, 200], [25, 50, 100, 200]],
-        //pageLength: 2,
-        //"paging": true,
-        //"pagingType": "full_numbers",
-        //"lengthMenu": [[1, 10, 5, 2], [1, 10, 5, 2]],
-        //stateSave: true,
         dom:
             "<'row'<'col-sm-2'l><'col-sm-7'B><'col-sm-3'f>>" +
             "<'row'<'col-sm-12'tr>>" +
@@ -53,16 +44,11 @@ $(document).ready(function () {
             { data: "SRC_REQUESTED_QUANTITY", name: "訂單原始數量", autoWidth: true, className: "dt-body-right" },
             { data: "SRC_PICKED_QUANTITY", name: "訂單已揀數量", autoWidth: true, className: "dt-body-right" },
             { data: "SRC_REQUESTED_QUANTITY_UOM", name: "訂單主單位", autoWidth: true },
-            //{ data: "REMARK", name: "備註", autoWidth: true },
-
-
         ],
 
         "order": [[1, 'asc']],
         select: {
             style: 'single',
-            //blurable: true,
-            //selector: 'td:first-child'
         },
         buttons: [
 
@@ -74,12 +60,6 @@ $(document).ready(function () {
                 PaperRollDataTablesBody.row(selectRow, { page: 'current' }).select();
             }
         },
-        //"drawCallback": function( settings ) {
-        //    $("#PaperRollEditDT_ID").text("");
-        //    $("#ORDER_NUMBER").text("");
-        //    $("#ORDER_SHIP_NUMBER").text("");
-        //    $("#ITEM_DESCRIPTION").text("");
-        //},
         "preDrawCallback": function (settings) {
             $("#SUB_ID").text("");
             $("#DLV_DETAIL_ID").text("");
@@ -88,20 +68,9 @@ $(document).ready(function () {
             $("#INVENTORY_ITEM_ID").text("");
             $("#ITEM_NUMBER").text("");
         }
-        //"initComplete": function(settings, json) {
-        //    $("#PaperRollEditDT_ID").text("");
-        //    $("#ORDER_NUMBER").text("");
-        //    $("#ORDER_SHIP_NUMBER").text("");
-        //    $("#ITEM_DESCRIPTION").text("");
-        //}
 
     });
 
-    //PaperRollDataTablesBody.on('order.dt search.dt', function () {
-    //    PaperRollDataTablesBody.column(1, { search: 'applied', order: 'applied' }).nodes().each(function (cell, i) {
-    //        cell.innerHTML = i + 1;
-    //    });
-    //}).draw();
 
     PaperRollDataTablesBody.on('select', function (e, dt, type, indexes) {
         if (type === 'row') {
@@ -109,8 +78,6 @@ $(document).ready(function () {
             $("#SUB_ID").text(SUB_ID);
             var DLV_DETAIL_ID = dt.rows(indexes).data().pluck('ID')[0];
             $("#DLV_DETAIL_ID").text(DLV_DETAIL_ID);
-            //var PaperRollEditDT_ID = dt.rows(indexes).data().pluck('ID')[0];
-            //$("#PaperRollEditDT_ID").text(PaperRollEditDT_ID);
             var ORDER_NUMBER = dt.rows(indexes).data().pluck('ORDER_NUMBER')[0];
             $("#ORDER_NUMBER").text(ORDER_NUMBER);
             var ORDER_SHIP_NUMBER = dt.rows(indexes).data().pluck('ORDER_SHIP_NUMBER')[0];
@@ -171,36 +138,6 @@ $(document).ready(function () {
         }
     });
 
-    //$('#PaperRollDataTablesBody tbody').on('click', 'tr', function () {
-    //    var id = this.id;
-    //    var index = $.inArray(id, selected);
-
-    //    if (index === -1) {
-    //        var rowsData = PaperRollDataTablesBody.rows({ page: 'current' }).data();
-    //        for (i = 0 ; i < rowsData.length; i++) {
-    //            for (j = 0; j < selected.length; j++) {
-    //                if (selected[j] == rowsData[i].DT_RowId) {
-    //                    selected.splice(j, 1);
-    //                }
-    //            }
-    //            //selected.splice(rowsData[i].DT_RowId, 1);
-    //        }
-    //        //$(p).each(function () {
-    //        //    selected.splice(p.id, 1);
-    //        //});
-    //        //selected.length = 0;
-    //        //PaperRollDataTablesBody.$('tr.selected').removeClass('selected');
-    //        selected.push(id);
-    //        //table.row(this).select();
-    //        //$(this).addClass('selected');
-    //    } else {
-    //        selected.splice(index, 1);
-    //        //$(this).removeClass('selected');
-    //    }
-
-    //    //$(this).toggleClass('selected');
-    //});
-
     var editor = new $.fn.dataTable.Editor({
         "language": {
             "url": "/bower_components/datatables/language/zh-TW.json"
@@ -242,36 +179,7 @@ $(document).ready(function () {
             }
         },
         idSrc: 'PICKED_ID',
-        //fields: [
-        //    {
-        //        name: "ID"
-        //    },
-        //    {
-        //        label: "倉庫",
-        //        name: "SUBINVENTORY_CODE"
-        //    },
-        //    {
-        //        label: "儲位",
-        //        name: "SEGMENT3"
-        //    },
-        //    {
-        //        label: "料號",
-        //        name: "ITEM_NO"
-        //    },
-        //    {
-        //        label: "捲號",
-        //        name: "LOT_NUMBER"
-        //    },
-        //    {
-        //        label: "數量",
-        //        name: "PRIMARY_AVAILABLE_QTY"
-        //    },
-        //    {
-        //        label: "備註",
-        //        name: "NOTE"
-        //    }
-
-        //],
+        
         i18n: {
             create: {
                 button: "新增",
@@ -301,10 +209,8 @@ $(document).ready(function () {
         language: {
             url: '/bower_components/datatables/language/zh-TW.json'
         },
-        //destroy: true,
         autoWidth: false,
         orderMulti: true,
-        //pageLength: 2,
         serverSide: true,
         processing: true,
         lengthMenu: [[25, 50, 100, 200], [25, 50, 100, 200]],
@@ -328,7 +234,6 @@ $(document).ready(function () {
             { data: "BARCODE", name: "條碼號", autoWidth: true },
             { data: "PRIMARY_QUANTITY", name: "主要數量", autoWidth: true, className: "dt-body-right" },
             { data: "PRIMARY_UOM", name: "主要單位", autoWidth: true },
-            //{ data: "REMARK", name: "備註", autoWidth: true, className: "dt-body-left" },
             { data: "LAST_UPDATE_DATE", name: "更新日期", autoWidth: true, visible: false },
             { data: "PICKED_ID", name: "PICKED_ID", autoWidth: true, visible: false }
         ],
@@ -336,49 +241,17 @@ $(document).ready(function () {
         "order": [[1, 'desc']],
         select: {
             style: 'multi',
-            //blurable: true,
-            //selector: 'td:first-child'
         },
         buttons: {
             dom: {
                 container: {
                     className: 'dt-buttons'
                 },
-                //button: {
-                //    tag: 'button',
-                //    className: 'btn externalBtn'
-                //}
             },
 
             buttons: [
                 'selectAll',
                 'selectNone',
-                //{
-                //    text: '刪除',
-                //    className: 'btn-danger',
-                //    action: function () {
-                //        var selectedData = PaperRollBarcodeDataTablesBody.rows('.selected').data();
-                //        if (selectedData.length == 0) {
-                //            swal.fire("請選擇要刪除的條碼");
-                //            return;
-                //        }
-
-                //        swal.fire({
-                //            title: "條碼資料刪除",
-                //            text: "確定刪除嗎?",
-                //            type: "warning",
-                //            showCancelButton: true,
-                //            confirmButtonColor: "#DD6B55",
-                //            confirmButtonText: "確定",
-                //            cancelButtonText: "取消"
-                //        }).then(function (result) {
-                //            if (result.value) {
-                //                DeleteBarcode(selectedData);
-                //            }
-                //        });
-                //    },
-                //    enabled: false
-                //    },
                 {
                     extend: "remove",
                     text: '刪除',
@@ -413,20 +286,8 @@ $(document).ready(function () {
                         })
                     }
                 },
-                //{
-                //    extend: "remove",
-                //    text: '刪除',
-                //    name: 'remove',
-                //    className: 'btn-danger',
-                //    editor: editor,
-                //    enabled: false,
-                //    init: function (api, node, config) {
-                //        $(node).removeClass('btn-default')
-                //    }
-                //},
                 {
                     text: '<span class="glyphicon glyphicon-print"></span>&nbsp列印標籤',
-                    //className: 'btn-default btn-sm',
                     action: function (e) {
                         var data = PaperRollBarcodeDataTablesBody.rows('.selected').data();
                         if (data.length == 0) {
@@ -465,9 +326,6 @@ $(document).ready(function () {
 
 
     });
-
-    //ImportPaperRollBarcodeEditDT();
-    //ImportPaperRollEditDT();
 
     $('#txtBARCODE').keydown(function (e) {
         if (e.keyCode == 13) {
@@ -545,8 +403,6 @@ $(document).ready(function () {
                 },
                 complete: function (data) {
                     $('#txtBARCODE').attr('disabled', false);
-                    //event.preventDefault();
-
                 }
 
             });
@@ -573,8 +429,6 @@ $(document).ready(function () {
             success: function (data) {
                 if (data.status) {
                     if (data.result == "條碼刪除成功") {
-                        //ImportPaperRollBarcodeEditDT();
-                        //ImportPaperRollEditDT();
                         PaperRollDataTablesBody.ajax.reload(null, false);
                         PaperRollBarcodeDataTablesBody.ajax.reload();
                         UpdateDeliveryDetailViewHeader();
@@ -617,8 +471,6 @@ $(document).ready(function () {
     }
 
     function inpuClose() {
-        //PaperRollDataTablesBody.buttons().disable(); //初始化時無效
-        //PaperRollBarcodeDataTablesBody.buttons().disable(); //初始化時無效
         $('#txtBARCODE').attr('disabled', true);
         $('#btnSaveBarcode').attr('disabled', true);
     }

@@ -21,11 +21,6 @@ $(document).ready(function () {
         locale: 'zh-tw',
         timezone: "Asia/Taipei",
         plugins: ['dayGrid', 'moment', 'bootstrap'],
-        //header: {
-        //    left: 'prevYear,prev,next,nextYear today, myCustomButton',
-        //    center: 'title',
-        //    right: 'dayGridMonth,dayGridWeek,dayGridDay'
-        //},
         header: false,
         buttonText: {
             today: '今天',
@@ -65,7 +60,6 @@ $(document).ready(function () {
 
     $("#select-year").on("change", function (event) {
         var selectedYear = sy.options[sy.selectedIndex].value;
-        //var month = sm.options[sm.selectedIndex].value;
         var date = null;
 
         var nowDate = new Date();
@@ -87,24 +81,10 @@ $(document).ready(function () {
         var status = $('#select-Status').val();
         calendar.addEventSource('/Purchase/GetEvents?id=' + sw.options[sw.selectedIndex].value + "&status=" + status);
         calendar.gotoDate(date);
-
-        //var date = selectedYear + "-" + "12" + "-01";
-
-        //if (calendar.getEventSources()[0] != null) {
-        //    calendar.getEventSources()[0].remove();
-        //}
-        //$("#select-month").val("12");
-
-        //calendar.addEventSource('/Purchase/GetEvents/' + date);
-        //calendar.gotoDate(date);
     });
 
     $("#btn-refresh").on('click', function () {
 
-        //showPdf(1);
-        //winPrintDialogBox();
-
-
         var year = sy.options[sy.selectedIndex].value;
 
         var month = sm.options[sm.selectedIndex].value;
@@ -118,18 +98,11 @@ $(document).ready(function () {
         };
         var status = $('#select-Status').val();
         calendar.addEventSource('/Purchase/GetEvents?id=' + warehouse + "&status=" + status);
-        //calendar.events = '/Purchase/GetEvents';
-        //calendar.refetchEvents();
         calendar.gotoDate(date);
-        //});
     });
 
     $("#select-warehouse").on('click', function () {
 
-        //showPdf(1);
-        //winPrintDialogBox();
-
-
         var year = sy.options[sy.selectedIndex].value;
 
         var month = sm.options[sm.selectedIndex].value;
@@ -143,10 +116,7 @@ $(document).ready(function () {
         };
         var status = $('#select-Status').val();
         calendar.addEventSource('/Purchase/GetEvents?id=' + warehouse + "&status=" + status);
-        //calendar.events = '/Purchase/GetEvents';
-        //calendar.refetchEvents();
         calendar.gotoDate(date);
-        //});
     });
 
     $("#select-Status").on('change', function () {
@@ -207,17 +177,6 @@ function calendarinit(calendar, sy, sm, sw) {
 
     var status = $('#select-Status').val();
     calendar.addEventSource('/Purchase/GetEvents?id=' + warehouse + "&status=" + status);
-    //calendar.gotoDate(year + "-" + month + "-01");
-
-    //var date = calendar.getDate()
-    //var year = calendar.formatDate(date, { year: 'numeric' }).substring(0,4);
-    //var month = calendar.formatDate(date, { month: 'numeric' }).substring(0,2);
-    //var day = calendar.formatDate(date, { day: 'numeric' }).substring(0,2);
-
-    //setSelectedValue(sy, year);
-    //setSelectedValue(sm, month);
-
-
 
 }
 

@@ -44,7 +44,6 @@
          { data: "SRC_REQUESTED_QUANTITY", name: "訂單原始數量", autoWidth: true, className: "dt-body-right" },
          { data: "SRC_PICKED_QUANTITY", name: "訂單已揀數量", autoWidth: true, className: "dt-body-right" },
          { data: "SRC_REQUESTED_QUANTITY_UOM", name: "訂單主單位", autoWidth: true },
-         //{ data: "REMARK", name: "備註", autoWidth: true },
 
         ],
 
@@ -68,7 +67,6 @@
         processing: true,
         orderMulti: true,
         lengthMenu: [[25, 50, 100, 200], [25, 50, 100, 200]],
-        //pageLength: 2,
         dom:
             "<'row'<'col-sm-2'l><'col-sm-7'><'col-sm-3'f>>" +
             "<'row'<'col-sm-12'tr>>" +
@@ -92,9 +90,6 @@
          { data: "PRIMARY_UOM", name: "主要單位", autoWidth: true },
          { data: "SECONDARY_QUANTITY", name: "次要數量", autoWidth: true, className: "dt-body-right" },
          { data: "SECONDARY_UOM", name: "次要單位", autoWidth: true },
-         //{ data: "REMARK", name: "備註", autoWidth: true, className: "dt-body-left" },
-         //{ data: "LAST_UPDATE_DATE", name: "更新日期", autoWidth: true, visible: false },
-         
         ],
 
         order: [[0, 'desc']],

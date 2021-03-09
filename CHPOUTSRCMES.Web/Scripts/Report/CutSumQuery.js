@@ -21,7 +21,6 @@ $(document).ready(function () {
             swal.fire("工單號須輸入4碼以上");
             return;
         }
-        //$('#ReportBox').show();
         ShowWait(function () {
             $.ajax({
                 url: "/Report/OspCutSumReport",

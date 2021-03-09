@@ -12,13 +12,8 @@ $(document).ready(function () {
     onclick();
     ////取得狀態
     var Status = $("#Status").val();
-    //if (Status == "0") {
     PaperRolldataTablesBody();
     FlatdataTablesBody();
-    //} else {
-    //    PaperRolldataTablesBody(Status);
-    //    FlatdataTablesBody(Status);
-    //}
     callDailog(Status);
     init(Status);
 
@@ -544,16 +539,7 @@ function init(status) {
 
     //範例下載
     $('#BtnDownload').click(function () {
-        //$.ajax({
-        //    url: '/Purchase/DownloadFile',
-        //    type: "POST",
-        //    datatype: "json",
-        //    success: function(){}
-
-        //});
         window.open('/Purchase/DownloadFile', '_blank');
-
-
     })
 }
 
@@ -927,7 +913,6 @@ function PaperRolldataTablesBody() {
         },
         lengthMenu: [[25, 50, 100, 200], [25, 50, 100, 200]],
         pageLength: 100,
-        //scrollX: true,
         destroy: true,
         autoWidth: true,
         serverSide: true,
@@ -1024,7 +1009,6 @@ function FlatdataTablesBody() {
         },
         lengthMenu: [[25, 50, 100, 200], [25, 50, 100, 200]],
         pageLength: 100,
-        //scrollX: true,
         destroy: true,
         autoWidth: false,
         serverSide: true,

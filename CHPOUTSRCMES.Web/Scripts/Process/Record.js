@@ -38,9 +38,6 @@ function LoadRecordInvestTable() {
         lengthMenu: [[25, 50, 100, 200], [25, 50, 100, 200]],
         select:true,
         destroy: true,
-        //processing: true,
-        //serverSide: true,
-        //scrollX: true,
         autoWidth: false,
         dom:
             "<'row'<'col-sm-2'l><'col-sm-7'><'col-sm-3'f>>" +
@@ -95,9 +92,6 @@ function LoadRecordProductionDataTable() {
         },
         lengthMenu: [[25, 50, 100, 200], [25, 50, 100, 200]],
         destroy: true,
-        //processing: true,
-        //serverSide: true,
-        //scrollX: true,
         autoWidth: false,
         dom:
             "<'row'<'col-sm-2'l><'col-sm-7'><'col-sm-3'f>>" +
@@ -146,9 +140,6 @@ function LoadRecordCotangentDataTables() {
             "url": "/bower_components/datatables/language/zh-TW.json"
         },
         destroy: true,
-        //processing: true,
-        //serverSide: true,
-        //scrollX: true,
         autoWidth: false,
         dom:
             "<'row'<'col-sm-2'l><'col-sm-7'><'col-sm-3'f>>" +

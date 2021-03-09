@@ -34,11 +34,6 @@ function getLossLocatorId() {
     } else {
         return null;
     }
-    //if ($('#ddlLocator option').length === 1) {
-    //    return null;
-    //} else {
-    //    return $("#ddlLocator").val();
-    //}
 }
 
 
@@ -47,32 +42,9 @@ function LossInit() {
     LossOnClick();
     LossLoadStockDT();
     LossLoadLossDetailDT();
-    //event();
     LossOnkey();
 };
 
-//function GetLossTop() {
-//    $("#txtItemNumberArea").toggleClass('border-0')
-//    $.ajax({
-//        url: "/StockTransaction/GetTop",
-//        type: "GET",
-//        dataType: 'html',
-//        data: {},
-//        success: function (data) {
-//            $('#Top').empty();
-//            $('#Top').html(data);
-//            LossTopInit();
-//        },
-//        error: function () {
-//            swal.fire('更新倉庫搜尋頁面失敗');
-//        },
-//        complete: function (data) {
-
-
-//        }
-
-//    })
-//}
 
 
 function LossTopInit() {
@@ -91,7 +63,6 @@ function LossTopInit() {
                 for (var i = 0; i < data.length; i++) {
                     $('#ddlLocator').append($('<option></option>').val(data[i].Value).html(data[i].Text));
                 }
-                //GetItemNumberList();
                 if (data.length == 1) {
                     $('#ddlLocatorArea').hide();
                     $('#ddlLocator').hide();
@@ -126,8 +97,6 @@ function LossTopInit() {
                 type: "POST",
                 dataType: "json",
                 data: {
-                    //SubinventoryCode: $("#ddlSubinventory").val(),
-                    //Locator: $("#ddlLocator").val(),
                     Prefix: request.term
                 },
                 success: function (data) {
@@ -150,18 +119,7 @@ function LossTopInit() {
 
     function LossAutoCompleteItemNumberSelectCallBack(ITEM_NO) {
         $('#btnSearchStock').focus();
-        //$("#txtItemNumber").val(ITEM_NO);
-        //SearchStock();
     }
-
-    //$('#txtItemNumber').keydown(function (e) {
-    //    if (e.keyCode == 13) {
-    //        //$('#btnSearchStock').focus();
-    //        //SearchStock();
-    //        //$(this).data('ui-autocomplete')._trigger('select', 'autocompleteselect', { item: { value: $(this).val() } });
-    //        //AutoCompleteItemNumberEnterCallBack();
-    //    }
-    //});
 
 }
 
@@ -177,7 +135,6 @@ function LossLoadStockDT() {
         processing: true,
         orderMulti: true,
         deferLoading: 0, //初始化DataTable時，不發出ajax
-        //pageLength: 2,
         dom:
             "<'row'<'col-sm-2'l><'col-sm-7'B><'col-sm-3'f>>" +
             "<'row'<'col-sm-12'tr>>" +
@@ -217,7 +174,6 @@ function LossLoadStockDT() {
             { data: "SECONDARY_UOM_CODE", name: "次要單位", autoWidth: true },
             { data: "NOTE", name: "備註", autoWidth: true },
             { data: "ID", name: "STOCK_ID", autoWidth: true, visible: false }
-            //{ data: "LAST_UPDATE_DATE", name: "更新日期", autoWidth: true, visible: false }
         ],
 
         order: [[1, 'desc']],
@@ -255,11 +211,9 @@ function LossLoadStockDT() {
             if (ITEM_CATEGORY == "平版") {
                 var Unit = dt.rows(indexes).data().pluck('SECONDARY_UOM_CODE')[0];
                 $('#TransactionUnit').text(Unit);
-                //$('#txtQty').attr('disabled', false);
             } else if (ITEM_CATEGORY == "捲筒") {
                 $('#txtQty').val(dt.rows(indexes).data().pluck('PRIMARY_AVAILABLE_QTY')[0]);
                 var Unit = dt.rows(indexes).data().pluck('PRIMARY_UOM_CODE')[0];
-                //$('#txtQty').attr('disabled', true);
                 $('#TransactionUnit').text(Unit);
             } else {
                 $('#TransactionUnit').text("");
@@ -410,26 +364,6 @@ function LossLoadLossDetailDT() {
 
         ],
         i18n: {
-            //create: {
-            //    button: "新增",
-            //    title: "新增",
-            //    submit: "確定",
-            //    action: 'btn-primary'
-            //},
-            //remove: {
-            //    button: '刪除',
-            //    title: "刪除",
-            //    submit: "確定",
-            //    confirm: {
-            //        "_": "你確定要刪除這筆資料?",
-            //        "1": "你確定要刪除這筆資料?"
-            //    }
-            //},
-            //edit: {
-            //    button: '編輯',
-            //    title: "編輯",
-            //    submit: "確定",
-            //}
             edit: {
                 button: "編輯備註",
                 title: "編輯備註",
@@ -462,7 +396,6 @@ function LossLoadLossDetailDT() {
         "language": {
             "url": "/bower_components/datatables/language/zh-TW.json"
         },
-        //destroy: true,
         autoWidth: false,
         serverSide: true,
         processing: true,
@@ -499,11 +432,8 @@ function LossLoadLossDetailDT() {
             }
                 ,
                 {
-                    //extend: "remove",
                     text: '刪除',
-                    //name: 'remove',
                     className: 'btn-danger',
-                    //editor: editor,
                     init: function (api, node, config) {
                         $(node).removeClass('btn-default')
                     },
@@ -526,21 +456,6 @@ function LossLoadLossDetailDT() {
                                 },
                                 className: 'btn-danger'
                             });
-
-                        //editor.remove(rows, {
-                        //    title: '刪除',
-                        //    message: rows.length === 1 ?
-                        //        '你確定要刪除這筆資料?' :
-                        //        '你確定要刪除這些資料?',
-                        //    buttons:
-                        //    {
-                        //        text: '刪除',
-                        //        className: 'btn-danger',
-                        //        action: function () {
-                        //            this.submit();
-                        //        }
-                        //    }
-                        //});
                     }
                 },
                 {
@@ -567,59 +482,9 @@ function LossLoadLossDetailDT() {
                             });
                     }
                 }
-            //{
-            //    extend: "remove",
-            //    text: '刪除',
-            //    name: 'remove',
-            //    className: 'btn-danger',
-            //    editor: editor,
-            //}
-            //,
-            //{
-            //    extend: 'edit',
-            //    text: '編輯備註',
-            //    name: 'edit',
-            //    className: 'btn-danger',
-            //    editor: editor,
-            //}
             ]
         },
-
-
-        //buttons: [
-        //    //{
-        //    //    extend: "create",
-        //    //    text: '新增條碼',
-        //    //    name: 'create',
-        //    //    className: 'btn-primary',
-        //    //    editor: EditorBody,
-        //    //}
-        //    ,
-        //    {
-        //        extend: "selectAll",
-        //    }
-        //    ,
-        //    {
-        //        extend: "selectNone",
-        //    }
-        //    ,
-        //    {
-        //        extend: "remove",
-        //        text: '刪除',
-        //        name: 'remove',
-        //        className: 'btn-danger',
-        //        editor: editor,
-        //    }
-        //    ,
-        //    {
-        //        extend: 'edit',
-        //        text: '編輯備註',
-        //        name: 'edit',
-        //        className: 'btn-danger',
-        //        editor: editor,
-        //    }
-
-        //],
+ 
         columns: [
              { data: null, defaultContent: '', className: 'select-checkbox', orderable: false, width: "40px" },
              { data: "SUB_ID", name: "項次", autoWidth: true },
@@ -657,7 +522,6 @@ function LossLoadLossDetailDT() {
              { data: "SECONDARY_UOM_CODE", name: "次要單位", autoWidth: true },
             { data: "NOTE", name: "備註", autoWidth: true },
             { data: "STOCK_ID", name: "STOCK_ID", autoWidth: true, visible: false }
-             //{ data: "LAST_UPDATE_DATE", name: "更新日期", autoWidth: true, visible: false }
         ],
         order: [[1, 'desc']]
     });
@@ -672,11 +536,7 @@ function SearchStock() {
         event.preventDefault();
         return;
     }
-    //if ($('#ddlLocator option').length > 1 && $('#ddlLocator').val() == "請選擇") {
-    //    swal.fire('請選擇儲位');
-    //    event.preventDefault();
-    //    return;
-    //}
+    
     if ($('#ddlLocatorArea').is(":visible")) {
         if ($('#ddlLocator').val() == "請選擇") {
             swal.fire('請選擇儲位');

@@ -33,11 +33,6 @@ function getProfitLocatorId() {
     } else {
         return null;
     }
-    //if ($('#ddlLocator option').length === 1) {
-    //    return null;
-    //} else {
-    //    return $("#ddlLocator").val();
-    //}
 }
 
 
@@ -49,29 +44,6 @@ function ProfitInit() {
     ProfitOnkey();
 };
 
-
-//function GetProfitTop() {
-//    $("#txtItemNumberArea").toggleClass('border-0')
-//    $.ajax({
-//        url: "/StockTransaction/GetTop",
-//        type: "GET",
-//        dataType: 'html',
-//        data: {},
-//        success: function (data) {
-//            $('#Top').empty();
-//            $('#Top').html(data);
-//            ProfitTopInit();
-//        },
-//        error: function () {
-//            swal.fire('更新倉庫搜尋頁面失敗');
-//        },
-//        complete: function (data) {
-
-
-//        }
-
-//    })
-//}
 
 
 function ProfitTopInit() {
@@ -90,7 +62,6 @@ function ProfitTopInit() {
                 for (var i = 0; i < data.length; i++) {
                     $('#ddlLocator').append($('<option></option>').val(data[i].Value).html(data[i].Text));
                 }
-                //GetItemNumberList();
                 if (data.length == 1) {
                     $('#ddlLocatorArea').hide();
                     $('#ddlLocator').hide();
@@ -125,8 +96,6 @@ function ProfitTopInit() {
                 type: "POST",
                 dataType: "json",
                 data: {
-                    //SubinventoryCode: $("#ddlSubinventory").val(),
-                    //Locator: $("#ddlLocator").val(),
                     Prefix: request.term
                 },
                 success: function (data) {
@@ -150,17 +119,8 @@ function ProfitTopInit() {
 
     function ProfitAutoCompleteItemNumberSelectCallBack(ITEM_NO) {
         $('#btnSearchLoss').focus();
-        //$("#txtItemNumber").val(ITEM_NO);
-        //SearchLoss();
     }
 
-    //$('#txtItemNumber').keydown(function (e) {
-    //    if (e.keyCode == 13) {
-    //        $('#btnSearchStock').focus();
-    //        //$(this).data('ui-autocomplete')._trigger('select', 'autocompleteselect', { item: { value: $(this).val() } });
-    //        //AutoCompleteItemNumberEnterCallBack();
-    //    }
-    //});
 }
 
 function ProfitLoadLossDetailDT() {
@@ -173,7 +133,6 @@ function ProfitLoadLossDetailDT() {
         processing: true,
         orderMulti: true,
         deferLoading: 0, //初始化DataTable時，不發出ajax
-        //pageLength: 2,
         dom:
             "<'row'<'col-sm-2'l><'col-sm-7'B><'col-sm-3'f>>" +
             "<'row'<'col-sm-12'tr>>" +
@@ -226,7 +185,6 @@ function ProfitLoadLossDetailDT() {
             { data: "SECONDARY_UOM_CODE", name: "次要單位", autoWidth: true },
             { data: "NOTE", name: "備註", autoWidth: true },
             { data: "STOCK_ID", name: "STOCK_ID", autoWidth: true, visible: false }
-            //{ data: "LAST_UPDATE_DATE", name: "更新日期", autoWidth: true, visible: false }
         ],
 
         order: [[1, 'desc']],
@@ -409,26 +367,6 @@ function ProfitLoadProfitDetailDT() {
 
         ],
         i18n: {
-            //create: {
-            //    button: "新增",
-            //    title: "新增",
-            //    submit: "確定",
-            //    action: 'btn-primary'
-            //},
-            //remove: {
-            //    button: '刪除',
-            //    title: "刪除",
-            //    submit: "確定",
-            //    confirm: {
-            //        "_": "你確定要刪除這筆資料?",
-            //        "1": "你確定要刪除這筆資料?"
-            //    }
-            //},
-            //edit: {
-            //    button: '編輯',
-            //    title: "編輯",
-            //    submit: "確定",
-            //}
             create: {
                 button: "新增",
                 title: "新增",
@@ -467,7 +405,6 @@ function ProfitLoadProfitDetailDT() {
         "language": {
             "url": "/bower_components/datatables/language/zh-TW.json"
         },
-        //destroy: true,
         autoWidth: false,
         serverSide: true,
         processing: true,
@@ -502,22 +439,6 @@ function ProfitLoadProfitDetailDT() {
             {
                 extend: "selectNone",
             },
-            //,
-            //{
-            //    extend: "remove",
-            //    text: '刪除',
-            //    name: 'remove',
-            //    className: 'btn-danger',
-            //    editor: editor,
-            //}
-            //,
-            //{
-            //    extend: 'edit',
-            //    text: '編輯備註',
-            //    name: 'edit',
-            //    className: 'btn-danger',
-            //    editor: editor,
-            //}
             {
                     extend: "remove",
                     text: '刪除',
@@ -552,7 +473,6 @@ function ProfitLoadProfitDetailDT() {
                 },
                 {
                     text: '<span class="glyphicon glyphicon-print"></span>&nbsp列印標籤',
-                    //className: 'btn-default btn-sm',
                     action: function (e) {
                         var data = ProfitDetailDT.rows('.selected').data();
                         if (data.length == 0) {
@@ -560,44 +480,12 @@ function ProfitLoadProfitDetailDT() {
                         }
                         PrintLable(ProfitDetailDT, "/StockInventory/PrintProfitLabel", "13");
                         
-                        //var transferPickedIdList = [];
-                        //for (var i = 0; i < data.length; i++) {
-                        //    transferPickedIdList.push(data[i].ID);
-                        //}
-                        //PrintLable(ProfitDetailDT, "/StockTransaction/PrintInboundLabel", "12");
-                        //if (barcode.length > 0) {
-                        //    swal.fire({
-                        //        title: "注意",
-                        //        html: "以下為併板後的條碼，請更換庫存棧板上的舊條碼。<br>" + barcode.join('<br>'),
-                        //        type: "warning",
-                        //        confirmButtonColor: "#DD6B55",
-                        //        confirmButtonText: "確定",
-                        //    }).then(function (result) {
-                        //        if (result.value) {
-                        //            PrintLable(ProfitDetailDT, "/StockTransaction/PrintInboundLabel", "12");
-                        //        }
-                        //    });
-                        //} else {
-                        //    printInboundLabel(transferPickedIdList)
-                        //}
                     },
                     className: "btn-primary",
-                    //enabled: false,
                     init: function (api, node, config) {
                         $(node).removeClass('btn-default')
                     }
                 },
-
-
-            //{
-            //    text: '<span class="glyphicon glyphicon-print"></span>&nbsp列印標籤',
-            //    //className: 'btn-default btn-sm',
-            //    action: function (e) {
-            //        PrintLable(ProfitDetailDT, "/Home/GetLabels3", "5");
-            //    },
-            //    className: "btn-primary"
-            //}
-            //    ,
 
                 {
                     text: '編輯備註',
@@ -624,55 +512,6 @@ function ProfitLoadProfitDetailDT() {
                         editor.hide(['ID', 'SUBINVENTORY_CODE', 'SEGMENT3', 'ITEM_NO', 'PRIMARY_TRANSACTION_QTY', 'LOT_NUMBER', 'LOCATOR_ID', 'SECONDARY_TRANSACTION_QTY']);
                     }
                 },
-            //{
-            //    extend: 'edit',
-            //    text: '編輯備註',
-            //    className: 'btn-danger',
-            //    name: 'edit',
-            //    editor: editor,
-            //    init: function (api, node, config) {
-            //        $(node).removeClass('btn-default')
-            //    },
-            //    action: function (e, dt, node, config) {
-            //        var rows = ProfitDetailDT.rows({ selected: true }).indexes();
-
-            //        if (rows.length === 0) {
-            //            return;
-            //        }
-
-            //        editor.edit(rows, {
-            //            title: '編輯備註',
-            //            message: rows.length === 1 ?
-            //                '你確定要刪除這筆資料?' :
-            //                '你確定要刪除這些資料?',
-            //            buttons:
-            //            {
-            //                text: '確定',
-            //                className: 'btn-danger',
-            //                action: function () {
-            //                    this.submit();
-            //                }
-            //            }
-            //        });
-            //        editor.hide(['ID', 'SUBINVENTORY_CODE', 'SEGMENT3', 'ITEM_NO', 'PRIMARY_TRANSACTION_QTY', 'LOT_NUMBER', 'LOCATOR_ID', 'SECONDARY_TRANSACTION_QTY']);
-
-            //        //var count = dt.rows({ selected: true }).count();
-            //        //if (count == 0) {
-            //        //    return;
-            //        //}
-
-            //        //editor.edit(rows,{
-            //        //    title: '編輯備註',
-            //        //    buttons: '確定',
-            //        //    action: function () {
-            //        //        this.submit();
-            //        //    },
-            //        //    className: 'btn-danger'
-            //        //});
-            //        //editor.hide(['ID', 'SUBINVENTORY_CODE', 'SEGMENT3', 'ITEM_NO', 'PRIMARY_TRANSACTION_QTY', 'LOT_NUMBER', 'LOCATOR_ID', 'SECONDARY_TRANSACTION_QTY']);
-
-            //    }
-            //}
             ]
         },
 
@@ -713,7 +552,6 @@ function ProfitLoadProfitDetailDT() {
              { data: "SECONDARY_UOM_CODE", name: "次要單位", autoWidth: true },
             { data: "NOTE", name: "備註", autoWidth: true },
             { data: "ID", name: "TRANSFER_INVENTORY_ID", autoWidth: true, visible: false  },
-             //{ data: "LAST_UPDATE_DATE", name: "更新日期", autoWidth: true, visible: false }
         ],
         order: [[1, 'desc']]
     });
@@ -776,25 +614,6 @@ function ProfitOnClick() {
 
         CreateBarcode(ORGANIZATION_ID, SUBINVENTORY_CODE, SEGMENT3, ITEM_NO, LOCATOR_ID);
 
-        //editor.create({
-        //    title: '新增條碼',
-        //    buttons: '確定'
-        //});
-        //var ITEM_CATEGORY = GetITEM_CATEGORY(SubinventoryCode, ddlItemNo);
-        //if (ITEM_CATEGORY == "平版")
-        //{
-        //    editor.show(['SUBINVENTORY_CODE', 'SEGMENT3', 'PRIMARY_AVAILABLE_QTY', 'ITEM_NO']);
-        //    editor.disable(['SUBINVENTORY_CODE', 'SEGMENT3', 'ITEM_NO']);
-        //    editor.field('SUBINVENTORY_CODE').val(SubinventoryCode);
-        //    editor.field('SEGMENT3').val(ddlLocator);
-        //    editor.field('ITEM_NO').val(ddlItemNo);
-        //} else if (ITEM_CATEGORY == "捲筒") {
-        //    editor.show(['SUBINVENTORY_CODE', 'SEGMENT3', 'LOT_NUMBER', 'PRIMARY_AVAILABLE_QTY', 'ITEM_NO']);
-        //    editor.disable(['SUBINVENTORY_CODE', 'SEGMENT3', 'ITEM_NO']);
-        //    editor.field('SUBINVENTORY_CODE').val(SubinventoryCode);
-        //    editor.field('SEGMENT3').val(ddlLocator);
-        //    editor.field('ITEM_NO').val(ddlItemNo);
-        //}
 
     });
 
@@ -812,7 +631,6 @@ function CreateBarcode(ORGANIZATION_ID, SUBINVENTORY_CODE, SEGMENT3, ITEM_NO, LO
         url: "/StockTransaction/GetStockItemData",
         type: "post",
         data: {
-            //SUBINVENTORY_CODE: SUBINVENTORY_CODE,
             ITEM_NO: ITEM_NO
         },
         success: function (data) {
@@ -873,11 +691,7 @@ function SearchLoss() {
         event.preventDefault();
         return;
     }
-    //if ($('#ddlLocator option').length > 1 && $('#ddlLocator').val() == "請選擇") {
-    //    swal.fire('請選擇儲位');
-    //    event.preventDefault();
-    //    return;
-    //}
+    
     if ($('#ddlLocatorArea').is(":visible")) {
         if ($('#ddlLocator').val() == "請選擇") {
             swal.fire('請選擇儲位');

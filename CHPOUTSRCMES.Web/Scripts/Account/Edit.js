@@ -15,7 +15,6 @@ function Edit() {
 
     var valid = $('#EditForm').valid();
 
-    //obj = document.getElementsByName("checkbox");
     obj = document.querySelectorAll('input[type=checkbox]');
     ORGANIZATIONID = [];
     ORGANIZATION_CODE = [];

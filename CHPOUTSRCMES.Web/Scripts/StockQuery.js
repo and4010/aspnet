@@ -32,15 +32,7 @@ $(document).ready(function () {
             noResults: "", results: ""
         }
     });
-    //$('#QueryTable tbody').on('click', '.available-query', function () {
-    //    var data = $('#QueryTable').DataTable().row($(this).parents('tr')).data();
-
-    //    var subinventoryCode = data['SubinventoryCode'];
-    //    var locatorId = data['LocatorId'];
-    //    var itemId = data['InventoryItemId'];
-
-    //    window.open("/Stock/Detail/" + subinventoryCode + "/" + locatorId + "/" + itemId);
-    //});
+    
     loadTable();
 
     function loadTable() {

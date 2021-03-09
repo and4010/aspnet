@@ -1,5 +1,4 @@
 ﻿$(document).ready(function () {
-    //select("請選擇"); 
     init();
 });
 

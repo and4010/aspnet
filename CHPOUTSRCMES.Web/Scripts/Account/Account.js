@@ -277,7 +277,6 @@ function LoadTable() {
         buttons: [
             {
                 text: '新增使用者',
-                //className: 'btn-danger',
                 action: function () {
                     window.location.href = "/Account/Create";
                 }
@@ -300,8 +299,7 @@ function onBtn() {
 function Insert() {
 
     var valid = $('#EditForm').valid();
-
-    //obj = document.getElementsByName("checkboxs");
+ 
     obj = document.querySelectorAll('input[type=checkbox]');
     ORGANIZATIONID = [];
     ORGANIZATION_CODE = [];

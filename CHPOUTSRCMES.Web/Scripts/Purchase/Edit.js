@@ -25,10 +25,6 @@ function click() {
 //已存檔入庫預設照片
 function photoView() {
     $('#fileinput').on("change", function () {
-        //imgName = [];
-        //imgSrc = [];
-        //imgFile = [];
-        //files = [];
         var file = $('#fileinput')[0];
         var fileList = file.files;
         for (var i = 0; i < fileList.length; i++) {

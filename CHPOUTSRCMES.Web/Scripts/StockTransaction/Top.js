@@ -2,31 +2,6 @@
 function GetTop() {
     $("#txtItemNumberArea").toggleClass('border-0')
     TopInit();
-    //$.ajax({
-    //    url: "/StockTransaction/GetTop",
-    //    type: "GET",
-    //    dataType: 'html',
-    //    data: {},
-    //    success: function (data) {
-    //        $('#Top').empty();
-    //        $('#Top').html(data);
-    //        TopInit();
-
-    //        //if (TransferType == "出庫") {
-    //        //    OutBoundInit();
-    //        //} else {
-    //        //    InBoundInit();
-    //        //}
-    //    },
-    //    error: function () {
-    //        swal.fire('更新倉庫搜尋頁面失敗');
-    //    },
-    //    complete: function (data) {
-
-
-    //    }
-
-    //})
 }
 
 
@@ -49,7 +24,6 @@ function TopInit() {
                     for (var i = 0; i < data.length; i++) {
                         $('#ddlLocator').append($('<option></option>').val(data[i].Value).html(data[i].Text));
                     }
-                    //GetItemNumberList();
                     if (data.length == 1) {
                         $('#ddlLocatorArea').hide();
                         $('#ddlLocator').hide();
@@ -84,8 +58,6 @@ function TopInit() {
                 type: "POST",
                 dataType: "json",
                 data: {
-                    //SubinventoryCode: $("#ddlSubinventory").val(),
-                    //Locator: $("#ddlLocator").val(),
                     Prefix: request.term
                 },
                 success: function (data) {
@@ -110,10 +82,4 @@ function TopInit() {
         LostFocusItemNumberCallBack($('#txtItemNumber').val());
     });
 
-    //$('#txtItemNumber').keydown(function (e) {
-    //    if (e.keyCode == 13) {
-    //        $(this).data('ui-autocomplete')._trigger('select', 'autocompleteselect', { item: { value: $(this).val() } });
-    //        //AutoCompleteItemNumberEnterCallBack();
-    //    }
-    //});
 }

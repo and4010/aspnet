@@ -1,40 +1,14 @@
 ﻿
 $(document).ready(function () {
-    //setDefault("Asp");
-    //function setDefault(defValue) {
-    //    $('#ddlPstyp option').each(function () {
-    //        if (($(this).attr('value')) === defValue) {
-    //            $(this).attr('selected', 'selected');
-    //        }
-    //    });
-    //}
 
     $("#ddlOrganization").change(function (event) {
         updateDdlOspSubinventory($(this).val());
     });
 
-    //$("#ddlOrganization").combobox({
-    //    select: function (event, ui) {
-    //        updateDdlOspSubinventory(this.value);
-
-    //    }
-    //});
-
     $("#ddlOspSubinventory").change(function (event) {
         var ORGANIZATION_ID = $("#ddlOrganization").val();
         updateDdlPstyp(ORGANIZATION_ID, $("#ddlOspSubinventory option:selected").text());
     });
-
-    //$("#ddlOspSubinventory").combobox({
-    //    select: function (event, ui) {
-    //        var ORGANIZATION_ID = $("#ddlOrganization").val();
-    //        updateDdlPstyp(ORGANIZATION_ID, $("#ddlOspSubinventory option:selected").text());
-    //    }
-    //});
-
-    //$("#ddlPstyp").combobox();
-
-
 
 
     var YszmpckqDataTablesBody = $('#YszmpckqDataTablesBody').DataTable({
@@ -120,15 +94,6 @@ $(document).ready(function () {
         return false;
     });
 
-    //$('.row-std').on('click', '#btnSearch', function (e) {
-
-    //    //YszmpckqDataTablesBody.draw();
-    //    YszmpckqDataTablesBody.ajax.reload();
-    //    return false;
-    //});
-
-
-
     function updateDdlOspSubinventory(ORGANIZATION_ID) {
         var ddl = $("#ddlOspSubinventory");
 
@@ -150,10 +115,8 @@ $(document).ready(function () {
                     var optionCount = ddl[0].length;
                     if (optionCount == 2) {
                         //選單數量為2時，選擇第2個
-                        //ddl.combobox('autocomplete', ddl[0][1].value, ddl[0][1].text);
                         ddl.val(ddl[0][1].value);
                     } else {
-                        //ddl.combobox('autocomplete', ddl[0][0].value, ddl[0][0].text);
                         ddl.val(ddl[0][0].value);
                     }
 
@@ -194,10 +157,8 @@ $(document).ready(function () {
                     var optionCount = ddl[0].length;
                     if (optionCount == 2) {
                         //選單數量為2時，選擇第2個                
-                        //ddl.combobox('autocomplete', ddl[0][1].value, ddl[0][1].text);
                         ddl.val(ddl[0][1].value);
                     } else {
-                        //ddl.combobox('autocomplete', ddl[0][0].value, ddl[0][0].text);
                         ddl.val(ddl[0][0].value);
                     }
 

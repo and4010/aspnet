@@ -39,8 +39,6 @@ $(document).ready(function () {
         $('#BtnEdit').show();
         $('#BtnApprove').hide();
         $('#OutputBathNoArea').hide();
-        //$('#BtnCheckProductionBatchNo').hide()
-        //$('#ProductForm').hide();
         InvestDataTables.column(11).visible(false);
         ProductionTables.column(9).visible(false);
         CotangentDataTable.column(9).visible(false);
@@ -140,12 +138,6 @@ $(document).ready(function () {
         });
         editorProduct.on('preSubmit', function (e, d) {
             var Roll_Ream_Wt = this.field('SecondaryQuantity');
-            //var Weight = this.field('PrimaryQuantity');
-
-            //if (Weight.val() === '') {
-            //    this.field('PrimaryQuantity').error('請勿空白');
-            //    return false;
-            //}
             if (Roll_Ream_Wt.val() === '') {
                 this.field('SecondaryQuantity').error('請勿空白');
                 return false;
@@ -823,10 +815,6 @@ function LoadProductionDataTable() {
         table: "#ProductionDataTables",
         idSrc: 'OspPickedOutId',
         fields: [
-            //{
-            //    label: "重量",
-            //    name: "PrimaryQuantity"
-            //},
             {
                 name: "OspPickedOutId"
             },
@@ -866,7 +854,6 @@ function LoadProductionDataTable() {
         destroy: true,
         processing: true,
         serverSide: true,
-        //scrollX: true,
         autoWidth: false,
         dom:
             "<'row'<'col-sm-2'l><'col-sm-7'B><'col-sm-3'f>>" +
@@ -1095,14 +1082,6 @@ function CotangentDataTables() {
         table: "#CotangentDataTables",
         idSrc: 'OspCotangentId',
         fields: [
-            //{
-            //    label: "公斤",
-            //    name: "Kg",
-            //    attr: {
-            //        type: "number",
-            //        min: "0"
-            //    }
-            //},
             {
                 label: "令數:",
                 name: "SecondaryQuantity",
@@ -1147,7 +1126,6 @@ function CotangentDataTables() {
         destroy: true,
         processing: true,
         serverSide: true,
-        //scrollX: true,
         autoWidth: false,
         dom:
             "<'row'<'col-sm-2'l><'col-sm-7'B><'col-sm-3'f>>" +
@@ -1541,21 +1519,6 @@ function BtnRecordEdit() {
     });
 
     $('#BtnApprove').click(function () {
-        //var OspHeaderId = $("#OspHeaderId").val();
-        //$.ajax({
-        //    url: '/Process/ApproveHeaderStauts/',
-        //    type: 'POST',
-        //    datatype: 'json',
-        //    data: { OspHeaderId: OspHeaderId },
-        //    success: function (data) {
-        //        if (data.resultModel.Success) {
-        //            window.location.href = '/Process/Index';
-        //        } else {
-        //            swal.fire(data.resultModel.Msg)
-        //        }
-        //    }
-        //});
-
 
         var loss = $('#Production_Loss').text();
         var OspDetailOutId = $("#OspDetailOutId").val();

@@ -32,10 +32,7 @@ const Canceled ="6";
 $(document).ready(function () {
     BtnEvent();
     search();
-    //$('#Status').combobox();
-    //$('#BatchNo').combobox();
-    //$('#MachineNum').combobox();
-    //$('#Subinventory').combobox();
+    
     //初始化日期
     $('#DueDateFrom').datepicker({
         dateFormat: 'yy-mm-dd',
@@ -167,7 +164,6 @@ function ProcessLoadTable(Status, BatchNo, MachineNum, DueDateFrom, DueDateTo, C
             "url": "/bower_components/datatables/language/zh-TW.json"
         },
         lengthMenu: [[25, 50, 100, 200], [25, 50, 100, 200]],
-        //scrollX: true,
         destroy: true,
         processing: true,
         serverSide: true,
@@ -292,12 +288,10 @@ function ProcessLoadTable(Status, BatchNo, MachineNum, DueDateFrom, DueDateTo, C
                         else {
                             temp.push('<button class="btn btn-primary btn-sm" id = "btnRecord">完工紀錄</button>');
                         }
-                        //content = '<button class="btn btn-primary btn-sm" id = "btnRecord">完工紀錄</button>';
                     }
 
                     if (row.Status == DwellBatch || row.Status == PendingBatch) {
                         temp.push('<button class="btn btn-primary btn-sm" id = "btnEdit">編輯備註</button>');
-                        //content = content + '<button class="btn btn-primary btn-sm" id = "btnEdit">編輯</button>';
                     }
 
                     for (i = 0; i < temp.length; i++) {
@@ -381,7 +375,6 @@ function ProcessLoadTable(Status, BatchNo, MachineNum, DueDateFrom, DueDateTo, C
             { data: "DoBasicWeight", "name": "基重", "autoWidth": true, "className": "dt-body-right" },
             { data: "DoSpecification", "name": "規格", "autoWidth": true, "className": "dt-body-center" },
             { data: "OrderWeight", "name": "令重", "autoWidth": true, "className": "dt-body-right" },
-            //{ data: "DoOrderWeight", "name": "令重", "autoWidth": true, "className": "dt-body-right" },
             { data: "DoGrainDirection", "name": "絲向", "autoWidth": true, "className": "dt-body-center" },
             { data: "DoReamWt", "name": "令數", "autoWidth": true, "className": "dt-body-right" },
             { data: "TransactionUom", "name": "交易單位", "autoWidth": true, "className": "dt-body-center" },
@@ -619,11 +612,6 @@ function cutMaterial_onclick() {
         headerList.push(selectRowData.pluck('OspHeaderId')[i]);
         
     }
-
-    //for (i = 0; i < headerList.length; i++) {
-   
-    //    window.open("/Home/OspReport/?OspHeaderId=" + headerList[i]);
-    //}
 
     var millisecondsToWait = 0;
     for (i = 0; i < headerList.length; i++) {

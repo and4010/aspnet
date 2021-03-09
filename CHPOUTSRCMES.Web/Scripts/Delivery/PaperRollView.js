@@ -5,17 +5,10 @@
             url: '/bower_components/datatables/language/zh-TW.json'
         },
 
-        //destroy: true,
         autoWidth: false,
-        //rowId: 'PaperRollEditDT_ID',
-        //select: true,
         serverSide: true,
         processing: true,
         lengthMenu: [[25, 50, 100, 200], [25, 50, 100, 200]],
-        //"paging": true,
-        //"pagingType": "full_numbers",
-        //"lengthMenu": [[1, 10, 5, 2], [1, 10, 5, 2]],
-        //stateSave: true,
         dom:
             "<'row'<'col-sm-2'l><'col-sm-7'><'col-sm-3'f>>" +
             "<'row'<'col-sm-12'tr>>" +
@@ -30,7 +23,6 @@
             }
         },
         columns: [
-         //{ data: null, defaultContent: '', className: 'select-checkbox', orderable: false, width: "40px" },
             { data: "SUB_ID", name: "項次", autoWidth: true },
          { data: "ORDER_NUMBER", name: "訂單", autoWidth: true },
          { data: "ORDER_SHIP_NUMBER", name: "訂單行號", autoWidth: true },
@@ -46,7 +38,6 @@
          { data: "SRC_REQUESTED_QUANTITY", name: "訂單原始數量", autoWidth: true, className: "dt-body-right" },
          { data: "SRC_PICKED_QUANTITY", name: "訂單已揀數量", autoWidth: true, className: "dt-body-right" },
          { data: "SRC_REQUESTED_QUANTITY_UOM", name: "訂單主單位", autoWidth: true },
-         //{ data: "REMARK", name: "備註", autoWidth: true },
 
         ],
 
@@ -58,9 +49,7 @@
         language: {
             url: '/bower_components/datatables/language/zh-TW.json'
         },
-        //destroy: true,
         autoWidth: false,
-        //"pageLength": 1,
         serverSide: true,
         processing: true,
         lengthMenu: [[25, 50, 100, 200], [25, 50, 100, 200]],
@@ -78,14 +67,11 @@
             },
         },
         columns: [
-         //{ data: null, defaultContent: '', className: 'select-checkbox', orderable: false, width: "40px" },
             { data: "SUB_ID", name: "項次", autoWidth: true },
             { data: "ITEM_NUMBER", name: "料號", autoWidth: true, className: "dt-body-left" },
          { data: "BARCODE", name: "條碼號", autoWidth: true },
          { data: "PRIMARY_QUANTITY", name: "主要數量", autoWidth: true, className: "dt-body-right" },
          { data: "PRIMARY_UOM", name: "主要單位", autoWidth: true },
-         //{ data: "REMARK", name: "備註", autoWidth: true, className: "dt-body-left" },
-         //{ data: "LAST_UPDATE_DATE", name: "更新日期", autoWidth: true, visible: false },
         ],
 
         "order": [[0, 'desc']],

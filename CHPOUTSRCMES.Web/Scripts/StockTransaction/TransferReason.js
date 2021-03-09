@@ -20,11 +20,6 @@ function getLocatorId() {
     } else {
         return null;
     }
-    //if ($('#ddlLocator option').length === 1) {
-    //    return null;
-    //} else {
-    //    return $("#ddlLocator").val();
-    //}
 }
 
 function TransferReasonInit() {
@@ -33,22 +28,6 @@ function TransferReasonInit() {
     GetTop();
     OnClick();
     photoView();
-
-
-
-    ////重新整理表格寬度
-    //$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-
-    //    // Need to reset width on table, not sure why.
-    //    $.fn.dataTable.tables({ visible: true, api: true }).table().node().style.width = '';
-
-    //    // .draw() is necessary for "no results" message to be properly positioned
-    //    $.fn.dataTable.tables({ visible: true, api: true }).columns.adjust().draw();
-
-
-    //});
-
-
 };
 
 function OnClick() {
@@ -143,8 +122,6 @@ function TransferReasonTableInit() {
         "order": [[1, 'desc']],
         select: {
             style: 'single',
-            //blurable: true,
-            //selector: 'td:first-child'
         },
         buttons: {
             dom: {
@@ -176,14 +153,9 @@ function TransferReasonTableInit() {
             var BARCODE = dt.rows(indexes).data().pluck('BARCODE')[0];
             $("#TransferReasonBarcode").text(BARCODE);
             var REASON_CODE = dt.rows(indexes).data().pluck('REASON_CODE')[0];
-            //var REASON_DESC = dt.rows(indexes).data().pluck('REASON_DESC')[0];
-            //var Reason = REASON_CODE + "-" + REASON_DESC;
             if (REASON_CODE) {
                 $("#Reason").val(REASON_CODE);
             }
-            //var NOTE = dt.rows(indexes).data().pluck('NOTE')[0];
-            //$('#Note').val(NOTE)
-
 
             var rowsData = TransferReasonTable.rows({ page: 'current' }).data();
             for (i = 0; i < rowsData.length; i++) {
@@ -194,7 +166,6 @@ function TransferReasonTableInit() {
                 }
             }
 
-            //var ID = dt.rows(indexes).data().pluck('ID')[0];
             var index = $.inArray(StockId, selected);
             if (index === -1) {
                 selected.push(StockId);
@@ -268,10 +239,6 @@ function SaveReason(StockId, ReasonCode, TransferLocatorId, Note) {
 //已存檔入庫預設照片
 function photoView() {
     $('#fileinput').on("change", function () {
-        //imgName = [];
-        //imgSrc = [];
-        //imgFile = [];
-        //files = [];
         var file = $('#fileinput')[0];
         var fileList = file.files;
         for (var i = 0; i < fileList.length; i++) {
@@ -292,7 +259,6 @@ function photoView() {
 
 
 function SubinventoryChangeCallBack() {
-    //clear();
     clearText();
     var SUBINVENTORY_CODE = getSubinventoryCode();
     $.ajax({
@@ -325,14 +291,11 @@ function SubinventoryChangeCallBack() {
 
 
 function LocatorChangeCallBack() {
-    //clear();
-    //clearText();
+   
 }
 
 function clear() {
-    //LoadTransferReasonTable.ajax.reload(null, false);
     selected = [];
-
 }
 
 function clearText() {
@@ -354,11 +317,7 @@ function SearchStock() {
         event.preventDefault();
         return;
     }
-    //if ($('#ddlLocator option').length > 1 && $('#ddlLocator').val() == "請選擇") {
-    //    swal.fire('請選擇儲位');
-    //    event.preventDefault();
-    //    return;
-    //}
+
     if ($('#ddlLocatorArea').is(":visible")) {
         if ($('#ddlLocator').val() == "請選擇") {
             swal.fire('請選擇儲位');
@@ -376,9 +335,7 @@ function SearchStock() {
 }
 
 function AutoCompleteItemNumberSelectCallBack(ITEM_NO) {
-    //$("#txtItemNumber").val(ITEM_NO);
     $('#btnSearchStock').focus();
-    //SearchStock();
 }
 
 function LostFocusItemNumberCallBack(ITEM_NO) {

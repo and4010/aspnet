@@ -5,25 +5,10 @@ $(document).ready(function () {
         updateDdlSubinventory($(this).val());
     });
 
-    //$("#ddlOrganization").combobox({
-    //    select: function (event, ui) {
-    //        updateDdlSubinventory(this.value);
-    //    }
-    //});
-
     $("#ddlSubinventory").change(function (event) {
         var ORGANIZATION_ID = $("#ddlOrganization").val();
         updateDdlLocator(ORGANIZATION_ID, $("#ddlSubinventory option:selected").text());
     });
-
-    //$("#ddlSubinventory").combobox({
-    //    select: function (event, ui) {
-    //        var ORGANIZATION_ID = $("#ddlOrganization").val();
-    //        updateDdlLocator(ORGANIZATION_ID, $("#ddlSubinventory option:selected").text());
-    //    }
-    //});
-
-    //$("#ddlLocator").combobox();
 
     var OrgSubinventoryDataTablesBody = $('#OrgSubinventoryDataTablesBody').DataTable({
         //"scrollX": true,
@@ -31,7 +16,6 @@ $(document).ready(function () {
             url: '/bower_components/datatables/language/zh-TW.json'
         },
         autoWidth: false,
-        //pageLength: 3,
         serverSide: true,
         processing: true,
         deferLoading: 0, //初始化DataTable時，不發出ajax
@@ -57,39 +41,8 @@ $(document).ready(function () {
          { data: "OSP_FLAG", name: "加工廠", "autoWidth": true },
           { data: "LOCATOR_SEGMENTS", name: "儲位節段", "autoWidth": true },
          { data: "LOCATOR_DESC", name: "儲位描述", "autoWidth": true },
-        // { data: "CREATED_BY_NAME", name: "建立人員", "autoWidth": true },
-        // {
-        //     data: "CREATION_DATE", name: "建立日期", "autoWidth": true, "mRender": function (data, type, full) {
-        //         if (data != null) {
-        //             var dtStart = new Date(parseInt(data.substr(6)));
-        //             var dtStartWrapper = moment(dtStart);
-        //             return dtStartWrapper.format('YYYY-MM-DD');
-        //         } else {
-        //             return '';
-        //         }
-        //     }
-        // },
-
-        // { data: "LAST_UPDATED_BY_NAME", name: "更新人員", "autoWidth": true },
-
-        //{
-        //    data: "LAST_UPDATE_DATE", name: "更新日期", "autoWidth": true, "mRender": function (data, type, full) {
-        //        if (data != null) {
-        //            var dtStart = new Date(parseInt(data.substr(6)));
-        //            var dtStartWrapper = moment(dtStart);
-        //            return dtStartWrapper.format('YYYY-MM-DD');
-        //        } else {
-        //            return '';
-        //        }
-        //    }
-        //},
-
-
 
         ],
-
-        //"order": [[1, 'asc']],
-        //buttons: [],
 
     });
 
@@ -97,14 +50,6 @@ $(document).ready(function () {
         search();
         return false;
     });
-
-    //$('.row-std').on('click', '#btnSearch', function (e) {
-
-    //    OrgSubinventoryDataTablesBody.ajax.reload();
-    //    return false;
-
-        
-    //});
 
 
     function updateDdlSubinventory(ORGANIZATION_ID) {
@@ -127,10 +72,8 @@ $(document).ready(function () {
                     var optionCount = ddl[0].length;
                     if (optionCount == 2) {
                         //選單數量為2時，選擇第2個
-                        //ddl.combobox('autocomplete', ddl[0][1].value, ddl[0][1].text);
                         ddl.val(ddl[0][1].value);
                     } else {
-                        //ddl.combobox('autocomplete', ddl[0][0].value, ddl[0][0].text);
                         ddl.val(ddl[0][0].value);
                     }
 
@@ -170,10 +113,8 @@ $(document).ready(function () {
                     var optionCount = ddl[0].length;
                     if (optionCount == 2) {
                         //選單數量為2時，選擇第2個
-                        //ddl.combobox('autocomplete', ddl[0][1].value, ddl[0][1].text);
                         ddl.val(ddl[0][1].value);
                     } else {
-                        //ddl.combobox('autocomplete', ddl[0][0].value, ddl[0][0].text);
                         ddl.val(ddl[0][0].value);
                     }
 

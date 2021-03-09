@@ -1,11 +1,8 @@
 ﻿var t;
 $(document).ready(function () {
-    //var referrer = document.referrer;
-    
 
     $('#btnSearch').click(function () {
         loadTable();
-        //t.ajax.reload();
     });
 
     $.datepicker.setDefaults($.datepicker.regional["zh-TW"]);
@@ -14,16 +11,7 @@ $(document).ready(function () {
         changeMonth: true,
         changeYear: true
     });
-    //$("#ProcessDate").val($.datepicker.formatDate("yy-mm-dd", new Date()));
-    //$('#QueryTable tbody').on('click', '.available-query', function () {
-    //    var data = $('#QueryTable').DataTable().row($(this).parents('tr')).data();
-
-    //    var processCode = data['ProcessCode'];
-    //    var serverCode = data['ServerCode'];
-    //    var batchId = data['BatchId'];
-
-    //    window.open("/Soa/Detail/" + processCode + "/" + serverCode + "/" + batchId);
-    //});
+    
     processDateInit();
     loadTable();
     
@@ -86,7 +74,6 @@ function initTable(processCode, processDate, hasError) {
         ],
         "order": [[2, 'desc']],
         columns: [
-            //{ data: "Id", "name": "項次", "autoWidth": true, "className": "dt-body-center", "searchable": false },
             {
                 "data": null, "sortable": false, "searchable": false,
                 render: function (data, type, row, meta) {
@@ -124,26 +111,8 @@ function initTable(processCode, processDate, hasError) {
             { data: "SoaProcessCode", "name": "SOA狀態", "autoWidth": true, "className": "dt-body-center" }
             
          ],
-         //'columnDefs': [{
-         //    "targets": [0],
-         //    "orderable": false,
-         //    "sortable": false
-         //}]
-        //"fnRowCallback": function (nRow, aData, iDisplayIndex) {
-        //    $("td:first", nRow).html(iDisplayIndex + 1);
-        //    return nRow;
-        //},
-         //"fnRowCallback": function (nRow, aData, iDisplayIndex) {
-         //    var oSettings = oAllLinksTable.fnSettings();
-         //    $("td:first", nRow).html(oSettings._iDisplayStart + iDisplayIndex + 1);
-         //    return nRow;
-         //},
+         
     });
 
-    //t.on('order.dt search.dt', function () {
-    //    t.column(0, { search: 'applied', order: 'applied' }).nodes().each(function (cell, i) {
-    //        cell.innerHTML = i + 1;
-    //    });
-    //}).draw();
 }
 

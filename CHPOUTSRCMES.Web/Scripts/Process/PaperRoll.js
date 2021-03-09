@@ -169,20 +169,6 @@ function init() {
         });
     });
 
-    ////1 有殘捲 0 無殘捲
-    //$('#PaperRoll_Invest_Remaining_Weight').attr("disabled", true);
-    //$('#PaperRoll_Invest_Remnant').change(function (e) {
-    //    var Remnant = $("#PaperRoll_Invest_Remnant").val();
-    //    if (Remnant == 1) {
-    //        $('#PaperRoll_Invest_Remaining_Weight').attr("disabled", false);
-    //    } else {
-    //        $('#PaperRoll_Invest_Remaining_Weight').val("");
-    //        $('#PaperRoll_Invest_Remaining_Weight').attr("disabled", true);
-
-    //    }
-
-    //});
-
 
     //在關鍵字input按下Enter，執行n送出 紙捲
     $("#PaperRoll_Production_Barcode").keyup(function (event) {
@@ -647,8 +633,6 @@ function LoadPaperRollInvestDataTable() {
             {
                 data: "", "autoWidth": true, "render": function (data) {
                     return '<button class = "btn btn-danger btn-sm" id = "btnDelete">刪除</button>';
-                    //'<button class="btn btn-primary btn-sm" id= "btnEdit">編輯</button>' +
-                    //'&nbsp|&nbsp' +
                 }
             }
         ],
@@ -749,7 +733,6 @@ function LoadPaperRollProductionDataTable() {
         destroy: true,
         processing: true,
         serverSide: true,
-        //scrollX: true,
         autoWidth: false,
         dom:
             "<'row'<'col-sm-2'l><'col-sm-7'B><'col-sm-3'f>>" +
@@ -1107,7 +1090,6 @@ function BtnRecord() {
                 success: function (data) {
                     if (data.Success) {
                         CloseWait();
-                        //changeStaus();
                         location.href = "/Process/Schedule/" + data.Data;
                     } else {
                         swal.fire(data.Msg);
@@ -1121,21 +1103,6 @@ function BtnRecord() {
     });
 
     $('#BtnApprove').click(function () {
-        //var OspHeaderId = $("#OspHeaderId").val();
-        //var Status = "核准";
-        //$.ajax({
-        //    url: '/Process/ApproveHeaderStauts/',
-        //    dataType: 'json',
-        //    type: 'post',
-        //    data: { OspHeaderId: OspHeaderId },
-        //    success: function (data) {
-        //        if (data.resultModel.Success) {
-        //            window.location.href = '/Process/Index';
-        //        } else {
-        //            swal.fire(data.resultModel.Msg)
-        //        }
-        //    }
-        //});
 
         var loss = $('#Production_Loss').text();
         var OspDetailOutId = $("#OspDetailOutId").val();
