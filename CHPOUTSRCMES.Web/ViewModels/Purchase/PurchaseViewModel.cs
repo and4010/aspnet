@@ -87,6 +87,18 @@ namespace CHPOUTSRCMES.Web.ViewModels.Purchase
         }
 
         /// <summary>
+        /// 取得庫存%入庫所有卷號
+        /// </summary>
+        /// <returns></returns>
+        public List<String> GetAllLotNumber()
+        {
+            using (var context = new MesContext())
+            {
+                return new PurchaseUOW(context).GetAllLotNumber();
+            }
+        }
+
+        /// <summary>
         /// 取得平張表頭資料
         /// </summary>
         /// <param name="CONTAINER_NO"></param>
