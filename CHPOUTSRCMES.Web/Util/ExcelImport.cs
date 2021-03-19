@@ -24,6 +24,7 @@ namespace CHPOUTSRCMES.Web.Util
         {
             PurchaseViewModel purchaseView = new PurchaseViewModel();
             var RollHeader = purchaseView.GetRollHeader(CtrHeaderId);
+            var GetallLotNumber = purchaseView.GetAllLotNumber();
             IWorkbook workbook = null;
             if (file.FileName.Substring(file.FileName.LastIndexOf(".")).Equals(".xls"))
             {
@@ -190,6 +191,30 @@ namespace CHPOUTSRCMES.Web.Util
             }
 
 
+            var CheckLot = true;
+            if(GetallLotNumber != null)
+            {
+                for (int k = 0; k < GetallLotNumber.Count; k++)
+                {
+                    for (int j = 0; j < PaperRollDetail.Count; j++)
+                    {
+                        if (GetallLotNumber[k] == PaperRollDetail[j].LotNumber)
+                        {
+                            CheckLot = false;
+                            break;
+                        }
+                    }
+                }
+            }
+
+
+            if (!CheckLot)
+            {
+                result.Msg = "匯入資料有重複捲號。";
+                result.Success = false;
+                return result;
+            }
+
             if (CheckQty)
             {
                 result = purchaseView.ImportPaperRollPickT(CtrHeaderId, PaperRollDetail, createby, userName);
@@ -199,6 +224,7 @@ namespace CHPOUTSRCMES.Web.Util
                 result.Msg = "匯入資料與表頭資料不正確";
                 result.Success = false;
             }
+
 
             workbook = null;
             sheet = null;

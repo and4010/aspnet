@@ -1875,6 +1875,42 @@ SELECT [TRANSFER_REASON_ID]
 
             return resultDataModel;
         }
+
+        /// <summary>
+        /// 取得庫存%入庫所有卷號
+        /// </summary>
+        /// <returns></returns>
+        public List<String> GetAllLotNumber()
+        {
+            try
+            {
+                List<String> vs = new List<string>();
+                StringBuilder query = new StringBuilder();
+                query.Append(
+                @"select
+  LOT_NUMBER
+  from CTR_PICKED_T 
+  where ITEM_CATEGORY = '捲筒'");
+                vs.AddRange(Context.Database.SqlQuery<String>(query.ToString()).ToList());
+
+                StringBuilder query1 = new StringBuilder();
+                query1.Append(
+                @"select
+  LOT_NUMBER
+  from STOCK_T 
+  where ITEM_CATEGORY = '捲筒'");
+                vs.AddRange(Context.Database.SqlQuery<String>(query1.ToString()).ToList());
+
+                return vs;
+            }
+            catch (Exception e)
+            {
+                logger.Error(e.Message);
+                return new List<String>();
+            }
+        }
+
+
     }
 
 
