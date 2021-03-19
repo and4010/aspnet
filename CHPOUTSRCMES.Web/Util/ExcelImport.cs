@@ -192,17 +192,21 @@ namespace CHPOUTSRCMES.Web.Util
 
 
             var CheckLot = true;
-            for (int k = 0; k < GetallLotNumber.Count; k++)
+            if(GetallLotNumber != null)
             {
-                for (int j = 0; j < PaperRollDetail.Count; j++)
+                for (int k = 0; k < GetallLotNumber.Count; k++)
                 {
-                    if (GetallLotNumber[k] == PaperRollDetail[j].LotNumber)
+                    for (int j = 0; j < PaperRollDetail.Count; j++)
                     {
-                        CheckLot = false;
-                        break;
+                        if (GetallLotNumber[k] == PaperRollDetail[j].LotNumber)
+                        {
+                            CheckLot = false;
+                            break;
+                        }
                     }
                 }
             }
+
 
             if (!CheckLot)
             {
