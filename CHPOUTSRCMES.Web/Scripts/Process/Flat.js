@@ -139,25 +139,22 @@ function init() {
     $('#Flat_Invest_Barcode').change(function (e) {
         var OspDetailInId = $("#OspDetailInId").val();
         var Barcode = $('#Flat_Invest_Barcode').val()
-        ShowWait(function () {
-            $.ajax({
-                url: '/Process/CheckStockBarcode',
-                type: 'post',
-                datatype: 'json',
-                data: { Barcode: Barcode, OspDetailInId: OspDetailInId },
-                success: function (data) {
-                    if (data.resultDataModel.Success == false) {
-                        swal.fire("條碼無資料");
-                        FlatClearText();
-                    } else {
-                        CloseWait();
-                        FlatDispalyText(data);
-                    }
-                },
-                error: function () {
-                    swal.fire("檢查庫存條碼失敗");
+        $.ajax({
+            url: '/Process/CheckStockBarcode',
+            type: 'post',
+            datatype: 'json',
+            data: { Barcode: Barcode, OspDetailInId: OspDetailInId },
+            success: function (data) {
+                if (data.resultDataModel.Success == false) {
+                    swal.fire("條碼無資料");
+                    FlatClearText();
+                } else {
+                    FlatDispalyText(data);
                 }
-            });
+            },
+            error: function () {
+                swal.fire("檢查庫存條碼失敗");
+            }
         });
        
     });
@@ -576,6 +573,7 @@ function FlatInvestSaveBarcode(Barcode, Remnant, Remaining_Weight, OspDetailInId
             "data": { Barcode: Barcode, Remnant: Remnant, Remaining_Weight: Remaining_Weight, OspDetailInId: OspDetailInId },
             success: function (data) {
                 if (data.resultModel.Success) {
+                    CloseWait();
                     FlatInvestTable.ajax.reload(null, false);
                     ClearRateLoss();
                 } else {

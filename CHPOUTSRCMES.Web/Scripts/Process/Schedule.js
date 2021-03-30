@@ -222,26 +222,25 @@ function init() {
     $('#Invest_Barcode').change(function (e) {
         var Barcode = $('#Invest_Barcode').val();
         var OspDetailInId = $("#OspDetailInId").val();
-        ShowWait(function () {
-            $.ajax({
-                url: '/Process/CheckStockBarcode',
-                type: 'post',
-                datatype: 'json',
-                data: { Barcode: Barcode, OspDetailInId: OspDetailInId },
-                success: function (data) {
-                    if (data.resultDataModel.Success == false) {
-                        swal.fire(data.resultDataModel.Msg);
-                        ClearText();
-                    } else {
-                        CloseWait();
-                        DispalyText(data);
-                    }
-                },
-                error: function () {
-                    swal.fire("檢查庫存條碼失敗");
+        
+        $.ajax({
+            url: '/Process/CheckStockBarcode',
+            type: 'post',
+            datatype: 'json',
+            data: { Barcode: Barcode, OspDetailInId: OspDetailInId },
+            success: function (data) {
+                if (data.resultDataModel.Success == false) {
+                    swal.fire(data.resultDataModel.Msg);
+                    ClearText();
+                } else {
+                    DispalyText(data);
                 }
-            });
+            },
+            error: function () {
+                swal.fire("檢查庫存條碼失敗");
+            }
         });
+        
         
     });
 
@@ -751,7 +750,7 @@ function LoadInvestDataTable() {
 //儲存條碼
 function InvestSaveBarcode(Barcode, Remnant, Remaining_Weight, OspDetailInId) {
 
-    ShowWait(function () {
+    ShowWait2(function () {
         $.ajax({
             "url": "/Process/SaveInvestBarcode",
             "type": "POST",
@@ -771,9 +770,8 @@ function InvestSaveBarcode(Barcode, Remnant, Remaining_Weight, OspDetailInId) {
             }
 
         });
-    });
-    
-
+    }, 'Invest_Barcode');
+     
 }
 
 //初始化產出table

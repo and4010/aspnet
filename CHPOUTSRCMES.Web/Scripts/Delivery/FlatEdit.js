@@ -455,7 +455,7 @@ $(document).ready(function () {
 
        
 
-        $('#txtBARCODE').attr('disabled', true);
+        //$('#txtBARCODE').attr('disabled', true);
 
         var viewModel = {
             DLV_HEADER_ID: $("#DlvHeaderId").text(),
@@ -492,7 +492,7 @@ $(document).ready(function () {
                     swal.fire('條碼輸入失敗');
                 },
                 complete: function (data) {
-                    $('#txtBARCODE').attr('disabled', false);
+                    //$('#txtBARCODE').attr('disabled', false);
 
                 }
 

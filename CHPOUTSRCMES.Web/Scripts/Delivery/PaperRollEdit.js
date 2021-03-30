@@ -367,7 +367,7 @@ $(document).ready(function () {
         }
 
 
-        $('#txtBARCODE').attr('disabled', true);
+        //$('#txtBARCODE').attr('disabled', true);
 
         ShowWait(function () {
             $.ajax({
@@ -402,7 +402,7 @@ $(document).ready(function () {
 
                 },
                 complete: function (data) {
-                    $('#txtBARCODE').attr('disabled', false);
+                    //$('#txtBARCODE').attr('disabled', false);
                 }
 
             });
