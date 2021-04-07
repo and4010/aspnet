@@ -1460,6 +1460,7 @@
     <Content Include="bower_components\pdfmake\build\pdfmake.js" />
     <Content Include="bower_components\pdfmake\build\pdfmake.min.js" />
     <Content Include="bower_components\pdfmake\build\vfs_fonts.js" />
+    <Content Include="bower_components\pdfSharpLabels\PdfSharp.dll" />
     <Content Include="bower_components\raphael\dev\amdDev.js" />
     <Content Include="bower_components\raphael\dev\index.js" />
     <Content Include="bower_components\raphael\dev\require.js" />
@@ -1483,7 +1484,6 @@
     <Content Include="bower_components\theme-login\css\style.css" />
     <Content Include="bower_components\theme-login\css\vendor.bundle.base.css" />
     <Content Include="bower_components\theme-login\image\login_1.jpg" />
-    <Content Include="Component\PdfSharpLabels\PdfSharp.dll" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\Delivery\index.css" />
