@@ -4,6 +4,7 @@ using CHPOUTSRCMES.Web.Models.StockQuery;
 using CHPOUTSRCMES.Web.ViewModels;
 using CHPOUTSRCMES.Web.ViewModels.SoaQuery;
 using Microsoft.AspNet.Identity;
+using System;
 using System.Collections.Generic;
 using System.Web.Mvc;
 
@@ -22,6 +23,7 @@ namespace CHPOUTSRCMES.Web.Controllers
             var model = new SoaQueryViewModel();
             model.ProcessCodeList = SoaQueryViewModel.getProcessCodeList();
             model.ErrorOptionList = SoaQueryViewModel.getErrorOptionList();
+            //model.ProcessDate = DateTime.Now.ToString("yyyy-MM-dd");
             model.Fields = new SoaQueryModel();
             return View(model);
         }

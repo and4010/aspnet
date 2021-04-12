@@ -1,8 +1,10 @@
 ﻿var t;
+
 $(document).ready(function () {
 
     $('#btnSearch').click(function () {
-        loadTable();
+        t.ajax.reload();
+        //loadTable();
     });
 
     $.datepicker.setDefaults($.datepicker.regional["zh-TW"]);
@@ -11,42 +13,32 @@ $(document).ready(function () {
         changeMonth: true,
         changeYear: true
     });
+
+
+    //processDateInit();
+    //loadTable();
     
-    processDateInit();
-    loadTable();
-    
-    function loadTable() {
-        var processCode = $("#ProcessCodeList option:selected").val();
-        var processDate = $("#ProcessDate").val();
-        var hasError = $("#ErrorOptionList option:selected").val();
-        if (processDate) {
-            $.session.set('ProcessDate', processDate);
-        }
 
-        initTable(processCode, processDate, hasError);
-    }
-    function processDateInit() {
-        var processDate = $.session.get('ProcessDate');
-        if (processDate) {
-            $("#ProcessDate").val(processDate);
-        } else {
-            $("#ProcessDate").val($.datepicker.formatDate("yy-mm-dd", new Date()));
-        }
-    }
-});
+    //function processDateInit() {
+    //    //var processDate = $.session.get('ProcessDate');
+    //    var processDate = $("#ProcessDate").val();
+    //    if (processDate) {
+    //        $("#ProcessDate").val(processDate);
+    //    } else {
+    //        $("#ProcessDate").val($.datepicker.formatDate("yy-mm-dd", new Date()));
+    //    }
+    //}
 
+    //processDateInit();
 
-
-function initTable(processCode, processDate, hasError) {
-
-     t = $('#QueryTable').DataTable({
+    t = $('#QueryTable').DataTable({
         "language": {
             "url": "/bower_components/datatables/language/zh-TW.json"
         },
         processing: true,
         serverSide: true,
         autoWidth: false,
-        destroy:true,
+        deferLoading: 0, //初始化DataTable時，不發出ajax
         dom:
             "<'row'<'col-sm-3 width-s'l><'col-sm-6'B><'col-sm-3'f>>" +
             "<'row'<'col-sm-12'tr>>" +
@@ -56,11 +48,11 @@ function initTable(processCode, processDate, hasError) {
             "url": "/Soa/SoaQuery",
             "type": "POST",
             "datatype": "json",
-            "data": {
-                'processCode': processCode,
-                'processDate': processDate,
-                'hasError': hasError,
-                '__RequestVerificationToken': $('input[name=__RequestVerificationToken]').val()
+            "data": function (d) {
+                d.processCode = $("#ProcessCodeList option:selected").val();
+                d.processDate = $("#ProcessDate").val();
+                d.hasError = $("#ErrorOptionList option:selected").val();
+                d.__RequestVerificationToken = $('input[name=__RequestVerificationToken]').val();
             }
         },
         buttons: [
@@ -109,10 +101,22 @@ function initTable(processCode, processDate, hasError) {
             { data: "SoaPullingFlag", "name": "SOA傳輸狀態", "autoWidth": true, "className": "dt-body-center" },
             { data: "SoaErrorMsg", "name": "SOA錯誤訊息", "autoWidth": true, "className": "dt-body-right" },
             { data: "SoaProcessCode", "name": "SOA狀態", "autoWidth": true, "className": "dt-body-center" }
-            
-         ],
-         
+
+        ],
+
     });
 
-}
 
+    
+});
+
+//當按上一頁來到此頁時，Firefox不會執行window.onload
+window.onload = function () {
+    var processDate = $("#ProcessDate").val();
+    if (processDate) {
+        $("#ProcessDate").val(processDate);
+    } else {
+        $("#ProcessDate").val($.datepicker.formatDate("yy-mm-dd", new Date()));
+    }
+    t.ajax.reload();
+};

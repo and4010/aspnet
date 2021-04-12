@@ -22,21 +22,22 @@
                             類型
                         </label>
                     </td>
-                    <td class="input-lg" style='width: 100px'>@Html.DropDownListFor(model => model.ProcessCodeList, Model.ProcessCodeList, new { @class = "customDropDownList", id = "ProcessCodeList", autocomplete = "off" })</td>
+                    <td class="input-lg" style='width: 100px'>@Html.DropDownListFor(model => model.ProcessCodeList, Model.ProcessCodeList, new { @class = "customDropDownList", id = "ProcessCodeList" })</td>
                     <td style="text-align: right;">
                         <label style='font-weight:bolder;'>
                             日期
                         </label>
                     </td>
                     <td class="input-lg">
-                        <input class="customTextBox" type="text" id="ProcessDate" tabindex="3" style="width:100px;" autocomplete="off" />
+                        @*@Html.TextBoxFor(model => model.ProcessDate, new { @class = "customTextBox", autocomplete = "off", id = "ProcessDate", tabindex = "3", style = "width:100px;" })*@
+                        <input class="customTextBox" type="text" id="ProcessDate" tabindex="3" style="width:100px;"/>
                     </td>
                     <td style="text-align: right;">
                         <label style='font-weight:bolder;'>
                             錯誤
                         </label>
                     </td>
-                    <td class="input-lg">@Html.DropDownListFor(model => model.ErrorOptionList, Model.ErrorOptionList, new { @class = "customDropDownList", id = "ErrorOptionList", autocomplete = "off" })</td>
+                    <td class="input-lg">@Html.DropDownListFor(model => model.ErrorOptionList, Model.ErrorOptionList, new { @class = "customDropDownList", id = "ErrorOptionList", })</td>
                 </tr>
                 <tr>
                     <td class="input-lg" colspan="6" style=" text-align: right;">
