@@ -2067,7 +2067,6 @@
     <Content Include="bower_components\GlobalFunc.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
-    <Content Include="Scripts\jquerysession.js" />
     <Content Include="Scripts\label.js" />
     <Content Include="Scripts\Logout.js" />
     <Content Include="Scripts\MachinePaperType.js" />

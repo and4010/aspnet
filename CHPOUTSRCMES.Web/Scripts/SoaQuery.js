@@ -1,10 +1,9 @@
-﻿var t;
+﻿var queryTable;
 
 $(document).ready(function () {
 
     $('#btnSearch').click(function () {
-        t.ajax.reload();
-        //loadTable();
+        queryTable.ajax.reload();
     });
 
     $.datepicker.setDefaults($.datepicker.regional["zh-TW"]);
@@ -14,24 +13,8 @@ $(document).ready(function () {
         changeYear: true
     });
 
-
-    //processDateInit();
-    //loadTable();
-    
-
-    //function processDateInit() {
-    //    //var processDate = $.session.get('ProcessDate');
-    //    var processDate = $("#ProcessDate").val();
-    //    if (processDate) {
-    //        $("#ProcessDate").val(processDate);
-    //    } else {
-    //        $("#ProcessDate").val($.datepicker.formatDate("yy-mm-dd", new Date()));
-    //    }
-    //}
-
-    //processDateInit();
-
-    t = $('#QueryTable').DataTable({
+    //SOA傳輸記錄表格
+    queryTable = $('#QueryTable').DataTable({
         "language": {
             "url": "/bower_components/datatables/language/zh-TW.json"
         },
@@ -101,22 +84,20 @@ $(document).ready(function () {
             { data: "SoaPullingFlag", "name": "SOA傳輸狀態", "autoWidth": true, "className": "dt-body-center" },
             { data: "SoaErrorMsg", "name": "SOA錯誤訊息", "autoWidth": true, "className": "dt-body-right" },
             { data: "SoaProcessCode", "name": "SOA狀態", "autoWidth": true, "className": "dt-body-center" }
-
         ],
-
     });
-
-
-    
 });
 
-//當按上一頁來到此頁時，Firefox不會執行window.onload
+//於$(document).ready執行後才會執行，不可放在$(document).ready前。
+//當按回上一頁來到此頁時，Firefox不會執行$(document).ready和window.onload，IE和Chrome都會執行。
 window.onload = function () {
+    //日期欄位初始化
     var processDate = $("#ProcessDate").val();
     if (processDate) {
         $("#ProcessDate").val(processDate);
     } else {
+        //沒有日期時使用本機日期
         $("#ProcessDate").val($.datepicker.formatDate("yy-mm-dd", new Date()));
     }
-    t.ajax.reload();
+    queryTable.ajax.reload();
 };

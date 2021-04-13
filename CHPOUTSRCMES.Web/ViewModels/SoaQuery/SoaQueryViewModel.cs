@@ -17,8 +17,6 @@ namespace CHPOUTSRCMES.Web.ViewModels.SoaQuery
 
         public IEnumerable<SelectListItem> ErrorOptionList { set; get; }
 
-        //public String ProcessDate { set; get; }
-
         public static IEnumerable<SelectListItem> getProcessCodeList()
         {
             return new List<SelectListItem>() {
