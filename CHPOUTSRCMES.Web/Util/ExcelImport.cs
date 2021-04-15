@@ -207,10 +207,21 @@ namespace CHPOUTSRCMES.Web.Util
                 }
             }
 
+            if(PaperRollDetail.Count != 0)
+            {
+                List<string> lisDupValues2 = PaperRollDetail.GroupBy(x => x.LotNumber).
+                    Where(x => x.Count() > 1).Select(x => x.Key).ToList();
+                if(lisDupValues2.Count > 0)
+                {
+                    result.Msg = "excel有重複捲號。";
+                    result.Success = false;
+                    return result;
+                }
+            }
 
             if (!CheckLot)
             {
-                result.Msg = "匯入資料有重複捲號。";
+                result.Msg = "匯入資料與庫存有重複捲號。";
                 result.Success = false;
                 return result;
             }
