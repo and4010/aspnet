@@ -11,18 +11,25 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CHPOUTSRCMES.TASK", "CHPOUT
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Biotech Debug|Any CPU = Biotech Debug|Any CPU
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CEE973D5-3804-40BF-89DC-F3E48DA3FFFC}.Biotech Debug|Any CPU.ActiveCfg = Biotech Debug|Any CPU
+		{CEE973D5-3804-40BF-89DC-F3E48DA3FFFC}.Biotech Debug|Any CPU.Build.0 = Biotech Debug|Any CPU
 		{CEE973D5-3804-40BF-89DC-F3E48DA3FFFC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{CEE973D5-3804-40BF-89DC-F3E48DA3FFFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CEE973D5-3804-40BF-89DC-F3E48DA3FFFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CEE973D5-3804-40BF-89DC-F3E48DA3FFFC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C91E7BF6-F06C-4D79-ACE7-7CD0F79246C1}.Biotech Debug|Any CPU.ActiveCfg = Biotech Debug|Any CPU
+		{C91E7BF6-F06C-4D79-ACE7-7CD0F79246C1}.Biotech Debug|Any CPU.Build.0 = Biotech Debug|Any CPU
 		{C91E7BF6-F06C-4D79-ACE7-7CD0F79246C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C91E7BF6-F06C-4D79-ACE7-7CD0F79246C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C91E7BF6-F06C-4D79-ACE7-7CD0F79246C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C91E7BF6-F06C-4D79-ACE7-7CD0F79246C1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{21FFC0E3-196F-48E8-A0E2-1F23AAE2730F}.Biotech Debug|Any CPU.ActiveCfg = Biotech Debug|Any CPU
+		{21FFC0E3-196F-48E8-A0E2-1F23AAE2730F}.Biotech Debug|Any CPU.Build.0 = Biotech Debug|Any CPU
 		{21FFC0E3-196F-48E8-A0E2-1F23AAE2730F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{21FFC0E3-196F-48E8-A0E2-1F23AAE2730F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{21FFC0E3-196F-48E8-A0E2-1F23AAE2730F}.Release|Any CPU.ActiveCfg = Release|Any CPU

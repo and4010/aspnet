@@ -45,7 +45,7 @@ namespace CHPOUTSRCMES.Web.DataModel
                 parameters.Add(":ROUND", round);
 
                 string cmd =
-#if DEBUG
+#if BIOTECH
                     "SELECT ROUND(TPMC_ADMIN.UOM_CONVERSION(:ITEM_ID, :FROM_QTY, :FROM_UOM, :TO_UOM), :ROUND) QUANTITY FROM DUAL";
 #else
                     "SELECT ROUND(YFY_DIS_PKG_UTIL.UOM_CONVERSION(:ITEM_ID, :FROM_QTY, :FROM_UOM, :TO_UOM), :ROUND) QUANTITY FROM DUAL";

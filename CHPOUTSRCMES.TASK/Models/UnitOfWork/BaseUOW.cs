@@ -17,7 +17,7 @@ namespace CHPOUTSRCMES.TASK.Models.UnitOfWork
     {
         private Logger logger = LogManager.GetCurrentClassLogger();
 
-#if DEBUG
+#if BIOTECH
         private string schemaName = "dbo";
 #else
         private string schemaName = "dbo";

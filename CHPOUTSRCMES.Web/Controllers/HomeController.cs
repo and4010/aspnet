@@ -63,7 +63,7 @@ namespace CHPOUTSRCMES.Web.Controllers
         /// <returns></returns>
         public ActionResult CtrReport(string CtrHeaderId, string ItemCategory)
         {
-#if DEBUG
+#if BIOTECH
             return LocalReport(CtrHeaderId, ItemCategory);
 #else
            return RemoteReport(CtrHeaderId, ItemCategory);
@@ -151,7 +151,7 @@ namespace CHPOUTSRCMES.Web.Controllers
         /// <returns></returns>
         public ActionResult OspReport(string OspHeaderId)
         {
-#if DEBUG
+#if BIOTECH
             return OspLocalReport(OspHeaderId);
 #else
             return OspRemoteReport(OspHeaderId);
@@ -221,7 +221,7 @@ namespace CHPOUTSRCMES.Web.Controllers
 
         public ActionResult OspCutReceiptReport(string OspHeaderId)
         {
-#if DEBUG
+#if BIOTECH
             return OspLocalCutReceiptReport(OspHeaderId);
 #else
             return OspRemoteCutReceiptReport(OspHeaderId);
@@ -310,7 +310,7 @@ namespace CHPOUTSRCMES.Web.Controllers
         /// <returns></returns>
         public ActionResult OspStock(string OspHeaderId)
         {
-#if DEBUG
+#if BIOTECH
             return OspLocalStockReport(OspHeaderId);
 #else
             return OspRemoteStockReport(OspHeaderId);
@@ -381,7 +381,7 @@ namespace CHPOUTSRCMES.Web.Controllers
         /// <returns></returns>
         public ActionResult OspPaperRollerStock(string OspHeaderId)
         {
-#if DEBUG
+#if BIOTECH
             return OspLocalPaperRollerStockReport(OspHeaderId);
 #else
             return OspRemotePaperRollerStockReport(OspHeaderId);
@@ -448,7 +448,7 @@ namespace CHPOUTSRCMES.Web.Controllers
         /// <returns></returns>
         public ActionResult OspFlatStock(string OspHeaderId)
         {
-#if DEBUG
+#if BIOTECH
             return OspLocalPaperRollerStockReport(OspHeaderId);
 #else
             return OspRemotePaperRollerStockReport(OspHeaderId);

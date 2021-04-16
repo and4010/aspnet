@@ -639,7 +639,7 @@ namespace CHPOUTSRCMES.Web.Controllers
             {
                 using (DeliveryUOW uow = new DeliveryUOW(context))
                 {
-#if DEBUG
+#if BIOTECH
                     var result = tripHeaderData.LocalDeliveryPickingReportViewer(uow, tripName);
                     if (result.Success)
                     {

@@ -1074,7 +1074,7 @@ namespace CHPOUTSRCMES.Web.Controllers
             {
                 using (TransferUOW uow = new TransferUOW(context))
                 {
-#if DEBUG
+#if BIOTECH
                     var result = stockTransferData.LocalOutboundPickingReportViewer (uow, shipmentNumber);
                     if (result.Success)
                     {
@@ -1117,7 +1117,7 @@ namespace CHPOUTSRCMES.Web.Controllers
             {
                 using (TransferUOW uow = new TransferUOW(context))
                 {
-#if DEBUG
+#if BIOTECH
                     var result = stockTransferData.LocalInboundRollPickingReportViewer(uow, shipmentNumber);
                     if (result.Success)
                     {
@@ -1160,7 +1160,7 @@ namespace CHPOUTSRCMES.Web.Controllers
             {
                 using (TransferUOW uow = new TransferUOW(context))
                 {
-#if DEBUG
+#if BIOTECH
                     var result = stockTransferData.LocalInboundFlatPickingReportViewer(uow, shipmentNumber);
                     if (result.Success)
                     {

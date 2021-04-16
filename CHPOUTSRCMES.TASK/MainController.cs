@@ -26,7 +26,7 @@ namespace CHPOUTSRCMES.TASK
         private string erpConnStr;
 
         internal string ErpConnStr => erpConnStr ?? (erpConnStr =
-#if DEBUG
+#if BIOTECH
             System.Configuration.ConfigurationManager.ConnectionStrings["OracleTestContext"].ToString()
 #else
             System.Configuration.ConfigurationManager.ConnectionStrings["ErpContext"].ToString()
@@ -36,7 +36,7 @@ namespace CHPOUTSRCMES.TASK
         private string mesConnStr;
 
         internal string MesConnStr => mesConnStr ?? (mesConnStr =
-#if DEBUG
+#if BIOTECH
             System.Configuration.ConfigurationManager.ConnectionStrings["MesTestContext"].ToString()
 #else
             System.Configuration.ConfigurationManager.ConnectionStrings["MesContext"].ToString()

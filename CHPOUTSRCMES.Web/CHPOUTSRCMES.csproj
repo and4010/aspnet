@@ -1604,6 +1604,8 @@
     <Content Include="Img\login_1.jpg" />
     <Content Include="Img\paper2.png" />
     <Content Include="pngtree.jpg" />
+    <Content Include="Properties\PublishProfiles\發行正式機.pubxml.user" />
+    <Content Include="Properties\PublishProfiles\發行測試機.pubxml.user" />
     <Content Include="Scripts\Account\ChangePassword.js" />
     <Content Include="Scripts\Account\Edit.js" />
     <Content Include="Scripts\bootstrap.js" />
@@ -2039,7 +2041,6 @@
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Properties\PublishProfiles\Pon.pubxml" />
     <Content Include="Report\CutStock.rdlc" />
     <Content Include="Report\PurchaseFlat.rdlc" />
     <Content Include="Report\PurchasePaperRoll.rdlc" />
@@ -2050,10 +2051,10 @@
     <Content Include="Report\DeliveryPickingList.rdlc" />
     <Content Include="Report\InboundFlatPickingList.rdlc" />
     <Content Include="Report\InboundRollPickingList.rdlc" />
-    <None Include="Properties\PublishProfiles\元譯環境發佈.pubxml" />
-    <None Include="Properties\PublishProfiles\華紙環境發佈.pubxml" />
     <Content Include="Report\OspYield.rdlc" />
     <Content Include="Report\OspCutSum.rdlc" />
+    <None Include="Properties\PublishProfiles\發行正式機.pubxml" />
+    <None Include="Properties\PublishProfiles\發行測試機.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\Delivery\DetailViewHeader.js" />
     <Content Include="Scripts\Delivery\FlatEdit.js" />
@@ -2221,6 +2222,9 @@
     <Content Include="Views\Report\Yield.cshtml" />
     <Content Include="Views\Shared\_ReportPartial.cshtml" />
     <Content Include="Views\Report\CutSum.cshtml" />
+    <None Include="Web.Biotech Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -2276,6 +2280,15 @@
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Biotech Debug|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;BIOTECH</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <LangVersion>preview</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />

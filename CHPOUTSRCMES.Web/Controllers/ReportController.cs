@@ -74,7 +74,7 @@ namespace CHPOUTSRCMES.Web.Controllers
                 {
                     var userId = User.Identity.GetUserId();
                     YieldQueryModel yieldQueryModel = new YieldQueryModel();
-#if DEBUG
+#if BIOTECH
                     var result = yieldQueryModel.LocalOspYieldReportViewer(uow, cuttingDateFrom, cuttingDateTo, batchNo, machineNum, itemNumber, barcode, subinventory, userId);
                     if (result.Success)
                     {
@@ -124,7 +124,7 @@ namespace CHPOUTSRCMES.Web.Controllers
                     var userId = User.Identity.GetUserId();
                     CutSumQueryModel cutQueryModel = new CutSumQueryModel();
 
-#if DEBUG
+#if BIOTECH
                     var result = cutQueryModel.LocalOspCutSumReportViewer(uow, planStartDateFrom, planStartDateTo, batchNo, paperType, userId);
                     if (result.Success)
                     {
