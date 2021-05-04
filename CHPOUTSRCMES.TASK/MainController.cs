@@ -4,9 +4,13 @@ using CHPOUTSRCMES.TASK.Models.Service;
 using CHPOUTSRCMES.TASK.Tasks;
 using CHPOUTSRCMES.TASK.Tasks.Interfaces;
 using NLog;
+using NLog.Config;
+using NLog.Targets;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Transactions.Configuration;
@@ -27,6 +31,8 @@ namespace CHPOUTSRCMES.TASK
 
         internal string ErpConnStr => erpConnStr ?? (erpConnStr =
 #if BIOTECH
+            System.Configuration.ConfigurationManager.ConnectionStrings["OracleBiotechContext"].ToString()
+#elif TEST
             System.Configuration.ConfigurationManager.ConnectionStrings["OracleTestContext"].ToString()
 #else
             System.Configuration.ConfigurationManager.ConnectionStrings["ErpContext"].ToString()
@@ -37,6 +43,8 @@ namespace CHPOUTSRCMES.TASK
 
         internal string MesConnStr => mesConnStr ?? (mesConnStr =
 #if BIOTECH
+            System.Configuration.ConfigurationManager.ConnectionStrings["MesBiotechContext"].ToString()
+#elif TEST
             System.Configuration.ConfigurationManager.ConnectionStrings["MesTestContext"].ToString()
 #else
             System.Configuration.ConfigurationManager.ConnectionStrings["MesContext"].ToString()
@@ -89,6 +97,7 @@ namespace CHPOUTSRCMES.TASK
         /// </summary>
         public MainController()
         {
+            initLogger(MesConnStr);
             taskScheduler = new LimitedConcurrencyLevelTaskScheduler(20);
             factory = new TaskFactory(taskScheduler);
             taskers = new List<ITasker>();
@@ -184,6 +193,43 @@ namespace CHPOUTSRCMES.TASK
                 Task.WaitAll(trfTask1, trfTask2, trfTask3, trfTask4, trfTask5);
             });
 
+        }
+
+        public void initLogger(string strConnectionString)
+        {
+            SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder();
+            builder.ConnectionString = strConnectionString;
+
+            DatabaseTarget targetDB = new DatabaseTarget();
+
+            targetDB.Name = "MesLog";
+            targetDB.ConnectionString = strConnectionString;
+
+            targetDB.CommandText = string.Format(
+@"INSERT INTO [dbo].[LOG_ENTRY_TASK_T] ([CallSite], [Date], [Exception], [Level], [Logger], [MachineName], [Message], [StackTrace], [Thread], [Username]) VALUES (@CallSite, @Date, @Exception, @Level, @Logger, @MachineName, @Message, @StackTrace, @Thread, @Username);");
+            targetDB.Parameters.Add(new DatabaseParameterInfo("@CallSite", new NLog.Layouts.SimpleLayout("${callsite:filename=true}")));
+            targetDB.Parameters.Add(new DatabaseParameterInfo("@Date", new NLog.Layouts.SimpleLayout("${longdate}")));
+            targetDB.Parameters.Add(new DatabaseParameterInfo("@Exception", new NLog.Layouts.SimpleLayout("${exception}")));
+            targetDB.Parameters.Add(new DatabaseParameterInfo("@Level", new NLog.Layouts.SimpleLayout("${level}")));
+            targetDB.Parameters.Add(new DatabaseParameterInfo("@Logger", new NLog.Layouts.SimpleLayout("${logger}")));
+            targetDB.Parameters.Add(new DatabaseParameterInfo("@MachineName", new NLog.Layouts.SimpleLayout("${machinename}")));
+            targetDB.Parameters.Add(new DatabaseParameterInfo("@Message", new NLog.Layouts.SimpleLayout("${message}")));
+            targetDB.Parameters.Add(new DatabaseParameterInfo("@StackTrace", new NLog.Layouts.SimpleLayout("${stacktrace}")));
+            targetDB.Parameters.Add(new DatabaseParameterInfo("@Thread", new NLog.Layouts.SimpleLayout("${threadid}")));
+            targetDB.Parameters.Add(new DatabaseParameterInfo("@Username", new NLog.Layouts.SimpleLayout("${windows-identity:domain=true}")));
+
+            // Keep original configuration
+            LoggingConfiguration config = LogManager.Configuration;
+            if (config == null)
+                config = new LoggingConfiguration();
+
+            config.AddTarget(targetDB.Name, targetDB);
+
+            LoggingRule rule = new LoggingRule("*", LogLevel.Info, targetDB);
+            config.LoggingRules.Add(rule);
+            LogManager.ThrowExceptions = false;
+            LogManager.Configuration = config;
+            
         }
 
         /// <summary>
