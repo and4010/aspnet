@@ -1771,6 +1771,7 @@ select
                         SubinventoryCode = us.SubinventoryCode,
                         Segment2 = l.Segment2,
                         Segment3 = l.Segment3,
+                        LocatorSegments = l.LocatorSegments,
                         LocatorId = l.LocatorId,
                         LocatorControlFlag = l.ControlFlag,
                         LocatorDisableDate = l.LocatorDisableDate
@@ -1802,7 +1803,8 @@ select
                      .Select(x => new SelectListItem()
                      {
                          Text = x.Segment2 + "." + x.Segment3,
-                         Value = x.LocatorId.ToString()
+                         Value = x.LocatorId.ToString(),
+                         Selected = x.LocatorSegments == "FTY.TB3.TFG.NA"
                      }).ToList();
             }
         }
