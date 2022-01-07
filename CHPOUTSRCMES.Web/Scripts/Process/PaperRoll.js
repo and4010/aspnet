@@ -1087,7 +1087,7 @@ function BtnRecord() {
                 success: function (data) {
                     if (data.Success) {
                         CloseWait();
-                        location.href = "/Process/Schedule/" + data.Data;
+                        location.href = "/Process/PaperRoll/" + data.Data;
                     } else {
                         swal.fire(data.Msg);
                     }

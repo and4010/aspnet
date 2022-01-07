@@ -977,7 +977,7 @@ function BtnRecord() {
                 success: function (data) {
                     if (data.Success) {
                         CloseWait();
-                        location.href = "/Process/Schedule/" + data.Data;
+                        location.href = "/Process/Flat/" + data.Data;
                         //changeStaus();
                     } else {
                         swal.fire(data.Msg);
